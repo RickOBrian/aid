@@ -1,1 +1,5 @@
-{"autoMemoryEnabled": true}
+{
+  "project": "design-system",
+  "shared_rules": "skills/_shared/",
+  "memory_root": "memory/"
+}
