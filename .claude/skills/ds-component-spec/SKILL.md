@@ -1,7 +1,7 @@
 ---
 name: ds-component-spec
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -17,7 +17,7 @@ description: >
   компонента», передан Figma-фрейм или скриншот компонента.
 ---
 
-# DS Component Spec — v1.0.0
+# DS Component Spec — v1.0.1
 
 Принимает компонент в любом виде (Figma-фрейм, скриншот, текст, код)
 и выдаёт готовую спецификацию: уровень архитектуры, нейминг, токены,
@@ -33,6 +33,7 @@ description: >
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
 - `skills/_shared/token-rules.md` — трёхуровневая система токенов
 - `skills/_shared/platforms.md` — особенности Web / iOS / Android
+- `skills/_shared/stable-legacy-guide.md` — типы компонентов и статусы lifecycle
 
 **Если `.claude/intake-user` не существует:**
 Спроси имя одной строкой, покажи существующие
@@ -54,6 +55,10 @@ description: >
 Предупреди аналогично, используй встроенные правила из раздела
 «Встроенные правила платформ» ниже.
 
+**Если `skills/_shared/stable-legacy-guide.md` не существует:**
+Предупреди: «файл stable-legacy-guide.md не найден, типы компонентов
+не проверяются». Продолжай работу, но не выполняй проверку типа.
+
 **Если Figma MCP подключён:** забери компонент и токены из фрейма напрямую.
 **Если нет:** предупреди «Figma MCP не подключён» и попроси скриншот
 или текстовое описание. Не блокируй работу — продолжай с тем, что есть.
@@ -66,7 +71,10 @@ description: >
 
 Спроси только если неочевидно из материала (не больше 3 вопросов):
 1. Для каких платформ нужна спека? (по умолчанию — все три)
-2. Стадия: черновик для обсуждения или финал для разработки?
+2. Тип компонента: `Stable` или `Legacy`? Спека создаётся только для `Stable`.
+   Если передан `Legacy`-компонент — останови работу и сообщи:
+   «Спека создаётся только для Stable-компонентов. Этот компонент Legacy —
+   сначала создай его Stable-аналог.»
 3. Есть ли платформенные исключения (только web, только iOS)?
 
 Не задавай вопросы ради ритуала. Если всё понятно — переходи к шагу 2.
@@ -161,6 +169,7 @@ If a section has no content, write «нет» — do not omit the section.
 Шаблон спеки (4-space indent, чтобы внутренние блоки кода не ломали структуру):
 
     # [ComponentName] — Spec
+    Тип: Stable
     Уровень: [Item / Surface View / Structural View / Layout]
     Платформы: [Web · iOS · Android]
     Дата: [YYYY-MM-DD]   Автор: [из .claude/intake-user]
@@ -306,10 +315,11 @@ If a section has no content, write «нет» — do not omit the section.
 {
   "id": "spec-001",
   "component": "BadgeStatus",
+  "type": "Stable",
   "level": "surface-view",
   "platforms": ["web", "ios", "android"],
   "date": "2026-06-18",
-  "stage": "final",
+  "stage": "Released",
   "open_questions": 0,
   "missing_tokens": [],
   "_owner": "ivanov"
@@ -319,7 +329,7 @@ If a section has no content, write «нет» — do not omit the section.
 **После каждой спеки:**
 1. Добавь запись в файл памяти
 2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
-   Если файл недоступен — используй встроенные команды:
+   Если файл недоступен — использй встроенные команды:
 
 ```bash
 git pull --rebase
@@ -371,6 +381,11 @@ iOS-разработчик не обязан читать Web-секцию, чт
 
 ### Changelog
 
+- **1.0.1** — добавлена проверка типа компонента (Stable/Legacy) в Шаге 1;
+  поле `type` добавлено в шаблон спеки и в log-запись;
+  `stage` в log приведён к lifecycle-статусам (`Draft`, `Grooming`,
+  `Development`, `QA`, `Design Review`, `Released`);
+  добавлен `stable-legacy-guide.md` в список обязательных shared-файлов.
 - **1.0.0** — базовая спека: 4-уровневая архитектура, формула Role+Entity,
   токены 3 уровня, варианты, состояния, lifecycle для Structural View,
   реализация Web/iOS/Android, доступность, память.
