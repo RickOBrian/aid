@@ -1,6 +1,10 @@
 # Git Workflow
 
-## Синхронизация памяти
+Единый источник git-команд для всех скиллов репозитория.
+
+---
+
+## Синхронизация памяти после каждой записи
 
 ```bash
 git pull --rebase
@@ -9,12 +13,17 @@ git commit -m "<тип>(<skill>): <что произошло>"
 git push
 ```
 
-## Типы коммитов
-- `memory(<skill>)` — запись в журнал памяти
-- `spec(<component>)` — новая спека компонента
-- `feat(skills)` — новый скилл
-- `fix(skills)` — правка скилла
-- `chore` — инфраструктура
+`--rebase` обязателен: подтягивает чужие изменения перед своими.
+Личный log-файл не конфликтует с чужими — ребейз проходит чисто.
 
-## Правило --rebase
-Всегда --rebase, никогда --merge для memory/.
+---
+
+## Типы коммитов
+
+| Тип | Когда использовать | Пример |
+|-----|--------------------|--------|
+| `memory` | Запись в журнал памяти | `memory(ds-component-spec): add BadgeStatus` |
+| `spec` | Новая спека компонента | `spec(BadgeStatus): add spec v1.0.0` |
+| `audit` | Результат аудита токенов | `audit(button): fix missing semantic tokens` |
+| `feat` | Новый скилл | `feat(skills): add ds-token-audit` |
+| `fix` | Правка существующего скилла | `fix(skills): clarify CollectionView definition` |

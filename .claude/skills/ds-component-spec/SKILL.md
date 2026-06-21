@@ -1,7 +1,7 @@
 ---
 name: ds-component-spec
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -17,7 +17,7 @@ description: >
   компонента», передан Figma-фрейм или скриншот компонента.
 ---
 
-# DS Component Spec — v1.0.1
+# DS Component Spec — v1.1.0
 
 Принимает компонент в любом виде (Figma-фрейм, скриншот, текст, код)
 и выдаёт готовую спецификацию: уровень архитектуры, нейминг, токены,
@@ -33,7 +33,6 @@ description: >
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
 - `skills/_shared/token-rules.md` — трёхуровневая система токенов
 - `skills/_shared/platforms.md` — особенности Web / iOS / Android
-- `skills/_shared/stable-legacy-guide.md` — типы компонентов и статусы lifecycle
 
 **Если `.claude/intake-user` не существует:**
 Спроси имя одной строкой, покажи существующие
@@ -55,10 +54,6 @@ description: >
 Предупреди аналогично, используй встроенные правила из раздела
 «Встроенные правила платформ» ниже.
 
-**Если `skills/_shared/stable-legacy-guide.md` не существует:**
-Предупреди: «файл stable-legacy-guide.md не найден, типы компонентов
-не проверяются». Продолжай работу, но не выполняй проверку типа.
-
 **Если Figma MCP подключён:** забери компонент и токены из фрейма напрямую.
 **Если нет:** предупреди «Figma MCP не подключён» и попроси скриншот
 или текстовое описание. Не блокируй работу — продолжай с тем, что есть.
@@ -71,10 +66,7 @@ description: >
 
 Спроси только если неочевидно из материала (не больше 3 вопросов):
 1. Для каких платформ нужна спека? (по умолчанию — все три)
-2. Тип компонента: `Stable` или `Legacy`? Спека создаётся только для `Stable`.
-   Если передан `Legacy`-компонент — останови работу и сообщи:
-   «Спека создаётся только для Stable-компонентов. Этот компонент Legacy —
-   сначала создай его Stable-аналог.»
+2. Стадия: черновик для обсуждения или финал для разработки?
 3. Есть ли платформенные исключения (только web, только iOS)?
 
 Не задавай вопросы ради ритуала. Если всё понятно — переходи к шагу 2.
@@ -110,8 +102,10 @@ description: >
 - Switch, Checkbox, Radio без внешнего Label → Surface View.
   С внешним Label (FieldCheckbox, FieldRadio) → Structural View.
 - StatTile — Structural View: два равнозначных слота Label + Value.
-- CollectionView — не уровень архитектуры; отдельная роль,
-  решает что рендерить (данные / скелетон / EmptyState / ошибку).
+- CollectionView — не уровень архитектуры. Это отдельная роль родительского
+  контейнера: принимает решение что рендерить (данные / скелетон /
+  EmptyState / ошибку). Layout получает уже готовый набор дочерних
+  компонентов и только расставляет их.
 
 Если уровень неочевиден — скажи явно и объясни почему. Не угадывай.
 
@@ -119,12 +113,14 @@ description: >
 
 ## Шаг 3. Проверь нейминг
 
-Формула: **Role + Entity**
+Формула: **Role + Entity** (+ опциональный Qualifier)
 
 - **Role** — тип компонента (всегда первым):
   Badge, Button, Avatar, Icon, Text, Row, Island, Widget, Field, Surface.
-- **Entity** — тип содержимого:
+- **Entity** — тип содержимого или сущности:
   Status, Count, Product, Balance, Media, Icon, Text.
+- **Qualifier** — уточняющий постфикс (если нужен):
+  Floating, Compact, Inline, Grouped.
 
 Примеры: BadgeStatus, BadgeCount, ButtonIcon, ButtonText, AvatarButton,
 IslandProduct, WidgetBalance, FieldCheckbox, FieldRadio, StatTile, ListRow.
@@ -136,6 +132,8 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 - Суффикс Item в самостоятельном компоненте (IconItem → нет).
   Item допустим только как вложенный элемент коллекции: List.Item, Menu.Item.
 - Имя по реализации, не по роли: CardWithIconAndTitle → IslandProduct.
+- Суффикс Surface там, где есть устоявшееся смысловое имя:
+  пиши Badge, не TextSurface; Avatar, не AvatarSurface.
 
 **Стандартные имена слотов** для Structural View (кросс-платформенно):
 `leading`, `trailing`, `content`, `header`, `footer`, `title`,
@@ -154,7 +152,7 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 - **Component** — конкретный компонент: `button.background.default`
 
 Правила:
-- Компонентный слой обращается к primitive только через semantic — никогда напрямую.
+- Компонентный слой ссылается на semantic, не на primitive напрямую.
 - Захардкоженное значение (`background: #0057FF`) вместо токена — блокер.
 - Если нужного semantic-токена нет — отметь в спеке:
   «⚠️ нужно добавить токен: [предлагаемое имя]».
@@ -169,7 +167,6 @@ If a section has no content, write «нет» — do not omit the section.
 Шаблон спеки (4-space indent, чтобы внутренние блоки кода не ломали структуру):
 
     # [ComponentName] — Spec
-    Тип: Stable
     Уровень: [Item / Surface View / Structural View / Layout]
     Платформы: [Web · iOS · Android]
     Дата: [YYYY-MM-DD]   Автор: [из .claude/intake-user]
@@ -315,11 +312,10 @@ If a section has no content, write «нет» — do not omit the section.
 {
   "id": "spec-001",
   "component": "BadgeStatus",
-  "type": "Stable",
   "level": "surface-view",
   "platforms": ["web", "ios", "android"],
-  "date": "2026-06-18",
-  "stage": "Released",
+  "date": "2026-06-21",
+  "stage": "final",
   "open_questions": 0,
   "missing_tokens": [],
   "_owner": "ivanov"
@@ -329,7 +325,7 @@ If a section has no content, write «нет» — do not omit the section.
 **После каждой спеки:**
 1. Добавь запись в файл памяти
 2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
-   Если файл недоступен — использй встроенные команды:
+   Если файл недоступен — используй встроенные команды:
 
 ```bash
 git pull --rebase
@@ -344,7 +340,7 @@ git push
 **При следующем запуске** читай все `memory/ds-component-spec/log.*.json`:
 - Если компонент уже спекался — скажи дату и стадию предыдущей спеки.
 - Если в прошлых спеках накопились `missing_tokens` — напомни
-  как системная проблема до начала работы.
+  как системную проблему до начала работы.
 
 ---
 
@@ -353,6 +349,8 @@ git push
 Рядом с этим файлом должен лежать `skills/ds-component-spec/TESTING.md` —
 чеклист для проверки скилла перед мержем. Если файл отсутствует —
 создай его по шаблону из гайда `claude-skills-guide.md`, раздел «Фаза 3».
+
+---
 
 ## Тон
 
@@ -381,11 +379,11 @@ iOS-разработчик не обязан читать Web-секцию, чт
 
 ### Changelog
 
-- **1.0.1** — добавлена проверка типа компонента (Stable/Legacy) в Шаге 1;
-  поле `type` добавлено в шаблон спеки и в log-запись;
-  `stage` в log приведён к lifecycle-статусам (`Draft`, `Grooming`,
-  `Development`, `QA`, `Design Review`, `Released`);
-  добавлен `stable-legacy-guide.md` в список обязательных shared-файлов.
+- **1.1.0** — уточнён нейминг: добавлен Qualifier в формулу Role+Entity;
+  добавлено правило «суффикс Surface только для абстрактных компонентов»;
+  CollectionView переформулирован точнее: не уровень архитектуры, а роль
+  родительского контейнера, принимающего решение что рендерить;
+  исправлена опечатка «использй» → «используй».
 - **1.0.0** — базовая спека: 4-уровневая архитектура, формула Role+Entity,
   токены 3 уровня, варианты, состояния, lifecycle для Structural View,
   реализация Web/iOS/Android, доступность, память.
