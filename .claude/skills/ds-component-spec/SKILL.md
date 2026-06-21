@@ -9,7 +9,7 @@ description: >
   iOS (SwiftUI) и Android (Compose) из одного описания, скриншота
   или Figma-фрейма. Применяет четырёхуровневую архитектуру (Item →
   Surface View → Structural View → Layout) и трёхуровневую систему
-  токенов (primitive → semantic → component).
+  токенов (Core → Semantic → Component).
   Активируй когда: «сделай спек компонента», «опиши компонент для
   разработчиков», «создай spec для», «подготовь документацию
   компонента», «какой уровень у этого компонента», «как назвать
@@ -102,10 +102,8 @@ description: >
 - Switch, Checkbox, Radio без внешнего Label → Surface View.
   С внешним Label (FieldCheckbox, FieldRadio) → Structural View.
 - StatTile — Structural View: два равнозначных слота Label + Value.
-- CollectionView — не уровень архитектуры. Это отдельная роль родительского
-  контейнера: принимает решение что рендерить (данные / скелетон /
-  EmptyState / ошибку). Layout получает уже готовый набор дочерних
-  компонентов и только расставляет их.
+- CollectionView — не уровень архитектуры; отдельная роль,
+  решает что рендерить (данные / скелетон / EmptyState / ошибку).
 
 Если уровень неочевиден — скажи явно и объясни почему. Не угадывай.
 
@@ -113,14 +111,12 @@ description: >
 
 ## Шаг 3. Проверь нейминг
 
-Формула: **Role + Entity** (+ опциональный Qualifier)
+Формула: **Role + Entity**
 
 - **Role** — тип компонента (всегда первым):
   Badge, Button, Avatar, Icon, Text, Row, Island, Widget, Field, Surface.
-- **Entity** — тип содержимого или сущности:
+- **Entity** — тип содержимого:
   Status, Count, Product, Balance, Media, Icon, Text.
-- **Qualifier** — уточняющий постфикс (если нужен):
-  Floating, Compact, Inline, Grouped.
 
 Примеры: BadgeStatus, BadgeCount, ButtonIcon, ButtonText, AvatarButton,
 IslandProduct, WidgetBalance, FieldCheckbox, FieldRadio, StatTile, ListRow.
@@ -132,8 +128,6 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 - Суффикс Item в самостоятельном компоненте (IconItem → нет).
   Item допустим только как вложенный элемент коллекции: List.Item, Menu.Item.
 - Имя по реализации, не по роли: CardWithIconAndTitle → IslandProduct.
-- Суффикс Surface там, где есть устоявшееся смысловое имя:
-  пиши Badge, не TextSurface; Avatar, не AvatarSurface.
 
 **Стандартные имена слотов** для Structural View (кросс-платформенно):
 `leading`, `trailing`, `content`, `header`, `footer`, `title`,
@@ -147,12 +141,12 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 Если нет — встроенные правила ниже.
 
 Три уровня:
-- **Primitive** — сырые значения: `color.blue.500`, `shape.corner.8`
+- **Core** — сырые значения: `color.core.blue.500`, `shape.core.corner.8`
 - **Semantic** — назначение: `color.surface.default`, `color.text.primary`
 - **Component** — конкретный компонент: `button.background.default`
 
 Правила:
-- Компонентный слой ссылается на semantic, не на primitive напрямую.
+- Компонентный слой обращается к Core только через Semantic — никогда напрямую.
 - Захардкоженное значение (`background: #0057FF`) вместо токена — блокер.
 - Если нужного semantic-токена нет — отметь в спеке:
   «⚠️ нужно добавить токен: [предлагаемое имя]».
@@ -183,13 +177,13 @@ If a section has no content, write «нет» — do not omit the section.
     Слоты (только Structural View): leading, content, trailing, ...
 
     ## Токены
-    | Свойство         | Primitive             | Semantic                  | Component                       |
-    |------------------|-----------------------|---------------------------|---------------------------------|
-    | background       | color.neutral.0       | color.surface.default     | [name].background.default       |
-    | background:hover | —                     | color.surface.hover       | [name].background.hover         |
-    | color            | color.neutral.900     | color.text.primary        | [name].text                     |
-    | border-radius    | shape.corner.8        | —                         | [name].corner                   |
-    | padding-h        | spacing.4             | —                         | [name].padding.horizontal       |
+    | Свойство         | Core                    | Semantic                  | Component                       |
+    |------------------|-------------------------|---------------------------|---------------------------------|
+    | background       | color.core.neutral.0    | color.surface.default     | [name].background.default       |
+    | background:hover | —                       | color.surface.hover       | [name].background.hover         |
+    | color            | color.core.neutral.900  | color.text.primary        | [name].text                     |
+    | border-radius    | shape.core.corner.8     | —                         | [name].corner                   |
+    | padding-h        | spacing.core.4          | —                         | [name].padding.horizontal       |
     ⚠️ нужно добавить токен: [имя] — если semantic-слой неполный
 
     ## Варианты
@@ -274,15 +268,48 @@ If a section has no content, write «нет» — do not omit the section.
 
 ---
 
+## Шаг 6. Output Validation
+
+**Выполни этот чеклист перед финальным ответом. Не пропускай.**
+Если хотя бы один пункт не выполнен — исправь спеку до отдачи результата.
+
+**Токены:**
+- [ ] Все токены следуют трёхуровневой структуре: Core → Semantic → Component
+- [ ] Нет прямых ссылок с Component-уровня на Core-уровень (только через Semantic)
+- [ ] Нет захардкоженных значений (hex, px-числа без токена)
+- [ ] Все отсутствующие Semantic-токены помечены: ⚠️ нужно добавить токен: [имя]
+- [ ] Нейминг токенов соответствует формату из `token-rules.md` (или встроенным правилам)
+
+**Нейминг компонента:**
+- [ ] Имя компонента следует формуле Role + Entity (или обоснованно входит в список исключений)
+- [ ] Нет суффикса Item в самостоятельном компоненте
+- [ ] Имена слотов из стандартного списка: leading, trailing, content, header, footer, title, subtitle, action
+
+**Уровень архитектуры:**
+- [ ] Уровень соответствует определению (Item / Surface View / Structural View / Layout)
+- [ ] Граничный случай — объяснён явно
+- [ ] CollectionView не указан как уровень архитектуры
+
+**Полнота спеки:**
+- [ ] Все обязательные секции присутствуют (если нет содержимого — написано «нет»)
+- [ ] Секция Lifecycle заполнена только для Structural View
+- [ ] Каждая платформенная секция понятна без чтения остальных
+
+**Доступность:**
+- [ ] Touch target указан для всех платформ (минимум 44×44pt / 48×48dp)
+- [ ] Keyboard-навигация описана для Web
+
+---
+
 ## Встроенные правила токенов
 
 *Используются только если `skills/_shared/token-rules.md` не найден.*
 
-- Primitive — только сырые значения, без смысловой нагрузки
+- Core — только сырые значения, без смысловой нагрузки
 - Semantic — назначение, не привязан к конкретному компоненту
-- Component — ссылается на semantic, не на primitive напрямую
+- Component — ссылается на Semantic, не на Core напрямую
 - Захардкоженное значение вместо токена — блокер, отмечать явно
-- Отсутствующий semantic-токен — отмечать как «⚠️ нужно добавить»
+- Отсутствующий Semantic-токен — отмечать как «⚠️ нужно добавить»
 
 ---
 
@@ -314,16 +341,17 @@ If a section has no content, write «нет» — do not omit the section.
   "component": "BadgeStatus",
   "level": "surface-view",
   "platforms": ["web", "ios", "android"],
-  "date": "2026-06-21",
+  "date": "2026-06-18",
   "stage": "final",
   "open_questions": 0,
   "missing_tokens": [],
+  "validation_passed": true,
   "_owner": "ivanov"
 }
 ```
 
 **После каждой спеки:**
-1. Добавь запись в файл памяти
+1. Добавь запись в файл памяти (поле `validation_passed` — результат шага 6)
 2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
    Если файл недоступен — используй встроенные команды:
 
@@ -340,7 +368,7 @@ git push
 **При следующем запуске** читай все `memory/ds-component-spec/log.*.json`:
 - Если компонент уже спекался — скажи дату и стадию предыдущей спеки.
 - Если в прошлых спеках накопились `missing_tokens` — напомни
-  как системную проблему до начала работы.
+  как системная проблема до начала работы.
 
 ---
 
@@ -349,8 +377,6 @@ git push
 Рядом с этим файлом должен лежать `skills/ds-component-spec/TESTING.md` —
 чеклист для проверки скилла перед мержем. Если файл отсутствует —
 создай его по шаблону из гайда `claude-skills-guide.md`, раздел «Фаза 3».
-
----
 
 ## Тон
 
@@ -379,11 +405,11 @@ iOS-разработчик не обязан читать Web-секцию, чт
 
 ### Changelog
 
-- **1.1.0** — уточнён нейминг: добавлен Qualifier в формулу Role+Entity;
-  добавлено правило «суффикс Surface только для абстрактных компонентов»;
-  CollectionView переформулирован точнее: не уровень архитектуры, а роль
-  родительского контейнера, принимающего решение что рендерить;
-  исправлена опечатка «использй» → «используй».
+- **1.1.0** — добавлен Шаг 6 Output Validation: обязательный чеклист
+  перед финальным ответом (токены, нейминг, уровень архитектуры,
+  полнота спеки, доступность). Поле `validation_passed` добавлено
+  в формат записи памяти. Терминология токенов: Primitive → Core
+  (единообразно с остальными гайдами системы).
 - **1.0.0** — базовая спека: 4-уровневая архитектура, формула Role+Entity,
   токены 3 уровня, варианты, состояния, lifecycle для Structural View,
   реализация Web/iOS/Android, доступность, память.
