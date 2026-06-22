@@ -1,0 +1,72 @@
+.token-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.token-row__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--token-badge-bg);
+  font-family: var(--font-diagram);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--token-badge-text);
+  white-space: nowrap;
+}
+
+.token-row__badge--error {
+  background: #fee7e5;
+}
+
+.token-row__badge--success {
+  background: #d6f4db;
+}
+
+.token-row__swatch-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 64px;
+}
+
+.token-row__swatch {
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--swatch-border);
+  border-radius: 10px;
+}
+
+.token-row__hex {
+  font-family: var(--font-diagram);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--label-muted);
+  white-space: nowrap;
+}
+
+.token-row__arrow {
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--label-muted);
+}
+
+.token-row__trailing {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .token-row {
+    gap: 12px;
+  }
+}

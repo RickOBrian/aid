@@ -1,0 +1,104 @@
+.diagram-card {
+  position: relative;
+  border: 1px solid var(--diagram-card-border);
+  border-radius: var(--diagram-radius);
+  padding: 31px;
+  background: #fff;
+}
+
+.diagram-card--dont {
+  border-color: var(--status-attention);
+  background: rgba(240, 68, 56, 0.02);
+}
+
+.diagram-card--do {
+  border-color: var(--status-success);
+  background: rgba(18, 183, 106, 0.02);
+}
+
+.diagram-card--okay {
+  border-color: var(--diagram-card-border);
+}
+
+.diagram-card__chip {
+  position: absolute;
+  top: 25px;
+  right: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #fff;
+}
+
+.diagram-card__chip--dont {
+  background: var(--status-attention);
+}
+
+.diagram-card__chip--do {
+  background: var(--status-success);
+}
+
+.diagram-card__chip--okay {
+  background: var(--status-info-chip);
+  border-radius: 24px;
+}
+
+.diagram-card__title {
+  margin: 0 0 48px;
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000;
+}
+
+.diagram-card__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 43px;
+}
+
+.diagram-card__footer {
+  margin: 32px 0 0;
+  font-family: var(--font-diagram);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #565c6e;
+  text-align: center;
+}
+
+.diagram-card--compact .diagram-card__rows {
+  gap: 32px;
+}
+
+.diagram-card--compact .diagram-card__title {
+  margin-bottom: 32px;
+}
+
+.diagram-card--narrow {
+  max-width: 345px;
+}
+
+.diagram-card--medium {
+  max-width: 578px;
+}
+
+@media (max-width: 760px) {
+  .diagram-card {
+    padding: 24px 20px;
+  }
+
+  .diagram-card__chip {
+    position: static;
+    margin-bottom: 16px;
+    align-self: flex-start;
+  }
+}

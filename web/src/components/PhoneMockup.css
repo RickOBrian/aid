@@ -1,0 +1,114 @@
+.phone-mockup {
+  --phone-width: 375px;
+  --phone-height: 812px;
+  --phone-scale: 1;
+  --phone-bg: var(--diagram-surface);
+  position: relative;
+  width: calc(var(--phone-width) * var(--phone-scale));
+  height: calc(var(--phone-height) * var(--phone-scale));
+  flex-shrink: 0;
+}
+
+.phone-mockup__shell {
+  position: absolute;
+  inset: 0;
+  transform: scale(var(--phone-scale));
+  transform-origin: top left;
+  width: var(--phone-width);
+  height: var(--phone-height);
+  border: 6px solid #000;
+  border-radius: 44px;
+  background: var(--phone-bg);
+  overflow: hidden;
+}
+
+.phone-mockup__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 16px;
+  min-height: 59px;
+}
+
+.phone-mockup__time {
+  flex: 1;
+  font-family: var(--font-diagram);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+  color: #000;
+}
+
+.phone-mockup__island {
+  width: 125px;
+  height: 37px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.phone-mockup__icons {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.phone-mockup__signal,
+.phone-mockup__wifi,
+.phone-mockup__battery {
+  display: block;
+  background: #000;
+  border-radius: 1px;
+}
+
+.phone-mockup__signal {
+  width: 19px;
+  height: 12px;
+  clip-path: polygon(0 100%, 25% 40%, 50% 70%, 75% 20%, 100% 50%, 100% 100%);
+}
+
+.phone-mockup__wifi {
+  width: 17px;
+  height: 12px;
+  border: 2px solid #000;
+  border-top-color: transparent;
+  border-radius: 50% 50% 0 0;
+  background: transparent;
+}
+
+.phone-mockup__battery {
+  width: 27px;
+  height: 13px;
+  border: 1.5px solid #000;
+  border-radius: 3px;
+  position: relative;
+}
+
+.phone-mockup__battery::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 3px;
+  width: 2px;
+  height: 5px;
+  background: #000;
+  border-radius: 0 1px 1px 0;
+}
+
+.phone-mockup__screen {
+  position: relative;
+  min-height: calc(var(--phone-height) - 59px - 35px);
+}
+
+.phone-mockup__home {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  border-radius: 100px;
+  background: #192433;
+}

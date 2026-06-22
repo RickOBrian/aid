@@ -1,0 +1,22 @@
+.guide-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.guide-badge--do {
+  background: #12b76a;
+}
+
+.guide-badge--dont {
+  background: #f04438;
+}

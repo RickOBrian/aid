@@ -1,0 +1,16 @@
+.figma-section-image {
+  width: 100%;
+  border-radius: var(--page-radius);
+  overflow: hidden;
+  background: #fff;
+}
+
+.figma-section-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.figma-section-image--wide {
+  max-width: 100%;
+}

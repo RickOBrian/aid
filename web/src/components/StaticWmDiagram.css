@@ -1,0 +1,120 @@
+.static-wm-diagram__pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.static-wm-diagram__card {
+  flex: 1 1 600px;
+  max-width: 100%;
+  padding: 25px 31px 31px;
+  border-radius: var(--diagram-radius);
+  overflow-x: auto;
+}
+
+.static-wm-diagram__card--do {
+  border: 1px solid #12b76a;
+  background: rgba(18, 183, 106, 0.02);
+}
+
+.static-wm-diagram__card--dont {
+  border: 1px solid #f04438;
+  background: rgba(240, 68, 56, 0.02);
+}
+
+.static-wm-diagram__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.static-wm-diagram__label {
+  margin: 0;
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.static-wm-diagram__grid {
+  min-width: 640px;
+}
+
+.static-wm-diagram__header-row,
+.static-wm-diagram__body-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 192px) repeat(4, 64px);
+  gap: 0 24px;
+  align-items: start;
+}
+
+.static-wm-diagram__header-row {
+  margin-bottom: 16px;
+}
+
+.static-wm-diagram__header-cell {
+  font-family: var(--font-diagram);
+  font-size: 16px;
+  font-weight: 500;
+  color: #172b4d;
+}
+
+.static-wm-diagram__body-row {
+  margin-bottom: 24px;
+}
+
+.static-wm-diagram__body-row:last-child {
+  margin-bottom: 0;
+}
+
+.static-wm-diagram__token {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-family: var(--font-diagram);
+  font-size: 16px;
+  font-weight: 500;
+  color: #172b4d;
+  white-space: nowrap;
+}
+
+.static-wm-diagram__token--default {
+  background: #eceef4;
+}
+
+.static-wm-diagram__token--success {
+  background: #d6f4db;
+}
+
+.static-wm-diagram__token--error {
+  background: #fee7e5;
+}
+
+.static-wm-diagram__token-highlight {
+  color: #e90000;
+}
+
+.static-wm-diagram__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.static-wm-diagram__swatch {
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--swatch-border);
+  border-radius: 10px;
+}
+
+.static-wm-diagram__hex {
+  font-family: var(--font-diagram);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--label-muted);
+}

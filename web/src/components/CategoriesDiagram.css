@@ -1,0 +1,127 @@
+.categories-diagram {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 270px;
+  padding: 32px 64px;
+  border-radius: var(--diagram-radius);
+  background: var(--diagram-surface);
+  overflow: hidden;
+}
+
+.categories-diagram--compact {
+  align-items: flex-start;
+}
+
+.categories-diagram--icons {
+  align-items: center;
+  min-height: 239px;
+}
+
+.categories-diagram__cards {
+  padding: 66px 16px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.categories-diagram__card {
+  height: 138px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.categories-diagram__card--wide {
+  width: 343px;
+}
+
+.categories-diagram__card:not(.categories-diagram__card--wide) {
+  width: 165px;
+}
+
+.categories-diagram__cards {
+  grid-template-columns: repeat(2, 165px);
+}
+
+.categories-diagram__card--wide {
+  grid-column: 1 / -1;
+  width: 343px;
+}
+
+.categories-diagram__text-screen {
+  padding: 79px 16px 0;
+}
+
+.categories-diagram__headline {
+  margin: 0 0 16px;
+  font-family: var(--font-button);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 30px;
+  color: var(--text-base-main);
+}
+
+.categories-diagram__body {
+  margin: 0 0 24px;
+  font-family: var(--font-button);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--text-base-secondary);
+}
+
+.categories-diagram__link {
+  font-family: var(--font-button);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--bg-accent-main);
+  text-decoration: none;
+}
+
+.categories-diagram__icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  width: 100%;
+}
+
+.categories-diagram__icon-x {
+  font-family: var(--font-diagram);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.categories-diagram__line-screen {
+  padding: 71px 16px 0;
+}
+
+.categories-diagram__line-card {
+  width: 343px;
+  height: 144px;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.categories-diagram__line-row {
+  height: 48px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.categories-diagram__line-row:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 960px) {
+  .categories-diagram {
+    min-height: 220px;
+    padding: 24px 16px;
+  }
+
+  .categories-diagram__icon-row {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}

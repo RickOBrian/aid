@@ -1,0 +1,18 @@
+.guide-token-example {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: normal;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.guide-token-example__morpheme {
+  color: rgba(255, 0, 0, 0.72);
+}
+
+@media (max-width: 960px) {
+  .guide-token-example {
+    font-size: 24px;
+  }
+}

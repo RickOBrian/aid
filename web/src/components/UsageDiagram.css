@@ -1,0 +1,171 @@
+.usage-diagram {
+  position: relative;
+  height: var(--diagram-height);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  overflow: hidden;
+  background: #fff;
+}
+
+.usage-diagram__col {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-diagram);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #000;
+}
+
+.usage-diagram__col--left {
+  left: 129px;
+  top: 48px;
+}
+
+.usage-diagram__col--right {
+  left: 580px;
+  top: 48px;
+}
+
+.usage-diagram__row {
+  position: absolute;
+  inset: 0;
+}
+
+.usage-diagram__token {
+  position: absolute;
+  left: 129px;
+  margin: 0;
+  font-family: var(--font-diagram);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.usage-diagram__row--top .usage-diagram__token {
+  top: 96px;
+}
+
+.usage-diagram__row--bottom .usage-diagram__token {
+  top: 242px;
+}
+
+.usage-diagram__swatch {
+  position: absolute;
+  left: 129px;
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--swatch-border);
+  border-radius: 10px;
+}
+
+.usage-diagram__swatch--65 {
+  top: 126px;
+  background: var(--semantic-blue-65);
+}
+
+.usage-diagram__swatch--85 {
+  top: 272px;
+  background: var(--semantic-blue-85);
+}
+
+.usage-diagram__alias {
+  position: absolute;
+  left: 129px;
+  margin: 0;
+  font-family: var(--font-diagram);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--label-muted);
+  white-space: nowrap;
+}
+
+.usage-diagram__row--top .usage-diagram__alias {
+  top: 166px;
+}
+
+.usage-diagram__row--bottom .usage-diagram__alias {
+  top: 312px;
+}
+
+.usage-diagram__connector {
+  position: absolute;
+  left: 193px;
+  display: block;
+  pointer-events: none;
+}
+
+.usage-diagram__connector--top {
+  top: 133px;
+  width: 387px;
+  height: 15px;
+}
+
+.usage-diagram__connector--bottom {
+  top: 274px;
+  width: 387px;
+  height: 15px;
+}
+
+.usage-diagram__row .guide-button {
+  position: absolute;
+  left: 580px;
+}
+
+.usage-diagram__row--top .guide-button {
+  top: 110px;
+}
+
+.usage-diagram__row--bottom .guide-button {
+  top: 248px;
+}
+
+@media (max-width: 960px) {
+  .usage-diagram {
+    height: auto;
+    min-height: 420px;
+    padding: 24px 16px 32px;
+  }
+
+  .usage-diagram__col,
+  .usage-diagram__token,
+  .usage-diagram__swatch,
+  .usage-diagram__alias,
+  .usage-diagram__connector,
+  .usage-diagram__row .guide-button {
+    position: static;
+  }
+
+  .usage-diagram__row {
+    position: static;
+    display: grid;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--section-border);
+  }
+
+  .usage-diagram__row--top {
+    margin-top: 16px;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .usage-diagram__connector {
+    display: none;
+  }
+
+  .usage-diagram__col--left,
+  .usage-diagram__col--right {
+    position: static;
+  }
+
+  .usage-diagram__cols {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+}

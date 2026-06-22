@@ -1,0 +1,12 @@
+.guide-mono {
+  font-weight: 400;
+}
+
+.guide-numbered-list {
+  margin: 0;
+  padding-left: 30px;
+}
+
+.guide-numbered-list li + li {
+  margin-top: 0;
+}

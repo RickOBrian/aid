@@ -1,0 +1,115 @@
+.section13__title-muted {
+  color: var(--text-secondary);
+}
+
+.section13__demo {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  border-radius: 24px;
+  background: var(--preview-bg);
+}
+
+.section13__demo-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 192px;
+  width: 100%;
+}
+
+.section13__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 140px;
+  min-height: 112px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+  overflow: visible;
+}
+
+.section13__tile--ios-focus {
+  box-shadow:
+    0 0 0 3px rgba(44, 100, 227, 0.35),
+    0 0 0 6px rgba(44, 100, 227, 0.12);
+}
+
+.section13__ios-focus-ring {
+  position: absolute;
+  inset: -8px;
+  border: 2px solid rgba(44, 100, 227, 0.45);
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+.section13__android-ripple {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(29, 37, 47, 0.14) 0%,
+    rgba(29, 37, 47, 0.08) 35%,
+    rgba(29, 37, 47, 0.03) 55%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.section13__tile--android-ripple::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(29, 37, 47, 0.12);
+}
+
+.section13__radiobox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+}
+
+.section13__tile-label {
+  font-family: var(--font-button);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-base-main);
+}
+
+.section13__cursor {
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #1d252f;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.section13__cursor::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 12px solid #1d252f;
+  transform: rotate(-45deg);
+}

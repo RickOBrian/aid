@@ -1,0 +1,96 @@
+.collection-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.collection-card {
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  padding: 36px 32px;
+  min-height: 286px;
+  background: #fff;
+}
+
+.collection-card__title {
+  margin: 0 0 24px;
+  font-family: var(--font-diagram);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+  color: #000;
+}
+
+.collection-card__prefix {
+  margin: 0 0 32px;
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.collection-card__row {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+
+.collection-card__token {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 188px;
+  height: 32px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #eceef4;
+  font-family: var(--font-diagram);
+  font-size: 16px;
+  font-weight: 500;
+  color: #172b4d;
+}
+
+.collection-card__modes {
+  display: flex;
+  gap: 53px;
+}
+
+.collection-card__mode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.collection-card__mode-label {
+  font-family: var(--font-diagram);
+  font-size: 16px;
+  font-weight: 500;
+  color: #172b4d;
+}
+
+.collection-card__swatch {
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--swatch-border);
+  border-radius: 10px;
+}
+
+.collection-card__hex {
+  font-family: var(--font-diagram);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--label-muted);
+}
+
+@media (max-width: 760px) {
+  .collection-card__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .collection-card__modes {
+    gap: 32px;
+  }
+}

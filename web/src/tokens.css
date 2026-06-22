@@ -1,0 +1,76 @@
+:root {
+  /* Text */
+  --text-base-main: #1d252f;
+
+  /* Backgrounds */
+  --bg-accent-main: #2c64e3;
+  --bg-accent-pressed: #1039b1;
+
+  /* Core palette — sapphire */
+  --sapphire-55: #347cf6;
+  --sapphire-60: #3070ec;
+  --sapphire-65: #2c64e3;
+  --sapphire-70: #2356d2;
+  --sapphire-75: #1947c2;
+  --sapphire-80: #1039b1;
+  --sapphire-85: #0d2b81;
+  --sapphire-90: #091c50;
+
+  /* Semantic swatches */
+  --semantic-blue-65: #2c64e3;
+  --semantic-blue-85: #0d2b81;
+
+  /* Layout */
+  --page-radius: 32px;
+  --diagram-radius: 32px;
+  --diagram-height: 377px;
+  --section-border: #f6f7f9;
+  --diagram-border: rgba(0, 0, 0, 0.12);
+  --swatch-border: rgba(0, 0, 0, 0.05);
+  --label-muted: #44546f;
+
+  /* Typography */
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-button: 'Montserrat', system-ui, sans-serif;
+  --font-diagram: 'Inter', system-ui, sans-serif;
+
+  --guide-px: 64px;
+  --guide-py: 48px;
+  --guide-gap: 48px;
+
+  /* Token display */
+  --token-highlight: rgba(255, 0, 0, 0.72);
+  --token-muted: rgba(0, 0, 0, 0.72);
+  --text-secondary: #8690a2;
+  --token-badge-bg: #eceef4;
+  --token-badge-text: #172b4d;
+  --diagram-card-border: #d3d3d3;
+
+  /* Status */
+  --status-attention: #f04438;
+  --status-success: #12b76a;
+  --status-info-chip: #62c1c7;
+  --info-callout-bg: rgba(44, 100, 227, 0.1);
+
+  /* Preview surfaces */
+  --preview-bg: #f6f6f9;
+  --form-kenya-fade: #f6f7f8;
+  --text-muted: #8690a2;
+  --border-primary: #e1e4ea;
+
+  /* Guide diagrams */
+  --token-prefix-muted: rgba(0, 0, 0, 0.32);
+  --token-prefix-faded: #a2a2a2;
+  --diagram-surface: #f1f2f5;
+  --callout-line: #7eb8ff;
+  --folder-bg: rgba(0, 144, 206, 0.08);
+  --folder-border: #0090ce;
+  --folder-text-bg: rgba(0, 168, 107, 0.08);
+  --folder-text-border: #00a86b;
+  --folder-icon-bg: rgba(255, 149, 0, 0.08);
+  --folder-icon-border: #ff9500;
+  --folder-line-bg: rgba(142, 68, 173, 0.08);
+  --folder-line-border: #8e44ad;
+  --warning-banner-bg: rgba(255, 176, 56, 0.2);
+  --text-base-secondary: #5a6574;
+}

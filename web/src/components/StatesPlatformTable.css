@@ -1,0 +1,61 @@
+.states-platform-table {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid #d9d9d9;
+  border-radius: 16px;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.states-platform-table__column {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.states-platform-table__column:not(:last-child) {
+  border-right: 1px solid #d9d9d9;
+}
+
+.states-platform-table__cell {
+  padding: 10px 24px;
+  border-bottom: 1px solid #d9d9d9;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: normal;
+  color: #000;
+  white-space: nowrap;
+}
+
+.states-platform-table__cell:last-child {
+  border-bottom: none;
+}
+
+.states-platform-table__cell--head {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #646464;
+}
+
+.states-platform-table__cell--note {
+  color: #4f4f4f;
+}
+
+@media (max-width: 760px) {
+  .states-platform-table {
+    width: 100%;
+  }
+
+  .states-platform-table__column {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+
+  .states-platform-table__cell {
+    white-space: normal;
+    font-size: 16px;
+  }
+}

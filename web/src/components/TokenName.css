@@ -1,0 +1,47 @@
+.token-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: normal;
+  color: var(--token-muted);
+  word-break: break-word;
+}
+
+.token-name--md {
+  font-size: 36px;
+}
+
+.token-name--lg {
+  font-size: 32px;
+}
+
+.token-name--card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 118px;
+  padding: 32px 64px;
+  border-radius: 32px;
+  background: #fff;
+  font-size: 34px;
+}
+
+.token-name__part--highlight {
+  color: var(--token-highlight);
+}
+
+@media (max-width: 960px) {
+  .token-name--md {
+    font-size: 28px;
+  }
+
+  .token-name--lg {
+    font-size: 24px;
+  }
+
+  .token-name--card {
+    min-height: auto;
+    padding: 24px;
+    font-size: 24px;
+  }
+}

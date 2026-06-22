@@ -1,0 +1,328 @@
+.additional-subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 48px;
+  border-bottom: 4px solid var(--section-border);
+}
+
+.additional-subsection:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.additional-usage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding: 56px;
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+}
+
+.additional-usage__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.additional-usage__caption {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: var(--text-base-main);
+}
+
+.hall-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  width: min(100%, 375px);
+  padding: 16px;
+  border-radius: 31px;
+  background: #f6f6f9;
+}
+
+.hall-diagram__stage {
+  margin: 0;
+  font-family: var(--font-button);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #8690a2;
+}
+
+.hall-diagram__zone {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.hall-diagram__zone > span {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #8690a2;
+}
+
+.hall-diagram__seats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  width: 100%;
+  min-height: 72px;
+  padding: 8px;
+}
+
+.hall-diagram__seats--vip {
+  background:
+    radial-gradient(circle, #9059ff 6px, transparent 7px) 0 0 / 20px 20px,
+    radial-gradient(circle, #eb4278 6px, transparent 7px) 10px 10px / 20px 20px,
+    radial-gradient(circle, #2a121a 4px, transparent 5px) 6px 6px / 20px 20px;
+}
+
+.hall-diagram__seats--parter {
+  background:
+    radial-gradient(circle, #347cf6 6px, transparent 7px) 0 0 / 18px 18px,
+    radial-gradient(circle, #12b76a 6px, transparent 7px) 9px 9px / 18px 18px,
+    radial-gradient(circle, #ffb038 6px, transparent 7px) 4px 12px / 18px 18px,
+    radial-gradient(circle, #2a121a 4px, transparent 5px) 12px 4px / 18px 18px;
+}
+
+.icon-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 320px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-blocks__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #f6f6f9;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.icon-blocks__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.icon-blocks__icon--purple {
+  background: #9059ff;
+}
+
+.icon-blocks__icon--orange {
+  background: #ffb038;
+}
+
+.icon-blocks__icon--green {
+  background: #12b76a;
+}
+
+.additional-formation {
+  position: relative;
+  min-height: var(--diagram-height);
+  border: 1px solid var(--diagram-border);
+  border-radius: var(--diagram-radius);
+  overflow: hidden;
+}
+
+.additional-formation__core {
+  position: absolute;
+  top: 37px;
+  left: 97px;
+}
+
+.additional-formation__core-title,
+.additional-formation__semantic-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #000;
+}
+
+.additional-formation__palette {
+  display: flex;
+  flex-direction: column;
+}
+
+.additional-formation__palette-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.additional-formation__step {
+  width: 24px;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: right;
+  color: #000;
+}
+
+.additional-formation__core-swatch {
+  position: relative;
+  width: 80px;
+  height: 32px;
+}
+
+.additional-formation__core-swatch--highlight {
+  outline: 2px solid #ff0000;
+  outline-offset: -2px;
+}
+
+.additional-formation__hex {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.additional-formation__connector {
+  position: absolute;
+  top: 98px;
+  left: 205px;
+  width: min(401px, 40%);
+  height: auto;
+}
+
+.additional-formation__semantic {
+  position: absolute;
+  top: 40px;
+  right: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.additional-formation__token {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #000;
+}
+
+.additional-formation__swatch {
+  width: 64px;
+  height: 32px;
+  border: 1px solid var(--swatch-border);
+  border-radius: 10px;
+}
+
+.additional-formation__alias {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--label-muted);
+}
+
+.product-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.product-card {
+  padding: 33px;
+  border-radius: 33px;
+  background: #f6f6f9;
+}
+
+.product-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.product-card__icon {
+  width: 66px;
+  height: 66px;
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+.product-card__icon--insurance {
+  background: linear-gradient(135deg, #74d7a7 0%, #327053 100%);
+}
+
+.product-card__icon--pl {
+  background: linear-gradient(135deg, #ffda7c 0%, #c1791a 100%);
+}
+
+.product-card__icon--viv {
+  background: linear-gradient(135deg, #c2a4ff 0%, #7b2be0 100%);
+}
+
+.product-card__gradient {
+  width: 27px;
+  height: 224px;
+  border-radius: 4px;
+}
+
+.product-card__title {
+  margin: 0 0 12px;
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 26px;
+}
+
+.product-card__usage {
+  margin: 0;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+@media (max-width: 960px) {
+  .additional-usage {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .product-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .additional-formation {
+    min-height: 520px;
+  }
+
+  .additional-formation__core {
+    left: 24px;
+  }
+
+  .additional-formation__semantic {
+    top: auto;
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .additional-formation__connector {
+    display: none;
+  }
+}

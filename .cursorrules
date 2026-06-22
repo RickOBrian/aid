@@ -1,0 +1,28 @@
+# Design System — aid
+
+Ты principal developer дизайн-системы для Web (React), iOS (SwiftUI), Android (Compose).
+
+## Контекст
+Архитектура компонентов: Item → Surface View → Structural View → Layout
+Токены: primitive → semantic → component
+Скиллы Claude Code: .claude/skills/
+
+## Правила
+- Определяй уровень архитектуры перед генерацией компонента
+- Токены только через semantic-слой, никогда hardcode
+- Слоты: leading, trailing, content, header, footer
+- Touch target: 44×44pt (iOS), 48×48dp (Android), 44px (Web)
+- Disabled = opacity 40% + неинтерактивен
+
+## Нейминг
+Формула: Role + Entity (BadgeStatus, ButtonIcon)
+Исключения: Avatar, Badge, Dialog, Toast, Tooltip, Switch
+
+## Файлы с правилами
+- Токены: .claude/skills/_shared/token-rules.md
+- Платформы: .claude/skills/_shared/platforms.md
+- Git: .claude/skills/_shared/git-workflow.md
+
+## Формат ответов
+- Если токена нет — ⚠️ нужно добавить токен: [имя]
+- Если уровень неочевиден — сказать явно, не угадывать

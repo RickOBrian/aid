@@ -1,0 +1,104 @@
+.plugin-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: min(100%, 407px);
+  min-height: 144px;
+  padding: 25px 24px;
+  border-radius: 24px;
+  background: #f1f2f5;
+}
+
+.plugin-card__cover {
+  width: 94px;
+  height: 94px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 24px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.plugin-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plugin-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--text-base-main);
+}
+
+.plugin-card__link {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--bg-accent-main);
+  text-decoration: underline;
+}
+
+.plugin-section {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.plugin-section__block {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 48px;
+  border-bottom: 4px solid var(--section-border);
+}
+
+.plugin-section__block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.plugin-section__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.plugin-section__steps-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-base-main);
+}
+
+.plugin-section__steps-subtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.plugin-section__list {
+  margin: 0;
+  padding-left: 30px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text-base-main);
+}
+
+.plugin-section__list li + li {
+  margin-top: 0;
+}
+
+.plugin-section__marker {
+  color: #fb7805;
+}
+
+.plugin-section__marker--blue {
+  color: #05d6fb;
+}

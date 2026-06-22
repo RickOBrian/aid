@@ -1,0 +1,87 @@
+.diagram-callout {
+  position: absolute;
+  z-index: 2;
+  max-width: 380px;
+}
+
+.diagram-callout__label {
+  margin: 0;
+  font-family: var(--font-diagram);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+  color: var(--text-base-main);
+}
+
+.diagram-callout__prefix {
+  color: var(--token-prefix-faded);
+}
+
+.diagram-callout__sublabel {
+  margin: 4px 0 0;
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+  color: var(--text-base-main);
+  opacity: 0.6;
+}
+
+.diagram-callout__description {
+  margin: 8px 0 0;
+  font-family: var(--font-diagram);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26px;
+  color: var(--text-base-main);
+}
+
+.diagram-callout__line {
+  position: absolute;
+  height: 1px;
+  background: var(--callout-line);
+}
+
+.diagram-callout__line::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--callout-line);
+  transform: translate(50%, -50%);
+}
+
+.diagram-callout--left .diagram-callout__line {
+  left: 100%;
+  top: 14px;
+  width: 80px;
+  margin-left: 12px;
+}
+
+.diagram-callout--right .diagram-callout__line {
+  right: 100%;
+  top: 14px;
+  width: 80px;
+  margin-right: 12px;
+}
+
+.diagram-callout--right .diagram-callout__line::after {
+  right: auto;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 960px) {
+  .diagram-callout {
+    position: static;
+    max-width: none;
+    margin-bottom: 12px;
+  }
+
+  .diagram-callout__line {
+    display: none;
+  }
+}
