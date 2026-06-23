@@ -1,0 +1,19 @@
+[
+  {
+    "id": "spec-001",
+    "component": "ButtonText",
+    "level": "surface-view",
+    "platforms": ["web", "ios", "android"],
+    "date": "2026-06-20",
+    "stage": "draft",
+    "open_questions": 3,
+    "missing_tokens": [
+      "color.action.primary.hover",
+      "color.action.primary.pressed",
+      "color.text.on-action",
+      "color.transparent",
+      "typography.label.medium"
+    ],
+    "_owner": "sergej"
+  }
+]

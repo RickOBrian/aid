@@ -1,2 +1,4 @@
 CLAUDE.local.md
 .DS_Store
+memory/**/*.master.json
+.claude/intake-user
