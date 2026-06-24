@@ -1,6 +1,6 @@
 ---
 title: Semantic Color Tokens — Архитектурный гайд
-version: "1.0.0"
+version: "1.1.0"
 owner: design-system-team
 platforms: [web, ios, android]
 ---
@@ -10,6 +10,8 @@ platforms: [web, ios, android]
 > Этот гайд описывает архитектуру системы цветовых токенов: как они называются,
 > структурируются и применяются на всех платформах. Он не описывает процессы
 > и роли — это тема отдельного governance-гайда.
+>
+> Core Color Tokens описаны в отдельном гайде «Core Color Tokens — Архитектурный гайд».
 
 ---
 
@@ -26,14 +28,17 @@ platforms: [web, ios, android]
 
 ```
 Core Color Token:
-  sapphire-65 = #2C64E3
+  jasper-65 = #2C64E3
 
 Semantic Token:
-  bg/accent/main → blue/blue-65 → #2C64E3
+  bg/accent/main → jasper-65 → #2C64E3
 ```
 
 Цепочка всегда двухуровневая: **Core → Semantic**.
 Semantic не обращается к Core напрямую через HEX — только через алиас.
+
+На уровне Core палитры имеют нейтральные имена (камни, города и т.п.) и не знают
+о ролях (`brand`, `status`, `product`). Роль задаётся только на семантическом уровне.
 
 ### Единый файл токенов для всех платформ
 
@@ -71,6 +76,7 @@ bg/
 │   ├── main
 │   ├── main-secondary
 │   ├── fade
+│   ├── ghost
 │   ├── states/
 │   │   └── main-disable
 │   └── product/
@@ -97,6 +103,9 @@ icon/       # аналогичная структура
 line/       # аналогичная структура
 ```
 
+`ghost`-оттенки в semantic-слое ссылаются на прозрачные ступени палитр Core
+из подпапок `alpha` (см. Core-гайд).
+
 ---
 
 ## 3. Структура имени токена
@@ -114,6 +123,10 @@ bg - accent - product - marketplace - main - secondary - static
 
 Не все сегменты обязательны — используются только те, что нужны для однозначной
 идентификации.
+
+**Сегмент `[цвет]` в semantic-слое не обязан совпадать с именем палитры Core.**
+На уровне Semantic используются смысловые имена (`brand`, `status`, названия
+продуктов), даже если под ними лежат нейтральные палитры Core (`jasper`, `citrine`).
 
 ---
 
@@ -181,7 +194,7 @@ bg - accent - product - marketplace - main - secondary - static
 |---------|----------|
 | `main` | Основной насыщенный оттенок |
 | `fade` | Пастельный оттенок |
-| `ghost` | Цвет с прозрачностью |
+| `ghost` | Цвет с прозрачностью, ссылается на `-aXX` ступени Core-палитр |
 | `inverse` | Инверсивный цвет (для акцентных элементов превращает main в белый) |
 | `transparent` | Полностью прозрачный |
 
@@ -191,19 +204,29 @@ bg - accent - product - marketplace - main - secondary - static
 
 - `main` — от тёмного к светлому
 - `fade` — от светлого к тёмному
-- `ghost` — от тёмного к светлому (как main)
+- `ghost` — от тёмного к светлому (как main), но через альфа-ступени Core
 - `inverse` — иерархии нет
 
 ### Inverse: зачем не использовать один общий белый
 
 Если использовать один общий белый токен для текста на акцентных фонах,
 при смене брендового цвета он не обновится автоматически. `inverse` — это
-алиас на белый через цепочку конкретного цвета. Пример:
+алиас на белый через цепочку конкретного цвета.
+
+Пример:
 
 ```
-brand-main             → #7B2BE0  (light) / #AD85FF (dark)
-brand-inverse          → #FFFFFF  (всегда белый, привязан к brand)
+Core:
+  jasper-0   = #FFFFFF
+  jasper-60  = #7B2BE0
+
+Semantic:
+  brand-main    → jasper-60
+  brand-inverse → jasper-0
 ```
+
+Отдельных Core-токенов `white` и `black` нет — белый и чёрный живут как
+крайние ступени палитр Core (0 и 100).
 
 ---
 
@@ -235,8 +258,8 @@ bg-base-main-tertiary    ← третичный
 значение между light и dark.
 
 ```
-bg-accent-product-marketplace-main         → light: #95E02B / dark: #BCBCBC
-bg-accent-product-marketplace-main-static  → light: #95E02B / dark: #95E02B
+bg-accent-product-marketplace-main         → light: jasper-55 / dark: jasper-75
+bg-accent-product-marketplace-main-static  → light: jasper-55 / dark: jasper-55
 ```
 
 **Правило:** если токен только один (нет адаптивной версии), `-static` не пишется —
@@ -245,12 +268,7 @@ bg-accent-product-marketplace-main-static  → light: #95E02B / dark: #95E02B
 #### `-staticwm` — статичные цвета в White Label / Wealth Management режиме
 
 Для продуктов с темизацией под партнёра или WM-режимом существует третий уровень:
-
-| Токен | light | dark | light wm | dark wm |
-|-------|-------|------|----------|---------|
-| `brand-main` | #7B2BE0 | #AD85FF | #27313F | #6F6A65 |
-| `brand-main-static` | #7B2BE0 | #7B2BE0 | #27313F | #27313F |
-| `brand-main-staticwm` | #7B2BE0 | #7B2BE0 | #7B2BE0 | #7B2BE0 |
+помимо light/dark есть ещё партнёрские темы и WM-режим.
 
 `-staticwm` фиксирует цвет во всех режимах, включая WM.
 
@@ -319,6 +337,7 @@ bg-component-states-[группа]-[цвет]-[состояние]
 - `form` — текстовые поля, поля ввода кода, суммы
 
 Пример полного имени:
+
 ```
 bg-component-states-control-accent-active
 ```
@@ -369,13 +388,13 @@ bg-accent-product-marketplace-main
 
 ```
 Стандартная коллекция:
-  bg-base-main → light: #F7F6F2 / dark: #171614
+  bg-base-main → light: jasper-5 / dark: jasper-90
 
 Коллекция static-lm:
-  bg-base-main → #F7F6F2  (только light)
+  bg-base-main → jasper-5   (только light)
 
 Коллекция static-dm:
-  bg-base-main → #171614  (только dark)
+  bg-base-main → jasper-90  (только dark)
 ```
 
 ### Переключение коллекций в Figma
@@ -396,34 +415,11 @@ bg-accent-product-marketplace-main
 
 ---
 
-## 13. Плагины Figma
-
-### Variable Collection Switcher
-
-Переключение коллекций токенов в секциях и фреймах. Используется для
-быстрой смены между стандартной семантической коллекцией и static-lm / static-dm.
-
-### Variables Table Generator
-
-Создаёт и обновляет таблицы с токенами без ручной работы.
-
-**Если появилась новая коллекция:**
-1. Запустите плагин, выберите коллекцию из списка
-2. Нажмите «Generate Tables»
-3. Переместите сформированные фреймы на нужное место
-
-**Если обновилась текущая коллекция** (добавлен, изменён или переименован
-Global или Semantic Token):
-1. Запустите плагин
-2. Выберите фрейм «Variables Table — name»
-3. Нажмите «Update Tables»
-
-Коллекция должна соответствовать структуре, описанной в этом гайде.
-
----
-
 ## Changelog
 
+- **1.1.0** — обновлена связь с Core Color Tokens: добавлены примеры алиасов
+  на нейтральные палитры (jasper, citrine), убрано упоминание отдельных
+  Core-токенов white/black, уточнены правила для `ghost`-оттенков.
 - **1.0.0** — первая версия для Space: адаптирован из оригинального гайда,
   добавлены аксиома dark mode, правила платформенных морфем, разграничение
   product / additional, уточнено правило компонентных токенов,

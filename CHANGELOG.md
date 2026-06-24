@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.1] - 2026-06-24
+
+### Added
+- `docs/design-system/colors/core-color-tokens-guide.md`
+- `docs/design-system/colors/semantic-color-tokens-guide.md`
+- `docs/design-system/README.md` with color guide index
+
+### Changed
+- Relocated semantic color tokens guide from `docs/` to `docs/design-system/colors/`
+
+### Removed
+- `docs/semantic-color-tokens-guide.md` (relocated to `docs/design-system/colors/`)
+
 ## [0.2.0] - 2026-06-24
 
 ### Added
