@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0] - 2026-06-27
+
+### Added
+- `skills/_shared/token-rules.md` v1.3.0 — typography tokens section, role rules, blockers
+- `skills/ds-component-spec/SKILL.md` v1.2.0 — «Типографика» section in spec template
+
 ## [0.3.2] - 2026-06-27
 
 ### Changed
