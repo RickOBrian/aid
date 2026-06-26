@@ -4,7 +4,7 @@
 
 ## Контекст
 Архитектура компонентов: Item → Surface View → Structural View → Layout
-Токены: primitive → semantic → component
+Токены: Core → Semantic → Component
 Скиллы Claude Code: .claude/skills/
 
 ## Правила
@@ -19,9 +19,9 @@
 Исключения: Avatar, Badge, Dialog, Toast, Tooltip, Switch
 
 ## Файлы с правилами
-- Токены: .claude/skills/_shared/token-rules.md
-- Платформы: .claude/skills/_shared/platforms.md
-- Git: .claude/skills/_shared/git-workflow.md
+- Токены: skills/_shared/token-rules.md
+- Платформы: skills/_shared/platforms.md
+- Git: skills/_shared/git-workflow.md
 
 ## Формат ответов
 - Если токена нет — ⚠️ нужно добавить токен: [имя]

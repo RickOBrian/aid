@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.2] - 2026-06-27
+
+### Changed
+- `.cursorrules` — paths point to `skills/_shared/`, token terminology Core → Semantic → Component
+
 ## [0.3.1] - 2026-06-27
 
 ### Added
