@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.1] - 2026-06-27
+
+### Added
+- `PROJECT_STRUCTURE.md` — snapshot of repository tree
+- Formatted typography guides in `skills/_shared/` and `perplexity-skills/`
+
+### Changed
+- Renamed `docs/design-system/colors/` → `docs/design-system/tokens/`
+- `CLAUDE.md` — shared rules now reference `skills/_shared/`, added canonical source note
+
+### Removed
+- Empty `.claude/skills/shared/` directory
+
 ## [0.3.0] - 2026-06-26
 
 ### Added

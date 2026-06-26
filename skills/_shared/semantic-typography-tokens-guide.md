@@ -1,16 +1,16 @@
 ---
-title: Semantic Typography Tokens Guide
+title: Semantic Typography Tokens — Архитектурный гайд
 version: "1.1.0"
 owner: design-system-team
 platforms: [web, ios, android]
 ---
 
-# Semantic Typography Tokens Guide
+# Semantic Typography Tokens — Архитектурный гайд
 
 > Этот документ описывает **semantic-уровень типографики**:
 > роли текста (display / heading / body / label), правила именования
 > semantic-токенов, состав типографического стиля и связь с компонентами.
-> Числовые значения (Core-уровень) описаны в `Core Typography Tokens Guide`.
+> Числовые значения (Core-уровень) описаны в `Core Typography Tokens — Архитектурный гайд`.
 
 ---
 
