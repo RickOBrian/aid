@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0] - 2026-06-26
+
+### Added
+- `docs/design-system/colors/core-typography-tokens-guide.md`
+- `docs/design-system/colors/semantic-typography-tokens-guide.md`
+- `docs/design-system/typography/` — SOUZ typography guide (MD + web)
+- `perplexity-skills/` — Perplexity skill copies with frontmatter
+
+### Changed
+- `docs/design-system/README.md` — typography section and links
+
 ## [0.2.1] - 2026-06-24
 
 ### Added

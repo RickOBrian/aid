@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Типографика SOUZ — Архитектурный гайд</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="typography-guide.css">
+</head>
+<body>
+  <main class="page">
+
+    <!-- Hero -->
+    <article class="card" id="intro">
+      <p class="card__icon" aria-hidden="true">⚛</p>
+      <h1 class="card__title">Типографика SOUZ</h1>
+      <p class="card__lead">
+        Шкала и правила использования стилей типографики в нативных мобильных интерфейсах
+        с учётом узких экранов, особенностей iOS/Android и тач-интеракций.
+      </p>
+      <aside class="callout">
+        <svg class="callout__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3L2 20h20L12 3z" stroke="#e67e22" stroke-width="1.5" fill="#ff8438" fill-opacity="0.3"/>
+          <path d="M12 9v5M12 17h.01" stroke="#3e3027" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <p class="callout__title">Это система типографики, не привязанная к конкретному продукту</p>
+          <p class="callout__text">
+            Здесь указаны общие стандарты и примеры, которых следует придерживаться при создании
+            стилей типографики для продукта. Допустимо менять шрифт, значения, оставаясь в пределах
+            правил системы.
+          </p>
+        </div>
+      </aside>
+    </article>
+
+    <!-- Principles -->
+    <article class="card" id="principles">
+      <p class="card__icon" aria-hidden="true">⚛</p>
+      <h2 class="card__title">Основные принципы</h2>
+
+      <div class="principles">
+        <section class="principle">
+          <h3 class="principle__title">Line Height кратен 4px</h3>
+          <p class="principle__text">
+            Никаких <code>120%</code>, <code>Auto</code> и дробных значений. Все LH — чётные значения,
+            кратные 4px, чтобы идеально ложиться в 4px grid.
+          </p>
+          <figure class="grid-demo" aria-label="Иллюстрация: строки выровнены по сетке 4px">
+            <p class="grid-demo__line" style="line-height: 24px;">Body / M — line-height 24px</p>
+            <p class="grid-demo__line" style="line-height: 24px;">Следующая строка на 24px ниже</p>
+            <p class="grid-demo__meta">Синие линии = шаг сетки 4px · LH 24 = 6 единиц</p>
+            <p class="grid-demo__bad">✕ line-height: 120% · Auto — не использовать</p>
+          </figure>
+        </section>
+
+        <section class="principle">
+          <h3 class="principle__title">Имена по ролям, а не по тегам</h3>
+          <p class="principle__text">
+            Не <code>H1/H2</code>, а <code>Heading / L</code>, <code>Body / M</code>, <code>Label / S</code>.
+            Разработчики мапят это на теги, стили SwiftUI/Compose и т.д.
+          </p>
+          <figure class="roles-demo" aria-label="Сравнение именования">
+            <div class="roles-demo__row roles-demo__row--bad">H1 · H2 · H3</div>
+            <div class="roles-demo__row roles-demo__row--good">Heading / XL · Body / M · Label / S</div>
+          </figure>
+        </section>
+
+        <section class="principle">
+          <h3 class="principle__title">Body ≠ Label</h3>
+          <p class="principle__text">
+            <strong>Body</strong> — текст для чтения (2+ строки, высокий LH, paragraph-режим).<br>
+            <strong>Label</strong> — текст для управления (кнопки, инпуты, чипы, табы; однострочный режим).
+          </p>
+          <figure class="compare-demo" aria-label="Сравнение Body и Label">
+            <div class="compare-panel">
+              <div class="compare-panel__header">Body / M</div>
+              <div class="compare-panel__body">
+                <p class="sample-body">
+                  Основной текст для чтения. Несколько строк с комфортным межстрочным интервалом
+                  для длинного контента в карточках и описаниях.
+                </p>
+              </div>
+            </div>
+            <div class="compare-panel">
+              <div class="compare-panel__header">Label / M</div>
+              <div class="compare-panel__body">
+                <button type="button" class="sample-label">Продолжить</button>
+                <div class="sample-chips">
+                  <span class="sample-chip">Фильтр</span>
+                  <span class="sample-chip">Сортировка</span>
+                </div>
+              </div>
+            </div>
+          </figure>
+        </section>
+      </div>
+    </article>
+
+    <!-- Mobile scale -->
+    <article class="card" id="scale">
+      <p class="card__icon" aria-hidden="true">⚛</p>
+      <h2 class="card__title">Мобильная шкала стилей (Montserrat, Mobile)</h2>
+      <p class="card__lead">
+        Базовая единица LH: <strong>4px</strong>. Шкала балансирует читаемость и экономию вертикального пространства.
+      </p>
+
+      <!-- Display -->
+      <h3 class="section-title">Display</h3>
+      <p class="section-desc">Акцентные — редкие, для онбординга/paywall</p>
+      <aside class="callout" style="margin-top: 0; margin-bottom: 24px;">
+        <svg class="callout__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3L2 20h20L12 3z" stroke="#e67e22" stroke-width="1.5" fill="#ff8438" fill-opacity="0.3"/>
+          <path d="M12 9v5M12 17h.01" stroke="#3e3027" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p class="callout__text" style="margin: 0;">
+          Не рекомендуется использовать внутри обычных скролл-экранов с контентом и формами.
+        </p>
+      </aside>
+
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start; margin-bottom: 32px;">
+        <div class="table-wrap" style="margin: 0;">
+          <table>
+            <thead>
+              <tr>
+                <th>Стиль</th><th>Size</th><th>LH</th><th>Weight</th><th>Letter Spacing</th><th>Назначение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-style">Display / M</td><td>36</td><td>44</td><td>700</td><td>-0.5px</td><td>Крупный акцентный заголовок</td>
+              </tr>
+              <tr>
+                <td class="td-style">Display / S</td><td>32</td><td>40</td><td>700</td><td>-0.3px</td><td>Welcome-экраны, success-экраны</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figure class="phone phone--welcome" aria-label="Welcome-экран с Display / S">
+          <div class="phone__screen">
+            <div class="phone__status">9:41</div>
+            <div class="phone__content">
+              <p class="welcome-title">Добро пожаловать</p>
+              <p class="welcome-body">Display / S — акцентный заголовок для онбординга и success-экранов</p>
+              <button type="button" class="phone__btn phone__btn--primary">Начать</button>
+            </div>
+          </div>
+        </figure>
+      </div>
+
+      <!-- Heading -->
+      <h3 class="section-title">Heading</h3>
+      <p class="section-desc">
+        Заголовки мобильного интерфейса. Оптимизированы под 1–2 строки.
+        Если уходит в 3+ строки — снижай уровень или сокращай текст.
+      </p>
+
+      <figure class="scale-ladder" aria-label="Иерархия Heading">
+        <div class="scale-ladder__item">
+          <span class="scale-ladder__meta">Heading / XL · 28/36</span>
+          <span class="type-heading-xl">Заголовок экрана</span>
+        </div>
+        <div class="scale-ladder__item">
+          <span class="scale-ladder__meta">Heading / L · 24/32</span>
+          <span class="type-heading-l">Bottom Sheet</span>
+        </div>
+        <div class="scale-ladder__item">
+          <span class="scale-ladder__meta">Heading / M · 20/28</span>
+          <span class="type-heading-m">Секция</span>
+        </div>
+        <div class="scale-ladder__item">
+          <span class="scale-ladder__meta">Heading / S · 16/24</span>
+          <span class="type-heading-s">Карточка</span>
+        </div>
+        <div class="scale-ladder__item">
+          <span class="scale-ladder__meta">Heading / XS · 14/20</span>
+          <span class="type-heading-xs">Мини-блок</span>
+        </div>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Стиль</th><th>Size</th><th>LH</th><th>Weight</th><th>LS</th><th>Назначение</th><th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-style">Heading / XL</td><td>28</td><td>36</td><td>700</td><td>-0.2px</td><td>Large Title</td>
+              <td class="td-preview"><span class="type-heading-xl">Заголовок</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Heading / L</td><td>24</td><td>32</td><td>700</td><td>-0.1px</td><td>Bottom Sheet / Dialog</td>
+              <td class="td-preview"><span class="type-heading-l">Заголовок</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Heading / M</td><td>20</td><td>28</td><td>600</td><td>0</td><td>Экран / секция</td>
+              <td class="td-preview"><span class="type-heading-m">Заголовок</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Heading / S</td><td>16</td><td>24</td><td>600</td><td>0</td><td>Карточка, list item</td>
+              <td class="td-preview"><span class="type-heading-s">Заголовок</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Heading / XS</td><td>14</td><td>20</td><td>600</td><td>+0.1px</td><td>Подзаголовки</td>
+              <td class="td-preview"><span class="type-heading-xs">Заголовок</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Body -->
+      <h3 class="section-title">Body</h3>
+      <p class="section-desc">Текст для чтения на мобиле</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Стиль</th><th>Size</th><th>LH</th><th>Weight</th><th>LS</th><th>Назначение</th><th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-style">Body / L</td><td>16</td><td>28</td><td>500</td><td>0</td><td>Вводные, описания</td>
+              <td class="td-preview"><span class="type-body-l">Текст для чтения</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Body / M</td><td>14</td><td>24</td><td>500</td><td>0</td><td>Основной текст</td>
+              <td class="td-preview"><span class="type-body-m">Текст для чтения</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Body / S</td><td>12</td><td>20</td><td>500</td><td>+0.2px</td><td>Сноски, подсказки</td>
+              <td class="td-preview"><span class="type-body-s">Текст для чтения</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Label -->
+      <h3 class="section-title">Label</h3>
+      <p class="section-desc">До двух строк, Paragraph Spacing = 0</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Стиль</th><th>Size</th><th>LH</th><th>Weight</th><th>LS</th><th>Назначение</th><th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-style">Label / L</td><td>16</td><td>24</td><td>600</td><td>0</td><td>Buttons, инпуты</td>
+              <td class="td-preview"><span class="type-label-l">Кнопка</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Label / M</td><td>14</td><td>20</td><td>600</td><td>0</td><td>Buttons, чипы</td>
+              <td class="td-preview"><span class="type-label-m">Кнопка</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Label / S</td><td>12</td><td>16</td><td>600</td><td>+0.2px</td><td>Бейджи</td>
+              <td class="td-preview"><span class="type-label-s">Бейдж</span></td>
+            </tr>
+            <tr>
+              <td class="td-style">Label / XS</td><td>10</td><td>12</td><td>600</td><td>+0.3px</td><td>Tab Bar</td>
+              <td class="td-preview"><span class="type-label-xs">Таб</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <!-- Font pairs -->
+    <article class="card" id="pairs">
+      <p class="card__icon" aria-hidden="true">⚛</p>
+      <h2 class="card__title">Шрифтовые пары</h2>
+
+      <div class="pairs">
+        <section class="pair-card">
+          <h3>Пара 1. Экран с Large Title</h3>
+          <figure class="phone" aria-label="Экран с Large Title">
+            <div class="phone__screen">
+              <div class="phone__status">9:41</div>
+              <div class="phone__content">
+                <p class="type-heading-xl" style="margin: 0;">Заголовок экрана</p>
+                <div class="phone__stack-md"></div>
+                <p class="type-body-m" style="margin: 0; color: var(--text-secondary);">
+                  Краткое описание раздела в Body / M
+                </p>
+              </div>
+            </div>
+          </figure>
+        </section>
+
+        <section class="pair-card">
+          <h3>Пара 2. Карточка / List Item</h3>
+          <figure class="phone" aria-label="Карточка списка">
+            <div class="phone__screen">
+              <div class="phone__status">9:41</div>
+              <div class="phone__content">
+                <div style="padding: 14px 16px; background: var(--border-light); border-radius: 14px;">
+                  <p class="type-heading-s" style="margin: 0;">Название услуги</p>
+                  <div class="phone__stack-xs"></div>
+                  <p class="type-body-s" style="margin: 0; color: var(--text-secondary);">
+                    Описание в одну-две строки Body / S
+                  </p>
+                </div>
+              </div>
+            </div>
+          </figure>
+        </section>
+
+        <section class="pair-card">
+          <h3>Пара 3. Bottom Sheet</h3>
+          <figure class="phone" aria-label="Bottom Sheet">
+            <div class="phone__screen" style="justify-content: flex-end;">
+              <div class="phone__status">9:41</div>
+              <div style="background: #fff; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 24px rgba(0,0,0,0.08); padding: 0 16px 24px;">
+                <div class="phone__sheet-handle"></div>
+                <p class="type-heading-l" style="margin: 0 0 0;">Подтвердите действие</p>
+                <div class="phone__stack-md"></div>
+                <p class="type-body-m" style="margin: 0; color: var(--text-secondary);">
+                  Описание в Body / M перед контролами
+                </p>
+                <div class="phone__stack-lg"></div>
+                <div class="phone__actions" style="padding-top: 0;">
+                  <button type="button" class="phone__btn phone__btn--primary type-label-l">Подтвердить</button>
+                  <button type="button" class="phone__btn phone__btn--secondary type-label-m">Отмена</button>
+                </div>
+              </div>
+            </div>
+          </figure>
+        </section>
+      </div>
+    </article>
+
+    <section class="download-bar" aria-label="Скачать гайд">
+      <p class="download-bar__text">Полная версия гайда в Markdown · v1.1.0</p>
+      <a class="download-bar__btn" href="typography-guide.md" download="typography-guide.md">
+        Скачать typography-guide.md
+      </a>
+    </section>
+
+    <p class="footer-meta">
+      Типографика SOUZ · v1.1.0 · Montserrat Mobile · Источник: Figma DS Core / Tokens
+    </p>
+  </main>
+</body>
+</html>
