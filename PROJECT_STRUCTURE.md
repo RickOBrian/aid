@@ -4,36 +4,36 @@
 
 ```
 aid/
-├── .claude/
-│   ├── rules/
-│   ├── skills/
-│   │   ├── _shared/
+├── .claude
+│   ├── rules
+│   ├── skills
+│   │   ├── _shared
 │   │   │   ├── git-workflow.md
 │   │   │   ├── platforms.md
 │   │   │   └── token-rules.md
-│   │   ├── add-skill/
-│   │   │   ├── references/
+│   │   ├── add-skill
+│   │   │   ├── references
 │   │   │   │   └── .gitkeep
 │   │   │   └── SKILL.md
-│   │   ├── ds-component-spec/
-│   │   │   ├── references/
-│   │   │   │   ├── .gitkeep
-│   │   │   │   └── ButtonText.md
-│   │   │   └── ds-component-spec-SKILL.md
-│   │   └── shared/
+│   │   └── ds-component-spec
+│   │       ├── references
+│   │       │   ├── .gitkeep
+│   │       │   └── ButtonText.md
+│   │       └── ds-component-spec-SKILL.md
 │   ├── intake-user
 │   └── settings.json
-├── .cursor/
-│   └── rules/
+├── .cursor
+│   └── rules
+│       ├── ds-import.mdc
 │       └── git-push.mdc
-├── docs/
-│   ├── design-system/
-│   │   ├── colors/
+├── docs
+│   ├── design-system
+│   │   ├── tokens
 │   │   │   ├── core-color-tokens-guide.md
 │   │   │   ├── core-typography-tokens-guide.md
 │   │   │   ├── semantic-color-tokens-guide.md
 │   │   │   └── semantic-typography-tokens-guide.md
-│   │   ├── typography/
+│   │   ├── typography
 │   │   │   ├── index.html
 │   │   │   ├── typography-guide.css
 │   │   │   └── typography-guide.md
@@ -41,11 +41,11 @@ aid/
 │   ├── claude-skills-guide.md
 │   ├── ds-component-architecture-guide.md
 │   └── semver-guide.md
-├── memory/
-│   └── ds-component-spec/
+├── memory
+│   └── ds-component-spec
 │       ├── .gitkeep
 │       └── log.sergej.json
-├── perplexity-skills/
+├── perplexity-skills
 │   ├── claude-skills-guide.md
 │   ├── core-color-tokens-guide.md
 │   ├── core-typography-tokens-guide.md
@@ -58,17 +58,18 @@ aid/
 │   ├── semver-guide.md
 │   ├── space-context.md
 │   └── token-rules.md
-├── skills/
-│   ├── _shared/
+├── skills
+│   ├── _shared
 │   │   ├── core-typography-tokens-guide.md
 │   │   ├── git-workflow.md
 │   │   ├── platforms.md
 │   │   ├── semantic-typography-tokens-guide.md
 │   │   └── token-rules.md
-│   └── ds-component-spec/
+│   └── ds-component-spec
 │       └── SKILL.md
 ├── .cursorrules
 ├── .gitignore
+├── AGENTS.md
 ├── CHANGELOG.md
 ├── CLAUDE.local.md
 ├── CLAUDE.md
