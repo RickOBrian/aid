@@ -21,7 +21,8 @@ aid/
 │   │       │   └── ButtonText.md
 │   │       └── ds-component-spec-SKILL.md
 │   ├── intake-user
-│   └── settings.json
+│   ├── settings.json
+│   └── space-context.md
 ├── .cursor
 │   └── rules
 │       ├── ds-import.mdc
@@ -60,9 +61,11 @@ aid/
 │   └── token-rules.md
 ├── skills
 │   ├── _shared
+│   │   ├── core-space-tokens-guide.md
 │   │   ├── core-typography-tokens-guide.md
 │   │   ├── git-workflow.md
 │   │   ├── platforms.md
+│   │   ├── semantic-space-tokens-guide.md
 │   │   ├── semantic-typography-tokens-guide.md
 │   │   └── token-rules.md
 │   └── ds-component-spec
