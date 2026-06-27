@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
