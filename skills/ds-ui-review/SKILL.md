@@ -133,6 +133,15 @@ Rules:
   placeholder card with a note: "requires /apply [class-name] first"
 - Do not create any other file during `/review`
 
+After creating the file, resolve its absolute path and output this line
+at the end of the review response (outside the 4-space template block):
+
+**Preview:** file:///[absolute path to docs/preview-variants.html]
+
+To resolve the path: take the workspace root (the directory containing
+`docs/`), append `/docs/preview-variants.html`, and use that as the URL.
+Example: `file:///Users/name/Projects/aid/docs/preview-variants.html`
+
 ---
 
 ## MODE 2 — /apply
