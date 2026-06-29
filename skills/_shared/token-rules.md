@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.2.1
+# Правила токенов дизайн-системы — v1.3.1
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -125,11 +125,15 @@ color-surface-accent-subtle → color-teal-50 (light) / color-teal-900 (dark)
 
 ## Состояния и соответствие платформ
 
-| Состояние | Web | iOS | Android |
+Нейминг состояний в Figma, логика поглощения и правила комбинирования — в `component-states-guide.md`.
+
+Таблица токенов по платформам:
+
+| Состояние (Figma) | Web | iOS | Android |
 |---|---|---|---|
-| hover | `bg-accent-states-hover` | — | — |
+| hovered | `bg-accent-states-hover` | — | — |
 | pressed | `bg-accent-states-pressed` | `bg-accent-states-pressed` | `bg-accent-states-pressed` |
-| active | `bg-accent-states-active` | `bg-accent-states-active` | `bg-accent-states-active` |
+| selected / active | `bg-accent-states-active` | `bg-accent-states-active` | `bg-accent-states-active` |
 | disabled | `bg-accent-states-disable` | `bg-accent-states-disable` | `bg-accent-states-disable` |
 | focused | `bg-accent-states-focused` | `bg-accent-states-focused-ios` | — |
 | ripple | — | — | `bg-accent-states-ripple-android` |
@@ -142,10 +146,9 @@ Web не использует `-ios` и `-android` токены.
 
 ## Changelog
 
+- **1.3.1** — раздел «Состояния» переработан: убраны колонки платформ-кода (они в `component-states-guide.md`), добавлена строка `selected/active`, добавлена ссылка на `component-states-guide.md`.
+- **1.3.0** — версия синхронизирована с репо после миграции на двухуровневую архитектуру; frontmatter приведён к skill-совместимому формату (name, metadata, description).
 - **1.2.1** — добавлены ссылки на `core-space-tokens-guide.md` и `semantic-space-tokens-guide.md`; добавлены блокеры для прямого использования `spacing-N` в компонентах и чисел в именах Semantic-токенов пространства.
-- **1.2.0** — переход на двухуровневую модель токенов (Core → Semantic),
-  уровень Component исключён из правил; уточнены формулировки блокеров.
-- **1.1.0** — нотация токенов приведена к дефисной (`-`) как дефолтной для всех платформ.
-  Заменены все примеры: точечная нотация (`color.blue.500`) → дефисная (`color-blue-500`).
-- **1.0.0** — первая версия: система токенов, блокеры, состояния,
-  соответствие платформ, суффиксы static/staticwm.
+- **1.2.0** — переход на двухуровневую модель токенов (Core → Semantic), уровень Component исключён из правил; уточнены формулировки блокеров.
+- **1.1.0** — нотация токенов приведена к дефисной (`-`) как дефолтной для всех платформ. Заменены все примеры: точечная нотация (`color.blue.500`) → дефисная (`color-blue-500`).
+- **1.0.0** — первая версия: система токенов, блокеры, состояния, соответствие платформ, суффиксы static/staticwm.

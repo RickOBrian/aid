@@ -8,8 +8,8 @@ description: >
   Генерирует спецификацию компонента дизайн-системы для Web (React),
   iOS (SwiftUI) и Android (Compose) из одного описания, скриншота
   или Figma-фрейма. Применяет четырёхуровневую архитектуру (Item →
-  Surface View → Structural View → Layout) и трёхуровневую систему
-  токенов (primitive → semantic → component).
+  Surface View → Structural View → Layout) и двухуровневую систему
+  токенов (core → semantic).
   Активируй когда: «сделай спек компонента», «опиши компонент для
   разработчиков», «создай spec для», «подготовь документацию
   компонента», «какой уровень у этого компонента», «как назвать
@@ -31,8 +31,9 @@ description: >
 
 Прочитай в начале каждой сессии:
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
-- `skills/_shared/token-rules.md` — трёхуровневая система токенов
+- `skills/_shared/token-rules.md` — двухуровневая система токенов (Core → Semantic)
 - `skills/_shared/platforms.md` — особенности Web / iOS / Android
+- `skills/_shared/component-states-guide.md` — нейминг и логика состояний
 
 **Если `.claude/intake-user` не существует:**
 Спроси имя одной строкой, покажи существующие
@@ -53,6 +54,9 @@ description: >
 **Если `skills/_shared/platforms.md` не существует:**
 Предупреди аналогично, используй встроенные правила из раздела
 «Встроенные правила платформ» ниже.
+
+**Если `skills/_shared/component-states-guide.md` не существует:**
+Используй встроенную таблицу состояний из раздела «Встроенные правила состояний» ниже.
 
 **Если Figma MCP подключён:** забери компонент и токены из фрейма напрямую.
 **Если нет:** предупреди «Figma MCP не подключён» и попроси скриншот
@@ -127,7 +131,7 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 **Нельзя:**
 - Суффикс Item в самостоятельном компоненте (IconItem → нет).
   Item допустим только как вложенный элемент коллекции: List.Item, Menu.Item.
-- Имя по реализации, не по роли: CardWithIconAndTitle → IslandProduct.
+- Имя по реализации, а не по роли: CardWithIconAndTitle → IslandProduct.
 
 **Стандартные имена слотов** для Structural View (кросс-платформенно):
 `leading`, `trailing`, `content`, `header`, `footer`, `title`,
@@ -140,13 +144,13 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 Используй правила из `skills/_shared/token-rules.md` (если файл есть).
 Если нет — встроенные правила ниже.
 
-Три уровня:
-- **Primitive** — сырые значения: `color.blue.500`, `shape.corner.8`
-- **Semantic** — назначение: `color.surface.default`, `color.text.primary`
-- **Component** — конкретный компонент: `button.background.default`
+Два уровня:
+- **Core** — сырые значения: `color-blue-500`, `shape-corner-8`, `spacing-4`
+- **Semantic** — назначение: `color-surface-default`, `color-text-primary`, `color-action-primary`
 
 Правила:
-- Компонентный слой обращается к primitive только через semantic — никогда напрямую.
+- Компоненты используют **только semantic‑токены**.
+- Core‑токены применяются только при определении semantic‑токенов, не в компонентах.
 - Захардкоженное значение (`background: #0057FF`) вместо токена — блокер.
 - Если нужного semantic-токена нет — отметь в спеке:
   «⚠️ нужно добавить токен: [предлагаемое имя]».
@@ -177,36 +181,38 @@ If a section has no content, write «нет» — do not omit the section.
     Слоты (только Structural View): leading, content, trailing, ...
 
     ## Токены
-    | Свойство         | Primitive             | Semantic                  | Component                       |
-    |------------------|-----------------------|---------------------------|---------------------------------|
-    | background       | color.neutral.0       | color.surface.default     | [name].background.default       |
-    | background:hover | —                     | color.surface.hover       | [name].background.hover         |
-    | color            | color.neutral.900     | color.text.primary        | [name].text                     |
-    | border-radius    | shape.corner.8        | —                         | [name].corner                   |
-    | padding-h        | spacing.4             | —                         | [name].padding.horizontal       |
-
-    ⚠️ нужно добавить токен: [имя] — если semantic-слой неполный
-
-    ## Типографика
-    | Слот / элемент | Semantic-токен | Платформенные отличия |
-    |----------------|----------------|-----------------------|
-    | [слот]         | [label-m / heading-s / body-s и т.д.] | нет / [описание] |
-    ... ⚠️ нужно добавить токен: component-[entity] — если роль не покрыта стандартными категориями ...
+    | Свойство         | Core                 | Semantic                  |
+    |------------------|----------------------|---------------------------|
+    | background       | color-neutral-0      | color-surface-default     |
+    | background:hover | —                    | color-surface-hover       |
+    | color            | color-neutral-900    | color-text-primary        |
+    | border-radius    | shape-corner-8       | —                         |
+    | padding-h        | spacing-4            | —                         |
+    ... ⚠️ нужно добавить токен: [имя] — если semantic-слой неполный...
 
     ## Варианты
-    | Variant   | Описание          | Ключевой токен                      |
+    | Variant   | Описание          | Ключевой semantic-токен            |
     |-----------|-------------------|-------------------------------------|
-    | primary   | Основное действие | [name].background = action.primary  |
-    | secondary | Вторичное         | [name].background = surface.default |
+    | primary   | Основное действие | color-action-primary               |
+    | secondary | Вторичное         | color-surface-default              |
 
     ## Состояния
-    | Состояние | Визуальное изменение         | Токен                      |
-    |-----------|------------------------------|----------------------------|
-    | default   | —                            | —                          |
-    | hover     | фон меняется                 | [name].background.hover    |
-    | pressed   | фон темнее                   | [name].background.pressed  |
-    | disabled  | opacity 40%, не интерактивен | —                          |
-    | loading   | spinner, не интерактивен     | —                          |
+    Имена состояний — по таблице Figma из `component-states-guide.md`.
+
+    | Состояние | Визуальное изменение          | Semantic-токен                    |
+    |-----------|-------------------------------|-----------------------------------|
+    | default   | —                             | —                                 |
+    | hovered   | фон меняется (только Web)     | bg-accent-states-hover            |
+    | pressed   | фон темнее                    | bg-accent-states-pressed          |
+    | focused   | рамка фокуса                  | bg-accent-states-focused          |
+    | selected  | активный / выбранный          | bg-accent-states-active           |
+    | disabled  | opacity 40%, не интерактивен  | bg-accent-states-disable          |
+    | loading   | спиннер, не интерактивен      | —                                 |
+    | skeleton  | серые заглушки                | —                                 |
+    | error     | красная рамка + текст ошибки  | ⚠️ нужно добавить токен           |
+
+    Убирай из таблицы строки, неприменимые к компоненту.
+    Правила комбинирования состояний — в `component-states-guide.md`.
 
     ## Lifecycle (только Structural View)
     нет / [решение: кто управляет видимостью, анимацией появления]
@@ -279,11 +285,11 @@ If a section has no content, write «нет» — do not omit the section.
 
 *Используются только если `skills/_shared/token-rules.md` не найден.*
 
-- Primitive — только сырые значения, без смысловой нагрузки
-- Semantic — назначение, не привязан к конкретному компоненту
-- Component — ссылается на semantic, не на primitive напрямую
-- Захардкоженное значение вместо токена — блокер, отмечать явно
-- Отсутствующий semantic-токен — отмечать как «⚠️ нужно добавить»
+- Core — только сырые значения, без смысловой нагрузки.
+- Semantic — назначение, не привязан к конкретному компоненту.
+- Компоненты используют только semantic‑токены; Core‑токены — только при определении semantic.
+- Захардкоженное значение вместо токена — блокер, отмечать явно.
+- Отсутствующий semantic-токен — отмечать как «⚠️ нужно добавить».
 
 ---
 
@@ -299,6 +305,26 @@ If a section has no content, write «нет» — do not omit the section.
   Слоты — через @Composable lambda параметры.
 - **Все платформы:** touch target минимум 44×44pt / 48×48dp.
   Имена слотов одинаковые кросс-платформенно (leading, trailing, content).
+
+---
+
+## Встроенные правила состояний
+
+*Используются только если `skills/_shared/component-states-guide.md` не найден.*
+
+| Figma    | Web      | iOS         | Android  | Когда                                 |
+|----------|----------|-------------|----------|---------------------------------------|
+| default  | default  | normal      | enabled  | Базовое состояние                     |
+| hovered  | hover    | —           | —        | Наведение (только Web)                |
+| pressed  | active   | highlighted | pressed  | Момент нажатия                        |
+| focused  | focused  | —           | —        | Фокус клавиатуры                      |
+| selected | selected | selected    | selected | Выбран                                |
+| disabled | disabled | disabled    | disabled | Недоступен                            |
+| loading  | loading  | loading     | loading  | Спиннер внутри компонента             |
+| skeleton | skeleton | skeleton    | skeleton | Первичная загрузка                    |
+| error    | error    | error       | error    | Ошибка валидации                      |
+
+Приоритет поглощения: disabled > loading > pressed > selected/error > hovered+focused.
 
 ---
 
@@ -326,7 +352,7 @@ If a section has no content, write «нет» — do not omit the section.
 **После каждой спеки:**
 1. Добавь запись в файл памяти
 2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
-   Если файл недоступен — использй встроенные команды:
+   Если файл недоступен — используй встроенные команды:
 
 ```bash
 git pull --rebase
@@ -362,13 +388,6 @@ iOS-разработчик не обязан читать Web-секцию, чт
 Если уровень архитектуры неочевиден — говори явно, не угадывай.
 Если внешний инструмент недоступен — говори явно, предлагай ручной путь.
 
-Секция «Типографика» в шаблоне спеки:
-- Перечислить все текстовые слоты компонента — каждый отдельной строкой.
-- Для Surface View с одним текстовым элементом — одна строка.
-- Для Structural View — строка на каждый именованный слот с текстом.
-- Если токен меняется в зависимости от варианта или размера — добавить строку с уточнением.
-- Если платформа требует другой токен — указать в колонке «Платформенные отличия».
-
 ---
 
 ## Версионирование и changelog
@@ -385,9 +404,14 @@ iOS-разработчик не обязан читать Web-секцию, чт
 
 ### Changelog
 
-- **1.2.0** — добавлена секция «Типографика» в шаблон спеки: таблица текстовых слотов с semantic-токенами.
+- **1.2.0** — шаблон секции «Состояния» расширен: добавлены `hovered`,
+  `focused`, `selected`, `skeleton`, `error`; добавлена ссылка на
+  `component-states-guide.md`; в «Контекст окружения» добавлен этот файл;
+  добавлены «Встроенные правила состояний» как fallback.
+- **1.1.0** — переход на двухуровневую систему токенов (Core → Semantic),
+  удалены ссылки на component‑токены, обновлён шаблон таблицы токенов.
 - **1.0.0** — базовая спека: 4-уровневая архитектура, формула Role+Entity,
-  токены 3 уровня, варианты, состояния, lifecycle для Structural View,
+  токены, варианты, состояния, lifecycle для Structural View,
   реализация Web/iOS/Android, доступность, память.
   Graceful degradation: fallback для отсутствующих `_shared/`-файлов
   и MCP-инструментов.

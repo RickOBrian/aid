@@ -61,10 +61,13 @@ aid/
 │   └── token-rules.md
 ├── skills
 │   ├── _shared
+│   │   ├── component-states-guide.md
 │   │   ├── core-space-tokens-guide.md
 │   │   ├── core-typography-tokens-guide.md
+│   │   ├── ds-component-architecture-guide.md
 │   │   ├── git-workflow.md
 │   │   ├── platforms.md
+│   │   ├── semantic-color-tokens-guide.md
 │   │   ├── semantic-space-tokens-guide.md
 │   │   ├── semantic-typography-tokens-guide.md
 │   │   └── token-rules.md
