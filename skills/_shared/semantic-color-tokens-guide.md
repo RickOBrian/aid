@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -16,6 +16,10 @@ description: >
 
 # Semantic Color Tokens
 
+> Статус: Stable · v1.3.0
+
+---
+
 Semantic-токены — это смысловой слой поверх Core Color Tokens.
 Компоненты ссылаются только на semantic-токены, никогда напрямую на Core.
 Governance-правила — в `token-rules.md`.
@@ -27,8 +31,8 @@ Governance-правила — в `token-rules.md`.
 Semantic-токен ссылается на Core Color Token — не хранит HEX напрямую.
 
 ```
-Core Color Token: jasper-65 = #2C64E3
-Semantic Token:   bg-accent-main → jasper-65 = #2C64E3
+Core Color Token: jasper-65
+Semantic Token:   bg-accent-main → jasper-65
 ```
 
 Core → Semantic. Semantic → Core HEX.
@@ -95,11 +99,29 @@ bg
 
 ## 5. text, icon, line
 
-| Группа | Назначение        | Примеры                                         |
-|--------|-------------------|-------------------------------------------------|
-| `text` | Цвет текста       | `text-primary`, `text-secondary`, `text-disabled` |
-| `icon` | Цвет иконок       | `icon-primary`, `icon-secondary`, `icon-accent` |
-| `line` | Бордеры, делители | `line-default`, `line-strong`                   |
+```token-color
+text-primary   | var(--text-primary)   | Основной текст
+text-secondary | var(--text-secondary) | Второстепенный текст
+text-disabled  | var(--text-disabled)  | Неактивный текст
+text-inverse   | var(--text-inverse)   | Текст на акцентном фоне
+text-accent    | var(--text-accent)    | Акцентный текст и ссылки
+text-error     | var(--text-error)     | Текст ошибки
+text-success   | var(--text-success)   | Текст успеха
+```
+
+```token-color
+icon-primary   | var(--icon-primary)   | Основная иконка
+icon-secondary | var(--icon-secondary) | Второстепенная иконка
+icon-accent    | var(--icon-accent)    | Акцентная иконка
+icon-inverse   | var(--icon-inverse)   | Иконка на акцентном фоне
+icon-disabled  | var(--icon-disabled)  | Неактивная иконка
+```
+
+```token-color
+line-default | var(--line-default) | Стандартный разделитель и бордер
+line-strong  | var(--line-strong)  | Усиленный разделитель
+line-accent  | var(--line-accent)  | Акцентный бордер (фокус, активное поле)
+```
 
 `text` и `icon` — параллельные структуры.
 `line` — отдельная ветка, не подгруппа `bg`.
@@ -108,15 +130,15 @@ bg
 
 ## 6. bg-base, bg-card, bg-overlay, bg-modal
 
-| Токен                    | Назначение                        |
-|--------------------------|-----------------------------------|
-| `bg-base-main`           | Основной фон экрана               |
-| `bg-base-main-secondary` | Вторичный фон экрана              |
-| `bg-card-main`           | Фон карточки                      |
-| `bg-card-main-secondary` | Вторичный фон карточки            |
-| `bg-overlay-main`        | Оверлей (полупрозрачный)          |
-| `bg-modal-main`          | Фон модального окна               |
-| `bg-modal-main-secondary`| Вторичный фон модального окна     |
+```token-color
+bg-base-main            | var(--bg-base-main)            | Основной фон экрана
+bg-base-main-secondary  | var(--bg-base-main-secondary)  | Вторичный фон экрана
+bg-card-main            | var(--bg-card-main)            | Фон карточки
+bg-card-main-secondary  | var(--bg-card-main-secondary)  | Вторичный фон карточки
+bg-overlay-main         | var(--bg-overlay-main)         | Оверлей (полупрозрачный)
+bg-modal-main           | var(--bg-modal-main)           | Фон модального окна
+bg-modal-main-secondary | var(--bg-modal-main-secondary) | Вторичный фон модального окна
+```
 
 `bg-base-main` — первичный фон. `bg-base-main-secondary` — вторичный.
 
@@ -135,12 +157,12 @@ bg
 
 ## 7. bg-accent-* variants
 
-| Variant  | Назначение                                        |
-|----------|---------------------------------------------------|
-| `main`   | Основной акцентный фон                            |
-| `fade`   | Приглушённый акцент (с alpha-XX из Core)          |
-| `ghost`  | Еле заметный акцент (ещё тише fade)               |
-| `inverse`| Инверсный фон — текст поверх должен быть инверсным |
+```token-color
+bg-accent-main    | var(--bg-accent-main)    | Основной акцентный фон
+bg-accent-fade    | var(--bg-accent-fade)    | Приглушённый акцент (main с alpha)
+bg-accent-ghost   | var(--bg-accent-ghost)   | Еле заметный акцент (тише fade)
+bg-accent-inverse | var(--bg-accent-inverse) | Инверсный фон (текст поверх — инверсный)
+```
 
 `fade` и `ghost` — это `main` с уменьшенной прозрачностью через Core alpha-нотацию.
 `inverse` — фон, на котором используется `color-text-inverse` или `color-icon-inverse`.
@@ -150,7 +172,7 @@ bg
 `inverse` нужен когда элемент отображается на акцентном фоне.
 
 ```
-Core: jasper-0 = #FFFFFF, jasper-60 = #7B2BE0
+Core: jasper-0, jasper-60
 Semantic: brand-main → jasper-60, brand-inverse → jasper-0
 ```
 
@@ -297,6 +319,8 @@ bg-accent-product-marketplace-main
 
 ## Changelog
 
+- **1.3.0** — секции 5, 6, 7: таблицы заменены на `token-color`-блоки с live-свотчами
+  (token-viz.js). Убраны raw HEX-значения из prose-блоков секций 1 и 7 (Inverse).
 - **1.2.0** — добавлены skeleton-токены: `bg-component-skeleton-default` и
   `bg-component-skeleton-shimmer` в группу `bg-component-*`
   (раздел 11). Обновлена карта групп bg (раздел 4).
