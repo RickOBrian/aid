@@ -19,3 +19,8 @@
 ## Важно
 `skills/` — канонический source of truth. Редактировать только здесь.
 `.claude/skills/` — рабочие копии для Claude Code. Не редактировать вручную.
+
+## Language
+
+Always respond in Russian, regardless of the language used in the prompt or file content.
+Exception: respond in another language only if the user explicitly requests it in that message.
