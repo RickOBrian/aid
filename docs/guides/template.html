@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading… — DS Guides</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css"
+        id="hljs-theme">
+
+  <!-- CDN dependencies (order matters) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <style>
+    /* ── Guide-page specific styles ───────────────────────────── */
+
+    /* Layout: sidebar-nav | content | toc */
+    .guide-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 220px;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "header  header  header"
+        "sidenav content toc";
+      min-height: 100vh;
+    }
+
+    .guide-layout__header  { grid-area: header;  }
+    .guide-layout__sidenav { grid-area: sidenav; }
+    .guide-layout__content { grid-area: content; }
+    .guide-layout__toc     { grid-area: toc;     }
+
+    /* ── Content area ── */
+    .guide-content {
+      padding: var(--inset-container-v-l) var(--inset-screen-h-m);
+      max-width: 760px;
+    }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--gap-xs);
+      margin-bottom: var(--gap-l);
+      font-size: var(--label-xs-size);
+      line-height: var(--label-xs-lh);
+      font-weight: var(--label-xs-weight);
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+    .breadcrumb__link {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .breadcrumb__link:hover { color: var(--text-accent); text-decoration: underline; }
+    .breadcrumb__sep { color: var(--line-strong); user-select: none; }
+    .breadcrumb__current { color: var(--text-primary); }
+
+    /* ── Guide header ── */
+    .guide-header {
+      margin-bottom: var(--gap-l);
+      padding-bottom: var(--gap-l);
+      border-bottom: 1px solid var(--line-default);
+    }
+    .guide-header__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--gap-s);
+      margin-bottom: var(--gap-s);
+    }
+    .guide-header__title {
+      font-size: var(--heading-xl-size);
+      line-height: var(--heading-xl-lh);
+      font-weight: var(--heading-xl-weight);
+      color: var(--text-primary);
+      margin-bottom: var(--gap-s);
+    }
+    .guide-header__description {
+      font-size: var(--body-m-size);
+      line-height: var(--body-m-lh);
+      color: var(--text-secondary);
+    }
+
+    /* ── Prose (rendered markdown) ── */
+    .prose { color: var(--text-primary); }
+
+    .prose h1 {
+      font-size: var(--heading-xl-size);
+      line-height: var(--heading-xl-lh);
+      font-weight: var(--heading-xl-weight);
+      margin-bottom: var(--gap-s);
+    }
+    .prose h2 {
+      font-size: var(--heading-m-size);
+      line-height: var(--heading-m-lh);
+      font-weight: var(--heading-m-weight);
+      margin-top: var(--gap-xl);
+      margin-bottom: var(--gap-m);
+      padding-bottom: var(--gap-s);
+      border-bottom: 1px solid var(--line-default);
+      scroll-margin-top: 80px;
+    }
+    .prose h3 {
+      font-size: var(--heading-s-size);
+      line-height: var(--heading-s-lh);
+      font-weight: var(--heading-s-weight);
+      margin-top: var(--gap-l);
+      margin-bottom: var(--gap-s);
+      scroll-margin-top: 80px;
+    }
+    .prose h4 {
+      font-size: var(--heading-xs-size);
+      line-height: var(--heading-xs-lh);
+      font-weight: var(--heading-xs-weight);
+      margin-top: var(--gap-m);
+      margin-bottom: var(--gap-xs);
+      scroll-margin-top: 80px;
+    }
+    .prose p {
+      font-size: var(--body-m-size);
+      line-height: var(--body-m-lh);
+      margin-bottom: var(--gap-m);
+    }
+    .prose ul, .prose ol {
+      margin-left: var(--inset-container-h-m);
+      margin-bottom: var(--gap-m);
+      font-size: var(--body-m-size);
+      line-height: var(--body-m-lh);
+    }
+    .prose li { margin-bottom: var(--gap-xs); }
+
+    .prose blockquote {
+      border-left: 3px solid var(--bg-accent-main);
+      padding-left: var(--inset-container-h-s);
+      margin: 0 0 var(--gap-m);
+      color: var(--text-secondary);
+      font-size: var(--body-s-size);
+      line-height: var(--body-s-lh);
+    }
+    .prose blockquote p { margin-bottom: 0; font-size: inherit; }
+
+    .prose hr {
+      border: none;
+      border-top: 1px solid var(--line-default);
+      margin: var(--gap-l) 0;
+    }
+    .prose a { color: var(--text-accent); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+
+    .prose code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: var(--bg-base-main-secondary);
+      color: var(--text-primary);
+      padding: 2px 5px;
+      border-radius: var(--radius-s);
+      border: 1px solid var(--line-default);
+    }
+    .prose pre {
+      background: #1e1e2e;
+      border-radius: var(--radius-m);
+      padding: var(--inset-container-v-m) var(--inset-container-h-m);
+      overflow-x: auto;
+      margin-bottom: var(--gap-m);
+    }
+    .prose pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: none;
+      color: #cdd6f4;
+      border: none;
+      padding: 0;
+    }
+
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--body-s-size);
+      line-height: var(--body-s-lh);
+      margin-bottom: var(--gap-m);
+      background: var(--bg-card-main);
+      border-radius: var(--radius-m);
+      overflow: hidden;
+      border: 1px solid var(--line-default);
+    }
+    .prose th {
+      background: var(--bg-base-main-secondary);
+      font-size: var(--label-xs-size);
+      font-weight: var(--label-xs-weight);
+      line-height: var(--label-xs-lh);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--text-secondary);
+      padding: var(--inset-control-v-m) var(--inset-container-h-s);
+      text-align: left;
+      border-bottom: 1px solid var(--line-default);
+    }
+    .prose td {
+      padding: var(--inset-control-v-m) var(--inset-container-h-s);
+      border-bottom: 1px solid var(--line-default);
+      vertical-align: top;
+    }
+    .prose tr:last-child td { border-bottom: none; }
+    .prose tr:hover td { background: var(--bg-accent-fade); }
+
+    /* ── Status blockquote inside prose ── */
+    .prose blockquote p strong { color: var(--text-primary); }
+
+    /* ── TOC (right column) ── */
+    .guide-toc {
+      padding: var(--inset-container-v-l) var(--inset-container-h-m);
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+      border-left: 1px solid var(--line-default);
+    }
+
+    .guide-toc__label {
+      font-size: var(--meta-xs-size);
+      line-height: var(--meta-xs-lh);
+      font-weight: var(--meta-xs-weight);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: var(--gap-s);
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .toc-item { margin-bottom: 2px; }
+    .toc-item--h3 { padding-left: 12px; }
+
+    .toc-link {
+      display: block;
+      padding: 4px var(--inset-control-h-xs);
+      font-size: var(--label-xs-size);
+      line-height: 1.4;
+      font-weight: var(--label-xs-weight);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: var(--radius-s);
+      transition: background .1s, color .1s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toc-link:hover { color: var(--text-primary); background: var(--bg-accent-states-hover); }
+    .toc-link.is-active { color: var(--text-accent); background: var(--bg-accent-fade); }
+
+    /* ── Loading / error states ── */
+    .guide-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      color: var(--text-secondary);
+      font-size: var(--body-m-size);
+      gap: var(--gap-m);
+    }
+    .guide-loading__spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--line-default);
+      border-top-color: var(--bg-accent-main);
+      border-radius: var(--radius-full);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .guide-error {
+      padding: var(--inset-container-v-l) var(--inset-container-h-l);
+      background: var(--bg-accent-status-error);
+      border-radius: var(--radius-l);
+      color: var(--text-error);
+      font-size: var(--body-m-size);
+      margin-top: var(--gap-l);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .guide-layout {
+        grid-template-columns: 240px 1fr;
+        grid-template-areas:
+          "header  header"
+          "sidenav content";
+      }
+      .guide-layout__toc { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .guide-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "content";
+      }
+      .guide-layout__sidenav { display: none; }
+      .guide-content { padding: var(--inset-container-v-m) var(--inset-screen-h-s); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="guide-layout">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="layout__header guide-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title">Guides</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <div class="search">
+        <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input class="search__input" type="search" placeholder="Поиск гайдов…"
+               id="search-input" aria-label="Поиск по всей документации">
+      </div>
+
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Side navigation (same as index) ───────────────────── -->
+  <aside class="layout__sidebar guide-layout__sidenav" aria-label="Навигация по гайдам">
+    <nav id="sidenav">
+      <div class="sidebar__section-label">Токены</div>
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Color</div>
+      <a class="sidebar__item" href="template.html?id=core-color-tokens-guide">Core Color Tokens</a>
+      <a class="sidebar__item" href="template.html?id=semantic-color-tokens-guide">Semantic Color Tokens</a>
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Space</div>
+      <a class="sidebar__item" href="template.html?id=core-space-tokens-guide">Core Space Tokens</a>
+      <a class="sidebar__item" href="template.html?id=semantic-space-tokens-guide">Semantic Space Tokens</a>
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Typography</div>
+      <a class="sidebar__item" href="template.html?id=core-typography-tokens-guide">Core Typography</a>
+      <a class="sidebar__item" href="template.html?id=semantic-typography-tokens-guide">Semantic Typography</a>
+      <div class="sidebar__section-label">Компоненты</div>
+      <a class="sidebar__item" href="template.html?id=ds-component-architecture-guide">Архитектура</a>
+      <a class="sidebar__item" href="template.html?id=component-states-guide">Состояния</a>
+    </nav>
+  </aside>
+
+  <!-- ── Guide content ──────────────────────────────────────── -->
+  <main class="guide-layout__content">
+    <article class="guide-content" id="guide-content">
+
+      <!-- Loading state -->
+      <div class="guide-loading" id="guide-loading">
+        <div class="guide-loading__spinner"></div>
+        <span>Загрузка гайда…</span>
+      </div>
+
+      <!-- Populated by JS -->
+      <div id="guide-body" hidden>
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" id="guide-breadcrumb" aria-label="Навигация">
+          <a class="breadcrumb__link" href="../index.html">Главная</a>
+          <span class="breadcrumb__sep" aria-hidden="true">›</span>
+          <span id="breadcrumb-category" class="breadcrumb__link"></span>
+          <span id="breadcrumb-sep-sub" class="breadcrumb__sep" aria-hidden="true" hidden>›</span>
+          <span id="breadcrumb-sub" class="breadcrumb__link" hidden></span>
+          <span class="breadcrumb__sep" aria-hidden="true">›</span>
+          <span id="breadcrumb-name" class="breadcrumb__current"></span>
+        </nav>
+
+        <!-- Guide header (name, status, version, description) -->
+        <header class="guide-header" id="guide-header">
+          <div class="guide-header__meta" id="guide-meta"></div>
+          <h1 class="guide-header__title" id="guide-title"></h1>
+          <p class="guide-header__description" id="guide-description"></p>
+        </header>
+
+        <!-- Search results (cross-page search on guide page) -->
+        <div id="search-results" hidden></div>
+
+        <!-- Rendered markdown -->
+        <div class="prose" id="guide-prose"></div>
+
+      </div>
+
+    </article>
+  </main>
+
+  <!-- ── Table of contents (right) ─────────────────────────── -->
+  <aside class="guide-toc guide-layout__toc" aria-label="Оглавление">
+    <div class="guide-toc__label">На этой странице</div>
+    <ul class="toc-list" id="toc-list"></ul>
+  </aside>
+
+</div><!-- /guide-layout -->
+
+<!-- Search.js config: paths relative to guides/ subfolder -->
+<script>
+  window.DS_CONFIG = {
+    guidesBase: '../../skills/_shared/',
+    guidePage:  'template.html',
+  };
+</script>
+
+<script src="../assets/search.js"></script>
+<script src="../assets/nav.js"></script>
+<script src="../assets/token-viz.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Guide-to-category map (breadcrumb + sidebar active state) ─────────────
+  const GUIDE_META = {
+    'core-color-tokens-guide':          { group: 'Tokens',     sub: 'Color',      level: 'core',     status: 'Draft'  },
+    'semantic-color-tokens-guide':      { group: 'Tokens',     sub: 'Color',      level: 'semantic', status: 'Stable' },
+    'core-space-tokens-guide':          { group: 'Tokens',     sub: 'Space',      level: 'core',     status: 'Draft'  },
+    'semantic-space-tokens-guide':      { group: 'Tokens',     sub: 'Space',      level: 'semantic', status: 'Draft'  },
+    'core-typography-tokens-guide':     { group: 'Tokens',     sub: 'Typography', level: 'core',     status: 'Draft'  },
+    'semantic-typography-tokens-guide': { group: 'Tokens',     sub: 'Typography', level: 'semantic', status: 'Draft'  },
+    'ds-component-architecture-guide':  { group: 'Components', sub: null,         level: null,       status: 'Draft'  },
+    'component-states-guide':           { group: 'Components', sub: null,         level: null,       status: 'Draft'  },
+  };
+
+  // ── Parse frontmatter ─────────────────────────────────────────────────────
+  function parseFrontmatter(raw) {
+    if (!raw.startsWith('---')) return { fm: {}, body: raw };
+
+    // Handle double-frontmatter
+    let search = raw;
+    if (raw.startsWith('---\n')) {
+      const firstClose = raw.indexOf('\n---', 4);
+      if (firstClose !== -1) {
+        const nextOpen = raw.indexOf('---\n', firstClose + 1);
+        if (nextOpen !== -1 && nextOpen < firstClose + 6) {
+          search = raw.slice(firstClose + 1);
+        }
+      }
+    }
+
+    const end = search.indexOf('\n---', 4);
+    if (end === -1) return { fm: {}, body: search };
+
+    const fmRaw = search.slice(4, end);
+    const body  = search.slice(end + 4).trimStart();
+    const fm    = {};
+    let inMeta  = false;
+    let inDesc  = false;
+    const descLines = [];
+
+    for (const line of fmRaw.split('\n')) {
+      if (line.startsWith('metadata:')) { inMeta = true; continue; }
+      if (line.startsWith('description:')) { inDesc = true; continue; }
+
+      if (inDesc) {
+        if (line.startsWith(' ') || line.startsWith('\t')) {
+          descLines.push(line.trim()); continue;
+        }
+        inDesc = false;
+      }
+
+      if (inMeta && (line.startsWith('  ') || line.startsWith('\t'))) {
+        const t = line.trim();
+        if (t.startsWith('version:')) fm.metaVersion = t.split(':')[1].trim().replace(/"/g,'');
+        continue;
+      }
+      inMeta = false;
+
+      if (line.includes(':') && !line.startsWith(' ')) {
+        const [k, ...rest] = line.split(':');
+        fm[k.trim()] = rest.join(':').trim().replace(/^"(.*)"$/, '$1');
+      }
+    }
+    if (descLines.length) fm.description = descLines.join(' ');
+
+    // Graceful fallbacks for non-standard frontmatter
+    fm.resolvedName    = fm.name    || fm.title   || '';
+    fm.resolvedVersion = fm.metaVersion || fm.version || '';
+
+    return { fm, body };
+  }
+
+  // ── Configure marked ──────────────────────────────────────────────────────
+  function configureMarked() {
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+      highlight(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try { return hljs.highlight(code, { language: lang }).value; } catch (_) {}
+        }
+        return hljs.highlightAuto(code).value;
+      },
+    });
+  }
+
+  // ── Strip status blockquote (it's shown in the header instead) ───────────
+  function stripStatusLine(body) {
+    return body.replace(/^>\s*Статус:[^\n]+\n?/m, '').trimStart();
+  }
+
+  // ── Remove first h1 (shown in guide-header instead) ───────────────────────
+  function stripFirstH1(body) {
+    return body.replace(/^#\s+[^\n]+\n?/, '').trimStart();
+  }
+
+  // ── Build table of contents from rendered HTML ────────────────────────────
+  function buildTOC(proseEl) {
+    const headings = proseEl.querySelectorAll('h2, h3');
+    const tocList  = document.getElementById('toc-list');
+    if (!tocList) return;
+    tocList.innerHTML = '';
+
+    headings.forEach((h, i) => {
+      if (!h.id) h.id = 'heading-' + i;
+
+      const li   = document.createElement('li');
+      li.className = 'toc-item' + (h.tagName === 'H3' ? ' toc-item--h3' : '');
+
+      const a = document.createElement('a');
+      a.className = 'toc-link';
+      a.href      = '#' + h.id;
+      a.textContent = h.textContent;
+      a.dataset.heading = h.id;
+
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + h.id);
+      });
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    return headings;
+  }
+
+  // ── Intersection Observer → highlight active TOC item ────────────────────
+  function initScrollSpy(headings) {
+    if (!headings || !headings.length) return;
+
+    const links = document.querySelectorAll('.toc-link');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        links.forEach(l => {
+          l.classList.toggle('is-active', l.dataset.heading === id);
+        });
+      });
+    }, {
+      rootMargin: '-10% 0px -80% 0px',
+      threshold: 0,
+    });
+
+    headings.forEach(h => observer.observe(h));
+  }
+
+  // ── Highlight active sidebar item ─────────────────────────────────────────
+  function setActiveSidebarItem(id) {
+    document.querySelectorAll('.sidebar__item').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      a.classList.toggle('is-active', href.includes('id=' + id));
+    });
+  }
+
+  // ── Build breadcrumb ──────────────────────────────────────────────────────
+  function buildBreadcrumb(id, name) {
+    const meta = GUIDE_META[id] || {};
+
+    document.getElementById('breadcrumb-name').textContent = name;
+
+    const catEl = document.getElementById('breadcrumb-category');
+    catEl.textContent = meta.group || '';
+
+    const subEl    = document.getElementById('breadcrumb-sub');
+    const subSep   = document.getElementById('breadcrumb-sep-sub');
+    if (meta.sub) {
+      subEl.textContent = meta.sub;
+      subEl.hidden      = false;
+      subSep.hidden     = false;
+    }
+  }
+
+  // ── Populate guide header ─────────────────────────────────────────────────
+  function populateHeader(id, fm) {
+    const meta    = GUIDE_META[id] || {};
+    const name    = fm.resolvedName || id;
+    const version = fm.resolvedVersion || meta.version || '';
+    const status  = meta.status || 'Draft';
+    const level   = meta.level;
+
+    document.title = name + ' — DS Guides';
+
+    document.getElementById('guide-title').textContent = name;
+    document.getElementById('guide-description').textContent = fm.description || '';
+
+    const metaEl = document.getElementById('guide-meta');
+    const statusCls = status === 'Stable' ? 'badge--stable' : 'badge--draft';
+    const levelBadge = level
+      ? `<span class="badge badge--${level}">${level === 'core' ? 'Core' : 'Semantic'}</span>`
+      : '';
+
+    metaEl.innerHTML = `
+      <span class="badge ${statusCls}">${status}</span>
+      ${levelBadge}
+      <span class="card__version">${version ? 'v' + version : ''}</span>
+    `;
+  }
+
+  // ── Main: fetch + render guide ────────────────────────────────────────────
+  async function loadGuide() {
+    const params = new URLSearchParams(location.search);
+    const id = window.DS_GUIDE_ID || params.get('id');
+
+    if (!id) {
+      showError('Не указан параметр ?id= в URL.');
+      return;
+    }
+
+    const mdPath = '../../skills/_shared/' + id + '.md';
+
+    try {
+      const res = await fetch(mdPath);
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + mdPath);
+      const raw = await res.text();
+
+      const { fm, body } = parseFrontmatter(raw);
+      const cleanBody    = stripFirstH1(stripStatusLine(body));
+
+      // Configure and render
+      configureMarked();
+      const html = marked.parse(cleanBody);
+
+      // Populate UI
+      populateHeader(id, fm);
+      buildBreadcrumb(id, fm.resolvedName || id);
+      setActiveSidebarItem(id);
+
+      const proseEl = document.getElementById('guide-prose');
+      proseEl.innerHTML = html;
+
+      // Syntax highlight (before token-viz so explicit blocks are processed first)
+      proseEl.querySelectorAll('pre code').forEach(el => {
+        if (!el.className.includes('language-token-')) hljs.highlightElement(el);
+      });
+
+      // Token visualization
+      if (window.DSTokenViz) window.DSTokenViz.init(proseEl);
+
+      // TOC + scroll spy
+      const headings = buildTOC(proseEl);
+      initScrollSpy(headings);
+
+      // Show content, hide loader
+      document.getElementById('guide-loading').hidden = true;
+      document.getElementById('guide-body').hidden    = false;
+
+      // Notify nav.js that content is ready (for cross-page highlight)
+      dispatchEvent(new CustomEvent('ds:content-ready'));
+
+    } catch (err) {
+      showError('Не удалось загрузить гайд: ' + err.message);
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('guide-loading').hidden = true;
+    document.getElementById('guide-body').hidden    = false;
+    document.getElementById('guide-prose').innerHTML =
+      `<div class="guide-error">${msg}</div>`;
+  }
+
+  // ── Theme toggle (same logic as index.html) ───────────────────────────────
+  function initTheme() {
+    const html      = document.documentElement;
+    const btnToggle = document.getElementById('theme-toggle');
+    const iconSun   = document.getElementById('icon-sun');
+    const iconMoon  = document.getElementById('icon-moon');
+    const hljsTheme = document.getElementById('hljs-theme');
+
+    const HLJS_LIGHT = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css';
+    const HLJS_DARK  = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-dark.min.css';
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      iconSun.style.display  = theme === 'dark'  ? 'block' : 'none';
+      iconMoon.style.display = theme === 'light' ? 'block' : 'none';
+      hljsTheme.href = theme === 'dark' ? HLJS_DARK : HLJS_LIGHT;
+      localStorage.setItem('ds-theme', theme);
+    }
+
+    btnToggle.addEventListener('click', () => {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    const saved = localStorage.getItem('ds-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  }
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  // If we arrived via a named guide redirect (?from=…), save ?id before
+  // replaceState strips it, then restore the pretty URL.
+  (function restorePrettyUrl() {
+    const p = new URLSearchParams(location.search);
+    const id   = p.get('id');
+    const from = p.get('from');
+    if (id) window.DS_GUIDE_ID = id;   // preserve before URL is rewritten
+    if (from) {
+      try { history.replaceState(null, '', from); } catch (_) {}
+    }
+  })();
+
+  function _boot() {
+    initTheme();
+    loadGuide();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _boot);
+  } else {
+    _boot();
+  }
+
+})();
+</script>
+
+</body>
+</html>
