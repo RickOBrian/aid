@@ -7,15 +7,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css"
-        id="hljs-theme">
+  <link rel="stylesheet" href="../assets/vendor/a11y-light.min.css" id="hljs-theme">
 
-  <!-- CDN dependencies (order matters) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+  <!-- Local vendor dependencies (order matters) -->
+  <script src="../assets/vendor/lunr.min.js"></script>
+  <script src="../assets/vendor/marked.min.js"></script>
+  <script src="../assets/vendor/highlight.min.js"></script>
+  <script src="../assets/vendor/highlight-swift.min.js"></script>
+  <script src="../assets/vendor/highlight-kotlin.min.js"></script>
 
   <link rel="stylesheet" href="../assets/style.css">
 
@@ -706,8 +705,8 @@
     const iconMoon  = document.getElementById('icon-moon');
     const hljsTheme = document.getElementById('hljs-theme');
 
-    const HLJS_LIGHT = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css';
-    const HLJS_DARK  = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-dark.min.css';
+    const HLJS_LIGHT = '../assets/vendor/a11y-light.min.css';
+    const HLJS_DARK  = '../assets/vendor/a11y-dark.min.css';
 
     function applyTheme(theme) {
       html.setAttribute('data-theme', theme);
