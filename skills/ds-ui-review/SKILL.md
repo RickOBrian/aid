@@ -1,7 +1,7 @@
 ---
 name: ds-ui-review
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   «check UI quality», «rate the design», «apply variant», «ui review».
 ---
 
-# ds-ui-review — v1.0.0
+# ds-ui-review — v1.1.0
 
 Reviews component or screen code against B2C UI quality standards from
 `ui-trends-2026.md`. `/review` scores without touching files. `/apply` implements
@@ -67,9 +67,10 @@ Produce exactly 2–3 variants. Each variant requires:
 - Token implications — existing semantic tokens only; if a new token would be
   required flag it: ⚠️ blocked — token `[name]` does not exist
 
-**HARD CONSTRAINT:** `/review` must never modify files, create files, or propose
-new tokens. Flag any improvement that requires a new token as blocked; do not
-invent a token name and proceed.
+**HARD CONSTRAINT:** `/review` must never modify existing files or propose new
+tokens. Flag any improvement that requires a new token as blocked; do not
+invent a token name and proceed. The only file `/review` may create is
+`docs/preview-variants.html` — see Step 6.
 
 ### Step 5. Output
 
@@ -96,22 +97,41 @@ ALWAYS use this exact structure:
     **What changes:** [specific and observable — cite token names or CSS props]
     **Visual impact:** [what the user will see differently]
     **Token implications:** [existing semantic tokens, or ⚠️ blocked — token `[name]` does not exist]
+    **Benchmark reference:** [Product — specific observable pattern] — [one sentence why this pattern applies to the current target]
 
     ### Variant 2: [kebab-name]
 
     **What changes:** [specific and observable — cite token names or CSS props]
     **Visual impact:** [what the user will see differently]
     **Token implications:** [existing semantic tokens, or ⚠️ blocked — token `[name]` does not exist]
+    **Benchmark reference:** [Product — specific observable pattern] — [one sentence why this pattern applies to the current target]
 
     ### Variant 3: [kebab-name] *(optional)*
 
     **What changes:** [specific and observable — cite token names or CSS props]
     **Visual impact:** [what the user will see differently]
     **Token implications:** [existing semantic tokens, or ⚠️ blocked — token `[name]` does not exist]
+    **Benchmark reference:** [Product — specific observable pattern] — [one sentence why this pattern applies to the current target]
 
     ---
 
     *To apply: `/apply [variant name]`*
+
+### Step 6. Generate preview
+
+After outputting the review text, create `docs/preview-variants.html`.
+
+Rules:
+- First line of the file must be `<!-- DELETE AFTER REVIEW -->`
+- Link `../assets/style.css` so all CSS token vars resolve live
+- Render all proposed variants as static side-by-side visual mockups
+- Each mockup: variant kebab-name as `<h3>`, then a minimal HTML
+  demonstration of the visual element the variant describes
+- Use only classes and token vars that already exist in `style.css`
+  (including `.token-ref` if applied); do not introduce new CSS
+- If a variant's class does not yet exist in `style.css`, render a
+  placeholder card with a note: "requires /apply [class-name] first"
+- Do not create any other file during `/review`
 
 ---
 
@@ -163,3 +183,10 @@ git commit -m "ui(ds-ui-review): apply [variant-name] to [ComponentName]"
 - `patch` — wording corrections
 - `minor` — new scoring axis, new variant field, graceful degradation update
 - `major` — breaking change to output structure or mode semantics
+
+## Changelog
+
+- **1.1.0** — added `Benchmark reference` field to each variant output block;
+  added Step 6 (auto-generate `docs/preview-variants.html` after /review);
+  updated HARD CONSTRAINT to permit only `preview-variants.html` creation.
+- **1.0.0** — initial release: /review + /apply, 5-axis scoring, variant format.
