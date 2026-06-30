@@ -1,0 +1,305 @@
+/* ============================================================
+   docs-theme.css — Aid Docsite Visual Language Override
+   Source: skills/_shared/docs-visual-language.md
+
+   Load AFTER style.css to override token values and add
+   docs-specific layout variables.
+
+   Rules:
+   · Only CSS custom property overrides and additions
+   · No hardcoded values except inside @import
+   · All element rules reference CSS variables
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Token value overrides — Light ────────────────────────
+   Warm neutral surfaces replace the cool-gray defaults.
+   Large radius replaces compact token values.
+   Generous line-heights replace compact doc defaults.
+   ──────────────────────────────────────────────────────── */
+:root {
+
+  /* Surface — warm neutral background (visual language: #EBEBEB tone) */
+  --bg-base-main:           #EBEBEB;
+  --bg-base-main-secondary: #E2E2E2;
+
+  /* Radius — large, modern (visual language: 20–28px cards) */
+  --radius-m:   14px;
+  --radius-l:   20px;
+  --radius-xl:  24px;
+  --radius-2xl: 32px;
+
+  /* Typography — body: comfortable line-height (1.65–1.75) */
+  --body-l-lh:  28px;   /* 16px → ~1.75 */
+  --body-m-lh:  26px;   /* 14px → ~1.65 */
+  --body-s-lh:  22px;   /* 13px → ~1.57 */
+
+  /* Typography — headings: heavy weight, tight line-height (1.1–1.2) */
+  --heading-xl-size:   32px;
+  --heading-xl-lh:     36px;   /* ~1.13 */
+  --heading-xl-weight: 800;
+
+  --heading-l-size:    26px;
+  --heading-l-lh:      30px;   /* ~1.15 */
+  --heading-l-weight:  800;
+
+  --heading-m-size:    22px;
+  --heading-m-lh:      26px;   /* ~1.18 */
+  --heading-m-weight:  700;
+
+  --heading-s-size:    18px;
+  --heading-s-lh:      22px;
+  --heading-s-weight:  700;
+
+  --heading-xs-size:   16px;
+  --heading-xs-lh:     20px;
+  --heading-xs-weight: 600;
+
+  /* Spacing — generous gaps for breathing room */
+  --gap-l:  28px;
+  --gap-xl: 40px;
+
+  /* ── New docs layout variables ──────────────────────────
+     --doc-* namespace: docs-specific, not DS tokens.
+     ──────────────────────────────────────────────────── */
+
+  /* Shadows — soft, large spread, low opacity */
+  --doc-shadow-card:       0 8px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --doc-shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --doc-shadow-float:      0 4px 20px rgba(0, 0, 0, 0.12);
+
+  /* Easing */
+  --doc-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --doc-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Prose layout */
+  --doc-prose-max-width:  740px;
+  --doc-section-gap:      48px;
+  --doc-paragraph-gap:    20px;
+  --doc-heading-gap-top:  40px;
+  --doc-heading-gap-bot:  16px;
+}
+
+/* ── Token value overrides — Dark ─────────────────────────
+   Warm dark neutrals mirror the warm-gray light surfaces.
+   ──────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-base-main:           #181818;
+  --bg-base-main-secondary: #1E1E1E;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--body-m-lh);
+}
+
+/* ============================================================
+   Prose — typography rhythm
+   ============================================================ */
+
+.prose {
+  max-width: var(--doc-prose-max-width);
+  line-height: var(--body-m-lh);
+}
+
+.prose p {
+  margin-bottom: var(--doc-paragraph-gap);
+  line-height: var(--body-m-lh);
+}
+
+.prose h2 {
+  margin-top: var(--doc-heading-gap-top);
+  margin-bottom: var(--doc-heading-gap-bot);
+  font-size: var(--heading-l-size);
+  line-height: var(--heading-l-lh);
+  font-weight: var(--heading-l-weight);
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  margin-top: var(--doc-section-gap);
+  margin-bottom: var(--doc-heading-gap-bot);
+  font-size: var(--heading-m-size);
+  line-height: var(--heading-m-lh);
+  font-weight: var(--heading-m-weight);
+  letter-spacing: -0.01em;
+}
+
+.prose h4 {
+  margin-top: var(--gap-xl);
+  margin-bottom: var(--gap-m);
+  font-size: var(--heading-s-size);
+  line-height: var(--heading-s-lh);
+  font-weight: var(--heading-s-weight);
+}
+
+.prose li {
+  line-height: var(--body-m-lh);
+  margin-bottom: var(--gap-xs);
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: var(--doc-paragraph-gap);
+}
+
+/* ============================================================
+   Cards — soft shadow, no border, large radius
+   ============================================================ */
+
+.card,
+.guide-header,
+.layout__sidebar {
+  box-shadow: var(--doc-shadow-card);
+  border-radius: var(--radius-xl);
+}
+
+/* Sidebar: no border — depth from shadow only */
+.layout__sidebar {
+  border-right: none;
+}
+
+/* Guide header card */
+.guide-header {
+  border-radius: var(--radius-xl);
+  border: none;
+  box-shadow: var(--doc-shadow-card);
+  padding: var(--inset-container-v-l) var(--inset-container-h-l);
+  margin-bottom: var(--gap-xl);
+}
+
+/* ============================================================
+   Sidebar — pill active state, spring easing
+   ============================================================ */
+
+.sidebar__item {
+  border-radius: var(--radius-full);
+  transition: background-color 0.18s var(--doc-ease-spring),
+              color            0.18s var(--doc-ease-spring),
+              transform        0.18s var(--doc-ease-spring);
+}
+
+.sidebar__item:hover {
+  transform: translateX(2px);
+}
+
+.sidebar__item.is-active {
+  border-radius: var(--radius-full);
+}
+
+/* ============================================================
+   Search — pill shape
+   ============================================================ */
+
+.search__input {
+  border-radius: var(--radius-full);
+  padding-left: 38px;
+}
+
+/* ============================================================
+   Buttons — pill, spring easing
+   ============================================================ */
+
+.btn-icon {
+  border-radius: var(--radius-full);
+  transition: background-color 0.18s var(--doc-ease-spring),
+              color            0.18s var(--doc-ease-spring),
+              transform        0.18s var(--doc-ease-spring);
+}
+
+.btn-icon:hover {
+  transform: scale(1.08);
+}
+
+/* ============================================================
+   Badges — pill shape
+   ============================================================ */
+
+.badge {
+  border-radius: var(--radius-full);
+}
+
+/* ============================================================
+   TOC links — pill hover
+   ============================================================ */
+
+.toc-link {
+  border-radius: var(--radius-full);
+  transition: background-color 0.15s var(--doc-ease-spring),
+              color            0.15s var(--doc-ease-spring);
+}
+
+/* ============================================================
+   Tables — large radius, soft shadow, no border
+   ============================================================ */
+
+.table-wrap {
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  box-shadow: var(--doc-shadow-card);
+}
+
+.prose table {
+  border-radius: var(--radius-l);
+}
+
+.prose thead {
+  background: var(--bg-base-main-secondary);
+}
+
+.prose thead th {
+  border-bottom: none;
+  font-weight: var(--label-m-weight);
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   Callouts — large radius, no left border on outer, pill feel
+   ============================================================ */
+
+.callout-note,
+.callout-warning,
+.callout-blocker {
+  border-radius: var(--radius-l);
+}
+
+/* ============================================================
+   Token swatches — large radius, soft shadow
+   ============================================================ */
+
+.token-swatch {
+  border-radius: var(--radius-l);
+  box-shadow: var(--doc-shadow-card);
+}
+
+/* ============================================================
+   Code blocks — large radius
+   ============================================================ */
+
+.prose pre {
+  border-radius: var(--radius-l);
+}
+
+/* ============================================================
+   Arch diagram & token demo — visual language applied
+   (supplements the inline <style> in guides)
+   ============================================================ */
+
+.arch-diagram {
+  border-radius: var(--radius-xl);
+  border: none;
+  box-shadow: var(--doc-shadow-card);
+}
+
+.token-text-demo {
+  border-radius: var(--radius-xl);
+  border: none;
+  box-shadow: var(--doc-shadow-card);
+}
