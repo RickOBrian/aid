@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.3.0"
+  version: "1.5.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -16,7 +16,7 @@ description: >
 
 # Semantic Color Tokens
 
-> Статус: Stable · v1.3.0
+> Статус: Stable · v1.5.0
 
 ---
 
@@ -30,10 +30,25 @@ Governance-правила — в `token-rules.md`.
 
 Semantic-токен ссылается на Core Color Token — не хранит HEX напрямую.
 
-```
-Core Color Token: jasper-65
-Semantic Token:   bg-accent-main → jasper-65
-```
+<div class="arch-diagram">
+  <div class="arch-diagram__row">
+    <span class="arch-diagram__layer">Core</span>
+    <code class="arch-diagram__name">jasper-65</code>
+    <span class="arch-diagram__note">#ef3124</span>
+  </div>
+  <div class="arch-diagram__connector">semantic ссылается на core</div>
+  <div class="arch-diagram__row">
+    <span class="arch-diagram__layer">Semantic</span>
+    <code class="arch-diagram__name">bg-accent-main</code>
+    <span class="arch-diagram__note">→ jasper-65</span>
+  </div>
+  <div class="arch-diagram__connector">компонент использует semantic</div>
+  <div class="arch-diagram__row">
+    <span class="arch-diagram__layer">Component</span>
+    <code class="arch-diagram__name">background: var(--bg-accent-main)</code>
+    <span class="arch-diagram__note"></span>
+  </div>
+</div>
 
 Core → Semantic. Semantic → Core HEX.
 Core-токены называются по цвету (jasper, citrine); semantic — по назначению (brand, status, product).
@@ -99,28 +114,38 @@ bg
 
 ## 5. text, icon, line
 
+<div class="token-text-demo">
+  <span class="token-text-demo__item" style="color:var(--text-primary)">text-primary</span>
+  <span class="token-text-demo__item" style="color:var(--text-secondary)">text-secondary</span>
+  <span class="token-text-demo__item" style="color:var(--text-disabled)">text-disabled</span>
+  <span class="token-text-demo__item token-text-demo__item--on-accent" style="color:var(--text-inverse)">text-inverse</span>
+  <span class="token-text-demo__item" style="color:var(--text-accent)">text-accent</span>
+  <span class="token-text-demo__item" style="color:var(--text-error)">text-error</span>
+  <span class="token-text-demo__item" style="color:var(--text-success)">text-success</span>
+</div>
+
 ```token-color
-text-primary   | var(--text-primary)   | Основной текст
-text-secondary | var(--text-secondary) | Второстепенный текст
-text-disabled  | var(--text-disabled)  | Неактивный текст
-text-inverse   | var(--text-inverse)   | Текст на акцентном фоне
-text-accent    | var(--text-accent)    | Акцентный текст и ссылки
-text-error     | var(--text-error)     | Текст ошибки
-text-success   | var(--text-success)   | Текст успеха
+text-primary   | rgba(3, 3, 6, 0.88)   | Основной текст
+text-secondary | rgba(4, 4, 19, 0.55)  | Второстепенный текст
+text-disabled  | rgba(5, 11, 44, 0.18) | Неактивный текст
+text-inverse   | #ffffff               | Текст на акцентном фоне
+text-accent    | #ef3124               | Акцентный текст и ссылки
+text-error     | #ec2d20               | Текст ошибки
+text-success   | #0d9336               | Текст успеха
 ```
 
 ```token-color
-icon-primary   | var(--icon-primary)   | Основная иконка
-icon-secondary | var(--icon-secondary) | Второстепенная иконка
-icon-accent    | var(--icon-accent)    | Акцентная иконка
-icon-inverse   | var(--icon-inverse)   | Иконка на акцентном фоне
-icon-disabled  | var(--icon-disabled)  | Неактивная иконка
+icon-primary   | #212124 | Основная иконка
+icon-secondary | #898991 | Второстепенная иконка
+icon-accent    | #ef3124 | Акцентная иконка
+icon-inverse   | #ffffff | Иконка на акцентном фоне
+icon-disabled  | #d2d3d9 | Неактивная иконка
 ```
 
 ```token-color
-line-default | var(--line-default) | Стандартный разделитель и бордер
-line-strong  | var(--line-strong)  | Усиленный разделитель
-line-accent  | var(--line-accent)  | Акцентный бордер (фокус, активное поле)
+line-default | #e7e8eb | Стандартный разделитель и бордер
+line-strong  | #d2d3d9 | Усиленный разделитель
+line-accent  | #ef3124 | Акцентный бордер (фокус, активное поле)
 ```
 
 `text` и `icon` — параллельные структуры.
@@ -131,13 +156,13 @@ line-accent  | var(--line-accent)  | Акцентный бордер (фокус
 ## 6. bg-base, bg-card, bg-overlay, bg-modal
 
 ```token-color
-bg-base-main            | var(--bg-base-main)            | Основной фон экрана
-bg-base-main-secondary  | var(--bg-base-main-secondary)  | Вторичный фон экрана
-bg-card-main            | var(--bg-card-main)            | Фон карточки
-bg-card-main-secondary  | var(--bg-card-main-secondary)  | Вторичный фон карточки
-bg-overlay-main         | var(--bg-overlay-main)         | Оверлей (полупрозрачный)
-bg-modal-main           | var(--bg-modal-main)           | Фон модального окна
-bg-modal-main-secondary | var(--bg-modal-main-secondary) | Вторичный фон модального окна
+bg-base-main            | #ffffff             | Основной фон экрана
+bg-base-main-secondary  | #f2f3f5             | Вторичный фон экрана
+bg-card-main            | #ffffff             | Фон карточки
+bg-card-main-secondary  | #edeef0             | Вторичный фон карточки
+bg-overlay-main         | rgba(0, 0, 0, 0.60) | Оверлей (полупрозрачный)
+bg-modal-main           | #ffffff             | Фон модального окна
+bg-modal-main-secondary | #f2f3f5             | Вторичный фон модального окна
 ```
 
 `bg-base-main` — первичный фон. `bg-base-main-secondary` — вторичный.
@@ -158,10 +183,10 @@ bg-modal-main-secondary | var(--bg-modal-main-secondary) | Вторичный ф
 ## 7. bg-accent-* variants
 
 ```token-color
-bg-accent-main    | var(--bg-accent-main)    | Основной акцентный фон
-bg-accent-fade    | var(--bg-accent-fade)    | Приглушённый акцент (main с alpha)
-bg-accent-ghost   | var(--bg-accent-ghost)   | Еле заметный акцент (тише fade)
-bg-accent-inverse | var(--bg-accent-inverse) | Инверсный фон (текст поверх — инверсный)
+bg-accent-main    | #ef3124 | Основной акцентный фон
+bg-accent-fade    | #ffdfdf | Приглушённый акцент (main с alpha)
+bg-accent-ghost   | #ffebeb | Еле заметный акцент (тише fade)
+bg-accent-inverse | #121213 | Инверсный фон (текст поверх — инверсный)
 ```
 
 `fade` и `ghost` — это `main` с уменьшенной прозрачностью через Core alpha-нотацию.
@@ -271,10 +296,10 @@ Skeleton — двуслойная анимация ожидания данных
 Токены живут в группе `bg-component-*`: это состояние отображения компонента,
 а не акцентный или базовый фон экрана.
 
-| Токен                           | Назначение                                    | Core (light)        | Core (dark)         |
-|---------------------------------|-----------------------------------------------|---------------------|---------------------|
-| `bg-component-skeleton-default` | Базовый фон заглушки                          | `color-neutral-100` | `color-neutral-800` |
-| `bg-component-skeleton-shimmer` | Светлая волна поверх default (shimmer-анимация) | `color-neutral-50`  | `color-neutral-700` |
+| Токен                             | Назначение                                      | Core (light)        | Light value | Core (dark)         |
+|-----------------------------------|-------------------------------------------------|---------------------|-------------|---------------------|
+| `bg-component-skeleton-default`   | Базовый фон заглушки                            | `color-neutral-100` | `#f2f3f5`   | `color-neutral-800` |
+| `bg-component-skeleton-shimmer`   | Светлая волна поверх default (shimmer-анимация) | `color-neutral-0`   | `#ffffff`   | `color-neutral-700` |
 
 **Правила использования:**
 - `bg-component-skeleton-default` — фон всей области-заглушки
@@ -319,6 +344,13 @@ bg-accent-product-marketplace-main
 
 ## Changelog
 
+- **1.5.0** — Illustration Logic: секция 1 (Принцип) — arch-diagram Core→Semantic→Component
+  (Rule 5); секция 5 (text/icon/line) — live token-text-demo (Rule 1).
+  Добавлены CSS-классы `.arch-diagram` и `.token-text-demo` в `style.css`.
+- **1.4.0** — секции 5, 6, 7: CSS-переменные заменены на реальные hex/rgba значения в
+  `token-color`-блоках — свотчи теперь рендерятся без подключённой theme CSS.
+  Секция 11: таблица skeleton дополнена колонкой `Light value` с фактическими значениями
+  (`#f2f3f5`, `#ffffff`). Маппинг на основе извлечённых токенов публичной UI-библиотеки (light theme).
 - **1.3.0** — секции 5, 6, 7: таблицы заменены на `token-color`-блоки с live-свотчами
   (token-viz.js). Убраны raw HEX-значения из prose-блоков секций 1 и 7 (Inverse).
 - **1.2.0** — добавлены skeleton-токены: `bg-component-skeleton-default` и

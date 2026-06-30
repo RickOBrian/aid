@@ -691,6 +691,87 @@ body {
 }
 
 /* ============================================================
+   Arch diagram  (Rule 5 — architecture / hierarchy illustration)
+   ============================================================ */
+.arch-diagram {
+  max-width: 640px;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m, 8px);
+  overflow: hidden;
+  margin-bottom: var(--gap-m, 16px);
+  background: var(--bg-card-main);
+}
+.arch-diagram__row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line-default);
+}
+.arch-diagram__row:last-child { border-bottom: none; }
+.arch-diagram__layer {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+.arch-diagram__name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background: none;
+  padding: 0;
+}
+.arch-diagram__note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+.arch-diagram__connector {
+  padding: 3px 16px 3px 18px;
+  font-size: 11px;
+  color: var(--text-disabled);
+  border-bottom: 1px solid var(--line-default);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.arch-diagram__connector::before {
+  content: '↓';
+  font-size: 14px;
+  color: var(--line-strong);
+  margin-left: 30px;
+}
+
+/* ============================================================
+   Token text demo  (Rule 1 — color token live-text illustration)
+   ============================================================ */
+.token-text-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  padding: 16px 20px;
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m, 8px);
+  margin-bottom: var(--gap-m, 16px);
+}
+.token-text-demo__item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.token-text-demo__item--on-accent {
+  background: var(--bg-accent-main);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* ============================================================
    Page heading block
    ============================================================ */
 .page-hero {
