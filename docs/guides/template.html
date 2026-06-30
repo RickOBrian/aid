@@ -19,6 +19,9 @@
   <link rel="stylesheet" href="../assets/style.css">
 
   <style>
+    /* Respect [hidden] attribute — author display rules override UA default */
+    [hidden] { display: none !important; }
+
     /* ── Guide-page specific styles ───────────────────────────── */
 
     /* Layout: sidebar-nav | content | toc */
@@ -34,7 +37,7 @@
 
     .guide-layout__header  { grid-area: header;  }
     .guide-layout__sidenav { grid-area: sidenav; }
-    .guide-layout__content { grid-area: content; }
+    .guide-layout__content { grid-area: content; min-width: 0; } /* prevent grid blowout */
     .guide-layout__toc     { grid-area: toc;     }
 
     /* ── Content area ── */
@@ -179,16 +182,22 @@
       padding: 0;
     }
 
+    /* Table scroll wrapper — added by JS after render */
+    .prose .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: var(--gap-m);
+      border-radius: var(--radius-m);
+      border: 1px solid var(--line-default);
+    }
     .prose table {
       width: 100%;
       border-collapse: collapse;
       font-size: var(--body-s-size);
       line-height: var(--body-s-lh);
-      margin-bottom: var(--gap-m);
       background: var(--bg-card-main);
       border-radius: var(--radius-m);
-      overflow: hidden;
-      border: 1px solid var(--line-default);
+      margin-bottom: 0; /* wrapper owns the margin */
     }
     .prose th {
       background: var(--bg-base-main-secondary);
@@ -208,7 +217,7 @@
       vertical-align: top;
     }
     .prose tr:last-child td { border-bottom: none; }
-    .prose tr:hover td { background: var(--bg-accent-fade); }
+    .prose tr:hover td { background: var(--bg-accent-states-hover); }
 
     /* ── Status blockquote inside prose ── */
     .prose blockquote p strong { color: var(--text-primary); }
@@ -307,7 +316,21 @@
           "content";
       }
       .guide-layout__sidenav { display: none; }
-      .guide-content { padding: var(--inset-container-v-m) var(--inset-screen-h-s); }
+      .guide-content {
+        padding: var(--inset-container-v-m, 24px) var(--inset-screen-h-s, 16px);
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      /* Prevent code blocks from stretching the viewport */
+      .prose pre {
+        max-width: 100%;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      /* Token viz grid: allow text wrapping */
+      .tv-name, .tv-desc { white-space: normal; word-break: break-word; }
+      .tv-color-row { grid-template-columns: 36px 1fr; }
+      .tv-value { display: none; }
     }
   </style>
 </head>
@@ -665,6 +688,22 @@
 
       const proseEl = document.getElementById('guide-prose');
       proseEl.innerHTML = html;
+
+      // Re-execute inline <script> tags injected via innerHTML (browsers skip them)
+      proseEl.querySelectorAll('script').forEach(oldScript => {
+        const s = document.createElement('script');
+        [...oldScript.attributes].forEach(a => s.setAttribute(a.name, a.value));
+        s.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(s, oldScript);
+      });
+
+      // Wrap tables in a scroll container (keeps width: 100% intact)
+      proseEl.querySelectorAll('table').forEach(table => {
+        const wrap = document.createElement('div');
+        wrap.className = 'table-wrap';
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
 
       // Syntax highlight (before token-viz so explicit blocks are processed first)
       proseEl.querySelectorAll('pre code').forEach(el => {
