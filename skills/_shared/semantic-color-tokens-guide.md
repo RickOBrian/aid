@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -16,7 +16,126 @@ description: >
 
 # Semantic Color Tokens
 
-> Статус: Stable · v1.5.0
+> Статус: Stable · v1.5.1
+
+<style>
+/* ================================================================
+   Visual Language Override — Semantic Color Guide v1.5.1
+   Source: skills/_shared/docs-visual-language.md
+   Rules: warm neutral bg · white cards · large radius · soft shadow
+          pill shapes · spring easing · floating pill on hover
+   ================================================================ */
+
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration:  0.01ms !important;
+  }
+}
+
+/* ── arch-diagram ────────────────────────────────────────
+   Outer: warm neutral #EBEBEB, r-24, soft shadow, no border
+   Inner rows: white cards, r-16 (nested radius: 24 − 8px padding)
+   ──────────────────────────────────────────────────────── */
+.arch-diagram {
+  background: #EBEBEB;
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: visible;
+  margin-bottom: 24px;
+  max-width: 560px;
+}
+.arch-diagram__row {
+  background: var(--bg-card-main);
+  border-radius: 16px;
+  border: none;
+  border-bottom: none;
+  padding: 14px 20px;
+  transition: transform 0.22s var(--ease-spring),
+              box-shadow 0.22s var(--ease-spring);
+}
+.arch-diagram__row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+.arch-diagram__connector {
+  border-bottom: none;
+  padding: 5px 20px;
+  color: var(--text-disabled);
+  font-size: 11px;
+}
+
+/* ── token-text-demo ──────────────────────────────────────
+   Outer: warm neutral #EBEBEB, r-24, soft shadow, no border
+   Items: white pill cards, hover lifts + shows floating dark pill
+   Floating pill: dark bg · white text · border-radius 9999px
+   ──────────────────────────────────────────────────────── */
+.token-text-demo {
+  background: #EBEBEB;
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  padding: 16px;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.token-text-demo__item {
+  background: var(--bg-card-main);
+  border-radius: 9999px;
+  padding: 9px 18px;
+  cursor: default;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.22s var(--ease-spring),
+              box-shadow 0.22s var(--ease-spring);
+}
+.token-text-demo__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+}
+.token-text-demo__item--on-accent {
+  background: var(--bg-accent-main);
+  border-radius: 9999px;
+  padding: 9px 18px;
+}
+
+/* Floating pill label — appears above item on hover */
+.token-text-demo__item::after {
+  content: attr(data-value);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(0.9);
+  background: var(--text-primary);
+  color: var(--bg-card-main);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: opacity   0.15s var(--ease-out),
+              transform 0.22s var(--ease-spring);
+  z-index: 10;
+}
+.token-text-demo__item:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+</style>
 
 ---
 
@@ -115,13 +234,13 @@ bg
 ## 5. text, icon, line
 
 <div class="token-text-demo">
-  <span class="token-text-demo__item" style="color:var(--text-primary)">text-primary</span>
-  <span class="token-text-demo__item" style="color:var(--text-secondary)">text-secondary</span>
-  <span class="token-text-demo__item" style="color:var(--text-disabled)">text-disabled</span>
-  <span class="token-text-demo__item token-text-demo__item--on-accent" style="color:var(--text-inverse)">text-inverse</span>
-  <span class="token-text-demo__item" style="color:var(--text-accent)">text-accent</span>
-  <span class="token-text-demo__item" style="color:var(--text-error)">text-error</span>
-  <span class="token-text-demo__item" style="color:var(--text-success)">text-success</span>
+  <span class="token-text-demo__item" data-value="#111111"   style="color:var(--text-primary)">text-primary</span>
+  <span class="token-text-demo__item" data-value="#6E6E73"   style="color:var(--text-secondary)">text-secondary</span>
+  <span class="token-text-demo__item" data-value="#AEAEB2"   style="color:var(--text-disabled)">text-disabled</span>
+  <span class="token-text-demo__item token-text-demo__item--on-accent" data-value="#FFFFFF" style="color:var(--text-inverse)">text-inverse</span>
+  <span class="token-text-demo__item" data-value="#0057FF"   style="color:var(--text-accent)">text-accent</span>
+  <span class="token-text-demo__item" data-value="#D93025"   style="color:var(--text-error)">text-error</span>
+  <span class="token-text-demo__item" data-value="#1A7F4B"   style="color:var(--text-success)">text-success</span>
 </div>
 
 ```token-color
@@ -344,6 +463,9 @@ bg-accent-product-marketplace-main
 
 ## Changelog
 
+- **1.5.1** — Visual Language applied to existing illustrations (arch-diagram §1, token-text-demo §5):
+  warm neutral `#EBEBEB` outer bg, white card rows/pills, r-24 container, r-16 nested rows,
+  soft shadow (no border), spring easing, floating dark pill on hover with resolved hex value.
 - **1.5.0** — Illustration Logic: секция 1 (Принцип) — arch-diagram Core→Semantic→Component
   (Rule 5); секция 5 (text/icon/line) — live token-text-demo (Rule 1).
   Добавлены CSS-классы `.arch-diagram` и `.token-text-demo` в `style.css`.
