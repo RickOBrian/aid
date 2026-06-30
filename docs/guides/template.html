@@ -20,156 +20,257 @@
   <link rel="stylesheet" href="../assets/docs-theme.css">
 
   <style>
-    /* ── Guide-page specific styles ───────────────────────────── */
+    /* ================================================================
+       Guide page — visual layer redesign
+       Applied: docs-visual-language.md
+       Warm neutral bg · floating white cards · pill nav · spring easing
+       ================================================================ */
 
-    /* Layout: sidebar-nav | content | toc */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* ── Layout grid ── */
     .guide-layout {
       display: grid;
-      grid-template-columns: 240px 1fr 220px;
+      grid-template-columns: 256px 1fr 220px;
       grid-template-rows: auto 1fr;
       grid-template-areas:
         "header  header  header"
         "sidenav content toc";
       min-height: 100vh;
+      background: #EBEBEB;
     }
 
     .guide-layout__header  { grid-area: header;  }
     .guide-layout__sidenav { grid-area: sidenav; }
-    .guide-layout__content { grid-area: content; }
+    .guide-layout__content { grid-area: content; min-width: 0; padding: 28px 24px 64px 16px; }
     .guide-layout__toc     { grid-area: toc;     }
 
-    /* ── Content area ── */
+    /* ── Header: white, no border, subtle shadow ── */
+    .layout__header {
+      border-bottom: none;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    /* ── Sidebar: white card, rounded right corners, floats on warm bg ── */
+    .layout__sidebar {
+      background: var(--bg-card-main);
+      border-right: none;
+      border-radius: 0 20px 20px 0;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.06);
+      padding: 20px 8px;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+    }
+
+    /* Sidebar section labels — top-level groups (Токены, Компоненты) */
+    .sidebar__section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-secondary);
+      padding: 20px 12px 6px;
+      line-height: 1;
+    }
+    .sidebar__section-label:first-child { padding-top: 8px; }
+
+    /* Sidebar sub-labels — category groups (Цвет, Отступы, Типографика) */
+    .sidebar__section-sublabel {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-disabled);
+      padding: 14px 12px 4px;
+      line-height: 1;
+    }
+
+    /* Nav items — pill shape, spring easing */
+    .sidebar__item {
+      display: block;
+      margin: 1px 4px;
+      padding: 7px 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: var(--label-s-lh);
+      font-weight: var(--label-s-weight);
+      border-radius: var(--radius-full);
+      transition: background-color 0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  color            0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  transform        0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .sidebar__item:hover {
+      background-color: var(--bg-accent-states-hover);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+    .sidebar__item.is-active {
+      background-color: var(--bg-accent-main);
+      color: var(--text-inverse);
+      font-weight: 600;
+    }
+    .sidebar__item.is-active:hover {
+      background-color: var(--bg-accent-main);
+      color: var(--text-inverse);
+      transform: none;
+    }
+
+    /* ── Guide content: white card on warm bg ── */
     .guide-content {
-      padding: var(--inset-container-v-l) var(--inset-screen-h-m);
+      background: var(--bg-card-main);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+      padding: 48px;
       max-width: 760px;
     }
 
-    /* ── Breadcrumb ── */
+    /* ── Breadcrumb: tiny, faint, uppercase, tracked ── */
     .breadcrumb {
       display: flex;
       align-items: center;
-      gap: var(--gap-xs);
-      margin-bottom: var(--gap-l);
-      font-size: var(--label-xs-size);
-      line-height: var(--label-xs-lh);
-      font-weight: var(--label-xs-weight);
-      color: var(--text-secondary);
+      gap: 5px;
+      margin-bottom: 28px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-disabled);
       flex-wrap: wrap;
     }
     .breadcrumb__link {
-      color: var(--text-secondary);
+      color: var(--text-disabled);
       text-decoration: none;
+      transition: color 0.15s;
     }
-    .breadcrumb__link:hover { color: var(--text-accent); text-decoration: underline; }
+    .breadcrumb__link:hover { color: var(--text-accent); }
     .breadcrumb__sep { color: var(--line-strong); user-select: none; }
-    .breadcrumb__current { color: var(--text-primary); }
+    .breadcrumb__current { color: var(--text-secondary); }
 
-    /* ── Guide header ── */
+    /* ── Guide header: no border, 32px gap before first block ── */
     .guide-header {
-      margin-bottom: var(--gap-l);
-      padding-bottom: var(--gap-l);
-      border-bottom: 1px solid var(--line-default);
+      margin-bottom: 32px;
+      padding-bottom: 0;
+      border-bottom: none;
     }
     .guide-header__meta {
       display: flex;
       align-items: center;
       gap: var(--gap-s);
-      margin-bottom: var(--gap-s);
+      margin-bottom: var(--gap-m);
     }
     .guide-header__title {
       font-size: var(--heading-xl-size);
-      line-height: var(--heading-xl-lh);
+      line-height: 1.1;
       font-weight: var(--heading-xl-weight);
       color: var(--text-primary);
+      letter-spacing: -0.02em;
       margin-bottom: var(--gap-s);
     }
     .guide-header__description {
       font-size: var(--body-m-size);
-      line-height: var(--body-m-lh);
+      line-height: 1.65;
       color: var(--text-secondary);
     }
 
-    /* ── Prose (rendered markdown) ── */
+    /* ── Badges: pill shape ── */
+    .badge { border-radius: var(--radius-full); }
+
+    /* ── Prose ── */
     .prose { color: var(--text-primary); }
 
     .prose h1 {
       font-size: var(--heading-xl-size);
-      line-height: var(--heading-xl-lh);
+      line-height: 1.1;
       font-weight: var(--heading-xl-weight);
-      margin-bottom: var(--gap-s);
-    }
-    .prose h2 {
-      font-size: var(--heading-m-size);
-      line-height: var(--heading-m-lh);
-      font-weight: var(--heading-m-weight);
-      margin-top: var(--gap-xl);
+      letter-spacing: -0.02em;
       margin-bottom: var(--gap-m);
-      padding-bottom: var(--gap-s);
-      border-bottom: 1px solid var(--line-default);
+    }
+    /* h2: heavy, tight, large — section separator via spacing only (no border) */
+    .prose h2 {
+      font-size: var(--heading-l-size);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 0;
+      border-bottom: none;
       scroll-margin-top: 80px;
     }
     .prose h3 {
-      font-size: var(--heading-s-size);
-      line-height: var(--heading-s-lh);
-      font-weight: var(--heading-s-weight);
-      margin-top: var(--gap-l);
-      margin-bottom: var(--gap-s);
+      font-size: var(--heading-m-size);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-top: 40px;
+      margin-bottom: 14px;
       scroll-margin-top: 80px;
     }
     .prose h4 {
-      font-size: var(--heading-xs-size);
-      line-height: var(--heading-xs-lh);
-      font-weight: var(--heading-xs-weight);
-      margin-top: var(--gap-m);
-      margin-bottom: var(--gap-xs);
+      font-size: var(--heading-s-size);
+      line-height: 1.3;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 10px;
       scroll-margin-top: 80px;
     }
+    /* Body: 16px, lh 1.7, generous paragraph gap */
     .prose p {
-      font-size: var(--body-m-size);
-      line-height: var(--body-m-lh);
-      margin-bottom: var(--gap-m);
+      font-size: var(--body-l-size);
+      line-height: 1.7;
+      margin-bottom: 1.5em;
+      color: var(--text-primary);
     }
     .prose ul, .prose ol {
       margin-left: var(--inset-container-h-m);
-      margin-bottom: var(--gap-m);
-      font-size: var(--body-m-size);
-      line-height: var(--body-m-lh);
+      margin-bottom: 1.5em;
+      font-size: var(--body-l-size);
+      line-height: 1.7;
     }
-    .prose li { margin-bottom: var(--gap-xs); }
+    .prose li { margin-bottom: 6px; }
 
     .prose blockquote {
       border-left: 3px solid var(--bg-accent-main);
       padding-left: var(--inset-container-h-s);
-      margin: 0 0 var(--gap-m);
+      margin: 0 0 1.5em;
       color: var(--text-secondary);
-      font-size: var(--body-s-size);
-      line-height: var(--body-s-lh);
+      font-size: var(--body-m-size);
+      line-height: 1.65;
+      border-radius: 0 var(--radius-m) var(--radius-m) 0;
     }
     .prose blockquote p { margin-bottom: 0; font-size: inherit; }
 
+    /* hr: invisible — spacing only */
     .prose hr {
       border: none;
-      border-top: 1px solid var(--line-default);
-      margin: var(--gap-l) 0;
+      height: 0;
+      margin: 48px 0;
     }
+
     .prose a { color: var(--text-accent); text-decoration: none; }
     .prose a:hover { text-decoration: underline; }
 
+    /* Inline code: pill shape, warm bg, no harsh border */
     .prose code {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85em;
+      font-size: 0.84em;
       background: var(--bg-base-main-secondary);
       color: var(--text-primary);
-      padding: 2px 5px;
-      border-radius: var(--radius-s);
-      border: 1px solid var(--line-default);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      border: none;
     }
     .prose pre {
       background: #1e1e2e;
-      border-radius: var(--radius-m);
+      border-radius: var(--radius-l);
       padding: var(--inset-container-v-m) var(--inset-container-h-m);
       overflow-x: auto;
-      margin-bottom: var(--gap-m);
+      margin-bottom: 1.5em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
     }
     .prose pre code {
       font-family: 'JetBrains Mono', monospace;
@@ -178,26 +279,34 @@
       color: #cdd6f4;
       border: none;
       padding: 0;
+      border-radius: 0;
     }
 
+    /* Tables: larger radius, soft shadow, no outer border */
+    .table-wrap {
+      border-radius: var(--radius-l);
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      margin-bottom: 1.5em;
+    }
     .prose table {
       width: 100%;
       border-collapse: collapse;
       font-size: var(--body-s-size);
       line-height: var(--body-s-lh);
-      margin-bottom: var(--gap-m);
+      margin-bottom: 0;
       background: var(--bg-card-main);
-      border-radius: var(--radius-m);
+      border-radius: var(--radius-l);
       overflow: hidden;
-      border: 1px solid var(--line-default);
+      border: none;
     }
     .prose th {
-      background: var(--bg-base-main-secondary);
+      background: var(--bg-base-main);
       font-size: var(--label-xs-size);
-      font-weight: var(--label-xs-weight);
+      font-weight: 700;
       line-height: var(--label-xs-lh);
       text-transform: uppercase;
-      letter-spacing: .04em;
+      letter-spacing: .05em;
       color: var(--text-secondary);
       padding: var(--inset-control-v-m) var(--inset-container-h-s);
       text-align: left;
@@ -209,60 +318,80 @@
       vertical-align: top;
     }
     .prose tr:last-child td { border-bottom: none; }
-    .prose tr:hover td { background: var(--bg-accent-fade); }
+    .prose tr:hover td { background: var(--bg-accent-states-hover); }
 
-    /* ── Status blockquote inside prose ── */
     .prose blockquote p strong { color: var(--text-primary); }
 
-    /* ── TOC (right column) ── */
+    /* ── TOC: transparent, no border, pill active ── */
     .guide-toc {
-      padding: var(--inset-container-v-l) var(--inset-container-h-m);
+      background: transparent;
+      border-left: none;
+      padding: 32px 16px 32px 8px;
       position: sticky;
       top: 57px;
       height: calc(100vh - 57px);
       overflow-y: auto;
-      border-left: 1px solid var(--line-default);
     }
-
     .guide-toc__label {
-      font-size: var(--meta-xs-size);
-      line-height: var(--meta-xs-lh);
-      font-weight: var(--meta-xs-weight);
-      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: 0.08em;
+      color: var(--text-disabled);
       margin-bottom: var(--gap-s);
+      padding: 0 8px;
     }
-
-    .toc-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .toc-item { margin-bottom: 2px; }
-    .toc-item--h3 { padding-left: 12px; }
+    .toc-list { list-style: none; padding: 0; margin: 0; }
+    .toc-item { margin-bottom: 1px; }
+    .toc-item--h3 { padding-left: 10px; }
 
     .toc-link {
       display: block;
-      padding: 4px var(--inset-control-h-xs);
-      font-size: var(--label-xs-size);
+      padding: 5px 8px;
+      font-size: 11px;
       line-height: 1.4;
-      font-weight: var(--label-xs-weight);
-      color: var(--text-secondary);
+      font-weight: 500;
+      color: var(--text-disabled);
       text-decoration: none;
-      border-radius: var(--radius-s);
-      transition: background .1s, color .1s;
+      border-radius: var(--radius-full);
+      transition: background 0.15s, color 0.15s;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .toc-link:hover { color: var(--text-primary); background: var(--bg-accent-states-hover); }
-    .toc-link.is-active { color: var(--text-accent); background: var(--bg-accent-fade); }
+    .toc-link:hover { color: var(--text-primary); background: var(--bg-accent-ghost); }
+    .toc-link.is-active {
+      color: var(--text-accent);
+      background: var(--bg-accent-fade);
+      font-weight: 600;
+    }
 
-    /* ── Loading / error states ── */
-    /* Ensure [hidden] attr always wins over display:flex etc. */
+    /* ── Search: pill, borderless at rest, focus shadow ── */
+    .search__input {
+      border-radius: var(--radius-full);
+      border-color: transparent;
+      background: var(--bg-base-main-secondary);
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .search__input:focus {
+      border-color: var(--line-accent);
+      background: var(--bg-card-main);
+      box-shadow: 0 0 0 3px var(--bg-accent-states-focused);
+    }
+
+    /* ── Theme toggle: pill ── */
+    .btn-icon {
+      border-radius: var(--radius-full);
+      border-color: transparent;
+      transition: background-color 0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  transform        0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-icon:hover { transform: scale(1.1); }
+
+    /* ── [hidden] must always win ── */
     [hidden] { display: none !important; }
 
+    /* ── Loading ── */
     .guide-loading {
       display: flex;
       flex-direction: column;
@@ -274,8 +403,7 @@
       gap: var(--gap-m);
     }
     .guide-loading__spinner {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border: 2px solid var(--line-default);
       border-top-color: var(--bg-accent-main);
       border-radius: var(--radius-full);
@@ -295,23 +423,24 @@
     /* ── Responsive ── */
     @media (max-width: 1100px) {
       .guide-layout {
-        grid-template-columns: 240px 1fr;
-        grid-template-areas:
-          "header  header"
-          "sidenav content";
+        grid-template-columns: 256px 1fr;
+        grid-template-areas: "header header" "sidenav content";
       }
       .guide-layout__toc { display: none; }
     }
-
     @media (max-width: 768px) {
       .guide-layout {
         grid-template-columns: 1fr;
-        grid-template-areas:
-          "header"
-          "content";
+        grid-template-areas: "header" "content";
       }
       .guide-layout__sidenav { display: none; }
-      .guide-content { padding: var(--inset-container-v-m) var(--inset-screen-h-s); }
+      .guide-layout__content { padding: 16px; }
+      .guide-content {
+        padding: 28px 20px;
+        border-radius: 16px;
+      }
+      .prose code { white-space: pre-wrap; word-break: break-word; }
+      .prose pre  { white-space: pre-wrap; }
     }
   </style>
 </head>
@@ -357,13 +486,13 @@
   <aside class="layout__sidebar guide-layout__sidenav" aria-label="Навигация по гайдам">
     <nav id="sidenav">
       <div class="sidebar__section-label">Токены</div>
-      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Цвет</div>
+      <div class="sidebar__section-sublabel">Цвет</div>
       <a class="sidebar__item" href="template.html?id=core-color-tokens-guide">Цветовая палитра</a>
       <a class="sidebar__item" href="template.html?id=semantic-color-tokens-guide">Семантика цвета</a>
-      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Отступы</div>
+      <div class="sidebar__section-sublabel">Отступы</div>
       <a class="sidebar__item" href="template.html?id=core-space-tokens-guide">Шкала отступов</a>
       <a class="sidebar__item" href="template.html?id=semantic-space-tokens-guide">Семантика отступов</a>
-      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Типографика</div>
+      <div class="sidebar__section-sublabel">Типографика</div>
       <a class="sidebar__item" href="template.html?id=core-typography-tokens-guide">Шкала типографики</a>
       <a class="sidebar__item" href="template.html?id=semantic-typography-tokens-guide">Семантика типографики</a>
       <div class="sidebar__section-label">Компоненты</div>
