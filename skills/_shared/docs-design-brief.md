@@ -121,3 +121,5 @@ no per-page overrides.
 
 Show the rule, then prove it on the same page —
 a rule without a visual example that would fail it is incomplete.
+
+Visual language reference: see `skills/_shared/docs-visual-language.md`
