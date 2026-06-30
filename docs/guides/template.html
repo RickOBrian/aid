@@ -259,6 +259,9 @@
     .toc-link.is-active { color: var(--text-accent); background: var(--bg-accent-fade); }
 
     /* ── Loading / error states ── */
+    /* Ensure [hidden] attr always wins over display:flex etc. */
+    [hidden] { display: none !important; }
+
     .guide-loading {
       display: flex;
       flex-direction: column;
@@ -436,14 +439,14 @@
 
   // ── Guide-to-category map (breadcrumb + sidebar active state) ─────────────
   const GUIDE_META = {
-    'core-color-tokens-guide':          { group: 'Tokens',     sub: 'Color',      level: 'core',     status: 'Draft'  },
-    'semantic-color-tokens-guide':      { group: 'Tokens',     sub: 'Color',      level: 'semantic', status: 'Stable' },
-    'core-space-tokens-guide':          { group: 'Tokens',     sub: 'Space',      level: 'core',     status: 'Draft'  },
-    'semantic-space-tokens-guide':      { group: 'Tokens',     sub: 'Space',      level: 'semantic', status: 'Draft'  },
-    'core-typography-tokens-guide':     { group: 'Tokens',     sub: 'Typography', level: 'core',     status: 'Draft'  },
-    'semantic-typography-tokens-guide': { group: 'Tokens',     sub: 'Typography', level: 'semantic', status: 'Draft'  },
-    'ds-component-architecture-guide':  { group: 'Components', sub: null,         level: null,       status: 'Draft'  },
-    'component-states-guide':           { group: 'Components', sub: null,         level: null,       status: 'Draft'  },
+    'core-color-tokens-guide':          { group: 'Токены',     sub: 'Цвет',        level: 'core',     status: 'Draft',  displayName: 'Цветовая палитра'        },
+    'semantic-color-tokens-guide':      { group: 'Токены',     sub: 'Цвет',        level: 'semantic', status: 'Stable', displayName: 'Семантика цвета'         },
+    'core-space-tokens-guide':          { group: 'Токены',     sub: 'Отступы',     level: 'core',     status: 'Draft',  displayName: 'Шкала отступов'          },
+    'semantic-space-tokens-guide':      { group: 'Токены',     sub: 'Отступы',     level: 'semantic', status: 'Draft',  displayName: 'Семантика отступов'      },
+    'core-typography-tokens-guide':     { group: 'Токены',     sub: 'Типографика', level: 'core',     status: 'Draft',  displayName: 'Шкала типографики'       },
+    'semantic-typography-tokens-guide': { group: 'Токены',     sub: 'Типографика', level: 'semantic', status: 'Draft',  displayName: 'Семантика типографики'   },
+    'ds-component-architecture-guide':  { group: 'Компоненты', sub: null,          level: null,       status: 'Draft',  displayName: 'Архитектура компонентов' },
+    'component-states-guide':           { group: 'Компоненты', sub: null,          level: null,       status: 'Draft',  displayName: 'Состояния компонентов'   },
   };
 
   // ── Parse frontmatter ─────────────────────────────────────────────────────
@@ -611,7 +614,7 @@
   // ── Populate guide header ─────────────────────────────────────────────────
   function populateHeader(id, fm) {
     const meta    = GUIDE_META[id] || {};
-    const name    = fm.resolvedName || id;
+    const name    = meta.displayName || fm.resolvedName || id;
     const version = fm.resolvedVersion || meta.version || '';
     const status  = meta.status || 'Draft';
     const level   = meta.level;
@@ -660,7 +663,8 @@
 
       // Populate UI
       populateHeader(id, fm);
-      buildBreadcrumb(id, fm.resolvedName || id);
+      const meta = GUIDE_META[id] || {};
+      buildBreadcrumb(id, meta.displayName || fm.resolvedName || id);
       setActiveSidebarItem(id);
 
       const proseEl = document.getElementById('guide-prose');
