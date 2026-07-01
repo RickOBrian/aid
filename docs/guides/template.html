@@ -26,8 +26,27 @@
        Warm neutral bg · floating white cards · pill nav · spring easing
        ================================================================ */
 
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+    /* Theme-aware code block colours */
+    :root {
+      /* Core — code block palette (docs-local) */
+      --color-neutral-150: #f0f0f4;
+      --color-neutral-850: #24292f;
+
+      /* Semantic — code block */
+      --bg-code-block:   var(--color-neutral-150);
+      --text-code-block: var(--color-neutral-850);
+
+      /* Shadow — rgba only in token definitions */
+      --color-shadow-soft:  rgba(0, 0, 0, 0.06);
+      --color-shadow-faint: rgba(0, 0, 0, 0.04);
+      --color-shadow-strong: rgba(0, 0, 0, 0.12);
+      --shadow-card:   0 4px 24px rgba(0, 0, 0, 0.06);
+      --shadow-subtle: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+    [data-theme="dark"] {
+      --color-neutral-150: #1e1e2e;
+      --color-neutral-850: #cdd6f4;
+    }
 
     /* ── Layout grid ── */
     .guide-layout {
@@ -38,9 +57,10 @@
         "header  header  header"
         "sidenav content toc";
       min-height: 100vh;
-      background: #EBEBEB;
+      background: var(--bg-base-main);
     }
 
+    /* Grid area assignments — must override style.css which uses different area names */
     .guide-layout__header  { grid-area: header;  }
     .guide-layout__sidenav { grid-area: sidenav; }
     .guide-layout__content { grid-area: content; min-width: 0; padding: 28px 24px 64px 16px; }
@@ -49,7 +69,7 @@
     /* ── Header: white, no border, subtle shadow ── */
     .layout__header {
       border-bottom: none;
-      box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 0 var(--color-shadow-soft), 0 2px 12px var(--color-shadow-faint);
     }
 
     /* ── Sidebar: white card, rounded right corners, floats on warm bg ── */
@@ -57,7 +77,7 @@
       background: var(--bg-card-main);
       border-right: none;
       border-radius: 0 20px 20px 0;
-      box-shadow: 4px 0 24px rgba(0,0,0,0.06);
+      box-shadow: 4px 0 24px var(--color-shadow-soft);
       padding: 20px 8px;
       position: sticky;
       top: 57px;
@@ -123,7 +143,7 @@
     .guide-content {
       background: var(--bg-card-main);
       border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-card), var(--shadow-subtle);
       padding: 48px;
       max-width: 760px;
     }
@@ -265,18 +285,18 @@
       border: none;
     }
     .prose pre {
-      background: #1e1e2e;
+      background: var(--bg-code-block);
       border-radius: var(--radius-l);
       padding: var(--inset-container-v-m) var(--inset-container-h-m);
       overflow-x: auto;
       margin-bottom: 1.5em;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 20px var(--color-shadow-strong);
     }
     .prose pre code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       background: none;
-      color: #cdd6f4;
+      color: var(--text-code-block);
       border: none;
       padding: 0;
       border-radius: 0;
@@ -286,7 +306,7 @@
     .table-wrap {
       border-radius: var(--radius-l);
       overflow: hidden;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 16px var(--color-shadow-soft);
       margin-bottom: 1.5em;
     }
     .prose table {
@@ -391,6 +411,14 @@
     /* ── [hidden] must always win ── */
     [hidden] { display: none !important; }
 
+    /* Search dropdown: right-align to search wrapper to stay within viewport */
+    #search-wrapper .search-dropdown {
+      left: auto;
+      right: 0;
+      max-width: min(420px, calc(100vw - 2rem));
+      overflow-x: hidden;
+    }
+
     /* ── Loading ── */
     .guide-loading {
       display: flex;
@@ -458,13 +486,14 @@
     </div>
 
     <div class="header__controls">
-      <div class="search">
+      <div class="search" id="search-wrapper">
         <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         <input class="search__input" type="search" placeholder="Поиск гайдов…"
                id="search-input" aria-label="Поиск по всей документации">
+        <div id="search-results" class="search-dropdown" hidden></div>
       </div>
 
       <button class="btn-icon" id="theme-toggle"
@@ -532,9 +561,6 @@
           <p class="guide-header__description" id="guide-description"></p>
         </header>
 
-        <!-- Search results (cross-page search on guide page) -->
-        <div id="search-results" hidden></div>
-
         <!-- Rendered markdown -->
         <div class="prose" id="guide-prose"></div>
 
@@ -559,7 +585,7 @@
   };
 </script>
 
-<script src="../assets/search.js"></script>
+<script src="../assets/search.js?v=5"></script>
 <script src="../assets/nav.js"></script>
 <script src="../assets/token-viz.js"></script>
 
