@@ -49,6 +49,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return
         super().do_GET()
 
+    def end_headers(self):
+        path = urlparse(self.path).path
+        if path.endswith(('.md', '.json', '.html')):
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+        super().end_headers()
+
     def do_POST(self):
         if _is_save_tokens_path(self):
             self._handle_save_tokens()

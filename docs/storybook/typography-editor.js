@@ -136,7 +136,9 @@
     if (!tbody) return;
 
     try {
-      const res = await fetch('../tokens/typography-tokens-changelog.md');
+      const res = await fetch(`../tokens/typography-tokens-changelog.md?_=${Date.now()}`, {
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('changelog fetch failed');
       const md = await res.text();
       const rows = parseChangelogTable(md);
@@ -346,6 +348,7 @@
             saveStatus.className = 'storybook-status is-success';
           }
 
+          await loadChangelog();
           setTimeout(() => location.reload(), 600);
         } catch (err) {
           if (saveStatus) {
