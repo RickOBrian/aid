@@ -4,18 +4,82 @@
 (function () {
   'use strict';
 
-  const TOKEN_PREFIXES = [
+  const TOKEN_SCAN_PREFIXES = [
     '--heading-',
     '--body-',
     '--label-',
     '--meta-',
     '--font-',
-    '--text-',
     '--leading-',
     '--tracking-',
   ];
 
+  const TYPOGRAPHY_TOKEN_RE =
+    /^--(?:font-[\w-]+|(?:heading|body|label|meta)-[a-z0-9]+-(?:size|lh|weight)|leading-[\w-]+|tracking-[\w-]+|text-[\w-]+-(?:size|lh|weight|tracking))$/;
+
+  const COLOR_TOKEN_PREFIX_RE = /^--(?:text-(?!.*-(?:size|lh|weight|tracking)$)|icon-|bg-|line-|core-)/;
+
+  function isColorValue(value) {
+    const v = value.trim();
+    if (!v) return false;
+    if (/^#[0-9a-f]{3,8}$/i.test(v)) return true;
+    if (/^rgba?\(/i.test(v)) return true;
+    if (/^hsla?\(/i.test(v)) return true;
+    if (/var\(--core-/i.test(v)) return true;
+    if (/var\(--(?:text|icon|bg|line)-/i.test(v)) return true;
+    return false;
+  }
+
+  function isTypographyToken(name, value = '') {
+    if (COLOR_TOKEN_PREFIX_RE.test(name)) return false;
+    if (!TYPOGRAPHY_TOKEN_RE.test(name)) return false;
+    if (isColorValue(value)) return false;
+    return true;
+  }
+
   const SAMPLE_TEXT = 'Aid — быстрый рыжий лис';
+  const SAMPLE_TEXT_MONO = 'const aid = "быстрый лис";';
+
+  const TOKEN_GROUPS = [
+    {
+      id: 'fonts',
+      label: 'Шрифты',
+      match: (name) => name.startsWith('--font-'),
+    },
+    {
+      id: 'headings',
+      label: 'Заголовки',
+      match: (name) => name.startsWith('--heading-'),
+    },
+    {
+      id: 'lead',
+      label: 'Лид',
+      match: (name) => name.startsWith('--body-l-'),
+    },
+    {
+      id: 'body',
+      label: 'Основной текст',
+      match: (name) => name.startsWith('--body-m-') || name.startsWith('--body-s-'),
+    },
+    {
+      id: 'labels',
+      label: 'Лейблы',
+      match: (name) => name.startsWith('--label-'),
+    },
+    {
+      id: 'meta',
+      label: 'Мета',
+      match: (name) => name.startsWith('--meta-'),
+    },
+    {
+      id: 'spacing',
+      label: 'Letter-spacing / Leading',
+      match: (name) => name.startsWith('--leading-') || name.startsWith('--tracking-'),
+    },
+  ];
+
+  const SIZE_ORDER = ['xl', 'l', 'm', 's', 'xs'];
+  const PROP_ORDER = { size: 0, lh: 1, weight: 2 };
 
   function inferCategory(name) {
     if (name.includes('-size')) return 'font-size';
@@ -24,13 +88,96 @@
     if (name.startsWith('--font-')) return 'font-family';
     if (name.startsWith('--leading-')) return 'line-height';
     if (name.startsWith('--tracking-')) return 'letter-spacing';
-    if (name.startsWith('--text-') && name.endsWith('-size')) return 'font-size';
     return 'other';
   }
 
-  function previewStyle(name, category) {
+  function getRolePrefix(name) {
+    const match = name.match(/^--(heading|body|label|meta)-([a-z0-9]+)-/);
+    return match ? `--${match[1]}-${match[2]}` : null;
+  }
+
+  function sortRoleTokens(tokens) {
+    return [...tokens].sort((a, b) => {
+      const prop = (name, role) => name.slice(role.length + 1);
+      const role = getRolePrefix(tokens[0].name);
+      return (PROP_ORDER[prop(a.name, role)] ?? 99) - (PROP_ORDER[prop(b.name, role)] ?? 99);
+    });
+  }
+
+  function compareRoles(a, b) {
+    const key = (role) => {
+      const match = role.match(/^--(heading|body|label|meta)-([a-z0-9]+)$/);
+      if (!match) return [99, role];
+      const idx = SIZE_ORDER.indexOf(match[2]);
+      return [idx === -1 ? 99 : idx, role];
+    };
+    const [aIdx, aRole] = key(a);
+    const [bIdx, bRole] = key(b);
+    return aIdx - bIdx || aRole.localeCompare(bRole);
+  }
+
+  function clusterTokensInSection(tokens) {
+    const byRole = new Map();
+    const standalone = [];
+
+    tokens.forEach((token) => {
+      const role = getRolePrefix(token.name);
+      const prop = role ? token.name.slice(role.length + 1) : '';
+      if (role && (prop === 'size' || prop === 'lh' || prop === 'weight')) {
+        if (!byRole.has(role)) byRole.set(role, []);
+        byRole.get(role).push(token);
+      } else {
+        standalone.push(token);
+      }
+    });
+
+    const roleClusters = [...byRole.entries()]
+      .map(([role, roleTokens]) => ({
+        role,
+        tokens: sortRoleTokens(roleTokens),
+        kind: 'role',
+      }))
+      .sort((a, b) => compareRoles(a.role, b.role));
+
+    const singleClusters = standalone
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((token) => ({
+        role: token.name,
+        tokens: [token],
+        kind: 'single',
+      }));
+
+    return [...roleClusters, ...singleClusters];
+  }
+
+  function groupTokens(tokens) {
+    const assigned = new Set();
+
+    return TOKEN_GROUPS.map((group) => {
+      const items = tokens.filter((token) => {
+        if (assigned.has(token.name)) return false;
+        return group.match(token.name);
+      });
+
+      items.forEach((token) => assigned.add(token.name));
+      return { ...group, tokens: items };
+    }).filter((group) => group.tokens.length > 0);
+  }
+
+  function previewStyleForRole(role) {
+    return {
+      fontFamily: "var(--font-body, 'Google Sans', system-ui, sans-serif)",
+      fontSize: `var(${role}-size)`,
+      lineHeight: `var(${role}-lh)`,
+      fontWeight: `var(${role}-weight)`,
+      letterSpacing: 'normal',
+      color: 'var(--text-primary)',
+    };
+  }
+
+  function previewStyleForToken(token) {
     const base = {
-      fontFamily: 'var(--font-body, Inter, system-ui, sans-serif)',
+      fontFamily: "var(--font-body, 'Google Sans', system-ui, sans-serif)",
       fontSize: 'var(--body-m-size)',
       lineHeight: 'var(--body-m-lh)',
       fontWeight: 'var(--body-m-weight)',
@@ -38,27 +185,56 @@
       color: 'var(--text-primary)',
     };
 
-    switch (category) {
+    if (token.name.startsWith('--font-')) {
+      base.fontFamily = `var(${token.name})`;
+      return base;
+    }
+
+    switch (token.category) {
       case 'font-size':
-        base.fontSize = `var(${name})`;
+        base.fontSize = `var(${token.name})`;
         break;
       case 'line-height':
-        base.lineHeight = `var(${name})`;
+        base.lineHeight = `var(${token.name})`;
         break;
       case 'font-weight':
-        base.fontWeight = `var(${name})`;
+        base.fontWeight = `var(${token.name})`;
         break;
       case 'font-family':
-        base.fontFamily = `var(${name})`;
+        base.fontFamily = `var(${token.name})`;
         break;
       case 'letter-spacing':
-        base.letterSpacing = `var(${name})`;
+        base.letterSpacing = `var(${token.name})`;
         break;
       default:
-        base.fontSize = `var(${name})`;
+        base.fontSize = `var(${token.name})`;
     }
 
     return base;
+  }
+
+  function buildStyleAttr(styles) {
+    return Object.entries(styles)
+      .map(([key, value]) => `${camelToKebab(key)}:${value}`)
+      .join(';');
+  }
+
+  function previewSampleText(name) {
+    return name === '--font-mono' ? SAMPLE_TEXT_MONO : SAMPLE_TEXT;
+  }
+
+  function getClusterPreviewStyle(cluster) {
+    return cluster.kind === 'role'
+      ? previewStyleForRole(cluster.role)
+      : previewStyleForToken(cluster.tokens[0]);
+  }
+
+  function updateClusterPreview(tbody, cluster) {
+    const previewEl = tbody.querySelector(
+      `tr[data-cluster="${CSS.escape(cluster.role)}"] .token-preview`
+    );
+    if (!previewEl) return;
+    Object.assign(previewEl.style, getClusterPreviewStyle(cluster));
   }
 
   function collectTypographyTokens() {
@@ -77,27 +253,29 @@
       for (const rule of rules) {
         if (rule.selectorText !== ':root') continue;
         for (const prop of rule.style) {
-          if (prop.startsWith('--') && TOKEN_PREFIXES.some((p) => prop.startsWith(p))) {
-            names.add(prop);
-          }
+          if (!prop.startsWith('--')) continue;
+          if (!TOKEN_SCAN_PREFIXES.some((p) => prop.startsWith(p))) continue;
+          const value = rule.style.getPropertyValue(prop).trim();
+          if (isTypographyToken(prop, value)) names.add(prop);
         }
       }
     }
 
     for (let i = 0; i < styles.length; i += 1) {
       const prop = styles[i];
-      if (prop.startsWith('--') && TOKEN_PREFIXES.some((p) => prop.startsWith(p))) {
-        names.add(prop);
-      }
+      if (!prop.startsWith('--')) continue;
+      if (!TOKEN_SCAN_PREFIXES.some((p) => prop.startsWith(p))) continue;
+      const value = styles.getPropertyValue(prop).trim();
+      if (isTypographyToken(prop, value)) names.add(prop);
     }
 
     return [...names]
-      .sort()
       .map((name) => ({
         name,
         category: inferCategory(name),
         value: styles.getPropertyValue(name).trim(),
-      }));
+      }))
+      .filter((token) => isTypographyToken(token.name, token.value));
   }
 
   function parseChangelogTable(md) {
@@ -243,34 +421,102 @@
     banner.hidden = false;
   }
 
-  function renderTokenTable(tokens) {
-    const tbody = document.getElementById('tokens-tbody');
-    if (!tbody) return;
+  function renderTokenRows(tokens, originals, modified, tbody, onInputChange) {
+    const clusters = clusterTokensInSection(tokens);
 
-    const originals = new Map(tokens.map((t) => [t.name, t.value]));
-    const modified = new Map();
+    tbody.innerHTML = clusters
+      .map((cluster) => {
+        const preview = getClusterPreviewStyle(cluster);
+        const styleAttr = buildStyleAttr(preview);
+        const sample = previewSampleText(cluster.tokens[0].name);
+        const rowspan = cluster.tokens.length;
 
-    tbody.innerHTML = tokens
-      .map((token) => {
-        const preview = previewStyle(token.name, token.category);
-        const styleAttr = Object.entries(preview)
-          .map(([k, v]) => `${camelToKebab(k)}:${v}`)
-          .join(';');
-
-        return `
-        <tr data-token="${escapeHtml(token.name)}">
+        return cluster.tokens
+          .map(
+            (token, index) => `
+        <tr data-cluster="${escapeHtml(cluster.role)}" data-token="${escapeHtml(token.name)}">
           <td><code class="token-name">${escapeHtml(token.name)}</code></td>
           <td><span class="token-category">${escapeHtml(token.category)}</span></td>
-          <td><code class="token-value">${escapeHtml(token.value)}</code></td>
-          <td><span class="token-preview" style="${styleAttr}">${SAMPLE_TEXT}</span></td>
+          <td><code class="token-value" data-token="${escapeHtml(token.name)}">${escapeHtml(token.value)}</code></td>
+          ${
+            index === 0
+              ? `<td class="token-preview-cell" rowspan="${rowspan}">
+            <span class="token-preview" style="${styleAttr}">${escapeHtml(sample)}</span>
+          </td>`
+              : ''
+          }
           <td>
             <input class="token-editor-input" type="text"
                    value="${escapeHtml(token.value)}"
                    data-token="${escapeHtml(token.name)}"
+                   data-cluster="${escapeHtml(cluster.role)}"
                    aria-label="Edit ${escapeHtml(token.name)}">
           </td>
-        </tr>`;
+        </tr>`
+          )
+          .join('');
       })
+      .join('');
+
+    tbody.querySelectorAll('.token-editor-input').forEach((input) => {
+      input.addEventListener('input', () => {
+        const name = input.dataset.token;
+        const clusterId = input.dataset.cluster;
+        const next = input.value.trim();
+        const orig = originals.get(name);
+
+        document.documentElement.style.setProperty(name, next);
+
+        const valueCell = tbody.querySelector(
+          `code.token-value[data-token="${CSS.escape(name)}"]`
+        );
+        if (valueCell) valueCell.textContent = next;
+
+        const cluster = clusters.find((item) => item.role === clusterId);
+        if (cluster) updateClusterPreview(tbody, cluster);
+
+        if (next === orig) {
+          modified.delete(name);
+          input.classList.remove('is-modified');
+        } else {
+          modified.set(name, { token: name, oldValue: orig, newValue: next });
+          input.classList.add('is-modified');
+        }
+
+        onInputChange();
+      });
+    });
+  }
+
+  function renderTokenTable(tokens) {
+    const container = document.getElementById('tokens-groups');
+    if (!container) return;
+
+    const originals = new Map(tokens.map((t) => [t.name, t.value]));
+    const modified = new Map();
+    const groups = groupTokens(tokens);
+
+    container.innerHTML = groups
+      .map(
+        (group) => `
+      <section class="storybook-token-group" aria-labelledby="token-group-${group.id}">
+        <h3 id="token-group-${group.id}">${escapeHtml(group.label)}</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Токен</th>
+                <th>Свойство</th>
+                <th>Значение</th>
+                <th>Превью</th>
+                <th>Редактирование</th>
+              </tr>
+            </thead>
+            <tbody data-group="${escapeHtml(group.id)}"></tbody>
+          </table>
+        </div>
+      </section>`
+      )
       .join('');
 
     const saveBar = document.getElementById('save-bar');
@@ -284,39 +530,17 @@
       if (saveCount) saveCount.textContent = count ? `${count} изменений` : '';
     }
 
-    tbody.querySelectorAll('.token-editor-input').forEach((input) => {
-      input.addEventListener('input', () => {
-        const name = input.dataset.token;
-        const next = input.value.trim();
-        const orig = originals.get(name);
+    function onInputChange() {
+      updateSaveBar();
+      if (saveStatus) {
+        saveStatus.textContent = '';
+        saveStatus.className = 'storybook-status';
+      }
+    }
 
-        document.documentElement.style.setProperty(name, next);
-
-        const row = tbody.querySelector(`tr[data-token="${name}"]`);
-        const valueCell = row?.querySelector('.token-value');
-        const previewEl = row?.querySelector('.token-preview');
-        if (valueCell) valueCell.textContent = next;
-
-        if (previewEl) {
-          const category = inferCategory(name);
-          const style = previewStyle(name, category);
-          Object.assign(previewEl.style, style);
-        }
-
-        if (next === orig) {
-          modified.delete(name);
-          input.classList.remove('is-modified');
-        } else {
-          modified.set(name, { token: name, oldValue: orig, newValue: next });
-          input.classList.add('is-modified');
-        }
-
-        updateSaveBar();
-        if (saveStatus) {
-          saveStatus.textContent = '';
-          saveStatus.className = 'storybook-status';
-        }
-      });
+    groups.forEach((group) => {
+      const tbody = container.querySelector(`tbody[data-group="${group.id}"]`);
+      if (tbody) renderTokenRows(group.tokens, originals, modified, tbody, onInputChange);
     });
 
     if (saveBtn) {

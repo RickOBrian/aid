@@ -6,7 +6,7 @@
   <title>Typography — System Storybook</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="stylesheet" href="../assets/docs-theme.css">
@@ -16,15 +16,15 @@
   <style>
     /* Typography tokens — editable via storybook (mirrors style.css + docs-theme) */
     :root {
-      --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
       --heading-xl-size:   32px;
       --heading-xl-lh:     36px;
-      --heading-xl-weight: 800;
+      --heading-xl-weight: 600;
       --heading-l-size:    26px;
       --heading-l-lh:      30px;
-      --heading-l-weight:  800;
+      --heading-l-weight:  600;
       --heading-m-size:    22px;
       --heading-m-lh:      26px;
       --heading-m-weight:  700;
@@ -119,22 +119,13 @@
 
     <section class="storybook-section" aria-labelledby="tokens-heading">
       <h2 id="tokens-heading">Typography tokens</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Token</th>
-              <th>Category</th>
-              <th>Current value</th>
-              <th>Preview</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody id="tokens-tbody">
-            <tr><td colspan="5" class="storybook-status">Загрузка токенов…</td></tr>
-          </tbody>
-        </table>
+      <div id="tokens-groups">
+        <p class="storybook-status">Загрузка токенов…</p>
       </div>
+      <p class="storybook-token-scope-note">
+        Text color tokens (<code>text-*</code>, <code>icon-*</code>) are managed in
+        <a href="../guides/semantic-color-tokens-guide.html">Semantic Color Tokens →</a>
+      </p>
     </section>
 
     <section class="storybook-section" aria-labelledby="changelog-heading">
