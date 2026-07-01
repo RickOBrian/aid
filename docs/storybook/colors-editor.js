@@ -56,12 +56,145 @@
   function parseCoreToken(name) {
     const body = name.slice(7);
     const alphaMatch = body.match(/^(.+)-(\d+-a\d+)$/);
-    if (alphaMatch) return { palette: alphaMatch[1], step: alphaMatch[2] };
+    if (alphaMatch) return { palette: alphaMatch[1], step: alphaMatch[2], isAlpha: true };
     const bMatch = body.match(/^(.+)-(\d+-b)$/);
-    if (bMatch) return { palette: bMatch[1], step: bMatch[2] };
+    if (bMatch) return { palette: bMatch[1], step: bMatch[2], isAlpha: false };
     const numMatch = body.match(/^(.+)-(\d+)$/);
-    if (numMatch) return { palette: numMatch[1], step: numMatch[2] };
-    return { palette: body, step: '—' };
+    if (numMatch) return { palette: numMatch[1], step: numMatch[2], isAlpha: false };
+    return { palette: body, step: '—', isAlpha: false };
+  }
+
+  function isAlphaStep(step) {
+    return /-a\d+$/i.test(step);
+  }
+
+  function parseStepSortKey(step) {
+    if (step === '—') return [99999, 9, 0];
+    const alphaMatch = step.match(/^(\d+)-a(\d+)$/);
+    if (alphaMatch) return [Number(alphaMatch[1]), 2, Number(alphaMatch[2])];
+    const bMatch = step.match(/^(\d+)-b$/);
+    if (bMatch) return [Number(bMatch[1]), 1, 0];
+    const numMatch = step.match(/^(\d+)$/);
+    if (numMatch) return [Number(numMatch[1]), 0, 0];
+    return [99999, 9, 0];
+  }
+
+  function compareSteps(stepA, stepB) {
+    const ka = parseStepSortKey(stepA);
+    const kb = parseStepSortKey(stepB);
+    return ka[0] - kb[0] || ka[1] - kb[1] || ka[2] - kb[2] || String(stepA).localeCompare(String(stepB));
+  }
+
+  function getStepNumeric(step) {
+    const match = step.match(/^(\d+)/);
+    return match ? Number(match[1]) : -1;
+  }
+
+  function parseHex(value) {
+    const match = value.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (!match) return null;
+    let hex = match[1];
+    if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('');
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: 1,
+    };
+  }
+
+  function parseRgba(value) {
+    const match = value
+      .trim()
+      .match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)$/i);
+    if (!match) return null;
+    return {
+      r: Number(match[1]),
+      g: Number(match[2]),
+      b: Number(match[3]),
+      a: match[4] !== undefined ? Number(match[4]) : 1,
+    };
+  }
+
+  function parseColor(value) {
+    return parseRgba(value) || parseHex(value);
+  }
+
+  function rgbToHex(r, g, b) {
+    return `#${[r, g, b]
+      .map((channel) => channel.toString(16).padStart(2, '0'))
+      .join('')
+      .toUpperCase()}`;
+  }
+
+  function formatAlphaDisplay(cssValue) {
+    const rgba = parseRgba(cssValue);
+    if (!rgba) return cssValue;
+    const pct = Math.round(rgba.a * 100);
+    return `${rgbToHex(rgba.r, rgba.g, rgba.b)} · ${pct}%`;
+  }
+
+  function parseAlphaDisplay(displayValue) {
+    const match = displayValue.trim().match(/^#([0-9A-Fa-f]{6})\s*·\s*(\d+)%$/);
+    if (!match) return null;
+    const r = parseInt(match[1].slice(0, 2), 16);
+    const g = parseInt(match[1].slice(2, 4), 16);
+    const b = parseInt(match[1].slice(4, 6), 16);
+    const alpha = Number(match[2]) / 100;
+    const alphaStr = Number.isInteger(alpha * 100) ? String(alpha) : alpha.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+    return `rgba(${r}, ${g}, ${b}, ${alphaStr})`;
+  }
+
+  function colorLuminance(cssValue) {
+    const color = parseColor(cssValue);
+    if (!color) return null;
+    const channels = [color.r, color.g, color.b].map((channel) => {
+      const s = channel / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  }
+
+  function effectiveLuminance(cssValue) {
+    const rgba = parseRgba(cssValue);
+    if (rgba && rgba.a < 1) {
+      const fg = colorLuminance(`rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`);
+      return rgba.a * fg + (1 - rgba.a);
+    }
+    return colorLuminance(cssValue);
+  }
+
+  function checkStepOrderViolation(items, index) {
+    if (index === 0) return false;
+    const currStep = parseCoreToken(items[index].token).step;
+    const prevStep = parseCoreToken(items[index - 1].token).step;
+    const currN = getStepNumeric(currStep);
+    const prevN = getStepNumeric(prevStep);
+    if (currN <= prevN) return false;
+
+    const currVal = readTokenValue(items[index].token) || items[index].light;
+    const prevVal = readTokenValue(items[index - 1].token) || items[index - 1].light;
+    const currLum = effectiveLuminance(currVal);
+    const prevLum = effectiveLuminance(prevVal);
+    if (currLum === null || prevLum === null) return false;
+    return currLum > prevLum;
+  }
+
+  function renderCoreSwatch(token, cssValue, step) {
+    if (!isAlphaStep(step)) {
+      return `<span class="color-swatch" style="background-color: var(${escapeHtml(token)})" aria-hidden="true"></span>`;
+    }
+
+    const rgba = parseRgba(cssValue);
+    const baseHex = rgba ? rgbToHex(rgba.r, rgba.g, rgba.b) : '';
+
+    return `
+      <span class="color-swatch color-swatch--alpha" aria-hidden="true">
+        <span class="color-swatch__solid" style="background-color: ${escapeHtml(baseHex)}"></span>
+        <span class="color-swatch__alpha color-swatch__checker">
+          <span class="color-swatch__alpha-fill" style="background-color: var(${escapeHtml(token)})"></span>
+        </span>
+      </span>`;
   }
 
   function parseSemanticCategory(name) {
@@ -97,7 +230,7 @@
         items: items.sort((a, b) => {
           const stepA = parseCoreToken(a.token).step;
           const stepB = parseCoreToken(b.token).step;
-          return String(stepA).localeCompare(String(stepB), undefined, { numeric: true });
+          return compareSteps(stepA, stepB);
         }),
       }));
   }
@@ -153,26 +286,36 @@
     container.innerHTML = groups
       .map((group) => {
         const rows = group.items
-          .map((row) => {
+          .map((row, index) => {
             const { palette, step } = parseCoreToken(row.token);
             const live = readTokenValue(row.token) || row.light;
+            const isAlpha = isAlphaStep(step);
+            const displayValue = isAlpha ? formatAlphaDisplay(live) : live;
+            const stepViolation = checkStepOrderViolation(group.items, index);
             originals.set(row.token, live);
 
             return `
           <tr data-token="${escapeHtml(row.token)}">
-            <td><code class="token-name">${escapeHtml(row.token)}</code></td>
+            <td>
+              <code class="token-name">${escapeHtml(row.token)}</code>
+              ${
+                stepViolation
+                  ? '<span class="color-step-warning" title="step order violation — value appears lighter than lower step">⚠ step order violation — value appears lighter than lower step</span>'
+                  : ''
+              }
+            </td>
             <td>${escapeHtml(palette)}</td>
             <td>${escapeHtml(step)}</td>
             <td>
               <input class="token-editor-input" type="text"
-                     value="${escapeHtml(live)}"
+                     value="${escapeHtml(displayValue)}"
+                     data-raw-value="${escapeHtml(live)}"
+                     data-alpha-display="${isAlpha ? 'true' : 'false'}"
                      data-token="${escapeHtml(row.token)}"
                      data-mode="core"
                      aria-label="Edit ${escapeHtml(row.token)}">
             </td>
-            <td>
-              <span class="color-swatch" style="background-color: var(${escapeHtml(row.token)})" aria-hidden="true"></span>
-            </td>
+            <td>${renderCoreSwatch(row.token, live, step)}</td>
           </tr>`;
           })
           .join('');
@@ -272,15 +415,37 @@
     return groups;
   }
 
+  function resolveInputCssValue(input) {
+    const next = input.value.trim();
+    if (input.dataset.alphaDisplay === 'true') {
+      const fromDisplay = parseAlphaDisplay(next);
+      if (fromDisplay) return fromDisplay;
+      if (parseRgba(next)) return next;
+    }
+    return next;
+  }
+
   function bindInputs(scope) {
     scope.querySelectorAll('.token-editor-input').forEach((input) => {
       input.addEventListener('input', () => {
         const name = input.dataset.token;
         const mode = input.dataset.mode;
-        const next = input.value.trim();
+        const next = resolveInputCssValue(input);
         applyToken(name, next, mode === 'dark' ? 'dark' : 'light');
+        if (input.dataset.alphaDisplay === 'true' && parseRgba(next)) {
+          input.dataset.rawValue = next;
+        }
         trackChange(name, next, mode === 'dark' ? 'dark' : 'light');
         input.classList.toggle('is-modified', modified.has(mode === 'dark' ? `${name}::dark` : name));
+
+        if (mode === 'core' && input.dataset.alphaDisplay === 'true') {
+          const row = input.closest('tr');
+          const swatchCell = row?.querySelector('td:last-child');
+          const { step } = parseCoreToken(name);
+          if (swatchCell && parseRgba(next)) {
+            swatchCell.innerHTML = renderCoreSwatch(name, next, step);
+          }
+        }
       });
     });
   }
