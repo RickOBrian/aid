@@ -4,7 +4,8 @@
       "id": "tokens",
       "label": "Tokens",
       "items": [
-        { "id": "typography", "label": "Typography", "href": "typography.html", "status": "stable" }
+        { "id": "typography", "label": "Typography", "href": "typography.html", "status": "stable" },
+        { "id": "colors", "label": "Colors", "href": "colors.html", "status": "stable" }
       ]
     },
     {
