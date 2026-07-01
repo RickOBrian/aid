@@ -119,6 +119,50 @@
 </div>
 
 <script src="storybook.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function renderSwatch(el, value) {
+    const hex = String(value || '').trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+      el.style.backgroundColor = hex;
+    }
+  }
+
+  function patchCoreRow(row) {
+    const input = row.querySelector('.token-editor-input[data-mode="core"]');
+    const el = row.querySelector('.color-swatch:not(.color-swatch--alpha)');
+    if (!input || !el) return;
+    renderSwatch(el, input.dataset.rawValue || input.value);
+  }
+
+  function patchCoreTable() {
+    document.querySelectorAll('#tab-core-content tr[data-token]').forEach(patchCoreRow);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const core = document.getElementById('tab-core-content');
+    if (!core) return;
+
+    new MutationObserver((mutations) => {
+      const rowsAdded = mutations.some((mutation) =>
+        [...mutation.addedNodes].some(
+          (node) =>
+            node.nodeType === Node.ELEMENT_NODE &&
+            (node.matches?.('tr[data-token]') || node.querySelector?.('tr[data-token]'))
+        )
+      );
+      if (rowsAdded) patchCoreTable();
+    }).observe(core, { childList: true, subtree: true });
+
+    core.addEventListener('input', (event) => {
+      const row = event.target.closest('tr[data-token]');
+      if (row) patchCoreRow(row);
+    });
+  });
+})();
+</script>
 <script src="colors-editor.js"></script>
 </body>
 </html>
