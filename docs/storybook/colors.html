@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="storybook-color-tokens.css">
   <link rel="stylesheet" href="storybook-layout.css">
   <link rel="stylesheet" href="storybook-colors.css">
+  <style>
+    .swatch { border: 1px solid oklch(0 0 0 / 0.12); }
+  </style>
 </head>
 <body data-storybook-page="colors">
 
@@ -116,150 +119,6 @@
 </div>
 
 <script src="storybook.js"></script>
-<script>
-(function () {
-  'use strict';
-
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function parseRgba(value) {
-    const match = String(value)
-      .trim()
-      .match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d.]+))?\s*\)$/i);
-    if (!match) return null;
-    return {
-      r: Number(match[1]),
-      g: Number(match[2]),
-      b: Number(match[3]),
-      a: match[4] !== undefined ? Number(match[4]) : 1,
-    };
-  }
-
-  function rgbToHex(r, g, b) {
-    return `#${[r, g, b]
-      .map((channel) => channel.toString(16).padStart(2, '0'))
-      .join('')
-      .toUpperCase()}`;
-  }
-
-  function isAlpha(tokenName, value) {
-    return value.trim().startsWith('rgba') || tokenName.includes('-a');
-  }
-
-  function formatValue(tokenName, value) {
-    if (!isAlpha(tokenName, value)) return value;
-    const rgba = parseRgba(value);
-    if (!rgba) return value;
-    return `${rgbToHex(rgba.r, rgba.g, rgba.b)} · ${Math.round(rgba.a * 100)}%`;
-  }
-
-  function renderSwatch(token, value, tokenName) {
-    if (!isAlpha(tokenName, value)) {
-      return `<span class="color-swatch" style="background-color: var(${escapeHtml(token)})" aria-hidden="true"></span>`;
-    }
-
-    const rgba = parseRgba(value);
-    const baseHex = rgba ? rgbToHex(rgba.r, rgba.g, rgba.b) : '';
-
-    return `
-      <span class="color-swatch color-swatch--alpha" aria-hidden="true">
-        <span class="color-swatch__solid" style="background-color: ${escapeHtml(baseHex)}"></span>
-        <span class="color-swatch__alpha color-swatch__checker">
-          <span class="color-swatch__alpha-fill" style="background-color: var(${escapeHtml(token)})"></span>
-        </span>
-      </span>`;
-  }
-
-  function resolveRawValue(input) {
-    const raw = (input.dataset.rawValue || input.value).trim();
-    if (parseRgba(raw)) return raw;
-    const match = input.value.trim().match(/^#([0-9A-Fa-f]{6})\s*·\s*(\d+)%$/);
-    if (!match) return raw;
-    const r = parseInt(match[1].slice(0, 2), 16);
-    const g = parseInt(match[1].slice(2, 4), 16);
-    const b = parseInt(match[1].slice(4, 6), 16);
-    const alpha = Number(match[2]) / 100;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
-
-  function patchCoreRow(row) {
-    const token = row.dataset.token;
-    const input = row.querySelector('.token-editor-input[data-mode="core"]');
-    if (!input) return;
-
-    const raw = resolveRawValue(input);
-    if (!isAlpha(token, raw)) return;
-
-    input.dataset.rawValue = raw;
-    input.dataset.alphaDisplay = 'true';
-    input.value = formatValue(token, raw);
-
-    const swatchCell = row.querySelector('td:last-child');
-    if (swatchCell) swatchCell.innerHTML = renderSwatch(token, raw, token);
-  }
-
-  let patchObserver = null;
-  let isPatching = false;
-
-  function shouldPatchFromMutations(mutations) {
-    return mutations.some((mutation) =>
-      [...mutation.addedNodes].some(
-        (node) =>
-          node.nodeType === Node.ELEMENT_NODE &&
-          (node.classList?.contains('color-token-group') ||
-            node.querySelector?.('.color-token-group'))
-      )
-    );
-  }
-
-  function patchCoreTable() {
-    if (isPatching) return;
-    isPatching = true;
-    try {
-      document.querySelectorAll('#tab-core-content tr[data-token]').forEach(patchCoreRow);
-    } finally {
-      isPatching = false;
-    }
-  }
-
-  function bindPatchers() {
-    const coreEl = document.getElementById('tab-core-content');
-    if (!coreEl) return;
-
-    patchObserver = new MutationObserver((mutations) => {
-      if (!shouldPatchFromMutations(mutations)) return;
-      patchCoreTable();
-    });
-    patchObserver.observe(coreEl, { childList: true, subtree: true });
-
-    coreEl.addEventListener('input', (event) => {
-      const input = event.target.closest('.token-editor-input[data-mode="core"]');
-      if (!input) return;
-      const row = input.closest('tr[data-token]');
-      if (!row) return;
-      const token = row.dataset.token;
-      const raw = resolveRawValue(input);
-      if (!isAlpha(token, raw)) return;
-      input.dataset.rawValue = raw;
-      input.dataset.alphaDisplay = 'true';
-      const swatchCell = row.querySelector('td:last-child');
-      if (swatchCell) swatchCell.innerHTML = renderSwatch(token, raw, token);
-    });
-
-    document.querySelectorAll('.storybook-tabs__btn').forEach((btn) => {
-      btn.addEventListener('click', () => setTimeout(patchCoreTable, 0));
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', bindPatchers);
-})();
-</script>
 <script src="colors-editor.js"></script>
 </body>
 </html>
