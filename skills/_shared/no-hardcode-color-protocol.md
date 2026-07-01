@@ -159,5 +159,14 @@ name: no-hardcode-color-protocol
 - [ ] Ни один space-токен не содержит значение цвета
 - [ ] Новые токены добавлены в `color-tokens-registry.md` (если цветовые)
 - [ ] `[data-theme="dark"]` содержит только semantic-overrides, не core-токены
+- [ ] Core palette step order: higher step number = darker color.  
+      Если step 65 выглядит светлее step 55 — значения инвертированы, исправить до коммита.  
+      Правило: step 0 = `#ffffff`, step 100 = `#000000`, монотонно темнее.
+- [ ] Alpha token format в display/docs: показывать как `#HEX · N%`, никогда как `rgba()` syntax.  
+      `rgba()` допустим только внутри `:root` как фактическое CSS-значение.  
+      Любой UI, который показывает значение человеку, конвертирует в формат hex + percent.
+- [ ] Typography tokens не содержат color values.  
+      Если значение токена — HEX, `rgba`, или color keyword — он принадлежит color-группе, не typography.  
+      Перенести до коммита.
 
 Если хотя бы один пункт не выполнен — коммит не делать, исправить сначала.
