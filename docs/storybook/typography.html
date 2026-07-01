@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typography — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/docs-theme.css">
+  <link rel="stylesheet" href="storybook-color-tokens.css">
+  <link rel="stylesheet" href="storybook-layout.css">
+
+  <style>
+    /* Typography tokens — editable via storybook (mirrors style.css + docs-theme) */
+    :root {
+      --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+      --heading-xl-size:   32px;
+      --heading-xl-lh:     36px;
+      --heading-xl-weight: 800;
+      --heading-l-size:    26px;
+      --heading-l-lh:      30px;
+      --heading-l-weight:  800;
+      --heading-m-size:    22px;
+      --heading-m-lh:      26px;
+      --heading-m-weight:  700;
+      --heading-s-size:    18px;
+      --heading-s-lh:      22px;
+      --heading-s-weight:  700;
+      --heading-xs-size:   16px;
+      --heading-xs-lh:     20px;
+      --heading-xs-weight: 600;
+
+      --body-l-size:   16px;
+      --body-l-lh:     28px;
+      --body-l-weight: 400;
+      --body-m-size:   14px;
+      --body-m-lh:     26px;
+      --body-m-weight: 400;
+      --body-s-size:   13px;
+      --body-s-lh:     22px;
+      --body-s-weight: 400;
+
+      --label-l-size:   16px;
+      --label-l-lh:     20px;
+      --label-l-weight: 500;
+      --label-m-size:   14px;
+      --label-m-lh:     18px;
+      --label-m-weight: 500;
+      --label-s-size:   13px;
+      --label-s-lh:     16px;
+      --label-s-weight: 500;
+      --label-xs-size:   12px;
+      --label-xs-lh:     14px;
+      --label-xs-weight: 500;
+
+      --meta-xs-size:   11px;
+      --meta-xs-lh:     14px;
+      --meta-xs-weight: 500;
+    }
+
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="typography">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <header class="storybook-page-header">
+      <h1>Typography</h1>
+      <p>Live-редактор типографических токенов docs/guides. Изменения применяются мгновенно; сохранение записывает значения в файлы репозитория.</p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="tokens-heading">
+      <h2 id="tokens-heading">Typography tokens</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Category</th>
+              <th>Current value</th>
+              <th>Preview</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody id="tokens-tbody">
+            <tr><td colspan="5" class="storybook-status">Загрузка токенов…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="storybook-section" aria-labelledby="changelog-heading">
+      <h2 id="changelog-heading">Changelog</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Date</th>
+              <th>Token</th>
+              <th>Change</th>
+              <th>Author</th>
+            </tr>
+          </thead>
+          <tbody id="changelog-tbody">
+            <tr><td colspan="5" class="storybook-status">Загрузка changelog…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<div class="storybook-save-bar" id="save-bar" aria-live="polite">
+  <span class="storybook-save-bar__count" id="save-count"></span>
+  <span class="storybook-status" id="save-status"></span>
+  <button type="button" class="storybook-btn storybook-btn--primary" id="save-btn">Apply &amp; Save</button>
+</div>
+
+<script src="storybook.js"></script>
+<script src="typography-editor.js"></script>
+</body>
+</html>

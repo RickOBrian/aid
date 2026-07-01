@@ -1,0 +1,82 @@
+/* Storybook — semantic color tokens (no-hardcode-color-protocol) */
+
+:root {
+  --core-neutral-x-0:   #FFFFFF;
+  --core-neutral-x-5:   #EBEBEB;
+  --core-neutral-x-10:  #E2E2E2;
+  --core-neutral-x-15:  #E5E5EA;
+  --core-neutral-x-20:  #EFEFF2;
+  --core-neutral-x-25:  #C7C7CC;
+  --core-neutral-x-45:  #AEAEB2;
+  --core-neutral-x-60:  #6E6E73;
+  --core-neutral-x-82:  #24292F;
+  --core-neutral-x-85:  #1C1C1E;
+  --core-neutral-x-88:  #181818;
+  --core-neutral-x-90:  #111111;
+  --core-neutral-x-93:  #2C2C2E;
+  --core-neutral-x-95:  #3A3A3C;
+  --core-neutral-x-97:  #636366;
+  --core-neutral-x-98:  #F5F5F7;
+  --core-neutral-x-100-a40: rgba(0, 0, 0, 0.40);
+  --core-neutral-x-100-a60: rgba(0, 0, 0, 0.60);
+  --core-sapphire-55:     #0057FF;
+  --core-sapphire-65:     #3B82F6;
+  --core-sapphire-55-a06: rgba(0, 87, 255, 0.06);
+  --core-sapphire-55-a08: rgba(0, 87, 255, 0.08);
+  --core-sapphire-55-a12: rgba(0, 87, 255, 0.12);
+  --core-sapphire-55-a14: rgba(0, 87, 255, 0.14);
+  --core-sapphire-55-a16: rgba(0, 87, 255, 0.16);
+  --core-sapphire-65-a08: rgba(59, 130, 246, 0.08);
+  --core-sapphire-65-a10: rgba(59, 130, 246, 0.10);
+  --core-sapphire-65-a16: rgba(59, 130, 246, 0.16);
+  --core-sapphire-65-a18: rgba(59, 130, 246, 0.18);
+  --core-sapphire-65-a20: rgba(59, 130, 246, 0.20);
+  --core-carnelian-55:    #D93025;
+  --core-carnelian-65:    #F87171;
+
+  --bg-base-main:            var(--core-neutral-x-0);
+  --bg-base-main-secondary:  var(--core-neutral-x-10);
+  --bg-card-main:            var(--core-neutral-x-0);
+  --bg-card-main-secondary:  var(--core-neutral-x-20);
+  --bg-accent-main:          var(--core-sapphire-55);
+  --bg-accent-fade:          var(--core-sapphire-55-a12);
+  --bg-accent-ghost:         var(--core-sapphire-55-a06);
+  --bg-accent-states-hover:  var(--core-sapphire-55-a08);
+  --bg-accent-states-pressed: var(--core-sapphire-55-a16);
+  --bg-accent-states-active: var(--core-sapphire-55-a14);
+  --bg-accent-states-disable: var(--core-sapphire-55-a06);
+  --bg-accent-states-focused: var(--core-sapphire-55-a12);
+  --text-primary:   var(--core-neutral-x-90);
+  --text-secondary: var(--core-neutral-x-60);
+  --text-disabled:  var(--core-neutral-x-45);
+  --text-inverse:   var(--core-neutral-x-0);
+  --text-accent:    var(--core-sapphire-55);
+  --text-error:     var(--core-carnelian-55);
+  --line-default:   var(--core-neutral-x-15);
+  --line-strong:    var(--core-neutral-x-25);
+  --line-accent:    var(--core-sapphire-55);
+}
+
+[data-theme="dark"] {
+  --bg-base-main:            var(--core-neutral-x-88);
+  --bg-base-main-secondary:  var(--core-neutral-x-90);
+  --bg-card-main:            var(--core-neutral-x-85);
+  --bg-card-main-secondary:  var(--core-neutral-x-93);
+  --bg-accent-main:          var(--core-sapphire-65);
+  --bg-accent-fade:          var(--core-sapphire-65-a16);
+  --bg-accent-ghost:         var(--core-sapphire-65-a08);
+  --bg-accent-states-hover:  var(--core-sapphire-65-a10);
+  --bg-accent-states-pressed: var(--core-sapphire-65-a20);
+  --bg-accent-states-active: var(--core-sapphire-65-a18);
+  --bg-accent-states-disable: var(--core-sapphire-65-a08);
+  --bg-accent-states-focused: var(--core-sapphire-65-a16);
+  --text-primary:   var(--core-neutral-x-98);
+  --text-secondary: var(--core-neutral-x-45);
+  --text-disabled:  var(--core-neutral-x-97);
+  --text-inverse:   var(--core-neutral-x-90);
+  --text-accent:    var(--core-sapphire-65);
+  --text-error:     var(--core-carnelian-65);
+  --line-default:   var(--core-neutral-x-93);
+  --line-strong:    var(--core-neutral-x-95);
+  --line-accent:    var(--core-sapphire-65);
+}

@@ -1,0 +1,257 @@
+#!/usr/bin/env node
+/**
+ * docs/tokens/save-tokens.js
+ *
+ * Persists typography CSS custom properties to :root blocks across the docs site.
+ *
+ * Usage:
+ *   echo '{"--body-m-size":"15px"}' | node docs/tokens/save-tokens.js
+ *   node docs/tokens/save-tokens.js --serve [port]
+ *
+ * POST body: { tokens: { "--token": "value" }, changes?: [{ token, oldValue, newValue }], author?: "name" }
+ * Legacy body: { "--token": "value", ... }
+ */
+
+'use strict';
+
+const fs = require('fs');
+const http = require('http');
+const path = require('path');
+
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
+const CHANGELOG_PATH = path.join(__dirname, 'typography-tokens-changelog.md');
+const GUIDES_DIR = path.join(REPO_ROOT, 'docs', 'guides');
+const STORYBOOK_DIR = path.join(REPO_ROOT, 'docs', 'storybook');
+const STYLE_CSS = path.join(REPO_ROOT, 'docs', 'assets', 'style.css');
+const DOCS_THEME_CSS = path.join(REPO_ROOT, 'docs', 'assets', 'docs-theme.css');
+
+const EXTRA_CSS_TARGETS = [STYLE_CSS, DOCS_THEME_CSS];
+
+function listHtmlFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((name) => name.endsWith('.html'))
+    .map((name) => path.join(dir, name));
+}
+
+function getTargetFiles() {
+  return [
+    ...listHtmlFiles(GUIDES_DIR),
+    ...listHtmlFiles(STORYBOOK_DIR),
+    ...EXTRA_CSS_TARGETS.filter((f) => fs.existsSync(f)),
+  ];
+}
+
+function updateRootBlocks(content, updates) {
+  let updated = content;
+  let changed = false;
+
+  const rootRe = /:root\s*\{/g;
+  let match;
+  const replacements = [];
+
+  while ((match = rootRe.exec(content)) !== null) {
+    const open = match.index + match[0].length;
+    let depth = 1;
+    let i = open;
+    while (i < content.length && depth > 0) {
+      if (content[i] === '{') depth += 1;
+      if (content[i] === '}') depth -= 1;
+      i += 1;
+    }
+    if (depth !== 0) continue;
+
+    const inner = content.slice(open, i - 1);
+    let newInner = inner;
+    let blockChanged = false;
+
+    for (const [token, value] of Object.entries(updates)) {
+      const declRe = new RegExp(`(${escapeRegExp(token)}\\s*:\\s*)([^;\\n]+)(\\s*;)`, 'g');
+      if (declRe.test(newInner)) {
+        newInner = newInner.replace(declRe, `$1${value}$3`);
+        blockChanged = true;
+      }
+    }
+
+    if (blockChanged) {
+      replacements.push({ start: open, end: i - 1, text: newInner });
+      changed = true;
+    }
+  }
+
+  for (let r = replacements.length - 1; r >= 0; r -= 1) {
+    const { start, end, text } = replacements[r];
+    updated = updated.slice(0, start) + text + updated.slice(end);
+  }
+
+  return { content: updated, changed };
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function readLatestVersion() {
+  const md = fs.readFileSync(CHANGELOG_PATH, 'utf8');
+  const versions = [...md.matchAll(/\|\s*(\d+\.\d+\.\d+)\s*\|/g)].map((m) => m[1]);
+  return versions.length ? versions[versions.length - 1] : '1.0.0';
+}
+
+function bumpPatch(version) {
+  const parts = version.split('.').map(Number);
+  parts[2] += 1;
+  return parts.join('.');
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function appendChangelog({ version, date, changes, author }) {
+  let md = fs.readFileSync(CHANGELOG_PATH, 'utf8');
+  const rows = changes.length
+    ? changes.map(
+        (c) => `| ${version} | ${date} | ${c.token} | ${c.oldValue} → ${c.newValue} | ${author} |`
+      )
+    : [`| ${version} | ${date} | multiple | token updates | ${author} |`];
+
+  const insertAt = md.lastIndexOf('\n|');
+  if (insertAt === -1) {
+    md += '\n' + rows.join('\n') + '\n';
+  } else {
+    const lineEnd = md.indexOf('\n', insertAt + 1);
+    const pos = lineEnd === -1 ? md.length : lineEnd;
+    md = md.slice(0, pos) + '\n' + rows.join('\n') + md.slice(pos);
+  }
+
+  fs.writeFileSync(CHANGELOG_PATH, md, 'utf8');
+}
+
+function normalizePayload(body) {
+  const author = body.author || 'system';
+  const tokens = body.tokens && typeof body.tokens === 'object' ? body.tokens : body;
+  const changes = Array.isArray(body.changes) ? body.changes : [];
+
+  const cleanTokens = {};
+  for (const [key, value] of Object.entries(tokens)) {
+    if (key.startsWith('--') && typeof value === 'string') {
+      cleanTokens[key] = value.trim();
+    }
+  }
+
+  return { tokens: cleanTokens, changes, author };
+}
+
+function saveTokens(payload) {
+  const { tokens, changes, author } = normalizePayload(payload);
+  const tokenNames = Object.keys(tokens);
+
+  if (!tokenNames.length) {
+    return { ok: false, error: 'No tokens in request body' };
+  }
+
+  const filesUpdated = [];
+
+  for (const filePath of getTargetFiles()) {
+    const original = fs.readFileSync(filePath, 'utf8');
+    const { content, changed } = updateRootBlocks(original, tokens);
+    if (changed) {
+      fs.writeFileSync(filePath, content, 'utf8');
+      filesUpdated.push(path.relative(REPO_ROOT, filePath));
+    }
+  }
+
+  const version = bumpPatch(readLatestVersion());
+  const date = todayISO();
+  const changelogChanges =
+    changes.length > 0
+      ? changes
+      : tokenNames.map((token) => ({
+          token,
+          oldValue: '—',
+          newValue: tokens[token],
+        }));
+
+  appendChangelog({ version, date, changes: changelogChanges, author });
+
+  return { ok: true, version, filesUpdated };
+}
+
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (c) => chunks.push(c));
+    process.stdin.on('end', () => resolve(chunks.join('')));
+    process.stdin.on('error', reject);
+  });
+}
+
+function sendJson(res, status, data) {
+  const body = JSON.stringify(data);
+  res.writeHead(status, {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body),
+  });
+  res.end(body);
+}
+
+function startServer(port) {
+  const server = http.createServer(async (req, res) => {
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      });
+      res.end();
+      return;
+    }
+
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    const chunks = [];
+    req.on('data', (c) => chunks.push(c));
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
+        const result = saveTokens(payload);
+        sendJson(res, result.ok ? 200 : 400, result);
+      } catch (err) {
+        sendJson(res, 500, { ok: false, error: err.message });
+      }
+    });
+  });
+
+  server.listen(port, () => {
+    console.log(`save-tokens server → http://localhost:${port}`);
+  });
+}
+
+async function main() {
+  if (process.argv.includes('--serve')) {
+    const portArg = process.argv[process.argv.indexOf('--serve') + 1];
+    startServer(Number(portArg) || 3336);
+    return;
+  }
+
+  const argJson = process.argv[2];
+  const raw = argJson || (await readStdin());
+  if (!raw || !raw.trim()) {
+    console.error('Usage: node save-tokens.js \'{"--body-m-size":"15px"}\'');
+    process.exit(1);
+  }
+
+  const result = saveTokens(JSON.parse(raw));
+  console.log(JSON.stringify(result, null, 2));
+  process.exit(result.ok ? 0 : 1);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

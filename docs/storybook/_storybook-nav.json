@@ -1,0 +1,16 @@
+{
+  "sections": [
+    {
+      "id": "tokens",
+      "label": "Tokens",
+      "items": [
+        { "id": "typography", "label": "Typography", "href": "typography.html", "status": "stable" }
+      ]
+    },
+    {
+      "id": "components",
+      "label": "Components",
+      "items": []
+    }
+  ]
+}

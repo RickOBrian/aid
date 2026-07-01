@@ -121,6 +121,10 @@
   --radius-2xl:  24px;
   --radius-full: 9999px;
 
+  /* Typography — font families */
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
   /* Typography — heading */
   --heading-xl-size:   28px;
   --heading-xl-lh:     36px;
@@ -250,7 +254,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   background-color: var(--bg-base-main);
   color: var(--text-primary);
   line-height: var(--body-m-lh);
@@ -422,6 +426,9 @@ body {
 .search__input:focus {
   border-color: var(--line-accent);
   background-color: var(--bg-card-main);
+  outline: 2px solid var(--line-accent);
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 .search__icon {
@@ -444,7 +451,7 @@ body {
   background-color: var(--bg-card-main);
   border: 1px solid var(--line-default);
   border-radius: var(--radius-l);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   z-index: 500;
   padding: var(--inset-control-v-s);
 }
@@ -574,12 +581,12 @@ body {
   border: 1px solid var(--line-default);
   border-radius: var(--radius-l);
   padding: var(--inset-container-v-m) var(--inset-container-h-m);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .card:hover {
-  border-color: var(--bg-accent-main);
-  box-shadow: 0 0 0 3px var(--bg-accent-fade);
+  border-color: var(--line-accent);
+  box-shadow: none;
 }
 
 .card__header {
@@ -817,16 +824,22 @@ code {
 }
 
 /* ── Light mode overrides ── */
-/* a11y-light bg is #fefefe; we use our design token instead */
+/* a11y-light bg is #fefefe; inline code only — pre blocks use border, no fill */
 :root .hljs {
-  background: #f5f5f7;          /* ~= bg-base-main-secondary */
-  color: #2b2b2b;               /* 13.5:1 on #f5f5f7 ✓ */
-  padding: var(--inset-container-v-m, 16px) var(--inset-container-h-m, 16px);
+  background: transparent;
+  color: #2b2b2b;
+  padding: 0;
+}
+
+:root pre .hljs,
+:root .prose pre .hljs {
+  background: transparent;
+  padding: 0;
 }
 
 /* Inline code (not in pre) */
 :root :not(pre) > code {
-  background: #f0f0f5;
+  background: var(--bg-base-main-secondary, #f0f0f5);
   color: #2b2b2b;               /* 13.5:1 ✓ */
   padding: 2px 6px;
   border-radius: var(--radius-s, 4px);
@@ -834,11 +847,16 @@ code {
 }
 
 /* ── Dark mode overrides ── */
-/* a11y-dark bg is #2b2b2b; keep it, patch any insufficient tokens */
 [data-theme="dark"] .hljs {
-  background: #1e1e2e;          /* our dark card bg */
-  color: #cdd6f4;               /* 10.9:1 on #1e1e2e ✓ */
-  padding: var(--inset-container-v-m, 16px) var(--inset-container-h-m, 16px);
+  background: transparent;
+  color: #cdd6f4;
+  padding: 0;
+}
+
+[data-theme="dark"] pre .hljs,
+[data-theme="dark"] .prose pre .hljs {
+  background: transparent;
+  padding: 0;
 }
 
 /* a11y-dark fixes — colours below were < 4.5:1 on #2b2b2b / #1e1e2e */

@@ -9,11 +9,14 @@ Serves the whole project, so both URLs resolve correctly:
   /docs/guides/template.html    → guide page
 """
 import http.server
+import json
+import subprocess
 import sys
 from pathlib import Path
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 3335
 ROOT = Path(__file__).parent.parent  # project root (…/aid/)
+SAVE_TOKENS_SCRIPT = ROOT / 'docs' / 'tokens' / 'save-tokens.js'
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -33,6 +36,50 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             return
         super().do_GET()
+
+    def do_POST(self):
+        if self.path.rstrip('/') in ('/docs/tokens/save-tokens', '/docs/tokens/save-tokens.js'):
+            self._handle_save_tokens()
+            return
+        self.send_error(404, 'Not found')
+
+    def _handle_save_tokens(self):
+        length = int(self.headers.get('Content-Length', 0))
+        raw = self.rfile.read(length).decode('utf-8') if length else '{}'
+
+        try:
+            proc = subprocess.run(
+                ['node', str(SAVE_TOKENS_SCRIPT)],
+                input=raw,
+                capture_output=True,
+                text=True,
+                cwd=str(ROOT),
+                timeout=30,
+            )
+            body = proc.stdout.strip() or proc.stderr.strip() or '{"ok":false,"error":"empty response"}'
+            data = json.loads(body)
+            status = 200 if proc.returncode == 0 and data.get('ok') else 400
+        except (json.JSONDecodeError, subprocess.TimeoutExpired, FileNotFoundError) as err:
+            body = json.dumps({'ok': False, 'error': str(err)})
+            status = 500
+
+        encoded = body.encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(encoded)))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(encoded)
+
+    def do_OPTIONS(self):
+        if self.path.rstrip('/') in ('/docs/tokens/save-tokens', '/docs/tokens/save-tokens.js'):
+            self.send_response(204)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+            self.end_headers()
+            return
+        self.send_error(404)
 
     def log_message(self, fmt, *args):
         # One-line request log; args[0] may be an HTTPStatus object on errors

@@ -1,0 +1,85 @@
+/**
+ * Storybook shared — nav + theme
+ */
+(function () {
+  'use strict';
+
+  const NAV_URL = '_storybook-nav.json';
+  const ACTIVE_PAGE = document.body.dataset.storybookPage || '';
+
+  async function loadNav() {
+    const navEl = document.getElementById('storybook-nav');
+    if (!navEl) return;
+
+    try {
+      const res = await fetch(NAV_URL);
+      if (!res.ok) throw new Error('nav fetch failed');
+      const data = await res.json();
+      navEl.innerHTML = '';
+
+      for (const section of data.sections || []) {
+        const label = document.createElement('div');
+        label.className = 'storybook-nav__section-label';
+        label.textContent = section.label;
+        navEl.appendChild(label);
+
+        for (const item of section.items || []) {
+          const a = document.createElement('a');
+          a.className = 'storybook-nav__item';
+          if (item.href) {
+            a.href = item.href;
+            const pageId = item.href.replace('.html', '');
+            if (pageId === ACTIVE_PAGE || item.id === ACTIVE_PAGE) {
+              a.classList.add('is-active');
+            }
+          } else {
+            a.href = '#';
+            a.classList.add('is-planned');
+          }
+          a.textContent = item.label;
+
+          if (item.status) {
+            const status = document.createElement('span');
+            status.className = 'storybook-nav__status';
+            status.textContent = item.status;
+            a.appendChild(status);
+          }
+
+          navEl.appendChild(a);
+        }
+      }
+    } catch (err) {
+      navEl.innerHTML = `<p class="storybook-status is-error">Nav: ${err.message}</p>`;
+    }
+  }
+
+  function initTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    const iconSun = document.getElementById('icon-sun');
+    const iconMoon = document.getElementById('icon-moon');
+    if (!btn) return;
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      if (iconSun) iconSun.style.display = theme === 'dark' ? 'block' : 'none';
+      if (iconMoon) iconMoon.style.display = theme === 'light' ? 'block' : 'none';
+      localStorage.setItem('ds-theme', theme);
+    }
+
+    btn.addEventListener('click', () => {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    const saved = localStorage.getItem('ds-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    loadNav();
+  });
+
+  window.DSStorybook = { initTheme, loadNav };
+})();
