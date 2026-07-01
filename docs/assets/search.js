@@ -113,8 +113,11 @@
   // ── Strip MD formatting from text ──────────────────────────────────────────
   function stripMd(text) {
     return text
-      .replace(/^---[\s\S]*?---\n/m, '')       // frontmatter
+      // Note: frontmatter already stripped by parseFrontmatter — do NOT apply
+      // /^---[\s\S]*?---/m here; guides have many --- dividers that would be eaten.
       .replace(/```[\s\S]*?```/gm, '')          // fenced code
+      .replace(/<style[\s\S]*?<\/style>/gi, '') // inline <style> blocks (illustration CSS)
+      .replace(/<[^>]+>/g, ' ')                 // HTML tags → space
       .replace(/`[^`]+`/g, '')                  // inline code
       .replace(/!\[.*?\]\(.*?\)/g, '')          // images
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links → text
@@ -190,64 +193,88 @@
       this.field('category', { boost: 5  });
       this.field('body',     { boost: 1  });
 
-      // Disable Lunr stemming for Russian-heavy content
+      // Disable stemmer and trimmer — trimmer strips Cyrillic (uses \W which
+      // matches non-ASCII), so all Russian tokens become empty strings.
       this.pipeline.remove(lunr.stemmer);
+      this.pipeline.remove(lunr.trimmer);
       this.searchPipeline.remove(lunr.stemmer);
+      this.searchPipeline.remove(lunr.trimmer);
 
       docs.forEach(d => this.add(d));
     });
 
     indexReady = true;
+    console.log('[DS Search] index ready. docs=' + Object.keys(docStore).length +
+      ' total textLen=' + Object.values(docStore).reduce((s, d) => s + (d.text ? d.text.length : 0), 0));
     dispatchEvent(new CustomEvent('ds:search-ready'));
   }
 
   // ── Search ────────────────────────────────────────────────────────────────
   function search(query) {
+    // Debug logs fire BEFORE any early return so they're always visible
+    console.log('[DS Search] called. indexReady=' + indexReady + ' query=' + JSON.stringify(query));
+    if (!search._debugged && indexReady) {
+      search._debugged = true;
+      const storeInfo = Object.values(docStore).map(d =>
+        d.id + ': textLen=' + (d.text ? d.text.length : 0)
+      );
+      console.log('[DS Search] docStore:', storeInfo.join(' | '));
+    }
+
     if (!indexReady || !query.trim()) return [];
 
     const q   = query.trim();
     const qLo = q.toLowerCase();
-    let results = [];
 
-    // 1. Exact Lunr match
-    try { results = lunrIndex.search(q); } catch (_) {}
+    // ── Lunr pass (Latin / short-form matches) ────────────────────────────
+    let lunrResults = [];
 
-    // 2. Wildcard prefix: "ст" → "ст*" matches "стабильный", "структура" etc.
-    if (!results.length) {
+    // 1. Exact
+    try { lunrResults = lunrIndex.search(q); } catch (_) {}
+
+    // 2. Wildcard prefix: "ст*"
+    if (!lunrResults.length) {
       try {
-        const wq = q.split(/\s+/).map(t => t + '*').join(' ');
-        results = lunrIndex.search(wq);
+        lunrResults = lunrIndex.search(q.split(/\s+/).map(t => t + '*').join(' '));
       } catch (_) {}
     }
 
-    // 3. Fuzzy ±1 for typo tolerance
-    if (!results.length) {
+    // 3. Fuzzy ±1
+    if (!lunrResults.length) {
       try {
-        const fq = q.split(/\s+/).map(t => t + '~1').join(' ');
-        results = lunrIndex.search(fq);
+        lunrResults = lunrIndex.search(q.split(/\s+/).map(t => t + '~1').join(' '));
       } catch (_) {}
     }
 
-    // 4. Substring fallback — scans docStore directly, catches mid-word matches
-    //    e.g. "ст" inside "Состояния", "static", "states"
-    if (!results.length) {
-      results = Object.values(docStore)
-        .filter(doc =>
-          doc.name.toLowerCase().includes(qLo) ||
-          (doc.text && doc.text.toLowerCase().includes(qLo))
-        )
-        .map(doc => ({ ref: doc.id, score: 0.5 }));
-    }
+    // ── Substring pass — always runs, critical for Cyrillic ───────────────
+    // Lunr's pipeline removes Cyrillic tokens even without trimmer in some
+    // environments; substring scan on raw text is the reliable fallback.
+    const subResults = Object.values(docStore)
+      .filter(doc => {
+        const nameMatch = doc.name.toLowerCase().includes(qLo);
+        const textMatch = !!(doc.text && doc.text.toLowerCase().includes(qLo));
+        console.log('[DS Search] substr check', doc.id,
+          '| name:', JSON.stringify(doc.name.slice(0, 30)),
+          '| textLen:', doc.text ? doc.text.length : 0,
+          '| nameMatch:', nameMatch, '| textMatch:', textMatch);
+        return nameMatch || textMatch;
+      })
+      .map(doc => ({ ref: doc.id, score: 0.5 }));
 
-    return results.slice(0, 8).map(r => {
+    // Merge: Lunr first (higher relevance), then substring-only additions
+    const seen   = new Set(lunrResults.map(r => r.ref));
+    const merged = [...lunrResults, ...subResults.filter(r => !seen.has(r.ref))];
+
+    return merged.slice(0, 8).map(r => {
       const doc = docStore[r.ref];
+      if (!doc) return null;
       return {
         ...doc,
         score:   r.score,
-        context: extractContext(doc.text, q, CFG.contextLen),
+        context: extractContext(doc.text || '', q, CFG.contextLen),
         url:     CFG.guidePage + '?id=' + doc.id,
       };
-    });
+    }).filter(Boolean);
   }
 
   // ── Render results ────────────────────────────────────────────────────────
@@ -282,7 +309,7 @@
 
     let debounceTimer;
 
-    input.addEventListener('input', () => {
+    function triggerSearch() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         const q = input.value.trim();
@@ -301,7 +328,12 @@
 
         renderResults(search(q), q, resultsEl);
       }, 160);
-    });
+    }
+
+    // Use both events: 'input' may be suppressed for Cyrillic in Yandex Browser
+    // when compositionstart fires without compositionend. 'keyup' is the fallback.
+    input.addEventListener('input', triggerSearch);
+    input.addEventListener('keyup',  triggerSearch);
 
     // Close on Esc
     input.addEventListener('keydown', e => {
@@ -355,6 +387,21 @@
   });
 
   // ── Public API ────────────────────────────────────────────────────────────
-  window.DSSearch = { search, manifest: GUIDE_MANIFEST, isReady: () => indexReady };
+  window.DSSearch = {
+    search,
+    manifest: GUIDE_MANIFEST,
+    isReady:  () => indexReady,
+    // Debug helper — run DSSearch.debug('ст') in browser console
+    debug(q) {
+      const qLo = (q || '').toLowerCase();
+      return Object.values(docStore).map(d => ({
+        id:        d.id,
+        textLen:   d.text ? d.text.length : 0,
+        textSample: d.text ? d.text.slice(0, 120) : '(empty)',
+        nameMatch: d.name.toLowerCase().includes(qLo),
+        textMatch: !!(d.text && d.text.toLowerCase().includes(qLo)),
+      }));
+    },
+  };
 
 })();

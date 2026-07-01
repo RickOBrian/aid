@@ -1,0 +1,306 @@
+<!-- DELETE AFTER REVIEW -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview Variants — semantic-color-tokens-guide · ds-ui-review v1.1.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body {
+      padding: var(--inset-screen-h-l);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .preview-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--gap-m);
+      margin-bottom: var(--gap-xl);
+      padding-bottom: var(--gap-m);
+      border-bottom: 1px solid var(--line-default);
+    }
+    .preview-meta__title {
+      font-size: var(--heading-s-size);
+      font-weight: var(--heading-s-weight);
+      color: var(--text-primary);
+    }
+    .preview-meta__sub {
+      font-size: var(--body-s-size);
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap-l);
+      align-items: start;
+    }
+    .preview-card {
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-l);
+      background: var(--bg-card-main);
+      overflow: hidden;
+    }
+    .preview-card__header {
+      padding: var(--inset-container-v-s) var(--inset-container-h-m);
+      border-bottom: 1px solid var(--line-default);
+      background: var(--bg-base-main-secondary);
+    }
+    .preview-card__name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--label-s-size);
+      font-weight: var(--label-s-weight);
+      color: var(--text-primary);
+    }
+    .preview-card__desc {
+      font-size: var(--body-s-size);
+      color: var(--text-secondary);
+      margin-top: 2px;
+      line-height: var(--body-s-lh);
+    }
+    .preview-card__body {
+      padding: var(--inset-container-v-m) var(--inset-container-h-m);
+    }
+    /* Placeholder for variants blocked on missing CSS classes */
+    .preview-placeholder {
+      background: var(--bg-base-main-secondary);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-m);
+      padding: var(--inset-container-v-m) var(--inset-container-h-m);
+      color: var(--text-secondary);
+      font-size: var(--body-s-size);
+      line-height: var(--body-s-lh);
+    }
+    .preview-placeholder__label {
+      font-size: var(--label-xs-size);
+      font-weight: var(--label-xs-weight);
+      color: var(--text-disabled);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--gap-xs);
+    }
+    /* ── Variant 1: token-color-blocks live mockup ── */
+    .tv-mock {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-m);
+      overflow: hidden;
+      background: var(--bg-card-main);
+    }
+    .tv-mock__row {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      padding: 10px var(--inset-container-h-s);
+      gap: var(--gap-m);
+      border-bottom: 1px solid var(--line-default);
+      transition: background 0.1s;
+    }
+    .tv-mock__row:last-child { border-bottom: none; }
+    .tv-mock__row:hover { background: var(--bg-accent-states-hover); }
+    .tv-mock__swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-s);
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
+    .tv-mock__name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+    .tv-mock__value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+    /* theme bar */
+    .theme-bar {
+      margin-top: var(--gap-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--gap-s);
+      padding-top: var(--gap-m);
+      border-top: 1px solid var(--line-default);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-meta">
+    <div>
+      <div class="preview-meta__title">Preview Variants</div>
+      <div class="preview-meta__sub">semantic-color-tokens-guide · ds-ui-review v1.1.0</div>
+    </div>
+    <span class="badge badge--draft">DELETE AFTER REVIEW</span>
+  </div>
+
+  <div class="preview-grid">
+
+    <!-- ── Variant 1: token-color-blocks ── -->
+    <div class="preview-card">
+      <div class="preview-card__header">
+        <div class="preview-card__name">token-color-blocks</div>
+        <div class="preview-card__desc">token-color fenced blocks → live 40×40px swatches per token</div>
+      </div>
+      <div class="preview-card__body">
+        <div class="tv-mock">
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--text-primary)"></div>
+            <code class="tv-mock__name">text-primary</code>
+            <span class="tv-mock__value">var(--text-primary)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--text-secondary)"></div>
+            <code class="tv-mock__name">text-secondary</code>
+            <span class="tv-mock__value">var(--text-secondary)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--bg-accent-main)"></div>
+            <code class="tv-mock__name">bg-accent-main</code>
+            <span class="tv-mock__value">var(--bg-accent-main)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--bg-accent-fade)"></div>
+            <code class="tv-mock__name">bg-accent-fade</code>
+            <span class="tv-mock__value">var(--bg-accent-fade)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--bg-accent-ghost)"></div>
+            <code class="tv-mock__name">bg-accent-ghost</code>
+            <span class="tv-mock__value">var(--bg-accent-ghost)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--bg-accent-status-success)"></div>
+            <code class="tv-mock__name">bg-accent-status-success</code>
+            <span class="tv-mock__value">var(--bg-accent-status-success)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--bg-accent-status-error)"></div>
+            <code class="tv-mock__name">bg-accent-status-error</code>
+            <span class="tv-mock__value">var(--bg-accent-status-error)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--line-default)"></div>
+            <code class="tv-mock__name">line-default</code>
+            <span class="tv-mock__value">var(--line-default)</span>
+          </div>
+          <div class="tv-mock__row">
+            <div class="tv-mock__swatch" style="background:var(--icon-accent)"></div>
+            <code class="tv-mock__name">icon-accent</code>
+            <span class="tv-mock__value">var(--icon-accent)</span>
+          </div>
+        </div>
+        <p style="font-size:var(--body-s-size);color:var(--text-secondary);margin-top:var(--gap-s);line-height:var(--body-s-lh)">
+          Toggle theme below — swatches resolve live via CSS vars.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Variant 2: skeleton-blocker-callout ── -->
+    <div class="preview-card">
+      <div class="preview-card__header">
+        <div class="preview-card__name">skeleton-blocker-callout</div>
+        <div class="preview-card__desc">Semantic callout blocks by severity in section 11</div>
+      </div>
+      <div class="preview-card__body">
+        <div class="preview-placeholder">
+          <div class="preview-placeholder__label">Blocked</div>
+          requires <code class="token-ref">/apply callout-system</code> first
+          <br><br>
+          Will render three severity variants:
+          <br><br>
+          <span style="display:flex;align-items:center;gap:var(--gap-xs);margin-bottom:var(--gap-xs)">
+            <span style="width:10px;height:10px;border-radius:2px;background:var(--bg-accent-status-error);border:1px solid var(--text-error);flex-shrink:0"></span>
+            <code class="token-ref">.callout-blocker</code> — "Не используй bg-base-* для скелетонов"
+          </span>
+          <span style="display:flex;align-items:center;gap:var(--gap-xs);margin-bottom:var(--gap-xs)">
+            <span style="width:10px;height:10px;border-radius:2px;background:var(--bg-accent-status-warning);border:1px solid var(--line-strong);flex-shrink:0"></span>
+            <code class="token-ref">.callout-warning</code> — "Web не использует -ios и -android"
+          </span>
+          <span style="display:flex;align-items:center;gap:var(--gap-xs)">
+            <span style="width:10px;height:10px;border-radius:2px;background:var(--bg-accent-status-attention);border:1px solid var(--line-accent);flex-shrink:0"></span>
+            <code class="token-ref">.callout-note</code> — "Оба токена адаптируются к light/dark"
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Variant 3: arch-diagram-bg-map ── -->
+    <div class="preview-card">
+      <div class="preview-card__header">
+        <div class="preview-card__name">arch-diagram-bg-map</div>
+        <div class="preview-card__desc">ASCII tree → visual hierarchy block in section 4</div>
+      </div>
+      <div class="preview-card__body">
+        <div class="preview-placeholder">
+          <div class="preview-placeholder__label">Blocked</div>
+          requires <code class="token-ref">.arch-diagram</code> in style.css first
+          <br><br>
+          Will replace the ASCII tree with a centered block
+          (max-width 640px, 1px <code class="token-ref">--line-default</code>,
+          <code class="token-ref">--radius-m</code>):
+          <br><br>
+          <code style="font-size:11px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;line-height:2">
+            bg<br>
+            &nbsp;├─ base · card · overlay · modal<br>
+            &nbsp;├─ accent<br>
+            &nbsp;│&nbsp;&nbsp;&nbsp;├─ main · fade · ghost · inverse<br>
+            &nbsp;│&nbsp;&nbsp;&nbsp;├─ states · product · status<br>
+            &nbsp;│&nbsp;&nbsp;&nbsp;└─ additional<br>
+            &nbsp;└─ component<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ form · control · floating<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ skeleton (new v1.2.0)
+          </code>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="theme-bar">
+    <button class="btn-icon" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+      <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+        <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <span style="font-size:var(--body-s-size);color:var(--text-secondary)">
+      Toggle theme — Variant 1 swatches resolve live; Variants 2–3 show placeholder state in both themes.
+    </span>
+  </div>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var btn  = document.getElementById('theme-toggle');
+      var sun  = document.getElementById('icon-sun');
+      var moon = document.getElementById('icon-moon');
+      function apply(t) {
+        html.setAttribute('data-theme', t);
+        sun.style.display  = t === 'dark'  ? 'block' : 'none';
+        moon.style.display = t === 'light' ? 'block' : 'none';
+        localStorage.setItem('ds-theme', t);
+      }
+      btn.addEventListener('click', function () {
+        apply(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      });
+      var saved = localStorage.getItem('ds-theme');
+      apply(saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    })();
+  </script>
+
+</body>
+</html>

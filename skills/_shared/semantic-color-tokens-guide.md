@@ -42,7 +42,7 @@ description: >
    Inner rows: white cards, r-16 (nested radius: 24 − 8px padding)
    ──────────────────────────────────────────────────────── */
 .arch-diagram {
-  background: #EBEBEB;
+  background: var(--bg-base-main);
   border: none;
   border-radius: 24px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
@@ -80,7 +80,7 @@ description: >
    Floating pill: dark bg · white text · border-radius 9999px
    ──────────────────────────────────────────────────────── */
 .token-text-demo {
-  background: #EBEBEB;
+  background: var(--bg-base-main);
   border: none;
   border-radius: 24px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);

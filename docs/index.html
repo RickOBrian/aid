@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System — Guides</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css"
+        id="hljs-theme">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js" defer></script>
+
+  <link rel="stylesheet" href="assets/style.css">
+
+  <script>
+    window.DS_CONFIG = {
+      guidesBase: '../skills/_shared/',
+      guidePage:  'guides/template.html',
+    };
+  </script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="layout__header">
+    <div class="header__logo">
+      <span class="header__eyebrow">Design System</span>
+      <span class="header__title">Guides</span>
+    </div>
+
+    <div class="header__controls">
+      <div class="search" id="search-wrapper">
+        <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input class="search__input" type="search" placeholder="Поиск по гайдам…"
+               id="search-input" aria-label="Поиск по гайдам"
+               autocomplete="off" spellcheck="false">
+        <div id="search-results" class="search-dropdown" hidden></div>
+      </div>
+
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <!-- Sun icon — shown in dark mode -->
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <!-- Moon icon — shown in light mode -->
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ────────────────────────────────────────────── -->
+  <aside class="layout__sidebar" aria-label="Навигация по гайдам">
+    <nav>
+      <div class="sidebar__section-label">Токены</div>
+
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Color</div>
+      <a class="sidebar__item" href="guides/template.html?id=core-color-tokens-guide">Core Color Tokens</a>
+      <a class="sidebar__item" href="guides/template.html?id=semantic-color-tokens-guide">Semantic Color Tokens</a>
+
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Space</div>
+      <a class="sidebar__item" href="guides/template.html?id=core-space-tokens-guide">Core Space Tokens</a>
+      <a class="sidebar__item" href="guides/template.html?id=semantic-space-tokens-guide">Semantic Space Tokens</a>
+
+      <div class="sidebar__section-label" style="padding-top:4px;opacity:.6;font-size:10px">Typography</div>
+      <a class="sidebar__item" href="guides/template.html?id=core-typography-tokens-guide">Core Typography</a>
+      <a class="sidebar__item" href="guides/template.html?id=semantic-typography-tokens-guide">Semantic Typography</a>
+
+      <div class="sidebar__section-label">Компоненты</div>
+      <a class="sidebar__item" href="guides/template.html?id=ds-component-architecture-guide">Архитектура</a>
+      <a class="sidebar__item" href="guides/template.html?id=component-states-guide">Состояния</a>
+    </nav>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <main class="layout__main" id="main">
+
+    <!-- Index content -->
+    <div id="index-content">
+
+      <div class="page-hero">
+        <h1 class="page-hero__title">Design System Guides</h1>
+        <p class="page-hero__subtitle">
+          Документация по токенам и архитектуре компонентов для Web, iOS и Android.
+        </p>
+      </div>
+
+      <!-- ── Group: Tokens ──────────────────────────────────── -->
+      <section class="section-group" aria-labelledby="group-tokens">
+        <div class="section-heading">
+          <h2 class="section-heading__title" id="group-tokens">Tokens</h2>
+          <span class="section-heading__count">6</span>
+        </div>
+
+        <!-- Subgroup: Color -->
+        <div class="section-subgroup">
+          <div class="section-subgroup__label">Color</div>
+          <div class="card-grid">
+
+            <a class="card" href="guides/template.html?id=core-color-tokens-guide"
+               data-name="Core Color Tokens"
+               data-type="color"
+               data-description="Архитектура Core Color Tokens: палитры, шкала ступеней, прозрачные варианты, нейтральные имена палитр.">
+              <div class="card__header">
+                <span class="card__name">Core Color Tokens</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">
+                Базовый уровень цветовой системы. Именованные палитры с HEX-значениями без семантики.
+                Source of truth для Semantic-слоя.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--core">Core</span>
+                <span class="card__version">v1.2.0</span>
+              </div>
+            </a>
+
+            <a class="card" href="guides/template.html?id=semantic-color-tokens-guide"
+               data-name="Semantic Color Tokens"
+               data-type="color"
+               data-description="Semantic-слой цветовых токенов: bg/text/icon/line, состояния, skeleton, product-группы.">
+              <div class="card__header">
+                <span class="card__name">Semantic Color Tokens</span>
+                <span class="badge badge--stable">Stable</span>
+              </div>
+              <p class="card__description">
+                Смысловой слой поверх Core Color Tokens. bg, text, icon, line, accent-states, skeleton.
+                Компоненты ссылаются только на semantic-токены.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--semantic">Semantic</span>
+                <span class="card__version">v1.2.0</span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Subgroup: Space -->
+        <div class="section-subgroup">
+          <div class="section-subgroup__label">Space</div>
+          <div class="card-grid">
+
+            <a class="card" href="guides/template.html?id=core-space-tokens-guide"
+               data-name="Core Space Tokens"
+               data-type="space"
+               data-description="Core-уровень пространственных токенов: spacing-N, size-N, shape-corner-N.">
+              <div class="card__header">
+                <span class="card__name">Core Space Tokens</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">
+                Примитивная шкала spacing-N, фиксированные размеры size-N и Core-радиусы shape-corner-N.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--core">Core</span>
+                <span class="card__version">v1.1.0</span>
+              </div>
+            </a>
+
+            <a class="card" href="guides/template.html?id=semantic-space-tokens-guide"
+               data-name="Semantic Space Tokens"
+               data-type="space"
+               data-description="Semantic пространственные токены: inset-*, gap-*, radius-*.">
+              <div class="card__header">
+                <span class="card__name">Semantic Space Tokens</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">
+                inset-{category}-{axis}-{size}, gap-*, radius-*. Единственный пространственный уровень
+                для компонентов.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--semantic">Semantic</span>
+                <span class="card__version">v1.0.0</span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Subgroup: Typography -->
+        <div class="section-subgroup">
+          <div class="section-subgroup__label">Typography</div>
+          <div class="card-grid">
+
+            <a class="card" href="guides/template.html?id=core-typography-tokens-guide"
+               data-name="Core Typography Tokens"
+               data-type="typography"
+               data-description="Core-уровень типографических токенов: шкалы size, line-height, weight, tracking.">
+              <div class="card__header">
+                <span class="card__name">Core Typography Tokens</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">
+                Числовые шкалы размеров, межстрочных интервалов, насыщенности и трекинга.
+                Source of truth для Semantic-типографики.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--core">Core</span>
+                <span class="card__version">v1.0.0</span>
+              </div>
+            </a>
+
+            <a class="card" href="guides/template.html?id=semantic-typography-tokens-guide"
+               data-name="Semantic Typography Tokens"
+               data-type="typography"
+               data-description="Semantic типографические роли: Display, Heading, Body, Label.">
+              <div class="card__header">
+                <span class="card__name">Semantic Typography Tokens</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">
+                Роли текста: Display, Heading, Body, Label, и расширяемые: code, numeric, helper, meta.
+              </p>
+              <div class="card__footer">
+                <span class="badge badge--semantic">Semantic</span>
+                <span class="card__version">v1.1.0</span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Group: Components ──────────────────────────────── -->
+      <section class="section-group" aria-labelledby="group-components">
+        <div class="section-heading">
+          <h2 class="section-heading__title" id="group-components">Components</h2>
+          <span class="section-heading__count">2</span>
+        </div>
+
+        <div class="card-grid">
+
+          <a class="card" href="guides/template.html?id=ds-component-architecture-guide"
+             data-name="Архитектура компонентов"
+             data-type="components"
+             data-description="Четырёхуровневая архитектура: Item → Surface View → Structural View → Layout.">
+            <div class="card__header">
+              <span class="card__name">Архитектура компонентов</span>
+              <span class="badge badge--draft">Draft</span>
+            </div>
+            <p class="card__description">
+              Четырёхуровневая модель: Item → Surface View → Structural View → Layout.
+              Правила нейминга, слотов и lifecycle.
+            </p>
+            <div class="card__footer">
+              <span class="chip">Components</span>
+              <span class="card__version">v1.1.0</span>
+            </div>
+          </a>
+
+          <a class="card" href="guides/template.html?id=component-states-guide"
+             data-name="Состояния компонентов"
+             data-type="components"
+             data-description="Нейминг и логика состояний для Figma, Web, iOS и Android.">
+            <div class="card__header">
+              <span class="card__name">Состояния компонентов</span>
+              <span class="badge badge--draft">Draft</span>
+            </div>
+            <p class="card__description">
+              Нейминг состояний, приоритет поглощения, допустимые комбинации.
+              Figma → Web / iOS / Android маппинг.
+            </p>
+            <div class="card__footer">
+              <span class="chip">Components</span>
+              <span class="card__version">v1.1.0</span>
+            </div>
+          </a>
+
+        </div>
+
+      </section>
+
+    </div><!-- /index-content -->
+
+  </main>
+
+</div><!-- /layout -->
+
+<script>
+  // ── Theme toggle ──────────────────────────────────────────
+  const html       = document.documentElement;
+  const btnToggle  = document.getElementById('theme-toggle');
+  const iconSun    = document.getElementById('icon-sun');
+  const iconMoon   = document.getElementById('icon-moon');
+  const hljsTheme  = document.getElementById('hljs-theme');
+
+  const HLJS_LIGHT = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-light.min.css';
+  const HLJS_DARK  = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-dark.min.css';
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    iconSun.style.display  = theme === 'dark'  ? 'block' : 'none';
+    iconMoon.style.display = theme === 'light' ? 'block' : 'none';
+    hljsTheme.href = theme === 'dark' ? HLJS_DARK : HLJS_LIGHT;
+    localStorage.setItem('ds-theme', theme);
+  }
+
+  btnToggle.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  });
+
+  // Restore saved preference
+  const saved = localStorage.getItem('ds-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+</script>
+
+
+<script src="assets/search.js?v=5"></script>
+<script src="assets/nav.js"></script>
+
+</body>
+</html>

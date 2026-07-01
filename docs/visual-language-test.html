@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Language Test</title>
+  <style>
+    :root {
+      --bg-base-main:           #F7F7F8;
+      --bg-base-main-secondary: #EFEFF2;
+      --bg-card-main:           #FFFFFF;
+      --text-primary:           #111111;
+      --text-secondary:         #6E6E73;
+      --text-disabled:          #AEAEB2;
+      --line-default:           #E5E5EA;
+
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration:  0.01ms !important;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #EBEBEB;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px 20px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card-main);
+      border-radius: 24px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 32px;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-disabled);
+      margin-bottom: 8px;
+    }
+
+    /* ── Token row ── */
+    .token-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--bg-base-main);
+      cursor: default;
+      position: relative;
+      transition: background 0.18s var(--ease-spring),
+                  transform  0.22s var(--ease-spring);
+    }
+
+    .token-row:hover {
+      background: var(--bg-base-main-secondary);
+      transform: translateY(-1px);
+    }
+
+    /* Token name — styled with its own color */
+    .token-name {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1;
+      transition: letter-spacing 0.2s var(--ease-spring);
+    }
+    .token-row:hover .token-name { letter-spacing: 0.01em; }
+
+    /* Floating pill tooltip — visible on hover */
+    .token-pill {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%) scale(0.88) translateX(4px);
+      background: var(--text-primary);
+      color: var(--bg-card-main);
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity   0.18s var(--ease-out),
+                  transform 0.22s var(--ease-spring);
+    }
+
+    .token-row:hover .token-pill {
+      opacity: 1;
+      transform: translateY(-50%) scale(1) translateX(0);
+    }
+
+    /* ── Divider ── */
+    .card__divider {
+      height: 1px;
+      background: var(--line-default);
+      margin: 4px 0;
+      border-radius: 1px;
+    }
+
+    /* ── Footer note ── */
+    .card__footer {
+      font-size: 12px;
+      color: var(--text-disabled);
+      text-align: center;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <p class="card__label">text tokens — hover to reveal resolved value</p>
+
+    <div class="token-row">
+      <span class="token-name" style="color: var(--text-primary)">text-primary</span>
+      <span class="token-pill" id="pill-primary"></span>
+    </div>
+
+    <div class="token-row">
+      <span class="token-name" style="color: var(--text-secondary)">text-secondary</span>
+      <span class="token-pill" id="pill-secondary"></span>
+    </div>
+
+    <div class="card__divider"></div>
+
+    <div class="token-row">
+      <span class="token-name" style="color: var(--text-disabled)">text-disabled</span>
+      <span class="token-pill" id="pill-disabled"></span>
+    </div>
+
+    <p class="card__footer">each name is rendered in its own token color</p>
+  </div>
+
+  <script>
+    // Resolve CSS var values and inject into pill labels
+    const style = getComputedStyle(document.documentElement);
+    [
+      ['primary',   '--text-primary'],
+      ['secondary', '--text-secondary'],
+      ['disabled',  '--text-disabled'],
+    ].forEach(([key, token]) => {
+      const val = style.getPropertyValue(token).trim();
+      document.getElementById('pill-' + key).textContent = val;
+    });
+  </script>
+
+</body>
+</html>
