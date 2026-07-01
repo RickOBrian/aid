@@ -57,13 +57,13 @@ Update this file every time a new token is created.
 | --core-carnelian-65 | core | #F87171 | — | text-error (dark) |
 | --core-carnelian-55-a16 | core | rgba(239,68,68,0.16) | — | bg-accent-status-error (dark) |
 | --core-jasper-55 | core | #D1FAE5 | — | bg-accent-status-success |
-| --core-jasper-65 | core | rgba(16,185,129,0.16) | — | bg-accent-status-success (dark) |
+| --core-jasper-65-a16 | core | rgba(16,185,129,0.16) | — | bg-accent-status-success (dark) |
 | --core-jasper-75 | core | #1A7F4B | — | text-success |
 | --core-jasper-85 | core | #34D399 | — | text-success (dark) |
 | --core-citrine-55 | core | #FEF3C7 | — | bg-accent-status-warning |
-| --core-citrine-65 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
+| --core-citrine-65-a16 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
 | --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
-| --core-amethyst-65 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
+| --core-amethyst-65-a16 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
 | --bg-base-main | semantic | core-neutral-x-0 | core-neutral-x-88 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
@@ -80,10 +80,10 @@ Update this file every time a new token is created.
 | --bg-accent-states-active | semantic | core-sapphire-55-a14 | core-sapphire-65-a18 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-accent-states-disable | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-accent-states-focused | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --bg-accent-status-success | semantic | core-jasper-55 | core-jasper-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --bg-accent-status-warning | semantic | core-citrine-55 | core-citrine-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-success | semantic | core-jasper-55 | core-jasper-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-warning | semantic | core-citrine-55 | core-citrine-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-accent-status-error | semantic | core-neutral-x-22 | core-carnelian-55-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-component-skeleton-default | semantic | core-neutral-x-18 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-component-skeleton-shimmer | semantic | core-neutral-x-15-b | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
