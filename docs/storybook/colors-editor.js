@@ -673,12 +673,30 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    init().catch((err) => {
-      const coreEl = document.getElementById('tab-core-content');
-      if (coreEl) {
-        coreEl.innerHTML = `<p class="storybook-status is-error">${escapeHtml(err.message)}</p>`;
+    let tokensRendered = false;
+    const timeoutId = setTimeout(() => {
+      if (!tokensRendered) {
+        const coreEl = document.getElementById('tab-core-content');
+        if (coreEl) {
+          coreEl.innerHTML =
+            '<p class="storybook-status is-error">Не удалось загрузить токены. Проверьте консоль.</p>';
+        }
       }
-    });
+    }, 5000);
+
+    init()
+      .then(() => {
+        tokensRendered = true;
+        clearTimeout(timeoutId);
+      })
+      .catch((err) => {
+        clearTimeout(timeoutId);
+        console.error('init failed:', err);
+        const coreEl = document.getElementById('tab-core-content');
+        if (coreEl) {
+          coreEl.innerHTML = `<p class="storybook-status is-error">${escapeHtml(err.message)}</p>`;
+        }
+      });
   });
 
   window.DSColorEditor = { init };

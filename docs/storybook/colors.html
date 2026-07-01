@@ -204,16 +204,39 @@
     if (swatchCell) swatchCell.innerHTML = renderSwatch(token, raw, token);
   }
 
+  let patchObserver = null;
+  let isPatching = false;
+
+  function shouldPatchFromMutations(mutations) {
+    return mutations.some((mutation) =>
+      [...mutation.addedNodes].some(
+        (node) =>
+          node.nodeType === Node.ELEMENT_NODE &&
+          (node.classList?.contains('color-token-group') ||
+            node.querySelector?.('.color-token-group'))
+      )
+    );
+  }
+
   function patchCoreTable() {
-    document.querySelectorAll('#tab-core-content tr[data-token]').forEach(patchCoreRow);
+    if (isPatching) return;
+    isPatching = true;
+    try {
+      document.querySelectorAll('#tab-core-content tr[data-token]').forEach(patchCoreRow);
+    } finally {
+      isPatching = false;
+    }
   }
 
   function bindPatchers() {
     const coreEl = document.getElementById('tab-core-content');
     if (!coreEl) return;
 
-    const observer = new MutationObserver(() => patchCoreTable());
-    observer.observe(coreEl, { childList: true, subtree: true });
+    patchObserver = new MutationObserver((mutations) => {
+      if (!shouldPatchFromMutations(mutations)) return;
+      patchCoreTable();
+    });
+    patchObserver.observe(coreEl, { childList: true, subtree: true });
 
     coreEl.addEventListener('input', (event) => {
       const input = event.target.closest('.token-editor-input[data-mode="core"]');
