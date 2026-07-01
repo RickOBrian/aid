@@ -11,27 +11,27 @@ Update this file every time a new token is created.
 | Token | Level | Light value | Dark value | Used in |
 |-------|-------|-------------|------------|---------|
 | --core-neutral-x-0 | core | #FFFFFF | — | bg-base-main, bg-card-main, text-inverse, icon-inverse |
-| --core-neutral-x-3 | core | #CDD6F4 | — | text-code-block (dark) |
-| --core-neutral-x-5 | core | #EBEBEB | — | (reserved) |
-| --core-neutral-x-10 | core | #E2E2E2 | — | bg-base-main-secondary |
-| --core-neutral-x-12 | core | #F0F0F4 | — | bg-code-block |
-| --core-neutral-x-15 | core | #E5E5EA | — | line-default |
-| --core-neutral-x-15-b | core | #F0F0F5 | — | bg-component-skeleton-shimmer |
+| --core-neutral-x-3 | core | #F5F5F7 | — | text-code-block (dark) |
+| --core-neutral-x-5 | core | #F0F0F5 | — | (reserved) |
+| --core-neutral-x-10 | core | #F0F0F4 | — | bg-base-main-secondary |
+| --core-neutral-x-12 | core | #EFEFF2 | — | bg-code-block |
+| --core-neutral-x-15 | core | #FEE2E2 | — | line-default |
+| --core-neutral-x-15-b | core | #EBEBEB | — | bg-component-skeleton-shimmer |
 | --core-neutral-x-18 | core | #E5E5EA | — | bg-component-skeleton-default |
-| --core-neutral-x-20 | core | #EFEFF2 | — | bg-card-main-secondary, bg-modal-main-secondary |
-| --core-neutral-x-22 | core | #FEE2E2 | — | bg-accent-status-error |
-| --core-neutral-x-25 | core | #C7C7CC | — | line-strong |
-| --core-neutral-x-45 | core | #AEAEB2 | — | text-disabled, text-secondary (dark), icon-secondary (dark) |
-| --core-neutral-x-60 | core | #6E6E73 | — | text-secondary |
-| --core-neutral-x-82 | core | #24292F | — | text-code-block |
-| --core-neutral-x-85 | core | #1C1C1E | — | bg-card-main (dark) |
-| --core-neutral-x-88 | core | #181818 | — | bg-base-main (dark) |
-| --core-neutral-x-90 | core | #111111 | — | text-primary, bg-accent-inverse (dark), text-inverse (dark), icon-inverse (dark) |
-| --core-neutral-x-92 | core | #1E1E2E | — | bg-code-block (dark) |
-| --core-neutral-x-93 | core | #2C2C2E | — | bg-card-main-secondary (dark), bg-modal-main (dark), line-default (dark) |
-| --core-neutral-x-95 | core | #3A3A3C | — | bg-modal-main-secondary (dark), line-strong (dark) |
-| --core-neutral-x-97 | core | #636366 | — | text-disabled (dark), icon-disabled (dark) |
-| --core-neutral-x-98 | core | #F5F5F7 | — | text-primary (dark), icon-primary (dark) |
+| --core-neutral-x-20 | core | #E5E5EA | — | bg-card-main-secondary, bg-modal-main-secondary |
+| --core-neutral-x-22 | core | #E2E2E2 | — | bg-accent-status-error |
+| --core-neutral-x-25 | core | #CDD6F4 | — | line-strong |
+| --core-neutral-x-45 | core | #C7C7CC | — | text-disabled, text-secondary (dark), icon-secondary (dark) |
+| --core-neutral-x-60 | core | #AEAEB2 | — | text-secondary |
+| --core-neutral-x-82 | core | #6E6E73 | — | text-code-block |
+| --core-neutral-x-85 | core | #636366 | — | bg-card-main (dark) |
+| --core-neutral-x-88 | core | #3A3A3C | — | bg-base-main (dark) |
+| --core-neutral-x-90 | core | #2C2C2E | — | text-primary, bg-accent-inverse (dark), text-inverse (dark), icon-inverse (dark) |
+| --core-neutral-x-92 | core | #24292F | — | bg-code-block (dark) |
+| --core-neutral-x-93 | core | #1E1E2E | — | bg-card-main-secondary (dark), bg-modal-main (dark), line-default (dark) |
+| --core-neutral-x-95 | core | #1C1C1E | — | bg-modal-main-secondary (dark), line-strong (dark) |
+| --core-neutral-x-97 | core | #181818 | — | text-disabled (dark), icon-disabled (dark) |
+| --core-neutral-x-98 | core | #111111 | — | text-primary (dark), icon-primary (dark) |
 | --core-neutral-x-100 | core | #000000 | — | overlay alpha base |
 | --core-neutral-x-100-a04 | core | rgba(0,0,0,0.04) | — | (reserved) |
 | --core-neutral-x-100-a06 | core | rgba(0,0,0,0.06) | — | (reserved) |
@@ -41,8 +41,8 @@ Update this file every time a new token is created.
 | --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | — | (reserved) |
 | --core-neutral-x-100-a40 | core | rgba(0,0,0,0.40) | — | bg-overlay-main |
 | --core-neutral-x-100-a60 | core | rgba(0,0,0,0.60) | — | bg-overlay-main (dark) |
-| --core-sapphire-55 | core | #0057FF | — | bg-accent-main, text-accent, line-accent, icon-accent |
-| --core-sapphire-65 | core | #3B82F6 | — | bg-accent-main (dark), text-accent (dark) |
+| --core-sapphire-55 | core | #3B82F6 | — | bg-accent-main, text-accent, line-accent, icon-accent |
+| --core-sapphire-65 | core | #0057FF | — | bg-accent-main (dark), text-accent (dark) |
 | --core-sapphire-55-a06 | core | rgba(0,87,255,0.06) | — | bg-accent-ghost, bg-accent-states-disable |
 | --core-sapphire-55-a08 | core | rgba(0,87,255,0.08) | — | bg-accent-states-hover |
 | --core-sapphire-55-a12 | core | rgba(0,87,255,0.12) | — | bg-accent-fade, bg-accent-states-focused |
@@ -53,13 +53,13 @@ Update this file every time a new token is created.
 | --core-sapphire-65-a16 | core | rgba(59,130,246,0.16) | — | bg-accent-fade (dark), bg-accent-states-focused (dark) |
 | --core-sapphire-65-a18 | core | rgba(59,130,246,0.18) | — | bg-accent-states-active (dark) |
 | --core-sapphire-65-a20 | core | rgba(59,130,246,0.20) | — | bg-accent-states-pressed (dark) |
-| --core-carnelian-55 | core | #D93025 | — | text-error |
-| --core-carnelian-65 | core | #F87171 | — | text-error (dark) |
+| --core-carnelian-55 | core | #F87171 | — | text-error |
+| --core-carnelian-65 | core | #D93025 | — | text-error (dark) |
 | --core-carnelian-55-a16 | core | rgba(239,68,68,0.16) | — | bg-accent-status-error (dark) |
 | --core-jasper-55 | core | #D1FAE5 | — | bg-accent-status-success |
 | --core-jasper-65-a16 | core | rgba(16,185,129,0.16) | — | bg-accent-status-success (dark) |
-| --core-jasper-75 | core | #1A7F4B | — | text-success |
-| --core-jasper-85 | core | #34D399 | — | text-success (dark) |
+| --core-jasper-75 | core | #34D399 | — | text-success |
+| --core-jasper-85 | core | #1A7F4B | — | text-success (dark) |
 | --core-citrine-55 | core | #FEF3C7 | — | bg-accent-status-warning |
 | --core-citrine-65-a16 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
 | --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
