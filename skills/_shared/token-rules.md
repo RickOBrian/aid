@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.3.1
+# Правила токенов дизайн-системы — v1.4.0
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -106,6 +106,38 @@ Core → Semantic
 
 ---
 
+## Границы категорий — стоп-правила
+
+### Типографика vs Цвет
+
+Типографика отвечает **ТОЛЬКО** за форму текста:
+
+- font-family, font-size, font-weight, line-height, letter-spacing
+
+Цвет текста — это **НЕ** типографика. Он живёт в Semantic Color Tokens, категория `text`:
+
+- `text-primary`, `text-secondary`, `text-muted`, `text-disabled`, `text-inverse` → semantic-color
+- `icon-primary`, `icon-secondary`, `icon-accent` → semantic-color
+
+❌ **Запрещено:** typography token со значением цвета (`#hex`, `rgba`, `var(--core-*)` с цветом)  
+❌ **Запрещено:** в таблице типографики отображать токены с color-значениями  
+✅ **Правило:** если значение токена — цвет, токен принадлежит color-группе, не typography
+
+### Пространство vs Цвет vs Типографика
+
+Каждый токен принадлежит **ровно одной** категории.  
+Определяется по **значению**, не по контексту использования:
+
+| Значение токена | Категория |
+|---|---|
+| `#hex`, `rgba`, `oklch` | color |
+| `px`, `rem`, `em` (размер текста) | typography |
+| `px`, `rem` (отступы, радиусы) | space |
+| font-name, font-stack | typography |
+| unitless number (font-weight) | typography |
+
+---
+
 ## Отсутствующий semantic-токен
 
 Если нужный semantic-токен не существует — **не используй Core напрямую**.
@@ -146,6 +178,7 @@ Web не использует `-ios` и `-android` токены.
 
 ## Changelog
 
+- **1.4.0** — добавлен раздел «Границы категорий — стоп-правила»: типографика vs цвет, пространство vs цвет vs типографика; правило определения категории по значению токена.
 - **1.3.1** — раздел «Состояния» переработан: убраны колонки платформ-кода (они в `component-states-guide.md`), добавлена строка `selected/active`, добавлена ссылка на `component-states-guide.md`.
 - **1.3.0** — версия синхронизирована с репо после миграции на двухуровневую архитектуру; frontmatter приведён к skill-совместимому формату (name, metadata, description).
 - **1.2.1** — добавлены ссылки на `core-space-tokens-guide.md` и `semantic-space-tokens-guide.md`; добавлены блокеры для прямого использования `spacing-N` в компонентах и чисел в именах Semantic-токенов пространства.

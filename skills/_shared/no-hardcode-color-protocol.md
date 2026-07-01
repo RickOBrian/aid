@@ -146,3 +146,18 @@ name: no-hardcode-color-protocol
 | Semantic с числом в имени | `--text-14` | `--text-label` |
 | Semantic с цветом в имени | `--bg-white` | `--bg-base-main` |
 | Семантика без Core | `--bg-card-main: #f7f7f7` | `--bg-card-main: var(--core-neutral-x-5)` |
+
+---
+
+## Самопроверка перед коммитом
+
+Перед каждым коммитом, затрагивающим токены, — пройти чеклист:
+
+- [ ] Все токены с цветовым значением → находятся в color-группе (`:root` Color section)
+- [ ] Таблица типографики содержит только: font-family, font-size, font-weight, line-height, letter-spacing
+- [ ] Ни один typography-токен не содержит значение цвета
+- [ ] Ни один space-токен не содержит значение цвета
+- [ ] Новые токены добавлены в `color-tokens-registry.md` (если цветовые)
+- [ ] `[data-theme="dark"]` содержит только semantic-overrides, не core-токены
+
+Если хотя бы один пункт не выполнен — коммит не делать, исправить сначала.
