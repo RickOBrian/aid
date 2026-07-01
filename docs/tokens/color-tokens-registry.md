@@ -10,9 +10,9 @@ Update this file every time a new token is created.
 
 | Token | Level | Light value | Dark value | Used in |
 |-------|-------|-------------|------------|---------|
-| --core-neutral-x-0 | core | #FFFFFF | — | bg-card-main, text-inverse, icon-inverse |
+| --core-neutral-x-0 | core | #FFFFFF | — | bg-base-main, bg-card-main, text-inverse, icon-inverse |
 | --core-neutral-x-3 | core | #CDD6F4 | — | text-code-block (dark) |
-| --core-neutral-x-5 | core | #EBEBEB | — | bg-base-main |
+| --core-neutral-x-5 | core | #EBEBEB | — | (reserved) |
 | --core-neutral-x-10 | core | #E2E2E2 | — | bg-base-main-secondary |
 | --core-neutral-x-12 | core | #F0F0F4 | — | bg-code-block |
 | --core-neutral-x-15 | core | #E5E5EA | — | line-default |
@@ -32,13 +32,13 @@ Update this file every time a new token is created.
 | --core-neutral-x-95 | core | #3A3A3C | — | bg-modal-main-secondary (dark), line-strong (dark) |
 | --core-neutral-x-97 | core | #636366 | — | text-disabled (dark), icon-disabled (dark) |
 | --core-neutral-x-98 | core | #F5F5F7 | — | text-primary (dark), icon-primary (dark) |
-| --core-neutral-x-100 | core | #000000 | — | shadow alpha base |
-| --core-neutral-x-100-a04 | core | rgba(0,0,0,0.04) | — | shadow-subtle |
-| --core-neutral-x-100-a06 | core | rgba(0,0,0,0.06) | — | shadow-card, shadow-header, shadow-sidebar, shadow-table |
+| --core-neutral-x-100 | core | #000000 | — | overlay alpha base |
+| --core-neutral-x-100-a04 | core | rgba(0,0,0,0.04) | — | (reserved) |
+| --core-neutral-x-100-a06 | core | rgba(0,0,0,0.06) | — | (reserved) |
 | --core-neutral-x-100-a07 | core | rgba(0,0,0,0.07) | — | (reserved) |
 | --core-neutral-x-100-a08 | core | rgba(0,0,0,0.08) | — | (reserved) |
 | --core-neutral-x-100-a10 | core | rgba(0,0,0,0.10) | — | (reserved) |
-| --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | — | shadow-float |
+| --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | — | (reserved) |
 | --core-neutral-x-100-a40 | core | rgba(0,0,0,0.40) | — | bg-overlay-main |
 | --core-neutral-x-100-a60 | core | rgba(0,0,0,0.60) | — | bg-overlay-main (dark) |
 | --core-sapphire-55 | core | #0057FF | — | bg-accent-main, text-accent, line-accent, icon-accent |
@@ -64,7 +64,7 @@ Update this file every time a new token is created.
 | --core-citrine-65 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
 | --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
 | --core-amethyst-65 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
-| --bg-base-main | semantic | core-neutral-x-5 | core-neutral-x-88 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-base-main | semantic | core-neutral-x-0 | core-neutral-x-88 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-card-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
@@ -103,9 +103,3 @@ Update this file every time a new token is created.
 | --line-default | semantic | core-neutral-x-15 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --line-strong | semantic | core-neutral-x-25 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --line-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-card | semantic | 0 4px 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-subtle | semantic | 0 1px 4px core-neutral-x-100-a04 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-header | semantic | 0 1px 0 + 0 2px 12px core-neutral-x-100-a06/a04 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-sidebar | semantic | 4px 0 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-float | semantic | 0 4px 20px core-neutral-x-100-a12 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --shadow-table | semantic | 0 2px 16px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |

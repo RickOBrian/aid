@@ -79,9 +79,9 @@
         width: 40px;
         height: 40px;
         border-radius: var(--radius-s, 4px);
-        border: 1px solid rgba(0,0,0,0.08);
+        border: 1px solid var(--line-default, rgba(0,0,0,0.08));
         flex-shrink: 0;
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+        box-shadow: none;
       }
       .tv-value {
         font-family: 'JetBrains Mono', monospace;

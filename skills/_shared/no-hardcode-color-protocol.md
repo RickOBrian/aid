@@ -54,7 +54,6 @@ name: no-hardcode-color-protocol
 --text-primary: var(--core-neutral-x-90);
 --text-secondary: var(--core-neutral-x-60);
 --line-default: var(--core-neutral-x-10);
---shadow-card: 0 4px 24px var(--core-neutral-x-100-a06);
 ```
 
 Правила Semantic:
@@ -107,7 +106,6 @@ name: no-hardcode-color-protocol
   --bg-card-main:       var(--core-neutral-x-5);
   --text-primary:       var(--core-neutral-x-90);
   --line-default:       var(--core-neutral-x-10);
-  --shadow-card:        0 4px 24px var(--core-neutral-x-100-a06);
 }
 
 [data-theme="dark"] {
@@ -132,7 +130,6 @@ name: no-hardcode-color-protocol
 |-------|-------|---------------|--------------|---------|
 | --core-neutral-x-0 | core | #ffffff | — | bg-base-main |
 | --bg-base-main | semantic | core-neutral-x-0 | core-neutral-x-90 | template.html |
-| --shadow-card | semantic | 0 4px 24px core-neutral-x-100-a06 | same | template.html |
 ```
 
 Если файл не существует — создать его.
@@ -144,7 +141,7 @@ name: no-hardcode-color-protocol
 | Нарушение | Запрещено | Правильно |
 |-----------|-----------|-----------|
 | HEX в компоненте | `color: #333` | `color: var(--text-primary)` |
-| RGBA в компоненте | `box-shadow: 0 4px 24px rgba(0,0,0,0.06)` | `box-shadow: var(--shadow-card)` |
+| RGBA в компоненте | `border: 1px solid rgba(0,0,0,0.06)` | `border: 1px solid var(--line-default)` |
 | Core напрямую в компоненте | `background: var(--core-jasper-55)` | `background: var(--bg-accent-main)` |
 | Semantic с числом в имени | `--text-14` | `--text-label` |
 | Semantic с цветом в имени | `--bg-white` | `--bg-base-main` |

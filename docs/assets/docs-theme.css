@@ -18,12 +18,20 @@
    Large radius replaces compact token values.
    Generous line-heights replace compact doc defaults.
    ──────────────────────────────────────────────────────── */
-:root {
-
-  /* Surface — warm neutral background (visual language: #EBEBEB tone) */
-  --bg-base-main:           #EBEBEB;
+html:not([data-theme="dark"]) {
+  --bg-base-main:           #FFFFFF;
   --bg-base-main-secondary: #E2E2E2;
+}
 
+/* ── Token value overrides — Dark ─────────────────────────
+   Warm dark neutrals mirror the warm-gray light surfaces.
+   ──────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-base-main:           #181818;
+  --bg-base-main-secondary: #1E1E1E;
+}
+
+:root {
   /* Radius — large, modern (visual language: 20–28px cards) */
   --radius-m:   14px;
   --radius-l:   20px;
@@ -64,29 +72,16 @@
      --doc-* namespace: docs-specific, not DS tokens.
      ──────────────────────────────────────────────────── */
 
-  /* Shadows — soft, large spread, low opacity */
-  --doc-shadow-card:       0 8px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --doc-shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.06);
-  --doc-shadow-float:      0 4px 20px rgba(0, 0, 0, 0.12);
-
   /* Easing */
   --doc-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --doc-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Prose layout */
   --doc-prose-max-width:  740px;
-  --doc-section-gap:      48px;
-  --doc-paragraph-gap:    20px;
-  --doc-heading-gap-top:  40px;
-  --doc-heading-gap-bot:  16px;
-}
-
-/* ── Token value overrides — Dark ─────────────────────────
-   Warm dark neutrals mirror the warm-gray light surfaces.
-   ──────────────────────────────────────────────────────── */
-[data-theme="dark"] {
-  --bg-base-main:           #181818;
-  --bg-base-main-secondary: #1E1E1E;
+  --doc-section-gap:      28px;
+  --doc-paragraph-gap:    16px;
+  --doc-heading-gap-top:  28px;
+  --doc-heading-gap-bot:  12px;
 }
 
 /* ============================================================
@@ -98,6 +93,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: var(--body-m-lh);
+  background-color: var(--bg-base-main);
+}
+
+html {
+  background-color: var(--bg-base-main);
+}
+
+.guide-layout {
+  background-color: var(--bg-base-main);
 }
 
 /* TODO: refactor style.css line 253 to use var(--font-body) */
@@ -156,28 +160,48 @@ body, body * {
 }
 
 /* ============================================================
-   Cards — soft shadow, no border, large radius
+   Cards — border separation, no shadow
    ============================================================ */
 
-.card,
-.guide-header,
-.layout__sidebar {
-  box-shadow: var(--doc-shadow-card);
-  border-radius: var(--radius-xl);
+.card {
+  border: 1px solid var(--line-default);
+  box-shadow: none;
+  border-radius: 0;
 }
 
-/* Sidebar: no border — depth from shadow only */
-.layout__sidebar {
-  border-right: none;
+.card:hover {
+  border-color: var(--line-accent);
+  box-shadow: none;
 }
 
-/* Guide header card */
+/* Header + side panels — divider lines */
+.layout__header {
+  border-bottom: 1px solid var(--line-default);
+  box-shadow: none;
+}
+.layout__sidebar,
+.guide-toc {
+  box-shadow: none;
+  border-radius: 0;
+  background-color: var(--bg-card-main);
+}
+
+.layout__sidebar {
+  border-right: 1px solid var(--line-default);
+}
+
+.guide-toc {
+  border-left: 1px solid var(--line-default);
+}
+
+/* Guide header — no card substrate */
 .guide-header {
-  border-radius: var(--radius-xl);
+  box-shadow: none;
+  border-radius: 0;
   border: none;
-  box-shadow: var(--doc-shadow-card);
-  padding: var(--inset-container-v-l) var(--inset-container-h-l);
-  margin-bottom: var(--gap-xl);
+  background: transparent;
+  padding: 0;
+  margin-bottom: 20px;
 }
 
 /* ============================================================
@@ -206,6 +230,12 @@ body, body * {
 .search__input {
   border-radius: var(--radius-full);
   padding-left: 38px;
+}
+
+.search__input:focus {
+  outline: 2px solid var(--line-accent);
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 /* ============================================================
@@ -242,27 +272,57 @@ body, body * {
 }
 
 /* ============================================================
-   Tables — large radius, soft shadow, no border
+   Table component — .table-wrap shell + inner table
    ============================================================ */
 
 .table-wrap {
   border-radius: var(--radius-l);
   overflow: hidden;
-  box-shadow: var(--doc-shadow-card);
+  border: 1px solid var(--line-default);
+  box-shadow: none;
+  margin-bottom: 1.5em;
 }
 
-.prose table {
-  border-radius: var(--radius-l);
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  margin: 0;
+  background: var(--bg-card-main);
+  border: none;
+  border-radius: 0;
 }
 
-.prose thead {
+.table-wrap thead {
   background: var(--bg-base-main-secondary);
 }
 
-.prose thead th {
+.table-wrap th {
+  font-size: var(--label-xs-size);
+  font-weight: 700;
+  line-height: var(--label-xs-lh);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: var(--inset-control-v-m) var(--inset-container-h-s);
+  text-align: left;
+  border-bottom: 1px solid var(--line-default);
+  background: var(--bg-base-main-secondary);
+}
+
+.table-wrap td {
+  padding: var(--inset-control-v-m) var(--inset-container-h-s);
+  border-bottom: 1px solid var(--line-default);
+  vertical-align: top;
+}
+
+.table-wrap tr:last-child td {
   border-bottom: none;
-  font-weight: var(--label-m-weight);
-  letter-spacing: 0.01em;
+}
+
+.table-wrap tbody tr:hover td {
+  background: var(--bg-accent-states-hover);
 }
 
 /* ============================================================
@@ -281,7 +341,8 @@ body, body * {
 
 .token-swatch {
   border-radius: var(--radius-l);
-  box-shadow: var(--doc-shadow-card);
+  border: 1px solid var(--line-default);
+  box-shadow: none;
 }
 
 /* ============================================================
@@ -289,7 +350,17 @@ body, body * {
    ============================================================ */
 
 .prose pre {
+  background: transparent;
   border-radius: var(--radius-l);
+  border: 1px solid var(--line-default);
+  box-shadow: none;
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.prose pre code,
+.prose pre .hljs {
+  background: transparent;
+  padding: 0;
 }
 
 /* ============================================================
@@ -299,12 +370,12 @@ body, body * {
 
 .arch-diagram {
   border-radius: var(--radius-xl);
-  border: none;
-  box-shadow: var(--doc-shadow-card);
+  border: 1px solid var(--line-default);
+  box-shadow: none;
 }
 
 .token-text-demo {
   border-radius: var(--radius-xl);
-  border: none;
-  box-shadow: var(--doc-shadow-card);
+  border: 1px solid var(--line-default);
+  box-shadow: none;
 }

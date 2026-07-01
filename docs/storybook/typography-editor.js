@@ -166,6 +166,81 @@
       .replace(/"/g, '&quot;');
   }
 
+  function getSaveEndpoints() {
+    const urls = new Set();
+    urls.add('/docs/tokens/save-tokens');
+    urls.add(new URL('../tokens/save-tokens', window.location.href).href);
+    urls.add(`http://${window.location.hostname}:3336/save-tokens`);
+    return [...urls];
+  }
+
+  async function parseSaveResponse(res) {
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      if (text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html')) {
+        throw new Error(
+          'Сервер не поддерживает сохранение. Запустите: python3 scripts/docs-server.py'
+        );
+      }
+      throw new Error('Некорректный ответ сервера (ожидался JSON)');
+    }
+  }
+
+  async function postSave(payload) {
+    const endpoints = getSaveEndpoints();
+    let lastError;
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await parseSaveResponse(res);
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+        return data;
+      } catch (err) {
+        lastError = err;
+      }
+    }
+
+    throw lastError || new Error('Не удалось сохранить токены');
+  }
+
+  async function probeSaveApi() {
+    const banner = document.getElementById('save-api-banner');
+    if (!banner) return;
+
+    try {
+      const res = await fetch('/docs/tokens/save-tokens', { method: 'OPTIONS' });
+      if (res.status === 204 || res.status === 200) {
+        banner.hidden = true;
+        return;
+      }
+    } catch (_) {
+      /* try fallback port */
+    }
+
+    try {
+      const res = await fetch(`http://${window.location.hostname}:3336/save-tokens`, {
+        method: 'OPTIONS',
+      });
+      if (res.status === 204 || res.status === 200) {
+        banner.hidden = true;
+        return;
+      }
+    } catch (_) {
+      /* no save api */
+    }
+
+    banner.hidden = false;
+  }
+
   function renderTokenTable(tokens) {
     const tbody = document.getElementById('tokens-tbody');
     if (!tbody) return;
@@ -260,20 +335,11 @@
         });
 
         try {
-          const res = await fetch('../tokens/save-tokens', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tokens,
-              changes,
-              author: localStorage.getItem('ds-author') || 'sergej',
-            }),
+          const data = await postSave({
+            tokens,
+            changes,
+            author: localStorage.getItem('ds-author') || 'sergej',
           });
-
-          const data = await res.json();
-          if (!res.ok || !data.ok) {
-            throw new Error(data.error || `HTTP ${res.status}`);
-          }
 
           if (saveStatus) {
             saveStatus.textContent = `Сохранено v${data.version}`;
@@ -300,6 +366,7 @@
     const tokens = collectTypographyTokens();
     renderTokenTable(tokens);
     loadChangelog();
+    probeSaveApi();
   }
 
   document.addEventListener('DOMContentLoaded', init);

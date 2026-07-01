@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.5.1"
+  version: "1.5.2"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -16,13 +16,13 @@ description: >
 
 # Semantic Color Tokens
 
-> Статус: Stable · v1.5.1
+> Статус: Stable · v1.5.2
 
 <style>
 /* ================================================================
    Visual Language Override — Semantic Color Guide v1.5.1
    Source: skills/_shared/docs-visual-language.md
-   Rules: warm neutral bg · white cards · large radius · soft shadow
+   Rules: warm neutral bg · white cards · large radius · line-default border
           pill shapes · spring easing · floating pill on hover
    ================================================================ */
 
@@ -38,14 +38,14 @@ description: >
 }
 
 /* ── arch-diagram ────────────────────────────────────────
-   Outer: warm neutral #EBEBEB, r-24, soft shadow, no border
+   Outer: warm neutral #EBEBEB, r-24, line-default border
    Inner rows: white cards, r-16 (nested radius: 24 − 8px padding)
    ──────────────────────────────────────────────────────── */
 .arch-diagram {
   background: var(--bg-base-main);
-  border: none;
+  border: 1px solid var(--line-default);
   border-radius: 24px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: none;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -57,15 +57,16 @@ description: >
 .arch-diagram__row {
   background: var(--bg-card-main);
   border-radius: 16px;
-  border: none;
-  border-bottom: none;
+  border: 1px solid var(--line-default);
+  border-bottom: 1px solid var(--line-default);
   padding: 14px 20px;
   transition: transform 0.22s var(--ease-spring),
-              box-shadow 0.22s var(--ease-spring);
+              border-color 0.22s var(--ease-spring);
 }
 .arch-diagram__row:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  border-color: var(--line-accent);
+  box-shadow: none;
 }
 .arch-diagram__connector {
   border-bottom: none;
@@ -75,15 +76,15 @@ description: >
 }
 
 /* ── token-text-demo ──────────────────────────────────────
-   Outer: warm neutral #EBEBEB, r-24, soft shadow, no border
+   Outer: warm neutral #EBEBEB, r-24, line-default border
    Items: white pill cards, hover lifts + shows floating dark pill
    Floating pill: dark bg · white text · border-radius 9999px
    ──────────────────────────────────────────────────────── */
 .token-text-demo {
   background: var(--bg-base-main);
-  border: none;
+  border: 1px solid var(--line-default);
   border-radius: 24px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: none;
   padding: 16px;
   gap: 8px;
   margin-bottom: 24px;
@@ -91,17 +92,19 @@ description: >
 .token-text-demo__item {
   background: var(--bg-card-main);
   border-radius: 9999px;
+  border: 1px solid var(--line-default);
   padding: 9px 18px;
   cursor: default;
   position: relative;
   display: inline-flex;
   align-items: center;
   transition: transform 0.22s var(--ease-spring),
-              box-shadow 0.22s var(--ease-spring);
+              border-color 0.22s var(--ease-spring);
 }
 .token-text-demo__item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+  border-color: var(--line-accent);
+  box-shadow: none;
 }
 .token-text-demo__item--on-accent {
   background: var(--bg-accent-main);
@@ -126,7 +129,8 @@ description: >
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 1px solid var(--line-strong);
+  box-shadow: none;
   transition: opacity   0.15s var(--ease-out),
               transform 0.22s var(--ease-spring);
   z-index: 10;
@@ -463,9 +467,10 @@ bg-accent-product-marketplace-main
 
 ## Changelog
 
+- **1.5.2** — Illustrations: тени заменены на `line-default` / `line-accent` borders (arch-diagram, token-text-demo).
 - **1.5.1** — Visual Language applied to existing illustrations (arch-diagram §1, token-text-demo §5):
   warm neutral `#EBEBEB` outer bg, white card rows/pills, r-24 container, r-16 nested rows,
-  soft shadow (no border), spring easing, floating dark pill on hover with resolved hex value.
+  line-default border (no shadow), spring easing, floating dark pill on hover with resolved hex value.
 - **1.5.0** — Illustration Logic: секция 1 (Принцип) — arch-diagram Core→Semantic→Component
   (Rule 5); секция 5 (text/icon/line) — live token-text-demo (Rule 1).
   Добавлены CSS-классы `.arch-diagram` и `.token-text-demo` в `style.css`.

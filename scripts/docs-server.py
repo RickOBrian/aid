@@ -13,10 +13,22 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 3335
 ROOT = Path(__file__).parent.parent  # project root (…/aid/)
 SAVE_TOKENS_SCRIPT = ROOT / 'docs' / 'tokens' / 'save-tokens.js'
+
+
+def _request_path(handler):
+    return urlparse(handler.path).path.rstrip('/')
+
+
+def _is_save_tokens_path(handler):
+    return _request_path(handler) in (
+        '/docs/tokens/save-tokens',
+        '/docs/tokens/save-tokens.js',
+    )
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -38,7 +50,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
-        if self.path.rstrip('/') in ('/docs/tokens/save-tokens', '/docs/tokens/save-tokens.js'):
+        if _is_save_tokens_path(self):
             self._handle_save_tokens()
             return
         self.send_error(404, 'Not found')
@@ -72,7 +84,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(encoded)
 
     def do_OPTIONS(self):
-        if self.path.rstrip('/') in ('/docs/tokens/save-tokens', '/docs/tokens/save-tokens.js'):
+        if _is_save_tokens_path(self):
             self.send_response(204)
             self.send_header('Access-Control-Allow-Origin', '*')
             self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -99,8 +111,11 @@ class ReusableServer(http.server.HTTPServer):
 
 if __name__ == '__main__':
     url = f'http://localhost:{PORT}/docs/index.html'
-    print(f'\n  DS Docs  →  {url}')
-    print(f'  Root     →  {ROOT}')
+    storybook = f'http://localhost:{PORT}/docs/storybook/typography.html'
+    print(f'\n  DS Docs      →  {url}')
+    print(f'  Storybook    →  {storybook}')
+    print(f'  Token save   →  POST /docs/tokens/save-tokens')
+    print(f'  Root         →  {ROOT}')
     print(f'  Ctrl+C to stop\n')
 
     server = ReusableServer(('', PORT), Handler)

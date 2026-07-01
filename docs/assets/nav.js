@@ -107,7 +107,6 @@
         border: 1px solid var(--line-default, #e5e5ea);
         border-top: none;
         border-radius: 0 0 var(--radius-l, 12px) var(--radius-l, 12px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.12);
         padding: 8px 12px;
         min-width: 400px;
       }
@@ -209,11 +208,11 @@
         border-radius: var(--radius-l, 12px);
         background: var(--bg-card-main, #fff);
         margin-bottom: var(--gap-s, 8px);
-        transition: border-color .15s, box-shadow .15s;
+        transition: border-color .15s;
       }
       .search-result:hover {
-        border-color: var(--bg-accent-main, #0057ff);
-        box-shadow: 0 0 0 3px var(--bg-accent-fade, rgba(0,87,255,.12));
+        border-color: var(--line-accent, #0057ff);
+        box-shadow: none;
       }
       .search-result__header {
         display: flex;

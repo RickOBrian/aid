@@ -193,12 +193,15 @@ function sendJson(res, status, data) {
   res.writeHead(status, {
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(body),
+    'Access-Control-Allow-Origin': '*',
   });
   res.end(body);
 }
 
 function startServer(port) {
   const server = http.createServer(async (req, res) => {
+    const path = (req.url || '').split('?')[0];
+
     if (req.method === 'OPTIONS') {
       res.writeHead(204, {
         'Access-Control-Allow-Origin': '*',
@@ -211,6 +214,11 @@ function startServer(port) {
 
     if (req.method !== 'POST') {
       sendJson(res, 405, { ok: false, error: 'Method not allowed' });
+      return;
+    }
+
+    if (path !== '/' && path !== '/save-tokens' && path !== '/docs/tokens/save-tokens') {
+      sendJson(res, 404, { ok: false, error: 'Not found' });
       return;
     }
 

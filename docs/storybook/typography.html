@@ -109,6 +109,12 @@
     <header class="storybook-page-header">
       <h1>Typography</h1>
       <p>Live-редактор типографических токенов docs/guides. Изменения применяются мгновенно; сохранение записывает значения в файлы репозитория.</p>
+      <p id="save-api-banner" class="storybook-status is-error" hidden>
+        Сохранение недоступно на этом сервере. Запустите
+        <code>python3 scripts/docs-server.py</code>
+        или в отдельном терминале
+        <code>node docs/tokens/save-tokens.js --serve</code>.
+      </p>
     </header>
 
     <section class="storybook-section" aria-labelledby="tokens-heading">
