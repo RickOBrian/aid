@@ -10,3 +10,102 @@ Update this file every time a new token is created.
 
 | Token | Level | Light value | Dark value | Used in |
 |-------|-------|-------------|------------|---------|
+| --core-neutral-x-0 | core | #FFFFFF | — | bg-card-main, text-inverse, icon-inverse |
+| --core-neutral-x-3 | core | #CDD6F4 | — | text-code-block (dark) |
+| --core-neutral-x-5 | core | #EBEBEB | — | bg-base-main |
+| --core-neutral-x-10 | core | #E2E2E2 | — | bg-base-main-secondary |
+| --core-neutral-x-12 | core | #F0F0F4 | — | bg-code-block |
+| --core-neutral-x-15 | core | #E5E5EA | — | line-default |
+| --core-neutral-x-15-b | core | #F0F0F5 | — | bg-component-skeleton-shimmer |
+| --core-neutral-x-18 | core | #E5E5EA | — | bg-component-skeleton-default |
+| --core-neutral-x-20 | core | #EFEFF2 | — | bg-card-main-secondary, bg-modal-main-secondary |
+| --core-neutral-x-22 | core | #FEE2E2 | — | bg-accent-status-error |
+| --core-neutral-x-25 | core | #C7C7CC | — | line-strong |
+| --core-neutral-x-45 | core | #AEAEB2 | — | text-disabled, text-secondary (dark), icon-secondary (dark) |
+| --core-neutral-x-60 | core | #6E6E73 | — | text-secondary |
+| --core-neutral-x-82 | core | #24292F | — | text-code-block |
+| --core-neutral-x-85 | core | #1C1C1E | — | bg-card-main (dark) |
+| --core-neutral-x-88 | core | #181818 | — | bg-base-main (dark) |
+| --core-neutral-x-90 | core | #111111 | — | text-primary, bg-accent-inverse (dark), text-inverse (dark), icon-inverse (dark) |
+| --core-neutral-x-92 | core | #1E1E2E | — | bg-code-block (dark) |
+| --core-neutral-x-93 | core | #2C2C2E | — | bg-card-main-secondary (dark), bg-modal-main (dark), line-default (dark) |
+| --core-neutral-x-95 | core | #3A3A3C | — | bg-modal-main-secondary (dark), line-strong (dark) |
+| --core-neutral-x-97 | core | #636366 | — | text-disabled (dark), icon-disabled (dark) |
+| --core-neutral-x-98 | core | #F5F5F7 | — | text-primary (dark), icon-primary (dark) |
+| --core-neutral-x-100 | core | #000000 | — | shadow alpha base |
+| --core-neutral-x-100-a04 | core | rgba(0,0,0,0.04) | — | shadow-subtle |
+| --core-neutral-x-100-a06 | core | rgba(0,0,0,0.06) | — | shadow-card, shadow-header, shadow-sidebar, shadow-table |
+| --core-neutral-x-100-a07 | core | rgba(0,0,0,0.07) | — | (reserved) |
+| --core-neutral-x-100-a08 | core | rgba(0,0,0,0.08) | — | (reserved) |
+| --core-neutral-x-100-a10 | core | rgba(0,0,0,0.10) | — | (reserved) |
+| --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | — | shadow-float |
+| --core-neutral-x-100-a40 | core | rgba(0,0,0,0.40) | — | bg-overlay-main |
+| --core-neutral-x-100-a60 | core | rgba(0,0,0,0.60) | — | bg-overlay-main (dark) |
+| --core-sapphire-55 | core | #0057FF | — | bg-accent-main, text-accent, line-accent, icon-accent |
+| --core-sapphire-65 | core | #3B82F6 | — | bg-accent-main (dark), text-accent (dark) |
+| --core-sapphire-55-a06 | core | rgba(0,87,255,0.06) | — | bg-accent-ghost, bg-accent-states-disable |
+| --core-sapphire-55-a08 | core | rgba(0,87,255,0.08) | — | bg-accent-states-hover |
+| --core-sapphire-55-a12 | core | rgba(0,87,255,0.12) | — | bg-accent-fade, bg-accent-states-focused |
+| --core-sapphire-55-a14 | core | rgba(0,87,255,0.14) | — | bg-accent-states-active |
+| --core-sapphire-55-a16 | core | rgba(0,87,255,0.16) | — | bg-accent-states-pressed |
+| --core-sapphire-65-a08 | core | rgba(59,130,246,0.08) | — | bg-accent-ghost (dark), bg-accent-states-disable (dark) |
+| --core-sapphire-65-a10 | core | rgba(59,130,246,0.10) | — | bg-accent-states-hover (dark) |
+| --core-sapphire-65-a16 | core | rgba(59,130,246,0.16) | — | bg-accent-fade (dark), bg-accent-states-focused (dark) |
+| --core-sapphire-65-a18 | core | rgba(59,130,246,0.18) | — | bg-accent-states-active (dark) |
+| --core-sapphire-65-a20 | core | rgba(59,130,246,0.20) | — | bg-accent-states-pressed (dark) |
+| --core-carnelian-55 | core | #D93025 | — | text-error |
+| --core-carnelian-65 | core | #F87171 | — | text-error (dark) |
+| --core-carnelian-55-a16 | core | rgba(239,68,68,0.16) | — | bg-accent-status-error (dark) |
+| --core-jasper-55 | core | #D1FAE5 | — | bg-accent-status-success |
+| --core-jasper-65 | core | rgba(16,185,129,0.16) | — | bg-accent-status-success (dark) |
+| --core-jasper-75 | core | #1A7F4B | — | text-success |
+| --core-jasper-85 | core | #34D399 | — | text-success (dark) |
+| --core-citrine-55 | core | #FEF3C7 | — | bg-accent-status-warning |
+| --core-citrine-65 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
+| --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
+| --core-amethyst-65 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
+| --bg-base-main | semantic | core-neutral-x-5 | core-neutral-x-88 | core-color-tokens-guide.html |
+| --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html |
+| --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html |
+| --bg-card-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-93 | core-color-tokens-guide.html |
+| --bg-overlay-main | semantic | core-neutral-x-100-a40 | core-neutral-x-100-a60 | core-color-tokens-guide.html |
+| --bg-modal-main | semantic | core-neutral-x-0 | core-neutral-x-93 | core-color-tokens-guide.html |
+| --bg-modal-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-95 | core-color-tokens-guide.html |
+| --bg-accent-main | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
+| --bg-accent-fade | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html |
+| --bg-accent-ghost | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html |
+| --bg-accent-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
+| --bg-accent-states-hover | semantic | core-sapphire-55-a08 | core-sapphire-65-a10 | core-color-tokens-guide.html |
+| --bg-accent-states-pressed | semantic | core-sapphire-55-a16 | core-sapphire-65-a20 | core-color-tokens-guide.html |
+| --bg-accent-states-active | semantic | core-sapphire-55-a14 | core-sapphire-65-a18 | core-color-tokens-guide.html |
+| --bg-accent-states-disable | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html |
+| --bg-accent-states-focused | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html |
+| --bg-accent-status-success | semantic | core-jasper-55 | core-jasper-65 | core-color-tokens-guide.html |
+| --bg-accent-status-warning | semantic | core-citrine-55 | core-citrine-65 | core-color-tokens-guide.html |
+| --bg-accent-status-error | semantic | core-neutral-x-22 | core-carnelian-55-a16 | core-color-tokens-guide.html |
+| --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65 | core-color-tokens-guide.html |
+| --bg-component-skeleton-default | semantic | core-neutral-x-18 | core-neutral-x-93 | core-color-tokens-guide.html |
+| --bg-component-skeleton-shimmer | semantic | core-neutral-x-15-b | core-neutral-x-95 | core-color-tokens-guide.html |
+| --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html |
+| --text-code-block | semantic | core-neutral-x-82 | core-neutral-x-3 | core-color-tokens-guide.html |
+| --text-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html |
+| --text-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html |
+| --text-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html |
+| --text-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
+| --text-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
+| --text-error | semantic | core-carnelian-55 | core-carnelian-65 | core-color-tokens-guide.html |
+| --text-success | semantic | core-jasper-75 | core-jasper-85 | core-color-tokens-guide.html |
+| --icon-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html |
+| --icon-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html |
+| --icon-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html |
+| --icon-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
+| --icon-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
+| --line-default | semantic | core-neutral-x-15 | core-neutral-x-93 | core-color-tokens-guide.html |
+| --line-strong | semantic | core-neutral-x-25 | core-neutral-x-95 | core-color-tokens-guide.html |
+| --line-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
+| --shadow-card | semantic | 0 4px 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
+| --shadow-subtle | semantic | 0 1px 4px core-neutral-x-100-a04 | same | core-color-tokens-guide.html |
+| --shadow-header | semantic | 0 1px 0 + 0 2px 12px core-neutral-x-100-a06/a04 | same | core-color-tokens-guide.html |
+| --shadow-sidebar | semantic | 4px 0 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
+| --shadow-float | semantic | 0 4px 20px core-neutral-x-100-a12 | same | core-color-tokens-guide.html |
+| --shadow-table | semantic | 0 2px 16px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
