@@ -99,6 +99,8 @@ function readLatestVersion() {
 }
 
 function bumpPatch(version) {
+  // Token value change = PATCH per semver-guide.md
+  // MINOR = new token added, MAJOR = token renamed or deleted
   const parts = version.split('.').map(Number);
   parts[2] += 1;
   return parts.join('.');
@@ -108,21 +110,32 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function formatChangelogEntry(changes) {
+  if (!changes.length) {
+    return { tokenCol: 'multiple', changeCol: 'token updates' };
+  }
+
+  const tokenCol = changes.map((c) => c.token).join(', ');
+  const changeCol =
+    changes.length > 3
+      ? `${changes.length} tokens updated`
+      : changes.map((c) => `${c.token}: ${c.oldValue} → ${c.newValue}`).join('; ');
+
+  return { tokenCol, changeCol };
+}
+
 function appendChangelog({ version, date, changes, author }) {
   let md = fs.readFileSync(CHANGELOG_PATH, 'utf8');
-  const rows = changes.length
-    ? changes.map(
-        (c) => `| ${version} | ${date} | ${c.token} | ${c.oldValue} → ${c.newValue} | ${author} |`
-      )
-    : [`| ${version} | ${date} | multiple | token updates | ${author} |`];
+  const { tokenCol, changeCol } = formatChangelogEntry(changes);
+  const row = `| ${version} | ${date} | ${tokenCol} | ${changeCol} | ${author} |`;
 
   const insertAt = md.lastIndexOf('\n|');
   if (insertAt === -1) {
-    md += '\n' + rows.join('\n') + '\n';
+    md += '\n' + row + '\n';
   } else {
     const lineEnd = md.indexOf('\n', insertAt + 1);
     const pos = lineEnd === -1 ? md.length : lineEnd;
-    md = md.slice(0, pos) + '\n' + rows.join('\n') + md.slice(pos);
+    md = md.slice(0, pos) + '\n' + row + md.slice(pos);
   }
 
   fs.writeFileSync(CHANGELOG_PATH, md, 'utf8');
