@@ -123,8 +123,8 @@
 (function () {
   'use strict';
 
-  function renderSwatch(el, value) {
-    const hex = String(value || '').trim();
+  function applySwatchBackground(el, hexValue) {
+    const hex = String(hexValue || '').trim();
     if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
       el.style.backgroundColor = hex;
     }
@@ -134,7 +134,7 @@
     const input = row.querySelector('.token-editor-input[data-mode="core"]');
     const el = row.querySelector('.color-swatch:not(.color-swatch--alpha)');
     if (!input || !el) return;
-    renderSwatch(el, input.dataset.rawValue || input.value);
+    applySwatchBackground(el, input.dataset.rawValue || input.value);
   }
 
   function patchCoreTable() {
