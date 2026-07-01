@@ -64,48 +64,48 @@ Update this file every time a new token is created.
 | --core-citrine-65 | core | rgba(245,158,11,0.16) | — | bg-accent-status-warning (dark) |
 | --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
 | --core-amethyst-65 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
-| --bg-base-main | semantic | core-neutral-x-5 | core-neutral-x-88 | core-color-tokens-guide.html |
-| --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html |
-| --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html |
-| --bg-card-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-93 | core-color-tokens-guide.html |
-| --bg-overlay-main | semantic | core-neutral-x-100-a40 | core-neutral-x-100-a60 | core-color-tokens-guide.html |
-| --bg-modal-main | semantic | core-neutral-x-0 | core-neutral-x-93 | core-color-tokens-guide.html |
-| --bg-modal-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-95 | core-color-tokens-guide.html |
-| --bg-accent-main | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
-| --bg-accent-fade | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html |
-| --bg-accent-ghost | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html |
-| --bg-accent-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
-| --bg-accent-states-hover | semantic | core-sapphire-55-a08 | core-sapphire-65-a10 | core-color-tokens-guide.html |
-| --bg-accent-states-pressed | semantic | core-sapphire-55-a16 | core-sapphire-65-a20 | core-color-tokens-guide.html |
-| --bg-accent-states-active | semantic | core-sapphire-55-a14 | core-sapphire-65-a18 | core-color-tokens-guide.html |
-| --bg-accent-states-disable | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html |
-| --bg-accent-states-focused | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html |
-| --bg-accent-status-success | semantic | core-jasper-55 | core-jasper-65 | core-color-tokens-guide.html |
-| --bg-accent-status-warning | semantic | core-citrine-55 | core-citrine-65 | core-color-tokens-guide.html |
-| --bg-accent-status-error | semantic | core-neutral-x-22 | core-carnelian-55-a16 | core-color-tokens-guide.html |
-| --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65 | core-color-tokens-guide.html |
-| --bg-component-skeleton-default | semantic | core-neutral-x-18 | core-neutral-x-93 | core-color-tokens-guide.html |
-| --bg-component-skeleton-shimmer | semantic | core-neutral-x-15-b | core-neutral-x-95 | core-color-tokens-guide.html |
-| --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html |
-| --text-code-block | semantic | core-neutral-x-82 | core-neutral-x-3 | core-color-tokens-guide.html |
-| --text-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html |
-| --text-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html |
-| --text-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html |
-| --text-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
-| --text-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
-| --text-error | semantic | core-carnelian-55 | core-carnelian-65 | core-color-tokens-guide.html |
-| --text-success | semantic | core-jasper-75 | core-jasper-85 | core-color-tokens-guide.html |
-| --icon-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html |
-| --icon-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html |
-| --icon-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html |
-| --icon-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
-| --icon-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html |
-| --line-default | semantic | core-neutral-x-15 | core-neutral-x-93 | core-color-tokens-guide.html |
-| --line-strong | semantic | core-neutral-x-25 | core-neutral-x-95 | core-color-tokens-guide.html |
-| --line-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html |
-| --shadow-card | semantic | 0 4px 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
-| --shadow-subtle | semantic | 0 1px 4px core-neutral-x-100-a04 | same | core-color-tokens-guide.html |
-| --shadow-header | semantic | 0 1px 0 + 0 2px 12px core-neutral-x-100-a06/a04 | same | core-color-tokens-guide.html |
-| --shadow-sidebar | semantic | 4px 0 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
-| --shadow-float | semantic | 0 4px 20px core-neutral-x-100-a12 | same | core-color-tokens-guide.html |
-| --shadow-table | semantic | 0 2px 16px core-neutral-x-100-a06 | same | core-color-tokens-guide.html |
+| --bg-base-main | semantic | core-neutral-x-5 | core-neutral-x-88 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-card-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-overlay-main | semantic | core-neutral-x-100-a40 | core-neutral-x-100-a60 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-modal-main | semantic | core-neutral-x-0 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-modal-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-main | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-fade | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-ghost | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-states-hover | semantic | core-sapphire-55-a08 | core-sapphire-65-a10 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-states-pressed | semantic | core-sapphire-55-a16 | core-sapphire-65-a20 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-states-active | semantic | core-sapphire-55-a14 | core-sapphire-65-a18 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-states-disable | semantic | core-sapphire-55-a06 | core-sapphire-65-a08 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-states-focused | semantic | core-sapphire-55-a12 | core-sapphire-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-success | semantic | core-jasper-55 | core-jasper-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-warning | semantic | core-citrine-55 | core-citrine-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-error | semantic | core-neutral-x-22 | core-carnelian-55-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-component-skeleton-default | semantic | core-neutral-x-18 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-component-skeleton-shimmer | semantic | core-neutral-x-15-b | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-code-block | semantic | core-neutral-x-82 | core-neutral-x-3 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-error | semantic | core-carnelian-55 | core-carnelian-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-success | semantic | core-jasper-75 | core-jasper-85 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --icon-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --icon-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --icon-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --icon-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --icon-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --line-default | semantic | core-neutral-x-15 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --line-strong | semantic | core-neutral-x-25 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --line-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-card | semantic | 0 4px 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-subtle | semantic | 0 1px 4px core-neutral-x-100-a04 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-header | semantic | 0 1px 0 + 0 2px 12px core-neutral-x-100-a06/a04 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-sidebar | semantic | 4px 0 24px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-float | semantic | 0 4px 20px core-neutral-x-100-a12 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --shadow-table | semantic | 0 2px 16px core-neutral-x-100-a06 | same | core-color-tokens-guide.html, semantic-color-tokens-guide.html |

@@ -1,13 +1,1061 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Semantic Color Tokens — DS Guides</title>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Семантика цвета — DS Guides</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/a11y-light.min.css" id="hljs-theme">
+
+  <!-- Local vendor dependencies (order matters) -->
+  <script src="../assets/vendor/lunr.min.js"></script>
+  <script src="../assets/vendor/marked.min.js"></script>
+  <script src="../assets/vendor/highlight.min.js"></script>
+  <script src="../assets/vendor/highlight-swift.min.js"></script>
+  <script src="../assets/vendor/highlight-kotlin.min.js"></script>
+
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/docs-theme.css">
+
+  <style>
+    /* ================================================================
+       Guide page — visual layer redesign
+       Applied: docs-visual-language.md
+       Warm neutral bg · floating white cards · pill nav · spring easing
+       ================================================================ */
+
+    /* Theme-aware tokens — Core → Semantic (no-hardcode-color-protocol) */
+    :root {
+      /* ═══════════════════════════════════════
+         CORE COLOR TOKENS — raw values only
+         ═══════════════════════════════════════ */
+      --core-neutral-x-0:   #FFFFFF;
+      --core-neutral-x-5:   #EBEBEB;
+      --core-neutral-x-10:  #E2E2E2;
+      --core-neutral-x-12:  #F0F0F4;
+      --core-neutral-x-15:  #E5E5EA;
+      --core-neutral-x-20:  #EFEFF2;
+      --core-neutral-x-25:  #C7C7CC;
+      --core-neutral-x-45:  #AEAEB2;
+      --core-neutral-x-60:  #6E6E73;
+      --core-neutral-x-82:  #24292F;
+      --core-neutral-x-85:  #1C1C1E;
+      --core-neutral-x-88:  #181818;
+      --core-neutral-x-90:  #111111;
+      --core-neutral-x-92:  #1E1E2E;
+      --core-neutral-x-93:  #2C2C2E;
+      --core-neutral-x-95:  #3A3A3C;
+      --core-neutral-x-97:  #636366;
+      --core-neutral-x-98:  #F5F5F7;
+      --core-neutral-x-3:   #CDD6F4;
+      --core-neutral-x-100: #000000;
+
+      --core-neutral-x-100-a04: rgba(0, 0, 0, 0.04);
+      --core-neutral-x-100-a06: rgba(0, 0, 0, 0.06);
+      --core-neutral-x-100-a07: rgba(0, 0, 0, 0.07);
+      --core-neutral-x-100-a08: rgba(0, 0, 0, 0.08);
+      --core-neutral-x-100-a10: rgba(0, 0, 0, 0.10);
+      --core-neutral-x-100-a12: rgba(0, 0, 0, 0.12);
+      --core-neutral-x-100-a40: rgba(0, 0, 0, 0.40);
+      --core-neutral-x-100-a60: rgba(0, 0, 0, 0.60);
+
+      --core-sapphire-55:     #0057FF;
+      --core-sapphire-65:     #3B82F6;
+      --core-sapphire-55-a06: rgba(0, 87, 255, 0.06);
+      --core-sapphire-55-a08: rgba(0, 87, 255, 0.08);
+      --core-sapphire-55-a12: rgba(0, 87, 255, 0.12);
+      --core-sapphire-55-a14: rgba(0, 87, 255, 0.14);
+      --core-sapphire-55-a16: rgba(0, 87, 255, 0.16);
+      --core-sapphire-65-a08: rgba(59, 130, 246, 0.08);
+      --core-sapphire-65-a10: rgba(59, 130, 246, 0.10);
+      --core-sapphire-65-a16: rgba(59, 130, 246, 0.16);
+      --core-sapphire-65-a18: rgba(59, 130, 246, 0.18);
+      --core-sapphire-65-a20: rgba(59, 130, 246, 0.20);
+
+      --core-carnelian-55:    #D93025;
+      --core-carnelian-65:    #F87171;
+      --core-carnelian-55-a16: rgba(239, 68, 68, 0.16);
+
+      --core-jasper-55:       #D1FAE5;
+      --core-jasper-65:       rgba(16, 185, 129, 0.16);
+      --core-jasper-75:       #1A7F4B;
+      --core-jasper-85:       #34D399;
+
+      --core-citrine-55:      #FEF3C7;
+      --core-citrine-65:      rgba(245, 158, 11, 0.16);
+
+      --core-amethyst-55:     #EDE9FE;
+      --core-amethyst-65:     rgba(139, 92, 246, 0.16);
+
+      --core-neutral-x-15-b:  #F0F0F5;
+      --core-neutral-x-18:    #E5E5EA;
+      --core-neutral-x-22:    #FEE2E2;
+
+      /* ═══════════════════════════════════════
+         SEMANTIC COLOR TOKENS — purpose aliases
+         ═══════════════════════════════════════ */
+      --bg-base-main:                 var(--core-neutral-x-5);
+      --bg-base-main-secondary:       var(--core-neutral-x-10);
+      --bg-card-main:                 var(--core-neutral-x-0);
+      --bg-card-main-secondary:       var(--core-neutral-x-20);
+      --bg-overlay-main:              var(--core-neutral-x-100-a40);
+      --bg-modal-main:                var(--core-neutral-x-0);
+      --bg-modal-main-secondary:      var(--core-neutral-x-20);
+
+      --bg-accent-main:               var(--core-sapphire-55);
+      --bg-accent-fade:               var(--core-sapphire-55-a12);
+      --bg-accent-ghost:              var(--core-sapphire-55-a06);
+      --bg-accent-inverse:            var(--core-neutral-x-0);
+
+      --bg-accent-states-hover:       var(--core-sapphire-55-a08);
+      --bg-accent-states-pressed:     var(--core-sapphire-55-a16);
+      --bg-accent-states-active:      var(--core-sapphire-55-a14);
+      --bg-accent-states-disable:     var(--core-sapphire-55-a06);
+      --bg-accent-states-focused:     var(--core-sapphire-55-a12);
+
+      --bg-accent-status-success:     var(--core-jasper-55);
+      --bg-accent-status-warning:     var(--core-citrine-55);
+      --bg-accent-status-error:       var(--core-neutral-x-22);
+      --bg-accent-status-attention:   var(--core-amethyst-55);
+
+      --bg-component-skeleton-default: var(--core-neutral-x-18);
+      --bg-component-skeleton-shimmer: var(--core-neutral-x-15-b);
+
+      --bg-code-block:                var(--core-neutral-x-12);
+      --text-code-block:              var(--core-neutral-x-82);
+
+      --text-primary:                 var(--core-neutral-x-90);
+      --text-secondary:               var(--core-neutral-x-60);
+      --text-disabled:                var(--core-neutral-x-45);
+      --text-inverse:                 var(--core-neutral-x-0);
+      --text-accent:                  var(--core-sapphire-55);
+      --text-error:                   var(--core-carnelian-55);
+      --text-success:                 var(--core-jasper-75);
+
+      --icon-primary:                 var(--core-neutral-x-90);
+      --icon-secondary:               var(--core-neutral-x-60);
+      --icon-disabled:                var(--core-neutral-x-45);
+      --icon-accent:                  var(--core-sapphire-55);
+      --icon-inverse:                 var(--core-neutral-x-0);
+
+      --line-default:                 var(--core-neutral-x-15);
+      --line-strong:                  var(--core-neutral-x-25);
+      --line-accent:                  var(--core-sapphire-55);
+
+      --shadow-card:                  0 4px 24px var(--core-neutral-x-100-a06);
+      --shadow-subtle:                0 1px 4px var(--core-neutral-x-100-a04);
+      --shadow-header:                0 1px 0 var(--core-neutral-x-100-a06), 0 2px 12px var(--core-neutral-x-100-a04);
+      --shadow-sidebar:               4px 0 24px var(--core-neutral-x-100-a06);
+      --shadow-float:                 0 4px 20px var(--core-neutral-x-100-a12);
+      --shadow-table:                 0 2px 16px var(--core-neutral-x-100-a06);
+    }
+
+    [data-theme="dark"] {
+      /* Semantic overrides — core tokens never change */
+      --bg-base-main:                 var(--core-neutral-x-88);
+      --bg-base-main-secondary:       var(--core-neutral-x-90);
+      --bg-card-main:                 var(--core-neutral-x-85);
+      --bg-card-main-secondary:       var(--core-neutral-x-93);
+      --bg-overlay-main:              var(--core-neutral-x-100-a60);
+      --bg-modal-main:                var(--core-neutral-x-93);
+      --bg-modal-main-secondary:      var(--core-neutral-x-95);
+
+      --bg-accent-main:               var(--core-sapphire-65);
+      --bg-accent-fade:               var(--core-sapphire-65-a16);
+      --bg-accent-ghost:              var(--core-sapphire-65-a08);
+      --bg-accent-inverse:            var(--core-neutral-x-90);
+
+      --bg-accent-states-hover:       var(--core-sapphire-65-a10);
+      --bg-accent-states-pressed:     var(--core-sapphire-65-a20);
+      --bg-accent-states-active:      var(--core-sapphire-65-a18);
+      --bg-accent-states-disable:     var(--core-sapphire-65-a08);
+      --bg-accent-states-focused:     var(--core-sapphire-65-a16);
+
+      --bg-accent-status-success:     var(--core-jasper-65);
+      --bg-accent-status-warning:     var(--core-citrine-65);
+      --bg-accent-status-error:       var(--core-carnelian-55-a16);
+      --bg-accent-status-attention:   var(--core-amethyst-65);
+
+      --bg-component-skeleton-default: var(--core-neutral-x-93);
+      --bg-component-skeleton-shimmer: var(--core-neutral-x-95);
+
+      --bg-code-block:                var(--core-neutral-x-92);
+      --text-code-block:              var(--core-neutral-x-3);
+
+      --text-primary:                 var(--core-neutral-x-98);
+      --text-secondary:               var(--core-neutral-x-45);
+      --text-disabled:                var(--core-neutral-x-97);
+      --text-inverse:                 var(--core-neutral-x-90);
+      --text-accent:                  var(--core-sapphire-65);
+      --text-error:                   var(--core-carnelian-65);
+      --text-success:                 var(--core-jasper-85);
+
+      --icon-primary:                 var(--core-neutral-x-98);
+      --icon-secondary:               var(--core-neutral-x-45);
+      --icon-disabled:                var(--core-neutral-x-97);
+      --icon-accent:                  var(--core-sapphire-65);
+      --icon-inverse:                 var(--core-neutral-x-90);
+
+      --line-default:                 var(--core-neutral-x-93);
+      --line-strong:                  var(--core-neutral-x-95);
+      --line-accent:                  var(--core-sapphire-65);
+    }
+
+    /* ── Layout grid ── */
+    .guide-layout {
+      display: grid;
+      grid-template-columns: 256px 1fr 220px;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "header  header  header"
+        "sidenav content toc";
+      min-height: 100vh;
+      background: var(--bg-base-main);
+    }
+
+    /* Grid area assignments — must override style.css which uses different area names */
+    .guide-layout__header  { grid-area: header;  }
+    .guide-layout__sidenav { grid-area: sidenav; }
+    .guide-layout__content { grid-area: content; min-width: 0; padding: 28px 24px 64px 16px; }
+    .guide-layout__toc     { grid-area: toc;     }
+
+    /* ── Header: white, no border, subtle shadow ── */
+    .layout__header {
+      border-bottom: none;
+      box-shadow: var(--shadow-header);
+    }
+
+    /* ── Sidebar: white card, rounded right corners, floats on warm bg ── */
+    .layout__sidebar {
+      background: var(--bg-card-main);
+      border-right: none;
+      border-radius: 0 20px 20px 0;
+      box-shadow: var(--shadow-sidebar);
+      padding: 20px 8px;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+    }
+
+    /* Sidebar section labels — top-level groups (Токены, Компоненты) */
+    .sidebar__section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-secondary);
+      padding: 20px 12px 6px;
+      line-height: 1;
+    }
+    .sidebar__section-label:first-child { padding-top: 8px; }
+
+    /* Sidebar sub-labels — category groups (Цвет, Отступы, Типографика) */
+    .sidebar__section-sublabel {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-disabled);
+      padding: 14px 12px 4px;
+      line-height: 1;
+    }
+
+    /* Nav items — pill shape, spring easing */
+    .sidebar__item {
+      display: block;
+      margin: 1px 4px;
+      padding: 7px 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: var(--label-s-lh);
+      font-weight: var(--label-s-weight);
+      border-radius: var(--radius-full);
+      transition: background-color 0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  color            0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  transform        0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .sidebar__item:hover {
+      background-color: var(--bg-accent-states-hover);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+    .sidebar__item.is-active {
+      background-color: var(--bg-accent-main);
+      color: var(--text-inverse);
+      font-weight: 600;
+    }
+    .sidebar__item.is-active:hover {
+      background-color: var(--bg-accent-main);
+      color: var(--text-inverse);
+      transform: none;
+    }
+
+    /* ── Guide content: white card on warm bg ── */
+    .guide-content {
+      background: var(--bg-card-main);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card), var(--shadow-subtle);
+      padding: 48px;
+      max-width: 760px;
+    }
+
+    /* ── Breadcrumb: tiny, faint, uppercase, tracked ── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 28px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-disabled);
+      flex-wrap: wrap;
+    }
+    .breadcrumb__link {
+      color: var(--text-disabled);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .breadcrumb__link:hover { color: var(--text-accent); }
+    .breadcrumb__sep { color: var(--line-strong); user-select: none; }
+    .breadcrumb__current { color: var(--text-secondary); }
+
+    /* ── Guide header: no border, 32px gap before first block ── */
+    .guide-header {
+      margin-bottom: 32px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .guide-header__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--gap-s);
+      margin-bottom: var(--gap-m);
+    }
+    .guide-header__title {
+      font-size: var(--heading-xl-size);
+      line-height: 1.1;
+      font-weight: var(--heading-xl-weight);
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--gap-s);
+    }
+    .guide-header__description {
+      font-size: var(--body-m-size);
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+
+    /* ── Badges: pill shape ── */
+    .badge { border-radius: var(--radius-full); }
+
+    /* ── Prose ── */
+    .prose { color: var(--text-primary); }
+
+    .prose h1 {
+      font-size: var(--heading-xl-size);
+      line-height: 1.1;
+      font-weight: var(--heading-xl-weight);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--gap-m);
+    }
+    /* h2: heavy, tight, large — section separator via spacing only (no border) */
+    .prose h2 {
+      font-size: var(--heading-l-size);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 0;
+      border-bottom: none;
+      scroll-margin-top: 80px;
+    }
+    .prose h3 {
+      font-size: var(--heading-m-size);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-top: 40px;
+      margin-bottom: 14px;
+      scroll-margin-top: 80px;
+    }
+    .prose h4 {
+      font-size: var(--heading-s-size);
+      line-height: 1.3;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 10px;
+      scroll-margin-top: 80px;
+    }
+    /* Body: 16px, lh 1.7, generous paragraph gap */
+    .prose p {
+      font-size: var(--body-l-size);
+      line-height: 1.7;
+      margin-bottom: 1.5em;
+      color: var(--text-primary);
+    }
+    .prose ul, .prose ol {
+      margin-left: var(--inset-container-h-m);
+      margin-bottom: 1.5em;
+      font-size: var(--body-l-size);
+      line-height: 1.7;
+    }
+    .prose li { margin-bottom: 6px; }
+
+    .prose blockquote {
+      border-left: 3px solid var(--bg-accent-main);
+      padding-left: var(--inset-container-h-s);
+      margin: 0 0 1.5em;
+      color: var(--text-secondary);
+      font-size: var(--body-m-size);
+      line-height: 1.65;
+      border-radius: 0 var(--radius-m) var(--radius-m) 0;
+    }
+    .prose blockquote p { margin-bottom: 0; font-size: inherit; }
+
+    /* hr: invisible — spacing only */
+    .prose hr {
+      border: none;
+      height: 0;
+      margin: 48px 0;
+    }
+
+    .prose a { color: var(--text-accent); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+
+    /* Inline code: pill shape, warm bg, no harsh border */
+    .prose code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84em;
+      background: var(--bg-base-main-secondary);
+      color: var(--text-primary);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      border: none;
+    }
+    .prose pre {
+      background: var(--bg-code-block);
+      border-radius: var(--radius-l);
+      padding: var(--inset-container-v-m) var(--inset-container-h-m);
+      overflow-x: auto;
+      margin-bottom: 1.5em;
+      box-shadow: var(--shadow-float);
+    }
+    .prose pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: none;
+      color: var(--text-code-block);
+      border: none;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    /* Tables: larger radius, soft shadow, no outer border */
+    .table-wrap {
+      border-radius: var(--radius-l);
+      overflow: hidden;
+      box-shadow: var(--shadow-table);
+      margin-bottom: 1.5em;
+    }
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--body-s-size);
+      line-height: var(--body-s-lh);
+      margin-bottom: 0;
+      background: var(--bg-card-main);
+      border-radius: var(--radius-l);
+      overflow: hidden;
+      border: none;
+    }
+    .prose th {
+      background: var(--bg-base-main);
+      font-size: var(--label-xs-size);
+      font-weight: 700;
+      line-height: var(--label-xs-lh);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-secondary);
+      padding: var(--inset-control-v-m) var(--inset-container-h-s);
+      text-align: left;
+      border-bottom: 1px solid var(--line-default);
+    }
+    .prose td {
+      padding: var(--inset-control-v-m) var(--inset-container-h-s);
+      border-bottom: 1px solid var(--line-default);
+      vertical-align: top;
+    }
+    .prose tr:last-child td { border-bottom: none; }
+    .prose tr:hover td { background: var(--bg-accent-states-hover); }
+
+    .prose blockquote p strong { color: var(--text-primary); }
+
+    /* ── TOC: transparent, no border, pill active ── */
+    .guide-toc {
+      background: transparent;
+      border-left: none;
+      padding: 32px 16px 32px 8px;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+    }
+    .guide-toc__label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-disabled);
+      margin-bottom: var(--gap-s);
+      padding: 0 8px;
+    }
+    .toc-list { list-style: none; padding: 0; margin: 0; }
+    .toc-item { margin-bottom: 1px; }
+    .toc-item--h3 { padding-left: 10px; }
+
+    .toc-link {
+      display: block;
+      padding: 5px 8px;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 500;
+      color: var(--text-disabled);
+      text-decoration: none;
+      border-radius: var(--radius-full);
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toc-link:hover { color: var(--text-primary); background: var(--bg-accent-ghost); }
+    .toc-link.is-active {
+      color: var(--text-accent);
+      background: var(--bg-accent-fade);
+      font-weight: 600;
+    }
+
+    /* ── Search: pill, borderless at rest, focus shadow ── */
+    .search__input {
+      border-radius: var(--radius-full);
+      border-color: transparent;
+      background: var(--bg-base-main-secondary);
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .search__input:focus {
+      border-color: var(--line-accent);
+      background: var(--bg-card-main);
+      box-shadow: 0 0 0 3px var(--bg-accent-states-focused);
+    }
+
+    /* ── Theme toggle: pill ── */
+    .btn-icon {
+      border-radius: var(--radius-full);
+      border-color: transparent;
+      transition: background-color 0.18s cubic-bezier(0.34,1.56,0.64,1),
+                  transform        0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-icon:hover { transform: scale(1.1); }
+
+    /* ── [hidden] must always win ── */
+    [hidden] { display: none !important; }
+
+    /* Search dropdown: right-align to search wrapper to stay within viewport */
+    #search-wrapper .search-dropdown {
+      left: auto;
+      right: 0;
+      max-width: min(420px, calc(100vw - 2rem));
+      overflow-x: hidden;
+    }
+
+    /* ── Loading ── */
+    .guide-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      color: var(--text-secondary);
+      font-size: var(--body-m-size);
+      gap: var(--gap-m);
+    }
+    .guide-loading__spinner {
+      width: 32px; height: 32px;
+      border: 2px solid var(--line-default);
+      border-top-color: var(--bg-accent-main);
+      border-radius: var(--radius-full);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .guide-error {
+      padding: var(--inset-container-v-l) var(--inset-container-h-l);
+      background: var(--bg-accent-status-error);
+      border-radius: var(--radius-l);
+      color: var(--text-error);
+      font-size: var(--body-m-size);
+      margin-top: var(--gap-l);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .guide-layout {
+        grid-template-columns: 256px 1fr;
+        grid-template-areas: "header header" "sidenav content";
+      }
+      .guide-layout__toc { display: none; }
+    }
+    @media (max-width: 768px) {
+      .guide-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas: "header" "content";
+      }
+      .guide-layout__sidenav { display: none; }
+      .guide-layout__content { padding: 16px; }
+      .guide-content {
+        padding: 28px 20px;
+        border-radius: 16px;
+      }
+      .prose code { white-space: pre-wrap; word-break: break-word; }
+      .prose pre  { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="guide-layout">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="layout__header guide-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title">Guides</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <div class="search" id="search-wrapper">
+        <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input class="search__input" type="search" placeholder="Поиск гайдов…"
+               id="search-input" aria-label="Поиск по всей документации">
+        <div id="search-results" class="search-dropdown" hidden></div>
+      </div>
+
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Side navigation (same as index) ───────────────────── -->
+  <aside class="layout__sidebar guide-layout__sidenav" aria-label="Навигация по гайдам">
+    <nav id="sidenav">
+      <div class="sidebar__section-label">Токены</div>
+      <div class="sidebar__section-sublabel">Цвет</div>
+      <a class="sidebar__item" href="core-color-tokens-guide.html">Цветовая палитра</a>
+      <a class="sidebar__item is-active" href="semantic-color-tokens-guide.html">Семантика цвета</a>
+      <div class="sidebar__section-sublabel">Отступы</div>
+      <a class="sidebar__item" href="template.html?id=core-space-tokens-guide">Шкала отступов</a>
+      <a class="sidebar__item" href="template.html?id=semantic-space-tokens-guide">Семантика отступов</a>
+      <div class="sidebar__section-sublabel">Типографика</div>
+      <a class="sidebar__item" href="template.html?id=core-typography-tokens-guide">Шкала типографики</a>
+      <a class="sidebar__item" href="template.html?id=semantic-typography-tokens-guide">Семантика типографики</a>
+      <div class="sidebar__section-label">Компоненты</div>
+      <a class="sidebar__item" href="template.html?id=ds-component-architecture-guide">Архитектура</a>
+      <a class="sidebar__item" href="template.html?id=component-states-guide">Состояния</a>
+    </nav>
+  </aside>
+
+  <!-- ── Guide content ──────────────────────────────────────── -->
+  <main class="guide-layout__content">
+    <article class="guide-content" id="guide-content">
+
+      <!-- Loading state -->
+      <div class="guide-loading" id="guide-loading">
+        <div class="guide-loading__spinner"></div>
+        <span>Загрузка гайда…</span>
+      </div>
+
+      <!-- Populated by JS -->
+      <div id="guide-body" hidden>
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" id="guide-breadcrumb" aria-label="Навигация">
+          <a class="breadcrumb__link" href="../index.html">Главная</a>
+          <span class="breadcrumb__sep" aria-hidden="true">›</span>
+          <span id="breadcrumb-category" class="breadcrumb__link"></span>
+          <span id="breadcrumb-sep-sub" class="breadcrumb__sep" aria-hidden="true" hidden>›</span>
+          <span id="breadcrumb-sub" class="breadcrumb__link" hidden></span>
+          <span class="breadcrumb__sep" aria-hidden="true">›</span>
+          <span id="breadcrumb-name" class="breadcrumb__current"></span>
+        </nav>
+
+        <!-- Guide header (name, status, version, description) -->
+        <header class="guide-header" id="guide-header">
+          <div class="guide-header__meta" id="guide-meta"></div>
+          <h1 class="guide-header__title" id="guide-title"></h1>
+          <p class="guide-header__description" id="guide-description"></p>
+        </header>
+
+        <!-- Rendered markdown -->
+        <div class="prose" id="guide-prose"></div>
+
+      </div>
+
+    </article>
+  </main>
+
+  <!-- ── Table of contents (right) ─────────────────────────── -->
+  <aside class="guide-toc guide-layout__toc" aria-label="Оглавление">
+    <div class="guide-toc__label">На этой странице</div>
+    <ul class="toc-list" id="toc-list"></ul>
+  </aside>
+
+</div><!-- /guide-layout -->
+
+<!-- Search.js config: paths relative to guides/ subfolder -->
 <script>
-  // Redirect to the guide template, then restore the original URL
-  var id  = 'semantic-color-tokens-guide';
-  var here = location.href;  // e.g. …/docs/guides/core-color-tokens-guide.html
-  // Navigate to template; after load it will replaceState back to here
-  location.replace('template.html?id=' + id + '&from=' + encodeURIComponent(here));
+  window.DS_CONFIG = {
+    guidesBase: '../../skills/_shared/',
+    guidePage:  'semantic-color-tokens-guide.html',
+  };
+  window.DS_GUIDE_ID = 'semantic-color-tokens-guide';
 </script>
-</head><body></body></html>
+
+<script src="../assets/search.js?v=5"></script>
+<script src="../assets/nav.js"></script>
+<script src="../assets/token-viz.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Guide-to-category map (breadcrumb + sidebar active state) ─────────────
+  const GUIDE_META = {
+    'core-color-tokens-guide':          { group: 'Токены',     sub: 'Цвет',        level: 'core',     status: 'Draft',  displayName: 'Цветовая палитра'        },
+    'semantic-color-tokens-guide':      { group: 'Токены',     sub: 'Цвет',        level: 'semantic', status: 'Stable', displayName: 'Семантика цвета'         },
+    'core-space-tokens-guide':          { group: 'Токены',     sub: 'Отступы',     level: 'core',     status: 'Draft',  displayName: 'Шкала отступов'          },
+    'semantic-space-tokens-guide':      { group: 'Токены',     sub: 'Отступы',     level: 'semantic', status: 'Draft',  displayName: 'Семантика отступов'      },
+    'core-typography-tokens-guide':     { group: 'Токены',     sub: 'Типографика', level: 'core',     status: 'Draft',  displayName: 'Шкала типографики'       },
+    'semantic-typography-tokens-guide': { group: 'Токены',     sub: 'Типографика', level: 'semantic', status: 'Draft',  displayName: 'Семантика типографики'   },
+    'ds-component-architecture-guide':  { group: 'Компоненты', sub: null,          level: null,       status: 'Draft',  displayName: 'Архитектура компонентов' },
+    'component-states-guide':           { group: 'Компоненты', sub: null,          level: null,       status: 'Draft',  displayName: 'Состояния компонентов'   },
+  };
+
+  // ── Parse frontmatter ─────────────────────────────────────────────────────
+  function parseFrontmatter(raw) {
+    if (!raw.startsWith('---')) return { fm: {}, body: raw };
+
+    // Handle double-frontmatter
+    let search = raw;
+    if (raw.startsWith('---\n')) {
+      const firstClose = raw.indexOf('\n---', 4);
+      if (firstClose !== -1) {
+        const nextOpen = raw.indexOf('---\n', firstClose + 1);
+        if (nextOpen !== -1 && nextOpen < firstClose + 6) {
+          search = raw.slice(firstClose + 1);
+        }
+      }
+    }
+
+    const end = search.indexOf('\n---', 4);
+    if (end === -1) return { fm: {}, body: search };
+
+    const fmRaw = search.slice(4, end);
+    const body  = search.slice(end + 4).trimStart();
+    const fm    = {};
+    let inMeta  = false;
+    let inDesc  = false;
+    const descLines = [];
+
+    for (const line of fmRaw.split('\n')) {
+      if (line.startsWith('metadata:')) { inMeta = true; continue; }
+      if (line.startsWith('description:')) { inDesc = true; continue; }
+
+      if (inDesc) {
+        if (line.startsWith(' ') || line.startsWith('\t')) {
+          descLines.push(line.trim()); continue;
+        }
+        inDesc = false;
+      }
+
+      if (inMeta && (line.startsWith('  ') || line.startsWith('\t'))) {
+        const t = line.trim();
+        if (t.startsWith('version:')) fm.metaVersion = t.split(':')[1].trim().replace(/"/g,'');
+        continue;
+      }
+      inMeta = false;
+
+      if (line.includes(':') && !line.startsWith(' ')) {
+        const [k, ...rest] = line.split(':');
+        fm[k.trim()] = rest.join(':').trim().replace(/^"(.*)"$/, '$1');
+      }
+    }
+    if (descLines.length) fm.description = descLines.join(' ');
+
+    // Graceful fallbacks for non-standard frontmatter
+    fm.resolvedName    = fm.name    || fm.title   || '';
+    fm.resolvedVersion = fm.metaVersion || fm.version || '';
+
+    return { fm, body };
+  }
+
+  // ── Configure marked ──────────────────────────────────────────────────────
+  function configureMarked() {
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+      highlight(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try { return hljs.highlight(code, { language: lang }).value; } catch (_) {}
+        }
+        return hljs.highlightAuto(code).value;
+      },
+    });
+  }
+
+  // ── Strip status blockquote (it's shown in the header instead) ───────────
+  function stripStatusLine(body) {
+    return body.replace(/^>\s*Статус:[^\n]+\n?/m, '').trimStart();
+  }
+
+  // ── Remove first h1 (shown in guide-header instead) ───────────────────────
+  function stripFirstH1(body) {
+    return body.replace(/^#\s+[^\n]+\n?/, '').trimStart();
+  }
+
+  // ── Build table of contents from rendered HTML ────────────────────────────
+  function buildTOC(proseEl) {
+    const headings = proseEl.querySelectorAll('h2, h3');
+    const tocList  = document.getElementById('toc-list');
+    if (!tocList) return;
+    tocList.innerHTML = '';
+
+    headings.forEach((h, i) => {
+      if (!h.id) h.id = 'heading-' + i;
+
+      const li   = document.createElement('li');
+      li.className = 'toc-item' + (h.tagName === 'H3' ? ' toc-item--h3' : '');
+
+      const a = document.createElement('a');
+      a.className = 'toc-link';
+      a.href      = '#' + h.id;
+      a.textContent = h.textContent;
+      a.dataset.heading = h.id;
+
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + h.id);
+      });
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    return headings;
+  }
+
+  // ── Intersection Observer → highlight active TOC item ────────────────────
+  function initScrollSpy(headings) {
+    if (!headings || !headings.length) return;
+
+    const links = document.querySelectorAll('.toc-link');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        links.forEach(l => {
+          l.classList.toggle('is-active', l.dataset.heading === id);
+        });
+      });
+    }, {
+      rootMargin: '-10% 0px -80% 0px',
+      threshold: 0,
+    });
+
+    headings.forEach(h => observer.observe(h));
+  }
+
+  // ── Highlight active sidebar item ─────────────────────────────────────────
+  function setActiveSidebarItem(id) {
+    document.querySelectorAll('.sidebar__item').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      a.classList.toggle('is-active',
+        href.includes('id=' + id) || href.includes(id + '.html'));
+    });
+  }
+
+  // ── Build breadcrumb ──────────────────────────────────────────────────────
+  function buildBreadcrumb(id, name) {
+    const meta = GUIDE_META[id] || {};
+
+    document.getElementById('breadcrumb-name').textContent = name;
+
+    const catEl = document.getElementById('breadcrumb-category');
+    catEl.textContent = meta.group || '';
+
+    const subEl    = document.getElementById('breadcrumb-sub');
+    const subSep   = document.getElementById('breadcrumb-sep-sub');
+    if (meta.sub) {
+      subEl.textContent = meta.sub;
+      subEl.hidden      = false;
+      subSep.hidden     = false;
+    }
+  }
+
+  // ── Populate guide header ─────────────────────────────────────────────────
+  function populateHeader(id, fm) {
+    const meta    = GUIDE_META[id] || {};
+    const name    = meta.displayName || fm.resolvedName || id;
+    const version = fm.resolvedVersion || meta.version || '';
+    const status  = meta.status || 'Draft';
+    const level   = meta.level;
+
+    document.title = name + ' — DS Guides';
+
+    document.getElementById('guide-title').textContent = name;
+    document.getElementById('guide-description').textContent = fm.description || '';
+
+    const metaEl = document.getElementById('guide-meta');
+    const statusCls = status === 'Stable' ? 'badge--stable' : 'badge--draft';
+    const levelBadge = level
+      ? `<span class="badge badge--${level}">${level === 'core' ? 'Core' : 'Semantic'}</span>`
+      : '';
+
+    metaEl.innerHTML = `
+      <span class="badge ${statusCls}">${status}</span>
+      ${levelBadge}
+      <span class="card__version">${version ? 'v' + version : ''}</span>
+    `;
+  }
+
+  // ── Main: fetch + render guide ────────────────────────────────────────────
+  async function loadGuide() {
+    const params = new URLSearchParams(location.search);
+    const id = window.DS_GUIDE_ID || params.get('id');
+
+    if (!id) {
+      showError('Не указан параметр ?id= в URL.');
+      return;
+    }
+
+    const mdPath = '../../skills/_shared/' + id + '.md';
+
+    try {
+      const res = await fetch(mdPath);
+      if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + mdPath);
+      const raw = await res.text();
+
+      const { fm, body } = parseFrontmatter(raw);
+      const cleanBody    = stripFirstH1(stripStatusLine(body));
+
+      // Configure and render
+      configureMarked();
+      const html = marked.parse(cleanBody);
+
+      // Populate UI
+      populateHeader(id, fm);
+      const meta = GUIDE_META[id] || {};
+      buildBreadcrumb(id, meta.displayName || fm.resolvedName || id);
+      setActiveSidebarItem(id);
+
+      const proseEl = document.getElementById('guide-prose');
+      proseEl.innerHTML = html;
+
+      // Syntax highlight (before token-viz so explicit blocks are processed first)
+      proseEl.querySelectorAll('pre code').forEach(el => {
+        if (!el.className.includes('language-token-')) hljs.highlightElement(el);
+      });
+
+      // Token visualization
+      if (window.DSTokenViz) window.DSTokenViz.init(proseEl);
+
+      // TOC + scroll spy
+      const headings = buildTOC(proseEl);
+      initScrollSpy(headings);
+
+      // Show content, hide loader
+      document.getElementById('guide-loading').hidden = true;
+      document.getElementById('guide-body').hidden    = false;
+
+      // Notify nav.js that content is ready (for cross-page highlight)
+      dispatchEvent(new CustomEvent('ds:content-ready'));
+
+    } catch (err) {
+      showError('Не удалось загрузить гайд: ' + err.message);
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('guide-loading').hidden = true;
+    document.getElementById('guide-body').hidden    = false;
+    document.getElementById('guide-prose').innerHTML =
+      `<div class="guide-error">${msg}</div>`;
+  }
+
+  // ── Theme toggle (same logic as index.html) ───────────────────────────────
+  function initTheme() {
+    const html      = document.documentElement;
+    const btnToggle = document.getElementById('theme-toggle');
+    const iconSun   = document.getElementById('icon-sun');
+    const iconMoon  = document.getElementById('icon-moon');
+    const hljsTheme = document.getElementById('hljs-theme');
+
+    const HLJS_LIGHT = '../assets/vendor/a11y-light.min.css';
+    const HLJS_DARK  = '../assets/vendor/a11y-dark.min.css';
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      iconSun.style.display  = theme === 'dark'  ? 'block' : 'none';
+      iconMoon.style.display = theme === 'light' ? 'block' : 'none';
+      hljsTheme.href = theme === 'dark' ? HLJS_DARK : HLJS_LIGHT;
+      localStorage.setItem('ds-theme', theme);
+    }
+
+    btnToggle.addEventListener('click', () => {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    const saved = localStorage.getItem('ds-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  }
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  function _boot() {
+    initTheme();
+    loadGuide();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _boot);
+  } else {
+    _boot();
+  }
+
+})();
+</script>
+
+</body>
+</html>
