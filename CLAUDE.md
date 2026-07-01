@@ -35,3 +35,13 @@ Treat it as a valid example of the pattern.
 
 Always respond in Russian, regardless of the language used in the prompt or file content.
 Exception: respond in another language only if the user explicitly requests it in that message.
+
+## Color token rules (auto-applied)
+
+When working with any *.html, *.css, or *.scss file:
+- Read `skills/_shared/no-hardcode-color-protocol.md` before writing any color value
+- No hardcoded colors allowed: no HEX, no rgba(), no named colors
+- Every color must use var(--semantic-token), where semantic token references a core token
+- If a needed token doesn't exist — create it following the protocol, then use it
+- After creating new tokens — update `docs/tokens/color-tokens-registry.md`
+  (create the file if it doesn't exist)

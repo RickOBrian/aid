@@ -26,3 +26,10 @@
 ## Формат ответов
 - Если токена нет — ⚠️ нужно добавить токен: [имя]
 - Если уровень неочевиден — сказать явно, не угадывать
+
+# Color token enforcement
+When editing *.html, *.css, *.scss:
+- Read skills/_shared/no-hardcode-color-protocol.md
+- Zero hardcoded colors. Use var(--semantic-token) only.
+- Missing token? Create core + semantic pair per protocol rules, then use semantic.
+- Update docs/tokens/color-tokens-registry.md after any new token is created.
