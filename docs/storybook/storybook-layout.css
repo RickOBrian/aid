@@ -315,6 +315,65 @@
   color: var(--text-accent);
 }
 
+/* ============================================================
+   Component docs — read-only component library (Storybook → Components)
+   ============================================================ */
+.component-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--gap-m);
+}
+
+.component-doc {
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-l);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.component-doc__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin-bottom: var(--gap-s);
+}
+
+.component-doc__header h3 {
+  font-size: var(--heading-xs-size);
+  line-height: var(--heading-xs-lh);
+  font-weight: var(--heading-xs-weight);
+  color: var(--text-primary);
+}
+
+.component-doc__hint {
+  font-size: var(--label-xs-size);
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.component-doc__sample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  margin-bottom: var(--gap-m);
+  background: var(--bg-base-main-secondary);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-m);
+}
+
+.component-doc__tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+}
+
+.component-doc__violation {
+  color: var(--text-error);
+}
+
 @media (max-width: 900px) {
   .storybook-layout {
     grid-template-columns: 1fr;

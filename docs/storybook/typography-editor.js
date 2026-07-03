@@ -15,7 +15,7 @@
   ];
 
   const TYPOGRAPHY_TOKEN_RE =
-    /^--(?:font-[\w-]+|(?:heading|body|label|meta)-[a-z0-9]+-(?:size|lh|weight)|leading-[\w-]+|tracking-[\w-]+|text-[\w-]+-(?:size|lh|weight|tracking))$/;
+    /^--(?:font-[\w-]+|(?:heading|body|label|meta)-[a-z0-9]+-(?:size|lh|weight|tracking)|leading-[\w-]+|tracking-[\w-]+|text-[\w-]+-(?:size|lh|weight|tracking))$/;
 
   const COLOR_TOKEN_PREFIX_RE = /^--(?:text-(?!.*-(?:size|lh|weight|tracking)$)|icon-|bg-|line-|core-)/;
 
@@ -79,15 +79,16 @@
   ];
 
   const SIZE_ORDER = ['xl', 'l', 'm', 's', 'xs'];
-  const PROP_ORDER = { size: 0, lh: 1, weight: 2 };
+  const PROP_ORDER = { size: 0, lh: 1, weight: 2, tracking: 3 };
+  const ROLE_PROPS = new Set(['size', 'lh', 'weight', 'tracking']);
 
   function inferCategory(name) {
     if (name.includes('-size')) return 'font-size';
     if (name.includes('-lh')) return 'line-height';
     if (name.includes('-weight')) return 'font-weight';
+    if (name.includes('-tracking')) return 'letter-spacing';
     if (name.startsWith('--font-')) return 'font-family';
     if (name.startsWith('--leading-')) return 'line-height';
-    if (name.startsWith('--tracking-')) return 'letter-spacing';
     return 'other';
   }
 
@@ -123,7 +124,7 @@
     tokens.forEach((token) => {
       const role = getRolePrefix(token.name);
       const prop = role ? token.name.slice(role.length + 1) : '';
-      if (role && (prop === 'size' || prop === 'lh' || prop === 'weight')) {
+      if (role && ROLE_PROPS.has(prop)) {
         if (!byRole.has(role)) byRole.set(role, []);
         byRole.get(role).push(token);
       } else {
@@ -170,7 +171,7 @@
       fontSize: `var(${role}-size)`,
       lineHeight: `var(${role}-lh)`,
       fontWeight: `var(${role}-weight)`,
-      letterSpacing: 'normal',
+      letterSpacing: `var(${role}-tracking, normal)`,
       color: 'var(--text-primary)',
     };
   }
@@ -368,9 +369,13 @@
     }
   }
 
+  function isNetworkFetchError(err) {
+    return err instanceof TypeError && /failed to fetch/i.test(String(err.message));
+  }
+
   async function postSave(payload) {
     const endpoints = getSaveEndpoints();
-    let lastError;
+    let lastNetworkError;
 
     for (const url of endpoints) {
       try {
@@ -385,11 +390,15 @@
         }
         return data;
       } catch (err) {
-        lastError = err;
+        if (isNetworkFetchError(err)) {
+          lastNetworkError = err;
+          continue;
+        }
+        throw err;
       }
     }
 
-    throw lastError || new Error('Не удалось сохранить токены');
+    throw lastNetworkError || new Error('Не удалось сохранить токены');
   }
 
   async function probeSaveApi() {
@@ -438,13 +447,6 @@
           <td><code class="token-name">${escapeHtml(token.name)}</code></td>
           <td><span class="token-category">${escapeHtml(token.category)}</span></td>
           <td><code class="token-value" data-token="${escapeHtml(token.name)}">${escapeHtml(token.value)}</code></td>
-          ${
-            index === 0
-              ? `<td class="token-preview-cell" rowspan="${rowspan}">
-            <span class="token-preview" style="${styleAttr}">${escapeHtml(sample)}</span>
-          </td>`
-              : ''
-          }
           <td>
             <input class="token-editor-input" type="text"
                    value="${escapeHtml(token.value)}"
@@ -452,18 +454,29 @@
                    data-cluster="${escapeHtml(cluster.role)}"
                    aria-label="Edit ${escapeHtml(token.name)}">
           </td>
+          ${
+            index === 0
+              ? `<td class="token-preview-cell" rowspan="${rowspan}">
+            <span class="token-preview" style="${styleAttr}">${escapeHtml(sample)}</span>
+          </td>`
+              : ''
+          }
         </tr>`
           )
           .join('');
       })
       .join('');
 
+    // Typing only edits the input's own draft value (native browser behavior —
+    // no listener needed). Commit (apply + preview + track) happens on blur only,
+    // so partial/incomplete input never touches the CSS var or reflows the preview.
     tbody.querySelectorAll('.token-editor-input').forEach((input) => {
-      input.addEventListener('input', () => {
+      input.addEventListener('blur', () => {
         const name = input.dataset.token;
         const clusterId = input.dataset.cluster;
-        const next = input.value.trim();
         const orig = originals.get(name);
+        const next = window.DSStorybook.normalizeTokenValue(input.value.trim(), orig);
+        input.value = next;
 
         document.documentElement.style.setProperty(name, next);
 
@@ -508,8 +521,8 @@
                 <th>Токен</th>
                 <th>Свойство</th>
                 <th>Значение</th>
-                <th>Превью</th>
                 <th>Редактирование</th>
+                <th>Превью</th>
               </tr>
             </thead>
             <tbody data-group="${escapeHtml(group.id)}"></tbody>

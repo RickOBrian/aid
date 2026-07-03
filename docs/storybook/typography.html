@@ -19,48 +19,61 @@
       --font-body: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-      --heading-xl-size:   32px;
-      --heading-xl-lh:     36px;
-      --heading-xl-weight: 600;
-      --heading-l-size:    26px;
-      --heading-l-lh:      30px;
-      --heading-l-weight:  600;
-      --heading-m-size:    22px;
-      --heading-m-lh:      26px;
-      --heading-m-weight:  700;
-      --heading-s-size:    18px;
-      --heading-s-lh:      22px;
-      --heading-s-weight:  700;
-      --heading-xs-size:   16px;
-      --heading-xs-lh:     20px;
-      --heading-xs-weight: 600;
+      --heading-xl-size:     32px;
+      --heading-xl-lh:       40px;
+      --heading-xl-weight:   700;
+      --heading-xl-tracking: -0.3px;
+      --heading-l-size:      28px;
+      --heading-l-lh:        36px;
+      --heading-l-weight:    700;
+      --heading-l-tracking:  -0.2px;
+      --heading-m-size:      24px;
+      --heading-m-lh:        32px;
+      --heading-m-weight:    700;
+      --heading-m-tracking:  -0.1px;
+      --heading-s-size:      20px;
+      --heading-s-lh:        28px;
+      --heading-s-weight:    700;
+      --heading-s-tracking:  0px;
+      --heading-xs-size:     16px;
+      --heading-xs-lh:       20px;
+      --heading-xs-weight:   600;
+      --heading-xs-tracking: 0px;
 
-      --body-l-size:   16px;
-      --body-l-lh:     28px;
-      --body-l-weight: 400;
-      --body-m-size:   14px;
-      --body-m-lh:     26px;
-      --body-m-weight: 400;
-      --body-s-size:   13px;
-      --body-s-lh:     22px;
-      --body-s-weight: 400;
+      --body-l-size:     16px;
+      --body-l-lh:       28px;
+      --body-l-weight:   400;
+      --body-l-tracking: 0px;
+      --body-m-size:     14px;
+      --body-m-lh:       26px;
+      --body-m-weight:   400;
+      --body-m-tracking: 0px;
+      --body-s-size:     13px;
+      --body-s-lh:       22px;
+      --body-s-weight:   400;
+      --body-s-tracking: 0.1px;
 
-      --label-l-size:   16px;
-      --label-l-lh:     20px;
-      --label-l-weight: 500;
-      --label-m-size:   14px;
-      --label-m-lh:     18px;
-      --label-m-weight: 500;
-      --label-s-size:   13px;
-      --label-s-lh:     16px;
-      --label-s-weight: 500;
-      --label-xs-size:   12px;
-      --label-xs-lh:     14px;
-      --label-xs-weight: 500;
+      --label-l-size:      16px;
+      --label-l-lh:        20px;
+      --label-l-weight:    500;
+      --label-l-tracking:  0px;
+      --label-m-size:      14px;
+      --label-m-lh:        18px;
+      --label-m-weight:    500;
+      --label-m-tracking:  0px;
+      --label-s-size:      13px;
+      --label-s-lh:        16px;
+      --label-s-weight:    500;
+      --label-s-tracking:  0.1px;
+      --label-xs-size:     12px;
+      --label-xs-lh:       14px;
+      --label-xs-weight:   500;
+      --label-xs-tracking: 0.2px;
 
-      --meta-xs-size:   11px;
-      --meta-xs-lh:     14px;
-      --meta-xs-weight: 500;
+      --meta-xs-size:     11px;
+      --meta-xs-lh:       14px;
+      --meta-xs-weight:   500;
+      --meta-xs-tracking: 0.2px;
     }
 
     html,
@@ -108,7 +121,7 @@
   <main class="storybook-layout__content">
     <header class="storybook-page-header">
       <h1>Typography</h1>
-      <p>Live-редактор типографических токенов docs/guides. Изменения применяются мгновенно; сохранение записывает значения в файлы репозитория.</p>
+      <p>Live-редактор типографических токенов docs/guides. Изменения применяются при потере фокуса поля (blur); сохранение записывает значения в файлы репозитория.</p>
       <p id="save-api-banner" class="storybook-status is-error" hidden>
         Сохранение недоступно на этом сервере. Запустите
         <code>python3 scripts/docs-server.py</code>

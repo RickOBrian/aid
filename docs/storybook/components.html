@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Components — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/docs-theme.css">
+  <link rel="stylesheet" href="storybook-color-tokens.css">
+  <link rel="stylesheet" href="storybook-layout.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="components">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <header class="storybook-page-header">
+      <h1>Components</h1>
+      <p>
+        Read-only карточки UI-компонентов, реально используемых на сайте документации
+        (<code>docs/assets/style.css</code>, <code>docs/storybook/*.css</code>). Без controls
+        для редактирования — только уровень архитектуры, semantic-токены и известные нарушения.
+        Нарушения помечены ⚠️ и не исправлены — они существуют в коде сайта на момент аудита.
+      </p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="components-heading">
+      <h2 id="components-heading">UI-компоненты сайта</h2>
+
+      <div class="component-doc-grid">
+
+        <!-- ── Badge ─────────────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>Badge</h3>
+            <span class="chip">Surface View</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <span class="badge badge--stable">Stable</span>
+            <span class="badge badge--draft">Draft</span>
+            <span class="badge badge--core">Core</span>
+            <span class="badge badge--semantic">Semantic</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5).</td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>high — уровень подтверждён прямым примером («Badge | Бейдж без вариантов», раздел 5).</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">inset-control-h-xs</code>
+                    <code class="token-ref">radius-full</code>
+                    <code class="token-ref">label-xs-size</code>
+                    <code class="token-ref">label-xs-lh</code>
+                    <code class="token-ref">label-xs-weight</code>
+                    <code class="token-ref">bg-accent-status-success</code>
+                    <code class="token-ref">bg-accent-status-warning</code>
+                    <code class="token-ref">bg-accent-status-attention</code>
+                    <code class="token-ref">bg-accent-ghost</code>
+                    <code class="token-ref">bg-accent-fade</code>
+                    <code class="token-ref">text-success</code>
+                    <code class="token-ref">text-accent</code>
+                    <code class="token-ref">text-primary</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Blocker</strong> — <code>padding: 2px var(--inset-control-h-xs)</code> —
+                    вертикальный отступ захардкожен (<code>2px</code>), нет ссылки на inset-токен.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── Card ──────────────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>Card</h3>
+            <span class="chip">требует уточнения</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <div class="card" style="max-width:280px">
+              <div class="card__header">
+                <span class="card__name">Card Name</span>
+                <span class="badge badge--draft">Draft</span>
+              </div>
+              <p class="card__description">Пример описания карточки для демонстрации токенов типографики и цвета.</p>
+              <div class="card__footer">
+                <span class="chip">Type</span>
+                <span class="card__version">v1.0.0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>
+                    Требует уточнения (перепроверено). <code>card__header</code>,
+                    <code>card__description</code>, <code>card__footer</code> — это BEM-классы
+                    CSS для стилизации визуально разных зон блока, а не именованные слоты как API
+                    (нет пропсов/@ViewBuilder/lambda-параметров, которые описаны в разделе 9
+                    гайда). В этом репозитории нет реализации компонента на целевой платформе,
+                    которая подтвердила бы slot-контракт — только статичная разметка одного
+                    инстанса. По одному лишь CSS нельзя отличить «Structural View с 3 слотами»
+                    от «Surface View с внутренней вёрсткой»: понижаю до «требует уточнения» до
+                    подтверждения на уровне реализации компонента.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>low — спорно; нет подтверждённого named-slot API, только CSS BEM-конвенция.</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">bg-card-main</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">line-accent</code>
+                    <code class="token-ref">radius-l</code>
+                    <code class="token-ref">inset-container-v-m</code>
+                    <code class="token-ref">inset-container-h-m</code>
+                    <code class="token-ref">gap-s</code>
+                    <code class="token-ref">gap-m</code>
+                    <code class="token-ref">gap-xs</code>
+                    <code class="token-ref">heading-xs-size</code>
+                    <code class="token-ref">heading-xs-lh</code>
+                    <code class="token-ref">heading-xs-weight</code>
+                    <code class="token-ref">body-s-size</code>
+                    <code class="token-ref">body-s-lh</code>
+                    <code class="token-ref">body-s-weight</code>
+                    <code class="token-ref">label-xs-size</code>
+                    <code class="token-ref">label-xs-lh</code>
+                    <code class="token-ref">label-xs-weight</code>
+                    <code class="token-ref">text-primary</code>
+                    <code class="token-ref">text-secondary</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td>Не найдены — все значения ссылаются на semantic-токены.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── Chip ──────────────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>Chip</h3>
+            <span class="chip">Surface View</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <span class="chip">Color</span>
+            <span class="chip">Typography</span>
+            <span class="chip">Components</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5, 9).</td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>high — уровень подтверждён прямым примером («Chip | Chip-контрол», раздел 5).</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">gap-xs</code>
+                    <code class="token-ref">inset-control-v-xs</code>
+                    <code class="token-ref">inset-control-h-xs</code>
+                    <code class="token-ref">radius-s</code>
+                    <code class="token-ref">meta-xs-size</code>
+                    <code class="token-ref">meta-xs-lh</code>
+                    <code class="token-ref">meta-xs-weight</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">text-secondary</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Blocker</strong> — <code>letter-spacing: 0.04em</code> — захардкожен
+                    трекинг вместо ссылки на семантический tracking-токен роли <code>meta-xs</code>
+                    (<code>meta-xs-tracking</code> уже существует в Typography Storybook — токен
+                    есть, но не используется).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── ButtonIcon ────────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>ButtonIcon</h3>
+            <span class="chip">Surface View</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <button class="btn-icon" type="button" aria-label="Пример ButtonIcon" tabindex="-1">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5, 9, дерево в разделе 2).</td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>high — уровень подтверждён прямым примером («ButtonIcon | Кнопка-иконка», раздел 5).</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">radius-m</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">icon-secondary</code>
+                    <code class="token-ref">icon-primary</code>
+                    <code class="token-ref">bg-accent-states-hover</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Gap</strong> — <code>width: 36px; height: 36px</code> — захардкожен
+                    размер; semantic size-токена для габаритов контрола не существует, нужно
+                    предложить новый (например, <code>size-control-m</code>).<br>
+                    ⚠️ <strong>Quality note</strong> — <code>36px</code> меньше touch target 44px
+                    (Web), зафиксированного в правилах проекта.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── Search / FieldSearch ──────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>Search <span class="component-doc__hint">(FieldSearch)</span></h3>
+            <span class="chip">требует уточнения</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <div class="search" style="width:100%">
+              <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <input class="search__input" type="text" placeholder="Поиск по гайдам…" readonly aria-label="Пример FieldSearch">
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>
+                    Требует уточнения (перепроверено). <code>search__icon</code> и
+                    <code>search__input</code> — BEM-классы CSS, а не именованные слоты как API:
+                    в разметке это два самостоятельных потомка <code>.search</code>, без
+                    компонента с пропсами/@ViewBuilder/lambda-параметрами <code>leading</code>/
+                    <code>content</code> из раздела 9. Визуально структура похожа на
+                    Field-компонент, но в этом репозитории нет реализации, которая подтвердила
+                    бы slot-контракт — только один статичный инстанс разметки: понижаю до
+                    «требует уточнения» до подтверждения на уровне реализации компонента.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>low — спорно; нет подтверждённого named-slot API, только CSS BEM-конвенция.</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">inset-control-v-s</code>
+                    <code class="token-ref">inset-control-h-m</code>
+                    <code class="token-ref">radius-m</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">line-accent</code>
+                    <code class="token-ref">bg-base-main-secondary</code>
+                    <code class="token-ref">bg-card-main</code>
+                    <code class="token-ref">text-primary</code>
+                    <code class="token-ref">text-disabled</code>
+                    <code class="token-ref">icon-secondary</code>
+                    <code class="token-ref">label-s-size</code>
+                    <code class="token-ref">label-s-lh</code>
+                    <code class="token-ref">label-s-weight</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Gap</strong> — <code>padding-left: 36px</code> (отступ под иконку) —
+                    захардкожен, semantic-токен под отступ иконки в контроле не заведён, нужно
+                    предложить новый.<br>
+                    ⚠️ <strong>Quality note</strong> — <code>width: 280px</code> на контейнере —
+                    захардкожен, но это ширина конкретного инстанса в шапке сайта, а не
+                    переиспользуемое значение стиля; ограничение метода анализа (только один
+                    инстанс использования в разметке).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── ColorSwatch ───────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>ColorSwatch</h3>
+            <span class="chip">требует уточнения</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <span class="color-swatch" style="--color-swatch-bg: var(--bg-accent-main)"></span>
+            <span class="color-swatch color-swatch--alpha">
+              <span class="color-swatch__solid" style="background-color: var(--bg-accent-main)"></span>
+              <span class="color-swatch__alpha color-swatch__checker">
+                <span class="color-swatch__alpha-fill" style="background-color: var(--bg-accent-main)"></span>
+              </span>
+            </span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>
+                    Требует уточнения. Базовый вариант (<code>.color-swatch</code>) — атомарный
+                    цветной блок без вложенного контента, по аналогии с <code>Dot</code> (Item,
+                    раздел 4). Alpha-вариант (<code>.color-swatch--alpha</code>) состоит из двух
+                    визуальных частей (solid + alpha-заливка) — граница Item/Structural View
+                    неочевидна, критерий «именованный слот» здесь чисто визуальный, не контентный.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>low — спорно, классификация уровня требует уточнения у Principal Designer.</td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">radius-s</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">bg-base-main-secondary</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Blocker</strong> — <code>.color-swatch__checker</code> использует
+                    захардкоженные HEX (<code>#ccc</code>, <code>#ffffff</code>) в
+                    <code>background-image</code> / <code>background-color</code> — прямое
+                    нарушение no-hardcode-color-protocol.<br>
+                    ⚠️ <strong>Gap</strong> — <code>width</code> / <code>height</code>
+                    (<code>32px</code>, <code>64px</code>) — захардкожен размер; semantic
+                    size-токена для габаритов свотча не существует, нужно предложить новый.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- ── StorybookButton ───────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>StorybookButton <span class="component-doc__hint">(ButtonText)</span></h3>
+            <span class="chip">Surface View</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <button class="storybook-btn storybook-btn--primary" type="button" tabindex="-1">Apply &amp; Save</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>
+                    Surface View — Role-семья <code>Button</code> зафиксирована как Surface View
+                    в разделе 9; по составу (текст в оболочке) соответствует <code>ButtonText</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>
+                    medium — Role-семья <code>Button</code> напрямую зафиксирована как Surface View
+                    (раздел 9), но конкретное сопоставление CSS-класса <code>.storybook-btn</code>
+                    с примером <code>ButtonText</code> — вывод по составу, не буквальное имя из гайда.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">label-m-size</code>
+                    <code class="token-ref">label-m-lh</code>
+                    <code class="token-ref">label-m-weight</code>
+                    <code class="token-ref">radius-full</code>
+                    <code class="token-ref">bg-accent-main</code>
+                    <code class="token-ref">bg-accent-states-pressed</code>
+                    <code class="token-ref">text-inverse</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Blocker</strong> — <code>padding: 8px 16px</code> — захардкожены
+                    отступы вместо уже существующих <code>inset-control-*</code>-токенов.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script src="storybook.js"></script>
+</body>
+</html>

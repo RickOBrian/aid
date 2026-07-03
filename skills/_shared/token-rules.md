@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.4.0
+# Правила токенов дизайн-системы — v1.5.0
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -88,6 +88,34 @@ Core → Semantic
 - Компоненты (кнопки, инпуты, бейджи и т.п.) **ссылаются только на semantic‑токены**.
 - Связь «компонент → semantic‑токены» описывается в спецификациях компонентов
   (см. `ds-component-spec`), а не в отдельном уровне токенов.
+
+---
+
+## Состав типографического стиля
+
+Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и т.п.) — это не одно
+значение, а **фиксированный набор свойств**. Каждое свойство ссылается на Core-токен
+типографики:
+
+| Свойство | Core-токен | Обязательно |
+|---|---|---|
+| `font-family` | `type-family-*` | да |
+| `font-size` | `type-size-*` | да |
+| `line-height` | `type-lh-*` | да |
+| `font-weight` | `type-weight-*` | да |
+| `letter-spacing` (tracking) | `type-tracking-*` | да |
+
+Правила:
+
+- `letter-spacing` (трекинг) — **полноправное свойство** стиля наравне с size, line-height
+  и weight, а не опциональная добавка.
+- Все свойства обязательны: частичный токен (например, size без line-height, weight или
+  letter-spacing) — блокер.
+- Свойства ссылаются на Core через semantic-роль; компонент → Core напрямую запрещён.
+
+Детали шкал Core (`type-size-*`, `type-lh-*`, `type-weight-*`, `type-tracking-*`) —
+в `core-typography-tokens-guide.md`; правила ролей и их состав —
+в `semantic-typography-tokens-guide.md`.
 
 ---
 
@@ -178,6 +206,7 @@ Web не использует `-ios` и `-android` токены.
 
 ## Changelog
 
+- **1.5.0** — добавлен раздел «Состав типографического стиля»: фиксированный набор свойств semantic-токена типографики (font-family, font-size, line-height, font-weight, letter-spacing/tracking) с явным указанием, что трекинг — полноправное обязательное свойство.
 - **1.4.0** — добавлен раздел «Границы категорий — стоп-правила»: типографика vs цвет, пространство vs цвет vs типографика; правило определения категории по значению токена.
 - **1.3.1** — раздел «Состояния» переработан: убраны колонки платформ-кода (они в `component-states-guide.md`), добавлена строка `selected/active`, добавлена ссылка на `component-states-guide.md`.
 - **1.3.0** — версия синхронизирована с репо после миграции на двухуровневую архитектуру; frontmatter приведён к skill-совместимому формату (name, metadata, description).

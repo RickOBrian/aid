@@ -53,6 +53,21 @@
     }
   }
 
+  /**
+   * Normalizes a plain numeric edit (e.g. "32", "3", "-0.5") into a unit-suffixed
+   * CSS value by reusing the unit of the token's previous value (e.g. "32px").
+   * Values that already carry a unit, or aren't plain numbers, pass through untouched.
+   */
+  function normalizeTokenValue(raw, previousValue) {
+    const value = String(raw).trim();
+    if (!/^-?\d+(?:\.\d+)?$/.test(value)) return value;
+
+    const unitMatch = String(previousValue || '').trim().match(/^-?\d+(?:\.\d+)?([a-z%]+)$/i);
+    if (!unitMatch) return value;
+
+    return `${value}${unitMatch[1]}`;
+  }
+
   function initTheme() {
     const html = document.documentElement;
     const btn = document.getElementById('theme-toggle');
@@ -81,5 +96,5 @@
     loadNav();
   });
 
-  window.DSStorybook = { initTheme, loadNav };
+  window.DSStorybook = { initTheme, loadNav, normalizeTokenValue };
 })();

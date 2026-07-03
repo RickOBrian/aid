@@ -288,11 +288,12 @@
       sample.style.lineHeight    = lh + 'px';
       sample.style.fontWeight    = weight;
       sample.style.letterSpacing = tracking;
+      sample.title = `${size}/${lh} · w${weight} · tracking ${tracking}`;
       sample.textContent = desc || 'The quick brown fox jumps over the lazy dog';
 
       const meta = document.createElement('span');
       meta.className = 'tv-type-meta';
-      meta.textContent = `${size}/${lh} w${weight}`;
+      meta.textContent = `${size}/${lh} w${weight} · ${tracking}`;
 
       row.append(nameEl, sample, meta);
       grid.appendChild(row);
@@ -420,6 +421,12 @@
       if (weight)  sample.style.fontWeight    = String(weight);
       if (tracking)sample.style.letterSpacing = tracking;
       sample.style.color = 'var(--text-primary)';
+      sample.title = [
+        size + 'px',
+        lh ? lh + 'px LH' : null,
+        weight ? 'w' + weight : null,
+        tracking ? 'tracking ' + tracking : null,
+      ].filter(Boolean).join(' · ');
       sample.textContent = 'Пример текста · Sample';
       sampleCell.appendChild(sample);
 

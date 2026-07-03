@@ -426,10 +426,17 @@
   }
 
   function bindInputs(scope) {
+    // Typing only edits the input's own draft value (native browser behavior —
+    // no listener needed). Commit (apply + track + swatch) happens on blur only,
+    // so partial/incomplete input never touches the CSS var or reflows the preview.
     scope.querySelectorAll('.token-editor-input').forEach((input) => {
-      input.addEventListener('input', () => {
+      input.addEventListener('blur', () => {
         const name = input.dataset.token;
         const mode = input.dataset.mode;
+        const key = mode === 'dark' ? `${name}::dark` : name;
+        const orig = originals.get(key) ?? originals.get(name) ?? '';
+        input.value = window.DSStorybook.normalizeTokenValue(input.value.trim(), orig);
+
         const next = resolveInputCssValue(input);
         applyToken(name, next, mode === 'dark' ? 'dark' : 'light');
         if (input.dataset.alphaDisplay === 'true' && parseRgba(next)) {
@@ -493,8 +500,27 @@
     return [...urls];
   }
 
+  async function parseSaveResponse(res) {
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      if (text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html')) {
+        throw new Error(
+          'Сервер не поддерживает сохранение. Запустите: python3 scripts/docs-server.py'
+        );
+      }
+      throw new Error('Некорректный ответ сервера (ожидался JSON)');
+    }
+  }
+
+  function isNetworkFetchError(err) {
+    return err instanceof TypeError && /failed to fetch/i.test(String(err.message));
+  }
+
   async function postSave(payload) {
-    let lastError;
+    let lastNetworkError;
+
     for (const url of getSaveEndpoints()) {
       try {
         const res = await fetch(url, {
@@ -502,15 +528,21 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        const text = await res.text();
-        const data = JSON.parse(text);
-        if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        const data = await parseSaveResponse(res);
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
         return data;
       } catch (err) {
-        lastError = err;
+        if (isNetworkFetchError(err)) {
+          lastNetworkError = err;
+          continue;
+        }
+        throw err;
       }
     }
-    throw lastError || new Error('Не удалось сохранить токены');
+
+    throw lastNetworkError || new Error('Не удалось сохранить токены');
   }
 
   async function loadChangelog() {
