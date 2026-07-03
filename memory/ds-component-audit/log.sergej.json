@@ -1,0 +1,17 @@
+[
+  {
+    "id": "audit-001",
+    "component": "Badge",
+    "verdict": "match",
+    "level": "surface-view",
+    "category": "indicators",
+    "confidence": "high",
+    "platforms": ["web"],
+    "source": "screenshot",
+    "source_type": null,
+    "status": "approved",
+    "date": "2026-07-03",
+    "notes": "Батч из 4 реальных скриншотов вариантов (stable/draft/core/semantic) с docs/storybook/components/badge.html. Все варианты уже задокументированы в спеке Badge, ничего нового не предложено.",
+    "_owner": "sergej"
+  }
+]
