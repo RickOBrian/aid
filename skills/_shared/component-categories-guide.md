@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: component-categories-guide
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   owner: design-system-team
   platforms: [web, ios, android]
 description: >
@@ -12,9 +12,9 @@ description: >
   используется только для группировки в навигации.
 ---
 
-# Категории компонентов дизайн-системы — v1.0.0
+# Категории компонентов дизайн-системы — v1.1.0
 
-> Статус: Draft · v1.0.0
+> Статус: Draft · v1.1.0
 
 ---
 
@@ -42,7 +42,8 @@ description: >
 | **Indicators** | Статус/классификация без действия | Badge, Chip, Tag, Dot |
 | **Media** | Представление сущности (пользователь, продукт, бренд) | Avatar, AvatarButton |
 | **Surfaces** | Generic-контейнеры без собственного смысла | Card, IconSurface, MediaSurface |
-| **Data display** | Метрики и аналитика | StatTile, WidgetBalance |
+| **Data display: metrics** | Метрики и аналитика | StatTile, WidgetBalance |
+| **Data display: tabular** | Построчные табличные данные с заголовком и повторяющимися строками (Table, TableRow). Отличается от Surfaces (единичный контент) и Data display: metrics (StatTile, WidgetBalance) наличием построчной структуры с переиспользуемым Row-паттерном. | Table |
 | **Navigation** | Навигация по продукту | NavBar, TabBar, Menu |
 | **Overlays** | Временно перекрывают контент | BottomSheet, Dialog, Toast, SidePanel |
 | **Layout** | Только расстановка группы компонентов | VStack, HStack, Grid |
@@ -116,6 +117,12 @@ description: >
 
 ## Changelog
 
+- **1.1.0** — 2026-07-03. Added "Data display: tabular" category for
+  row-based table components. Категория "Data display" переименована в
+  "Data display: metrics" для явного разграничения с новой категорией
+  (обе описывают разные назначения: метрики vs построчные табличные
+  данные). Первый компонент новой категории — Table (по итогам аудита
+  audit-002, `memory/ds-component-audit/log.sergej.json`).
 - **1.0.0** — первая версия. Зафиксированы 10 категорий, 3 разрешённых
   спорных случая (Search → Inputs, Toast → Overlays, Avatar → Media),
   правило добавления новых категорий с порогом "2+ компонента" и

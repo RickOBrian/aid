@@ -15,5 +15,29 @@
       "typography.label.medium"
     ],
     "_owner": "sergej"
+  },
+  {
+    "id": "spec-002",
+    "component": "Table",
+    "level": "structural-view",
+    "platforms": ["web"],
+    "date": "2026-07-03",
+    "stage": "final",
+    "open_questions": 0,
+    "missing_tokens": [],
+    "notes": "Все открытые вопросы закрыты. tracking-wide → label-tracking-uppercase-header (type-tracking-0_6, semantic-typography-tokens-guide.md v1.2.0). label-xs-weight-strong → новый полный semantic-токен, type-weight-700 уже существовал на Core (semantic-typography-tokens-guide.md v1.3.0, token-rules.md v1.5.1); хардкод font-weight:700 заменён на var(--label-xs-weight-strong) в docs/assets/docs-theme.css (.table-wrap th), docs/storybook/storybook-layout.css (.storybook-nav__section-label), docs/storybook/storybook-colors.css (.storybook-toc__label). Repeatable Slot закрыт ds-component-architecture-guide.md v1.3.0. iOS/Android осознанно убраны из scope — нет реального кейса нативного использования; платформа зафиксирована как web-only до появления кейса. Побочная находка (не исправлена, отдельный TODO): .sidebar__section-label и .guide-toc__label (docs/guides/template.html и производные) используют нетокенизированный font-size:10px и хардкод letter-spacing 0.08em/0.09em — вне scope label-xs-weight-strong (не 12px), требуют отдельного рассмотрения.",
+    "_owner": "sergej"
+  },
+  {
+    "id": "spec-003",
+    "component": "TableRow",
+    "level": "structural-view",
+    "platforms": ["web"],
+    "date": "2026-07-03",
+    "stage": "draft",
+    "open_questions": 1,
+    "missing_tokens": [],
+    "notes": "Repeatable Slot / Cell Span закрыт — ds-component-architecture-guide.md v1.3.0, раздел «Слоты Structural View». iOS/Android осознанно убраны из scope — нет реального кейса, платформа зафиксирована как web-only. Остаётся открытым TODO (намеренно не решается): состояния pressed/focused/selected/disabled/loading/skeleton/error не реализованы в CSS — добавлять только при реальном сценарии, без фиктивных состояний.",
+    "_owner": "sergej"
   }
 ]

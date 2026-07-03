@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: ds-component-architecture-guide
 metadata:
-  version: "1.1.0"
+  version: "1.3.0"
   owner: design-system-team
   platforms: [web, ios, android]
 description: >
@@ -13,7 +13,7 @@ description: >
 
 # Архитектура компонентов дизайн-системы
 
-> Статус: Draft · v1.1.0
+> Статус: Draft · v1.3.0
 
 ---
 
@@ -139,6 +139,7 @@ Structural View имеет два и более именованных слот�
 | BottomSheetRow | Строка в шторке |
 | IslandRow | Строка в Island |
 | MenuRow | Строка меню |
+| TableRow | Строка таблицы (repeatable cell-слот, см. раздел 9 «Исключение: Row-компоненты») |
 
 ### Field-компоненты
 
@@ -287,6 +288,17 @@ Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — уст�
 | Island | Structural View| IslandProduct, IslandHotel         |
 | Widget | Structural View| WidgetBalance, WidgetSummary       |
 
+### Исключение: Row-компоненты
+
+Устоявшиеся Row-компоненты (`ListRow`, `MenuRow`, `BottomSheetRow`, `IslandRow`,
+`TableRow`) сохраняют legacy-формулу Entity+Role (Row — в конце имени) и не
+переименовываются в формат RoleX. `RowList`/`RowMenu` в таблице Role-семей
+выше — иллюстративный пример формулы, не действующее имя компонента.
+
+Новые Row-компоненты, вводимые после v1.1.0, также следуют устоявшемуся
+паттерну Entity+Row для консистентности с уже существующими именами, а не
+формуле Role+Entity из этого раздела.
+
 ### Слоты Structural View
 
 | Слот      | Назначение                    | Реализация                     |
@@ -299,6 +311,42 @@ Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — уст�
 | `footer`  | Нижняя зона                   | — |
 
 Слоты — кросс-платформенные. Одинаковые имена на Web, iOS, Android.
+
+### Repeatable Slot
+
+Repeatable Slot — слот, который повторяется переменное число раз (2..N)
+внутри одного Structural View, в отличие от фиксированных именованных
+слотов (leading/content/trailing). Используется когда количество
+однотипных дочерних элементов определяется данными, а не дизайном
+(например: ячейки строки таблицы, колонки, повторяющиеся карточки в
+динамическом гриде).
+
+Правила:
+
+- Repeatable Slot обозначается в спеке как `cell (repeatable, 2..N)` или
+  аналогично, с указанием диапазона.
+- Компонент с Repeatable Slot может дополнительно поддерживать
+  `colSpan`/`rowSpan` (Cell Span) — объединение соседних повторяющихся
+  элементов в один визуальный блок.
+- Cell Span задаётся как проп на уровне самого повторяющегося элемента
+  (например `TableCell`), а не на родителе.
+- Repeatable Slot — валидный паттерн Structural View, не требует
+  понижения уровня до Layout, если сам компонент не является чистым
+  списком/сеткой без семантики (в этом случае используется Layout:
+  Grid/List).
+
+**Пример — TableRow / TableCell с colSpan:**
+
+```tsx
+<TableRow>
+  <TableCell colSpan={2}>Категория и назначение</TableCell>
+  <TableCell>Значение</TableCell>
+</TableRow>
+```
+
+Здесь `TableRow` задаёт Repeatable Slot `cell`, а `colSpan` на конкретном
+`TableCell` объединяет первые два повторяющихся элемента в один блок —
+проп находится на дочернем элементе, не на `TableRow`.
 
 ### Антипаттерны нейминга
 
@@ -356,6 +404,23 @@ Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — уст�
 ---
 
 ## Changelog
+
+### v1.3.0 — 2026-07-03
+
+**[Add] Repeatable Slot and Cell Span as valid Structural View patterns (раздел 6, «Слоты Structural View»)**
+- Добавлен подраздел «Repeatable Slot» — слот с переменным числом повторений (2..N), в отличие от фиксированных именованных слотов
+- Задокументирован `colSpan`/`rowSpan` (Cell Span) как проп повторяющегося дочернего элемента (например `TableCell`), не родителя
+- Явно зафиксировано: Repeatable Slot не понижает уровень до Layout, если компонент не является чистым списком/сеткой без семантики
+- Добавлен пример на основе `TableRow`/`TableCell` с `colSpan`
+- Закрывает открытый вопрос №1 из спеки TableRow (`memory/ds-component-spec/log.sergej.json`, spec-003)
+
+### v1.2.0 — 2026-07-03
+
+**[Add] Documented naming exception: Row-suffix components (XRow) keep legacy Entity+Role formula instead of Role+Entity (раздел 9)**
+- Добавлен подраздел «Исключение: Row-компоненты» сразу после таблицы Role-семей
+- `ListRow`, `MenuRow`, `BottomSheetRow`, `IslandRow`, `TableRow` явно закреплены как Entity+Role, не переименовываются в RoleX
+- Новые Row-компоненты после v1.1.0 следуют этому же устоявшемуся паттерну
+- `TableRow` добавлен в таблицу «Row-компоненты» (раздел 6) по итогам аудита audit-003 (`memory/ds-component-audit/log.sergej.json`)
 
 ### v1.1.0 — 2026-06-28
 
