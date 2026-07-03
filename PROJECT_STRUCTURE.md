@@ -1,69 +1,60 @@
 # Структура проекта aid
 
-> Снимок на 2026-07-01 · ветка `main` · v0.3.0
+> Снимок на 2026-07-03 · ветка `main` · v0.3.0
 
 ```
 aid/
 ├── .claude
-│   ├── intake-user
 │   ├── rules
-│   ├── settings.json
 │   ├── skills
 │   │   ├── _shared
 │   │   │   ├── git-workflow.md
 │   │   │   ├── platforms.md
 │   │   │   └── token-rules.md
 │   │   ├── add-skill
-│   │   │   ├── SKILL.md
-│   │   │   └── references
-│   │   │       └── .gitkeep
+│   │   │   ├── references
+│   │   │   │   └── .gitkeep
+│   │   │   └── SKILL.md
 │   │   └── ds-component-spec
-│   │       ├── ds-component-spec-SKILL.md
-│   │       └── references
-│   │           ├── .gitkeep
-│   │           └── ButtonText.md
+│   │       ├── references
+│   │       │   ├── .gitkeep
+│   │       │   └── ButtonText.md
+│   │       └── ds-component-spec-SKILL.md
+│   ├── intake-user
+│   ├── settings.json
 │   └── space-context.md
 ├── .cursor
 │   └── rules
 │       ├── ds-import.mdc
 │       ├── ds-principal.mdc
 │       └── git-push.mdc
-├── .cursorrules
-├── .gitignore
-├── AGENTS.md
-├── CHANGELOG.md
-├── CLAUDE.local.md
-├── CLAUDE.md
-├── PROJECT_STRUCTURE.md
-├── VERSION
 ├── docs
 │   ├── assets
+│   │   ├── vendor
+│   │   │   ├── a11y-dark.min.css
+│   │   │   ├── a11y-light.min.css
+│   │   │   ├── highlight-kotlin.min.js
+│   │   │   ├── highlight-swift.min.js
+│   │   │   ├── highlight.min.js
+│   │   │   ├── lunr.min.js
+│   │   │   └── marked.min.js
+│   │   ├── docs-tables.js
 │   │   ├── docs-theme.css
 │   │   ├── nav.js
 │   │   ├── search.js
 │   │   ├── style.css
-│   │   ├── token-viz.js
-│   │   └── vendor
-│   │       ├── a11y-dark.min.css
-│   │       ├── a11y-light.min.css
-│   │       ├── highlight-kotlin.min.js
-│   │       ├── highlight-swift.min.js
-│   │       ├── highlight.min.js
-│   │       ├── lunr.min.js
-│   │       └── marked.min.js
-│   ├── claude-skills-guide.md
+│   │   └── token-viz.js
 │   ├── design-system
-│   │   ├── README.md
 │   │   ├── tokens
 │   │   │   ├── core-color-tokens-guide.md
 │   │   │   ├── core-typography-tokens-guide.md
 │   │   │   ├── semantic-color-tokens-guide.md
 │   │   │   └── semantic-typography-tokens-guide.md
-│   │   └── typography
-│   │       ├── index.html
-│   │       ├── typography-guide.css
-│   │       └── typography-guide.md
-│   ├── ds-component-architecture-guide.md
+│   │   ├── typography
+│   │   │   ├── index.html
+│   │   │   ├── typography-guide.css
+│   │   │   └── typography-guide.md
+│   │   └── README.md
 │   ├── guides
 │   │   ├── component-states-guide.html
 │   │   ├── core-color-tokens-guide.html
@@ -74,6 +65,25 @@ aid/
 │   │   ├── semantic-space-tokens-guide.html
 │   │   ├── semantic-typography-tokens-guide.html
 │   │   └── template.html
+│   ├── storybook
+│   │   ├── _storybook-nav.json
+│   │   ├── colors-editor.js
+│   │   ├── colors.html
+│   │   ├── components.html
+│   │   ├── index.html
+│   │   ├── storybook-color-tokens.css
+│   │   ├── storybook-colors.css
+│   │   ├── storybook-layout.css
+│   │   ├── storybook.js
+│   │   ├── typography-editor.js
+│   │   └── typography.html
+│   ├── tokens
+│   │   ├── color-tokens-changelog.md
+│   │   ├── color-tokens-registry.md
+│   │   ├── save-tokens.js
+│   │   └── typography-tokens-changelog.md
+│   ├── claude-skills-guide.md
+│   ├── ds-component-architecture-guide.md
 │   ├── index.html
 │   ├── preview-variants.html
 │   ├── semver-guide.md
@@ -97,31 +107,41 @@ aid/
 │   └── token-rules.md
 ├── scripts
 │   ├── docs-server.py
-│   └── preview.py
-└── skills
-    ├── _shared
-    │   ├── component-states-guide.md
-    │   ├── core-color-tokens-guide.md
-    │   ├── core-space-tokens-guide.md
-    │   ├── core-typography-tokens-guide.md
-    │   ├── docs-design-brief.md
-    │   ├── docs-visual-language.md
-    │   ├── ds-component-architecture-guide.md
-    │   ├── git-workflow.md
-    │   ├── no-hardcode-color-protocol.md
-    │   ├── platforms.md
-    │   ├── semantic-color-tokens-guide.md
-    │   ├── semantic-space-tokens-guide.md
-    │   ├── semantic-typography-tokens-guide.md
-    │   ├── token-rules.md
-    │   └── ui-trends-2026.md
-    ├── ds-component-spec
-    │   └── SKILL.md
-    ├── ds-ui-review
-    │   ├── SKILL.md
-    │   └── TESTING.md
-    └── guide-lint
-        └── SKILL.md
+│   ├── preview.py
+│   └── start-docs.sh
+├── skills
+│   ├── _shared
+│   │   ├── component-categories-guide.md
+│   │   ├── component-states-guide.md
+│   │   ├── core-color-tokens-guide.md
+│   │   ├── core-space-tokens-guide.md
+│   │   ├── core-typography-tokens-guide.md
+│   │   ├── docs-design-brief.md
+│   │   ├── docs-visual-language.md
+│   │   ├── ds-component-architecture-guide.md
+│   │   ├── git-workflow.md
+│   │   ├── no-hardcode-color-protocol.md
+│   │   ├── platforms.md
+│   │   ├── semantic-color-tokens-guide.md
+│   │   ├── semantic-space-tokens-guide.md
+│   │   ├── semantic-typography-tokens-guide.md
+│   │   ├── token-rules.md
+│   │   └── ui-trends-2026.md
+│   ├── ds-component-spec
+│   │   └── SKILL.md
+│   ├── ds-ui-review
+│   │   ├── SKILL.md
+│   │   └── TESTING.md
+│   └── guide-lint
+│       └── SKILL.md
+├── .cursorrules
+├── .gitignore
+├── AGENTS.md
+├── CHANGELOG.md
+├── CLAUDE.local.md
+├── CLAUDE.md
+├── PROJECT_STRUCTURE.md
+└── VERSION
 ```
 
 ## Назначение разделов
