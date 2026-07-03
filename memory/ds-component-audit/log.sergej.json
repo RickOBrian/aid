@@ -13,5 +13,35 @@
     "date": "2026-07-03",
     "notes": "Батч из 4 реальных скриншотов вариантов (stable/draft/core/semantic) с docs/storybook/components/badge.html. Все варианты уже задокументированы в спеке Badge, ничего нового не предложено.",
     "_owner": "sergej"
+  },
+  {
+    "id": "audit-002",
+    "component": "Table",
+    "verdict": "new",
+    "level": "structural-view",
+    "category": "data-display-tabular",
+    "confidence": "medium",
+    "platforms": ["web"],
+    "source": "screenshot",
+    "source_type": null,
+    "status": "approved",
+    "date": "2026-07-03",
+    "notes": "Источник: таблица «Категория/Назначение» на странице semantic-color-tokens-guide, класс .table-wrap (docs/assets/docs-theme.css:277-329). Переиспользуется в десятках мест сайта, не задокументирован как компонент. Decomposition Check (Шаг 3.5): строки выделены в отдельный компонент TableRow (см. audit-003) — обоснование: .tv-row (docs/assets/token-viz.js) переиспользует строчный паттерн вне table-контекста. Категория: новая «Data display: tabular» — Surfaces (единичный контент) и Data display (метрики) не подходят по смыслу под построчные табличные данные; component-categories-guide.md ещё не обновлён, требуется отдельное действие. Имя Table — однословное исключение по аналогии с Badge/Dialog/Toast, конфликтов нет.",
+    "_owner": "sergej"
+  },
+  {
+    "id": "audit-003",
+    "component": "TableRow",
+    "verdict": "new",
+    "level": "structural-view",
+    "category": null,
+    "confidence": "medium",
+    "platforms": ["web"],
+    "source": "screenshot",
+    "source_type": null,
+    "status": "approved",
+    "date": "2026-07-03",
+    "notes": "Выделен из Table (audit-002) по Decomposition Check — строка (категория-пилюля + описание), структурный аналог ListRow/MenuRow/BottomSheetRow/IslandRow. Без отдельной категории в навигации, документируется как часть спеки Table. ВНИМАНИЕ — открытое расхождение в docs/ds-component-architecture-guide.md: раздел «Строчные компоненты» (строки 160-170) использует порядок Entity+Role (ListRow, MenuRow), а раздел 9 «Таблица Role-суффиксов» (строки 317-328, более новая нормализация) требует Role+Entity (RowList, RowMenu) — консистентное имя было бы RowTable, не TableRow. Имя TableRow согласовано явно Principal Designer при аудите, несмотря на это расхождение; флагирую для будущей ревизии гайда архитектуры.",
+    "_owner": "sergej"
   }
 ]
