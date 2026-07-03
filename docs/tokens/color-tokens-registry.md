@@ -15,8 +15,7 @@ Update this file every time a new token is created.
 | --core-neutral-x-5 | core | #F0F0F5 | — | (reserved) |
 | --core-neutral-x-10 | core | #F0F0F4 | — | bg-base-main-secondary |
 | --core-neutral-x-12 | core | #EFEFF2 | — | bg-code-block |
-| --core-neutral-x-15 | core | #FEE2E2 | — | line-default |
-| --core-neutral-x-15-b | core | #EBEBEB | — | bg-component-skeleton-shimmer |
+| --core-neutral-x-15 | core | #D9D9D9 | — | bg-component-skeleton-shimmer |
 | --core-neutral-x-18 | core | #E5E5EA | — | bg-component-skeleton-default |
 | --core-neutral-x-20 | core | #E5E5EA | — | bg-card-main-secondary, bg-modal-main-secondary |
 | --core-neutral-x-22 | core | #E2E2E2 | — | bg-accent-status-error |
@@ -85,7 +84,7 @@ Update this file every time a new token is created.
 | --bg-accent-status-error | semantic | core-neutral-x-22 | core-carnelian-55-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-accent-status-attention | semantic | core-amethyst-55 | core-amethyst-65-a16 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-component-skeleton-default | semantic | core-neutral-x-18 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --bg-component-skeleton-shimmer | semantic | core-neutral-x-15-b | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-component-skeleton-shimmer | semantic | core-neutral-x-15 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-code-block | semantic | core-neutral-x-82 | core-neutral-x-3 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
