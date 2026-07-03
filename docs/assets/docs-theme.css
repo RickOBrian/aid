@@ -11,7 +11,7 @@
    · All element rules reference CSS variables
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ── Token value overrides — Light ────────────────────────
    Warm neutral surfaces replace the cool-gray defaults.
@@ -45,19 +45,19 @@ html:not([data-theme="dark"]) {
 
   /* Typography — headings: heavy weight, tight line-height (1.1–1.2) */
   --heading-xl-size:   32px;
-  --heading-xl-lh:     36px;   /* ~1.13 */
-  --heading-xl-weight: 800;
+  --heading-xl-lh:     40px;   /* ~1.13 */
+  --heading-xl-weight: 700;
 
-  --heading-l-size:    26px;
-  --heading-l-lh:      30px;   /* ~1.15 */
-  --heading-l-weight:  800;
+  --heading-l-size:    28px;
+  --heading-l-lh:      36px;   /* ~1.15 */
+  --heading-l-weight:  700;
 
-  --heading-m-size:    22px;
-  --heading-m-lh:      26px;   /* ~1.18 */
+  --heading-m-size:    24px;
+  --heading-m-lh:      32px;   /* ~1.18 */
   --heading-m-weight:  700;
 
-  --heading-s-size:    18px;
-  --heading-s-lh:      22px;
+  --heading-s-size:    20px;
+  --heading-s-lh:      28px;
   --heading-s-weight:  700;
 
   --heading-xs-size:   16px;
@@ -89,7 +89,7 @@ html:not([data-theme="dark"]) {
    ============================================================ */
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: var(--body-m-lh);
@@ -104,9 +104,8 @@ html {
   background-color: var(--bg-base-main);
 }
 
-/* TODO: refactor style.css line 253 to use var(--font-body) */
 body, body * {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ============================================================
@@ -321,7 +320,11 @@ body, body * {
   border-bottom: none;
 }
 
-.table-wrap tbody tr:hover td {
+.table-wrap tbody tr.is-clickable {
+  cursor: pointer;
+}
+
+.table-wrap tbody tr.is-clickable:hover td {
   background: var(--bg-accent-states-hover);
 }
 

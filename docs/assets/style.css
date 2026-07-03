@@ -122,24 +122,24 @@
   --radius-full: 9999px;
 
   /* Typography — font families */
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Typography — heading */
   --heading-xl-size:   28px;
-  --heading-xl-lh:     36px;
+  --heading-xl-lh:     40px;
   --heading-xl-weight: 700;
 
-  --heading-l-size:    24px;
-  --heading-l-lh:      32px;
+  --heading-l-size:    28px;
+  --heading-l-lh:      36px;
   --heading-l-weight:  700;
 
-  --heading-m-size:    22px;
-  --heading-m-lh:      28px;
+  --heading-m-size:    24px;
+  --heading-m-lh:      32px;
   --heading-m-weight:  600;
 
-  --heading-s-size:    18px;
-  --heading-s-lh:      24px;
+  --heading-s-size:    20px;
+  --heading-s-lh:      28px;
   --heading-s-weight:  600;
 
   --heading-xs-size:   16px;

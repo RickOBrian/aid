@@ -13,7 +13,7 @@
   --radius-card: 64px;
   --radius-md: 24px;
   --radius-sm: 12px;
-  --font-guide: "Inter", system-ui, sans-serif;
+  --font-guide: "Google Sans", system-ui, sans-serif;
   --font-sample: "Montserrat", system-ui, sans-serif;
   --grid-unit: 4px;
 }
@@ -347,7 +347,11 @@ tbody td {
   vertical-align: middle;
 }
 
-tbody tr:hover {
+tbody tr.is-clickable {
+  cursor: pointer;
+}
+
+tbody tr.is-clickable:hover {
   background: #fafafa;
 }
 
