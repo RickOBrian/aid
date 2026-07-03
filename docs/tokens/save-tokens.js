@@ -20,8 +20,11 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const CHANGELOG_PATH = path.join(__dirname, 'typography-tokens-changelog.md');
+const COLOR_REGISTRY_PATH = path.join(__dirname, 'color-tokens-registry.md');
+const COLOR_CHANGELOG_PATH = path.join(__dirname, 'color-tokens-changelog.md');
 const GUIDES_DIR = path.join(REPO_ROOT, 'docs', 'guides');
 const STORYBOOK_DIR = path.join(REPO_ROOT, 'docs', 'storybook');
+const STORYBOOK_COLOR_TOKENS_CSS = path.join(STORYBOOK_DIR, 'storybook-color-tokens.css');
 const STYLE_CSS = path.join(REPO_ROOT, 'docs', 'assets', 'style.css');
 const DOCS_THEME_CSS = path.join(REPO_ROOT, 'docs', 'assets', 'docs-theme.css');
 
@@ -124,8 +127,54 @@ function formatChangelogEntry(changes) {
   return { tokenCol, changeCol };
 }
 
-function appendChangelog({ version, date, changes, author }) {
-  let md = fs.readFileSync(CHANGELOG_PATH, 'utf8');
+function isColorToken(name) {
+  return /^--(core|bg|text|icon|line|shadow)-/.test(name);
+}
+
+function normalizeSemanticRegistryRef(value) {
+  const v = value.trim();
+  if (!v) return v;
+  if (v.startsWith('var(--')) return v.slice(6, -1).replace(/^--/, '');
+  if (v.startsWith('var(')) return v.slice(4, -1).replace(/^--/, '');
+  return v.replace(/^--/, '');
+}
+
+function updateColorRegistry(content, tokens) {
+  let updated = content;
+  let changed = false;
+
+  for (const [token, value] of Object.entries(tokens)) {
+    const coreRe = new RegExp(
+      `(\\| ${escapeRegExp(token)} \\| core \\| )([^|]+)( \\|)`,
+      'g'
+    );
+    if (coreRe.test(content)) {
+      updated = updated.replace(coreRe, `$1${value}$3`);
+      changed = true;
+      continue;
+    }
+
+    const semanticRe = new RegExp(
+      `(\\| ${escapeRegExp(token)} \\| semantic \\| )([^|]+)( \\|)`,
+      'g'
+    );
+    if (semanticRe.test(updated)) {
+      const ref = normalizeSemanticRegistryRef(value);
+      updated = updated.replace(semanticRe, `$1${ref}$3`);
+      changed = true;
+    }
+  }
+
+  return { content: updated, changed };
+}
+
+function readLatestVersionFrom(md) {
+  const versions = [...md.matchAll(/\|\s*(\d+\.\d+\.\d+)\s*\|/g)].map((m) => m[1]);
+  return versions.length ? versions[versions.length - 1] : '1.0.0';
+}
+
+function appendChangelogFile(changelogPath, { version, date, changes, author }) {
+  let md = fs.readFileSync(changelogPath, 'utf8');
   const { tokenCol, changeCol } = formatChangelogEntry(changes);
   const row = `| ${version} | ${date} | ${tokenCol} | ${changeCol} | ${author} |`;
 
@@ -138,7 +187,41 @@ function appendChangelog({ version, date, changes, author }) {
     md = md.slice(0, pos) + '\n' + row + md.slice(pos);
   }
 
-  fs.writeFileSync(CHANGELOG_PATH, md, 'utf8');
+  fs.writeFileSync(changelogPath, md, 'utf8');
+}
+
+function appendTypographyChangelog(entry) {
+  appendChangelogFile(CHANGELOG_PATH, entry);
+}
+
+function appendColorChangelog(entry) {
+  appendChangelogFile(COLOR_CHANGELOG_PATH, entry);
+}
+
+function splitTokensByKind(tokens) {
+  const color = {};
+  const typography = {};
+  for (const [key, value] of Object.entries(tokens)) {
+    if (isColorToken(key)) color[key] = value;
+    else typography[key] = value;
+  }
+  return { color, typography };
+}
+
+function cssValueForRoot(token, value) {
+  if (!isColorToken(token)) return value;
+  if (token.startsWith('--core-')) return value;
+  if (value.startsWith('var(')) return value;
+  if (value.startsWith('--')) return `var(${value})`;
+  return `var(--${value})`;
+}
+
+function getColorTargetFiles() {
+  const files = [
+    ...listHtmlFiles(GUIDES_DIR).filter((f) => f.includes('color-tokens')),
+    STORYBOOK_COLOR_TOKENS_CSS,
+  ];
+  return files.filter((f) => fs.existsSync(f));
 }
 
 function normalizePayload(body) {
@@ -164,19 +247,10 @@ function saveTokens(payload) {
     return { ok: false, error: 'No tokens in request body' };
   }
 
+  const { color: colorTokens, typography: typoTokens } = splitTokensByKind(tokens);
   const filesUpdated = [];
-
-  for (const filePath of getTargetFiles()) {
-    const original = fs.readFileSync(filePath, 'utf8');
-    const { content, changed } = updateRootBlocks(original, tokens);
-    if (changed) {
-      fs.writeFileSync(filePath, content, 'utf8');
-      filesUpdated.push(path.relative(REPO_ROOT, filePath));
-    }
-  }
-
-  const version = bumpPatch(readLatestVersion());
   const date = todayISO();
+  let savedVersion = null;
   const changelogChanges =
     changes.length > 0
       ? changes
@@ -186,9 +260,58 @@ function saveTokens(payload) {
           newValue: tokens[token],
         }));
 
-  appendChangelog({ version, date, changes: changelogChanges, author });
+  if (Object.keys(typoTokens).length) {
+    for (const filePath of getTargetFiles()) {
+      const original = fs.readFileSync(filePath, 'utf8');
+      const { content, changed } = updateRootBlocks(original, typoTokens);
+      if (changed) {
+        fs.writeFileSync(filePath, content, 'utf8');
+        filesUpdated.push(path.relative(REPO_ROOT, filePath));
+      }
+    }
 
-  return { ok: true, version, filesUpdated };
+    const typoChanges = changelogChanges.filter((c) => !isColorToken(c.token));
+    if (typoChanges.length) {
+      savedVersion = bumpPatch(readLatestVersion());
+      appendTypographyChangelog({ version: savedVersion, date, changes: typoChanges, author });
+    }
+  }
+
+  if (Object.keys(colorTokens).length) {
+    const rootUpdates = {};
+    for (const [token, value] of Object.entries(colorTokens)) {
+      rootUpdates[token] = cssValueForRoot(token, value);
+    }
+
+    for (const filePath of getColorTargetFiles()) {
+      const original = fs.readFileSync(filePath, 'utf8');
+      const { content, changed } = updateRootBlocks(original, rootUpdates);
+      if (changed) {
+        fs.writeFileSync(filePath, content, 'utf8');
+        filesUpdated.push(path.relative(REPO_ROOT, filePath));
+      }
+    }
+
+    if (fs.existsSync(COLOR_REGISTRY_PATH)) {
+      const registry = fs.readFileSync(COLOR_REGISTRY_PATH, 'utf8');
+      const { content, changed } = updateColorRegistry(registry, colorTokens);
+      if (changed) {
+        fs.writeFileSync(COLOR_REGISTRY_PATH, content, 'utf8');
+        filesUpdated.push(path.relative(REPO_ROOT, COLOR_REGISTRY_PATH));
+      }
+    }
+
+    const colorChanges = changelogChanges.filter((c) => isColorToken(c.token));
+    if (colorChanges.length) {
+      const colorVersion = bumpPatch(
+        readLatestVersionFrom(fs.readFileSync(COLOR_CHANGELOG_PATH, 'utf8'))
+      );
+      appendColorChangelog({ version: colorVersion, date, changes: colorChanges, author });
+      if (!savedVersion) savedVersion = colorVersion;
+    }
+  }
+
+  return { ok: true, version: savedVersion || '1.0.0', filesUpdated: [...new Set(filesUpdated)] };
 }
 
 function readStdin() {

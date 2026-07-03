@@ -10,6 +10,8 @@ Serves the whole project, so both URLs resolve correctly:
 """
 import http.server
 import json
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -18,6 +20,33 @@ from urllib.parse import urlparse
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 3335
 ROOT = Path(__file__).parent.parent  # project root (…/aid/)
 SAVE_TOKENS_SCRIPT = ROOT / 'docs' / 'tokens' / 'save-tokens.js'
+
+
+def _resolve_node():
+    """Locate node binary — GUI-launched servers often have a minimal PATH."""
+    node = shutil.which('node')
+    if node:
+        return node
+    for candidate in (
+        '/opt/homebrew/bin/node',
+        '/usr/local/bin/node',
+        '/usr/bin/node',
+    ):
+        if Path(candidate).is_file():
+            return candidate
+    return 'node'
+
+
+NODE_BIN = _resolve_node()
+
+
+def _subprocess_env():
+    env = os.environ.copy()
+    node_dir = str(Path(NODE_BIN).parent)
+    path = env.get('PATH', '')
+    if node_dir not in path.split(':'):
+        env['PATH'] = f'{node_dir}:{path}' if path else node_dir
+    return env
 
 
 def _request_path(handler):
@@ -68,12 +97,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         try:
             proc = subprocess.run(
-                ['node', str(SAVE_TOKENS_SCRIPT)],
+                [NODE_BIN, str(SAVE_TOKENS_SCRIPT)],
                 input=raw,
                 capture_output=True,
                 text=True,
                 cwd=str(ROOT),
                 timeout=30,
+                env=_subprocess_env(),
             )
             body = proc.stdout.strip() or proc.stderr.strip() or '{"ok":false,"error":"empty response"}'
             data = json.loads(body)
