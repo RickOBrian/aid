@@ -4,7 +4,9 @@
 (function () {
   'use strict';
 
-  const NAV_URL = '_storybook-nav.json';
+  // Root-relative so nested pages (e.g. docs/storybook/components/badge.html)
+  // resolve the same nav file as top-level Storybook pages.
+  const NAV_URL = '/docs/storybook/_storybook-nav.json';
   const ACTIVE_PAGE = document.body.dataset.storybookPage || '';
 
   async function loadNav() {
@@ -23,9 +25,21 @@
         label.textContent = section.label;
         navEl.appendChild(label);
 
+        let lastGroup = null;
         for (const item of section.items || []) {
+          if (item.group !== lastGroup) {
+            lastGroup = item.group || null;
+            if (lastGroup) {
+              const groupLabel = document.createElement('div');
+              groupLabel.className = 'storybook-nav__group-label';
+              groupLabel.textContent = lastGroup;
+              navEl.appendChild(groupLabel);
+            }
+          }
+
           const a = document.createElement('a');
           a.className = 'storybook-nav__item';
+          if (item.group) a.classList.add('storybook-nav__item--grouped');
           if (item.href) {
             a.href = item.href;
             const pageId = item.href.replace('.html', '');

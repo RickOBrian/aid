@@ -57,6 +57,20 @@
   padding-top: 8px;
 }
 
+.storybook-nav__group-label {
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-disabled);
+  padding: 10px 12px 2px 20px;
+  line-height: 1;
+}
+
+.storybook-nav__item--grouped {
+  padding-left: 20px;
+}
+
 .storybook-nav__item {
   display: flex;
   align-items: center;
@@ -206,6 +220,22 @@
   font-size: var(--body-s-size);
   line-height: var(--body-s-lh);
   color: var(--text-secondary);
+}
+
+.component-doc-breadcrumb {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: var(--gap-xs);
+}
+
+.component-doc-breadcrumb a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.component-doc-breadcrumb a:hover {
+  text-decoration: underline;
 }
 
 .storybook-token-scope-note a {
@@ -372,6 +402,61 @@
 
 .component-doc__violation {
   color: var(--text-error);
+}
+
+.component-category {
+  margin-bottom: 28px;
+}
+
+.component-category:last-child {
+  margin-bottom: 0;
+}
+
+.component-category__title {
+  font-size: var(--heading-s-size);
+  line-height: var(--heading-s-lh);
+  font-weight: var(--heading-s-weight);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.component-category__desc {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.component-category__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding: 0;
+}
+
+.component-category__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  padding: var(--inset-control-v-s) var(--inset-control-h-m);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+}
+
+.component-category__item a {
+  font-size: var(--label-m-size);
+  line-height: var(--label-m-lh);
+  font-weight: var(--label-m-weight);
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.component-category__item a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 900px) {

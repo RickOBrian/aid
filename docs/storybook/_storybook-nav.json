@@ -4,15 +4,22 @@
       "id": "tokens",
       "label": "Tokens",
       "items": [
-        { "id": "typography", "label": "Typography", "href": "typography.html", "status": "stable" },
-        { "id": "colors", "label": "Colors", "href": "colors.html", "status": "stable" }
+        { "id": "typography", "label": "Typography", "href": "/docs/storybook/typography.html", "status": "stable" },
+        { "id": "colors", "label": "Colors", "href": "/docs/storybook/colors.html", "status": "stable" }
       ]
     },
     {
       "id": "components",
       "label": "Components",
       "items": [
-        { "id": "components", "label": "Components", "href": "components.html", "status": "read-only" }
+        { "id": "components", "label": "Overview", "href": "/docs/storybook/components.html", "status": "read-only" },
+        { "id": "components/button-icon", "label": "ButtonIcon", "href": "/docs/storybook/components/button-icon.html", "group": "Controls" },
+        { "id": "components/storybook-button", "label": "StorybookButton", "href": "/docs/storybook/components/storybook-button.html", "group": "Controls" },
+        { "id": "components/search", "label": "Search", "href": "/docs/storybook/components/search.html", "group": "Inputs" },
+        { "id": "components/badge", "label": "Badge", "href": "/docs/storybook/components/badge.html", "group": "Indicators" },
+        { "id": "components/chip", "label": "Chip", "href": "/docs/storybook/components/chip.html", "group": "Indicators" },
+        { "id": "components/card", "label": "Card", "href": "/docs/storybook/components/card.html", "group": "Surfaces" },
+        { "id": "components/color-swatch", "label": "ColorSwatch", "href": "/docs/storybook/components/color-swatch.html", "group": "Documentation utilities" }
       ]
     }
   ]
