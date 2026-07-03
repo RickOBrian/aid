@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.5.0
+# Правила токенов дизайн-системы — v1.5.1
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -112,6 +112,12 @@ Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и 
 - Все свойства обязательны: частичный токен (например, size без line-height, weight или
   letter-spacing) — блокер.
 - Свойства ссылаются на Core через semantic-роль; компонент → Core напрямую запрещён.
+- `font-weight` любого шага `type-weight-*`, включая `type-weight-700`, допустим для
+  любой роли, включая `label-*`, если это задокументировано как отдельный полный
+  semantic-токен (пример: `label-xs-weight-strong` — усиленное начертание `label-xs`,
+  см. `semantic-typography-tokens-guide.md`, раздел 7.1). Веса не ограничены «своим»
+  диапазоном на роль — привязка веса к роли решается на semantic-уровне, не запрещена
+  архитектурно.
 
 Детали шкал Core (`type-size-*`, `type-lh-*`, `type-weight-*`, `type-tracking-*`) —
 в `core-typography-tokens-guide.md`; правила ролей и их состав —
@@ -206,6 +212,11 @@ Web не использует `-ios` и `-android` токены.
 
 ## Changelog
 
+- **1.5.1** — 2026-07-03. Уточнено в разделе «Состав типографического
+  стиля»: `font-weight` (включая `type-weight-700`) допустим для любой
+  роли, включая `label-*`, если задокументирован как отдельный полный
+  semantic-токен (пример: `label-xs-weight-strong`). Основание — спека
+  `spec-002` (`memory/ds-component-spec/log.sergej.json`).
 - **1.5.0** — добавлен раздел «Состав типографического стиля»: фиксированный набор свойств semantic-токена типографики (font-family, font-size, line-height, font-weight, letter-spacing/tracking) с явным указанием, что трекинг — полноправное обязательное свойство.
 - **1.4.0** — добавлен раздел «Границы категорий — стоп-правила»: типографика vs цвет, пространство vs цвет vs типографика; правило определения категории по значению токена.
 - **1.3.1** — раздел «Состояния» переработан: убраны колонки платформ-кода (они в `component-states-guide.md`), добавлена строка `selected/active`, добавлена ссылка на `component-states-guide.md`.

@@ -1,6 +1,6 @@
 ---
 title: Semantic Typography Tokens — Архитектурный гайд
-version: "1.1.1"
+version: "1.3.0"
 owner: design-system-team
 platforms: [web, ios, android]
 ---
@@ -161,6 +161,39 @@ label-xs
 - paragraph spacing = 0;
 - Label не используется в параграфах — он живёт на контролах.
 
+### 7.1. Усиленное начертание — `label-xs-weight-strong`
+
+Для случаев, когда `label-xs` нужен с более жирным начертанием, чем
+базовый вес роли (например uppercase-заголовки таблиц, служебные
+секционные лейблы) — используется отдельный **полный** semantic-токен
+`label-xs-weight-strong`, а не модификатор (модификаторы — только для
+`letter-spacing`, см. раздел 11a):
+
+```text
+label-xs-weight-strong →
+  font-family:     type-family-sans-1   (как у label-xs)
+  font-size:       type-size-12         (как у label-xs)
+  line-height:     type-lh-14           (как у label-xs)
+  font-weight:     type-weight-700      (вместо type-weight-500/600 у label-xs)
+  letter-spacing:  как у label-xs — самостоятельного tracking не задаёт
+```
+
+`type-weight-700` уже существует на Core-уровне (см.
+`core-typography-tokens-guide.md`, раздел 5) — новый Core-токен не
+требовался, потребовалась только semantic-привязка веса к роли.
+
+Комбинируется с tracking-модификатором из раздела 11a там, где нужно
+uppercase-tracking:
+
+```text
+.table-wrap th → label-xs-weight-strong + label-tracking-uppercase-header
+```
+
+Это не отдельная генерализуемая формула «-weight-strong» для любой
+роли — только зафиксированный случай для `label-xs`. Аналогичная
+потребность для других ролей (`body-*`, `heading-*`) — отдельное
+решение design-system-team, не по аналогии молча.
+
 ---
 
 ## 8. Разница Body vs Label (блокер)
@@ -221,6 +254,7 @@ label-l
 label-m
 label-s
 label-xs
+label-xs-weight-strong
 code-m
 numeric-m
 helper-s
@@ -256,6 +290,49 @@ heading-m →
 - частичный токен (только размер без LH/weight) — блокер;
 - семейство (`type-family-*`) выбирается под роль (brand/ui/mono/numeric),
   но семантика семейства описывается в продуктовых/брендовых документах.
+
+---
+
+## 11a. Tracking-модификаторы (частичные semantic-токены)
+
+Единственное исключение из правила раздела 11 «все 5 свойств одним
+токеном»: для `letter-spacing` допускаются самостоятельные
+semantic-токены-модификаторы, которые переопределяют **только**
+tracking поверх базовой роли (`label-*` и т.п.), не трогая
+family/size/line-height/weight.
+
+Правила:
+
+- Модификатор применяется **вместе** с базовой ролью, не вместо неё:
+  `label-xs` + `label-tracking-uppercase-pill` на одном элементе.
+- Модификатор не имеет права переопределять никакое свойство, кроме
+  `letter-spacing`.
+- Список допустимых модификаторов **закрытый** — фиксируется явно в
+  таблице ниже. Использовать модификатор «из головы», без добавления в
+  этот гайд, нельзя.
+- Это единственное исключение из «полного набора свойств одним
+  токеном» — распространять паттерн частичных токенов на другие
+  свойства (weight, size и т.д.) нельзя без отдельного пересмотра
+  раздела 11 и явного решения design-system-team.
+
+**Текущий список модификаторов:**
+
+| Токен | Core | Назначение |
+|---|---|---|
+| `label-tracking-uppercase-header` | `type-tracking-0_6` | Заголовки таблиц — uppercase, компактный размер (например `.table-wrap th`) |
+| `label-tracking-uppercase-pill` | `type-tracking-0_4` | Uppercase-категории в пилюлях/чипах (например `.chip`) |
+
+**Пример:**
+
+```text
+.table-wrap th →
+  label-xs                          (font-family/size/line-height/weight)
+  + label-tracking-uppercase-header (letter-spacing: type-tracking-0_6)
+
+.chip →
+  label-xs (или meta-xs, см. спеку компонента)
+  + label-tracking-uppercase-pill   (letter-spacing: type-tracking-0_4)
+```
 
 ---
 
@@ -421,3 +498,26 @@ heading-m →
 Конкретные значения Core-токенов и их соответствие ролям описываются
 в продуктовых типографических гайдах и могут отличаться, если сохраняется
 архитектура ролей и соблюдаются блокеры.
+
+---
+
+## Changelog
+
+- **1.3.0** — 2026-07-03. Добавлен раздел 7.1 и токен
+  `label-xs-weight-strong` — полный semantic-токен (не модификатор) для
+  усиленного начертания `label-xs` (`type-weight-700`, уже существующий
+  на Core-уровне). Добавлен в список именования (раздел 10). Заменяет
+  хардкод `font-weight: 700` в `.table-wrap th`,
+  `.storybook-nav__section-label`, `.storybook-toc__label`. Основание —
+  спека `spec-002` (`memory/ds-component-spec/log.sergej.json`).
+- **1.2.0** — 2026-07-03. Добавлен раздел 11a «Tracking-модификаторы
+  (частичные semantic-токены)» — единственное исключение из правила
+  «5 свойств одним токеном» (раздел 11): самостоятельные
+  semantic-токены, переопределяющие только `letter-spacing` поверх
+  базовой роли. Введены `label-tracking-uppercase-header` (→
+  `type-tracking-0_6`) и `label-tracking-uppercase-pill` (→
+  `type-tracking-0_4`) как закрытый список допустимых модификаторов.
+  Основание — аудит `audit-002`/`audit-003` и спеки
+  `spec-002`/`spec-003` (`memory/`).
+- **до 1.2.0** — версии не документированы в этом файле (Changelog
+  отсутствовал); текущая версия на момент введения раздела — `1.1.1`.

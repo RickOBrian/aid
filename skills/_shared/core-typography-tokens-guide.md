@@ -1,6 +1,6 @@
 ---
 title: Core Typography Tokens — Архитектурный гайд
-version: "1.0.0"
+version: "1.1.1"
 owner: design-system-team
 platforms: [web, ios, android]
 ---
@@ -157,6 +157,13 @@ type-weight-700   → bold
 - `type-weight-400`, `type-weight-500`, `type-weight-600`, `type-weight-700`;
 - любые alias типа `strong`, `weak` живут только на semantic-уровне.
 
+**`type-weight-700` уже существует на Core-уровне** — отдельный
+«core-токен для XS-лейбла» заводить не нужно: Core-токен по определению
+role-agnostic (раздел 2, «Аксиома Core-уровня» — роль на этом уровне не
+описывается). Присвоение `type-weight-700` конкретной роли (например
+усиленному варианту `label-xs`) — задача semantic-уровня, см.
+`label-xs-weight-strong` в `semantic-typography-tokens-guide.md`.
+
 ---
 
 ## 6. Трекинг (type-tracking-*)
@@ -169,8 +176,22 @@ type-tracking--0_2   →  -0.2px
 type-tracking-0      →   0px
 type-tracking-0_2    →  +0.2px
 type-tracking-0_3    →  +0.3px
+type-tracking-0_4    →  +0.4px
+type-tracking-0_6    →  +0.6px
 ...
 ```
+
+**Шаги `0_4` и `0_6` добавлены в v1.1.0** для замены существующих
+хардкодов `letter-spacing` в системе (значение в `em` конвертировано в
+px под фактический размер текста компонента, где применялось):
+
+- `0.04em` при `font-size: 11px` (`.chip`, meta-xs) → `0.44px` → ближайшая
+  ступень `type-tracking-0_4`
+- `0.05em` при `font-size: 12px` (`.table-wrap th`, label-xs) → `0.6px` →
+  ступень `type-tracking-0_6`
+
+Единый механизм трекинга остаётся в абсолютных единицах — второй,
+параллельной шкалы в `em` не вводится (см. блокер ниже).
 
 Принципы:
 
@@ -277,6 +298,17 @@ label-m →
 
 ## Changelog
 
+- **1.1.1** — 2026-07-03. Уточнено в разделе 5: `type-weight-700` уже
+  существует на Core-уровне, отдельный «core-токен под XS-лейбл» не
+  заводится — присвоение веса конкретной роли (`label-xs-weight-strong`)
+  происходит на semantic-уровне. Основание — `label-xs-weight-strong`
+  (`semantic-typography-tokens-guide.md`), спека `spec-002` (`memory/`).
+- **1.1.0** — 2026-07-03. Добавлены ступени `type-tracking-0_4` (+0.4px)
+  и `type-tracking-0_6` (+0.6px) в существующую шкалу `type-tracking-*` —
+  конвертация хардкодов `0.04em`/`0.05em` (`.chip`, `.table-wrap th`) в
+  абсолютные px под фактический размер текста, без введения параллельной
+  em-шкалы. Основание — аудит `audit-002`/`audit-003` и спеки
+  `spec-002`/`spec-003` (`memory/`).
 - **1.0.0** — первая версия: определение Core-уровня, шкалы `type-size-*`,
   `type-lh-*`, `type-weight-*`, `type-tracking-*`, принципы платформенных
   единиц и блокеры.

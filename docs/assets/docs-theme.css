@@ -299,7 +299,7 @@ body, body * {
 
 .table-wrap th {
   font-size: var(--label-xs-size);
-  font-weight: 700;
+  font-weight: var(--label-xs-weight-strong);
   line-height: var(--label-xs-lh);
   text-transform: uppercase;
   letter-spacing: 0.05em;

@@ -45,7 +45,7 @@
 
 .storybook-nav__section-label {
   font-size: var(--label-xs-size);
-  font-weight: 700;
+  font-weight: var(--label-xs-weight-strong);
   text-transform: uppercase;
   letter-spacing: 0.09em;
   color: var(--text-secondary);
