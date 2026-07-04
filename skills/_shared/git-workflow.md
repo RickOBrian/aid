@@ -1,10 +1,10 @@
 ---
 title: Git Workflow для памяти скиллов
-version: "1.0.0"
+version: "1.1.0"
 owner: design-system-team
 ---
 
-# Git Workflow для памяти скиллов — v1.0.0
+# Git Workflow для памяти скиллов — v1.1.0
 
 Единые git-команды для синхронизации памяти скиллов.
 Все скиллы ссылаются на этот файл — не дублируй команды в SKILL.md.
@@ -33,6 +33,7 @@ git push
 | `memory(<skill>)` | Запись в журнал памяти | `memory(ds-component-spec): add BadgeStatus spec` |
 | `spec(<component>)` | Новая спека компонента | `spec(ButtonText): add spec v1.0.0` |
 | `audit(<target>)` | Результат аудита | `audit(tokens): ButtonText primitive refs` |
+| `migrate(<component>)` | Pilot/rollout миграции legacy → canonical компонент | `migrate(TableRow): pilot 2 file(s)` |
 | `feat(skills)` | Новый скилл | `feat(skills): add ds-token-audit v1.0.0` |
 | `fix(skills)` | Правка существующего скилла | `fix(skills): update ds-component-spec triggers` |
 | `docs` | Обновление гайда | `docs: update semver-guide to v1.2.0` |
@@ -95,5 +96,7 @@ echo "ivanov" > .claude/intake-user
 
 ## Changelog
 
+- **1.1.0** — добавлен тип коммита `migrate(<component>)` для
+  pilot/rollout миграции legacy-компонентов (`ds-component-migration`).
 - **1.0.0** — первая версия: команды синхронизации, типы коммитов,
   структура memory/, .gitignore, онбординг.
