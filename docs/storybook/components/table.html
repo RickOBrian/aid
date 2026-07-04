@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/docs-theme.css">
+  <link rel="stylesheet" href="../storybook-color-tokens.css">
+  <link rel="stylesheet" href="../storybook-layout.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="components/table">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <header class="storybook-page-header">
+      <p class="component-doc-breadcrumb">
+        <a href="../components.html">← Components</a>
+      </p>
+      <h1>Table</h1>
+      <p>Read-only карточка компонента — без controls для редактирования.</p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="component-heading">
+      <div class="component-doc-grid">
+
+        <!-- ── Table ─────────────────────────────────────────── -->
+        <article class="component-doc">
+          <header class="component-doc__header">
+            <h3>Table</h3>
+            <span class="chip">Structural View</span>
+          </header>
+
+          <div class="component-doc__sample">
+            <div class="table-wrap" data-ds-component="Table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Value</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>bg-accent-main</td>
+                    <td>#1C6DFF</td>
+                    <td>Stable</td>
+                  </tr>
+                  <tr class="is-clickable">
+                    <td>bg-accent-states-hover</td>
+                    <td>#1558D6</td>
+                    <td>Stable</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Уровень</th>
+                  <td>Structural View — два и более именованных слота (заголовок + повторяющиеся строки), см. <code>ds-component-architecture-guide.md</code>, раздел «Repeatable Slot / Cell Span» (v1.3.0).</td>
+                </tr>
+                <tr>
+                  <th>Confidence</th>
+                  <td>medium (audit-002) — спека закрыта: <code>memory/ds-component-spec/log.*.json</code>, <code>spec-002</code>, <code>stage: final</code>, <code>open_questions: 0</code>.</td>
+                </tr>
+                <tr>
+                  <th>Слоты</th>
+                  <td>
+                    <code>header</code> — опциональный, <code>&lt;thead&gt;</code>.<br>
+                    <code>content</code> — repeatable, <code>&lt;tbody&gt;</code>: каждая <code>&lt;tr&gt;</code> — экземпляр
+                    <code>TableRow</code>.
+                    ⚠️ <code>TableRow</code> (<code>spec-003</code>) — <code>stage: draft</code>,
+                    <code>open_questions: 1</code>: контракт слота <code>content</code> считать
+                    предварительным до перевода в <code>final</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
+                  <td class="component-doc__tokens">
+                    <code class="token-ref">radius-l</code>
+                    <code class="token-ref">line-default</code>
+                    <code class="token-ref">body-s-size</code>
+                    <code class="token-ref">body-s-lh</code>
+                    <code class="token-ref">bg-card-main</code>
+                    <code class="token-ref">bg-base-main-secondary</code>
+                    <code class="token-ref">label-xs-size</code>
+                    <code class="token-ref">label-xs-weight-strong</code>
+                    <code class="token-ref">label-xs-lh</code>
+                    <code class="token-ref">text-secondary</code>
+                    <code class="token-ref">inset-control-v-m</code>
+                    <code class="token-ref">inset-container-h-s</code>
+                    <code class="token-ref">bg-accent-states-hover</code>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Варианты</th>
+                  <td>
+                    <strong>Static</strong> — статичная разметка (<code>docs/storybook/typography.html</code>,
+                    <code>docs/storybook/colors.html</code>).<br>
+                    <strong>Interactive-generated</strong> — строки рендерятся JS-шаблоном
+                    (<code>docs/storybook/typography-editor.js</code>, <code>docs/storybook/colors-editor.js</code>) —
+                    mapping для этой группы ещё не решён (<code>memory/ds-component-migration/log.*.json</code>,
+                    <code>migration-001</code>).<br>
+                    <strong>Row-level: <code>is-clickable</code></strong> — hover-состояние строки уже есть в CSS
+                    (<code>bg-accent-states-hover</code>), но именованный контракт на уровне <code>TableRow</code>
+                    для него — draft, не финализирован.
+                  </td>
+                </tr>
+                <tr>
+                  <th>Нарушения</th>
+                  <td class="component-doc__violation">
+                    ⚠️ <strong>Blocker</strong> — <code>.table-wrap th { letter-spacing: 0.05em }</code>
+                    (<code>docs/assets/docs-theme.css</code>) — хардкод трекинга вместо
+                    <code>var(--label-tracking-uppercase-header)</code>. Токен уже описан в
+                    <code>semantic-typography-tokens-guide.md</code> именно для этого селектора
+                    (<code>type-tracking-0_6</code>), но не подключён в живом CSS — расхождение с
+                    заметкой в <code>spec-002</code> о том, что трекинг был токенизирован.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script src="../storybook.js"></script>
+</body>
+</html>
