@@ -1,6 +1,6 @@
 # Структура проекта aid
 
-> Снимок на 2026-07-03 · ветка `main` · v0.3.0
+> Снимок на 2026-07-16 · ветка `main` · v0.3.0
 
 ```
 aid/
@@ -61,27 +61,68 @@ aid/
 │   │   ├── core-space-tokens-guide.html
 │   │   ├── core-typography-tokens-guide.html
 │   │   ├── ds-component-architecture-guide.html
+│   │   ├── ds-component-audit-guide.html
+│   │   ├── ds-component-migration-guide.html
 │   │   ├── semantic-color-tokens-guide.html
 │   │   ├── semantic-space-tokens-guide.html
 │   │   ├── semantic-typography-tokens-guide.html
 │   │   └── template.html
+│   ├── prototypes
+│   │   ├── assets
+│   │   │   ├── fonts
+│   │   │   │   ├── JTUSjIg1_i6t8kCHKm459W1hyyTh89ZNpQ.woff2
+│   │   │   │   ├── JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2
+│   │   │   │   ├── Montserrat-500-cyrillic.woff2
+│   │   │   │   ├── Montserrat-500-latin.woff2
+│   │   │   │   ├── Montserrat-500.ttf
+│   │   │   │   ├── Montserrat-600-cyrillic.woff2
+│   │   │   │   ├── Montserrat-600-latin.woff2
+│   │   │   │   └── Montserrat-600.ttf
+│   │   │   ├── badge-icon.png
+│   │   │   ├── carousel-default-banner-image.png
+│   │   │   ├── clock.png
+│   │   │   ├── default-banner-image.png
+│   │   │   ├── heart.png
+│   │   │   ├── partner-logo.png
+│   │   │   └── suitcase.png
+│   │   ├── banner-adaptive-demo.html
+│   │   ├── serve.py
+│   │   └── start-serve.sh
 │   ├── storybook
+│   │   ├── components
+│   │   │   ├── badge.html
+│   │   │   ├── button-icon.html
+│   │   │   ├── card.html
+│   │   │   ├── chip.html
+│   │   │   ├── color-swatch.html
+│   │   │   ├── search.html
+│   │   │   ├── storybook-button.html
+│   │   │   └── table.html
 │   │   ├── _storybook-nav.json
 │   │   ├── colors-editor.js
 │   │   ├── colors.html
 │   │   ├── components.html
 │   │   ├── index.html
+│   │   ├── spec-editor.js
+│   │   ├── spec-inspector.js
 │   │   ├── storybook-color-tokens.css
 │   │   ├── storybook-colors.css
 │   │   ├── storybook-layout.css
+│   │   ├── storybook-spec-inspector.css
+│   │   ├── storybook-token-create.css
+│   │   ├── storybook-typography-tokens.css
 │   │   ├── storybook.js
+│   │   ├── token-confirm.js
+│   │   ├── token-create.js
+│   │   ├── token-store.js
 │   │   ├── typography-editor.js
 │   │   └── typography.html
 │   ├── tokens
 │   │   ├── color-tokens-changelog.md
 │   │   ├── color-tokens-registry.md
 │   │   ├── save-tokens.js
-│   │   └── typography-tokens-changelog.md
+│   │   ├── typography-tokens-changelog.md
+│   │   └── typography-tokens-registry.md
 │   ├── claude-skills-guide.md
 │   ├── ds-component-architecture-guide.md
 │   ├── index.html
@@ -89,6 +130,12 @@ aid/
 │   ├── semver-guide.md
 │   └── visual-language-test.html
 ├── memory
+│   ├── ds-component-audit
+│   │   ├── .gitkeep
+│   │   └── log.sergej.json
+│   ├── ds-component-migration
+│   │   ├── .gitkeep
+│   │   └── log.sergej.json
 │   └── ds-component-spec
 │       ├── .gitkeep
 │       └── log.sergej.json
@@ -119,6 +166,9 @@ aid/
 │   │   ├── docs-design-brief.md
 │   │   ├── docs-visual-language.md
 │   │   ├── ds-component-architecture-guide.md
+│   │   ├── ds-component-audit-guide.md
+│   │   ├── ds-component-migration-guide.md
+│   │   ├── editable-component-spec-layer-guide.md
 │   │   ├── git-workflow.md
 │   │   ├── no-hardcode-color-protocol.md
 │   │   ├── platforms.md
@@ -127,7 +177,17 @@ aid/
 │   │   ├── semantic-typography-tokens-guide.md
 │   │   ├── token-rules.md
 │   │   └── ui-trends-2026.md
+│   ├── ds-component-audit
+│   │   ├── references
+│   │   │   └── .gitkeep
+│   │   ├── SKILL.md
+│   │   └── TESTING.md
+│   ├── ds-component-migration
+│   │   ├── SKILL.md
+│   │   └── TESTING.md
 │   ├── ds-component-spec
+│   │   └── SKILL.md
+│   ├── ds-developer-guide
 │   │   └── SKILL.md
 │   ├── ds-ui-review
 │   │   ├── SKILL.md
@@ -141,7 +201,8 @@ aid/
 ├── CLAUDE.local.md
 ├── CLAUDE.md
 ├── PROJECT_STRUCTURE.md
-└── VERSION
+├── VERSION
+└── measure-presentation-pass.md
 ```
 
 ## Назначение разделов
