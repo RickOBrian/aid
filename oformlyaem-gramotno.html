@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Знаки и цифры — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title text-h1">Знаки и цифры</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <aside class="sidebar" aria-label="Содержание раздела">
+        <ul class="sidebar__list">
+          <li><a href="#quotes" class="sidebar__link text-nav">Кавычки</a></li>
+          <li><a href="#nested-quotes" class="sidebar__link text-nav">Кавычки внутри кавычек</a></li>
+          <li><a href="#dash-words" class="sidebar__link text-nav">Тире между словами</a></li>
+          <li><a href="#number-ranges" class="sidebar__link text-nav">Диапазоны чисел</a></li>
+          <li><a href="#hyphen" class="sidebar__link text-nav">Дефис</a></li>
+          <li><a href="#no-slash" class="sidebar__link text-nav">Без слэша</a></li>
+          <li><a href="#letter-yo" class="sidebar__link text-nav">Буква ё</a></li>
+          <li><a href="#period" class="sidebar__link text-nav">Точка</a></li>
+          <li><a href="#no-hanging" class="sidebar__link text-nav">Без «висяков»</a></li>
+          <li><a href="#currency" class="sidebar__link text-nav">Валюта</a></li>
+          <li><a href="#phones" class="sidebar__link text-nav">Номера телефонов</a></li>
+          <li><a href="#dates" class="sidebar__link text-nav">Даты</a></li>
+          <li><a href="#time" class="sidebar__link text-nav">Обозначение времени</a></li>
+          <li><a href="#percent" class="sidebar__link text-nav">Процент</a></li>
+          <li><a href="#numbers" class="sidebar__link text-nav">Числа</a></li>
+          <li><a href="#math" class="sidebar__link text-nav">Математические знаки</a></li>
+          <li><a href="#abbreviations" class="sidebar__link text-nav">Сокращения</a></li>
+        </ul>
+      </aside>
+      <main class="page-content">
+        <p class="text-body content-intro">
+          В оформлении текста с точки зрения грамотности опираемся на
+          <a href="https://orfogrammka.ru/%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA/%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA_%D0%B8%D0%B7%D0%B4%D0%B0%D1%82%D0%B5%D0%BB%D1%8F_%D0%B8_%D0%B0%D0%B2%D1%82%D0%BE%D1%80%D0%B0_%D0%BC%D0%B8%D0%BB%D1%8C%D1%87%D0%B8%D0%BD_%D1%87%D0%B5%D0%BB%D1%8C%D1%86%D0%BE%D0%B2%D0%B0/" class="text-link" target="_blank" rel="noopener noreferrer">Справочник издателя и автора Аркадия Мильчина и Людмилы Чельцовой</a>.
+          Дополнительные правила описаны ниже.
+        </p>
+
+        <article class="card" id="quotes" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Кавычки</h2>
+            <div class="text-body">
+              <p><strong>Названия приложения, разделов сайта, кнопок и вкладок</strong> всегда пишем в кавычках.</p>
+              <p><strong>Названия опций, карт, подписок, брендов, компаний</strong> — берём в кавычки, если перед ними стоит родовое слово (офис банка «Совкомбанк» — но офис Совкомбанка). Если родового слова нет — кавычки не ставим.</p>
+              <p>В любом случае, названия компаний лучше предварительно проверять на официальных сайтах, поскольку некоторые из них отказались от кавычек в принципе (например, Яндекс, билайн).</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Тариф «Выгодный»</p>
+                    <p>Оплачивайте покупки в Пятёрочке</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Тариф "Выгодный"</p>
+                    <p>Оплачивайте покупки в «Пятёрочке»</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="nested-quotes" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Кавычки внутри кавычек</h2>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Раздел «Подписка „Халва.Десятка“»</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Раздел «Подписка «Халва.Десятка»»</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="dash-words" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Тире между словами</h2>
+            <p class="text-body">Длинное тире «—» — это знак препинания, который используем для замены пропущенных слов, выделения мысли и разделения между подлежащим и сказуемым. Между отдельными словами в предложении используем именно классическое длинное тире.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>Подробности — ниже</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>Подробности - ниже</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="number-ranges" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Диапазоны чисел</h2>
+            <p class="text-body">При указании интервалов (диапазонов чисел) используем длинное тире.<br>Если интервал содержит слова или даты в формате дд.мм.гггг — отделяем его пробелами, если только цифры — не отделяем.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 января — 5 февраля</p>
+                    <p class="no-typography">3—5 рабочих дней</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 января – 5 февраля</p>
+                    <p>3 - 5 рабочих дней</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="hyphen" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Дефис</h2>
+            <p class="text-body">Дефис «-» — часть двусоставного слова. Используем дефис в таких словах и не отделяем пробелами</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>Онлайн-магазин</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>Онлайн — магазин</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="no-slash" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без слэша</h2>
+            <p class="text-body">Заменяем на предлог или союз по смыслу.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>₽ в месяц</p>
+                    <p>если вы выбираете Оптимальный<br>или Безлимитный тариф</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>₽/месяц</p>
+                    <p>если вы выбираете Оптимальный/Безлимитный тариф</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="letter-yo" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Буква ё</h2>
+            <p class="text-body">Мы уважаем нашу исконно русскую букву и не калечим её при написании, лишая точек.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>учтём скидку</p>
+                    <p>партнёры</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>учтем скидку</p>
+                    <p>партнеры</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="period" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Точка</h2>
+            <div class="text-body">
+              <p>Не ставим точки в последнем предложении. Если в интерфейсном тексте несколько предложений — ставим во всех, кроме последнего. При этом ставим точки в конце абзацев, если их 2 или больше — в конце всех абзацев, кроме последнего.</p>
+              <p>Этот знак препинания не имеет смысла в конце текста, поскольку пользователь и так видит, что текст закончился. В интерфейсными элементах — заголовках, подзаголовках, кнопках — точки в конце не ставим, а значит, для консистентности лучше убрать их и в основных текстах.</p>
+              <p><strong>Исключение:</strong> есть форматы, в которых ставить итоговую точку нужно: речь о документах, инструкциях, гайдах, статьях, материалах рассылки и письмах. В данном случае она облегчает восприятие текста — во-первых, из-за привычности её использования в таких форматах, а во-вторых, из-за присущей таким форматам объёмности текста. Знак препинания в конце длинного повествования воспринимается как «уравновешивающий» якорь.</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Пока ваш список операций пуст. Совершайте покупки — и получайте бонусы</p>
+                    <p>Спасибо!</p>
+                    <p>В течение 10 минут менеджер свяжется с вами для подтверждения. Если звонок не поступит — пожалуйста, напишите в чат</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Пока ваш список операций пуст. Совершайте покупки — и получайте бонусы.</p>
+                    <p>Спасибо!</p>
+                    <p>В течение 10 минут менеджер свяжется с вами для подтверждения. Если звонок не поступит — пожалуйста, напишите в чат.</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card card--compact" id="no-hanging" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без «висяков»</h2>
+            <div class="text-body">
+              <p>«Висяки» — это предлоги, союзы и частицы, которые «подвисли» в конце строки, хотя относятся по смыслу к слову в начале следующей строки. По правилам типографики мы переносим их на новую строку.</p>
+              <p>Мы ставим неразрывный пробелы в качестве связки предлогов, союзов, частиц и междометий со словом, к которому они относятся.</p>
+              <p>Сочетания клавиш для неразрывного пробела: для Mac OS — ⌥Option+Пробел (или Shift+Return), для Windows — Ctrl+Shift+Пробел (только для ворда)</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Спасибо!</p>
+                    <p>В течение 10 минут менеджер свяжется с вами для подтверждения. Если звонок не поступит — пожалуйста, напишите в чат</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Спасибо!</p>
+                    <p>В течение 10 минут менеджер свяжется с вами для подтверждения. Если звонок не поступит — пожалуйста, напишите в чат.</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="currency" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Валюта</h2>
+            <div class="text-body">
+              <p><strong>Знак рубля.</strong> Для экономии места и консистентности в текстах обозначаем знак рубля спецсимволом ₽. Знак ставится через неразрывный пробел после цифрового обозначения суммы.</p>
+              <p><strong>Иностранные валюты.</strong> Доллары, евро и другие иностранные валюты мы также обозначаем спецсимволами. Они также ставятся через пробел после цифрового обозначения суммы — для соблюдения консистентности.</p>
+              <p><strong>ISO-коды валют (RUB, EUR).</strong> Использование кодов может быть актуально для некоторых банковских продуктов. Если рубль сопоставляется с иностранными валютами (перерасчёт, конвертация) или сравнивается баланс счетов в разных валютах — мы используем такой код, принятый для конкретной валюты.</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p><strong>Получите скидку 50% на покупку</strong></p>
+                    <p>Дарим промокод на 300 ₽</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p><strong>Получите скидку 50% на покупку</strong></p>
+                    <p>Дарим промокод на 300 рублей</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p class="text-body"><strong>Исключение:</strong> если использовать знак технически невозможно, используем слово «рублей» или сокращение «руб.».</p>
+          </div>
+        </article>
+
+        <article class="card" id="phones" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Номера телефонов</h2>
+            <p class="text-body">Для быстроты и простоты считывания номера телефона пишем, используя пробелы и скобки с кодом страны. Между цифрами основного номера ставим дефисы.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Свяжитесь с нами по телефону</p>
+                    <p class="no-typography">8 (499) 348-76-78</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Свяжитесь с нами по телефону</p>
+                    <p>84993487678</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="dates" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Даты</h2>
+            <div class="text-body">
+              <p>При указании даты мы прописываем месяц буквами, чтобы визуально облегчить длинную последовательность цифр. Если дата меньше 10, 0 в начале не ставим. Стараемся соблюдать это правило всегда, но иногда бывают <strong>исключения</strong>: если это технически невозможно, если критична длина итогового текста с датой, в финансовой отчётности или детализации по банковской операции. Тогда используем классический формат написания в формате дд.мм.гггг — если дата меньше 10, ставим в начале 0.<br><strong>Исключение есть и здесь:</strong> в рекламных материалах даты до 10 могут писаться без 0 в начале.</p>
+              <p>При этом год мы по возможности стараемся не ставить — как правило, это излишне. Если указание года всё-таки необходимо (например, при указании интервалов, когда года в датах разные) — используем полное написание формата «гггг». При этом не ставим «г.» или «года» в конце.</p>
+              <p><strong>Интервалы дат.</strong> Если нам нужно указать диапазон дат, для написания месяца мы используем буквенное сокращение, без точки. Между датами ставим среднее тире «–».</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 января 2025</p>
+                    <p>03.01.2025</p>
+                    <p class="no-typography">3 сент 2025 – 3 окт 2025</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 января 2025 года</p>
+                    <p>3.01.25 г.</p>
+                    <p>03.09.25 — 03.10.25</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="time" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Обозначение времени</h2>
+            <p class="text-body">Указываем время в формате ЧЧ:ММ. Сокращение часового пояса пишем строчными буквами.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>20:00 мск</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text"><p>20:00 по МСК</p></div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="percent" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Процент</h2>
+            <p class="text-body">Знак процента пишется слитно с числом — например, «Скидка 15%». Не заменяем слово «процент» символом, если он употребляется без чисел — например, «большой процент».<br><br>Во <strong>множественном числе</strong> пишем буквами — «проценты». Вариант %% возможен в самых крайних случаях, когда есть критичные технические ограничения.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Увеличенный процент</p>
+                    <p>10% кешбэк</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Увеличенный %</p>
+                    <p>10 % кешбэк</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="numbers" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Числа</h2>
+            <div class="text-body">
+              <p>Все числа мы пишем цифрами. Даже до 10 — правило о буквенном написании таких чисел актуально только для художественных текстов.</p>
+              <p>В числах ставим разделитель разрядов — отделяем тысячи пробелами. Исключение – случаи, где может произойти неконтролируемый перенос части числа на новую строку.</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Вы получите 3 преимущества</p>
+                    <p>3 000 ₽</p>
+                    <p>До 2025 года</p>
+                    <p>25-й день</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Вы получите три преимущества</p>
+                    <p>3000 ₽</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="text-body">
+              <p><strong>Длинные числа.</strong> Десятки и сотни тысяч пишем цифрами, миллионы и миллиарды — сокращаем.</p>
+              <p><strong>Исключение:</strong> иногда указание точного числа необходимо — при указании расчётов, или, например, если речь о деньгах клиента: баланс счёта, проценты по вкладу, задолженность по кредиту.</p>
+            </div>
+            <div class="text-body">
+              <p><strong>Сокращения.</strong> Мы используем сокращения разрядов чисел согласно правилам русского языка.</p>
+              <p>ед., тыс. — сокращения с точкой в конце</p>
+              <p>млн, млрд, … — сокращения до согласных без точки в конце</p>
+            </div>
+            <p class="text-body"><strong>Наращения.</strong> Используем буквенное наращение только при указании количественного числительного: «1-й», «30-й». При указании года — не используем.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 000</p>
+                    <p>300 млн</p>
+                    <p>До 2025 года</p>
+                    <p>25-й день</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>3 тыс</p>
+                    <p>300 000 000 000</p>
+                    <p>До 2025-го года</p>
+                    <p>25-ый день</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="math" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Математические знаки</h2>
+            <p class="text-body">Мы стараемся избегать математических знаков &gt;,&lt;,-,+,= в интерфейсных текстах — чаще всего, они увеличивают когнитивную нагрузку при считывании информации (особенно это касается знаков &gt;&lt; — человеку может понадобиться пара секунд, чтобы вспомнить, что к чему относится).<br>Кроме того, их можно спутать с другими знаками и неверно понять смысл — например, минус можно спутать с тире и дефисом).<br>Подбираем эквивалент в словах: больше, меньше, равно. Знаки + и -, как правило, можно убрать из текста без потери смысла — например, как в случаях «-15% скидка» или «+2% к ставке»</p>
+            <div class="text-body">
+              <p><strong>Исключения:</strong></p>
+              <ul class="text-list">
+                <li>если мы хотим показать пример расчёта (например, начисление процентов в акции)</li>
+                <li>технические особенности (знаки, которые автоматически подгружаются системой)</li>
+                <li>если в интерфейсном элементе с текстом критичен каждый лишний знак</li>
+                <li>маркетинговые тексты — в форматах, где важна краткость и ёмкость в целях продвижения и продаж (например, в тексте баннера)</li>
+              </ul>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Более 30 000 клиентов</p>
+                    <p>2% к ставке</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>&gt; 30 000 клиентов</p>
+                    <p>+2% к ставке</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="abbreviations" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Сокращения</h2>
+            <div class="card__section">
+              <h3 class="text-h3">Числа</h3>
+              <div class="text-body">
+                <p>Мы используем сокращения разрядов чисел согласно правилам русского языка.</p>
+                <p>ед., тыс. — сокращения с точкой в конце</p>
+                <p>млн, млрд, … — сокращения до согласных без точки в конце</p>
+              </div>
+            </div>
+            <div class="card__section">
+              <h3 class="text-h3">Параметры</h3>
+              <div class="text-body">
+                <p>Эти сокращения также подчиняются правилам русского языка.</p>
+                <p>шт. — с точкой в конце (сокращение до первых букв)<br>км — без точки (использование согласных с сокращением гласных)</p>
+              </div>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>1 млн ₽</p>
+                    <p>шт.</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>1 млн. ₽</p>
+                    <p>шт</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <nav class="footer-nav" aria-label="Навигация по разделам">
+          <a href="uproshchaem-i-sokrashchaem.html" class="footer-nav__card footer-nav__card--prev">
+            <span class="nav-arrow nav-arrow--back" aria-hidden="true">
+              <img src="assets/arrow-left.svg?v=2" alt="" width="24" height="24">
+            </span>
+            <span class="footer-nav__label text-footer-nav">Упрощаем и сокращаем</span>
+          </a>
+          <a href="ton-obshcheniya.html" class="footer-nav__card footer-nav__card--next">
+            <span class="footer-nav__label text-footer-nav">Тон общения</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <img src="assets/arrow-right.svg?v=2" alt="" width="24" height="24">
+            </span>
+          </a>
+        </nav>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

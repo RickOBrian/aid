@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поиск по гайду — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title text-h1">Поиск по гайду</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <main class="page-content">
+        <form class="search-results-form" data-search-results-form>
+          <img src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-results-input>
+        </form>
+
+        <p class="text-body search-results__meta" data-search-results-meta></p>
+
+        <div class="search-results__list" data-search-results></div>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чек-лист хорошего UX-текста — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title text-h1">Чек-лист хорошего UX-текста</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <aside class="sidebar" aria-label="Содержание раздела">
+        <ul class="sidebar__list">
+          <li><a href="#question-1" class="sidebar__link text-nav">Какая польза?</a></li>
+          <li><a href="#question-2" class="sidebar__link text-nav">Всё ли понятно пользователю?</a></li>
+          <li><a href="#question-3" class="sidebar__link text-nav">Всё ли понятно бабушке?</a></li>
+          <li><a href="#question-4" class="sidebar__link text-nav">Можно что-то упростить?</a></li>
+          <li><a href="#question-5" class="sidebar__link text-nav">Что по бюрократизму?</a></li>
+          <li><a href="#question-6" class="sidebar__link text-nav">Точно нет лишних слов?</a></li>
+          <li><a href="#question-7" class="sidebar__link text-nav">Проверить на ошибки и опечатки</a></li>
+        </ul>
+      </aside>
+
+      <main class="page-content">
+        <div class="checklist-hero">
+          <p class="checklist-hero__title">Как проверить текст на соответствие редполитике с&nbsp;помощью 7 вопросов</p>
+          <img class="checklist-hero__illustration" src="assets/checklist/hero-illustration.png" alt="" width="1016" height="1085">
+        </div>
+
+        <div class="checklist-steps">
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">1</span>
+            <article class="card" id="question-1" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Какая польза?</h2>
+                <div class="text-body">
+                  <p><strong>Проверяем пользу на всех уровнях:</strong></p>
+                  <p>— Какую проблему клиента решает текст?</p>
+                  <p>— Какой смысловую нагрузку несёт каждое предложение?</p>
+                  <p>— Зачем здесь это слово?</p>
+                  <p>Если текст не решает проблему и не полезен клиенту, написан просто для красоты — лучше не тратить время клиента и избавиться от него. Если предложение описывает преимущество продукта, но не описывает, как продукт решит задачу клиента, заменяем на более полезную формулировку.</p>
+                </div>
+                <div class="example-row">
+                  <div class="example-card example-card--good">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                      <div class="example-card__text"><p>Мы снизили стоимость тарифов</p></div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                  <div class="example-card example-card--bad">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                      <div class="example-card__text"><p>У нас для вас отличные новости!</p></div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">2</span>
+            <article class="card" id="question-2" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Всё ли понятно пользователю?</h2>
+                <div class="text-body">
+                  <p>Если пишем о сложном продукте, стараемся объяснять по порядку и, если есть возможность, сравнивать с тем, что знакомо пользователю.</p>
+                  <p>Стремимся писать так, чтобы читатель разобрался с вопросом в одном тексте, без «гугления» и поиска по другим сайтам. Сложные слова заменяем на простые или объясняем. Обучение начинаем от простого к сложному.</p>
+                </div>
+                <div class="example-row">
+                  <div class="example-card example-card--good">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>Удержание</p>
+                        <p>Кэшбэк</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                  <div class="example-card example-card--bad">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>Холдирование</p>
+                        <p>Cashback</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">3</span>
+            <article class="card" id="question-3" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Всё ли понятно бабушке?</h2>
+                <p class="text-body">Когда текст готов — смотрим на него так, как посмотрела бы на него бабушка: она ничего не знает о банковских продуктах, рассрочках, лимитах и пр. Что она поймёт из нашего текста? Где сложности? Что объяснено не очень ясно? Если что-то такое нашли — стараемся раскрыть и описать подробнее.</p>
+                <div class="example-row">
+                  <div class="example-card example-card--good">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>Партнёры, клиенты, подрядчики</p>
+                        <p>Оплата картами</p>
+                        <p>Зарплатный проект</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                  <div class="example-card example-card--bad">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>Контрагенты</p>
+                        <p>Эквайринг</p>
+                        <p>Пэйролл</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">4</span>
+            <article class="card" id="question-4" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Можно что-то упростить?</h2>
+                <p class="text-body">Много запятых в предложении — признак сложной конструкции. Больше одной запятой допустимо, только если у нас в тексте идёт перечисление. Сложносочинённые предложения упрощаем или разбиваем на несколько маленьких. Лучше чуть увеличить объём абзаца, но облегчить пользователю чтение.</p>
+                <div class="example-row">
+                  <div class="example-card example-card--good">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                      <div class="example-card__text"><p>Вам — 300 бонусных баллов<br>за оплату картой.<br>Пригодятся для следующих покупок!</p></div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                  <div class="example-card example-card--bad">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                      <div class="example-card__text"><p>Ура! Вы получили 300 бонусных баллов за покупку в магазине!🎉 Вперёд за новыми покупками!🥳</p></div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">5</span>
+            <article class="card" id="question-5" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Что по бюрократизму?</h2>
+                <p class="text-body">Признаки бюрократического стиля — страдательный залог, канцеляризмы, отглагольные существительные. Заменяем их на простые человеческие формулировки:</p>
+                <div class="example-row">
+                  <div class="example-card example-card--good">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>Чтобы помогать вам быстрее и лучше</p>
+                        <p>Чтобы оплата пришла в срок</p>
+                        <p>Решение</p>
+                        <p>Напишите заявление</p>
+                        <p>Работаем над улучшением → Улучшаем</p>
+                        <p>Проверять</p>
+                        <p>Оплачивать</p>
+                        <p>Правильно</p>
+                        <p>Чтобы подключить услугу</p>
+                        <p>Открыть счёт</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                  <div class="example-card example-card--bad">
+                    <div class="example-card__inner">
+                      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                      <div class="example-card__text">
+                        <p>В целях улучшения качества обслуживания</p>
+                        <p>Во избежание задержки оплаты</p>
+                        <p>Данное решение</p>
+                        <p>Просьба написать заявление</p>
+                        <p>Проводятся работы по улучшению</p>
+                        <p>Осуществлять проверку</p>
+                        <p>Производить оплату</p>
+                        <p>Надлежащим образом</p>
+                        <p>Для подключения услуги</p>
+                        <p>Открытие нового счёта</p>
+                      </div>
+                    </div>
+                    <div class="example-card__line" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">6</span>
+            <article class="card" id="question-6" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Точно нет лишних слов?</h2>
+                <p class="text-body">Хорошая практика — проверка готового текста через <a href="http://glvrd.ru" class="text-link" target="_blank" rel="noopener noreferrer">Главред</a>. Сервис подскажет лишние, не несущие смысла слова и посоветует, что с ними делать.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step">
+            <span class="checklist-step__number" aria-hidden="true">7</span>
+            <article class="card" id="question-7" data-section>
+              <div class="card__sections">
+                <h2 class="text-h2">Проверить на ошибки и опечатки</h2>
+                <p class="text-body">С этой задачей хорошо помогает <a href="http://orfogrammka.ru/" class="text-link" target="_blank" rel="noopener noreferrer">Орфограммка</a>. Однако сложную пунктуацию и орфографию сервис может не заметить — поэтому в любом случае стоит вычитывать текст самостоятельно, хотя бы 2 раза.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="checklist-step checklist-step--final">
+            <span class="checklist-step__number checklist-step__number--success" aria-hidden="true">
+              <img src="assets/check-circle.svg" alt="">
+            </span>
+            <div class="checklist-outro">
+              <p class="text-h3">Отлично! Текст проверен</p>
+              <p class="text-body-regular">Мы и наши клиенты будем довольны :)</p>
+            </div>
+          </div>
+
+        </div>
+
+        <nav class="footer-nav" aria-label="Навигация по разделам">
+          <a href="formaty.html" class="footer-nav__card footer-nav__card--prev">
+            <span class="nav-arrow nav-arrow--back" aria-hidden="true">
+              <img src="assets/arrow-left.svg?v=2" alt="" width="24" height="24">
+            </span>
+            <span class="footer-nav__label text-footer-nav">Форматы</span>
+          </a>
+          <a href="kak-polzovatsya-ii.html" class="footer-nav__card footer-nav__card--next">
+            <span class="footer-nav__label text-footer-nav">Как пользоваться ИИ-ассистентом</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <img src="assets/arrow-right.svg?v=2" alt="" width="24" height="24">
+            </span>
+          </a>
+        </nav>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

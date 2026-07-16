@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Библиотека промтов — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title text-h1">Библиотека промтов</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <aside class="sidebar" aria-label="Содержание раздела">
+        <ul class="sidebar__list">
+          <li><a href="#modal" class="sidebar__link text-nav">Модальное окно</a></li>
+          <li><a href="#push" class="sidebar__link text-nav">Пуш-сообщение</a></li>
+          <li><a href="#onboarding" class="sidebar__link text-nav">Онбординг для всплывающей панели</a></li>
+          <li><a href="#subtitle" class="sidebar__link text-nav">Подзаголовок</a></li>
+          <li><a href="#hint" class="sidebar__link text-nav">Подсказка</a></li>
+          <li><a href="#error" class="sidebar__link text-nav">Экран ошибки</a></li>
+          <li><a href="#success" class="sidebar__link text-nav">Экран успеха</a></li>
+        </ul>
+      </aside>
+
+      <main class="page-content">
+
+        <article class="card" id="modal" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Модальное окно</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты — UX-редактор мобильного приложения крупного банка.
+Задача: Сформулируй текст для модального окна на базе исходного текста ниже. Предложи 3 варианта. Учти, что модальное окно состоит из основного текста и двух кнопок.
+Пожелания по тексту: пиши без отглагольных, канцелярита, банковского сленга, избегай повторов в названиях кнопок вроде «отмена» и «отменить». Текст должен соответствовать всем правилам редполитики Совкомбанка
+Исходный текст/описание сути текста: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="push" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Пуш-сообщение</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты — UX-редактор мобильного приложения банка.
+Сформулируй пуш-уведомление для отображения в мобильном приложении банка. Предложи 3 варианта в дружелюбном тоне, но без панибратства, заигрываний, не нагнетая, без тревоги и паники, избегай канцелярита и слова «средства»
+
+Контекст: речь идёт о кейсе, когда с кошелька цифрового рубля пользователь хочет перевести деньги на свой обычный банковский счёт.
+
+Требования и пожелания: текст должен быть ёмким, лаконичным, не более 2 строк для формата пуш-уведомлений.
+
+Исходный текст/описание сути пуш-сообщения: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="onboarding" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Онбординг для всплывающей панели</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты UX-редактор мобильного приложения. Твоя задача — улучшить текст так, чтобы он был:
+- понятным с первого прочтения
+- коротким и лёгким для сканирования
+- дружелюбным, но не канцеляритным
+- полезным для пользователя
+- без сложных конструкций
+Что важно:
+* сохраняй смысл текста
+* не добавляй лишних маркетинговых формулировок
+* избегай абстрактности
+* избегай канцелярита
+* если предложение можно сократить без потери смысла — сокращай
+* пиши человечно, но без ярких эмоций
+* используй активный залог
+* вместо «средства» используй слово «деньги»
+* не используй восклицательные знаки
+Для каждого варианта:
+1. Перепиши текст
+2. Кратко объясни, что улучшилось
+3. Если уместно — предложи улучшенную альтернативу
+
+Исходный текст: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="subtitle" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Подзаголовок</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты UX-редактор мобильного приложения.
+Твоя задача — улучшить короткую фразу для интерфейса мобильного банка.
+Сделай текст:
+* понятным с первого взгляда
+* коротким и естественным
+* без канцеляризмов
+* без сложных конструкций
+* удобным для мобильного экрана
+Тональность:
+Спокойная, нейтральная, как у Совкомбанка
+Ограничения:
+До 100 символов
+
+Исходный текст: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="hint" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Подсказка</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты UX-редактор мобильного банка. Улучши текст подсказки для интерфейса: сделай её короче, понятнее и человечнее. Убери канцелярит, сложные слова и лишний текст. Не используй маркетинговые уловки — это должен быть UX-текст
+Предложи 3–5 вариантов, для каждого варианта:
+1. Перепиши текст
+2. Объясни, что стало лучше
+3. Предложи короткую версию для мобильного интерфейса
+4. Если уместно — предложи вариант с более дружелюбной тональностью
+5. Без восклицательных знаков
+6. Без маркетинговых фраз
+Исходный текст: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="error" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Экран ошибки</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты — UX-редактор мобильного приложения банка. Сформулируй текст для экрана ошибки в мобильном приложении банка на основе текста, предложенного ниже. Придумай 3 варианта в спокойном, доброжелательном тоне.
+Ограничения: избегай канцелярит, не пиши «налоговая служба», можно просто «налоговая», без страдательного залога.
+Пожелания: пиши гендерно нейтрально. Соблюдай правила синтаксиса заголовка и подзаголовка, в заголовке должна быть главная мысль — что регистрация не нужна.
+Когда возникает экран ошибки: [...]
+Исходный текст: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <article class="card" id="success" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Экран успеха</h2>
+            <div class="ai-block">
+              <p class="prompt-text">Ты UX-редактор мобильного приложения. Твоя задача — улучшить текст экрана успеха после действия пользователя.
+Текст должен:
+* быстро считываться
+* создавать ощущение завершённости и уверенности
+* быть спокойным и понятным
+* не звучать канцелярски
+* не перегружать пользователя
+Что важно:
+* сохраняй смысл текста
+* не добавляй лишних маркетинговых формулировок
+* избегай абстрактности
+* избегай канцелярита
+* если предложение можно сократить без потери смысла — сокращай
+* пиши человечно, но без ярких эмоций
+* используй активный залог
+* вместо «средства» используй слово «деньги»
+* не используй восклицательные знаки
+Предложи 3–5 вариантов — для каждого варианта:
+1. Перепиши текст
+2. Объясни, что стало лучше
+3. Предложи короткую версию для мобильного интерфейса
+4. Если уместно — предложи вариант с более дружелюбной тональностью
+Когда возникает экран успеха: [...]
+Исходный текст: [...]</p>
+            </div>
+            <a class="ai-cta" href="https://docs.google.com/document/d/1l3586GtZHjcmAkmwcVVD0pLXyroXGwAGIlu2Yose2YE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <span class="ai-cta__label">Скопировать промт (Google Doc)</span>
+              <img class="ai-cta__icon" src="assets/ai/external-link.png" alt="" width="23" height="32">
+            </a>
+          </div>
+        </article>
+
+        <nav class="footer-nav" aria-label="Навигация по разделам">
+          <a href="kak-polzovatsya-ii.html" class="footer-nav__card footer-nav__card--prev">
+            <span class="nav-arrow nav-arrow--back" aria-hidden="true">
+              <img src="assets/arrow-left.svg?v=2" alt="" width="24" height="24">
+            </span>
+            <span class="footer-nav__label text-footer-nav">Как пользоваться ИИ-ассистентом</span>
+          </a>
+          <a href="chek-list-kachestva-textov.html" class="footer-nav__card footer-nav__card--next">
+            <span class="footer-nav__label text-footer-nav">Чек-лист для оценки качества текстов</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <img src="assets/arrow-right.svg?v=2" alt="" width="24" height="24">
+            </span>
+          </a>
+        </nav>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

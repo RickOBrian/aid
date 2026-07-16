@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Форматы — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title page-header__title--long text-h1">Форматы: гайд по интерфейсным текстам</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <aside class="sidebar" aria-label="Содержание раздела">
+        <ul class="sidebar__list">
+          <li><a href="#heading" class="sidebar__link text-nav">Заголовок или название раздела</a></li>
+          <li><a href="#subtitle" class="sidebar__link text-nav">Подзаголовок</a></li>
+          <li><a href="#button" class="sidebar__link text-nav">Кнопка</a></li>
+          <li><a href="#status" class="sidebar__link text-nav">Статус</a></li>
+          <li><a href="#success-screen" class="sidebar__link text-nav">Экран успеха</a></li>
+          <li><a href="#error-screen" class="sidebar__link text-nav">Экран ошибки</a></li>
+          <li><a href="#empty-states" class="sidebar__link text-nav">Пустые состояния</a></li>
+          <li><a href="#long-texts" class="sidebar__link text-nav">Любые длинные тексты</a></li>
+          <li><a href="#tooltips" class="sidebar__link text-nav">Тултипы (всплывающие подсказки)</a></li>
+          <li><a href="#lists" class="sidebar__link text-nav">Списки</a></li>
+          <li><a href="#links" class="sidebar__link text-nav">Оформление ссылок</a></li>
+          <li><a href="#footnotes" class="sidebar__link text-nav">Сноски</a></li>
+          <li><a href="#email-mask" class="sidebar__link text-nav">Маскировка части email</a></li>
+          <li><a href="#ui-names" class="sidebar__link text-nav">Названия интерфейсных элементов</a></li>
+          <li><a href="#legal" class="sidebar__link text-nav">Юридические тексты</a></li>
+          <li><a href="#push" class="sidebar__link text-nav">Пуш-уведомления</a></li>
+          <li><a href="#sms" class="sidebar__link text-nav">СМС</a></li>
+        </ul>
+      </aside>
+      <main class="page-content">
+<article class="card" id="heading" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Заголовок или название раздела</h2>
+    <div class="text-body">
+      <p>Как правило, взгляд пользователя в первую очередь фокусируется именно на заголовках. Поэтому они должны чётко отражать основную суть и отвечать на вопрос — <strong>зачем пользователю вся нижеследующая (вложенная) информация?</strong></p>
+      <p>Исходя из этого правила, мы также стараемся преобразовать <strong>вид названия раздела — в максимально ясную формулировку на 1 – 3 слова, а вид заголовка — в целевое действие на 1 – 5 слов</strong>.</p>
+      <p>Вопросительные знаки в заголовках — не табу, но их присутствие должно быть оправдано (см. «Радость общения = простота»). Если мы адресуем вопрос самому пользователю или пишем FAQ — знак оправдан.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Получите скидку 50%</strong></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Выгодный обмен</strong></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="subtitle" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Подзаголовок</h2>
+    <div class="text-body">
+      <p>Подзаголовок должен дополнять, раскрывать смысл заголовка. При этом, в подзаголовках мы используем только <strong>полные фразы, чтобы их можно было прочитать по отдельности</strong>. Это связано с тем, что пользователь не читает текст целиком (особенно в мобильном приложении), а пробегается по нему взглядом. Поэтому каждый текстовый элемент должен представлять собой отдельную единицу смысла.</p>
+      <p>Пишем подзаголовки с большой буквы. Стремимся к <strong>количеству слов не более 8 – 12</strong>.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Биометрия: защита ваших данных</strong></p><p>Повышайте безопасность через обработку данных</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Биометрия: защита ваших данных</strong></p><p>от мошенников и удобный доступ в приложение</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div><div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Оценка за 15 минут</strong></p><p>Оперативный анализ вашей кредитоспособности</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Оценка за 15 минут</strong></p><p>вашей кредитоспособности</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="button" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Кнопка</h2>
+    <div class="text-body">
+      <p>Кнопка — это решение клиента, выраженное в интерфейсе. Силу этого интерфейсного элемента мы стремимся выразить в <strong>инфинитиве (оформить, перейти)</strong> — в частности, если просим пользователя выполнить какое-то действие. Однако текст кнопки может быть и в виде <strong>наречия</strong>, если мы просим пользователя ознакомиться с информацией <strong>(хорошо, понятно)</strong>.</p>
+      <p>Кнопка должна быть логически связана с заголовком, поскольку именно эти два интерфейсных элемента пользователь считывает в первую очередь. Текст кнопки может совпадать с текстом заголовка.</p>
+      <p>В тексте кнопки <strong>воздерживаемся от любых знаков препинания</strong> — в таком компактном формате они могут создавать дополнительную когнитивную нагрузку. Это правило действует, если в кнопке есть название интерфейсного элемента (перейти в Профиль) — обычно такие названия мы пишем в кавычках без родового слова.</p>
+      <p>Стараемся избегать «весёлых» формулировок и восклицательных знаков — это может выглядеть навязчиво и раздражающе.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Как получить скидку?</strong></p><p>Воспользуйтесь промокодом БАНК</p><span class="ui-btn ui-btn--primary">Узнать подробнее</span></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Как получить скидку?</strong></p><p>Воспользуйтесь промокодом БАНК</p><span class="ui-btn ui-btn--primary">Подробная информация</span></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div><div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Получите скидку 50% на подписку</strong></p><p>50 ₽ вместо 100 ₽ на один месяц</p><span class="ui-btn ui-btn--primary">Получить скидку</span></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Получите скидку 50% на подписку</strong></p><p>50 ₽ вместо 100 ₽ на один месяц</p><span class="ui-btn ui-btn--primary">Уже бегу!</span></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="status" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Статус</h2>
+    <div class="text-body">
+      <p>Как правило, статусы в нашем интерфейсе представлены в виде бейджей к конкретным функциям. Они могут отражать, например, актуальность данных или подключение какой-либо опции. Функции могут иметь разные формулировки, существительные в них могут быть разного рода. Для соблюдения консистентности форм мы выделили 2 случая, в зависимости от которых мы по-разному формулируем статусы:</p>
+      <ul class="text-list">
+        <li>Если все статусы на одном экране <strong>относятся к одной сущности</strong> (например, «телефон», «заявка») — формулируем их в виде прилагательного или глагола завершённого действия с окончанием, согласующимся с названием сущности (Заявка → «Рассмотрена», «Отклонена»; Номер телефона → «Подключен», «Новый»)</li>
+        <li>Если статусы на одном экране, но <strong>относятся к разным сущностям</strong> — формулируем их в виде прилагательного или глагола завершённого действия с окончанием среднего рода (Госуслуги → «Подключено», «Персональные данные» → «Подключено», «Биометрия» → «Не подключено»)</li>
+      </ul>
+      <p><strong>Исключение.</strong> Есть статусы, которые могут подгружаться технически — в этом случае берём исходный текст статуса, но стараемся максимально «подогнать» под его вид другие тексты на экране (например, соблюсти минимум разных окончаний в идентичных текстовых элементах).</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/status-good.png" alt="Правильный пример: статус" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/status-bad.png" alt="Неправильный пример: статус" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="success-screen" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Экран успеха</h2>
+    <div class="text-body">
+      <p>На этом экране мы должны ясно дать понять пользователю, что <strong>он всё сделал правильно и пришёл к нужному результату</strong>. При этом, как правило, от него не требуется каких-то действительно сложных действий — в основном, это дело нескольких кликов или ввода необъёмных данных. Поэтому не стоит расхваливать пользователя — это будет звучать как издёвка.</p>
+      <p>На экране успеха всегда есть кнопка, которая даёт возможность его закрыть (например, «Закрыть»). Может быть и вторая кнопка — если предлагаем пользователю какое-либо альтернативное действие.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/success-1-good.png" alt="Правильный пример: экран успеха" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/success-1-bad.png" alt="Неправильный пример: экран успеха" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/success-2-good.png" alt="Правильный пример: экран успеха" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/success-2-bad.png" alt="Неправильный пример: экран успеха" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="error-screen" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Экран ошибки</h2>
+    <div class="text-body">
+      <p>Экраны ошибок могут быть разные. Но для всех типов таких экранов мы стараемся соблюдать три правила:</p>
+      <ul class="text-list">
+        <li><strong>факт:</strong> сообщить об ошибке</li>
+        <li><strong>конкретизация:</strong> кратко и прозрачно объяснить, что именно пошло не так</li>
+        <li><strong>решение:</strong> предложить действие/варианты действий или обозначить, что делается для устранения ошибки</li>
+      </ul>
+      <p>Мы не пугаем пользователя страшными формулировками и восклицательными знаками, не оставляем его в неведении. Стараемся проявлять дружелюбие за счёт информативности и предложения решения проблемы. При этом держим уважительную дистанцию, не уходя в панибратство и чрезмерное сочувствие.</p>
+      <p>На экране ошибки стараемся давать пользователю возможность действовать через кнопки — решить возникшую проблему (проверить данные, написать в поддержку, отключить VPN) и закрыть окно.</p>
+      <p>На экране ошибки всегда есть кнопка, которая даёт возможность его закрыть (например, «Закрыть»). Может быть и вторая кнопка — если предлагаем пользователю какое-либо альтернативное действие.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/error-1-good.png" alt="Правильный пример: экран ошибки" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/error-1-bad.png" alt="Неправильный пример: экран ошибки" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/error-2-good.png" alt="Правильный пример: экран ошибки" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/error-2-bad.png" alt="Неправильный пример: экран ошибки" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="empty-states" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Пустые состояния</h2>
+    <div class="text-body">
+      <p>Для экранов пустых состояний стремимся применять практически те же принципы, что и для экранов ошибок:</p>
+      <ul class="text-list">
+        <li><strong>сообщаем о факте</strong>: список пуст, раздел в разработке, нет доступных акций, ничего не нашли по результатам поиска</li>
+        <li><strong>конкретизация + решение</strong>: уточняем детали и возможные действия — вы пока ничего не купили, выберите акции, повторите запрос и т.д. Задаёмся вопросом о полезности информации для пользователя</li>
+      </ul>
+      <p>Кнопку добавляем, если пользователь может что-то сделать, чтобы появился контент.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/empty-1-good.png" alt="Правильный пример: пустое состояние" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/empty-1-bad.png" alt="Неправильный пример: пустое состояние" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/empty-2-good.png" alt="Правильный пример: пустое состояние" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/empty-2-bad.png" alt="Неправильный пример: пустое состояние" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="long-texts" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Любые длинные тексты</h2>
+    <div class="text-body">
+      <p>Длинными для интерфейса считаются все тексты, <strong>занимающие 4+ строки</strong>. Мы стараемся сделать их максимально удобочитаемыми — по возможности <strong>добавляем разметку смысловых блоков, нумерацию, списки</strong>.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/long-texts-good.png" alt="Правильный пример: длинный текст в модальном окне" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/long-texts-bad.png" alt="Неправильный пример: длинный текст в модальном окне" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="tooltips" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Тултипы (всплывающие подсказки)</h2>
+    <div class="text-body">
+      <p>Появляются при нажатии или наведении на отдельный интерфейсный элемент, который требует пояснения. В интерфейсах сайтов и мобильных приложений Совкомбанка чаще всего таким элементом выступает иконка информации в виде буквы i в круге.</p>
+      <p>Текст тултипа должен логично дополнять блок информации, к которой он относится. При этом, мы не помещаем туда <strong>гиперссылки или какие-либо важные данные</strong>, поскольку пользователь может не кликнуть по нему и упустить всё, что там содержится.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/tooltips-phone-good.png" alt="Правильный пример: тултип в мобильном приложении" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/tooltips-phone-bad.png" alt="Неправильный пример: тултип в мобильном приложении" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen example-screen--panel" src="assets/formaty/panels/tooltips-web-good.png" alt="Правильный пример: тултип на сайте" width="430" height="625" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen example-screen--panel" src="assets/formaty/panels/tooltips-web-bad.png" alt="Неправильный пример: тултип на сайте" width="430" height="625" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="lists" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Списки</h2>
+    <div class="text-body">
+      <p>Списки в интерфейсных текстах оформляются не так, как в литературных. Для лёгкости считывания UX-эксперты рекомендуют в конце пунктов списка <strong>избавляться от знаков препинания — точки и точки с запятой</strong>.</p>
+      <p>Мы используем как <strong>нумерованные</strong>, так и <strong>маркированные списки</strong> в приложении, но чётко разграничиваем их применение. Нумерованные списки используем, если нам важно показать последовательность действий. Маркированные — если идёт обычное перечисление, в котором последовательность не важна.</p>
+      <p>Если заголовок списка — это законченное предложение, пункты пишем <strong>с заглавной</strong> (например, «как воспользоваться?:»). Если пункты продолжают это предложение — <strong>с маленькой</strong> (например, «КАСКО позволяет:»).</p>
+      <p>По возможности вместо текстовых элементов списков (цифры или точки) используем <strong>визуальную иконку</strong> — с цифрой, точкой или символом, соответствующим смыслу пункта.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Как воспользоваться?</strong></p><ol class="example-list"><li>Нажмите кнопку «Применить»</li><li>Получите кэшбэк 500 баллов на карту</li></ol></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>Как воспользоваться?</strong></p><ul class="example-list"><li>нажмите кнопку «Применить»;</li><li>получите кэшбэк 500 баллов на карту.</li></ul></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="links" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Оформление ссылок</h2>
+    <div class="text-body">
+      <p>Ссылки, как и кнопки, нужны нам для того, чтобы перенаправить пользователя на другую страницу. Разница в том, что ссылка — вспомогательный элемент (даёт доп.информацию), а кнопка — целевой (переводит на следующий этап флоу).</p>
+      <p>В ссылку мы «оборачиваем» только целевое слово (желательно одно), без предлогов. Например, в футере с юридической информацией может быть по 2 – 3 ссылки, и если подчёркивать предлоги, текст станет одной сплошной ссылкой.</p>
+      <p>Из текста ссылки должно быть понятно, куда именно перейдёт пользователь. Не используем наречия места (тут, здесь).</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Напишите в <a href="#" class="text-link">Поддержку</a></p><p>Соглашаюсь с <a href="#" class="text-link">условиями</a> предоставления кредита и <a href="#" class="text-link">дополнительных услуг</a></p><p><a href="#" class="text-link">Подробности акции</a></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Напишите <a href="#" class="text-link">в Поддержку</a></p><p>Соглашаюсь <a href="#" class="text-link">с условиями предоставления кредита и дополнительных услуг</a></p><p>Подробности акции читайте <a href="#" class="text-link">здесь</a></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="footnotes" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Сноски</h2>
+    <div class="text-body">
+      <p>Сноски — классический атрибут документации и других длинных, «тяжеловесных» текстов. Это примечания, дополнения, которые содержат две части: само обозначение сноски (* или цифры в верхнем индексе) в основном тексте и отдельный участок после него с самим примечанием.</p>
+      <p><strong>В интерфейсных текстах они утяжеляют восприятие пользователя</strong> — поскольку вынуждают «перемещаться» по экрану и держать в голове весь смысл изначального предложения, откуда временно уводит сноска. Поэтому мы <strong>стараемся формулировать тексты так, чтобы уходить от их использования</strong>. Если формулировкой вопрос не решить, можно переносить дополнения на следующий шаг (например, «прятать» под кнопку «Подробные условия»), использовать скобки или, если есть техническая возможность, тултипы.</p>
+      <p><strong>Примечание:</strong> если речь о юридических текстах, возможность упразднять сноски необходимо обсудить и утвердить с юристом. Если без сносок не обойтись, используем для обозначения знак *.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>+1% к ставке Онлайн-копилки</strong></p><p>Увеличенная базовая ставка начисляется на сумму до 1,5 млн ₽. С 3-го месяца, если это первая Копилка, с 1-го месяца — по повторно открытым Копилкам</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p><strong>+1% к ставке Онлайн-копилки</strong></p><p>Увеличение на +1% базовой ставки по счету¹</p><p>¹ — Увеличенная базовая ставка начисляется на сумму до 1,5 млн ₽. с 3-го месяца, если это ваша первая Копилка, а также с 1-го месяца по повторно открытым Копилкам.</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="email-mask" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Маскировка части email</h2>
+    <div class="text-body">
+      <p>В процессах, связанных с подтверждением данных пользователя (например, аутентификацией или верификацией), может потребоваться маскировка части email — для сохранения конфиденциальности. Мы используем единую форму написания для таких маскировок: вне зависимости от количества фактического количества символов в адресе, открываем <strong>первую и последнюю букву до @ и обозначаем шифровку для середины 3-мя звёздочками</strong>. Например, для адреса <a href="mailto:privet@mail.ru" class="text-link">privet@mail.ru</a> маска будет выглядеть как p***t@example.ru.</p>
+    </div>
+    <div class="example-rows">
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>p***t@example.ru</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>pr***t@example.ru</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div><div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>s***k@example.ru</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>s********k@example.ru</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+<article class="card" id="ui-names" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Названия интерфейсных элементов</h2>
+    <div class="text-body">
+      <p>Мы не используем родовые слова при указании названий кнопок или разделов — они излишни, их можно убрать без потери смысла.</p>
+      <p>Названия пишем в кавычках везде, кроме кнопок — в этом формате воздерживаемся от любых знаков препинания.</p>
+      <p><strong>Примечание.</strong> Если в тексте идёт речь об инструменте или сервисе, сущность которого совпадает с названием раздела (например, чат и раздел «Чат») — указываем именно инструмент, т.е. пишем со строчной без кавычек.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Перейдите на наш сайт</p><p>Нажмите «Подробнее»</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Перейдите по ссылке на наш сайт</p><p>Нажмите на кнопку «Подробнее»</p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="legal" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Юридические тексты</h2>
+    <ul class="text-list text-body">
+      <li>«Политика конфиденциальности», «политика персональных данных» или «политика» — пишем с маленькой буквы</li>
+      <li>Цвет текста: если текст под кнопкой – серый, если в тогле — чёрный</li>
+      <li>Размер шрифта: должен быть меньше, чем основной текст в интерфейсе</li>
+      <li>Сохраняем гендерную нейтральность — «соглашаюсь», а не «согласен»</li>
+      <li>Сохраняем консистентность формулировок — всегда пишем «соглашаюсь», не «даю согласие» или «выражаю согласие»)</li>
+    </ul>
+    <div class="text-body">
+      <p>С 1 сентября 2025 года по закону № 152-ФЗ, необходимо оформлять согласие на обработку персональных данных отдельно от других документов. В связи с этим:</p>
+      <ul class="text-list">
+        <li>если в перечисленных документах есть политика персональных данных (ППД) — оформляем как тоглы и делаем отдельный тогл с ПД</li>
+        <li>в зависимости от количества документов пишем по-разному:</li>
+      </ul>
+      <p><strong>1 документ:</strong></p>
+      <ul class="text-list">
+        <li>1 документ — пишем под кнопкой название. Исключение — когда у документа длинное название. Тогда лучше сразу выносить его на отдельный экран</li>
+        <li>1 документ + ПД — 2 тогла</li>
+      </ul>
+      <p><strong>2 документа:</strong></p>
+      <ul class="text-list">
+        <li>2 документа — пишем под кнопкой два названия</li>
+        <li>2 документа + ПД — 2 тогла, для ПД и «Документы»</li>
+      </ul>
+      <p><strong>3 и более документов:</strong></p>
+      <ul class="text-list">
+        <li>От 3 документов = Пишем «Документы» и выносим отдельно</li>
+        <li>От 3 документов + ПД = Пишем 2 тогла, для ПД и «Документы»</li>
+      </ul>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Соглашаюсь с <a href="#" class="text-link">политикой обработки персональных данных</a> для оказания страховых услуг</p><p>Соглашаюсь с <a href="#" class="text-link">документами</a></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad">
+    <div class="example-card__inner">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <div class="example-card__text"><p>Нажимая «Открыть вклад», вы соглашаетесь с <a href="#" class="text-link">условиями обслуживания, условиями заявления-оферты и минимальной гарантированной ставкой, с политикой персональных данных</a></p></div>
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="push" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">Пуш-уведомления</h2>
+    <div class="text-body">
+      <p>Пуш-уведомления <strong>делятся на операционные и информационные</strong>. В операционных заголовок «Халва-Совкомбанк» зафиксирован, меняется только основной текст. В информационных можно менять и заголовок, и основной тексты — в зависимости от задачи.</p>
+      <p>Чтобы пуш-уведомления отображались полностью на всех устройствах, придерживаемся следующих правил: <strong>заголовок</strong> — до 25 символов, <strong>основной текст</strong> — до 65 символов с пробелами. Если этого количества не хватает, можно написать больше — опираемся на здравый смысл и предыдущие уведомления.</p>
+      <p><strong>В операционных пушах нельзя добавлять ссылки</strong> — поэтому пишем так, чтобы клиенту не нужно было искать дополнительную информацию.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/push-good.png" alt="Правильный пример: пуш-уведомление" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/push-bad.png" alt="Неправильный пример: пуш-уведомление" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+<article class="card" id="sms" data-section>
+  <div class="card__sections">
+    <h2 class="text-h2">СМС</h2>
+    <div class="text-body">
+      <p>Пишем текст СМС как можно короче, в идеале — <strong>до 70 символов с пробелами.</strong> Максимальная длина — до 134 символов. Текст в СМС сплошной — не получится оформить заголовок или список.</p>
+    </div>
+<div class="example-row">
+  <div class="example-card example-card--good example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/sms-good.png" alt="Правильный пример: СМС" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+  <div class="example-card example-card--bad example-card--screen">
+    <div class="example-card__inner example-card__inner--screen">
+      <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+      <img class="example-screen" src="assets/formaty/phones/sms-bad.png" alt="Неправильный пример: СМС" width="294" height="599" loading="lazy" decoding="async">
+    </div>
+    <div class="example-card__line" aria-hidden="true"></div>
+  </div>
+</div>
+  </div>
+</article>
+
+        <nav class="footer-nav" aria-label="Навигация по разделам">
+          <a href="terminy-fz168.html" class="footer-nav__card footer-nav__card--prev">
+            <span class="nav-arrow nav-arrow--back" aria-hidden="true">
+              <img src="assets/arrow-left.svg?v=2" alt="" width="24" height="24">
+            </span>
+            <span class="footer-nav__label text-footer-nav">Термины и названия, требующие замены по ФЗ-168</span>
+          </a>
+          <a href="chek-list.html" class="footer-nav__card footer-nav__card--next">
+            <span class="footer-nav__label text-footer-nav">Чек-лист</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <img src="assets/arrow-right.svg?v=2" alt="" width="24" height="24">
+            </span>
+          </a>
+        </nav>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Инфостиль Совкомбанка — Редполитика Совкомбанк</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/typograf.css">
+  <link rel="stylesheet" href="css/styles.css?v=34">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <div class="page-header__left">
+        <a href="index.html" class="back-btn" aria-label="На главный экран">
+          <img src="assets/back-button.svg" alt="" width="64" height="64">
+        </a>
+        <h1 class="page-header__title text-h1">Инфостиль Совкомбанка</h1>
+      </div>
+
+      <div class="site-search" data-site-search>
+        <button class="site-search__toggle" type="button" aria-label="Открыть поиск" data-search-toggle>
+          <img src="assets/search-icon-blue.svg" alt="" width="22" height="22">
+        </button>
+        <div class="site-search__box">
+          <img class="site-search__icon" src="assets/search-icon.svg" alt="" width="20" height="20">
+          <input class="site-search__input" type="text" inputmode="search" autocomplete="off" placeholder="Поиск по гайду" aria-label="Поиск по гайду" data-search-input>
+          <button class="site-search__clear" type="button" aria-label="Очистить поиск" data-search-clear>
+            <img src="assets/close-circle.svg" alt="" width="16" height="16">
+          </button>
+          <button class="site-search__mobile-close" type="button" aria-label="Закрыть поиск" data-search-mobile-close>
+            <img src="assets/close.svg?v=1" alt="" width="16" height="16">
+          </button>
+        </div>
+        <div class="site-search__backdrop" data-search-backdrop></div>
+        <div class="site-search__dropdown" data-search-dropdown hidden></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <aside class="sidebar" aria-label="Содержание раздела">
+        <ul class="sidebar__list">
+          <li><a href="#intro-constructions" class="sidebar__link text-nav">Без вводных конструкций</a></li>
+          <li><a href="#long-sentences" class="sidebar__link text-nav">Без длинных предложений</a></li>
+          <li><a href="#repetitions" class="sidebar__link text-nav">Уходим от повторов</a></li>
+          <li><a href="#participles" class="sidebar__link text-nav">Без причастных и деепричастных оборотов</a></li>
+          <li><a href="#intensifiers" class="sidebar__link text-nav">Без усилителей</a></li>
+          <li><a href="#capslock" class="sidebar__link text-nav">Без капслока</a></li>
+          <li><a href="#time-parasites" class="sidebar__link text-nav">Без паразитов времени</a></li>
+          <li><a href="#russian" class="sidebar__link text-nav">Говорим по-русски</a></li>
+          <li><a href="#modality" class="sidebar__link text-nav">Уходим от модальности</a></li>
+          <li><a href="#vague-words" class="sidebar__link text-nav">Без неопределённых слов</a></li>
+          <li><a href="#parentheses" class="sidebar__link text-nav">Без текста в скобках</a></li>
+        </ul>
+      </aside>
+      <main class="page-content">
+        <div class="content-intro text-body">
+          <p>
+            В текстах мы держим курс на информационную пользу и концепцию «чётко и по делу». Такой подход принято называть
+            <a href="https://www.unisender.com/ru/glossary/chto-takoe-infostil/" class="text-link" target="_blank" rel="noopener noreferrer">инфостилем</a>.
+          </p>
+          <p>
+            <strong>Инфостиль</strong> — это способ писать понятные тексты. Включает набор приёмов редактирования, которые помогают убрать из текста всё лишнее и наполнить его полезными для читателя сведениями. Понятие ввёл в обиход Максим Ильяхов в своей книге «Пиши, сокращай».
+          </p>
+        </div>
+
+        <article class="card" id="intro-constructions" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без вводных конструкций</h2>
+            <p class="text-body">Вводные конструкции выражают отношение автора к высказыванию. Это хорошо для художественных текстов, но в интерфейсах не добавляют новой информации и усложняют понимание. Поэтому избавляемся от них.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Это удобно, потому что..</p>
+                    <p>Это преимущество</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Во-первых, это удобно</p>
+                    <p>Это, безусловно, преимущество</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="long-sentences" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без длинных предложений</h2>
+            <div class="text-body">
+              <p>Чем короче тексты в интерфейсе — тем легче и быстрее их считывает пользователь. Оптимальная длина — около 8 – 13 слов (в зависимости от длины слова). Если предложение больше 10 слов — разбиваем его на несколько, либо делим его на части с помощью «—» или «:».</p>
+              <p>Совет: читаем написанное про себя или вслух. Если не получилось прочитать на одном дыхании — нужно сокращать</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Вы превысили лимит. Обратитесь в банк с паспортом: подтвердите личность и увеличьте лимит. После этого переводы снова будут доступны</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Поскольку вы превысили лимит ежедневного перевода, вам необходимо обратиться в отделение банка с паспортом для подтверждения вашей личности и увеличения лимита, чтобы продолжить использование сервиса переводов в полном объеме.</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="repetitions" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Уходим от повторов</h2>
+            <p class="text-body">Мы избегаем повторов слов в соседних предложениях или элементах текста, например, заголовке и подзаголовке. Это правило мы используем в рамках здравого смысла — следим за однозначностью считывания информации чтобы, не запутать пользователя.</p>
+            <div class="example-rows">
+              <div class="example-row">
+                <div class="example-card example-card--good">
+                  <div class="example-card__inner">
+                    <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                    <div class="example-card__text">
+                      <p><strong>Регулярный доход</strong></p>
+                      <p>Начисляем % каждый день,<br>выплачиваем — раз в месяц</p>
+                    </div>
+                  </div>
+                  <div class="example-card__line" aria-hidden="true"></div>
+                </div>
+                <div class="example-card example-card--bad">
+                  <div class="example-card__inner">
+                    <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                    <div class="example-card__text">
+                      <p><strong>Регулярный доход</strong></p>
+                      <p>Регулярно начисляем %, ежемесячно выплачиваем доход</p>
+                    </div>
+                  </div>
+                  <div class="example-card__line" aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="example-row">
+                <div class="example-card example-card--good">
+                  <div class="example-card__inner">
+                    <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                    <div class="example-card__text">
+                      <p><strong>Вы убрали цель</strong></p>
+                      <p>Добавить новую можно в любой момент</p>
+                    </div>
+                  </div>
+                  <div class="example-card__line" aria-hidden="true"></div>
+                </div>
+                <div class="example-card example-card--bad">
+                  <div class="example-card__inner">
+                    <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                    <div class="example-card__text">
+                      <p><strong>Вы убрали цель</strong></p>
+                      <p>Новую цель можно добавить в любой момент</p>
+                    </div>
+                  </div>
+                  <div class="example-card__line" aria-hidden="true"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="participles" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без причастных и деепричастных оборотов</h2>
+            <p class="text-body">Причастные и деепричастные обороты усложняют прочтение текста, поэтому мы стараемся отказываться от них.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Баллы магазинов начисляем на вашу бонусную карту. Если её ещё нет — выпускаем автоматически</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Баллы магазинов начисляем на вашу бонусную карту, выпущенную автоматически в случае, если у вас её ещё нет</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="intensifiers" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без усилителей</h2>
+            <div class="text-body">
+              <p>Усилители — слова, которые должны усиливать другое слово, но на деле делают текст «дешёвым». Стремимся избавляться от них в тексте без потери смысла.</p>
+              <p><strong>Превосходная степень.</strong> мы не используем слова «самый», «лучший», «крупнейший», «идеальный», «первый», «выгодный» и т.п.</p>
+              <p><strong>Согласно закону о рекламе</strong>, в любых рекламных коммуникациях запрещено использовать прилагательные превосходной степени без ссылки на доказательное исследование, и мы следуем этому закону.</p>
+              <p>Например, нельзя без подтверждения использовать слова «самый», «лучший», «крупнейший», «идеальный», «первый», «выгодный» и т.п.</p>
+              <p>Исключение: устная речь, где по правилу Здравого смысла подобные «украшения» уместны.</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Обслуживание — бесплатно</p>
+                    <p>Вам нужно нажать на кнопку</p>
+                    <p>Это выгодный тариф → Это тариф без комиссии</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Обслуживание — <span class="text-bad-word">абсолютно</span> бесплатно</p>
+                    <p>Вам нужно <span class="text-bad-word">только</span> нажать на кнопку</p>
+                    <p>Это <span class="text-bad-word">очень</span> выгодный тариф</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="text-note">
+              <p><strong>Примеры других усилителей:</strong> невероятно, мгновенно, на редкость, совершенно, действительно, максимально, значительно, по-настоящему, настоящий, реальный, нереально, самый, никогда, всегда.</p>
+              <p><a href="https://bureau.ru/bb/soviet/20160320/" class="text-link" target="_blank" rel="noopener noreferrer">Подробнее об усилителях</a></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="capslock" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без капслока</h2>
+            <div class="text-body">
+              <p>В своё время капслоком сильно злоупотребляли в самых разных коммуникациях — в том числе, и мошеннических. Поэтому сейчас капслок в интерфейсе редко вызывает у читателя что-то, кроме отторжения и ощущения, что текст на него «орёт». В этом приёме кроется неуважение и желание насильно привлечь внимание к тексту. Исключительные случаи, когда капслок оправдан:</p>
+              <ul class="text-list">
+                <li>если средствам пользователя что-то угрожает, и нам принципиально важно обратить на это внимание</li>
+                <li>при написании аббревиатур. Например, ПИН-код (ПИН — это аббревиатура, обозначающая «персональный идентификационный номер»), СМС (аббревиатура, адаптированная под русский язык, исходный перевод — Short Message Service)</li>
+                <li>при написании форматов файлов (PDF, DOCX, PNG)</li>
+                <li>при написании промокодов</li>
+                <li>если используется в названии компании: на официальном сайте компании и основных информационных источниках.</li>
+              </ul>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>При отключении подписки ваш кешбэк уменьшится вдвое</p>
+                    <p>Воспользуйтесь скидками до конца дня</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>ВНИМАНИЕ! При отключении подписки кешбэк УМЕНЬШИТСЯ</p>
+                    <p>Скидки действительны ТОЛЬКО сегодня</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="time-parasites" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без паразитов времени</h2>
+            <p class="text-body">Паразиты времени неинформативны, потому что по умолчанию текст и так написан в настоящем. Удаляем их из текстов без потери смысла.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Совкомбанк обслуживает N клиентов</p>
+                    <p>Совкомбанк насчитывает N сотрудников</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Сегодня Совкомбанк обслуживает N клиентов</p>
+                    <p>На сегодняшний день Совкомбанк насчитывает N сотрудников</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+            <p class="text-body"><strong>Примеры других паразитов времени:</strong> в настоящий момент, в данный момент, в наши дни, в настоящее время, в современной России, в последнее время.</p>
+          </div>
+        </article>
+
+        <article class="card" id="russian" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Говорим по-русски и в соответствии с ФЗ-168</h2>
+            <p class="text-body">Мы — российский банк, и потому стремимся максимально уйти от заимствованного сленга и адаптируем иностранные слова. Кроме того, 1 марта 2026 в силу вступил закон об необходимости замены иностранных слов, не вошедших в нормативные словари. Актуальные замены для общепринятых терминов и названий — в подразделе глоссария.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Удержание</p>
+                    <p>Кешбэк</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Холдирование</p>
+                    <p>Cashback</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="modality" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Уходим от модальности</h2>
+            <div class="text-body">
+              <p>Формулировки «вы должны», «вам требуется», «вы не можете» и глаголы в повелительном наклонении вызывают ощущения давления у читателя, поэтому мы стараемся убирать их из текстов.</p>
+              <p>Иногда без модальностей никак — особенно, когда мы сообщаем пользователю о необходимых действиях с его стороны («Выполните», «получите», «укажите»). В таких случаях мы используем их, но формулируем так, чтобы исключить частицу «не».</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Пожалуйста, укажите свои данные</p>
+                    <p>Для продления подписки пополните счёт</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Вы должны указать свои данные</p>
+                    <p>Вы не можете продлить подписку — у вас недостаточно средств на счёте</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="vague-words" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без неопределённых слов</h2>
+            <div class="text-body">
+              <p>Неопределённые слова — это то, что делает информацию расплывчатой, лишая её точности.<br>Мы отказываемся от неопределённых слов везде, где это возможно.</p>
+              <p>Кроме того, мы не пытаемся «сгладить углы», когда говорим о чувствительных темах (например, деньги или страхование жизни) — называем вещи своими именами.</p>
+            </div>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Скидки и акции партнёров</p>
+                    <p>Подписка «Халва.Десятка» — 0 ₽ за первый месяц. Далее — 399 ₽ в месяц</p>
+                    <p>Деньги</p>
+                    <p>Смерть</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p><span class="text-bad-word">Различные</span> скидки и акции партнёров</p>
+                    <p>Подписка «Халва.Десятка» — от 0 ₽</p>
+                    <p>Денежные средства</p>
+                    <p>Уход из жизни</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="text-body">
+              <p><strong>Самые частые неопределённые слова:</strong> от, более, различные, те или иные, некоторые, какие-нибудь.</p>
+              <p><strong>Самые частые усложнённые формулировки:</strong> денежные средства, уход из жизни</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="parentheses" data-section>
+          <div class="card__sections">
+            <h2 class="text-h2">Без текста в скобках</h2>
+            <p class="text-body">Текст в скобках нужен только в одном случае: когда у объекта два названия и мы не знаем, какое из них лучше известно нашей аудитории. В остальных случаях текст в скобках не нужен. Он либо точнее того, что перед скобками, либо менее точен, либо — самостоятельная мысль. Соответственно, мы либо выкидываем менее точные части текста, либо оформляем равнозначные по точности мысли в отдельные предложения.</p>
+            <div class="example-row">
+              <div class="example-card example-card--good">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/check-circle.svg" alt="Правильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Не более 30 000 ₽ за операцию</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+              <div class="example-card example-card--bad">
+                <div class="example-card__inner">
+                  <div class="example-card__icon"><img src="assets/close-circle.svg" alt="Неправильно" width="28" height="28"></div>
+                  <div class="example-card__text">
+                    <p>Не более 30 000 ₽ (за 1 операцию)</p>
+                  </div>
+                </div>
+                <div class="example-card__line" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <nav class="footer-nav" aria-label="Навигация по разделам">
+          <a href="index.html" class="footer-nav__card footer-nav__card--prev">
+            <span class="nav-arrow nav-arrow--back" aria-hidden="true">
+              <img src="assets/arrow-left.svg?v=2" alt="" width="24" height="24">
+            </span>
+            <span class="footer-nav__label text-footer-nav">На главный экран</span>
+          </a>
+          <a href="oformlyaem-gramotno.html" class="footer-nav__card footer-nav__card--next">
+            <span class="footer-nav__label text-footer-nav">Оформляем грамотно</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <img src="assets/arrow-right.svg?v=2" alt="" width="24" height="24">
+            </span>
+          </a>
+        </nav>
+      </main>
+    </div>
+
+    <div class="scroll-top" aria-hidden="true">
+      <button class="scroll-top__btn" type="button" aria-label="Наверх">
+        <img src="assets/chevron-up.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </div>
+
+  <script src="js/typograf.min.js"></script>
+  <script src="js/typography.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
