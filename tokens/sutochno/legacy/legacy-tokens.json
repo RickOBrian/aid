@@ -1,0 +1,541 @@
+[
+  {
+    "name": "avatars/01",
+    "value": "#CF8861",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #92654B"
+  },
+  {
+    "name": "avatars/02",
+    "value": "#E1C272",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #C0A869"
+  },
+  {
+    "name": "avatars/03",
+    "value": "#BBC451",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #A4AB52"
+  },
+  {
+    "name": "avatars/04",
+    "value": "#78B16F",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #628B5B"
+  },
+  {
+    "name": "avatars/05",
+    "value": "#75C2B9",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #6FABA4"
+  },
+  {
+    "name": "avatars/06",
+    "value": "#7096C3",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #6985A6"
+  },
+  {
+    "name": "avatars/07",
+    "value": "#8F7ACA",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #8374B0"
+  },
+  {
+    "name": "avatars/08",
+    "value": "#5F5794",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #524C79"
+  },
+  {
+    "name": "avatars/09",
+    "value": "#8A3E59",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #6F394C"
+  },
+  {
+    "name": "avatars/10",
+    "value": "#C94C4C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #B15252"
+  },
+  {
+    "name": "bg/promo/promo/new",
+    "value": "#C6F619",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/-black",
+    "value": "#000000",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/blue",
+    "value": "#142D88",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/extranet-dark",
+    "value": "#32A07C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/extranet-light",
+    "value": "#3ABF4E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/orange",
+    "value": "#EE5E20",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/additional/red",
+    "value": "#F22525",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/gray/07",
+    "value": "#43464B",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена"
+  },
+  {
+    "name": "fixed/main/-basic",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/main/-primary",
+    "value": "#1C1C1C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/attention-container",
+    "value": "#FFEFD7",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/attention-element",
+    "value": "#ECA71E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/brand-container",
+    "value": "#FFF3F2",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/brand-element",
+    "value": "#EE204D",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/error-container",
+    "value": "#FFE8E8",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/error-element",
+    "value": "#D12D1E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/neutral-container",
+    "value": "#DAECFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/neutral-element",
+    "value": "#7188E5",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/success-container",
+    "value": "#EBF7EB",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "fixed/semantic/success-element",
+    "value": "#00B23C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "gray/01",
+    "value": "#F8FAFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #26282E"
+  },
+  {
+    "name": "gray/02",
+    "value": "#F1F3FB",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #2D3034"
+  },
+  {
+    "name": "gray/03",
+    "value": "#E7E9F3",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #3A3D45"
+  },
+  {
+    "name": "gray/04",
+    "value": "#C0C3D3",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #4B4F58"
+  },
+  {
+    "name": "gray/05",
+    "value": "#979EAA",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #7D7E88"
+  },
+  {
+    "name": "gray/06",
+    "value": "#6C7077",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #9CA0A7"
+  },
+  {
+    "name": "gray/07",
+    "value": "#43464B",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Primitive-шкала gray/* в semantic-слое — должна быть core-neutral-*; Dark-значение отличается: #C8CBD3"
+  },
+  {
+    "name": "layers/background-extra",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #000000"
+  },
+  {
+    "name": "layers/overlay",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #2F3036"
+  },
+  {
+    "name": "layers/overlay-high",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #4D4F54"
+  },
+  {
+    "name": "main/background",
+    "value": "#F1F3FB",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #000000"
+  },
+  {
+    "name": "main/basic",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #1C1C1C"
+  },
+  {
+    "name": "main/link",
+    "value": "#3D51A1",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #7B95FB"
+  },
+  {
+    "name": "main/primary",
+    "value": "#1C1C1C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #FFFFFF"
+  },
+  {
+    "name": "rating/04",
+    "value": "#6C7077",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #9CA0A7"
+  },
+  {
+    "name": "rating/06",
+    "value": "#FFB31D",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #F2A612"
+  },
+  {
+    "name": "rating/08",
+    "value": "#90CD00",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #84BD00"
+  },
+  {
+    "name": "rating/10",
+    "value": "#00B23C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Dark-значение отличается: #0F9C3E"
+  },
+  {
+    "name": "semantic/attention-container",
+    "value": "#FFEFD7",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #38342C"
+  },
+  {
+    "name": "semantic/attention-element",
+    "value": "#ECA71E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #C5870C"
+  },
+  {
+    "name": "semantic/brand-container",
+    "value": "#FFF3F2",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #39282C"
+  },
+  {
+    "name": "semantic/brand-element",
+    "value": "#EE204D",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #E41946"
+  },
+  {
+    "name": "semantic/error-container",
+    "value": "#FFE8E8",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #392B2A"
+  },
+  {
+    "name": "semantic/error-element",
+    "value": "#D12D1E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #B1372C"
+  },
+  {
+    "name": "semantic/neutral-container",
+    "value": "#DAECFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #313F4E"
+  },
+  {
+    "name": "semantic/neutral-element",
+    "value": "#7188E5",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #5266B7"
+  },
+  {
+    "name": "semantic/success-container",
+    "value": "#ECF9F1",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #24332A"
+  },
+  {
+    "name": "semantic/success-element",
+    "value": "#00B23C",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #0F9C3E"
+  },
+  {
+    "name": "shades/-dark-80",
+    "value": "rgba(0, 0, 0, 0.8)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN; Dark-значение отличается: rgba(73, 73, 73, 0.8)"
+  },
+  {
+    "name": "shades/dark-15",
+    "value": "rgba(0, 0, 0, 0.15)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/dark-30",
+    "value": "rgba(0, 0, 0, 0.3)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/dark-4",
+    "value": "rgba(0, 0, 0, 0.04)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN; Dark-значение отличается: rgba(255, 255, 255, 0.12)"
+  },
+  {
+    "name": "shades/dark-50",
+    "value": "rgba(0, 0, 0, 0.5)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN; Dark-значение отличается: rgba(0, 0, 0, 0.8)"
+  },
+  {
+    "name": "shades/dark-8",
+    "value": "rgba(0, 0, 0, 0.08)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/light-15",
+    "value": "rgba(255, 255, 255, 0.15)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/light-30",
+    "value": "rgba(255, 255, 255, 0.3)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/light-60",
+    "value": "rgba(255, 255, 255, 0.6)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/light-70",
+    "value": "rgba(255, 255, 255, 0.7)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "shades/light-8",
+    "value": "rgba(255, 255, 255, 0.08)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Число в имени semantic-токена; Alpha-ступень в legacy-имени, не core-*-aNN"
+  },
+  {
+    "name": "special/superguest",
+    "value": "#41B619",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #339112"
+  },
+  {
+    "name": "special/superhost",
+    "value": "#ECA71E",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: #C5870C"
+  },
+  {
+    "name": "system/black",
+    "value": "#000000",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Именованный цвет вместо core/semantic роли; Dark-значение отличается: #FFFFFF"
+  },
+  {
+    "name": "system/black-fix",
+    "value": "#000000",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "system/focus",
+    "value": "#0088FF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  },
+  {
+    "name": "system/grabber",
+    "value": "rgba(60, 60, 67, 0.3)",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Dark-значение отличается: rgba(255, 255, 255, 0.3)"
+  },
+  {
+    "name": "system/white",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли; Именованный цвет вместо core/semantic роли; Dark-значение отличается: #000000"
+  },
+  {
+    "name": "system/white-fix",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Слэш-нотация вместо дефисной semantic-роли"
+  }
+]
