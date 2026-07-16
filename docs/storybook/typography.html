@@ -11,71 +11,13 @@
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="stylesheet" href="../assets/docs-theme.css">
   <link rel="stylesheet" href="storybook-color-tokens.css">
+  <!-- Typography tokens — GENERATED from docs/tokens/typography-tokens-registry.md.
+       This is the canonical source the editor reads/writes; do not hand-edit values here. -->
+  <link rel="stylesheet" href="storybook-typography-tokens.css">
   <link rel="stylesheet" href="storybook-layout.css">
+  <link rel="stylesheet" href="storybook-token-create.css">
 
   <style>
-    /* Typography tokens — editable via storybook (mirrors style.css + docs-theme) */
-    :root {
-      --font-body: 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-      --heading-xl-size:     32px;
-      --heading-xl-lh:       40px;
-      --heading-xl-weight:   700;
-      --heading-xl-tracking: -0.3px;
-      --heading-l-size:      28px;
-      --heading-l-lh:        36px;
-      --heading-l-weight:    700;
-      --heading-l-tracking:  -0.2px;
-      --heading-m-size:      24px;
-      --heading-m-lh:        32px;
-      --heading-m-weight:    700;
-      --heading-m-tracking:  -0.1px;
-      --heading-s-size:      20px;
-      --heading-s-lh:        28px;
-      --heading-s-weight:    700;
-      --heading-s-tracking:  0px;
-      --heading-xs-size:     16px;
-      --heading-xs-lh:       20px;
-      --heading-xs-weight:   600;
-      --heading-xs-tracking: 0px;
-
-      --body-l-size:     16px;
-      --body-l-lh:       28px;
-      --body-l-weight:   400;
-      --body-l-tracking: 0px;
-      --body-m-size:     14px;
-      --body-m-lh:       26px;
-      --body-m-weight:   400;
-      --body-m-tracking: 0px;
-      --body-s-size:     13px;
-      --body-s-lh:       22px;
-      --body-s-weight:   400;
-      --body-s-tracking: 0.1px;
-
-      --label-l-size:      16px;
-      --label-l-lh:        20px;
-      --label-l-weight:    500;
-      --label-l-tracking:  0px;
-      --label-m-size:      14px;
-      --label-m-lh:        18px;
-      --label-m-weight:    500;
-      --label-m-tracking:  0px;
-      --label-s-size:      13px;
-      --label-s-lh:        16px;
-      --label-s-weight:    500;
-      --label-s-tracking:  0.1px;
-      --label-xs-size:     12px;
-      --label-xs-lh:       14px;
-      --label-xs-weight:   500;
-      --label-xs-tracking: 0.2px;
-
-      --meta-xs-size:     11px;
-      --meta-xs-lh:       14px;
-      --meta-xs-weight:   500;
-      --meta-xs-tracking: 0.2px;
-    }
-
     html,
     body,
     .storybook-layout {
@@ -131,7 +73,10 @@
     </header>
 
     <section class="storybook-section" aria-labelledby="tokens-heading">
-      <h2 id="tokens-heading">Typography tokens</h2>
+      <div class="storybook-section__header-row">
+        <h2 id="tokens-heading">Typography tokens</h2>
+        <button type="button" class="storybook-btn storybook-btn--secondary" id="add-style-btn">+ Add style</button>
+      </div>
       <div id="tokens-groups">
         <p class="storybook-status">Загрузка токенов…</p>
       </div>
@@ -171,6 +116,9 @@
 </div>
 
 <script src="storybook.js"></script>
+<script src="token-store.js"></script>
+<script src="token-create.js"></script>
+<script src="token-confirm.js"></script>
 <script src="typography-editor.js"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../assets/docs-theme.css">
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
 
   <style>
     html,
@@ -61,122 +62,229 @@
       <p class="component-doc-breadcrumb">
         <a href="../components.html">← Components</a>
       </p>
-      <h1>Table</h1>
-      <p>Read-only карточка компонента — без controls для редактирования.</p>
+      <div class="spec-title-row">
+        <h1>Table</h1>
+        <div class="spec-badges">
+          <span class="chip">Structural View</span>
+          <span class="spec-confidence spec-confidence--medium">medium (audit-002)</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
     </header>
 
     <section class="storybook-section" aria-labelledby="component-heading">
-      <div class="component-doc-grid">
 
-        <!-- ── Table ─────────────────────────────────────────── -->
-        <article class="component-doc">
-          <header class="component-doc__header">
-            <h3>Table</h3>
-            <span class="chip">Structural View</span>
-          </header>
-
-          <div class="component-doc__sample">
-            <div class="table-wrap" data-ds-component="Table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Token</th>
-                    <th>Value</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>bg-accent-main</td>
-                    <td>#1C6DFF</td>
-                    <td>Stable</td>
-                  </tr>
-                  <tr class="is-clickable">
-                    <td>bg-accent-states-hover</td>
-                    <td>#1558D6</td>
-                    <td>Stable</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="table-wrap">
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <div class="table-wrap" data-ds-component="Table">
             <table>
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Value</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
               <tbody>
                 <tr>
-                  <th>Уровень</th>
-                  <td>Structural View — два и более именованных слота (заголовок + повторяющиеся строки), см. <code>ds-component-architecture-guide.md</code>, раздел «Repeatable Slot / Cell Span» (v1.3.0).</td>
+                  <td>bg-accent-main</td>
+                  <td>#1C6DFF</td>
+                  <td>Stable</td>
                 </tr>
-                <tr>
-                  <th>Confidence</th>
-                  <td>medium (audit-002) — спека закрыта: <code>memory/ds-component-spec/log.*.json</code>, <code>spec-002</code>, <code>stage: final</code>, <code>open_questions: 0</code>.</td>
-                </tr>
-                <tr>
-                  <th>Слоты</th>
-                  <td>
-                    <code>header</code> — опциональный, <code>&lt;thead&gt;</code>.<br>
-                    <code>content</code> — repeatable, <code>&lt;tbody&gt;</code>: каждая <code>&lt;tr&gt;</code> — экземпляр
-                    <code>TableRow</code>.
-                    ⚠️ <code>TableRow</code> (<code>spec-003</code>) — <code>stage: draft</code>,
-                    <code>open_questions: 1</code>: контракт слота <code>content</code> считать
-                    предварительным до перевода в <code>final</code>.
-                  </td>
-                </tr>
-                <tr>
-                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
-                  <td class="component-doc__tokens">
-                    <code class="token-ref">radius-l</code>
-                    <code class="token-ref">line-default</code>
-                    <code class="token-ref">body-s-size</code>
-                    <code class="token-ref">body-s-lh</code>
-                    <code class="token-ref">bg-card-main</code>
-                    <code class="token-ref">bg-base-main-secondary</code>
-                    <code class="token-ref">label-xs-size</code>
-                    <code class="token-ref">label-xs-weight-strong</code>
-                    <code class="token-ref">label-xs-lh</code>
-                    <code class="token-ref">text-secondary</code>
-                    <code class="token-ref">inset-control-v-m</code>
-                    <code class="token-ref">inset-container-h-s</code>
-                    <code class="token-ref">bg-accent-states-hover</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Варианты</th>
-                  <td>
-                    <strong>Static</strong> — статичная разметка (<code>docs/storybook/typography.html</code>,
-                    <code>docs/storybook/colors.html</code>).<br>
-                    <strong>Interactive-generated</strong> — строки рендерятся JS-шаблоном
-                    (<code>docs/storybook/typography-editor.js</code>, <code>docs/storybook/colors-editor.js</code>) —
-                    mapping для этой группы ещё не решён (<code>memory/ds-component-migration/log.*.json</code>,
-                    <code>migration-001</code>).<br>
-                    <strong>Row-level: <code>is-clickable</code></strong> — hover-состояние строки уже есть в CSS
-                    (<code>bg-accent-states-hover</code>), но именованный контракт на уровне <code>TableRow</code>
-                    для него — draft, не финализирован.
-                  </td>
-                </tr>
-                <tr>
-                  <th>Нарушения</th>
-                  <td class="component-doc__violation">
-                    ⚠️ <strong>Blocker</strong> — <code>.table-wrap th { letter-spacing: 0.05em }</code>
-                    (<code>docs/assets/docs-theme.css</code>) — хардкод трекинга вместо
-                    <code>var(--label-tracking-uppercase-header)</code>. Токен уже описан в
-                    <code>semantic-typography-tokens-guide.md</code> именно для этого селектора
-                    (<code>type-tracking-0_6</code>), но не подключён в живом CSS — расхождение с
-                    заметкой в <code>spec-002</code> о том, что трекинг был токенизирован.
-                  </td>
+                <tr class="is-clickable">
+                  <td>bg-accent-states-hover</td>
+                  <td>#1558D6</td>
+                  <td>Stable</td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </article>
-
+        </div>
       </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">Structural View — два и более именованных слота (заголовок + повторяющиеся строки), см. <code>ds-component-architecture-guide.md</code>, раздел «Repeatable Slot / Cell Span» (v1.3.0).</p>
+          </section>
+
+          <section class="spec-block" aria-labelledby="spec-slots-heading">
+            <h3 class="spec-block__title" id="spec-slots-heading">Слоты</h3>
+            <dl class="spec-defs">
+              <div class="spec-defs__row">
+                <dt><code>header</code></dt>
+                <dd>опциональный, <code>&lt;thead&gt;</code>.</dd>
+              </div>
+              <div class="spec-defs__row">
+                <dt><code>content</code></dt>
+                <dd>repeatable, <code>&lt;tbody&gt;</code>: каждая <code>&lt;tr&gt;</code> — экземпляр <code>TableRow</code>.</dd>
+              </div>
+            </dl>
+            <p class="spec-block__note">
+              ⚠️ <code>TableRow</code> (<code>spec-003</code>) — <code>stage: draft</code>,
+              <code>open_questions: 1</code>: контракт слота <code>content</code> считать
+              предварительным до перевода в <code>final</code>.
+            </p>
+          </section>
+
+          <section class="spec-block" aria-labelledby="spec-variants-heading">
+            <h3 class="spec-block__title" id="spec-variants-heading">Варианты</h3>
+            <dl class="spec-defs">
+              <div class="spec-defs__row">
+                <dt>Static</dt>
+                <dd>статичная разметка (<code>docs/storybook/typography.html</code>, <code>docs/storybook/colors.html</code>).</dd>
+              </div>
+              <div class="spec-defs__row">
+                <dt>Interactive-generated</dt>
+                <dd>
+                  строки рендерятся JS-шаблоном (<code>docs/storybook/typography-editor.js</code>,
+                  <code>docs/storybook/colors-editor.js</code>) — mapping для этой группы ещё не
+                  решён (<code>memory/ds-component-migration/log.*.json</code>, <code>migration-001</code>).
+                </dd>
+              </div>
+              <div class="spec-defs__row">
+                <dt>Row-level: <code>is-clickable</code></dt>
+                <dd>
+                  hover-состояние строки уже есть в CSS (<code>bg-accent-states-hover</code>), но
+                  именованный контракт на уровне <code>TableRow</code> для него — draft, не финализирован.
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--blocker">
+                <span class="spec-alert__tag">Blocker</span>
+                <p class="spec-alert__text">
+                  <code>.table-wrap th { letter-spacing: 0.05em }</code>
+                  (<code>docs/assets/docs-theme.css</code>) — хардкод трекинга вместо
+                  <code>var(--label-tracking-uppercase-header)</code>. Токен уже описан в
+                  <code>semantic-typography-tokens-guide.md</code> именно для этого селектора
+                  (<code>type-tracking-0_6</code>), но не подключён в живом CSS — расхождение с
+                  заметкой в <code>spec-002</code> о том, что трекинг был токенизирован.
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">medium (audit-002) — спека закрыта: <code>memory/ds-component-spec/log.*.json</code>, <code>spec-002</code>, <code>stage: final</code>, <code>open_questions: 0</code>.</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
     </section>
   </main>
 
 </div>
 
 <script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'Table',
+  interactive: false,
+  parts: [
+    {
+      id: 'root',
+      label: 'Wrapper',
+      selector: '.table-wrap',
+      description: 'Оболочка таблицы: рамка, скругление, обрезка контента.',
+    },
+    {
+      id: 'header',
+      label: 'Header (слот header)',
+      selector: '.table-wrap thead',
+      description: 'Опциональный слот <code>header</code> — <code>&lt;thead&gt;</code>.',
+    },
+    {
+      id: 'row',
+      label: 'Row (слот content)',
+      selector: '.table-wrap tbody tr',
+      description: 'Repeatable-слот <code>content</code>: каждая строка — экземпляр вложенного компонента.',
+      nested: { name: 'TableRow (spec-003, draft)' },
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      { part: 'header', property: 'padding ячейки (верт.)', token: 'inset-control-v-m',
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th' } },
+      { part: 'header', property: 'padding ячейки (гориз.)', token: 'inset-container-h-s',
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th' } },
+      { part: 'row', property: 'padding ячейки (верт.)', token: 'inset-control-v-m' },
+      { part: 'row', property: 'padding ячейки (гориз.)', token: 'inset-container-h-s' },
+    ],
+    colors: [
+      { context: 'default', part: 'root', property: 'background (table)', token: 'bg-card-main', swatch: true,
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap table' } },
+      // derived: bg-base-main-secondary дублируется в правилах thead и th —
+      // авто-правка одного источника была бы частичной
+      { context: 'default', part: 'header', property: 'background', token: 'bg-base-main-secondary', swatch: true },
+      { context: 'default', part: 'header', property: 'color', token: 'text-secondary', swatch: true,
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th' } },
+      {
+        context: 'hover',
+        part: 'row',
+        property: 'background (is-clickable)',
+        token: 'bg-accent-states-hover',
+        swatch: true,
+        note: 'Токен задан в stylesheet layer Table; именованный контракт hover — на уровне <code>TableRow</code> (draft), здесь не разворачивается.',
+      },
+    ],
+    borders: [
+      { part: 'root', property: 'border', token: 'line-default', swatch: true,
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap' } },
+      { part: 'root', property: 'border-radius', token: 'radius-l',
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap' } },
+      { part: 'header', property: 'border-bottom', token: 'line-default', swatch: true,
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th' } },
+    ],
+    typography: [
+      {
+        part: 'header',
+        role: 'label-xs (strong)',
+        tokens: ['label-xs-size', 'label-xs-lh', 'label-xs-weight-strong'],
+        sample: 'TOKEN',
+        edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th', roles: ['label'] },
+        extra: [
+          {
+            part: 'header',
+            property: 'letter-spacing',
+            value: '0.05em',
+            hardcoded: true,
+            note: 'Blocker — <code>var(--label-tracking-uppercase-header)</code> описан, но не подключён; см. «Нарушения».',
+            edit: { file: 'docs/assets/docs-theme.css', selector: '.table-wrap th', prop: 'letter-spacing' },
+          },
+        ],
+      },
+      {
+        part: 'row',
+        role: 'body-s',
+        tokens: ['body-s-size', 'body-s-lh'],
+        sample: 'bg-accent-main',
+      },
+    ],
+  },
+};
+</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
 </body>
 </html>

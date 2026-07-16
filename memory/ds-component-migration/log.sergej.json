@@ -6,7 +6,7 @@
     "legacy_markers": [".table-wrap", "<thead>", "<tbody>", "<th>", "<td>"],
     "scope": ["docs/", "storybook/ (нормализовано в docs/storybook/ — отдельного каталога storybook/ в репо нет)"],
     "scope_signature": ".table-wrap|thead|tbody|th|td::docs/,storybook/",
-    "phase": "pilot",
+    "phase": "rollout",
     "discovery": {
       "date": "2026-07-04",
       "files_found": 15,
@@ -86,21 +86,46 @@
           "change": "добавлен data-ds-component=\"Table\" на .table-wrap; CSS/классы/tbody-содержимое не тронуты"
         }
       ],
-      "constraint": "rollout_blocked_pending_TableRow_final",
+      "constraint": "rollout_was_blocked_pending_TableRow_final — resolved 2026-07-04, see rollout.blocker_history",
       "manual_review_flagged": []
     },
     "rollout": {
-      "status": "blocked",
-      "blocked_reason": "TableRow (spec-003) stage: draft, open_questions: 1 — см. Шаг 0.1",
-      "files_changed": 0,
-      "remaining_ambiguous": 0
+      "status": "completed_partial",
+      "blocked_reason": null,
+      "blocker_history": "Ранее заблокирован: TableRow (spec-003) stage: draft, open_questions: 1 (Шаг 0.1). Решено 2026-07-04 — spec-003 переведена в stage: final, open_questions: 0 (Principal Designer: состояния TableRow не нужны без реального сценария, closing as-is). Table (spec-002) — final.",
+      "scope_recheck": {
+        "date": "2026-07-04",
+        "scope_checked": "docs/ (полное дерево, не только storybook/) — новых файлов с .table-wrap вне уже известных 15 не найдено, скоуп подтверждён без изменений",
+        "already_migrated_pilot": ["docs/storybook/typography.html", "docs/storybook/colors.html"]
+      },
+      "files_changed": 1,
+      "files": [
+        {
+          "path": "docs/design-system/typography/index.html",
+          "change": "добавлен data-ds-component=\"Table\" на все 4 .table-wrap в файле; CSS/классы/содержимое строк не тронуты"
+        }
+      ],
+      "remaining_ambiguous": 0,
+      "remaining_exact_match_unmigrated": [],
+      "deferred_not_touched": [
+        "docs/storybook/typography-editor.js",
+        "docs/storybook/colors-editor.js"
+      ],
+      "out_of_scope_untouched": [
+        "docs/storybook/components/badge.html",
+        "docs/storybook/components/card.html",
+        "docs/storybook/components/chip.html",
+        "docs/storybook/components/button-icon.html",
+        "docs/storybook/components/search.html",
+        "docs/storybook/components/storybook-button.html",
+        "docs/storybook/components/color-swatch.html"
+      ]
     },
     "cleanup": {
       "follow_up": [
         "PropsTable/DefinitionList — отдельный ds-component-audit для 7 key-value .table-wrap файлов (badge.html, card.html, chip.html, button-icon.html, search.html, storybook-button.html, color-swatch.html)",
         "typography-guide.css — дублирующая копия .table-wrap стилей, консолидировать с docs-theme.css",
-        "typography-editor.js / colors-editor.js — решить mapping для JS-генерируемых таблиц (similar_pattern), отложено; mapping — «обновить JS-шаблон генерации строк», не «заменить HTML» (реальные TableRow-инстансы рендерятся этими файлами, не статичным HTML)",
-        "design-system/typography/index.html — остаётся в exact_match, не входит в текущий Pilot, ждёт batch rollout после снятия TableRow-блокировки"
+        "typography-editor.js / colors-editor.js — решить mapping для JS-генерируемых таблиц (similar_pattern), отложено; mapping — «обновить JS-шаблон генерации строк», не «заменить HTML» (реальные TableRow-инстансы рендерятся этими файлами, не статичным HTML); не тронуты в rollout 2026-07-04 без явного подтверждения"
       ]
     },
     "notes": "Table (spec-002) — stage: final, можно мигрировать без ограничений. TableRow (spec-003) — stage: draft, open_questions: 1 — по правилу Шага 0.1 Discovery/Pilot для групп, завязанных на TableRow (thead/tbody-строки), разрешены read-only, но Rollout для них заблокирован до перевода spec-003 в final. Важная находка: токенизация Table (spec-002) уже была применена in-place прямо в .table-wrap/th (docs/assets/docs-theme.css) — класс `.table-wrap` мог оказаться не 'legacy для замены', а уже текущей canonical-реализацией Table после фикса токенов; вопрос требует явного решения на Mapping (Phase 2), не решён самостоятельно.",

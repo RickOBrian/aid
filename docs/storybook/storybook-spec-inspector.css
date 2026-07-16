@@ -1,0 +1,1099 @@
+/* ============================================================
+   Spec Inspector — стили inspection/measure blocks для
+   component spec pages (рендерятся spec-inspector.js).
+   Все цвета — только через semantic-токены.
+   ============================================================ */
+
+/* Mount прозрачен для flex-потока spec-main: блоки инспектора
+   становятся её прямыми детьми и получают общий вертикальный ритм. */
+#spec-inspector {
+  display: contents;
+}
+
+.spec-inspect__hint {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+  margin-bottom: 14px;
+}
+
+/* ---------- measure rows (inspect-panel style) ---------- */
+
+.spec-measure {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  overflow: hidden;
+}
+
+.spec-measure + .spec-measure {
+  margin-top: var(--gap-s);
+}
+
+.spec-measure__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.2fr) minmax(160px, 1fr) minmax(90px, auto);
+  gap: var(--gap-s) var(--gap-m);
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-measure__row:last-child {
+  border-bottom: none;
+}
+
+.spec-measure__row--violation {
+  background: var(--bg-accent-status-error);
+}
+
+.spec-measure__target {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-measure__token {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  min-width: 0;
+}
+
+.spec-measure__value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.spec-measure__value--violation {
+  color: var(--text-error);
+  font-weight: 600;
+}
+
+.spec-measure__note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-measure__note code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-measure__context {
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 14px 0 6px;
+}
+
+.spec-measure__context:first-child {
+  margin-top: 0;
+}
+
+/* Захардкоженное значение — visually отличимо от токена */
+.spec-hardcode {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--line-strong);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.spec-hardcode--violation {
+  border-color: var(--text-error);
+  color: var(--text-error);
+}
+
+/* ---------- color swatch in rows ---------- */
+
+.spec-swatch {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-default);
+}
+
+/* ---------- anatomy ---------- */
+
+.spec-anatomy__stage {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: var(--inset-container-v-xl) var(--inset-container-h-xl);
+  background: var(--bg-base-main-secondary);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-m);
+  margin-bottom: var(--gap-m);
+}
+
+.spec-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-main);
+  color: var(--text-inverse);
+  font-size: var(--meta-xs-size);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.spec-pin--stage {
+  position: absolute;
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--bg-card-main);
+  pointer-events: none;
+}
+
+.spec-anatomy__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 72ch;
+}
+
+.spec-anatomy__item {
+  display: flex;
+  gap: var(--gap-s);
+  align-items: flex-start;
+}
+
+.spec-anatomy__body {
+  min-width: 0;
+}
+
+.spec-anatomy__name {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+}
+
+.spec-anatomy__name code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.spec-anatomy__desc {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-anatomy__desc code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+.spec-nested {
+  margin: 4px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  display: inline-block;
+}
+
+.spec-nested a {
+  color: var(--text-accent);
+}
+
+/* Подсветка части на сэмпле при hover по строке */
+.spec-part-highlight {
+  outline: 2px solid var(--bg-accent-main);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
+}
+
+.spec-measure__row[data-part],
+.spec-anatomy__item[data-part],
+.spec-inset-diagram[data-part],
+.spec-gap-diagram[data-part],
+.spec-offset-diagram[data-part],
+.spec-radius-diagram[data-part] {
+  cursor: default;
+}
+
+.spec-measure__row[data-part]:hover,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__name,
+.spec-inset-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-gap-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-offset-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-radius-diagram[data-part]:hover .spec-spatial-frame__part {
+  color: var(--text-accent);
+}
+
+/* ---------- typography views ---------- */
+
+.spec-type {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.spec-type + .spec-type {
+  margin-top: var(--gap-s);
+}
+
+.spec-type__sample {
+  margin: 0 0 6px;
+  color: var(--text-primary);
+}
+
+.spec-type__role {
+  margin: 0 0 10px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-type__tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-s) var(--gap-m);
+  margin-bottom: 6px;
+}
+
+.spec-type__token {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.spec-type .spec-measure {
+  margin-top: var(--gap-s);
+}
+
+/* ---------- hit area ---------- */
+
+.spec-hit-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-s-size);
+  color: var(--text-primary);
+}
+
+.spec-hit-ok {
+  color: var(--text-success);
+}
+
+.spec-hit-warn {
+  color: var(--text-error);
+  font-weight: 600;
+}
+
+/* ---------- sidebar: inspection index ---------- */
+
+.spec-index__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  padding: 6px 0;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-index__item:last-of-type {
+  border-bottom: none;
+}
+
+.spec-index__item:hover {
+  color: var(--text-accent);
+}
+
+.spec-index__count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.spec-index__skipped {
+  margin: 10px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 700px) {
+  .spec-measure__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .spec-measure__value {
+    text-align: left;
+  }
+}
+
+/* ============================================================
+   Spec Editor — editable-слой (spec-editor.js)
+   ============================================================ */
+
+.spec-editor-note {
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  max-width: 72ch;
+  margin: 0;
+}
+
+/* Trigger typed dropdown — сохраняет вид token-chip + chevron */
+.spec-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+}
+
+.spec-select__trigger:hover,
+.spec-select__trigger[aria-expanded='true'] {
+  border-color: var(--line-strong);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-select__trigger--role {
+  margin-left: var(--gap-s);
+  font-size: var(--label-xs-size);
+  color: var(--text-accent);
+}
+
+.spec-select__chevron {
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* Overlay-панель — портал в body, fixed: не обрезается контейнерами */
+.spec-select__panel {
+  z-index: 1000;
+  min-width: 260px;
+  max-width: 360px;
+  overflow-y: auto;
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-select__option {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-select__option:hover,
+.spec-select__option:focus-visible {
+  background: var(--bg-accent-states-hover);
+  outline: none;
+}
+
+.spec-select__option.is-selected {
+  color: var(--text-accent);
+}
+
+.spec-select__option-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spec-select__option-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Direct value fields */
+.spec-hardcode--editable {
+  cursor: pointer;
+}
+
+.spec-hardcode--editable:hover,
+.spec-hardcode--editable:focus-visible {
+  border-style: solid;
+  border-color: var(--line-strong);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.spec-edit-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-accent);
+  background: var(--bg-card-main);
+  color: var(--text-primary);
+  width: 110px;
+  outline: none;
+}
+
+/* Несохранённое изменение строки */
+.spec-measure__row.is-modified,
+.spec-type.is-modified {
+  border-left: 3px solid var(--bg-accent-main);
+}
+
+/* ---------- spatial measure presentation ---------- */
+
+.spec-spatial-group + .spec-spatial-group,
+.spec-spatial-scope + .spec-spatial-group,
+.spec-spatial-group + .spec-spatial-scope {
+  margin-top: var(--gap-m);
+}
+
+.spec-spatial-scope--nested {
+  margin-top: var(--gap-m);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-spatial-scope__label {
+  margin: 0 0 8px;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-spatial-group__label {
+  margin: 0 0 4px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.spec-spatial-group__hint {
+  margin: 0 0 12px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.spec-spatial-frame {
+  margin-bottom: 12px;
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-spatial-frame__part {
+  margin: 0 0 10px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-spatial-frame__derived {
+  margin: 8px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-spatial-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  margin-right: 6px;
+  border: 1px solid var(--line-default);
+  color: var(--text-secondary);
+  background: var(--bg-card-main);
+}
+
+.spec-spatial-chip--token {
+  border-color: var(--line-accent);
+  color: var(--text-accent);
+}
+
+.spec-spatial-chip--hardcode {
+  border-style: dashed;
+  color: var(--text-error);
+  border-color: var(--text-error);
+}
+
+.spec-spatial-chip--editable {
+  border-color: var(--line-strong);
+  color: var(--text-primary);
+}
+
+.spec-spatial-chip--derived {
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+
+/* outer / container inset diagram */
+.spec-inset-diagram__shell {
+  display: flex;
+  flex-direction: column;
+  max-width: 280px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  background: var(--bg-card-main);
+}
+
+.spec-inset-diagram__mid {
+  display: flex;
+  align-items: stretch;
+  min-height: 56px;
+}
+
+.spec-spatial-group__controls {
+  margin: 12px 0 6px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.spec-inset-diagram__band {
+  position: relative;
+  background: var(--bg-accent-states-hover);
+  border: 1px solid var(--line-accent);
+}
+
+.spec-inset-diagram__band-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-accent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.spec-inset-diagram__axis,
+.spec-gap-diagram__axis,
+.spec-offset-diagram__axis {
+  display: inline-flex;
+  padding: 0 4px;
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+}
+
+/* inner gap diagram */
+.spec-gap-diagram__bridge {
+  --spec-gap-width: 64px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 320px;
+}
+
+.spec-inset-diagram__band--top {
+  height: var(--spec-pad-top, 14px);
+  min-height: 10px;
+}
+
+.spec-inset-diagram__band--bottom {
+  height: var(--spec-pad-bottom, 14px);
+  min-height: 10px;
+}
+
+.spec-inset-diagram__band--left {
+  width: var(--spec-pad-left, 14px);
+  min-width: 10px;
+}
+
+.spec-inset-diagram__band--right {
+  width: var(--spec-pad-right, 14px);
+  min-width: 10px;
+}
+
+.spec-inset-diagram__content {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+  border: 1px dashed var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-inset-diagram__anns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.spec-inset-diagram__ann-row + .spec-inset-diagram__ann-row {
+  margin-top: 4px;
+}
+
+.spec-inset-diagram__ann {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-inset-diagram__ann code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-inset-diagram__ann em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-radius-diagram__callout {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-accent);
+  background: var(--bg-accent-states-hover);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-accent);
+}
+
+.spec-gap-diagram__bridge + .spec-gap-diagram__bridge {
+  margin-top: 10px;
+}
+
+.spec-gap-diagram__cell {
+  flex: 0 0 48px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.spec-gap-diagram__measure {
+  flex: 0 0 var(--spec-gap-width, 64px);
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 48px;
+  padding: 0 4px;
+}
+
+.spec-gap-diagram__line {
+  display: block;
+  width: 100%;
+  height: 0;
+  border-top: 2px solid var(--line-accent);
+  position: relative;
+}
+
+.spec-gap-diagram__line::before,
+.spec-gap-diagram__line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.spec-gap-diagram__line::before {
+  left: 0;
+  border-right: 6px solid var(--line-accent);
+}
+
+.spec-gap-diagram__line::after {
+  right: 0;
+  border-left: 6px solid var(--line-accent);
+}
+
+.spec-gap-diagram__label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-gap-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-gap-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* zone offset diagram */
+.spec-offset-diagram__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.spec-offset-diagram__stack + .spec-offset-diagram__stack {
+  margin-top: 12px;
+}
+
+.spec-offset-diagram__zone {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-offset-diagram__bridge {
+  font-size: var(--label-s-size);
+  color: var(--line-accent);
+  line-height: 1;
+}
+
+.spec-offset-diagram__label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--line-accent);
+  border-radius: var(--radius-s);
+  background: var(--bg-accent-states-hover);
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-offset-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-offset-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* radius diagram */
+.spec-radius-diagram__stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-m);
+}
+
+.spec-radius-diagram__box {
+  width: 96px;
+  height: 72px;
+  border: 2px solid var(--line-accent);
+  background: var(--bg-card-main);
+  position: relative;
+}
+
+.spec-radius-diagram__corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-top: 2px solid var(--line-accent);
+  border-left: 2px solid var(--line-accent);
+  border-top-left-radius: inherit;
+  pointer-events: none;
+}
+
+.spec-radius-diagram__label {
+  margin: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-radius-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-radius-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* ---------- prototype: outer inset measure card (Card page) ----------
+   Documentation-card подача: спокойный сэмпл-объект, один акцент на
+   dimension lines, metadata — secondary area под разделителем. */
+
+.spec-measure-card {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.spec-measure-card__stage {
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.spec-measure-card__caption {
+  margin: 0 0 14px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+/* Границы объекта: контур компонента, отступ задаётся живыми pad-переменными */
+.spec-measure-card__object {
+  position: relative;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: var(--spec-pad-top, 14px) var(--spec-pad-right, 14px)
+    var(--spec-pad-bottom, 14px) var(--spec-pad-left, 14px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+}
+
+.spec-measure-card__content {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-s);
+  background: var(--bg-base-main-secondary);
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* dimension lines — единственный акцентный элемент кадра */
+.spec-measure-card__dim {
+  position: absolute;
+  pointer-events: none;
+}
+
+.spec-measure-card__dim--v {
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: var(--spec-pad-top, 14px);
+  border-left: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--h {
+  top: 50%;
+  left: 0;
+  width: var(--spec-pad-left, 14px);
+  height: 0;
+  border-top: 1px solid var(--line-accent);
+}
+
+/* концевые засечки */
+.spec-measure-card__dim--v::before,
+.spec-measure-card__dim--v::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 6px;
+  height: 0;
+  border-top: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--v::before { top: 0; }
+.spec-measure-card__dim--v::after { bottom: 0; }
+
+.spec-measure-card__dim--h::before,
+.spec-measure-card__dim--h::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  height: 6px;
+  width: 0;
+  border-left: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--h::before { left: 0; }
+.spec-measure-card__dim--h::after { right: 0; }
+
+.spec-measure-card__val {
+  position: absolute;
+  z-index: 1;
+  padding: 1px 5px;
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-accent);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.spec-measure-card__val--v {
+  top: calc(var(--spec-pad-top, 14px) / 2);
+  left: 50%;
+  transform: translate(7px, -50%);
+}
+
+.spec-measure-card__val--h {
+  top: 50%;
+  left: calc(var(--spec-pad-left, 14px) / 2);
+  transform: translate(-50%, calc(-100% - 5px));
+}
+
+/* статусы без токена: derived — нейтральный, hardcode — предупреждающий */
+.spec-measure-card__dim--derived,
+.spec-measure-card__dim--derived::before,
+.spec-measure-card__dim--derived::after {
+  border-color: var(--line-strong);
+}
+
+.spec-measure-card__val--derived {
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__dim--hardcode,
+.spec-measure-card__dim--hardcode::before,
+.spec-measure-card__dim--hardcode::after {
+  border-color: var(--text-error);
+}
+
+.spec-measure-card__val--hardcode {
+  color: var(--text-error);
+}
+
+/* metadata — secondary area внутри той же карточки */
+.spec-measure-card__meta {
+  border-top: 1px solid var(--line-default);
+}
+
+.spec-measure-card__meta-caption {
+  margin: 12px 14px 4px;
+  font-size: var(--meta-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__meta .spec-measure {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.spec-spatial-group--nested .spec-spatial-frame {
+  border-style: dashed;
+}
+
+.spec-spatial-group--nested .spec-measure {
+  border-style: dashed;
+}

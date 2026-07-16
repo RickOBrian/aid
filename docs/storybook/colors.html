@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="storybook-color-tokens.css">
   <link rel="stylesheet" href="storybook-layout.css">
   <link rel="stylesheet" href="storybook-colors.css">
+  <link rel="stylesheet" href="storybook-token-create.css">
   <style>
     .swatch { border: 1px solid oklch(0 0 0 / 0.12); }
   </style>
@@ -72,6 +73,11 @@
               aria-controls="tab-semantic">Semantic</button>
     </div>
 
+    <div class="storybook-token-actions">
+      <button type="button" class="storybook-btn storybook-btn--secondary" id="add-core-color-btn" data-tab-scope="core">+ Add core color</button>
+      <button type="button" class="storybook-btn storybook-btn--secondary" id="add-semantic-color-btn" data-tab-scope="semantic" hidden>+ Add semantic color</button>
+    </div>
+
     <div class="storybook-tab-panel" id="tab-core" role="tabpanel" aria-labelledby="tab-btn-core">
       <div id="tab-core-content">
         <p class="storybook-status">Загрузка Core tokens…</p>
@@ -115,6 +121,7 @@
 <div class="storybook-save-bar" id="save-bar" aria-live="polite">
   <span class="storybook-save-bar__count" id="save-count"></span>
   <span class="storybook-status" id="save-status"></span>
+  <button type="button" class="storybook-btn storybook-btn--secondary" id="cancel-btn">Cancel</button>
   <button type="button" class="storybook-btn storybook-btn--primary" id="save-btn">Apply &amp; Save</button>
 </div>
 
@@ -163,6 +170,9 @@
   });
 })();
 </script>
+<script src="token-store.js"></script>
+<script src="token-create.js"></script>
+<script src="token-confirm.js"></script>
 <script src="colors-editor.js"></script>
 </body>
 </html>

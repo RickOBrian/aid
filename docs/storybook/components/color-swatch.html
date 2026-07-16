@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../assets/docs-theme.css">
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
 
   <style>
     html,
@@ -61,78 +62,155 @@
       <p class="component-doc-breadcrumb">
         <a href="../components.html">← Components</a>
       </p>
-      <h1>ColorSwatch</h1>
+      <div class="spec-title-row">
+        <h1>ColorSwatch</h1>
+        <div class="spec-badges">
+          <span class="chip">требует уточнения</span>
+          <span class="spec-confidence spec-confidence--low">low</span>
+        </div>
+      </div>
       <p>Read-only карточка компонента — без controls для редактирования.</p>
     </header>
 
     <section class="storybook-section" aria-labelledby="component-heading">
-      <div class="component-doc-grid">
 
-        <!-- ── ColorSwatch ───────────────────────────────────── -->
-        <article class="component-doc">
-          <header class="component-doc__header">
-            <h3>ColorSwatch</h3>
-            <span class="chip">требует уточнения</span>
-          </header>
-
-          <div class="component-doc__sample">
-            <span class="color-swatch" style="--color-swatch-bg: var(--bg-accent-main)"></span>
-            <span class="color-swatch color-swatch--alpha">
-              <span class="color-swatch__solid" style="background-color: var(--bg-accent-main)"></span>
-              <span class="color-swatch__alpha color-swatch__checker">
-                <span class="color-swatch__alpha-fill" style="background-color: var(--bg-accent-main)"></span>
-              </span>
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <span class="color-swatch" style="--color-swatch-bg: var(--bg-accent-main)"></span>
+          <span class="color-swatch color-swatch--alpha">
+            <span class="color-swatch__solid" style="background-color: var(--bg-accent-main)"></span>
+            <span class="color-swatch__alpha color-swatch__checker">
+              <span class="color-swatch__alpha-fill" style="background-color: var(--bg-accent-main)"></span>
             </span>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Уровень</th>
-                  <td>
-                    Требует уточнения. Базовый вариант (<code>.color-swatch</code>) — атомарный
-                    цветной блок без вложенного контента, по аналогии с <code>Dot</code> (Item,
-                    раздел 4). Alpha-вариант (<code>.color-swatch--alpha</code>) состоит из двух
-                    визуальных частей (solid + alpha-заливка) — граница Item/Structural View
-                    неочевидна, критерий «именованный слот» здесь чисто визуальный, не контентный.
-                  </td>
-                </tr>
-                <tr>
-                  <th>Confidence</th>
-                  <td>low — спорно, классификация уровня требует уточнения у Principal Designer.</td>
-                </tr>
-                <tr>
-                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
-                  <td class="component-doc__tokens">
-                    <code class="token-ref">radius-s</code>
-                    <code class="token-ref">line-default</code>
-                    <code class="token-ref">bg-base-main-secondary</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Нарушения</th>
-                  <td class="component-doc__violation">
-                    ⚠️ <strong>Blocker</strong> — <code>.color-swatch__checker</code> использует
-                    захардкоженные HEX (<code>#ccc</code>, <code>#ffffff</code>) в
-                    <code>background-image</code> / <code>background-color</code> — прямое
-                    нарушение no-hardcode-color-protocol.<br>
-                    ⚠️ <strong>Gap</strong> — <code>width</code> / <code>height</code>
-                    (<code>32px</code>, <code>64px</code>) — захардкожен размер; semantic
-                    size-токена для габаритов свотча не существует, нужно предложить новый.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-
+          </span>
+        </div>
       </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">
+              Требует уточнения. Базовый вариант (<code>.color-swatch</code>) — атомарный
+              цветной блок без вложенного контента, по аналогии с <code>Dot</code> (Item,
+              раздел 4). Alpha-вариант (<code>.color-swatch--alpha</code>) состоит из двух
+              визуальных частей (solid + alpha-заливка) — граница Item/Structural View
+              неочевидна, критерий «именованный слот» здесь чисто визуальный, не контентный.
+            </p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--blocker">
+                <span class="spec-alert__tag">Blocker</span>
+                <p class="spec-alert__text">
+                  <code>.color-swatch__checker</code> использует захардкоженные HEX
+                  (<code>#ccc</code>, <code>#ffffff</code>) в <code>background-image</code> /
+                  <code>background-color</code> — прямое нарушение no-hardcode-color-protocol.
+                </p>
+              </li>
+              <li class="spec-alert spec-alert--gap">
+                <span class="spec-alert__tag">Gap</span>
+                <p class="spec-alert__text">
+                  <code>width</code> / <code>height</code> (<code>32px</code>, <code>64px</code>) —
+                  захардкожен размер; semantic size-токена для габаритов свотча не существует,
+                  нужно предложить новый.
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">low — спорно, классификация уровня требует уточнения у Principal Designer.</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
     </section>
   </main>
 
 </div>
 
 <script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'ColorSwatch',
+  interactive: false,
+  parts: [
+    {
+      id: 'root',
+      label: 'Swatch (базовый)',
+      selector: '.color-swatch:not(.color-swatch--alpha)',
+      description: 'Атомарный цветной блок без вложенного контента (по аналогии с <code>Dot</code>).',
+    },
+    {
+      id: 'solid',
+      label: 'Solid-часть (alpha-вариант)',
+      selector: '.color-swatch--alpha .color-swatch__solid',
+      description: 'Левая половина alpha-варианта — непрозрачная заливка.',
+    },
+    {
+      id: 'alpha',
+      label: 'Alpha-часть (alpha-вариант)',
+      selector: '.color-swatch--alpha .color-swatch__alpha',
+      description: 'Правая половина — заливка поверх шахматной подложки; граница Item/Structural View здесь спорная (см. «Уровень архитектуры»).',
+    },
+  ],
+  aspects: {
+    size: [
+      {
+        part: 'root',
+        property: 'width / height',
+        value: '32px',
+        hardcoded: true,
+        note: 'Gap — semantic size-токена для габаритов свотча нет; см. «Нарушения».',
+      },
+      {
+        part: 'alpha',
+        property: 'width (alpha-вариант)',
+        value: '64px',
+        hardcoded: true,
+        note: 'Gap — тот же захардкоженный размер, см. «Нарушения».',
+      },
+    ],
+    spacing: [],
+    colors: [
+      { part: 'root', property: 'background (fallback)', token: 'bg-base-main-secondary', swatch: true },
+      {
+        part: 'alpha',
+        property: 'background (checker)',
+        value: '#ccc / #ffffff',
+        hardcoded: true,
+        note: 'Blocker — прямое нарушение no-hardcode-color-protocol; см. «Нарушения».',
+      },
+    ],
+    borders: [
+      { part: 'root', property: 'border', token: 'line-default', swatch: true },
+      { part: 'root', property: 'border-radius', token: 'radius-s' },
+    ],
+    typography: [],
+  },
+};
+</script>
+<!-- spec-editor.js подключается системно; на этой странице все записи derived:
+     размеры и checker-цвета захардкожены (цвета редактируются только через
+     токенизацию), а canonical stylesheet компонента не подключён к странице -->
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
 </body>
 </html>

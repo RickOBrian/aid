@@ -37,6 +37,8 @@
     { id: 'semantic-typography-tokens-guide',name: 'Semantic Typography Tokens', category: 'Tokens',     sub: 'Typography',   level: 'semantic', status: 'Draft',  version: '1.1.0' },
     { id: 'ds-component-architecture-guide', name: 'Архитектура компонентов',    category: 'Components', sub: null,           level: null,       status: 'Draft',  version: '1.1.0' },
     { id: 'component-states-guide',          name: 'Состояния компонентов',      category: 'Components', sub: null,           level: null,       status: 'Draft',  version: '1.1.0' },
+    { id: 'ds-component-migration-guide',    name: 'Миграция компонентов',       category: 'Skills',     sub: null,           level: null,       status: 'Draft',  version: '1.1.1' },
+    { id: 'ds-component-audit-guide',        name: 'Аудит компонентов',          category: 'Skills',     sub: null,           level: null,       status: 'Draft',  version: '1.0.0' },
   ];
 
   // ── State ──────────────────────────────────────────────────────────────────

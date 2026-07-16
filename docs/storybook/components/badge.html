@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../assets/docs-theme.css">
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
 
   <style>
     html,
@@ -61,74 +62,137 @@
       <p class="component-doc-breadcrumb">
         <a href="../components.html">← Components</a>
       </p>
-      <h1>Badge</h1>
-      <p>Read-only карточка компонента — без controls для редактирования.</p>
+      <div class="spec-title-row">
+        <h1>Badge</h1>
+        <div class="spec-badges">
+          <span class="chip">Surface View</span>
+          <span class="spec-confidence spec-confidence--high">high</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
     </header>
 
     <section class="storybook-section" aria-labelledby="component-heading">
-      <div class="component-doc-grid">
 
-        <!-- ── Badge ─────────────────────────────────────────── -->
-        <article class="component-doc">
-          <header class="component-doc__header">
-            <h3>Badge</h3>
-            <span class="chip">Surface View</span>
-          </header>
-
-          <div class="component-doc__sample">
-            <span class="badge badge--stable">Stable</span>
-            <span class="badge badge--draft">Draft</span>
-            <span class="badge badge--core">Core</span>
-            <span class="badge badge--semantic">Semantic</span>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Уровень</th>
-                  <td>Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5).</td>
-                </tr>
-                <tr>
-                  <th>Confidence</th>
-                  <td>high — уровень подтверждён прямым примером («Badge | Бейдж без вариантов», раздел 5).</td>
-                </tr>
-                <tr>
-                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
-                  <td class="component-doc__tokens">
-                    <code class="token-ref">inset-control-h-xs</code>
-                    <code class="token-ref">radius-full</code>
-                    <code class="token-ref">label-xs-size</code>
-                    <code class="token-ref">label-xs-lh</code>
-                    <code class="token-ref">label-xs-weight</code>
-                    <code class="token-ref">bg-accent-status-success</code>
-                    <code class="token-ref">bg-accent-status-warning</code>
-                    <code class="token-ref">bg-accent-status-attention</code>
-                    <code class="token-ref">bg-accent-ghost</code>
-                    <code class="token-ref">bg-accent-fade</code>
-                    <code class="token-ref">text-success</code>
-                    <code class="token-ref">text-accent</code>
-                    <code class="token-ref">text-primary</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Нарушения</th>
-                  <td class="component-doc__violation">
-                    ⚠️ <strong>Blocker</strong> — <code>padding: 2px var(--inset-control-h-xs)</code> —
-                    вертикальный отступ захардкожен (<code>2px</code>), нет ссылки на inset-токен.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <span class="badge badge--stable">Stable</span>
+          <span class="badge badge--draft">Draft</span>
+          <span class="badge badge--core">Core</span>
+          <span class="badge badge--semantic">Semantic</span>
+        </div>
       </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5).</p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--blocker">
+                <span class="spec-alert__tag">Blocker</span>
+                <p class="spec-alert__text">
+                  <code>padding: 2px var(--inset-control-h-xs)</code> — вертикальный отступ
+                  захардкожен (<code>2px</code>), нет ссылки на inset-токен.
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">high — уровень подтверждён прямым примером («Badge | Бейдж без вариантов», раздел 5).</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
     </section>
   </main>
 
 </div>
 
 <script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'Badge',
+  interactive: false,
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.badge',
+      description: 'Пилюля бейджа; текст — прямой контент без отдельного DOM-узла.',
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      { part: 'root', property: 'padding (гориз.)', token: 'inset-control-h-xs',
+        edit: { file: 'docs/assets/style.css', selector: '.badge' } },
+      {
+        part: 'root',
+        property: 'padding (верт.)',
+        value: '2px',
+        hardcoded: true,
+        note: 'Blocker — нет ссылки на inset-токен; см. «Нарушения».',
+        edit: { file: 'docs/assets/style.css', selector: '.badge', prop: 'padding' },
+      },
+    ],
+    colors: [
+      { context: 'variant: stable', part: 'root', property: 'background', token: 'bg-accent-status-success', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--stable' } },
+      { context: 'variant: stable', part: 'root', property: 'color', token: 'text-success', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--stable' } },
+      { context: 'variant: draft', part: 'root', property: 'background', token: 'bg-accent-status-warning', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--draft' } },
+      { context: 'variant: draft', part: 'root', property: 'color', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--draft' } },
+      { context: 'variant: core', part: 'root', property: 'background', token: 'bg-accent-ghost', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: core', part: 'root', property: 'color', token: 'text-accent', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: core', part: 'root', property: 'border', token: 'bg-accent-fade', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: semantic', part: 'root', property: 'background', token: 'bg-accent-status-attention', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--semantic' } },
+      { context: 'variant: semantic', part: 'root', property: 'color', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--semantic' } },
+    ],
+    borders: [
+      // derived: radius-full дублируется правилом .badge в docs-theme.css —
+      // авто-правка одного из двух источников была бы частичной
+      { part: 'root', property: 'border-radius', token: 'radius-full' },
+    ],
+    typography: [
+      {
+        part: 'root',
+        role: 'label-xs',
+        tokens: ['label-xs-size', 'label-xs-lh', 'label-xs-weight'],
+        sample: 'Stable',
+        edit: { file: 'docs/assets/style.css', selector: '.badge', roles: ['label'] },
+      },
+    ],
+  },
+};
+</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
 </body>
 </html>

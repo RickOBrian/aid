@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Миграция компонентов — DS Guides</title>
+<script>
+  // Redirect to the guide template, then restore the original URL
+  var id  = 'ds-component-migration-guide';
+  var here = location.href;  // e.g. …/docs/guides/ds-component-migration-guide.html
+  // Navigate to template; after load it will replaceState back to here
+  location.replace('template.html?id=' + id + '&from=' + encodeURIComponent(here));
+</script>
+</head><body></body></html>

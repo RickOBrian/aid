@@ -4,16 +4,6 @@
 (function () {
   'use strict';
 
-  const TOKEN_SCAN_PREFIXES = [
-    '--heading-',
-    '--body-',
-    '--label-',
-    '--meta-',
-    '--font-',
-    '--leading-',
-    '--tracking-',
-  ];
-
   const TYPOGRAPHY_TOKEN_RE =
     /^--(?:font-[\w-]+|(?:heading|body|label|meta)-[a-z0-9]+-(?:size|lh|weight|tracking)|leading-[\w-]+|tracking-[\w-]+|text-[\w-]+-(?:size|lh|weight|tracking))$/;
 
@@ -81,16 +71,6 @@
   const SIZE_ORDER = ['xl', 'l', 'm', 's', 'xs'];
   const PROP_ORDER = { size: 0, lh: 1, weight: 2, tracking: 3 };
   const ROLE_PROPS = new Set(['size', 'lh', 'weight', 'tracking']);
-
-  function inferCategory(name) {
-    if (name.includes('-size')) return 'font-size';
-    if (name.includes('-lh')) return 'line-height';
-    if (name.includes('-weight')) return 'font-weight';
-    if (name.includes('-tracking')) return 'letter-spacing';
-    if (name.startsWith('--font-')) return 'font-family';
-    if (name.startsWith('--leading-')) return 'line-height';
-    return 'other';
-  }
 
   function getRolePrefix(name) {
     const match = name.match(/^--(heading|body|label|meta)-([a-z0-9]+)-/);
@@ -238,45 +218,41 @@
     Object.assign(previewEl.style, getClusterPreviewStyle(cluster));
   }
 
-  function collectTypographyTokens() {
-    const styles = getComputedStyle(document.documentElement);
-    const names = new Set();
+  // ── Canonical source: docs/tokens/typography-tokens-registry.md ──────────
+  //
+  // The editor no longer discovers tokens by scanning whichever stylesheets
+  // happen to be loaded on this page (fragile, implicit). It fetches the
+  // registry — the same file save-tokens.js writes to and generates
+  // storybook-typography-tokens.css from — so the table always reflects the
+  // canonical set, including tokens created via the "+ Add style" flow.
+  const REGISTRY_URL = '../tokens/typography-tokens-registry.md';
 
-    for (const sheet of document.styleSheets) {
-      let rules;
-      try {
-        rules = sheet.cssRules;
-      } catch (_) {
+  function parseTypographyRegistryTable(md) {
+    const rows = [];
+    let inTable = false;
+
+    for (const line of md.split('\n')) {
+      if (!line.startsWith('|')) continue;
+      if (line.includes('Token') && line.includes('Category')) {
+        inTable = true;
         continue;
       }
-      if (!rules) continue;
+      if (!inTable || /^[|\s\-:]+$/.test(line)) continue;
 
-      for (const rule of rules) {
-        if (rule.selectorText !== ':root') continue;
-        for (const prop of rule.style) {
-          if (!prop.startsWith('--')) continue;
-          if (!TOKEN_SCAN_PREFIXES.some((p) => prop.startsWith(p))) continue;
-          const value = rule.style.getPropertyValue(prop).trim();
-          if (isTypographyToken(prop, value)) names.add(prop);
-        }
-      }
+      const cells = line.split('|').map((c) => c.trim());
+      if (cells.length < 5) continue;
+      const name = cells[1].startsWith('--') ? cells[1] : `--${cells[1]}`;
+      rows.push({ name, category: cells[2], value: cells[3], usedIn: cells[4] || '—' });
     }
 
-    for (let i = 0; i < styles.length; i += 1) {
-      const prop = styles[i];
-      if (!prop.startsWith('--')) continue;
-      if (!TOKEN_SCAN_PREFIXES.some((p) => prop.startsWith(p))) continue;
-      const value = styles.getPropertyValue(prop).trim();
-      if (isTypographyToken(prop, value)) names.add(prop);
-    }
+    return rows;
+  }
 
-    return [...names]
-      .map((name) => ({
-        name,
-        category: inferCategory(name),
-        value: styles.getPropertyValue(name).trim(),
-      }))
-      .filter((token) => isTypographyToken(token.name, token.value));
+  async function fetchTypographyTokens() {
+    const res = await fetch(`${REGISTRY_URL}?_=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('registry fetch failed');
+    const md = await res.text();
+    return parseTypographyRegistryTable(md).filter((t) => isTypographyToken(t.name, t.value));
   }
 
   function parseChangelogTable(md) {
@@ -448,11 +424,19 @@
           <td><span class="token-category">${escapeHtml(token.category)}</span></td>
           <td><code class="token-value" data-token="${escapeHtml(token.name)}">${escapeHtml(token.value)}</code></td>
           <td>
-            <input class="token-editor-input" type="text"
-                   value="${escapeHtml(token.value)}"
-                   data-token="${escapeHtml(token.name)}"
-                   data-cluster="${escapeHtml(cluster.role)}"
-                   aria-label="Edit ${escapeHtml(token.name)}">
+            <div class="token-edit-cell">
+              <input class="token-editor-input" type="text"
+                     value="${escapeHtml(token.value)}"
+                     data-token="${escapeHtml(token.name)}"
+                     data-cluster="${escapeHtml(cluster.role)}"
+                     aria-label="Edit ${escapeHtml(token.name)}">
+              <button type="button" class="token-row-rename" title="Переименовать ${escapeHtml(token.name)}"
+                      aria-label="Переименовать ${escapeHtml(token.name)}"
+                      data-rename-token="${escapeHtml(token.name)}">✎</button>
+              <button type="button" class="token-row-delete" title="Удалить ${escapeHtml(token.name)}"
+                      aria-label="Удалить ${escapeHtml(token.name)}"
+                      data-delete-token="${escapeHtml(token.name)}">&times;</button>
+            </div>
           </td>
           ${
             index === 0
@@ -478,7 +462,11 @@
         const next = window.DSStorybook.normalizeTokenValue(input.value.trim(), orig);
         input.value = next;
 
-        document.documentElement.style.setProperty(name, next);
+        // Единый source of truth: правка идёт в DSTokenStore, который
+        // перегенерирует авторитетный рантайм-слой (та же модель, что и у
+        // цветов). Fallback на :root — только если стор недоступен.
+        if (window.DSTokenStore) window.DSTokenStore.set(name, next, 'light');
+        else document.documentElement.style.setProperty(name, next);
 
         const valueCell = tbody.querySelector(
           `code.token-value[data-token="${CSS.escape(name)}"]`
@@ -499,14 +487,224 @@
         onInputChange();
       });
     });
+
+    bindTypographyDeleteControls(tbody);
+  }
+
+  // ── Delete flow: remove a typography token / style ────────────────────────
+  //
+  // Explicit per-row action with a mandatory confirm step (never one-click).
+  // Before confirming, we check declared consumers (usedIn). If the token is
+  // used we show a BLOCKING state with the dependency list and refuse to
+  // delete silently. The server re-validates the same rule against the
+  // canonical registry.
+
+  function typographyConsumers(name) {
+    const row = currentTokens.find((t) => t.name === name);
+    const v = String((row && row.usedIn) || '').trim();
+    if (!v || v === '—' || v === '(reserved)') return [];
+    return v
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  function buildDeleteTypographyConfig(name, triggerEl) {
+    const consumers = typographyConsumers(name);
+
+    if (consumers.length) {
+      return {
+        title: `Нельзя удалить ${name}`,
+        message:
+          'Токен используется — удаление заблокировано, чтобы не сломать зависимости. ' +
+          'Сначала снимите использование, затем повторите.',
+        blocked: true,
+        dependencies: [{ label: 'Используется консьюмерами (usedIn):', items: consumers }],
+        triggerEl,
+      };
+    }
+
+    return {
+      title: `Удалить ${name}?`,
+      message:
+        'Токен не числится используемым консьюмерами. Удаление необратимо. ' +
+        'Для role-стиля удаляйте все 4 свойства (size / lh / weight / tracking), иначе стиль останется неполным.',
+      confirmLabel: 'Удалить',
+      blocked: false,
+      triggerEl,
+      onConfirm: async () => {
+        const data = await postSave({
+          deletes: [{ kind: 'typography-token', token: name }],
+          author: localStorage.getItem('ds-author') || 'sergej',
+        }).catch((err) => ({ __error: err.message }));
+
+        if (data.__error) return { ok: false, error: data.__error };
+        if (!data.ok) return { ok: false, error: data.error || 'Не удалось удалить' };
+        await reloadTypographyAndRerender();
+        return { ok: true };
+      },
+    };
+  }
+
+  function bindTypographyDeleteControls(scope) {
+    scope.querySelectorAll('[data-delete-token]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        window.DSTokenConfirm.open(buildDeleteTypographyConfig(btn.dataset.deleteToken, btn));
+      });
+    });
+
+    scope.querySelectorAll('[data-rename-token]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        window.DSTokenCreate.open(buildRenameTypographyConfig(btn.dataset.renameToken, btn));
+      });
+    });
+  }
+
+  // ── Rename flow: rename standalone token / role ───────────────────────────
+  //
+  // A role sub-token (--heading-m-size …) is never renamed on its own — the
+  // property segment is fixed by the architecture. Renaming a role token
+  // renames the whole role (all 4 sub-tokens) atomically. Standalone tokens
+  // (font/leading/tracking) rename directly. Both reuse the create modal:
+  // "new name" field + references preview → POST { renames: [...] } → server
+  // rewrites the registry + regenerates CSS + rewrites var(--old) consumers.
+
+  const TYPOGRAPHY_ROLE_TOKEN_RE = /^--(heading|body|label|meta)-([a-z0-9]+)-(size|lh|weight|tracking)$/;
+
+  function typographyRoleOf(name) {
+    const m = name.match(TYPOGRAPHY_ROLE_TOKEN_RE);
+    return m ? `${m[1]}-${m[2]}` : null;
+  }
+
+  function typographyReferenceGroups(name) {
+    const consumers = typographyConsumers(name);
+    return consumers.length
+      ? [{ label: 'Используется консьюмерами (ссылки обновятся):', items: consumers }]
+      : [];
+  }
+
+  function buildRenameTypographyConfig(name, triggerEl) {
+    const role = typographyRoleOf(name);
+    const references = typographyReferenceGroups(name);
+    const refNote = references.length
+      ? 'Затронутые var(--…) ссылки обновятся автоматически.'
+      : 'Явных ссылок в реестре не найдено.';
+
+    if (role) {
+      return {
+        title: `Rename role "${role}"`,
+        description: `Роль переименуется целиком (size / lh / weight / tracking). ${refNote}`,
+        references,
+        submitLabel: 'Переименовать',
+        submittingLabel: 'Переименование…',
+        errorLabel: 'Не удалось переименовать роль',
+        triggerEl,
+        fields: [
+          {
+            id: 'newRole',
+            label: 'Новое имя роли',
+            type: 'text',
+            value: role,
+            placeholder: 'heading-l',
+            hint: 'heading|body|label|meta + строчный суффикс',
+            required: true,
+            validate: (value) => {
+              const v = value.trim();
+              if (v === role) return 'Новое имя совпадает со старым';
+              if (!/^(heading|body|label|meta)-[a-z0-9]+$/.test(v)) return 'heading|body|label|meta + строчный суффикс';
+              const dup = ['size', 'lh', 'weight', 'tracking'].find((p) => typographyTokenExists(`--${v}-${p}`));
+              return dup ? `--${v}-${dup} уже существует` : null;
+            },
+          },
+        ],
+        onSubmit: async (values) => {
+          const data = await postSave({
+            renames: [{ kind: 'typography-role', from: role, to: values.newRole.trim() }],
+            author: localStorage.getItem('ds-author') || 'sergej',
+          }).catch((err) => ({ __error: err.message }));
+
+          if (data.__error) return { ok: false, error: data.__error };
+          if (!data.ok) return { ok: false, error: data.error || 'Не удалось переименовать роль' };
+          await reloadTypographyAndRerender();
+          return { ok: true };
+        },
+      };
+    }
+
+    return {
+      title: `Rename ${name}`,
+      description: refNote,
+      references,
+      submitLabel: 'Переименовать',
+      submittingLabel: 'Переименование…',
+      errorLabel: 'Не удалось переименовать',
+      triggerEl,
+      fields: [
+        {
+          id: 'newName',
+          label: 'Новое имя',
+          type: 'text',
+          value: name,
+          required: true,
+          validate: (value) => {
+            const v = value.trim();
+            if (v === name) return 'Новое имя совпадает со старым';
+            const normalized = v.startsWith('--') ? v : `--${v}`;
+            if (!/^--(font-[\w-]+|leading-[\w-]+|tracking-[\w-]+)$/.test(normalized)) {
+              return '--font-*, --leading-* или --tracking-*';
+            }
+            return typographyTokenExists(normalized) ? `${normalized} уже существует` : null;
+          },
+        },
+      ],
+      onSubmit: async (values) => {
+        const to = values.newName.trim().startsWith('--') ? values.newName.trim() : `--${values.newName.trim()}`;
+        const data = await postSave({
+          renames: [{ kind: 'typography-token', from: name, to }],
+          author: localStorage.getItem('ds-author') || 'sergej',
+        }).catch((err) => ({ __error: err.message }));
+
+        if (data.__error) return { ok: false, error: data.__error };
+        if (!data.ok) return { ok: false, error: data.error || 'Не удалось переименовать' };
+        await reloadTypographyAndRerender();
+        return { ok: true };
+      },
+    };
+  }
+
+  // originals/modified are shared, persistent state — renderTokenTable() is
+  // called again after a successful "Add style" create (to reflect the new
+  // row without a page reload), so the save-bar button listener is bound
+  // ONCE (bindSaveBar) against these stable references instead of being
+  // re-attached on every render (which would stack duplicate handlers).
+  let originals = new Map();
+  const modified = new Map();
+  let currentTokens = [];
+
+  function updateSaveBar() {
+    const saveBar = document.getElementById('save-bar');
+    const saveCount = document.getElementById('save-count');
+    const count = modified.size;
+    if (saveBar) saveBar.classList.toggle('is-visible', count > 0);
+    if (saveCount) saveCount.textContent = count ? `${count} изменений` : '';
+  }
+
+  function onInputChange() {
+    updateSaveBar();
+    const saveStatus = document.getElementById('save-status');
+    if (saveStatus) {
+      saveStatus.textContent = '';
+      saveStatus.className = 'storybook-status';
+    }
   }
 
   function renderTokenTable(tokens) {
     const container = document.getElementById('tokens-groups');
     if (!container) return;
 
-    const originals = new Map(tokens.map((t) => [t.name, t.value]));
-    const modified = new Map();
+    currentTokens = tokens;
+    originals = new Map(tokens.map((t) => [t.name, t.value]));
+    modified.clear();
     const groups = groupTokens(tokens);
 
     container.innerHTML = groups
@@ -532,84 +730,232 @@
       )
       .join('');
 
-    const saveBar = document.getElementById('save-bar');
-    const saveCount = document.getElementById('save-count');
-    const saveBtn = document.getElementById('save-btn');
-    const saveStatus = document.getElementById('save-status');
-
-    function updateSaveBar() {
-      const count = modified.size;
-      if (saveBar) saveBar.classList.toggle('is-visible', count > 0);
-      if (saveCount) saveCount.textContent = count ? `${count} изменений` : '';
-    }
-
-    function onInputChange() {
-      updateSaveBar();
-      if (saveStatus) {
-        saveStatus.textContent = '';
-        saveStatus.className = 'storybook-status';
-      }
-    }
-
     groups.forEach((group) => {
       const tbody = container.querySelector(`tbody[data-group="${group.id}"]`);
       if (tbody) renderTokenRows(group.tokens, originals, modified, tbody, onInputChange);
     });
 
-    if (saveBtn) {
-      saveBtn.addEventListener('click', async () => {
-        if (!modified.size) return;
+    updateSaveBar();
+  }
 
-        saveBtn.disabled = true;
-        if (saveStatus) {
-          saveStatus.textContent = 'Сохранение…';
-          saveStatus.className = 'storybook-status';
-        }
+  function bindSaveBar() {
+    const saveBtn = document.getElementById('save-btn');
+    const saveStatus = document.getElementById('save-status');
+    if (!saveBtn) return;
 
-        const tokens = {};
-        const changes = [];
-        modified.forEach((c) => {
-          tokens[c.token] = c.newValue;
-          changes.push(c);
+    saveBtn.addEventListener('click', async () => {
+      if (!modified.size) return;
+
+      saveBtn.disabled = true;
+      if (saveStatus) {
+        saveStatus.textContent = 'Сохранение…';
+        saveStatus.className = 'storybook-status';
+      }
+
+      const tokens = {};
+      const changes = [];
+      modified.forEach((c) => {
+        tokens[c.token] = c.newValue;
+        changes.push(c);
+      });
+
+      try {
+        const data = await postSave({
+          tokens,
+          changes,
+          author: localStorage.getItem('ds-author') || 'sergej',
         });
 
-        try {
-          const data = await postSave({
-            tokens,
-            changes,
-            author: localStorage.getItem('ds-author') || 'sergej',
-          });
-
-          if (saveStatus) {
-            saveStatus.textContent = `Сохранено v${data.version}`;
-            saveStatus.className = 'storybook-status is-success';
-          }
-
-          await loadChangelog();
-          setTimeout(() => location.reload(), 600);
-        } catch (err) {
-          if (saveStatus) {
-            saveStatus.textContent = err.message;
-            saveStatus.className = 'storybook-status is-error';
-          }
-          saveBtn.disabled = false;
+        if (saveStatus) {
+          saveStatus.textContent = `Сохранено v${data.version}`;
+          saveStatus.className = 'storybook-status is-success';
         }
-      });
-    }
+
+        await loadChangelog();
+        setTimeout(() => location.reload(), 600);
+      } catch (err) {
+        if (saveStatus) {
+          saveStatus.textContent = err.message;
+          saveStatus.className = 'storybook-status is-error';
+        }
+        saveBtn.disabled = false;
+      }
+    });
   }
 
   function camelToKebab(str) {
     return str.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
   }
 
-  function init() {
-    const tokens = collectTypographyTokens();
+  function materializeTokens(tokens) {
+    if (!window.DSTokenStore) {
+      console.warn('DSTokenStore недоступен — пропускаю материализацию typography');
+      return;
+    }
+    window.DSTokenStore.materialize(
+      tokens.map((t) => ({ name: t.name, value: t.value, mode: 'light' }))
+    );
+  }
+
+  // ── Create flow: new style (role) / new standalone token ─────────────────
+  //
+  // Explicit "+ Add style" action. A "role" bundles all 4 required
+  // properties in one atomic create (see token-rules.md — "Состав
+  // типографического стиля"), enforcing the family constraint that a
+  // typography role is never partial. Confirm → POST { creates: [...] } →
+  // server writes the canonical registry + regenerates the derived CSS →
+  // we re-fetch and re-render in place (no page reload).
+
+  const TYPOGRAPHY_ROLE_NAME_RE = /^(heading|body|label|meta)-[a-z0-9]+$/;
+  const TYPOGRAPHY_STANDALONE_NAME_RE = /^--(font-[\w-]+|leading-[\w-]+|tracking-[\w-]+)$/;
+
+  function typographyTokenExists(name) {
+    return currentTokens.some((t) => t.name.toLowerCase() === name.toLowerCase());
+  }
+
+  function rejectColorValue(value) {
+    return isColorValue(value) ? 'Typography-токен не может содержать цветовое значение' : null;
+  }
+
+  async function reloadTypographyAndRerender() {
+    const tokens = await fetchTypographyTokens();
+    materializeTokens(tokens);
     renderTokenTable(tokens);
+    await loadChangelog();
+  }
+
+  function buildAddStyleConfig(triggerEl) {
+    const isStandalone = (values) => values.kind === 'standalone';
+    const isRole = (values) => values.kind !== 'standalone';
+
+    return {
+      title: 'Add style',
+      description:
+        'Role (heading/body/label/meta) требует все 4 свойства сразу: size, line-height, weight, tracking. ' +
+        'Отдельный токен (font-*/leading-*/tracking-*) — одно значение.',
+      submitLabel: 'Создать',
+      triggerEl,
+      fields: [
+        {
+          id: 'kind',
+          label: 'Тип',
+          type: 'select',
+          required: true,
+          options: [
+            { value: 'role', label: 'Новый role (heading/body/label/meta)' },
+            { value: 'standalone', label: 'Отдельный токен (font-*/leading-*/tracking-*)' },
+          ],
+        },
+        {
+          id: 'role',
+          label: 'Role name',
+          type: 'text',
+          placeholder: 'heading-2xl',
+          hint: 'heading|body|label|meta + строчный суффикс',
+          showIf: isRole,
+          required: true,
+          validate: (value) => {
+            if (!TYPOGRAPHY_ROLE_NAME_RE.test(value)) return 'heading|body|label|meta + строчный суффикс';
+            const dup = ['size', 'lh', 'weight', 'tracking'].find((p) => typographyTokenExists(`--${value}-${p}`));
+            return dup ? `--${value}-${dup} уже существует` : null;
+          },
+        },
+        { id: 'size', label: 'Size', type: 'text', placeholder: '40px', showIf: isRole, required: true, validate: rejectColorValue },
+        { id: 'lh', label: 'Line-height', type: 'text', placeholder: '48px', showIf: isRole, required: true, validate: rejectColorValue },
+        { id: 'weight', label: 'Weight', type: 'text', placeholder: '700', showIf: isRole, required: true, validate: rejectColorValue },
+        { id: 'tracking', label: 'Tracking', type: 'text', placeholder: '-0.2px', showIf: isRole, required: true, validate: rejectColorValue },
+        {
+          id: 'token',
+          label: 'Token name',
+          type: 'text',
+          placeholder: '--font-display',
+          showIf: isStandalone,
+          required: true,
+          validate: (value) => {
+            const name = value.startsWith('--') ? value : `--${value}`;
+            if (!TYPOGRAPHY_STANDALONE_NAME_RE.test(name)) return '--font-*, --leading-* или --tracking-*';
+            return typographyTokenExists(name) ? `${name} уже существует` : null;
+          },
+        },
+        {
+          id: 'category',
+          label: 'Category',
+          type: 'select',
+          showIf: isStandalone,
+          required: true,
+          options: [
+            { value: 'font-family', label: 'font-family' },
+            { value: 'line-height', label: 'line-height' },
+            { value: 'letter-spacing', label: 'letter-spacing' },
+            { value: 'font-weight', label: 'font-weight' },
+          ],
+        },
+        {
+          id: 'value',
+          label: 'Value',
+          type: 'text',
+          placeholder: "'Inter', sans-serif",
+          showIf: isStandalone,
+          required: true,
+          validate: rejectColorValue,
+        },
+      ],
+      onSubmit: async (values) => {
+        const payload =
+          values.kind === 'standalone'
+            ? {
+                kind: 'typography-standalone',
+                token: values.token.startsWith('--') ? values.token : `--${values.token}`,
+                category: values.category,
+                value: values.value,
+              }
+            : {
+                kind: 'typography-role',
+                role: values.role,
+                size: values.size,
+                lh: values.lh,
+                weight: values.weight,
+                tracking: values.tracking,
+              };
+
+        const data = await postSave({
+          creates: [payload],
+          author: localStorage.getItem('ds-author') || 'sergej',
+        }).catch((err) => ({ __error: err.message }));
+
+        if (data.__error) return { ok: false, error: data.__error };
+        await reloadTypographyAndRerender();
+        return { ok: true };
+      },
+    };
+  }
+
+  function bindCreateButton() {
+    const btn = document.getElementById('add-style-btn');
+    if (btn) {
+      btn.addEventListener('click', () => window.DSTokenCreate.open(buildAddStyleConfig(btn)));
+    }
+  }
+
+  async function init() {
+    const tokens = await fetchTypographyTokens();
+    materializeTokens(tokens);
+    renderTokenTable(tokens);
+    bindSaveBar();
+    bindCreateButton();
     loadChangelog();
     probeSaveApi();
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    init().catch((err) => {
+      console.error('typography init failed:', err);
+      const container = document.getElementById('tokens-groups');
+      if (container) {
+        container.innerHTML = `<p class="storybook-status is-error">${escapeHtml(err.message)}</p>`;
+      }
+    });
+  });
 
-  window.DSTypographyEditor = { collectTypographyTokens, init };
+  window.DSTypographyEditor = { fetchTypographyTokens, init };
 })();

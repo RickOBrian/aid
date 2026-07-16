@@ -87,7 +87,7 @@ Update this file every time a new token is created.
 | --bg-component-skeleton-shimmer | semantic | core-neutral-x-15 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-code-block | semantic | core-neutral-x-12 | core-neutral-x-92 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-code-block | semantic | core-neutral-x-82 | core-neutral-x-3 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --text-primary | semantic | core-neutral-x-90 | core-neutral-x-98 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --text-primary | semantic | core-neutral-x-100 | core-neutral-x-98 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-secondary | semantic | core-neutral-x-60 | core-neutral-x-45 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-disabled | semantic | core-neutral-x-45 | core-neutral-x-97 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --text-inverse | semantic | core-neutral-x-0 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |

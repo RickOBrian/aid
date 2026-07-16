@@ -332,6 +332,23 @@
   cursor: not-allowed;
 }
 
+.storybook-btn--secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--line-default);
+}
+
+.storybook-btn--secondary:hover {
+  color: var(--text-primary);
+  background: var(--bg-accent-states-hover);
+  border-color: var(--line-strong);
+}
+
+.storybook-btn--secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .storybook-status {
   font-size: var(--label-s-size);
   color: var(--text-secondary);
@@ -346,62 +363,310 @@
 }
 
 /* ============================================================
-   Component docs — read-only component library (Storybook → Components)
-   ============================================================ */
-.component-doc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: var(--gap-m);
-}
+   Component specs — read-only spec pages (Storybook → Components)
+   ============================================================
+   Pattern: wide single-column spec page (title + metadata badges →
+   full-width preview → two-column body: prose/definition/alert blocks
+   in the main column, Confidence detail + token chips in a sticky
+   sidebar). Replaces the old card-grid + table-of-key-values layout,
+   which squeezed long-form rationale, slot/variant descriptions and
+   violation notes into narrow table cells. Tables are reserved for
+   genuinely tabular data (e.g. the live Table-component preview
+   sample) — everything below is key→long-value or list content, so
+   it renders as prose, <dl> definition blocks, chip clouds and alert
+   cards instead. */
 
-.component-doc {
-  background: var(--bg-card-main);
-  border: 1px solid var(--line-default);
-  border-radius: var(--radius-l);
-  padding: var(--inset-container-v-m) var(--inset-container-h-m);
-}
-
-.component-doc__header {
+.spec-title-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: var(--gap-s);
-  margin-bottom: var(--gap-s);
+  flex-wrap: wrap;
+  gap: var(--gap-m);
+  margin-bottom: 4px;
 }
 
-.component-doc__header h3 {
-  font-size: var(--heading-xs-size);
-  line-height: var(--heading-xs-lh);
-  font-weight: var(--heading-xs-weight);
-  color: var(--text-primary);
+.spec-title-row h1 {
+  margin-bottom: 0;
 }
 
-.component-doc__hint {
-  font-size: var(--label-xs-size);
+.spec-alt-name {
+  font-size: var(--heading-s-size);
   font-weight: 400;
   color: var(--text-secondary);
 }
 
-.component-doc__sample {
+.spec-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding-top: 6px;
+  flex-wrap: wrap;
+}
+
+.spec-confidence {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--inset-control-v-xs) var(--inset-control-h-xs);
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  line-height: var(--meta-xs-lh);
+  font-weight: var(--meta-xs-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.spec-confidence--high {
+  background: var(--bg-accent-status-success);
+  color: var(--text-success);
+}
+
+.spec-confidence--medium {
+  background: var(--bg-accent-status-warning);
+  color: var(--text-primary);
+}
+
+.spec-confidence--low {
+  background: var(--bg-accent-status-error);
+  color: var(--text-error);
+}
+
+.spec-preview {
+  margin-bottom: 32px;
+}
+
+.spec-preview__label {
+  display: block;
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.spec-preview__stage {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--gap-s);
-  padding: var(--inset-container-v-m) var(--inset-container-h-m);
-  margin-bottom: var(--gap-m);
+  padding: var(--inset-container-v-xl) var(--inset-container-h-xl);
   background: var(--bg-base-main-secondary);
   border: 1px dashed var(--line-default);
   border-radius: var(--radius-m);
+  min-height: 96px;
 }
 
-.component-doc__tokens {
+.spec-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  align-items: start;
+}
+
+.spec-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+.spec-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  position: sticky;
+  top: 20px;
+}
+
+.spec-block__title {
+  font-size: var(--heading-xs-size);
+  line-height: var(--heading-xs-lh);
+  font-weight: var(--heading-xs-weight);
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.spec-block__text {
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.spec-block__text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
+
+.spec-block__note {
+  margin-top: 12px;
+  max-width: 72ch;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  background: var(--bg-accent-status-attention);
+  border-radius: var(--radius-s);
+}
+
+.spec-block__note code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+/* Definition-style blocks — slots / variants: structured name → long-form
+   description. A table would force every description into one row height
+   and one narrow column; a definition list lets each value wrap and breathe. */
+.spec-defs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  max-width: 72ch;
+}
+
+.spec-defs__row {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: var(--gap-m);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-defs__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.spec-defs__row dt {
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-defs__row dd {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-defs__row code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+/* Violations — independent list items with a severity tag, not table rows. */
+.spec-alerts {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  max-width: 72ch;
+}
+
+.spec-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-alert__tag {
+  align-self: flex-start;
+  font-size: var(--meta-xs-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.spec-alert--blocker .spec-alert__tag {
+  background: var(--bg-accent-status-error);
+  color: var(--text-error);
+}
+
+.spec-alert--gap .spec-alert__tag {
+  background: var(--bg-accent-status-warning);
+  color: var(--text-primary);
+}
+
+.spec-alert--quality .spec-alert__tag {
+  background: var(--bg-base-main-secondary);
+  color: var(--text-secondary);
+}
+
+.spec-alert__text {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-alert__text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
+
+.spec-clean-note {
+  max-width: 72ch;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-success);
+}
+
+/* Sidebar cards — Confidence detail + semantic-token chip cloud. */
+.spec-card {
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-l);
+}
+
+.spec-card__title {
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.spec-card__text {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-card__hint {
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.spec-tokens {
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap-xs);
 }
 
-.component-doc__violation {
-  color: var(--text-error);
+@media (max-width: 1100px) {
+  .spec-layout {
+    grid-template-columns: 1fr;
+  }
+  .spec-aside {
+    position: static;
+  }
 }
 
 .component-category {

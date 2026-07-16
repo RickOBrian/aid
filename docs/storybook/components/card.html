@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../assets/docs-theme.css">
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
 
   <style>
     html,
@@ -61,95 +62,173 @@
       <p class="component-doc-breadcrumb">
         <a href="../components.html">← Components</a>
       </p>
-      <h1>Card</h1>
-      <p>Read-only карточка компонента — без controls для редактирования.</p>
+      <div class="spec-title-row">
+        <h1>Card</h1>
+        <div class="spec-badges">
+          <span class="chip">требует уточнения</span>
+          <span class="spec-confidence spec-confidence--low">low</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
     </header>
 
     <section class="storybook-section" aria-labelledby="component-heading">
-      <div class="component-doc-grid">
 
-        <!-- ── Card ──────────────────────────────────────────── -->
-        <article class="component-doc">
-          <header class="component-doc__header">
-            <h3>Card</h3>
-            <span class="chip">требует уточнения</span>
-          </header>
-
-          <div class="component-doc__sample">
-            <div class="card" style="max-width:280px">
-              <div class="card__header">
-                <span class="card__name">Card Name</span>
-                <span class="badge badge--draft">Draft</span>
-              </div>
-              <p class="card__description">Пример описания карточки для демонстрации токенов типографики и цвета.</p>
-              <div class="card__footer">
-                <span class="chip">Type</span>
-                <span class="card__version">v1.0.0</span>
-              </div>
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <div class="card" style="max-width:280px">
+            <div class="card__header">
+              <span class="card__name">Card Name</span>
+              <span class="badge badge--draft">Draft</span>
+            </div>
+            <p class="card__description">Пример описания карточки для демонстрации токенов типографики и цвета.</p>
+            <div class="card__footer">
+              <span class="chip">Type</span>
+              <span class="card__version">v1.0.0</span>
             </div>
           </div>
-
-          <div class="table-wrap">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Уровень</th>
-                  <td>
-                    Требует уточнения (перепроверено). <code>card__header</code>,
-                    <code>card__description</code>, <code>card__footer</code> — это BEM-классы
-                    CSS для стилизации визуально разных зон блока, а не именованные слоты как API
-                    (нет пропсов/@ViewBuilder/lambda-параметров, которые описаны в разделе 9
-                    гайда). В этом репозитории нет реализации компонента на целевой платформе,
-                    которая подтвердила бы slot-контракт — только статичная разметка одного
-                    инстанса. По одному лишь CSS нельзя отличить «Structural View с 3 слотами»
-                    от «Surface View с внутренней вёрсткой»: понижаю до «требует уточнения» до
-                    подтверждения на уровне реализации компонента.
-                  </td>
-                </tr>
-                <tr>
-                  <th>Confidence</th>
-                  <td>low — спорно; нет подтверждённого named-slot API, только CSS BEM-конвенция.</td>
-                </tr>
-                <tr>
-                  <th>Semantic-токены, найденные в локальном stylesheet layer компонента</th>
-                  <td class="component-doc__tokens">
-                    <code class="token-ref">bg-card-main</code>
-                    <code class="token-ref">line-default</code>
-                    <code class="token-ref">line-accent</code>
-                    <code class="token-ref">radius-l</code>
-                    <code class="token-ref">inset-container-v-m</code>
-                    <code class="token-ref">inset-container-h-m</code>
-                    <code class="token-ref">gap-s</code>
-                    <code class="token-ref">gap-m</code>
-                    <code class="token-ref">gap-xs</code>
-                    <code class="token-ref">heading-xs-size</code>
-                    <code class="token-ref">heading-xs-lh</code>
-                    <code class="token-ref">heading-xs-weight</code>
-                    <code class="token-ref">body-s-size</code>
-                    <code class="token-ref">body-s-lh</code>
-                    <code class="token-ref">body-s-weight</code>
-                    <code class="token-ref">label-xs-size</code>
-                    <code class="token-ref">label-xs-lh</code>
-                    <code class="token-ref">label-xs-weight</code>
-                    <code class="token-ref">text-primary</code>
-                    <code class="token-ref">text-secondary</code>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Нарушения</th>
-                  <td>Не найдены — все значения ссылаются на semantic-токены.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-
+        </div>
       </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">
+              Требует уточнения (перепроверено). <code>card__header</code>,
+              <code>card__description</code>, <code>card__footer</code> — это BEM-классы
+              CSS для стилизации визуально разных зон блока, а не именованные слоты как API
+              (нет пропсов/@ViewBuilder/lambda-параметров, которые описаны в разделе 9
+              гайда). В этом репозитории нет реализации компонента на целевой платформе,
+              которая подтвердила бы slot-контракт — только статичная разметка одного
+              инстанса. По одному лишь CSS нельзя отличить «Structural View с 3 слотами»
+              от «Surface View с внутренней вёрсткой»: понижаю до «требует уточнения» до
+              подтверждения на уровне реализации компонента.
+            </p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <p class="spec-clean-note">Не найдены — все значения ссылаются на semantic-токены.</p>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">low — спорно; нет подтверждённого named-slot API, только CSS BEM-конвенция.</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
     </section>
   </main>
 
 </div>
 
 <script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'Card',
+  interactive: false,
+  // Прототип: documentation-card подача для outer/container inset
+  // (только эта страница; остальные — прежний рендер)
+  presentation: { outerInset: 'measure-card' },
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.card',
+      description: 'Поверхность карточки: фон, рамка, скругление, внутренние отступы.',
+    },
+    {
+      id: 'header',
+      label: 'Header zone',
+      selector: '.card__header',
+      description: 'Визуальная зона (BEM-класс), не подтверждённый слот — см. «Уровень архитектуры».',
+    },
+    {
+      id: 'description',
+      label: 'Description zone',
+      selector: '.card__description',
+      description: 'Текстовая зона; роль body-s, обрезка в 2 строки.',
+    },
+    {
+      id: 'footer',
+      label: 'Footer zone',
+      selector: '.card__footer',
+      description: 'Нижняя зона с метаданными (chip, версия).',
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      { part: 'root', property: 'padding (верт.)', token: 'inset-container-v-m',
+        edit: { file: 'docs/assets/style.css', selector: '.card' } },
+      { part: 'root', property: 'padding (гориз.)', token: 'inset-container-h-m',
+        edit: { file: 'docs/assets/style.css', selector: '.card' } },
+      { part: 'header', property: 'gap', token: 'gap-s',
+        edit: { file: 'docs/assets/style.css', selector: '.card__header' } },
+      { part: 'header', property: 'margin-bottom', token: 'gap-s',
+        edit: { file: 'docs/assets/style.css', selector: '.card__header' } },
+      { part: 'footer', property: 'gap', token: 'gap-xs',
+        edit: { file: 'docs/assets/style.css', selector: '.card__footer' } },
+      { part: 'footer', property: 'margin-top', token: 'gap-m',
+        edit: { file: 'docs/assets/style.css', selector: '.card__footer' } },
+    ],
+    colors: [
+      { context: 'default', part: 'root', property: 'background', token: 'bg-card-main', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.card' } },
+      { context: 'default', part: 'header', property: 'color (name)', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.card__name' } },
+      { context: 'default', part: 'description', property: 'color', token: 'text-secondary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.card__description' } },
+      // derived: line-accent дублируется правилом .card:hover в docs-theme.css
+      { context: 'hover', part: 'root', property: 'border-color', token: 'line-accent', swatch: true },
+    ],
+    borders: [
+      // derived: border и radius перекрыты docs-theme.css (.card → border-radius: 0)
+      { part: 'root', property: 'border', token: 'line-default', swatch: true },
+      { part: 'root', property: 'border-radius', token: 'radius-l' },
+    ],
+    typography: [
+      {
+        part: 'header',
+        role: 'heading-xs',
+        tokens: ['heading-xs-size', 'heading-xs-lh', 'heading-xs-weight'],
+        sample: 'Card Name',
+        edit: { file: 'docs/assets/style.css', selector: '.card__name', roles: ['heading'] },
+      },
+      {
+        part: 'description',
+        role: 'body-s',
+        tokens: ['body-s-size', 'body-s-lh', 'body-s-weight'],
+        sample: 'Пример описания карточки для демонстрации токенов.',
+        edit: { file: 'docs/assets/style.css', selector: '.card__description', roles: ['body'] },
+      },
+      {
+        part: 'footer',
+        role: 'label-xs',
+        tokens: ['label-xs-size', 'label-xs-lh', 'label-xs-weight'],
+        sample: 'v1.0.0',
+        edit: { file: 'docs/assets/style.css', selector: '.card__version', roles: ['label'] },
+      },
+    ],
+  },
+};
+</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
 </body>
 </html>

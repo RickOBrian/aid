@@ -89,6 +89,10 @@
       <a class="sidebar__item" href="guides/template.html?id=ds-component-architecture-guide">Архитектура</a>
       <a class="sidebar__item" href="guides/template.html?id=component-states-guide">Состояния</a>
 
+      <div class="sidebar__section-label">Скиллы</div>
+      <a class="sidebar__item" href="guides/template.html?id=ds-component-audit-guide">Аудит компонентов</a>
+      <a class="sidebar__item" href="guides/template.html?id=ds-component-migration-guide">Миграция компонентов</a>
+
       <div class="sidebar__section-label">Storybook</div>
       <a class="sidebar__item" href="storybook/index.html">System Storybook →</a>
     </nav>
@@ -288,6 +292,55 @@
             <div class="card__footer">
               <span class="chip">Components</span>
               <span class="card__version">v1.1.0</span>
+            </div>
+          </a>
+
+        </div>
+
+      </section>
+
+      <!-- ── Group: Skills ──────────────────────────────────── -->
+      <section class="section-group" aria-labelledby="group-skills">
+        <div class="section-heading">
+          <h2 class="section-heading__title" id="group-skills">Skills</h2>
+          <span class="section-heading__count">2</span>
+        </div>
+
+        <div class="card-grid">
+
+          <a class="card" href="guides/template.html?id=ds-component-audit-guide"
+             data-name="Аудит компонентов"
+             data-type="skills"
+             data-description="Определение идентичности UI-компонента по screenshot/Figma: Match, New, Ambiguous или Not a DS component.">
+            <div class="card__header">
+              <span class="card__name">Аудит компонентов</span>
+              <span class="badge badge--draft">Draft</span>
+            </div>
+            <p class="card__description">
+              Определяет идентичность UI-компонента по screenshot или Figma-ссылке: Match с существующим
+              компонентом, New, Ambiguous или Not a DS component. Спецификацию не пишет.
+            </p>
+            <div class="card__footer">
+              <span class="chip">Skills</span>
+              <span class="card__version">v1.0.0</span>
+            </div>
+          </a>
+
+          <a class="card" href="guides/template.html?id=ds-component-migration-guide"
+             data-name="Миграция компонентов"
+             data-type="skills"
+             data-description="Поэтапный перенос legacy-разметки на canonical-компонент: discovery → mapping → pilot → rollout → cleanup.">
+            <div class="card__header">
+              <span class="card__name">Миграция компонентов</span>
+              <span class="badge badge--draft">Draft</span>
+            </div>
+            <p class="card__description">
+              Поэтапный процесс переноса legacy-реализаций на уже утверждённый canonical-компонент:
+              discovery → mapping → pilot → rollout → cleanup, с гейтами подтверждения на каждом шаге.
+            </p>
+            <div class="card__footer">
+              <span class="chip">Skills</span>
+              <span class="card__version">v1.1.1</span>
             </div>
           </a>
 

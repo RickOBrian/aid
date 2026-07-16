@@ -34,10 +34,10 @@
     "level": "structural-view",
     "platforms": ["web"],
     "date": "2026-07-03",
-    "stage": "draft",
-    "open_questions": 1,
+    "stage": "final",
+    "open_questions": 0,
     "missing_tokens": [],
-    "notes": "Repeatable Slot / Cell Span закрыт — ds-component-architecture-guide.md v1.3.0, раздел «Слоты Structural View». iOS/Android осознанно убраны из scope — нет реального кейса, платформа зафиксирована как web-only. Остаётся открытым TODO (намеренно не решается): состояния pressed/focused/selected/disabled/loading/skeleton/error не реализованы в CSS — добавлять только при реальном сценарии, без фиктивных состояний.",
+    "notes": "Repeatable Slot / Cell Span закрыт — ds-component-architecture-guide.md v1.3.0, раздел «Слоты Structural View». iOS/Android осознанно убраны из scope — нет реального кейса, платформа зафиксирована как web-only. Открытый вопрос по состояниям закрыт решением Principal Designer: \"States for TableRow (pressed/focused/selected/disabled/loading/skeleton/error) are not required without a concrete usage scenario, closing as-is.\" Реализация состояний в CSS не добавлена — решение декларативное, не отложенный пробел; состояния проектируются только при появлении реального сценария.",
     "_owner": "sergej"
   }
 ]
