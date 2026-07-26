@@ -197,6 +197,68 @@
     return stage.querySelector(part.selector);
   }
 
+  function findPrimaryTextNode(el) {
+    if (!el) return null;
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const node = el.childNodes[i];
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) return node;
+    }
+    return null;
+  }
+
+  function clientRectToStageRect(clientRect, stageRect) {
+    const left = clientRect.left - stageRect.left;
+    const top = clientRect.top - stageRect.top;
+    return {
+      top,
+      bottom: top + clientRect.height,
+      left,
+      right: left + clientRect.width,
+      width: clientRect.width,
+      height: clientRect.height,
+      cx: left + clientRect.width / 2,
+      cy: top + clientRect.height / 2,
+    };
+  }
+
+  /* Text-only Items (Label in Chip/Badge — direct text content, no wrapper)
+     have no element of their own; measure the text node's ink box via Range
+     so halo/anchor sit on the glyphs, not the Container's padding/border. */
+  function measureTextContentRect(hostEl, stageRect) {
+    const textNode = findPrimaryTextNode(hostEl);
+    if (!textNode) return null;
+    const range = document.createRange();
+    range.selectNodeContents(textNode);
+    const r = range.getBoundingClientRect();
+    if (!r.width && !r.height) return null;
+    return clientRectToStageRect(r, stageRect);
+  }
+
+  /* Resolves an anatomy part to either an element box (Container) or a
+     text-content box (Label without its own DOM node). Explicit
+     part.targetType === 'text' always uses Range; otherwise a later part
+     whose selector resolves to a host already claimed by an earlier
+     element-target part is auto-promoted to text-content. */
+  function resolveAnatomyTarget(stage, part, stageRect, claimedHosts) {
+    if (!part.selector) return null;
+    const hostEl = stage.querySelector(part.selector);
+    if (!hostEl) return null;
+
+    const asText = part.targetType === 'text' || claimedHosts.has(hostEl);
+    if (asText) {
+      const rect = measureTextContentRect(hostEl, stageRect);
+      if (!rect) return null;
+      return { kind: 'text', hostEl, rect };
+    }
+
+    claimedHosts.add(hostEl);
+    return {
+      kind: 'element',
+      hostEl,
+      rect: clientRectToStageRect(hostEl.getBoundingClientRect(), stageRect),
+    };
+  }
+
   /* ---------- non-crossing boundary labeling ----------
      Anchors are grouped to the top/bottom half of the component (by anchor
      center-Y relative to the group's own bounding box — this is what makes
@@ -389,35 +451,104 @@
     });
   }
 
+  /* Corner radius for a halo box: reads the target's own computed
+     border-radius (so a pill-shaped target gets a pill-shaped halo,
+     not an unrelated fixed corner) and falls back to `fallback` only
+     when the target has no radius info. Clamped to half the box so an
+     oversized value (e.g. radius-full's 9999px) can't misreport — SVG
+     itself would clamp rx the same way, this just keeps the number sane
+     for callers that inspect it. */
+  function haloRadiusFor(el, boxWidth, boxHeight, fallback) {
+    const parsed = el ? parseFloat(getComputedStyle(el).borderRadius) : NaN;
+    const pad = CALLOUT_OUTLINE_PAD;
+    const radius = Number.isFinite(parsed) && parsed >= 0 ? parsed + pad : fallback;
+    return Math.min(radius, boxWidth / 2, boxHeight / 2);
+  }
+
+  /* Recomputes a halo <rect>'s geometry from the CURRENT layout, right
+     before it's revealed on hover — never from whatever rect happened to
+     be measured at paint time. getBoundingClientRect() always forces a
+     fresh layout flush, so this is never stale even if fonts/content
+     reflowed the page after the initial mount. Re-reads the stage's own
+     rect too (not a cached one), so scroll/resize between mount and hover
+     can't shift the halo relative to its target. No-op for nodes that
+     aren't a halo (no stored target element). */
+  function refreshAnatomyHaloGeometry(node, stage) {
+    const hostEl = node.__anatomyHostEl || node.__anatomyTargetEl;
+    if (!hostEl || !stage) return;
+    const pad = CALLOUT_OUTLINE_PAD;
+    const stageRect = stage.getBoundingClientRect();
+    const kind = node.__anatomyTargetKind || 'element';
+    const fallback = node.classList.contains('spec-anatomy-callout__outline') ? 3 : 4;
+
+    const rect = kind === 'text'
+      ? measureTextContentRect(hostEl, stageRect)
+      : clientRectToStageRect(hostEl.getBoundingClientRect(), stageRect);
+    if (!rect) return;
+
+    const width = rect.width + pad * 2;
+    const height = rect.height + pad * 2;
+    node.setAttribute('x', String(rect.left - pad));
+    node.setAttribute('y', String(rect.top - pad));
+    node.setAttribute('width', String(width));
+    node.setAttribute('height', String(height));
+    node.setAttribute('rx', String(
+      kind === 'text'
+        ? Math.min(2, width / 2, height / 2)
+        : haloRadiusFor(hostEl, width, height, fallback),
+    ));
+  }
+
   /* Hover-revealed tonal fill behind a normal-sized (non-tiny) target —
      ties the number/line to the exact box on demand, not just to wherever
      the line/dot happens to land. Applied unconditionally to every
-     non-tiny entry, see mountAnatomyCallouts. */
-  function appendAnatomyHighlight(svg, rect, partId) {
+     non-tiny entry, see mountAnatomyCallouts. Geometry here is only the
+     *initial* paint; refreshAnatomyHaloGeometry re-derives it from the
+     live target on every hover (see anatomyPartToggle). */
+  function appendAnatomyHighlight(svg, rect, partId, hostEl, targetKind) {
     const pad = CALLOUT_OUTLINE_PAD;
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     el.classList.add('spec-anatomy-callout__highlight');
     if (partId) el.dataset.part = partId;
+    el.__anatomyTargetEl = hostEl || null;
+    el.__anatomyHostEl = hostEl || null;
+    el.__anatomyTargetKind = targetKind || 'element';
+    const width = rect.width + pad * 2;
+    const height = rect.height + pad * 2;
     el.setAttribute('x', String(rect.left - pad));
     el.setAttribute('y', String(rect.top - pad));
-    el.setAttribute('width', String(rect.width + pad * 2));
-    el.setAttribute('height', String(rect.height + pad * 2));
-    el.setAttribute('rx', '4');
+    el.setAttribute('width', String(width));
+    el.setAttribute('height', String(height));
+    el.setAttribute('rx', String(
+      targetKind === 'text'
+        ? Math.min(2, width / 2, height / 2)
+        : haloRadiusFor(hostEl, width, height, 4),
+    ));
     svg.appendChild(el);
   }
 
   /* Full outline around a tiny target — replaces the dot/line for that one
-     callout (see layoutTinyTargets). */
-  function appendTinyOutline(svg, rect, partId) {
+     callout (see layoutTinyTargets). Same live-refresh contract as
+     appendAnatomyHighlight above. */
+  function appendTinyOutline(svg, rect, partId, hostEl, targetKind) {
     const pad = CALLOUT_OUTLINE_PAD;
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     el.classList.add('spec-anatomy-callout__outline');
     if (partId) el.dataset.part = partId;
+    el.__anatomyTargetEl = hostEl || null;
+    el.__anatomyHostEl = hostEl || null;
+    el.__anatomyTargetKind = targetKind || 'element';
+    const width = rect.width + pad * 2;
+    const height = rect.height + pad * 2;
     el.setAttribute('x', String(rect.left - pad));
     el.setAttribute('y', String(rect.top - pad));
-    el.setAttribute('width', String(rect.width + pad * 2));
-    el.setAttribute('height', String(rect.height + pad * 2));
-    el.setAttribute('rx', '3');
+    el.setAttribute('width', String(width));
+    el.setAttribute('height', String(height));
+    el.setAttribute('rx', String(
+      targetKind === 'text'
+        ? Math.min(2, width / 2, height / 2)
+        : haloRadiusFor(hostEl, width, height, 3),
+    ));
     svg.appendChild(el);
   }
 
@@ -490,7 +621,13 @@
     const legendItem = legendRoot ? legendRoot.querySelector(`.spec-anatomy__item[data-part="${partId}"]`) : null;
     return {
       activate() {
-        stage.querySelectorAll(`[data-part="${partId}"]`).forEach((node) => node.classList.add('is-active'));
+        stage.querySelectorAll(`[data-part="${partId}"]`).forEach((node) => {
+          // Re-measure the halo from the live DOM right before it becomes
+          // visible — the mount-time rect it was drawn with can go stale
+          // (font swap, content reflow elsewhere on the page, etc.).
+          refreshAnatomyHaloGeometry(node, stage);
+          node.classList.add('is-active');
+        });
         if (legendItem) legendItem.classList.add('is-active');
       },
       deactivate() {
@@ -529,24 +666,17 @@
     // order — only the (x, y) placement is re-derived by layoutAnatomyCallouts
     // below, so `entry.index` is threaded through unchanged.
     const entries = [];
+    const claimedHosts = new Set();
     (parts || []).forEach((part, i) => {
-      const el = findPartEl(stage, part);
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const rect = {
-        top: r.top - stageRect.top,
-        bottom: r.bottom - stageRect.top,
-        left: r.left - stageRect.left,
-        right: r.right - stageRect.left,
-        width: r.width,
-        height: r.height,
-      };
-      rect.cx = rect.left + rect.width / 2;
-      rect.cy = rect.top + rect.height / 2;
+      const target = resolveAnatomyTarget(stage, part, stageRect, claimedHosts);
+      if (!target) return;
+      const rect = target.rect;
       entries.push({
         part,
         index: i,
-        el,
+        el: target.hostEl,
+        hostEl: target.hostEl,
+        targetKind: target.kind,
         rect,
         isTiny: rect.width < CALLOUT_TINY_MIN || rect.height < CALLOUT_TINY_MIN,
         isSmall: rect.width < CALLOUT_TICK_MIN || rect.height < CALLOUT_TICK_MIN,
@@ -574,10 +704,10 @@
     // pointers/badges so the halo reads as "background" for the target,
     // not as an extra callout of its own.
     layout.forEach(({ entry }) => {
-      appendAnatomyHighlight(svg, entry.rect, entry.part.id);
+      appendAnatomyHighlight(svg, entry.rect, entry.part.id, entry.hostEl, entry.targetKind);
     });
     tinyLayout.forEach(({ entry }) => {
-      appendTinyOutline(svg, entry.rect, entry.part.id);
+      appendTinyOutline(svg, entry.rect, entry.part.id, entry.hostEl, entry.targetKind);
     });
 
     layout.forEach(({ entry, geom }) => {

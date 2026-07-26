@@ -225,6 +225,7 @@
       label: part.label || part.part || part.name || `Part ${index + 1}`,
       description: part.description || '',
       selector: part.selector || part.target || null,
+      targetType: part.targetType || null,
       optional: part.optional ?? part.isOptional,
       nested: part.nested || null,
       callout: part.callout || null,
