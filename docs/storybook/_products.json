@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "id": "ui-kit-a",
+      "label": "UI Kit A",
+      "status": "stable",
+      "tokens": {
+        "colors": {
+          "core": ["/tokens/ui-kit-a/core/color.json"],
+          "semantic": ["/tokens/ui-kit-a/semantic/color.json"],
+          "legacy": ["/tokens/ui-kit-a/legacy/legacy-tokens.json"]
+        }
+      },
+      "components": {
+        "items": []
+      }
+    },
+    {
+      "id": "ui-kit-b",
+      "label": "UI Kit B",
+      "status": "stable",
+      "tokens": {
+        "colors": {
+          "core": ["/tokens/ui-kit-b/core/color.json"],
+          "semantic": ["/tokens/ui-kit-b/semantic/color.json"],
+          "legacy": ["/tokens/ui-kit-b/legacy/legacy-tokens.json"]
+        }
+      },
+      "components": {
+        "items": []
+      }
+    },
+    {
+      "id": "sutochno",
+      "label": "Sutochno",
+      "status": "legacy",
+      "tokens": {
+        "colors": {
+          "core": [],
+          "semantic": [],
+          "legacy": ["/tokens/sutochno/legacy/legacy-tokens.json"]
+        },
+        "typography": {
+          "legacy": ["/tokens/sutochno/legacy/typography-styles.json"]
+        }
+      },
+      "components": {
+        "items": [
+          {
+            "id": "button-text",
+            "label": "ButtonText",
+            "href": "/docs/storybook/products/sutochno/components/button-text.html",
+            "group": "Controls",
+            "status": "legacy"
+          },
+          {
+            "id": "counter-value",
+            "label": "CounterValue",
+            "href": "/docs/storybook/products/sutochno/components/counter-value.html",
+            "group": "Indicators",
+            "status": "legacy"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -279,7 +279,16 @@ body, body * {
   overflow: hidden;
   border: 1px solid var(--line-default);
   box-shadow: none;
-  margin-bottom: 1.5em;
+}
+
+/* Structural View задаёт только собственную поверхность — внешний отступ
+   после таблицы принадлежит родительскому Layout-контейнеру страницы
+   (см. ds-component-architecture-guide.md v1.3.0). guide-content — единственный
+   контейнер, где .table-wrap рендерится прямо в потоке markdown-контента
+   (core-color-tokens-guide.html, semantic-color-tokens-guide.html) без
+   собственного group-отступа, поэтому отступ восстановлен здесь. */
+.guide-content .table-wrap {
+  margin-bottom: var(--gap-l);
 }
 
 .table-wrap table {

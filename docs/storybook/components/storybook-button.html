@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,32 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <!--
+      Инфраструктурный элемент инструмента Storybook, не входит в DS-каталог
+      компонентов. Spec не требуется. Решение Principal Designer, 2026-07-24
+      (см. memory/ds-component-spec/log.sergej.json, запись spec-007).
+    -->
+    <ul class="spec-alerts" aria-labelledby="storybook-button-infra-heading">
+      <li class="spec-alert spec-alert--quality">
+        <span class="spec-alert__tag" id="storybook-button-infra-heading">Infra, не DS</span>
+        <p class="spec-alert__text">
+          Инфраструктурный элемент инструмента Storybook: класс <code>.storybook-btn</code> используется
+          для собственного UI редактора токенов (save-bar, модалки создания/удаления в
+          <code>spec-editor.js</code>, <code>token-create.js</code>, <code>token-confirm.js</code>,
+          <code>colors.html</code>, <code>typography.html</code>). Не входит в DS-каталог компонентов —
+          spec-файл не ведётся. Решение Principal Designer, 2026-07-24
+          (<code>memory/ds-component-spec/log.sergej.json</code>, запись spec-007).
+        </p>
+      </li>
+    </ul>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>StorybookButton <span class="spec-alt-name">(ButtonText)</span></h1>
         <div class="spec-badges">
@@ -180,7 +203,65 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'ButtonText',
+  description: 'Кнопка с текстовым слотом. Основной интерактивный контрол для подтверждения действия (Surface View, Role-семья Button).',
+  version: '1.0.0',
+  status: 'stable',
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  dimensions: [
+    { label: 'Высота', value: '40px' },
+    { label: 'Мин. ширина', value: '96px' },
+  ],
+  fillTypes: [
+    { name: 'Solid', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa',
+      description: 'Насыщенная плотная заливка — основной CTA.' },
+    { name: 'Fade', bg: 'bg-accent-fade', text: 'text-accent', sample: 'Aa',
+      description: 'Приглушённая полупрозрачная заливка — второй по значимости акцент.' },
+    { name: 'Ghost', bg: 'bg-accent-ghost', text: 'text-accent', sample: 'Aa',
+      description: 'Пастельная заливка — третичное действие, минимум визуального веса.' },
+    { name: 'Inverse', bg: 'bg-accent-inverse', text: 'text-accent', backdrop: 'bg-accent-main', sample: 'Aa',
+      description: 'Inverse-цвет из той же семантической группы — контраст на цветной подложке.' },
+  ],
+  appearance: [
+    { fillType: 'Solid', variants: [
+      { name: 'Main', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Success', bg: 'bg-accent-status-success', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Warning', bg: 'bg-accent-status-warning', text: 'text-primary', sample: 'Aa' },
+      { name: 'Error', bg: 'bg-accent-status-error', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Attention', bg: 'bg-accent-status-attention', text: 'text-inverse', sample: 'Aa' },
+    ] },
+  ],
+  states: [
+    { name: 'Default', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa' },
+    { name: 'Hover', bg: 'bg-accent-states-hover', text: 'text-accent', sample: 'Aa',
+      description: 'Оверлей над base-фоном страницы.' },
+    { name: 'Pressed', bg: 'bg-accent-states-pressed', text: 'text-accent', sample: 'Aa' },
+    { name: 'Focused', bg: 'bg-accent-states-focused', text: 'text-accent', sample: 'Aa' },
+    { name: 'Disabled', bg: 'bg-accent-states-disable', text: 'text-disabled', sample: 'Aa',
+      description: 'Opacity 40% + неинтерактивен.' },
+  ],
+  tapArea: {
+    text: 'Область тапа равна физическому размеру контейнера — отдельного hit-slop нет.',
+    value: '40×96px',
+  },
+  constraints: [
+    { label: 'Мин. ширина', value: '<code>96px</code> — иначе текст CTA обрезается.' },
+    { label: 'Макс. строк текста', value: '1 — переполнение обрезается эллипсисом.' },
+  ],
+  animation: {
+    text: 'Переход между состояниями — background-color 0.15s ease. Нет входной/выходной анимации самого контрола.',
+  },
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

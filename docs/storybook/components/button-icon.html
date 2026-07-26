@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>ButtonIcon</h1>
         <div class="spec-badges">
@@ -187,7 +191,39 @@ window.DS_COMPONENT_SPEC = {
     typography: [],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'ButtonIcon',
+  description: 'Кнопка без текстового слота — единственный контент — иконка. Компактный контрол для одного действия (Surface View, Role-семья Button).',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'container', label: 'Container', selector: '.btn-icon', optional: false,
+      description: 'Кликабельная оболочка контрола: фон, рамка, border-radius, фиксированный размер 36×36px.' },
+    { id: 'icon', label: 'Icon', selector: '.btn-icon svg', optional: false,
+      description: 'Единственный контент контрола; цвет управляется icon-токенами через currentColor.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [
+    { name: 'Default', bg: 'bg-base-main', text: 'icon-secondary', sample: '●' },
+    { name: 'Hover', bg: 'bg-accent-states-hover', text: 'icon-primary', sample: '●' },
+  ],
+  tapArea: {
+    text: 'Область тапа равна физическому контейнеру (36×36px) — меньше touch target 44px, зафиксированного в правилах проекта.',
+    value: '36×36px',
+  },
+  constraints: [
+    { label: 'Touch target', value: '<code>36px</code> < 44px — Gap, semantic size-токена для габаритов контрола нет; см. «Нарушения».' },
+  ],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: component-categories-guide
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   owner: design-system-team
   platforms: [web, ios, android]
 description: >
@@ -12,9 +12,9 @@ description: >
   используется только для группировки в навигации.
 ---
 
-# Категории компонентов дизайн-системы — v1.1.0
+# Категории компонентов дизайн-системы — v1.1.1
 
-> Статус: Draft · v1.1.0
+> Статус: Draft · v1.1.1
 
 ---
 
@@ -37,7 +37,7 @@ description: >
 
 | Категория | Назначение | Компоненты (текущие) |
 |---|---|---|
-| **Controls** | Инициируют действие пользователя | ButtonIcon, StorybookButton, Switch, Checkbox, Radio |
+| **Controls** | Инициируют действие пользователя | ButtonIcon, ChipSelect, Switch, Checkbox, Radio |
 | **Inputs** | Ввод и редактирование данных | Search, TextField, Select |
 | **Indicators** | Статус/классификация без действия | Badge, Chip, Tag, Dot |
 | **Media** | Представление сущности (пользователь, продукт, бренд) | Avatar, AvatarButton |
@@ -117,6 +117,8 @@ description: >
 
 ## Changelog
 
+- **1.1.1** — 2026-07-16. Добавлен ChipSelect в категорию Controls (filter/selection
+  chip-контрол — инициирует действие выбора, не статус-индикатор, поэтому не Indicators).
 - **1.1.0** — 2026-07-03. Added "Data display: tabular" category for
   row-based table components. Категория "Data display" переименована в
   "Data display: metrics" для явного разграничения с новой категорией

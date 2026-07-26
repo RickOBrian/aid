@@ -1,5 +1,7 @@
 ---
 name: ds-developer-guide
+metadata:
+  version: "1.1.0"
 description: Build the complete Developer Guide page for a component in the Souz Design System Figma file (sections "Общее", "💻 Для разработчиков", "Layout"). Use whenever the user asks to generate, update, or fix a developer guide / DS guide page for a Figma component, component set, or preset. Covers template import, section layout, annotation drawing (anatomy/radius/sizes), text styles, dark mode, and mockups.
 ---
 
@@ -29,7 +31,11 @@ Sections marked **⚠️ Unverified** describe the theoretically correct approac
 
 ## 0. Workflow — the order of execution
 
-1. **Resolve input & identity.** Fetch the selected layer IDs via `figma.getNodeByIdAsync`. Resolve component identity: `INSTANCE` → `node.mainComponent.parent` (the `COMPONENT_SET`); `COMPONENT`/`COMPONENT_SET` → `node.name`.
+0. **Get the Figma link — before anything else, before step 1.** This skill can be invoked two ways:
+   - **With a Figma link already given** (a `figma.com/design/...` URL, with or without `node-id`, pasted in the same message that triggered this skill) — use it directly, skip straight to step 1.
+   - **Without one** — this is a hard stop (§0.2): ask *"Дай ссылку на компонент в Figma (design URL, желательно с node-id выделенного слоя)"* and wait for the answer before running any `figma.*` call or touching a live selection. Never fall back to "whatever is currently selected" as a silent default — a stale selection from a previous, unrelated task is exactly how the wrong component gets a guide built for it.
+   See §0.3 for URL parsing and for what to do once you have the link.
+1. **Resolve input & identity.** With the link from step 0 (or, if this run is happening inside a live Figma plugin session with a real selection, `figma.getNodeByIdAsync` on that selection) resolve component identity: `INSTANCE` → `node.mainComponent.parent` (the `COMPONENT_SET`); `COMPONENT`/`COMPONENT_SET` → `node.name`.
 2. **Ask, before touching Figma at all — three blocking questions, in this order** (§0.2 — each is a hard stop, wait for the answer before asking the next one):
    1. **Multiple components selected?** If so: *"Вы выбрали несколько компонентов: {list}. Строить один общий гайд для всех, или отдельный гайд на каждый?"* Skip this question if only one component/component set is selected.
    2. **Behavior**: write your own assumptions about how the component behaves, then ask *"Как ведёт себя компонент?"* with suggested answer options (§4.7 uses the answer).
@@ -79,7 +85,17 @@ async function writeCheckpoint(data) {
 
 ### 0.2 Questions are blocking — never work in parallel with an open question
 
-Every question to the user in this skill (the 3 upfront questions in step 2, Preset ambiguity in step 3) is a **hard stop**: ask, then stop issuing tool calls entirely until the answer arrives. Don't run any `figma.*` code, don't build the next section, don't do "useful work in the meantime" while a question is pending — there is no such thing as "in the meantime" here. There's no real concurrency between a pending chat question and code execution in this environment; anything that looks like "asking and continuing at the same time" is actually two separate, un-synchronized runs, and it's exactly what produces duplicated sections and crashes right after the user answers. Treat a posted question as the last action in that turn, full stop.
+Every question to the user in this skill (the Figma-link question in step 0, the 3 upfront questions in step 2, Preset ambiguity in step 3) is a **hard stop**: ask, then stop issuing tool calls entirely until the answer arrives. Don't run any `figma.*` code, don't build the next section, don't do "useful work in the meantime" while a question is pending — there is no such thing as "in the meantime" here. There's no real concurrency between a pending chat question and code execution in this environment; anything that looks like "asking and continuing at the same time" is actually two separate, un-synchronized runs, and it's exactly what produces duplicated sections and crashes right after the user answers. Treat a posted question as the last action in that turn, full stop.
+
+### 0.3 Parsing the Figma link from step 0
+
+Extract `fileKey` and `nodeId` from the URL:
+- `figma.com/design/:fileKey/:fileName?node-id=:nodeId` → convert `-` to `:` in `nodeId` (e.g. `1509-9956` → `1509:9956`).
+- `figma.com/design/:fileKey/branch/:branchKey/:fileName` → use `branchKey` as the effective `fileKey`.
+
+Once parsed, resolve the node before doing anything else in step 1:
+- **Running inside a live Figma plugin session** — `await figma.getNodeByIdAsync(nodeId)` against the open file (confirm it's the same file as `fileKey`; if not, ask the user to open the right file first).
+- **Running outside a plugin** (e.g. through a connected Figma MCP/tool integration that only exposes read-oriented calls such as "get design context", "get metadata", "get screenshot" rather than raw `figma.*` scripting) — use those tools with the parsed `fileKey`/`nodeId` to resolve identity and pull reference context, and say so explicitly: the parts of this skill below step 1 that call `figma.createSection()`, `importComponentByKeyAsync()`, `detachInstance()`, etc. require actual Plugin API execution and cannot run through a read-only integration. Don't silently skip this mismatch — flag it to the user and ask how they want to proceed (e.g. build the guide manually via the plugin console themselves, using this skill as the script/spec, vs. producing whatever subset is achievable with the available read-only tools).
 
 ---
 

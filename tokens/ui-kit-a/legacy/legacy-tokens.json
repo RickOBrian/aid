@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Background/Primary",
+    "value": "#F7F7F8",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Точечная нотация и слэш вместо дефисной semantic-роли bg-base-main"
+  },
+  {
+    "name": "color.primary",
+    "value": "#0057FF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Имя по цвету, не по назначению; точечная нотация вместо text-accent / bg-accent-main"
+  },
+  {
+    "name": "Spacing/Control/Padding-H",
+    "value": "16px",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": ""
+  }
+]

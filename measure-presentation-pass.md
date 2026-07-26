@@ -81,7 +81,7 @@ Component spec pages **не менялись** — presentation наследуе
 3. **Shorthand padding** парсится только для literal `Npx` форм (`8px 16px`); calc/rem не масштабируют band.
 4. **Border stroke** без spatial frame — только measure-таблица (намеренно: stroke ≠ геометрия inset).
 5. **ButtonIcon / ColorSwatch** — spacing пуст или минимален; radius может быть derived.
-6. **Figma reference** (`node-id=1374-5663`) — MCP не вернул node (возможно удалён или недоступен); композиция кадров реализована по требованиям задачи и существующим паттернам repo. Токены, значения и naming — только из repo.
+5. **Figma reference** — [AGENT] measure kit, node `2507:1085` в файле [💎 🦆 DS — Шаблоны гайдов ДС](https://www.figma.com/design/KYF7zGtgKf6iw41xXRDKQq/?node-id=2507-1085). Реализация: `docs/storybook/measure-agents.js` + стили в `storybook-spec-inspector.css`.
 
 ## Reusable pattern (для новых spec pages)
 

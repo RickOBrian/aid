@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Brand/Blue/500",
+    "value": "#3B82F6",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Primitive-level именование (палитра+шаг) вместо semantic bg-accent-main"
+  },
+  {
+    "name": "text.14.regular",
+    "value": "14px",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Число в имени semantic-токена запрещено; должен быть role body-m-size"
+  },
+  {
+    "name": "white",
+    "value": "#FFFFFF",
+    "status": "legacy",
+    "refactorNeeded": true,
+    "deviation": "Именованный цвет вместо core-neutral-x-0 / text-inverse"
+  }
+]

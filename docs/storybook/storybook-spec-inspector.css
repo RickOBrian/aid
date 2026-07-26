@@ -128,21 +128,252 @@
   border: 1px solid var(--line-default);
 }
 
-/* ---------- anatomy ---------- */
+/* ---------- anatomy (Figma guide block · node 16:3754) ---------- */
+
+.spec-anatomy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.spec-anatomy__frame {
+  padding: calc(var(--inset-container-v-xl) + var(--gap-s)) calc(var(--inset-container-h-xl) + var(--gap-s));
+  border-radius: var(--radius-2xl);
+  background: var(--bg-base-main-secondary);
+}
 
 .spec-anatomy__stage {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--gap-s);
-  padding: var(--inset-container-v-xl) var(--inset-container-h-xl);
-  background: var(--bg-base-main-secondary);
-  border: 1px dashed var(--line-default);
-  border-radius: var(--radius-m);
-  margin-bottom: var(--gap-m);
+  justify-content: center;
+  min-height: calc(var(--inset-container-v-xl) * 10);
+  padding: var(--inset-container-v-l) var(--inset-container-h-l);
 }
 
+.spec-anatomy__stage > :not(.spec-anatomy-callout-svg) {
+  position: relative;
+  z-index: 1;
+}
+
+.spec-anatomy-callout-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.spec-anatomy-callout__line {
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+  transition: stroke-width 180ms ease;
+}
+
+/* Widens the hit-area for hover without widening the visible stroke —
+   sits on top of the thin visible line, fully transparent. */
+.spec-anatomy-callout__line-hit {
+  stroke: transparent;
+  stroke-width: 12;
+  fill: none;
+  pointer-events: stroke;
+}
+
+.spec-anatomy-callout__dot {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout__badge {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout {
+  pointer-events: auto;
+  cursor: default;
+}
+
+.spec-anatomy-callout__label {
+  fill: var(--text-inverse);
+  font-family: var(--font-family-sans, Inter, system-ui, sans-serif);
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Small-target disambiguation + hover halo: tick at the anchor for small
+   targets, and — for every anatomy target, unconditionally — either a
+   tonal backdrop (normal size) or a full outline (too tiny for a point to
+   read unambiguously) — see measure-agents.js mountAnatomyCallouts.
+   Badges/lines/ticks stay visible at rest; the halo (highlight fill /
+   outline stroke) is hover-only — see .is-active rules below — so the
+   resting preview reads clean and the halo appears only on demand. */
+.spec-anatomy-callout__tick {
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+}
+
+.spec-anatomy-callout__highlight {
+  fill: var(--bg-accent-fade);
+  stroke: var(--bg-accent-main);
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.spec-anatomy-callout__outline {
+  fill: none;
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.spec-anatomy-callout.is-active .spec-anatomy-callout__badge {
+  stroke: var(--bg-card-main);
+  stroke-width: 2;
+}
+
+/* .is-active is set directly on each node sharing data-part (see
+   wireAnatomyLegend) — line/tick/outline/highlight are siblings at the SVG
+   root, not descendants of the .spec-anatomy-callout badge group, so they
+   need their own is-active rule rather than the descendant form above. */
+.spec-anatomy-callout__line.is-active {
+  stroke-width: 2;
+}
+
+.spec-anatomy-callout__tick.is-active {
+  stroke-width: 2.5;
+}
+
+.spec-anatomy-callout__outline.is-active {
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.spec-anatomy-callout__highlight.is-active {
+  opacity: 1;
+}
+
+.spec-anatomy__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  max-width: 72ch;
+}
+
+.spec-anatomy__item {
+  display: flex;
+  gap: var(--gap-m);
+  align-items: flex-start;
+}
+
+.spec-anatomy__bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--bg-anatomy-bullet);
+  color: var(--text-inverse);
+  font-size: var(--label-s-size);
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.spec-anatomy__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.spec-anatomy__title {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-anatomy__title--nested a,
+.spec-anatomy__title--nested {
+  color: var(--text-anatomy-nested);
+}
+
+.spec-anatomy__title--nested a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.spec-anatomy__title--nested a:hover {
+  color: var(--text-accent);
+}
+
+.spec-anatomy__desc {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-anatomy__desc code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+.spec-anatomy__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-anatomy__toggle-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  position: relative;
+}
+
+.spec-anatomy__toggle--can .spec-anatomy__toggle-icon {
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-anatomy__toggle--can .spec-anatomy__toggle-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-main);
+}
+
+.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon {
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--line-strong);
+}
+
+.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon::before {
+  content: '';
+  position: absolute;
+  inset: 6px 4px;
+  border-top: 2px solid var(--line-strong);
+  transform: rotate(-35deg);
+}
+
+/* legacy pin styles — больше не используются на stage, оставлены для совместимости */
 .spec-pin {
   display: inline-flex;
   align-items: center;
@@ -165,24 +396,8 @@
   pointer-events: none;
 }
 
-.spec-anatomy__legend {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 72ch;
-}
-
-.spec-anatomy__item {
-  display: flex;
-  gap: var(--gap-s);
-  align-items: flex-start;
-}
-
-.spec-anatomy__body {
-  min-width: 0;
+.spec-anatomy__legend .spec-nested {
+  margin-top: 0;
 }
 
 .spec-anatomy__name {
@@ -244,7 +459,8 @@
 }
 
 .spec-measure__row[data-part]:hover,
-.spec-anatomy__item[data-part]:hover .spec-anatomy__name,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title a,
 .spec-inset-diagram[data-part]:hover .spec-spatial-frame__part,
 .spec-gap-diagram[data-part]:hover .spec-spatial-frame__part,
 .spec-offset-diagram[data-part]:hover .spec-spatial-frame__part,
@@ -1096,4 +1312,384 @@
 
 .spec-spatial-group--nested .spec-measure {
   border-style: dashed;
+}
+
+/* ============================================================
+   DS Measure Agents — Figma [AGENT] kit (node 2507:1085)
+   ============================================================ */
+
+.ds-agent-gap-pad {
+  --ds-agent-band-size: 24px;
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+}
+
+.ds-agent-gap-pad--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 8px;
+  min-height: 55px;
+}
+
+.ds-agent-gap-pad--horizontal {
+  flex-direction: row;
+  align-items: center;
+  width: max(var(--ds-agent-band-size), 44px);
+  height: 8px;
+}
+
+.ds-agent-gap-pad__band {
+  flex: 1 1 auto;
+  min-width: 1px;
+  min-height: 1px;
+}
+
+.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  width: 100%;
+  height: var(--ds-agent-band-size);
+}
+
+.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  width: var(--ds-agent-band-size);
+  height: 100%;
+}
+
+.ds-agent-gap-pad--gap .ds-agent-gap-pad__band {
+  background: var(--bg-measure-gap-fill);
+  border: 1px dashed var(--line-measure-gap);
+}
+
+.ds-agent-gap-pad--gap.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  border-left: none;
+  border-right: none;
+}
+
+.ds-agent-gap-pad--gap.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  border-top: none;
+  border-bottom: none;
+}
+
+.ds-agent-gap-pad--padding .ds-agent-gap-pad__band {
+  background: var(--bg-measure-inset-fill);
+  border: 1px dashed var(--line-measure-inset);
+}
+
+.ds-agent-gap-pad--padding.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  border-left: none;
+  border-right: none;
+}
+
+.ds-agent-gap-pad--padding.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  border-top: none;
+  border-bottom: none;
+}
+
+.ds-agent-gap-pad__bubble {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 3px;
+  border-radius: 3.5px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-gap-pad--vertical .ds-agent-gap-pad__bubble {
+  left: 50%;
+  bottom: -21px;
+  transform: translateX(-50%);
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__bubble {
+  top: 50%;
+  left: calc(100% + 6px);
+  transform: translateY(-50%);
+}
+
+.ds-agent-gap-pad--gap .ds-agent-gap-pad__bubble {
+  background: var(--bg-measure-gap-bubble);
+  color: var(--text-inverse);
+}
+
+.ds-agent-gap-pad--padding .ds-agent-gap-pad__bubble {
+  background: var(--bg-measure-inset-bubble);
+  color: var(--text-inverse);
+}
+
+.ds-agent-gap-pad__token {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-gap-pad__value {
+  color: var(--text-measure-bubble-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-dimension {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ds-agent-dimension--height {
+  flex-direction: row;
+  height: 30px;
+}
+
+.ds-agent-dimension--width {
+  flex-direction: column;
+  width: 56px;
+}
+
+.ds-agent-dimension__line {
+  position: relative;
+  flex: 1 1 auto;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line {
+  width: 1px;
+  height: 100%;
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line::before,
+.ds-agent-dimension--height .ds-agent-dimension__line::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 7px;
+  height: 1px;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line::before { top: 0; }
+.ds-agent-dimension--height .ds-agent-dimension__line::after { bottom: 0; }
+
+.ds-agent-dimension--width .ds-agent-dimension__line {
+  width: 100%;
+  height: 1px;
+}
+
+.ds-agent-dimension--width .ds-agent-dimension__line::before,
+.ds-agent-dimension--width .ds-agent-dimension__line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--width .ds-agent-dimension__line::before { left: 0; }
+.ds-agent-dimension--width .ds-agent-dimension__line::after { right: 0; }
+
+.ds-agent-dimension__bubble {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--bg-measure-inset-bubble);
+  color: var(--text-inverse);
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.ds-agent-radius {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.ds-agent-radius__preview {
+  width: 72px;
+  height: 56px;
+  border: 2px solid var(--line-default);
+  background: var(--bg-card-main);
+  position: relative;
+}
+
+.ds-agent-radius__arc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-top: 2px solid var(--line-measure-radius);
+  border-right: 2px solid var(--line-measure-radius);
+  border-top-right-radius: inherit;
+  pointer-events: none;
+}
+
+.ds-agent-radius__bubble {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bg-measure-radius-fill);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-radius__token {
+  color: var(--text-measure-radius);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-radius__value {
+  color: var(--text-measure-radius-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.ds-agent-marker--left,
+.ds-agent-marker--right {
+  width: 53px;
+}
+
+.ds-agent-marker--top,
+.ds-agent-marker--bottom {
+  flex-direction: column;
+  height: 53px;
+}
+
+.ds-agent-marker__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--line-measure-gap);
+  flex: 0 0 6px;
+}
+
+.ds-agent-marker__line {
+  flex: 1 1 auto;
+  background: var(--line-measure-gap);
+}
+
+.ds-agent-marker--left .ds-agent-marker__line,
+.ds-agent-marker--right .ds-agent-marker__line {
+  height: 1px;
+}
+
+.ds-agent-marker--top .ds-agent-marker__line,
+.ds-agent-marker--bottom .ds-agent-marker__line {
+  width: 1px;
+}
+
+.ds-agent-marker__bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--bg-measure-gap-bubble);
+  color: var(--text-inverse);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-marker__label {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* agent-backed spatial frames */
+.spec-inset-diagram--agents .spec-inset-diagram__agent-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-slot--v {
+  display: flex;
+  justify-content: center;
+  min-height: 72px;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-slot--h {
+  flex: 0 0 auto;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__content,
+.spec-measure-card__object.spec-inset-diagram--agents .spec-measure-card__content {
+  flex: 1 1 auto;
+  min-width: 72px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__object.spec-inset-diagram--agents {
+  padding: var(--spec-pad-top, 14px) var(--spec-pad-right, 14px)
+    var(--spec-pad-bottom, 14px) var(--spec-pad-left, 14px);
+}
+
+.spec-gap-diagram--agents .spec-gap-diagram__bridge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.spec-gap-diagram--agents .spec-gap-diagram__bridge + .spec-gap-diagram__bridge {
+  margin-top: 16px;
+}
+
+.spec-offset-diagram--agents .spec-offset-diagram__stack {
+  align-items: center;
+  gap: 8px;
+}
+
+.spec-radius-diagram--agents .spec-radius-diagram__stage {
+  align-items: center;
+}
+
+.spec-size-agents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-m);
+  margin-bottom: 12px;
+  padding: var(--inset-container-v-s) var(--inset-container-h-s);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.ds-agent-gap-pad .spec-spatial-chip,
+.ds-agent-radius .spec-spatial-chip,
+.ds-agent-marker .spec-spatial-chip {
+  margin-right: 0;
+  font-size: 9px;
+  padding: 0 4px;
 }

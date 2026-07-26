@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>Badge</h1>
         <div class="spec-badges">
@@ -191,7 +195,37 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'Badge',
+  description: 'Пилюля-метка статуса без текстового слота-контента — прямой текст. Некликабельна, всегда рядом с сущностью, которую описывает.',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'container', label: 'Container', selector: '.badge', optional: false,
+      description: 'Пилюля-оболочка: фон (по variant), border-radius, padding.' },
+    { id: 'label', label: 'Label', selector: '.badge', optional: false,
+      description: 'Прямой текстовый контент пилюли, без отдельного DOM-узла.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  appearance: [
+    { fillType: 'Tinted (единственный тип заливки)', variants: [
+      { name: 'Stable', bg: 'bg-accent-status-success', text: 'text-success', sample: 'Stable' },
+      { name: 'Draft', bg: 'bg-accent-status-warning', text: 'text-primary', sample: 'Draft' },
+      { name: 'Core', bg: 'bg-accent-ghost', text: 'text-accent', border: 'bg-accent-fade', sample: 'Core' },
+      { name: 'Semantic', bg: 'bg-accent-status-attention', text: 'text-primary', sample: 'Semantic' },
+    ] },
+  ],
+  states: [],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

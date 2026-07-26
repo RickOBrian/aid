@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>Card</h1>
         <div class="spec-badges">
@@ -227,7 +231,40 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'Card',
+  description: 'Карточка-контейнер для превью сущности: заголовок с бейджем статуса, описание и футер с метаданными (Structural View — требует уточнения, см. «Уровень архитектуры»).',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'title', label: 'Header / Title', selector: '.card__name',
+      description: 'Текст названия сущности. Обязательность — ⚠️ не найдена реализация Card в src/ для проверки props.' },
+    { id: 'status-badge', label: 'Header / Status Badge', selector: '.card__header .badge',
+      nested: { name: 'Badge', href: 'badge.html' },
+      description: 'Вложенный компонент Badge для статуса. Обязательность — ⚠️ не найдена реализация для проверки props.' },
+    { id: 'description', label: 'Description', selector: '.card__description',
+      description: 'Текстовое описание, line-clamp 2 строки. Обязательность — ⚠️ не найдена реализация для проверки props.' },
+    { id: 'footer-tag', label: 'Footer / Tag', selector: '.card__footer .chip',
+      nested: { name: 'Chip', href: 'chip.html' },
+      description: 'Вложенный компонент Chip с типом/категорией. Обязательность — ⚠️ не найдена реализация для проверки props.' },
+    { id: 'footer-version', label: 'Footer / Version', selector: '.card__version',
+      description: 'Текст версии. Обязательность — ⚠️ не найдена реализация для проверки props.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [],
+  constraints: [
+    { label: 'Описание', value: 'Максимум 2 строки — переполнение обрезается (<code>line-clamp</code>).' },
+  ],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

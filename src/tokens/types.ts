@@ -5,6 +5,7 @@ export type TokenSource = 'core' | 'semantic' | 'legacy';
 export interface LoadedToken {
   name: string;
   value: string;
+  valueDark?: string;
   source: TokenSource;
   reference?: string;
   status?: string;
@@ -32,6 +33,7 @@ export interface RawTokenEntry {
 export interface LegacyTokenEntry {
   name: string;
   value: string;
+  valueDark?: string;
   status: 'legacy';
   refactorNeeded: boolean;
   deviation: string;

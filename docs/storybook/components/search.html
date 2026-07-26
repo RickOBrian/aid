@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search — System Storybook</title>
+  <title>FieldSearch — System Storybook</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,15 +59,18 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
-        <h1>Search <span class="spec-alt-name">(FieldSearch)</span></h1>
+        <h1>FieldSearch</h1>
         <div class="spec-badges">
-          <span class="chip">требует уточнения</span>
-          <span class="spec-confidence spec-confidence--low">low</span>
+          <span class="chip">Surface View</span>
+          <span class="spec-confidence spec-confidence--medium">medium</span>
         </div>
       </div>
       <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
@@ -93,14 +97,15 @@
           <section class="spec-block" aria-labelledby="spec-level-heading">
             <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
             <p class="spec-block__text">
-              Требует уточнения (перепроверено). <code>search__icon</code> и
-              <code>search__input</code> — BEM-классы CSS, а не именованные слоты как API:
-              в разметке это два самостоятельных потомка <code>.search</code>, без
-              компонента с пропсами/@ViewBuilder/lambda-параметрами <code>leading</code>/
-              <code>content</code> из раздела 9. Визуально структура похожа на
-              Field-компонент, но в этом репозитории нет реализации, которая подтвердила
-              бы slot-контракт — только один статичный инстанс разметки: понижаю до
-              «требует уточнения» до подтверждения на уровне реализации компонента.
+              Surface View — подтверждено Principal Designer. Состав компонента —
+              Icon (Item-примитив, декоративный) + Input (Item-примитив, аналогичный
+              <code>Text</code>/<code>Number</code>), ни один элемент не является
+              самостоятельным Role/Entity-компонентом → критерий
+              <code>ds-component-spec/SKILL.md</code> (Шаг 2, v1.3.0) даёт Surface View.
+              Компонент переименован в <code>FieldSearch</code> (конвенция полей ввода —
+              префикс <code>Field*</code>, как у <code>FieldCheckbox</code>/<code>FieldRadio</code>).
+              Открытый вопрос остаётся только по обязательности leading-иконки —
+              в репозитории нет реализации, которая подтвердила бы это по коду.
             </p>
           </section>
 
@@ -132,7 +137,7 @@
         <aside class="spec-aside">
           <section class="spec-card" aria-labelledby="spec-confidence-heading">
             <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
-            <p class="spec-card__text">low — спорно; нет подтверждённого named-slot API, только CSS BEM-конвенция.</p>
+            <p class="spec-card__text">medium — уровень подтверждён Principal Designer; открыт только вопрос обязательности leading-иконки (нет реализации для проверки по коду).</p>
           </section>
 
           <section class="spec-card" aria-labelledby="spec-index-heading">
@@ -151,14 +156,14 @@
 <script src="../storybook.js"></script>
 <script>
 window.DS_COMPONENT_SPEC = {
-  name: 'Search',
+  name: 'FieldSearch',
   interactive: true,
   parts: [
     {
       id: 'root',
       label: 'Field container',
       selector: '.search',
-      description: 'Позиционирующий контейнер; связка иконки и инпута — CSS BEM-конвенция, slot-контракт не подтверждён (см. «Уровень архитектуры»).',
+      description: 'Позиционирующий контейнер; связка иконки и инпута — Item-примитивы в одной Surface View-оболочке (см. «Уровень архитектуры»).',
     },
     {
       id: 'icon',
@@ -220,7 +225,36 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'FieldSearch',
+  description: 'Поле поиска с leading-иконкой. Surface View — уровень подтверждён Principal Designer (см. «Уровень архитектуры»).',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'icon', label: 'Leading icon', selector: '.search__icon',
+      description: 'Декоративная иконка поверх поля; цвет — icon-токен. Обязательность и возможность отключения — ⚠️ требует уточнения, нет реализации для проверки по коду.' },
+    { id: 'input', label: 'Input', selector: '.search__input', optional: false,
+      description: 'Само поле ввода: фон, рамка, типографика, состояния focus/placeholder.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [
+    { name: 'Default', bg: 'bg-base-main-secondary', text: 'text-primary', sample: 'Aa' },
+    { name: 'Focused', bg: 'bg-card-main', text: 'text-primary', sample: 'Aa',
+      description: 'border-color/outline — line-accent.' },
+  ],
+  constraints: [
+    { label: 'Отступ под иконку', value: '<code>padding-left: 36px</code> захардкожен — Gap, semantic-токен не заведён; см. «Нарушения».' },
+  ],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

@@ -27,14 +27,17 @@ const legacyGlob = import.meta.glob('../../tokens/*/legacy/legacy-tokens.json', 
 }) as Record<string, unknown[]>;
 
 function kitFromPath(path: string): UiKitId | null {
-  const match = path.match(/tokens\/(ui-kit-[ab])\//);
-  return match ? (match[1] as UiKitId) : null;
+  const match = path.match(/tokens\/([^/]+)\//);
+  if (!match) return null;
+  const id = match[1];
+  return SUPPORTED_UI_KITS.includes(id as UiKitId) ? (id as UiKitId) : null;
 }
 
 function toLoadedToken(
   entry: {
     name: string;
     value: string;
+    valueDark?: string;
     reference?: string;
     status?: string;
     refactorNeeded?: boolean;
@@ -45,6 +48,7 @@ function toLoadedToken(
   return {
     name: entry.name,
     value: entry.value,
+    valueDark: entry.valueDark,
     source,
     reference: entry.reference,
     status: entry.status,

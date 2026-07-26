@@ -1,0 +1,44 @@
+[
+  {
+    "id": "backlog-001",
+    "component": "Table",
+    "title": "Ссылка на несуществующий раздел «Repeatable Slot / Cell Span»",
+    "description": "docs/storybook/components/table.html ссылается на раздел «Repeatable Slot / Cell Span» в ds-component-architecture-guide.md (v1.3.0), но такого раздела в файле нет. Нужно уточнить: раздел не был добавлен при выпуске v1.3.0 или был переименован/перемещён — от этого зависит формальный статус контракта repeatable-слота Table.",
+    "status": "open"
+  },
+  {
+    "id": "backlog-002",
+    "component": "Table",
+    "title": "Расхождение платформ: web-only в spec vs iOS/Android planned в guide",
+    "description": "Table.md/TableRow.md (spec-002/spec-003) фиксируют платформу как web-only («iOS/Android осознанно убраны из scope — нет реального кейса нативного использования»), а DS_COMPONENT_GUIDE в table.html показывает iOS/Android со статусом planned. Нужно решить, какой источник актуален, и синхронизировать оба места.",
+    "status": "open"
+  },
+  {
+    "id": "backlog-003",
+    "component": "Table",
+    "title": "Контракт колонок не зафиксирован",
+    "description": "Количество колонок, обязательность <th> для каждой колонки и поддержка colspan нигде не описаны как явный контракт (presentbook использует 3 колонки, live-таблицы редакторов — 5). Нужно решить, вводится ли формальный column-контракт и поддержка colspan.",
+    "status": "open"
+  },
+  {
+    "id": "backlog-004",
+    "component": "Table",
+    "title": "Сортировка и пагинация отсутствуют в реализации",
+    "description": "В коде нет ни сортировки (aria-sort, data-sort, sortable-заголовков), ни пагинации — .sort() в JS используется только для подготовки данных. Нужно решить, планируются ли сортировка/пагинация в контракте Table и, если да, оформляются ли как отдельные компоненты (sort-контрол в <th> → Surface View; пагинация → отдельный Structural View), а не как внутренняя логика Table.",
+    "status": "open"
+  },
+  {
+    "id": "backlog-005",
+    "component": "TableRow",
+    "title": "Кликабельная строка недоступна с клавиатуры",
+    "description": "Строка с модификатором is-clickable реализована только через cursor: pointer и hover-фон (bg-accent-states-hover) — нет tabindex, ARIA-роли и активации по Enter/Space. Строка недостижима и неактивируема с клавиатуры.",
+    "status": "open"
+  },
+  {
+    "id": "backlog-006",
+    "component": "TableRow",
+    "title": "Высота строки меньше минимального touch target",
+    "description": "Расчётная высота TableRow (~40px, по текущим inset-control-v-m + line-height ячейки) меньше минимального touch target 44px (Web), зафиксированного в .cursorrules и skills/_shared/platforms.md.",
+    "status": "open"
+  }
+]

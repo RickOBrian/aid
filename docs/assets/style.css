@@ -30,6 +30,10 @@
   --bg-accent-ghost:         rgba(0, 87, 255, 0.06);
   --bg-accent-inverse:       #FFFFFF;
 
+  /* Color — bg-neutral (solid ink fill, e.g. active/selected neutral control) */
+  --bg-neutral-main:            #111111;
+  --bg-neutral-states-pressed:  #000000;
+
   /* Color — bg-accent-states */
   --bg-accent-states-hover:    rgba(0, 87, 255, 0.08);
   --bg-accent-states-pressed:  rgba(0, 87, 255, 0.16);
@@ -200,6 +204,10 @@
   --bg-accent-fade:    rgba(59, 130, 246, 0.16);
   --bg-accent-ghost:   rgba(59, 130, 246, 0.08);
   --bg-accent-inverse: #111111;
+
+  /* Color — bg-neutral (solid ink fill, e.g. active/selected neutral control) */
+  --bg-neutral-main:            #F5F5F7;
+  --bg-neutral-states-pressed:  #FFFFFF;
 
   /* Color — bg-accent-states */
   --bg-accent-states-hover:    rgba(59, 130, 246, 0.10);
@@ -682,6 +690,109 @@ body {
   border: 1px solid var(--line-default);
   color: var(--text-secondary);
   background-color: transparent;
+}
+
+/* ============================================================
+   ChipSelect (filter / selection control — leading icon optional)
+   Appearance: inverse-neutral | fade-neutral | fade-accent
+   State: default / :active (pressed) · Modifier: .is-active (selected)
+   ============================================================ */
+.chip-select {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--inset-control-v-s) var(--inset-control-h-m);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: var(--label-s-weight);
+  cursor: pointer;
+  transition: filter 0.1s ease;
+}
+
+.chip-select:active {
+  filter: brightness(0.94);
+}
+
+.chip-select--pressed-demo {
+  /* Static stand-in for :active — used only in the preview grid to freeze
+     the pressed look side-by-side with default, matching Figma's
+     State=Pressed variant. Not for real interactive use. */
+  filter: brightness(0.94);
+}
+
+.chip-select__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.chip-select__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Appearance: inverse-neutral — off = plain bordered surface, on = solid ink fill */
+.chip-select--inverse-neutral {
+  background-color: var(--bg-card-main);
+  border-color: var(--line-strong);
+  color: var(--text-primary);
+}
+
+/* Appearance: fade-neutral — off = tinted neutral surface, on = solid ink fill.
+   Uses bg-card-main-secondary (not bg-base-main-secondary) so the chip stays
+   visually distinct from the preview stage / page background it sits on. */
+.chip-select--fade-neutral {
+  background-color: var(--bg-card-main-secondary);
+  border-color: var(--line-default);
+  color: var(--text-secondary);
+}
+
+.chip-select--inverse-neutral.is-active {
+  background-color: var(--bg-neutral-main);
+  border-color: transparent;
+  color: var(--text-inverse);
+}
+
+.chip-select--fade-neutral.is-active {
+  background-color: var(--bg-neutral-main);
+  border-color: transparent;
+  color: var(--text-inverse);
+}
+
+.chip-select--inverse-neutral.is-active:active {
+  background-color: var(--bg-neutral-states-pressed);
+  filter: none;
+}
+
+.chip-select--inverse-neutral.is-active.chip-select--pressed-demo {
+  background-color: var(--bg-neutral-states-pressed);
+  filter: none;
+}
+
+.chip-select--fade-neutral.is-active:active {
+  background-color: var(--bg-neutral-states-pressed);
+  filter: none;
+}
+
+.chip-select--fade-neutral.is-active.chip-select--pressed-demo {
+  background-color: var(--bg-neutral-states-pressed);
+  filter: none;
+}
+
+/* Appearance: fade-accent — off = tinted accent surface, on = solid accent fill */
+.chip-select--fade-accent {
+  background-color: var(--bg-accent-ghost);
+  border-color: var(--bg-accent-fade);
+  color: var(--text-accent);
+}
+
+.chip-select--fade-accent.is-active {
+  background-color: var(--bg-accent-main);
+  border-color: transparent;
+  color: var(--text-inverse);
 }
 
 /* ============================================================

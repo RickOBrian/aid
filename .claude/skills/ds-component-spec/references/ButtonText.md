@@ -18,6 +18,18 @@
 - **Формула:** Button + Text — Role `Button`, Entity `Text`
 - **Слоты:** нет
 
+## Item / Structural View
+
+Визуальный состав ButtonText — три элемента, слева → справа:
+
+| # | Элемент | Архитектурный уровень | Обязателен | Можно отключить | Описание |
+|---|---|---|---|---|---|
+| 1 | Icon | Item | Нет | Да | Ведущая иконка перед текстом. Недоступна в size `tiny` — там только текст + trailing chevron. Не own-фон/форма — цвет через `currentColor`. |
+| 2 | Text | Item | Да | Нет | Единственный обязательный контент кнопки. 1 строка, ellipsis при переполнении. Без текста компонент не имеет смысла — отключить нельзя. |
+| 3 | Counter | ❖ Surface View (nested) | Нет | Да | Числовой индикатор (например, счётчик уведомлений) поверх/рядом с кнопкой. Container + Value в pill-обёртке (как Badge/Tag) — отдельный DS-компонент со своим spec: `CounterValue` (`src/components/sutochno/CounterValue.tsx`, presentbook: `docs/storybook/products/sutochno/components/counter-value.html`). Токены/отступы Counter не наследуются от ButtonText. |
+
+Уровень ButtonText остаётся **Surface View**: Icon и Text — Item-примитивы, Counter — единственный самостоятельный Role/Entity-компонент. Порог «≥2 самостоятельных Role/Entity-компонента» из уточнённого правила `ds-component-spec/SKILL.md` (Шаг 2, v1.3.0) не достигнут.
+
 ## Токены
 
 | Свойство | Component |

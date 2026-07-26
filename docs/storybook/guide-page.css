@@ -1,0 +1,575 @@
+/* ============================================================
+   Guide Page — «Developer Guide» layout по Figma-референсу
+   💎 🦆 DS — Шаблоны гайдов ДС · [AGENT] Developer Guide, node 2163:7276
+
+   Секции: Guide Header Detailed → Анатомия → Скругления →
+   Размеры и отступы → Типы заливки → Appearance → Состояния →
+   Область тапа → Ограничения → Анимация.
+
+   Рендерится guide-page.js в контейнер #guide-page из
+   window.DS_COMPONENT_GUIDE. Анатомия/скругления/размеры повторно
+   используют классы spec-anatomy__* и ds-agent-* (measure-agents.js) —
+   единый визуальный язык, без дублирования стилей.
+   ============================================================ */
+
+.guide-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  margin-bottom: var(--gap-xl);
+}
+
+.guide-section {
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-xl);
+  padding: var(--inset-container-v-xl) var(--inset-container-h-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+}
+
+.guide-section__title {
+  margin: 0;
+  font-size: var(--heading-m-size);
+  line-height: var(--heading-m-lh);
+  font-weight: var(--heading-m-weight);
+  color: var(--text-primary);
+}
+
+.guide-section__lead {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.guide-block {
+  width: 100%;
+  background: var(--bg-base-main-secondary);
+  border-radius: var(--radius-l);
+  padding: var(--inset-container-v-l) var(--inset-container-h-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-l);
+  box-sizing: border-box;
+}
+
+/* ---------- 1. Guide Header Detailed ---------- */
+
+.guide-page-header {
+  padding: 0;
+  overflow: hidden;
+}
+
+.guide-page-header__mockup {
+  margin: var(--inset-container-v-xl) var(--inset-container-h-xl) 0;
+  min-height: 220px;
+  border: 1px dashed var(--line-default);
+  background: var(--bg-base-main-secondary);
+  border-radius: var(--radius-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.guide-page-header__mockup-label {
+  font-size: var(--label-m-size);
+  font-weight: var(--label-m-weight);
+  color: var(--text-secondary);
+}
+
+.guide-page-header__mockup-hint {
+  font-size: var(--label-xs-size);
+  color: var(--text-disabled);
+}
+
+.guide-page-header__info {
+  padding: var(--gap-l) var(--inset-container-h-xl) var(--inset-container-v-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+}
+
+.guide-page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.guide-page-header__title {
+  margin: 0;
+  font-size: var(--heading-xl-size);
+  line-height: var(--heading-xl-lh);
+  font-weight: var(--heading-xl-weight);
+  color: var(--text-primary);
+}
+
+.guide-page-header__desc {
+  margin: 0;
+  font-size: var(--body-l-size);
+  line-height: var(--body-l-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.guide-page-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-s);
+}
+
+.guide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-m);
+  font-size: var(--label-m-size);
+  line-height: 16px;
+  font-weight: var(--label-m-weight);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.guide-badge--version {
+  background: var(--bg-base-main-secondary);
+  color: var(--text-primary);
+}
+
+.guide-badge--status-stable {
+  background: var(--bg-accent-status-success);
+  color: var(--text-success);
+}
+
+.guide-badge--status-legacy {
+  background: var(--bg-accent-status-warning);
+  color: var(--text-primary);
+}
+
+.guide-badge--platform-ready {
+  background: var(--bg-accent-ghost);
+  color: var(--text-accent);
+}
+
+.guide-badge--platform-planned {
+  background: var(--bg-accent-status-attention);
+  color: var(--text-primary);
+}
+
+.guide-badge--platform-missing {
+  background: var(--bg-base-main-secondary);
+  color: var(--text-disabled);
+  border-style: dashed;
+  border-color: var(--line-strong);
+}
+
+/* ---------- 4. Размеры и отступы: dimension chips ---------- */
+
+.guide-dim-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-s);
+  width: 100%;
+}
+
+.guide-dim-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  font-size: var(--label-s-size);
+}
+
+.guide-dim-chip__label {
+  color: var(--text-secondary);
+}
+
+.guide-dim-chip__value {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-accent);
+}
+
+.guide-size-variant {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  width: 100%;
+}
+
+.guide-size-variant__label {
+  margin: 0;
+  font-size: var(--heading-xs-size);
+  line-height: var(--heading-xs-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.guide-size-variant__stage {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---------- 5–7. swatch-grid: fill types / appearance / states ---------- */
+
+.guide-swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-l);
+  width: 100%;
+}
+
+.guide-swatch-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-s);
+  width: 132px;
+}
+
+.guide-swatch-card__sample {
+  width: 100%;
+  height: 64px;
+  border-radius: var(--radius-m);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--label-m-size);
+  font-weight: 600;
+  border: 1px solid var(--line-default);
+  box-sizing: border-box;
+}
+
+.guide-swatch-card__name {
+  margin: 0;
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.guide-swatch-card__desc {
+  margin: 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.guide-appearance-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.guide-appearance-group__label {
+  margin: 0;
+  font-size: var(--label-s-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+/* ---------- 8. Область тапа ---------- */
+
+.guide-tap-area {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--gap-l);
+  flex-wrap: wrap;
+}
+
+.guide-tap-area__text {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+  max-width: 56ch;
+}
+
+.guide-tap-area__value {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ---------- 9. Ограничения ---------- */
+
+.guide-constraints {
+  margin: 0;
+  width: 100%;
+  max-width: 72ch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.guide-constraints__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) 1fr;
+  gap: var(--gap-m);
+  padding-bottom: var(--gap-s);
+  border-bottom: 1px solid var(--line-default);
+}
+
+.guide-constraints__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.guide-constraints__row dt {
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.guide-constraints__row dd {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.guide-constraints__row code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
+
+/* ---------- 10. Анимация ---------- */
+
+.guide-animation__text {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.guide-empty-note {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-disabled);
+}
+
+/* ---------- 2. Анатомия (visual diagram · shared with measure-agents.js) ---------- */
+
+.spec-anatomy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.guide-anatomy__overload {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-anatomy__frame {
+  padding: calc(var(--inset-container-v-xl) + var(--gap-m)) calc(var(--inset-container-h-xl) + var(--gap-m));
+  border-radius: var(--radius-xl);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-anatomy__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--inset-container-v-xl) * 10);
+  padding: var(--inset-container-v-l) var(--inset-container-h-l);
+}
+
+.spec-anatomy__stage > :not(.spec-anatomy-callout-svg) {
+  position: relative;
+  z-index: 1;
+}
+
+.spec-anatomy-callout-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.spec-anatomy-callout__line {
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+}
+
+.spec-anatomy-callout__dot {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout__badge {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout__label {
+  fill: var(--text-inverse);
+  font-family: var(--font-family-sans, Inter, system-ui, sans-serif);
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.spec-anatomy-callout.is-active .spec-anatomy-callout__badge {
+  stroke: var(--bg-card-main);
+  stroke-width: 2;
+}
+
+.spec-anatomy-callout.is-active .spec-anatomy-callout__line {
+  stroke-width: 2;
+}
+
+.spec-anatomy__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  max-width: 72ch;
+}
+
+.spec-anatomy__item {
+  display: flex;
+  gap: var(--gap-m);
+  align-items: flex-start;
+}
+
+.spec-anatomy__bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--bg-anatomy-bullet);
+  color: var(--text-inverse);
+  font-size: var(--label-s-size);
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.spec-anatomy__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.spec-anatomy__title {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-anatomy__title--nested a,
+.spec-anatomy__title--nested {
+  color: var(--text-anatomy-nested);
+}
+
+.spec-anatomy__title--nested a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.spec-anatomy__title--nested a:hover {
+  color: var(--text-accent);
+}
+
+.spec-anatomy__desc {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-anatomy__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-anatomy__toggle-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  position: relative;
+}
+
+.spec-anatomy__toggle--can .spec-anatomy__toggle-icon {
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-anatomy__toggle--can .spec-anatomy__toggle-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-main);
+}
+
+.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon {
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--line-strong);
+}
+
+.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon::before {
+  content: '';
+  position: absolute;
+  inset: 6px 4px;
+  border-top: 2px solid var(--line-strong);
+  transform: rotate(-35deg);
+}
+
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title a,
+.spec-anatomy__item[data-part].is-active .spec-anatomy__title,
+.spec-anatomy__item[data-part].is-active .spec-anatomy__title a {
+  color: var(--text-accent);
+}
+
+@media (max-width: 700px) {
+  .guide-section {
+    padding: var(--inset-container-v-l) var(--inset-container-h-m);
+  }
+  .guide-constraints__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .spec-anatomy__frame {
+    padding: var(--inset-container-v-l) var(--inset-container-h-m);
+  }
+  .spec-anatomy__stage {
+    min-height: calc(var(--inset-container-v-xl) * 7);
+  }
+}

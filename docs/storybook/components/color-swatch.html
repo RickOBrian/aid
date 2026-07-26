@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>ColorSwatch</h1>
         <div class="spec-badges">
@@ -206,10 +210,37 @@ window.DS_COMPONENT_SPEC = {
     typography: [],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'ColorSwatch',
+  description: 'Read-only цветной блок для демонстрации токена: базовый вариант — сплошная заливка, alpha-вариант — сравнение solid/alpha-заливки поверх шахматной подложки.',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'swatch', label: 'Swatch (базовый)', selector: '.color-swatch:not(.color-swatch--alpha)', optional: false,
+      description: 'Атомарный цветной блок без вложенного контента (единственный Item внутри Surface View-оболочки базового варианта).' },
+    { id: 'solid', label: 'Solid-часть (alpha-вариант)', selector: '.color-swatch--alpha .color-swatch__solid', optional: false,
+      description: 'Левая половина alpha-варианта — непрозрачная заливка.' },
+    { id: 'alpha', label: 'Alpha-часть (alpha-вариант)', selector: '.color-swatch--alpha .color-swatch__alpha', optional: false,
+      description: 'Правая половина — заливка поверх шахматной подложки.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [],
+  constraints: [
+    { label: 'Габариты', value: '<code>32px</code> / <code>64px</code> захардкожены — Gap, semantic size-токена для свотча нет; см. «Нарушения».' },
+  ],
+};
 </script>
 <!-- spec-editor.js подключается системно; на этой странице все записи derived:
      размеры и checker-цвета захардкожены (цвета редактируются только через
      токенизацию), а canonical stylesheet компонента не подключён к странице -->
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

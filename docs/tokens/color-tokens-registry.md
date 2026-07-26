@@ -64,7 +64,7 @@ Update this file every time a new token is created.
 | --core-amethyst-55 | core | #EDE9FE | — | bg-accent-status-attention |
 | --core-amethyst-65-a16 | core | rgba(139,92,246,0.16) | — | bg-accent-status-attention (dark) |
 | --bg-base-main | semantic | core-neutral-x-0 | core-neutral-x-88 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
-| --bg-base-main-secondary | semantic | core-neutral-x-10 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-base-main-secondary | semantic | core-neutral-x-5 | core-neutral-x-90 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-card-main | semantic | core-neutral-x-0 | core-neutral-x-85 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-card-main-secondary | semantic | core-neutral-x-20 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --bg-overlay-main | semantic | core-neutral-x-100-a40 | core-neutral-x-100-a60 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
@@ -102,3 +102,27 @@ Update this file every time a new token is created.
 | --line-default | semantic | core-neutral-x-15 | core-neutral-x-93 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --line-strong | semantic | core-neutral-x-25 | core-neutral-x-95 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
 | --line-accent | semantic | core-sapphire-55 | core-sapphire-65 | core-color-tokens-guide.html, semantic-color-tokens-guide.html |
+| --bg-neutral-main | semantic | core-neutral-x-98 | core-neutral-x-3 | docs/storybook/components/chip-select.html |
+| --bg-neutral-states-pressed | semantic | core-neutral-x-100 | core-neutral-x-0 | docs/storybook/components/chip-select.html |
+| --core-neutral-x-0-a80 | core | rgba(255,255,255,0.8) | — | text-measure-bubble-muted |
+| --core-rhodolite-55 | core | #E8178A | — | line-measure-gap, bg-measure-gap-bubble |
+| --core-rhodolite-55-a10 | core | rgba(232,23,138,0.1) | — | bg-measure-gap-fill |
+| --core-aquamarine-55 | core | #0C8CE9 | — | line-measure-inset, bg-measure-inset-bubble |
+| --core-aquamarine-55-a10 | core | rgba(12,140,233,0.1) | — | bg-measure-inset-fill |
+| --core-peony-55 | core | #E25B8C | — | line-measure-radius, text-measure-radius |
+| --core-peony-55-a20 | core | rgba(226,91,140,0.2) | — | bg-measure-radius-fill |
+| --core-peony-55-a80 | core | rgba(226,91,140,0.8) | — | text-measure-radius-muted |
+| --bg-measure-gap-fill | semantic | core-rhodolite-55-a10 | — | docs/storybook/measure-agents.js |
+| --line-measure-gap | semantic | core-rhodolite-55 | — | docs/storybook/measure-agents.js |
+| --bg-measure-gap-bubble | semantic | core-rhodolite-55 | — | docs/storybook/measure-agents.js |
+| --bg-measure-inset-fill | semantic | core-aquamarine-55-a10 | — | docs/storybook/measure-agents.js |
+| --line-measure-inset | semantic | core-aquamarine-55 | — | docs/storybook/measure-agents.js |
+| --bg-measure-inset-bubble | semantic | core-aquamarine-55 | — | docs/storybook/measure-agents.js |
+| --bg-measure-radius-fill | semantic | core-peony-55-a20 | — | docs/storybook/measure-agents.js |
+| --line-measure-radius | semantic | core-peony-55 | — | docs/storybook/measure-agents.js |
+| --text-measure-radius | semantic | core-peony-55 | — | docs/storybook/measure-agents.js |
+| --text-measure-radius-muted | semantic | core-peony-55-a80 | — | docs/storybook/measure-agents.js |
+| --text-measure-bubble-muted | semantic | core-neutral-x-0-a80 | — | docs/storybook/measure-agents.js |
+| --core-amethyst-60 | core | #8F3FF1 | — | text-anatomy-nested |
+| --bg-anatomy-bullet | semantic | core-neutral-x-93 | core-neutral-x-90 | docs/storybook/spec-inspector.js |
+| --text-anatomy-nested | semantic | core-amethyst-60 | core-amethyst-60 | docs/storybook/spec-inspector.js |

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>Chip</h1>
         <div class="spec-badges">
@@ -184,7 +188,29 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'Chip',
+  description: 'Некликабельная пилюля-тег без слотов, кроме прямого текста. Используется для группировки контента по категории.',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'container', label: 'Container', selector: '.chip', optional: false,
+      description: 'Пилюля-оболочка: рамка (line-default), border-radius, padding; фон — transparent.' },
+    { id: 'label', label: 'Label', selector: '.chip', optional: false,
+      description: 'Прямой текстовый контент пилюли, без отдельного DOM-узла.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

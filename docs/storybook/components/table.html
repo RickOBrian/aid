@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../storybook-color-tokens.css">
   <link rel="stylesheet" href="../storybook-layout.css">
   <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
 
   <style>
     html,
@@ -58,10 +59,13 @@
   </aside>
 
   <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
     <header class="storybook-page-header">
-      <p class="component-doc-breadcrumb">
-        <a href="../components.html">← Components</a>
-      </p>
       <div class="spec-title-row">
         <h1>Table</h1>
         <div class="spec-badges">
@@ -283,7 +287,39 @@ window.DS_COMPONENT_SPEC = {
     ],
   },
 };
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'Table',
+  description: 'Structural View: опциональный слот header и repeatable-слот content — каждая строка — вложенный экземпляр TableRow (spec-003, draft).',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'header', label: 'Header (слот header)', selector: '.table-wrap thead', optional: true,
+      description: 'Опциональный слот; содержит header-ячейки с Item-текстом.' },
+    { id: 'header-cell-label', label: 'Header cell label', selector: '.table-wrap thead th',
+      description: 'Текст имени колонки: label-xs strong, uppercase, text-secondary. Обязателен, если присутствует слот header.' },
+    { id: 'row', label: 'Row (слот content)', selector: '.table-wrap tbody tr:last-child', optional: false,
+      nested: { name: 'TableRow' },
+      description: 'Repeatable-слот: каждый <tr> — экземпляр TableRow. Без строк таблица не несёт данных.' },
+    { id: 'cell', label: 'Cell (<td> / <th>)', selector: '.table-wrap tbody tr:first-child td:first-child', optional: false,
+      description: 'Inset + нижний разделитель; собственного компонента-ячейки в системе нет.' },
+    { id: 'cell-content', label: 'Cell content', selector: '.table-wrap tbody tr:first-child td:nth-child(2)', optional: false,
+      description: 'Обычно текст (Item); в live-инстансах редакторов встречаются вложенные ColorSwatch/Chip.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [],
+  constraints: [
+    { label: 'Row hover (<code>is-clickable</code>)', value: 'Токен задан в CSS, но именованный контракт — на уровне <code>TableRow</code> (draft), здесь не разворачивается.' },
+  ],
+};
 </script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
 <script src="../spec-inspector.js"></script>
 <script src="../spec-editor.js"></script>
 </body>

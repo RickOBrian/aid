@@ -1,26 +1,51 @@
 {
   "sections": [
     {
-      "id": "tokens",
-      "label": "Tokens",
+      "id": "sutochno",
+      "label": "Sutochno",
       "items": [
-        { "id": "typography", "label": "Typography", "href": "/docs/storybook/typography.html", "status": "stable" },
-        { "id": "colors", "label": "Colors", "href": "/docs/storybook/colors.html", "status": "stable" }
+        { "id": "sutochno/index", "label": "Overview", "href": "/docs/storybook/product.html?product=sutochno", "status": "legacy" },
+        { "id": "sutochno/tokens/colors", "label": "Colors", "href": "/docs/storybook/product-colors.html?product=sutochno", "group": "Tokens", "status": "legacy" },
+        { "id": "sutochno/tokens/typography", "label": "Typography", "href": "/docs/storybook/product-typography.html?product=sutochno", "group": "Tokens", "status": "legacy" },
+        { "id": "sutochno/components", "label": "Overview", "href": "/docs/storybook/product-components.html?product=sutochno", "group": "Components", "status": "legacy" },
+        { "id": "sutochno/components/button-text", "label": "ButtonText", "href": "/docs/storybook/products/sutochno/components/button-text.html", "group": "Controls", "status": "legacy" },
+        { "id": "sutochno/components/counter-value", "label": "CounterValue", "href": "/docs/storybook/products/sutochno/components/counter-value.html", "group": "Indicators", "status": "legacy" }
       ]
     },
     {
-      "id": "components",
-      "label": "Components",
+      "id": "design-system",
+      "label": "Design System",
       "items": [
-        { "id": "components", "label": "Overview", "href": "/docs/storybook/components.html", "status": "read-only" },
+        { "id": "design-system/index", "label": "Overview", "href": "/docs/storybook/typography.html", "status": "stable" },
+        { "id": "typography", "label": "Typography", "href": "/docs/storybook/typography.html", "group": "Tokens", "status": "stable" },
+        { "id": "colors", "label": "Colors", "href": "/docs/storybook/colors.html", "group": "Tokens", "status": "stable" },
+        { "id": "components", "label": "Overview", "href": "/docs/storybook/components.html", "group": "Components", "status": "read-only" },
         { "id": "components/button-icon", "label": "ButtonIcon", "href": "/docs/storybook/components/button-icon.html", "group": "Controls" },
-        { "id": "components/storybook-button", "label": "StorybookButton", "href": "/docs/storybook/components/storybook-button.html", "group": "Controls" },
+        { "id": "components/chip-select", "label": "ChipSelect", "href": "/docs/storybook/components/chip-select.html", "group": "Controls" },
         { "id": "components/search", "label": "Search", "href": "/docs/storybook/components/search.html", "group": "Inputs" },
         { "id": "components/badge", "label": "Badge", "href": "/docs/storybook/components/badge.html", "group": "Indicators" },
         { "id": "components/chip", "label": "Chip", "href": "/docs/storybook/components/chip.html", "group": "Indicators" },
         { "id": "components/card", "label": "Card", "href": "/docs/storybook/components/card.html", "group": "Surfaces" },
         { "id": "components/table", "label": "Table", "href": "/docs/storybook/components/table.html", "group": "Data display: tabular" },
         { "id": "components/color-swatch", "label": "ColorSwatch", "href": "/docs/storybook/components/color-swatch.html", "group": "Documentation utilities" }
+      ]
+    },
+    {
+      "id": "ui-kit-a",
+      "label": "UI Kit A",
+      "items": [
+        { "id": "ui-kit-a/index", "label": "Overview", "href": "/docs/storybook/product.html?product=ui-kit-a", "status": "stable" },
+        { "id": "ui-kit-a/tokens/colors", "label": "Colors", "href": "/docs/storybook/product-colors.html?product=ui-kit-a", "group": "Tokens", "status": "stable" },
+        { "id": "ui-kit-a/components", "label": "Overview", "href": "/docs/storybook/product-components.html?product=ui-kit-a", "group": "Components", "status": "stable" }
+      ]
+    },
+    {
+      "id": "ui-kit-b",
+      "label": "UI Kit B",
+      "items": [
+        { "id": "ui-kit-b/index", "label": "Overview", "href": "/docs/storybook/product.html?product=ui-kit-b", "status": "stable" },
+        { "id": "ui-kit-b/tokens/colors", "label": "Colors", "href": "/docs/storybook/product-colors.html?product=ui-kit-b", "group": "Tokens", "status": "stable" },
+        { "id": "ui-kit-b/components", "label": "Overview", "href": "/docs/storybook/product-components.html?product=ui-kit-b", "group": "Components", "status": "stable" }
       ]
     }
   ]

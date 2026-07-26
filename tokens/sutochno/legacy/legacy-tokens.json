@@ -4,538 +4,615 @@
     "value": "#FFCF8861",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF92654B"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF92654B"
   },
   {
     "name": "avatars/02",
     "value": "#FFE1C272",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FFC0A869"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FFC0A869"
   },
   {
     "name": "avatars/03",
     "value": "#FFBBC451",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FFA4AB52"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FFA4AB52"
   },
   {
     "name": "avatars/04",
     "value": "#FF78B16F",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF628B5B"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF628B5B"
   },
   {
     "name": "avatars/05",
     "value": "#FF75C2B9",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF6FABA4"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF6FABA4"
   },
   {
     "name": "avatars/06",
     "value": "#FF7096C3",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF6985A6"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF6985A6"
   },
   {
     "name": "avatars/07",
     "value": "#FF8F7ACA",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF8374B0"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF8374B0"
   },
   {
     "name": "avatars/08",
     "value": "#FF5F5794",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF524C79"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF524C79"
   },
   {
     "name": "avatars/09",
     "value": "#FF8A3E59",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF6F394C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF6F394C"
   },
   {
     "name": "avatars/10",
     "value": "#FFC94C4C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FFB15252"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FFB15252"
   },
   {
     "name": "bg/promo/promo/new",
     "value": "#FFC6F619",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFC6F619"
   },
   {
     "name": "fixed/additional/-black",
     "value": "#FF000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF000000"
   },
   {
     "name": "fixed/additional/blue",
     "value": "#FF142D88",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF142D88"
   },
   {
     "name": "fixed/additional/extranet-dark",
     "value": "#FF32A07C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF32A07C"
   },
   {
     "name": "fixed/additional/extranet-light",
     "value": "#FF3ABF4E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF3ABF4E"
   },
   {
     "name": "fixed/additional/orange",
     "value": "#FFEE5E20",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFEE5E20"
   },
   {
     "name": "fixed/additional/red",
     "value": "#FFF22525",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFF22525"
   },
   {
     "name": "fixed/gray/07",
     "value": "#FF43464B",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF43464B"
   },
   {
     "name": "fixed/main/-basic",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFFFFF"
   },
   {
     "name": "fixed/main/-primary",
     "value": "#FF1C1C1C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF1C1C1C"
   },
   {
     "name": "fixed/semantic/attention-container",
     "value": "#FFFFEFD7",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFEFD7"
   },
   {
     "name": "fixed/semantic/attention-element",
     "value": "#FFECA71E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFECA71E"
   },
   {
     "name": "fixed/semantic/brand-container",
     "value": "#FFFFF3F2",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFF3F2"
   },
   {
     "name": "fixed/semantic/brand-element",
     "value": "#FFEE204D",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFEE204D"
   },
   {
     "name": "fixed/semantic/error-container",
     "value": "#FFFFE8E8",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFE8E8"
   },
   {
     "name": "fixed/semantic/error-element",
     "value": "#FFD12D1E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFD12D1E"
   },
   {
     "name": "fixed/semantic/neutral-container",
     "value": "#FFDAECFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFDAECFF"
   },
   {
     "name": "fixed/semantic/neutral-element",
     "value": "#FF7188E5",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF7188E5"
   },
   {
     "name": "fixed/semantic/success-container",
     "value": "#FFEBF7EB",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFEBF7EB"
   },
   {
     "name": "fixed/semantic/success-element",
     "value": "#FF00B23C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF00B23C"
   },
   {
     "name": "gray/01",
     "value": "#FFF8FAFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF26282E"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF26282E"
   },
   {
     "name": "gray/02",
     "value": "#FFF1F3FB",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF2D3034"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF2D3034"
   },
   {
     "name": "gray/03",
     "value": "#FFE7E9F3",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF3A3D45"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF3A3D45"
   },
   {
     "name": "gray/04",
     "value": "#FFC0C3D3",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF4B4F58"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF4B4F58"
   },
   {
     "name": "gray/05",
     "value": "#FF979EAA",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF7D7E88"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF7D7E88"
   },
   {
     "name": "gray/06",
     "value": "#FF6C7077",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF9CA0A7"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF9CA0A7"
   },
   {
     "name": "gray/07",
     "value": "#FF43464B",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FFC8CBD3"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FFC8CBD3"
   },
   {
     "name": "layers/background-extra",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF000000"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF000000"
   },
   {
     "name": "layers/overlay",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF2F3036"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF2F3036"
   },
   {
     "name": "layers/overlay-high",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF4D4F54"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF4D4F54"
   },
   {
     "name": "main/background",
     "value": "#FFF1F3FB",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF000000"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF000000"
   },
   {
     "name": "main/basic",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF1C1C1C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF1C1C1C"
   },
   {
     "name": "main/link",
     "value": "#FF3D51A1",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF7B95FB"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF7B95FB"
   },
   {
     "name": "main/primary",
     "value": "#FF1C1C1C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FFFFFFFF"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFFFFF"
   },
   {
     "name": "rating/04",
     "value": "#FF6C7077",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF9CA0A7"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF9CA0A7"
   },
   {
     "name": "rating/06",
     "value": "#FFFFB31D",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FFF2A612"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FFF2A612"
   },
   {
     "name": "rating/08",
     "value": "#FF90CD00",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF84BD00"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF84BD00"
   },
   {
     "name": "rating/10",
     "value": "#FF00B23C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900); Dark-значение отличается: #FF0F9C3E"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Числовой суффикс не из шкалы Core (0–900)",
+    "valueDark": "#FF0F9C3E"
   },
   {
     "name": "semantic/attention-container",
     "value": "#FFFFEFD7",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF38342C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF38342C"
   },
   {
     "name": "semantic/attention-element",
     "value": "#FFECA71E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FFC5870C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FFC5870C"
   },
   {
     "name": "semantic/brand-container",
     "value": "#FFFFF3F2",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF39282C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF39282C"
   },
   {
     "name": "semantic/brand-element",
     "value": "#FFEE204D",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FFE41946"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FFE41946"
   },
   {
     "name": "semantic/error-container",
     "value": "#FFFFE8E8",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF392B2A"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF392B2A"
   },
   {
     "name": "semantic/error-element",
     "value": "#FFD12D1E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FFB1372C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FFB1372C"
   },
   {
     "name": "semantic/neutral-container",
     "value": "#FFDAECFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF313F4E"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF313F4E"
   },
   {
     "name": "semantic/neutral-element",
     "value": "#FF7188E5",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF5266B7"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF5266B7"
   },
   {
     "name": "semantic/success-container",
     "value": "#FFECF9F1",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF24332A"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF24332A"
   },
   {
     "name": "semantic/success-element",
     "value": "#FF00B23C",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте; Dark-значение отличается: #FF0F9C3E"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Semantic-группа в Core-импорте",
+    "valueDark": "#FF0F9C3E"
   },
   {
     "name": "shades/-dark-80",
     "value": "#CC000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #CC494949"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#CC494949"
   },
   {
     "name": "shades/dark-15",
     "value": "#26000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#26000000"
   },
   {
     "name": "shades/dark-30",
     "value": "#4D000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#4D000000"
   },
   {
     "name": "shades/dark-4",
     "value": "#0A000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #1FFFFFFF"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#1FFFFFFF"
   },
   {
     "name": "shades/dark-50",
     "value": "#80000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#80000000"
   },
   {
     "name": "shades/dark-8",
     "value": "#14000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#14000000"
   },
   {
     "name": "shades/light-15",
     "value": "#26FFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#26FFFFFF"
   },
   {
     "name": "shades/light-30",
     "value": "#4DFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#4DFFFFFF"
   },
   {
     "name": "shades/light-60",
     "value": "#99FFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#99FFFFFF"
   },
   {
     "name": "shades/light-70",
     "value": "#B2FFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#B2FFFFFF"
   },
   {
     "name": "shades/light-8",
     "value": "#14FFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#14FFFFFF"
   },
   {
     "name": "special/superguest",
     "value": "#FF41B619",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF339112"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF339112"
   },
   {
     "name": "special/superhost",
     "value": "#FFECA71E",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FFC5870C"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFC5870C"
   },
   {
     "name": "system/black",
     "value": "#FF000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FFFFFFFF"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFFFFF"
   },
   {
     "name": "system/black-fix",
     "value": "#FF000000",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF000000"
   },
   {
     "name": "system/focus",
     "value": "#FF0088FF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF0088FF"
   },
   {
     "name": "system/grabber",
     "value": "#4D3C3C43",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #4DFFFFFF"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#4DFFFFFF"
   },
   {
     "name": "system/white",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>; Dark-значение отличается: #FF000000"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FF000000"
   },
   {
     "name": "system/white-fix",
     "value": "#FFFFFFFF",
     "status": "legacy",
     "refactorNeeded": true,
-    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>"
+    "deviation": "Слэш-нотация вместо дефисной core-нотации; Имя не соответствует шаблону Core color-<группа>-<шаг>",
+    "valueDark": "#FFFFFFFF"
   }
 ]

@@ -1,7 +1,7 @@
 ---
 name: ds-component-spec
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -17,7 +17,7 @@ description: >
   компонента», передан Figma-фрейм или скриншот компонента.
 ---
 
-# DS Component Spec — v1.2.0
+# DS Component Spec — v1.3.0
 
 Принимает компонент в любом виде (Figma-фрейм, скриншот, текст, код)
 и выдаёт готовую спецификацию: уровень архитектуры, нейминг, токены,
@@ -93,8 +93,11 @@ description: >
   Примеры: Badge, BadgeStatus, BadgeCount, ButtonIcon, ButtonText,
   Avatar, AvatarButton, Tag, Switch, Checkbox, Radio.
 
-- **Structural View** — два и более именованных слота, составной
-  внутренний макет. Задаёт компоненту смысловую роль.
+- **Structural View** — два и более самостоятельных Role/Entity-компонентов
+  (не примитивов Item-уровня типа Icon/Text/Number) внутри одного компонента.
+  Задаёт компоненту смысловую роль. Если внутри — только Item-примитивы,
+  обёрнутые в один смысловой контейнер (даже если их 2 и более), это
+  Surface View, а не Structural View.
   Примеры: ListRow, IslandProduct, WidgetBalance, NavBar, StatTile,
   FieldCheckbox, FieldRadio.
 
@@ -404,6 +407,10 @@ iOS-разработчик не обязан читать Web-секцию, чт
 
 ### Changelog
 
+- **1.3.0** — Шаг 2 (Structural View) уточнён: критерий «≥2 именованных
+  элемента» заменён на «≥2 самостоятельных Role/Entity-компонента (не
+  Item-примитивов)». Снимает ложную классификацию компонентов вида
+  «Container + Value в одной обёртке» (Badge/Tag/Counter) как Structural View.
 - **1.2.0** — шаблон секции «Состояния» расширен: добавлены `hovered`,
   `focused`, `selected`, `skeleton`, `error`; добавлена ссылка на
   `component-states-guide.md`; в «Контекст окружения» добавлен этот файл;
@@ -415,3 +422,5 @@ iOS-разработчик не обязан читать Web-секцию, чт
   реализация Web/iOS/Android, доступность, память.
   Graceful degradation: fallback для отсутствующих `_shared/`-файлов
   и MCP-инструментов.
+
+<!-- TODO: критерий Шага 2 (v1.3.0) различает только Surface View vs Structural View — границу Item vs Surface View он не покрывает (кейс ColorSwatch, 2026-07-24), нужно отдельное уточнение правила. -->

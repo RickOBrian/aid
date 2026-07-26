@@ -20,7 +20,7 @@ const preview: Preview = {
     },
   },
   initialGlobals: {
-    uiKit: 'ui-kit-a',
+    uiKit: 'sutochno',
   },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },

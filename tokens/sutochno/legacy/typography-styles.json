@@ -1,0 +1,76 @@
+{
+  "fontFamily": "Inter",
+  "fontUrl": "https://fonts.google.com/specimen/Inter",
+  "groups": [
+    {
+      "id": "heading",
+      "label": "Heading",
+      "styles": [
+        { "id": "display-l", "name": "Display-L", "size": 46, "lineHeight": 50, "weight": 700, "letterSpacing": "0px", "params": "46/50 Bold", "description": "Заголовок для главных страниц и крупных обложек. Используется в hero-блоках и промо.", "legacy": false, "tags": ["Only Web"] },
+        { "id": "display-m", "name": "Display-M", "size": 38, "lineHeight": 42, "weight": 700, "letterSpacing": "0px", "params": "38/42 Bold", "description": "Заголовок для обложек и промо-блоков, когда нужен акцент без максимального масштаба", "legacy": false, "tags": ["Only Web"] },
+        { "id": "title-l", "name": "Title-L", "size": 32, "lineHeight": 38, "weight": 700, "letterSpacing": "0px", "params": "32/38 Bold", "description": "Основной заголовок страницы", "legacy": false, "tags": [] },
+        { "id": "title-m", "name": "Title-M", "size": 28, "lineHeight": 32, "weight": 700, "letterSpacing": "0px", "params": "28/32 Bold", "description": "Заголовок страницы или крупного раздела", "legacy": false, "tags": [] },
+        { "id": "title-s", "name": "Title-S", "size": 22, "lineHeight": 26, "weight": 700, "letterSpacing": "0px", "params": "22/26 Bold", "description": "Заголовок раздела или блока", "legacy": false, "tags": [] },
+        { "id": "subhead-l", "name": "Subhead-L", "size": 18, "lineHeight": 22, "weight": 700, "letterSpacing": "0px", "params": "18/22 Bold", "description": "Заголовок карточек, списков и крупных блоков контента", "legacy": false, "tags": [] },
+        { "id": "subhead-m", "name": "Subhead-M", "size": 16, "lineHeight": 20, "weight": 700, "letterSpacing": "0px", "params": "16/20 Bold", "description": "Заголовок карточек, элементов списков и небольших блоков", "legacy": false, "tags": [] },
+        { "id": "subhead-s", "name": "Subhead-S", "size": 14, "lineHeight": 18, "weight": 700, "letterSpacing": "0px", "params": "14/18 Bold", "description": "Заголовок компактных карточек и элементов интерфейса", "legacy": false, "tags": [] }
+      ]
+    },
+    {
+      "id": "text-18",
+      "label": "Text",
+      "sizeLabel": "18",
+      "styles": [
+        { "id": "label-l", "name": "Label-L", "size": 18, "lineHeight": 22, "weight": 600, "letterSpacing": "0px", "params": "18/22 Semi Bold", "description": "Элементы, которые должны быть быстро замечены и легко считаны, но не являются заголовками", "legacy": false, "tags": [] },
+        { "id": "body-l-medium", "name": "Body-L Medium", "size": 18, "lineHeight": 28, "weight": 500, "letterSpacing": "0px", "params": "18/28 Medium", "description": "Крупный акцентный текст для параграфов", "legacy": true, "tags": [] },
+        { "id": "body-l-medium-tight", "name": "Body-L Medium Tight", "size": 18, "lineHeight": 22, "weight": 500, "letterSpacing": "0px", "params": "18/22 Medium", "description": "Крупный плотный акцентный текст в 1-3 строки", "legacy": true, "tags": [] },
+        { "id": "body-l", "name": "Body-L", "size": 18, "lineHeight": 28, "weight": 400, "letterSpacing": "0px", "params": "18/28 Regular", "description": "Крупный текст для параграфов", "legacy": false, "tags": [] },
+        { "id": "body-l-tight", "name": "Body-L Tight", "size": 18, "lineHeight": 22, "weight": 400, "letterSpacing": "0px", "params": "18/22 Regular", "description": "Крупный текст в 1-3 строки", "legacy": false, "tags": [] }
+      ]
+    },
+    {
+      "id": "text-16",
+      "label": "Text",
+      "sizeLabel": "16",
+      "styles": [
+        { "id": "label-m", "name": "Label-M", "size": 16, "lineHeight": 20, "weight": 600, "letterSpacing": "0px", "params": "16/20 Semi Bold", "description": "Элементы, которые должны быть быстро замечены и легко считаны, но не являются заголовками", "legacy": false, "tags": [] },
+        { "id": "body-m-medium", "name": "Body-M Medium", "size": 16, "lineHeight": 24, "weight": 500, "letterSpacing": "0px", "params": "16/24 Medium", "description": "Основной акцентный наборный шрифт для параграфов", "legacy": true, "tags": [] },
+        { "id": "body-m-medium-tight", "name": "Body-M Medium Tight", "size": 16, "lineHeight": 20, "weight": 500, "letterSpacing": "0px", "params": "16/20 Medium", "description": "Основной акцентный наборный шрифт для текста в 1-3 строки", "legacy": true, "tags": [] },
+        { "id": "body-m", "name": "Body-M", "size": 16, "lineHeight": 24, "weight": 400, "letterSpacing": "0px", "params": "16/24 Regular", "description": "Основной наборный шрифт для параграфов", "legacy": false, "tags": [] },
+        { "id": "body-m-tight", "name": "Body-M Tight", "size": 16, "lineHeight": 20, "weight": 400, "letterSpacing": "0px", "params": "16/20 Regular", "description": "Основной наборный шрифт для текста в 1-3 строки", "legacy": false, "tags": [] }
+      ]
+    },
+    {
+      "id": "text-14",
+      "label": "Text",
+      "sizeLabel": "14",
+      "styles": [
+        { "id": "label-s", "name": "Label-S", "size": 14, "lineHeight": 20, "weight": 600, "letterSpacing": "0px", "params": "14/20 Semi Bold", "description": "Элементы, которые должны быть быстро замечены и легко считаны, но не являются заголовками", "legacy": false, "tags": [] },
+        { "id": "body-s-medium", "name": "Body-S Medium", "size": 14, "lineHeight": 20, "weight": 500, "letterSpacing": "0px", "params": "14/20 Medium", "description": "Вспомогательный акцентный текст к основному контенту", "legacy": true, "tags": [] },
+        { "id": "body-s", "name": "Body-S", "size": 14, "lineHeight": 20, "weight": 400, "letterSpacing": "0px", "params": "14/20 Regular", "description": "Вспомогательный текст к основному контенту", "legacy": false, "tags": [] }
+      ]
+    },
+    {
+      "id": "text-12",
+      "label": "Text",
+      "sizeLabel": "12",
+      "styles": [
+        { "id": "caption-bold", "name": "Caption Bold", "size": 12, "lineHeight": 16, "weight": 700, "letterSpacing": "0.2px", "params": "12/16 0.2px Bold", "description": "Максимальный акцент в пределах caption-уровня. Применяется когда подпись должна сильно выделяться.", "legacy": false, "tags": [] },
+        { "id": "caption-semi-bold", "name": "Caption Semi Bold", "size": 12, "lineHeight": 16, "weight": 600, "letterSpacing": "0.2px", "params": "12/16 0.2px Semibold", "description": "Акцентный служебный текст. Используется для выделения важной подписи или статуса.", "legacy": false, "tags": [] },
+        { "id": "caption-medium", "name": "Caption Medium", "size": 12, "lineHeight": 16, "weight": 500, "letterSpacing": "0.2px", "params": "12/16 0.2px Medium", "description": "Служебный текст. Используется для выделения важной подписи или статуса.", "legacy": true, "tags": [] },
+        { "id": "caption-regular", "name": "Caption Regular", "size": 12, "lineHeight": 16, "weight": 400, "letterSpacing": "0.2px", "params": "12/16 0.2px Regular", "description": "Базовый стиль для служебного текста и подписей", "legacy": false, "tags": [] }
+      ]
+    },
+    {
+      "id": "text-10",
+      "label": "Text",
+      "sizeLabel": "10",
+      "styles": [
+        { "id": "micro-bold", "name": "Micro Bold", "size": 10, "lineHeight": 14, "weight": 700, "letterSpacing": "0.2px", "params": "10/14 0.2px Bold", "description": "Максимальный акцент в микроуровне. Используется для тегов, лейблов, подписей.", "legacy": true, "tags": [] },
+        { "id": "micro-semi-bold", "name": "Micro Semi Bold", "size": 10, "lineHeight": 14, "weight": 600, "letterSpacing": "0.2px", "params": "10/14 0.2px Semibold", "description": "Акцентный микротекст. Используется для тегов, лейблов, подписей.", "legacy": true, "tags": [] },
+        { "id": "micro-medium", "name": "Micro Medium", "size": 10, "lineHeight": 14, "weight": 500, "letterSpacing": "0.2px", "params": "10/14 0.2px Medium", "description": "Технический текст", "legacy": true, "tags": [] },
+        { "id": "micro-regular", "name": "Micro Regular", "size": 10, "lineHeight": 14, "weight": 400, "letterSpacing": "0.2px", "params": "10/14 0.2px Regular", "description": "Минимально заметный технический текст", "legacy": true, "tags": [] }
+      ]
+    }
+  ]
+}

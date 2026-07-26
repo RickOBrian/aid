@@ -46,6 +46,7 @@ function toLoadedToken(
   entry: {
     name: string;
     value: string;
+    valueDark?: string;
     reference?: string;
     status?: string;
     refactorNeeded?: boolean;
@@ -56,6 +57,7 @@ function toLoadedToken(
   return {
     name: entry.name,
     value: entry.value,
+    valueDark: entry.valueDark,
     source,
     reference: entry.reference,
     status: entry.status,

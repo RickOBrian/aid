@@ -56,7 +56,7 @@
   --core-amethyst-55: #EDE9FE;
   --core-amethyst-65-a16: rgba(139,92,246,0.16);
   --bg-base-main: var(--core-neutral-x-0);
-  --bg-base-main-secondary: var(--core-neutral-x-10);
+  --bg-base-main-secondary: var(--core-neutral-x-5);
   --bg-card-main: var(--core-neutral-x-0);
   --bg-card-main-secondary: var(--core-neutral-x-20);
   --bg-overlay-main: var(--core-neutral-x-100-a40);
@@ -94,6 +94,30 @@
   --line-default: var(--core-neutral-x-15);
   --line-strong: var(--core-neutral-x-25);
   --line-accent: var(--core-sapphire-55);
+  --bg-neutral-main: var(--core-neutral-x-98);
+  --bg-neutral-states-pressed: var(--core-neutral-x-100);
+  --core-neutral-x-0-a80: rgba(255,255,255,0.8);
+  --core-rhodolite-55: #E8178A;
+  --core-rhodolite-55-a10: rgba(232,23,138,0.1);
+  --core-aquamarine-55: #0C8CE9;
+  --core-aquamarine-55-a10: rgba(12,140,233,0.1);
+  --core-peony-55: #E25B8C;
+  --core-peony-55-a20: rgba(226,91,140,0.2);
+  --core-peony-55-a80: rgba(226,91,140,0.8);
+  --bg-measure-gap-fill: var(--core-rhodolite-55-a10);
+  --line-measure-gap: var(--core-rhodolite-55);
+  --bg-measure-gap-bubble: var(--core-rhodolite-55);
+  --bg-measure-inset-fill: var(--core-aquamarine-55-a10);
+  --line-measure-inset: var(--core-aquamarine-55);
+  --bg-measure-inset-bubble: var(--core-aquamarine-55);
+  --bg-measure-radius-fill: var(--core-peony-55-a20);
+  --line-measure-radius: var(--core-peony-55);
+  --text-measure-radius: var(--core-peony-55);
+  --text-measure-radius-muted: var(--core-peony-55-a80);
+  --text-measure-bubble-muted: var(--core-neutral-x-0-a80);
+  --core-amethyst-60: #8F3FF1;
+  --bg-anatomy-bullet: var(--core-neutral-x-93);
+  --text-anatomy-nested: var(--core-amethyst-60);
 }
 
 [data-theme="dark"] {
@@ -136,4 +160,8 @@
   --line-default: var(--core-neutral-x-93);
   --line-strong: var(--core-neutral-x-95);
   --line-accent: var(--core-sapphire-65);
+  --bg-neutral-main: var(--core-neutral-x-3);
+  --bg-neutral-states-pressed: var(--core-neutral-x-0);
+  --bg-anatomy-bullet: var(--core-neutral-x-90);
+  --text-anatomy-nested: var(--core-amethyst-60);
 }

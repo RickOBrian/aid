@@ -1,0 +1,9 @@
+[
+  { "name": "core-neutral-x-0", "value": "#FFFFFF" },
+  { "name": "core-neutral-x-10", "value": "#EFEFF2" },
+  { "name": "core-neutral-x-60", "value": "#AEAEB2" },
+  { "name": "core-neutral-x-88", "value": "#111111" },
+  { "name": "core-sapphire-65", "value": "#3B82F6" },
+  { "name": "core-sapphire-65-a16", "value": "rgba(59, 130, 246, 0.16)" },
+  { "name": "core-sapphire-65-a08", "value": "rgba(59, 130, 246, 0.08)" }
+]

@@ -1,0 +1,12 @@
+[
+  { "name": "bg-base-main", "value": "#F7F7F8", "reference": "core-neutral-x-10" },
+  { "name": "bg-card-main", "value": "#FFFFFF", "reference": "core-neutral-x-0" },
+  { "name": "bg-accent-main", "value": "#0057FF", "reference": "core-sapphire-55" },
+  { "name": "bg-accent-ghost", "value": "rgba(0, 87, 255, 0.06)", "reference": "core-sapphire-55-a06" },
+  { "name": "bg-accent-fade", "value": "rgba(0, 87, 255, 0.12)", "reference": "core-sapphire-55-a12" },
+  { "name": "text-primary", "value": "#111111", "reference": "core-neutral-x-98" },
+  { "name": "text-secondary", "value": "#6E6E73", "reference": "core-neutral-x-60" },
+  { "name": "text-inverse", "value": "#FFFFFF", "reference": "core-neutral-x-0" },
+  { "name": "text-accent", "value": "#0057FF", "reference": "core-sapphire-55" },
+  { "name": "line-default", "value": "#E5E5EA" }
+]

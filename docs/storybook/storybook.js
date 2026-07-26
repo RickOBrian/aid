@@ -6,7 +6,7 @@
 
   // Root-relative so nested pages (e.g. docs/storybook/components/badge.html)
   // resolve the same nav file as top-level Storybook pages.
-  const NAV_URL = '/docs/storybook/_storybook-nav.json';
+  const NAV_URL = '/docs/storybook/_storybook-nav.json?v=6';
   const ACTIVE_PAGE = document.body.dataset.storybookPage || '';
 
   async function loadNav() {
@@ -42,8 +42,10 @@
           if (item.group) a.classList.add('storybook-nav__item--grouped');
           if (item.href) {
             a.href = item.href;
-            const pageId = item.href.replace('.html', '');
-            if (pageId === ACTIVE_PAGE || item.id === ACTIVE_PAGE) {
+            const isActive = item.id === ACTIVE_PAGE
+              || (ACTIVE_PAGE && item.id && ACTIVE_PAGE.startsWith(item.id.split('/')[0] + '/')
+                && item.href.includes('product=') && ACTIVE_PAGE.includes(item.id.split('/')[0]));
+            if (isActive) {
               a.classList.add('is-active');
             }
           } else {
