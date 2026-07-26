@@ -1,0 +1,14 @@
+---
+description: Anatomy annotation standard — halo/anchor geometry rules
+globs: ["**/measure-agents.js", "**/*.html"]
+alwaysApply: true
+---
+
+Перед любым изменением anchor-точки, halo, geometry-измерений 
+или anatomy-конфигов — прочитать skills/_shared/
+anatomy-annotation-standard.md и подтвердить в первой строке 
+ответа: "Прочитал anatomy-annotation-standard.md, применяю 
+пункты: [номера]".
+
+Запрещено вносить изменения в эту зону кода, если они 
+противоречат стандарту.

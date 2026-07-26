@@ -215,7 +215,7 @@
 }
 
 .spec-anatomy-callout__highlight {
-  fill: var(--bg-accent-fade);
+  fill: none;
   stroke: var(--bg-accent-main);
   stroke-width: 1;
   stroke-opacity: 0.5;

@@ -182,15 +182,18 @@
      decides two things, applied to every entry the same way:
        - a perpendicular tick at the anchor below CALLOUT_TICK_MIN
        - which hover halo it gets: a full stroke-only outline below
-         CALLOUT_TINY_MIN (layoutTinyTargets/appendTinyOutline), a tonal
-         highlight box otherwise (appendAnatomyHighlight) — every entry
-         gets exactly one, always, so hover works the same on any Item.
+         CALLOUT_TINY_MIN (layoutTinyTargets/appendTinyOutline), a slightly
+         softer stroke-only box otherwise (appendAnatomyHighlight) — both are
+         fill:none contours, never a background fill (anatomy-annotation-
+         standard.md §2) — every entry gets exactly one, always, so hover
+         works the same on any Item.
      See mountAnatomyCallouts / layoutTinyTargets below. */
   const CALLOUT_TICK_MIN = 32;   // width/height below this → perpendicular tick at the anchor
-  const CALLOUT_TINY_MIN = 16;   // width/height below this → full-outline hover halo instead of a tonal box
+  const CALLOUT_TINY_MIN = 16;   // width/height below this → full-outline hover halo instead of the softer box
   const CALLOUT_TICK_LEN = 7;
   const CALLOUT_OUTLINE_PAD = 3;
   const CALLOUT_TINY_STUB = 10;
+  const CALLOUT_DOT_RADIUS = 3;  // 6px diameter anchor dot (SVG circle r)
 
   function findPartEl(stage, part) {
     if (!part.selector) return null;
@@ -499,12 +502,16 @@
     ));
   }
 
-  /* Hover-revealed tonal fill behind a normal-sized (non-tiny) target —
-     ties the number/line to the exact box on demand, not just to wherever
-     the line/dot happens to land. Applied unconditionally to every
-     non-tiny entry, see mountAnatomyCallouts. Geometry here is only the
-     *initial* paint; refreshAnatomyHaloGeometry re-derives it from the
-     live target on every hover (see anatomyPartToggle). */
+  /* Hover-revealed stroke-only outline behind a normal-sized (non-tiny)
+     target — ties the number/line to the exact box on demand, not just to
+     wherever the line/dot happens to land. Fill is always transparent (see
+     .spec-anatomy-callout__highlight in storybook-spec-inspector.css) — the
+     halo is a contour, never a background fill, regardless of the target's
+     own background color (anatomy-annotation-standard.md §2). Applied
+     unconditionally to every non-tiny entry, see mountAnatomyCallouts.
+     Geometry here is only the *initial* paint; refreshAnatomyHaloGeometry
+     re-derives it from the live target on every hover (see
+     anatomyPartToggle). */
   function appendAnatomyHighlight(svg, rect, partId, hostEl, targetKind) {
     const pad = CALLOUT_OUTLINE_PAD;
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -690,9 +697,13 @@
     const layout = layoutAnatomyCallouts(normalEntries, stageRect);
     const tinyLayout = layoutTinyTargets(tinyEntries, stageRect);
 
-    // Every anatomy target gets exactly one hover-revealed halo — a tonal
-    // highlight box for normal-sized targets, a stroke-only outline for
-    // tiny ones (layoutTinyTargets/appendTinyOutline). Size (isTiny) is the
+    // Every anatomy target gets exactly one hover-revealed halo — a
+    // stroke-only box for normal-sized targets, a stroke-only outline for
+    // tiny ones (layoutTinyTargets/appendTinyOutline). Neither ever fills
+    // its background (fill:none in both .spec-anatomy-callout__highlight and
+    // .spec-anatomy-callout__outline) — the halo color is a fixed accent
+    // token, independent of the target's own background (anatomy-annotation-
+    // standard.md §2). Size (isTiny) is the
     // only thing deciding which of the two a target gets; there is no
     // per-id/per-part exception, so hover works the same for every current
     // and future Item regardless of whether it's plain text, a nested DS
@@ -731,7 +742,7 @@
       dot.dataset.part = part.id || '';
       dot.setAttribute('cx', String(geom.dotX));
       dot.setAttribute('cy', String(geom.dotY));
-      dot.setAttribute('r', '3');
+      dot.setAttribute('r', String(CALLOUT_DOT_RADIUS));
       svg.appendChild(dot);
 
       const badge = appendAnatomyBadge(svg, geom, entry.index + 1, part.id);
