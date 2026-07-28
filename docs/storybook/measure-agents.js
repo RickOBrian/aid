@@ -81,6 +81,10 @@
     const chip = options.chip || '';
     const entryId = options.entryId || '';
     const resolveToken = options.resolveToken || '';
+    // DS_COMPONENT_SPEC.parts id (engineering-audit namespace, always has
+    // 'root' with a real selector) — read by mountRadiusPreviews() to try
+    // cloning the real DOM node instead of leaving the generic fallback box.
+    const radiusPart = options.radiusPart || '';
     // Entries without a real design token (legacy {size, value} rows) pass
     // the same string as both tokenName and value — showing both lines
     // would just repeat it twice ("16px 16px"). Show the token-name line
@@ -89,7 +93,7 @@
 
     return `
       <div class="ds-agent-radius"${entryAttr(entryId)}>
-        <div class="ds-agent-radius__preview"${radiusStyle ? ` style="${radiusStyle}"` : ''}${resolveToken ? ` data-resolve-radius="${esc(resolveToken)}"` : ''}>
+        <div class="ds-agent-radius__preview"${radiusStyle ? ` style="${radiusStyle}"` : ''}${resolveToken ? ` data-resolve-radius="${esc(resolveToken)}"` : ''}${radiusPart ? ` data-radius-part="${esc(radiusPart)}"` : ''}>
           <span class="ds-agent-radius__arc" aria-hidden="true"></span>
         </div>
         <span class="ds-agent-radius__bubble">
@@ -101,47 +105,128 @@
   }
 
   /**
+   * [AGENT] Radius-preview real-component mount
+   *
+   * Swaps the generic .ds-agent-radius__preview box for a clone of the
+   * component's own real DOM node, so the arc traces an actual rendered
+   * corner (pill Switch track, rounded Card surface, …) instead of an
+   * abstract 72×56 rectangle — see radius-preview-standard.md §4.
+   *
+   * Lookup order per [data-radius-part]:
+   *  1. window.DS_COMPONENT_SPEC.parts (engineering-audit namespace — the
+   *     same one aspects.borders[].part already references, always has a
+   *     'root' entry with a real selector, e.g. '.switch', '.card').
+   *  2. 'root' with no spec.parts match → sample.firstElementChild — last
+   *     resort for a sample assembled without a matching spec.parts entry.
+   *  3. Any other id with no spec.parts match → guide.anatomy's own
+   *     `parts` (legend namespace), in case a page defines the part only
+   *     there.
+   * No match at all → leave the static fallback box untouched.
+   */
+  function mountRadiusPreviews(container, sample, parts) {
+    if (!container || !sample) return;
+    const spec = window.DS_COMPONENT_SPEC;
+
+    container.querySelectorAll('[data-radius-part]').forEach((previewEl) => {
+      const partId = previewEl.dataset.radiusPart;
+      const specPart = spec && (spec.parts || []).find((p) => p.id === partId);
+
+      let sourceEl = null;
+      if (specPart && specPart.selector) sourceEl = sample.querySelector(specPart.selector);
+      if (!sourceEl && partId === 'root') sourceEl = sample.firstElementChild || null;
+      if (!sourceEl) {
+        const anatomyPart = (parts || []).find((p) => p.id === partId);
+        if (anatomyPart && anatomyPart.selector) sourceEl = sample.querySelector(anatomyPart.selector);
+      }
+      if (!sourceEl) return;
+
+      const clone = sourceEl.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      clone.querySelectorAll('input, button, a').forEach((el) => el.setAttribute('tabindex', '-1'));
+      clone.classList.add('ds-agent-radius__clone');
+
+      previewEl.classList.add('ds-agent-radius__preview--real');
+      previewEl.innerHTML = '';
+      previewEl.appendChild(clone);
+
+      // Re-create the arc host removed by the innerHTML reset above —
+      // resolveRadiusArcs() below finds it the same way for a real clone
+      // or the untouched fallback box.
+      const arcHost = document.createElement('span');
+      arcHost.className = 'ds-agent-radius__arc';
+      arcHost.setAttribute('aria-hidden', 'true');
+      previewEl.appendChild(arcHost);
+    });
+  }
+
+  /**
    * [AGENT] Corner-Radius arc geometry sync
    *
-   * .ds-agent-radius__arc draws its quarter-circle with the classic
-   * CSS corner trick: a square child box the same side length as the
-   * corner radius, with only two borders visible and one corner rounded
-   * by that same radius. That only traces the real corner correctly if
-   * the box's own side length AND its border-radius both equal the
-   * container's actual (used, i.e. clamped to the preview box's own
-   * dimensions) radius — a fixed-size box with `border-*-radius: inherit`
-   * couples neither: `inherit` pulls the unclamped computed value, and
-   * clamping then happens independently against the ARC's fixed size,
-   * not the preview box's size, so the two never agree except by
-   * accident. Every `.ds-agent-radius__preview[data-resolve-radius]` on
-   * the page needs its arc's box size + border-radius computed together,
-   * from the preview's own rendered geometry — hence a dedicated pass
-   * over the whole page rather than a per-call inline style.
+   * .ds-agent-radius__arc is an SVG quarter-circle <path>, not a CSS
+   * border/border-radius trick — a `border-top-right-radius: inherit`
+   * corner box only reads the *unclamped* token value, decoupled from the
+   * box's own rendered size, so the curve and the real corner drift apart
+   * (this is exactly the bug this function exists to prevent). The path is
+   * built fresh from the real rendered geometry of whichever element the
+   * arc sits on — either a real cloned component node (see
+   * mountRadiusPreviews) or the generic fallback box — so both go through
+   * the same math and the same visual result:
+   *
+   *  1. `target` = `.ds-agent-radius__clone` if mountRadiusPreviews()
+   *     mounted a real component, else the `.ds-agent-radius__preview`
+   *     box itself.
+   *  2. `arcSize` = `min(realRadiusPx, min(target.width, target.height) / 2)`
+   *     — realRadiusPx read via `getComputedStyle(target).borderTopRightRadius`,
+   *     the actual used px value; the /2 clamp matches what the browser
+   *     itself applies once a uniform radius exceeds half the shorter side
+   *     (e.g. radius-full on a non-square target).
+   *  3. The path traces the target's OWN top-right corner exactly: tangent
+   *     points `(W - arcSize, 0)` → `(W, arcSize)` around a center at
+   *     `(W - arcSize, arcSize)`, in the target's local box coordinates —
+   *     the real geometry of a border-radius corner, not a repositioned
+   *     stand-in shape.
+   *  4. `.ds-agent-radius__arc` is kept as a *sibling* of the target inside
+   *     `.ds-agent-radius__preview` (never injected into the clone itself,
+   *     so a component's own `position` context is never touched) and
+   *     positioned via `top`/`right` deltas between the target's and the
+   *     preview's `getBoundingClientRect()`.
    *
    * Static demonstration section (Guide Page «Скругления», not the
    * anatomy halo) — run once after every `.ds-agent-radius__preview` on
-   * the page has its inline border-radius in place; no hover/resize
-   * recompute needed.
+   * the page has its inline border-radius (and, if any, its real clone)
+   * in place; no hover/resize recompute needed.
    */
   function resolveRadiusArcs(root) {
     const scope = root && root.querySelectorAll ? root : document;
     scope.querySelectorAll('[data-resolve-radius]').forEach((previewEl) => {
-      const arc = previewEl.querySelector('.ds-agent-radius__arc');
-      if (!arc) return;
+      const arcHost = previewEl.querySelector('.ds-agent-radius__arc');
+      if (!arcHost) return;
 
-      const box = previewEl.getBoundingClientRect();
-      if (!box.width || !box.height) return;
+      const target = previewEl.querySelector('.ds-agent-radius__clone') || previewEl;
+      const targetRect = target.getBoundingClientRect();
+      const previewRect = previewEl.getBoundingClientRect();
+      if (!targetRect.width || !targetRect.height) return;
 
-      const specifiedRadius = parseFloat(getComputedStyle(previewEl).borderTopRightRadius) || 0;
-      // Same clamp the browser itself applies once a uniform border-radius
-      // exceeds half the box's shorter side (e.g. radius-full on a
-      // non-square preview) — without it the arc box would overflow the
-      // preview it's meant to sit inside.
-      const arcSize = Math.max(0, Math.min(specifiedRadius, Math.min(box.width, box.height) / 2));
+      const realRadiusPx = parseFloat(getComputedStyle(target).borderTopRightRadius) || 0;
+      const arcSize = Math.max(0, Math.min(realRadiusPx, Math.min(targetRect.width, targetRect.height) / 2));
 
-      arc.style.width = `${arcSize}px`;
-      arc.style.height = `${arcSize}px`;
-      arc.style.borderTopRightRadius = `${arcSize}px`;
+      arcHost.style.top = `${targetRect.top - previewRect.top}px`;
+      arcHost.style.right = `${previewRect.right - targetRect.right}px`;
+      arcHost.style.width = `${arcSize}px`;
+      arcHost.style.height = `${arcSize}px`;
+
+      if (arcSize <= 0) {
+        arcHost.innerHTML = '';
+        return;
+      }
+      // Local box coordinates, arcSize×arcSize: start at the top tangent
+      // point (0,0), sweep clockwise to the right-edge tangent point
+      // (arcSize,arcSize) around a center at (0,arcSize) — the exact
+      // quarter-circle a `border-top-right-radius: arcSize` on an
+      // arcSize×arcSize box traces, drawn explicitly instead of relying on
+      // CSS clipping.
+      arcHost.innerHTML = `<svg class="ds-agent-radius__arc-svg" width="${arcSize}" height="${arcSize}" viewBox="0 0 ${arcSize} ${arcSize}" aria-hidden="true"><path d="M 0 0 A ${arcSize} ${arcSize} 0 0 1 ${arcSize} ${arcSize}"/></svg>`;
     });
   }
 
@@ -911,6 +996,7 @@
     gapsAndPaddings,
     widthHeight,
     cornerRadius,
+    mountRadiusPreviews,
     resolveRadiusArcs,
     anatomyMarker,
     anatomyLegendItem,

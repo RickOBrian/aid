@@ -1484,21 +1484,43 @@
   position: relative;
 }
 
-.ds-agent-radius__arc {
-  /* Fallback size/curve for previews without data-resolve-radius (no
-     token to resolve from — see cornerRadius()/resolveRadiusArcs() in
-     measure-agents.js). Token-driven previews get width/height/
-     border-top-right-radius set together, inline, by resolveRadiusArcs
-     once real geometry is known — never via CSS `inherit`, which pulls
-     the unclamped token value irrespective of this box's own size. */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 24px;
-  height: 24px;
-  border-top: 2px solid var(--line-measure-radius);
-  border-right: 2px solid var(--line-measure-radius);
+/* Real cloned component (mountRadiusPreviews() in measure-agents.js) —
+   drops the generic box's own border/background/fixed size so the real
+   node's own visual (pill Switch track, rounded Card surface, …) shows
+   through instead of sitting inside an unrelated rectangle. */
+.ds-agent-radius__preview--real {
+  width: auto;
+  height: auto;
+  min-width: 40px;
+  min-height: 40px;
+  border: none;
+  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.ds-agent-radius__clone {
   pointer-events: none;
+}
+
+.ds-agent-radius__arc {
+  /* Size/position/curve are computed at runtime by resolveRadiusArcs()
+     from the target's (real clone or this fallback box's own) rendered
+     geometry — see measure-agents.js. Never set width/height/border here:
+     a static value can't track a per-token radius or a per-component real
+     corner size, and CSS `border-*-radius: inherit` pulls the unclamped
+     token value irrespective of the target's own size — exactly the bug
+     resolveRadiusArcs() exists to prevent. */
+  position: absolute;
+  pointer-events: none;
+}
+
+.ds-agent-radius__arc-svg path {
+  fill: none;
+  stroke: var(--line-measure-radius);
+  stroke-width: 2;
 }
 
 .ds-agent-radius__bubble {

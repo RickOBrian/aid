@@ -77,9 +77,27 @@
       .filter((entry) => /radius/i.test(String(entry.property || '')))
       .map((entry) => ({
         label: entry.part ? specPartLabel(entry.part) : null,
+        // entry.part is a DS_COMPONENT_SPEC.parts id (engineering-audit
+        // namespace, always includes 'root' with a real selector — see
+        // spec-inspector.js), not a guide.anatomy id (visual-legend
+        // namespace, which may omit 'root' or rename it e.g. 'container').
+        // Carried through so mountRadiusPreviews() can look the real DOM
+        // node up via spec.parts instead of the anatomy legend's ids.
+        part: entry.part || null,
         token: entry.token,
         value: entry.value != null ? String(entry.value) : undefined,
       }));
+  }
+
+  // Legacy {size, value} radius rows (button-text.html, counter-value.html)
+  // carry no design token, only a value string like '16px' or
+  // 'pill (9999px)' — pull the first px number out so the preview can still
+  // get a real border-radius + a resolvable arc instead of staying a plain
+  // square. Returns null when nothing px-shaped is found.
+  function parseLegacyRadiusPx(value) {
+    if (value == null) return null;
+    const match = String(value).match(/(\d+(?:\.\d+)?)\s*px/);
+    return match ? parseFloat(match[1]) : null;
   }
 
   function deriveDimensions() {
@@ -331,20 +349,32 @@
     const radius = pickOrDerive(guide, 'radius', deriveRadius);
     if (!radius.length || !agents) return '';
     const items = radius
-      .map((entry) =>
-        agents.cornerRadius({
+      .map((entry) => {
+        // Legacy rows have no entry.token — try to recover a real px value
+        // from entry.value so the fallback box still gets a genuine
+        // border-radius + arc instead of staying a plain square (see
+        // parseLegacyRadiusPx / radius-preview-standard.md §4).
+        const legacyPx = entry.token ? null : parseLegacyRadiusPx(entry.value);
+        return agents.cornerRadius({
           tokenName: entry.token || entry.value || '—',
           value: entry.value || (entry.token ? `var(--${entry.token})` : '—'),
-          radiusStyle: entry.token ? `border-radius: var(--${esc(entry.token)});` : '',
-          resolveToken: entry.token || '',
+          radiusStyle: entry.token
+            ? `border-radius: var(--${esc(entry.token)});`
+            : legacyPx != null ? `border-radius: ${legacyPx}px;` : '',
+          resolveToken: entry.token || (legacyPx != null ? 'legacy' : ''),
+          // Engineering-namespace part id (DS_COMPONENT_SPEC.parts, always
+          // has 'root') — lets mountRadiusPreviews() clone the real DOM node
+          // instead of falling back to the generic preview box. Legacy rows
+          // have no entry.part, so they correctly stay on the fallback box.
+          radiusPart: entry.part || '',
           // entry.label — anatomy-part descriptor (token-schema entries);
           // entry.size — size-variant descriptor (legacy {size, value} rows,
           // e.g. button-text.html Large/Medium/Small/Tiny) — same chip slot.
           chip: entry.label || entry.size
             ? `<span class="spec-spatial-chip spec-spatial-chip--token">${esc(entry.label || entry.size)}</span>`
             : '',
-        })
-      )
+        });
+      })
       .join('');
     return `
       <section class="guide-section" aria-labelledby="guide-radius-heading">
@@ -583,6 +613,15 @@
 
     container.innerHTML = `<div class="guide-page">${sections.join('')}</div>`;
     mountAnatomyStage(container, guide);
+    // Swap generic radius-preview boxes for a real clone of the component's
+    // own DOM node wherever one resolves (spec.parts selector match against
+    // the same anatomy sample) — see mountRadiusPreviews() in
+    // measure-agents.js and radius-preview-standard.md §4. Must run before
+    // resolveRadiusArcs() so the arc math reads the clone's real geometry,
+    // not the empty fallback box's.
+    if (agents && agents.mountRadiusPreviews) {
+      agents.mountRadiusPreviews(container, resolveAnatomySample(guide), normalizeAnatomyParts(guide));
+    }
     // Static section, computed once against the just-inserted previews'
     // real rendered geometry — see resolveRadiusArcs() in measure-agents.js.
     if (agents && agents.resolveRadiusArcs) agents.resolveRadiusArcs(container);
