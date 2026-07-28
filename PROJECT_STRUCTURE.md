@@ -93,10 +93,12 @@ aid/
 │   │   │   ├── badge.html
 │   │   │   ├── button-icon.html
 │   │   │   ├── card.html
+│   │   │   ├── chip-select.html
 │   │   │   ├── chip.html
 │   │   │   ├── color-swatch.html
 │   │   │   ├── search.html
 │   │   │   ├── storybook-button.html
+│   │   │   ├── switch.html
 │   │   │   └── table.html
 │   │   ├── _storybook-nav.json
 │   │   ├── colors-editor.js

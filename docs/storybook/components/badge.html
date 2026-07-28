@@ -201,6 +201,12 @@ window.DS_COMPONENT_GUIDE = {
   description: 'Пилюля-метка статуса без текстового слота-контента — прямой текст. Некликабельна, всегда рядом с сущностью, которую описывает.',
   version: '1.0.0',
   status: 'stable',
+  // #spec-sample выше — общий Preview-блок (4 appearance-варианта), нужен
+  // целиком для секции Preview и для «Цвета и состояния» — не сокращаем.
+  // Для anatomy-стейджа достаточно 1 инстанса (container+label — один и тот
+  // же .badge), поэтому отдельный минимальный сэмпл — anatomy-annotation-
+  // standard.md п. 4.1.
+  anatomyPreview: '<span class="badge badge--stable">Stable</span>',
   anatomy: [
     { id: 'container', label: 'Container', selector: '.badge', optional: false,
       description: 'Пилюля-оболочка: фон (по variant), border-radius, padding.' },

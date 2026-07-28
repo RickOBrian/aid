@@ -125,6 +125,13 @@
     const nested = options.nested || null;
     const optional = options.optional;
     const partId = options.partId || '';
+    // Whether this Item resolves to a real DOM node in the current sample —
+    // only then can the switch actually hide/show something on canvas. An
+    // optional Item without one (e.g. a nested DS component referenced by
+    // name only, not wired into the live sample markup) gets a disabled
+    // switch with an explanatory title instead of a non-functional control —
+    // see toggleAnatomyPart / wireAnatomyPartSwitches below.
+    const hasSelector = options.hasSelector !== false;
 
     let titleHtml;
     if (nested) {
@@ -136,19 +143,39 @@
       titleHtml = `<p class="spec-anatomy__title">${esc(title)}</p>`;
     }
 
+    // Real production Switch component (docs/assets/style.css, .switch /
+    // .switch__knob — see docs/storybook/components/switch.html) — dogfoods
+    // the DS's own control instead of a bespoke icon. A switch only makes
+    // sense where there is something to toggle, i.e. optional Items — a
+    // required Item is always present, there is nothing to turn off, so it
+    // gets a plain label with no control at all (not even a disabled one).
+    // aria-checked drives the on/off look directly (no extra state class
+    // needed); disabled covers "optional but no resolvable DOM node to
+    // toggle in this sample" — see toggleAnatomyPart / wireAnatomyPartSwitches
+    // below for the click wiring.
     let toggleHtml = '';
-    if (optional === true) {
+    if (optional === true && hasSelector) {
       toggleHtml = `
-        <p class="spec-anatomy__toggle spec-anatomy__toggle--can">
-          <span class="spec-anatomy__toggle-icon" aria-hidden="true"></span>
-          Можно отключить
+        <p class="spec-anatomy__toggle">
+          <button type="button" class="switch" role="switch" aria-checked="true" data-part="${esc(partId)}">
+            <span class="switch__knob" aria-hidden="true"></span>
+          </button>
+          Опциональный элемент
+        </p>`;
+    } else if (optional === true && !hasSelector) {
+      const reason = nested
+        ? `Недоступно — ${nested.name} не является частью разметки в этом сэмпле`
+        : 'Недоступно — нет отдельного DOM-узла для переключения в этом сэмпле';
+      toggleHtml = `
+        <p class="spec-anatomy__toggle">
+          <button type="button" class="switch" role="switch" aria-checked="false" aria-disabled="true" disabled title="${esc(reason)}" data-part="${esc(partId)}">
+            <span class="switch__knob" aria-hidden="true"></span>
+          </button>
+          Опциональный элемент
         </p>`;
     } else if (optional === false) {
       toggleHtml = `
-        <p class="spec-anatomy__toggle spec-anatomy__toggle--cannot">
-          <span class="spec-anatomy__toggle-icon" aria-hidden="true"></span>
-          Нельзя отключить
-        </p>`;
+        <p class="spec-anatomy__toggle spec-anatomy__toggle--cannot">Обязательный элемент</p>`;
     }
 
     return `
@@ -255,11 +282,14 @@
     }
 
     claimedHosts.add(hostEl);
-    return {
-      kind: 'element',
-      hostEl,
-      rect: clientRectToStageRect(hostEl.getBoundingClientRect(), stageRect),
-    };
+    const rect = clientRectToStageRect(hostEl.getBoundingClientRect(), stageRect);
+    // Same "no box, no callout" rule already applied to text-content targets
+    // (measureTextContentRect above): a node can be in the DOM (found by
+    // selector) yet render nothing — display:none via the anatomy switch
+    // (toggleAnatomyPart), a collapsed nested placeholder, etc. Zero-size is
+    // treated as "not found" rather than drawing a degenerate 0×0 halo.
+    if (!rect.width && !rect.height) return null;
+    return { kind: 'element', hostEl, rect };
   }
 
   /* ---------- non-crossing boundary labeling ----------
@@ -789,6 +819,43 @@
     });
   }
 
+  /* Wires the real Switch buttons (see anatomyLegendItem — production
+     .switch component, rendered only for optional Items) in the legend to
+     the live sample: clicking toggles display:none on every DOM node
+     matching that part's selector inside `stage`, flips aria-checked (the
+     production CSS keys off this attribute directly, no separate state
+     class needed), and re-paints the canvas (`repaint`) so the callout for
+     a hidden part disappears instead of drawing a degenerate 0×0 halo (see
+     the zero-size guard in resolveAnatomyTarget). Disabled switches
+     (optional Item with no resolvable DOM node — see anatomyLegendItem) are
+     skipped: nothing to hide, and the native `disabled` attribute already
+     keeps them out of the tab order / non-interactive. Required Items don't
+     render a switch at all (nothing to toggle), so there is nothing to wire
+     for them here. */
+  function toggleAnatomyPart(stage, part, switchEl) {
+    const nodes = stage.querySelectorAll(part.selector);
+    if (!nodes.length) return;
+    const nowOn = switchEl.getAttribute('aria-checked') !== 'true';
+    nodes.forEach((node) => {
+      node.style.display = nowOn ? '' : 'none';
+    });
+    switchEl.setAttribute('aria-checked', String(nowOn));
+  }
+
+  function wireAnatomyPartSwitches(stage, legendRoot, parts, repaint) {
+    if (!stage || !legendRoot) return;
+    const switches = legendRoot.querySelectorAll('button.switch[data-part]:not(:disabled)');
+    switches.forEach((switchEl) => {
+      const partId = switchEl.dataset.part;
+      const part = (parts || []).find((p) => p.id === partId);
+      if (!part || !part.selector) return;
+      switchEl.addEventListener('click', () => {
+        toggleAnatomyPart(stage, part, switchEl);
+        if (typeof repaint === 'function') repaint();
+      });
+    });
+  }
+
   window.DSMeasureAgents = {
     esc,
     gapsAndPaddings,
@@ -799,5 +866,6 @@
     findPartEl,
     mountAnatomyCallouts,
     wireAnatomyLegend,
+    wireAnatomyPartSwitches,
   };
 })();

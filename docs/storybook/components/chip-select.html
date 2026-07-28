@@ -267,6 +267,13 @@ window.DS_COMPONENT_GUIDE = {
   description: 'Пилюля-выбор с текстом и опциональной leading-иконкой (без второго именованного слота). Тапабельна, поддерживает выбранное состояние (<code>is-active</code>).',
   version: '1.0.0',
   status: 'stable',
+  // #spec-sample выше — общий Preview-блок (7 инстансов, appearance × state),
+  // нужен целиком для секции Preview и «Цвета и состояния» — не сокращаем.
+  // Для anatomy-стейджа достаточно 1 инстанса, покрывающего все 3 части
+  // сразу (container+label общие с любым инстансом, icon — опциональная
+  // часть, нужен инстанс с .chip-select__icon) — берём готовую разметку
+  // последнего инстанса #spec-sample. anatomy-annotation-standard.md п. 4.1.
+  anatomyPreview: '<span class="chip-select chip-select--inverse-neutral is-active"><span class="chip-select__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Label</span>',
   anatomy: [
     { id: 'container', label: 'Container', selector: '.chip-select', optional: false,
       description: 'Кликабельная пилюля-оболочка: фон/рамка по appearance, border-radius, padding.' },

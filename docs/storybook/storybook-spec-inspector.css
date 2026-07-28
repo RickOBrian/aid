@@ -336,42 +336,9 @@
   color: var(--text-primary);
 }
 
-.spec-anatomy__toggle-icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
-  position: relative;
-}
-
-.spec-anatomy__toggle--can .spec-anatomy__toggle-icon {
-  border-radius: var(--radius-full);
-  border: 1px solid var(--line-default);
-  background: var(--bg-card-main);
-}
-
-.spec-anatomy__toggle--can .spec-anatomy__toggle-icon::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 10px;
-  height: 10px;
-  border-radius: var(--radius-full);
-  background: var(--bg-accent-main);
-}
-
-.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon {
-  border-radius: var(--radius-s);
-  border: 1px dashed var(--line-strong);
-}
-
-.spec-anatomy__toggle--cannot .spec-anatomy__toggle-icon::before {
-  content: '';
-  position: absolute;
-  inset: 6px 4px;
-  border-top: 2px solid var(--line-strong);
-  transform: rotate(-35deg);
-}
+/* Legend row hosts the real production Switch (.switch / .switch__knob,
+   docs/assets/style.css) directly — see anatomyLegendItem in
+   measure-agents.js. No legend-specific switch styles needed here. */
 
 /* legacy pin styles — больше не используются на stage, оставлены для совместимости */
 .spec-pin {

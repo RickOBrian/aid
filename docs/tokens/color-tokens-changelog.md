@@ -16,3 +16,4 @@ title: Color Tokens Changelog
 | 1.0.7 | 2026-07-16 | --bg-neutral-states-pressed | new — → #000000 (dark: #FFFFFF) | sergej |
 | 1.0.8 | 2026-07-18 | measure agents | new core + semantic tokens for Figma [AGENT] measure kit (node 2507:1085) | sergej |
 | 1.0.9 | 2026-07-24 | --bg-base-main-secondary | --bg-base-main-secondary: var(--core-neutral-x-10) → var(--core-neutral-x-5) | sergej |
+| 1.0.10 | 2026-07-27 | --bg-base-main-secondary | --bg-base-main-secondary: var(--core-neutral-x-10) → var(--core-neutral-x-5) | sergej |

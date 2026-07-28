@@ -12,8 +12,8 @@ Update this file every time a new token is created.
 |-------|-------|-------------|------------|---------|
 | --core-neutral-x-0 | core | #FFFFFF | — | bg-base-main, bg-card-main, text-inverse, icon-inverse |
 | --core-neutral-x-3 | core | #F5F5F7 | — | text-code-block (dark) |
-| --core-neutral-x-5 | core | #F0F0F5 | — | (reserved) |
-| --core-neutral-x-10 | core | #F0F0F4 | — | bg-base-main-secondary |
+| --core-neutral-x-5 | core | #F0F0F5 | — | bg-base-main-secondary |
+| --core-neutral-x-10 | core | #F0F0F4 | — | (reserved) |
 | --core-neutral-x-12 | core | #EFEFF2 | — | bg-code-block |
 | --core-neutral-x-15 | core | #D9D9D9 | — | bg-component-skeleton-shimmer |
 | --core-neutral-x-18 | core | #E5E5EA | — | bg-component-skeleton-default |

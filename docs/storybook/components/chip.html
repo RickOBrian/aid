@@ -194,6 +194,11 @@ window.DS_COMPONENT_GUIDE = {
   description: 'Некликабельная пилюля-тег без слотов, кроме прямого текста. Используется для группировки контента по категории.',
   version: '1.0.0',
   status: 'stable',
+  // #spec-sample выше — общий Preview-блок (3 инстанса), нужен целиком для
+  // секции Preview — не сокращаем. Для anatomy-стейджа достаточно 1
+  // инстанса (container+label — один и тот же .chip), поэтому отдельный
+  // минимальный сэмпл — anatomy-annotation-standard.md п. 4.1.
+  anatomyPreview: '<span class="chip">Color</span>',
   anatomy: [
     { id: 'container', label: 'Container', selector: '.chip', optional: false,
       description: 'Пилюля-оболочка: рамка (line-default), border-radius, padding; фон — transparent.' },

@@ -20,7 +20,6 @@
    ──────────────────────────────────────────────────────── */
 html:not([data-theme="dark"]) {
   --bg-base-main:           #FFFFFF;
-  --bg-base-main-secondary: #E2E2E2;
 }
 
 /* ── Token value overrides — Dark ─────────────────────────
@@ -28,7 +27,6 @@ html:not([data-theme="dark"]) {
    ──────────────────────────────────────────────────────── */
 [data-theme="dark"] {
   --bg-base-main:           #181818;
-  --bg-base-main-secondary: #1E1E1E;
 }
 
 :root {

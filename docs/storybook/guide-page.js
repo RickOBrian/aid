@@ -238,14 +238,21 @@
   }
 
   function resolveAnatomySample(guide) {
-    const node = document.getElementById('spec-sample') || document.getElementById('guide-anatomy-sample');
-    if (node) return node;
+    // guide.anatomyPreview is an explicit, anatomy-only override — takes
+    // priority whenever set, even if #spec-sample also exists on the page.
+    // #spec-sample is the shared Preview block (visible standalone section,
+    // also read by spec-inspector.js for hit-area) and commonly holds more
+    // instances than anatomy needs (e.g. all appearance × state variants);
+    // anatomyPreview lets a page keep #spec-sample untouched while giving
+    // the anatomy stage its own minimal instance set — see
+    // anatomy-annotation-standard.md §4.1. Falls back to #spec-sample /
+    // #guide-anatomy-sample when no override is provided.
     if (guide.anatomyPreview) {
       const wrap = document.createElement('div');
       wrap.innerHTML = guide.anatomyPreview;
       return wrap;
     }
-    return null;
+    return document.getElementById('spec-sample') || document.getElementById('guide-anatomy-sample') || null;
   }
 
   function renderAnatomy(guide) {
@@ -266,6 +273,7 @@
             nested: part.nested || null,
             optional: part.optional,
             partId: part.id,
+            hasSelector: Boolean(part.selector),
           });
         }
         return `<div class="spec-anatomy__item"><span class="spec-anatomy__bullet">${i + 1}</span><div class="spec-anatomy__body"><p class="spec-anatomy__title">${esc(part.label)}</p></div></div>`;
@@ -302,6 +310,7 @@
     paint();
 
     if (agents.wireAnatomyLegend) agents.wireAnatomyLegend(stage, legend);
+    if (agents.wireAnatomyPartSwitches) agents.wireAnatomyPartSwitches(stage, legend, parts, paint);
 
     let raf = null;
     window.addEventListener('resize', () => {

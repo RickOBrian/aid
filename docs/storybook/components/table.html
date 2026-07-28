@@ -293,6 +293,14 @@ window.DS_COMPONENT_GUIDE = {
   description: 'Structural View: опциональный слот header и repeatable-слот content — каждая строка — вложенный экземпляр TableRow (spec-003, draft).',
   version: '1.0.0',
   status: 'stable',
+  // #spec-sample выше — общий Preview-блок (2 строки × 3 колонки), нужен
+  // целиком для секции Preview — не сокращаем. Для anatomy-стейджа минимум:
+  // 1 header-строка с 1 th (header + header-cell-label) и 1 body-строка с
+  // 2 td (row/cell через :first-child, cell-content через :nth-child(2) —
+  // при единственной tr :first-child и :last-child совпадают, значит 1
+  // строки достаточно для row+cell+cell-content). Текст ячеек — из
+  // существующего #spec-sample. anatomy-annotation-standard.md п. 4.1.
+  anatomyPreview: '<div class="table-wrap" data-ds-component="Table"><table><thead><tr><th>Token</th></tr></thead><tbody><tr><td>bg-accent-main</td><td>#1C6DFF</td></tr></tbody></table></div>',
   anatomy: [
     { id: 'header', label: 'Header (слот header)', selector: '.table-wrap thead', optional: true,
       description: 'Опциональный слот; содержит header-ячейки с Item-текстом.' },

@@ -15,9 +15,13 @@
 /* ── Semantic tokens — Light theme (default) ── */
 :root {
 
+  /* Color — core (referenced by semantic aliases below) */
+  --core-neutral-x-5:        #F0F0F5;
+  --core-neutral-x-90:       #2C2C2E;
+
   /* Color — bg */
   --bg-base-main:            #F7F7F8;
-  --bg-base-main-secondary:  #EFEFF2;
+  --bg-base-main-secondary:  var(--core-neutral-x-5);
   --bg-card-main:            #FFFFFF;
   --bg-card-main-secondary:  #F7F7F8;
   --bg-overlay-main:         rgba(0, 0, 0, 0.40);
@@ -192,7 +196,7 @@
 
   /* Color — bg */
   --bg-base-main:            #111111;
-  --bg-base-main-secondary:  #1C1C1E;
+  --bg-base-main-secondary:  var(--core-neutral-x-90);
   --bg-card-main:            #1C1C1E;
   --bg-card-main-secondary:  #2C2C2E;
   --bg-overlay-main:         rgba(0, 0, 0, 0.60);
@@ -793,6 +797,58 @@ body {
   background-color: var(--bg-accent-main);
   border-color: transparent;
   color: var(--text-inverse);
+}
+
+/* ============================================================
+   Switch (on/off toggle control — Surface View, компактное ядро)
+   State: off / on (модификатор — aria-checked) · Disabled: opacity 40%
+   ============================================================ */
+.switch {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 48px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card-main-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.switch[aria-checked="true"] {
+  background-color: var(--bg-accent-main);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--line-accent);
+  outline-offset: 2px;
+}
+
+.switch:disabled,
+.switch[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.switch__knob {
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-card-main);
+  transform: translateY(-50%);
+  transition: left 0.15s ease, width 0.15s ease, height 0.15s ease;
+}
+
+.switch[aria-checked="true"] .switch__knob {
+  left: 22px;
+  width: 22px;
+  height: 22px;
 }
 
 /* ============================================================
