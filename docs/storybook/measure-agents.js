@@ -96,6 +96,51 @@
   }
 
   /**
+   * [AGENT] Corner-Radius arc geometry sync
+   *
+   * .ds-agent-radius__arc draws its quarter-circle with the classic
+   * CSS corner trick: a square child box the same side length as the
+   * corner radius, with only two borders visible and one corner rounded
+   * by that same radius. That only traces the real corner correctly if
+   * the box's own side length AND its border-radius both equal the
+   * container's actual (used, i.e. clamped to the preview box's own
+   * dimensions) radius — a fixed-size box with `border-*-radius: inherit`
+   * couples neither: `inherit` pulls the unclamped computed value, and
+   * clamping then happens independently against the ARC's fixed size,
+   * not the preview box's size, so the two never agree except by
+   * accident. Every `.ds-agent-radius__preview[data-resolve-radius]` on
+   * the page needs its arc's box size + border-radius computed together,
+   * from the preview's own rendered geometry — hence a dedicated pass
+   * over the whole page rather than a per-call inline style.
+   *
+   * Static demonstration section (Guide Page «Скругления», not the
+   * anatomy halo) — run once after every `.ds-agent-radius__preview` on
+   * the page has its inline border-radius in place; no hover/resize
+   * recompute needed.
+   */
+  function resolveRadiusArcs(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll('[data-resolve-radius]').forEach((previewEl) => {
+      const arc = previewEl.querySelector('.ds-agent-radius__arc');
+      if (!arc) return;
+
+      const box = previewEl.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+
+      const specifiedRadius = parseFloat(getComputedStyle(previewEl).borderTopRightRadius) || 0;
+      // Same clamp the browser itself applies once a uniform border-radius
+      // exceeds half the box's shorter side (e.g. radius-full on a
+      // non-square preview) — without it the arc box would overflow the
+      // preview it's meant to sit inside.
+      const arcSize = Math.max(0, Math.min(specifiedRadius, Math.min(box.width, box.height) / 2));
+
+      arc.style.width = `${arcSize}px`;
+      arc.style.height = `${arcSize}px`;
+      arc.style.borderTopRightRadius = `${arcSize}px`;
+    });
+  }
+
+  /**
    * [AGENT] Anatomy-Marker
    * position: 'left' | 'right' | 'top' | 'bottom'
    */
@@ -861,6 +906,7 @@
     gapsAndPaddings,
     widthHeight,
     cornerRadius,
+    resolveRadiusArcs,
     anatomyMarker,
     anatomyLegendItem,
     findPartEl,

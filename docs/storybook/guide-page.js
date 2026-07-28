@@ -580,6 +580,9 @@
 
     container.innerHTML = `<div class="guide-page">${sections.join('')}</div>`;
     mountAnatomyStage(container, guide);
+    // Static section, computed once against the just-inserted previews'
+    // real rendered geometry — see resolveRadiusArcs() in measure-agents.js.
+    if (agents && agents.resolveRadiusArcs) agents.resolveRadiusArcs(container);
   }
 
   window.DSGuidePage = { render };
