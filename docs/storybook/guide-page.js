@@ -337,8 +337,11 @@
           value: entry.value || (entry.token ? `var(--${entry.token})` : '—'),
           radiusStyle: entry.token ? `border-radius: var(--${esc(entry.token)});` : '',
           resolveToken: entry.token || '',
-          chip: entry.label
-            ? `<span class="spec-spatial-chip spec-spatial-chip--token">${esc(entry.label)}</span>`
+          // entry.label — anatomy-part descriptor (token-schema entries);
+          // entry.size — size-variant descriptor (legacy {size, value} rows,
+          // e.g. button-text.html Large/Medium/Small/Tiny) — same chip slot.
+          chip: entry.label || entry.size
+            ? `<span class="spec-spatial-chip spec-spatial-chip--token">${esc(entry.label || entry.size)}</span>`
             : '',
         })
       )

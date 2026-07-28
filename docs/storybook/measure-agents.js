@@ -81,6 +81,11 @@
     const chip = options.chip || '';
     const entryId = options.entryId || '';
     const resolveToken = options.resolveToken || '';
+    // Entries without a real design token (legacy {size, value} rows) pass
+    // the same string as both tokenName and value — showing both lines
+    // would just repeat it twice ("16px 16px"). Show the token-name line
+    // only when it actually carries information distinct from the value.
+    const showToken = tokenName !== '—' && tokenName !== value;
 
     return `
       <div class="ds-agent-radius"${entryAttr(entryId)}>
@@ -89,7 +94,7 @@
         </div>
         <span class="ds-agent-radius__bubble">
           ${chipHtml(chip)}
-          <span class="ds-agent-radius__token">${esc(tokenName)}</span>
+          ${showToken ? `<span class="ds-agent-radius__token">${esc(tokenName)}</span>` : ''}
           <span class="ds-agent-radius__value">${esc(value)}</span>
         </span>
       </div>`;
