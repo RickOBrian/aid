@@ -160,6 +160,13 @@
     });
   }
 
+  // Purely cosmetic gap between the drawn arc and the target's real corner
+  // — the arc is a separate visual callout, not a redraw of the border
+  // itself, so it must float just outside the real edge instead of fusing
+  // with it. Tune freely; every preview uses the same value so the "hover
+  // gap" reads consistently across tokens/components.
+  const RADIUS_ARC_OUTSET = 4;
+
   /**
    * [AGENT] Corner-Radius arc geometry sync
    *
@@ -176,21 +183,30 @@
    *  1. `target` = `.ds-agent-radius__clone` if mountRadiusPreviews()
    *     mounted a real component, else the `.ds-agent-radius__preview`
    *     box itself.
-   *  2. `arcSize` = `min(realRadiusPx, min(target.width, target.height) / 2)`
+   *  2. `radius` = `min(realRadiusPx, min(target.width, target.height) / 2)`
    *     — realRadiusPx read via `getComputedStyle(target).borderTopRightRadius`,
    *     the actual used px value; the /2 clamp matches what the browser
    *     itself applies once a uniform radius exceeds half the shorter side
-   *     (e.g. radius-full on a non-square target).
-   *  3. The path traces the target's OWN top-right corner exactly: tangent
-   *     points `(W - arcSize, 0)` → `(W, arcSize)` around a center at
-   *     `(W - arcSize, arcSize)`, in the target's local box coordinates —
-   *     the real geometry of a border-radius corner, not a repositioned
-   *     stand-in shape.
+   *     (e.g. radius-full on a non-square target). This single scalar
+   *     drives BOTH axes (width/height of the arc box, and both the rx and
+   *     ry of the SVG arc command) — never derive a separate width-based
+   *     and height-based value, or a non-square target (a wide pill Chip/
+   *     Badge, not just a square Switch) draws an ellipse instead of a
+   *     true quarter-circle.
+   *  3. The path traces a circle of that same `radius`, offset outward by
+   *     `RADIUS_ARC_OUTSET` on both axes so it floats just past the
+   *     target's own edge instead of sitting flush on top of it: the arc
+   *     box grows to `radius + RADIUS_ARC_OUTSET` per side and is
+   *     repositioned `RADIUS_ARC_OUTSET` further up/right, while the path
+   *     itself keeps the untouched `radius` — only its position within the
+   *     (now bigger) box shifts by the outset. Tangent points
+   *     `(outset, 0)` → `(outset + radius, radius)` around a center at
+   *     `(outset, radius)`, in the arc box's own local coordinates.
    *  4. `.ds-agent-radius__arc` is kept as a *sibling* of the target inside
    *     `.ds-agent-radius__preview` (never injected into the clone itself,
    *     so a component's own `position` context is never touched) and
    *     positioned via `top`/`right` deltas between the target's and the
-   *     preview's `getBoundingClientRect()`.
+   *     preview's `getBoundingClientRect()`, minus the outset.
    *
    * Static demonstration section (Guide Page «Скругления», not the
    * anatomy halo) — run once after every `.ds-agent-radius__preview` on
@@ -209,24 +225,25 @@
       if (!targetRect.width || !targetRect.height) return;
 
       const realRadiusPx = parseFloat(getComputedStyle(target).borderTopRightRadius) || 0;
-      const arcSize = Math.max(0, Math.min(realRadiusPx, Math.min(targetRect.width, targetRect.height) / 2));
+      const radius = Math.max(0, Math.min(realRadiusPx, Math.min(targetRect.width, targetRect.height) / 2));
+      const boxSize = radius + RADIUS_ARC_OUTSET;
 
-      arcHost.style.top = `${targetRect.top - previewRect.top}px`;
-      arcHost.style.right = `${previewRect.right - targetRect.right}px`;
-      arcHost.style.width = `${arcSize}px`;
-      arcHost.style.height = `${arcSize}px`;
+      arcHost.style.top = `${targetRect.top - previewRect.top - RADIUS_ARC_OUTSET}px`;
+      arcHost.style.right = `${previewRect.right - targetRect.right - RADIUS_ARC_OUTSET}px`;
+      arcHost.style.width = `${boxSize}px`;
+      arcHost.style.height = `${boxSize}px`;
 
-      if (arcSize <= 0) {
+      if (radius <= 0) {
         arcHost.innerHTML = '';
         return;
       }
-      // Local box coordinates, arcSize×arcSize: start at the top tangent
-      // point (0,0), sweep clockwise to the right-edge tangent point
-      // (arcSize,arcSize) around a center at (0,arcSize) — the exact
-      // quarter-circle a `border-top-right-radius: arcSize` on an
-      // arcSize×arcSize box traces, drawn explicitly instead of relying on
-      // CSS clipping.
-      arcHost.innerHTML = `<svg class="ds-agent-radius__arc-svg" width="${arcSize}" height="${arcSize}" viewBox="0 0 ${arcSize} ${arcSize}" aria-hidden="true"><path d="M 0 0 A ${arcSize} ${arcSize} 0 0 1 ${arcSize} ${arcSize}"/></svg>`;
+      // Local box coordinates, boxSize×boxSize: start at the outset-shifted
+      // top tangent point (outset,0), sweep clockwise to the outset-shifted
+      // right-edge tangent point (outset+radius,radius) around a center at
+      // (outset,radius). `radius` alone sets the curve on both axes (rx===ry
+      // always) — see point 2 above — so the arc stays a true quarter-circle
+      // regardless of the target's own width/height ratio.
+      arcHost.innerHTML = `<svg class="ds-agent-radius__arc-svg" width="${boxSize}" height="${boxSize}" viewBox="0 0 ${boxSize} ${boxSize}" aria-hidden="true"><path d="M ${RADIUS_ARC_OUTSET} 0 A ${radius} ${radius} 0 0 1 ${RADIUS_ARC_OUTSET + radius} ${radius}"/></svg>`;
     });
   }
 
