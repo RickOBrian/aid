@@ -67,21 +67,35 @@ anatomy-annotation-standard.md — тот файл ограничен строг
   `mountRadiusPreviews()` не находит DOM-узел (нет `data-radius-part`
   на превью вовсе — легacy-записи, см. ниже — или lookup не дал
   результата).
-- **Legacy size-таблицы без токена** (`button-text.html`,
-  `counter-value.html` — записи `{size, value}` без `entry.token`,
-  например `value: 'pill (9999px)'`) — задокументированное
-  ограничение: у таких записей нет `entry.part` (в спеке этих
-  страниц borders/radius не привязаны к `spec.parts`), поэтому
-  `mountRadiusPreviews()` их не трогает, и они ВСЕГДА остаются на
-  fallback-боксе — не временный недочёт, а стабильное поведение для
-  этой категории данных.
-- `renderRadius()` компенсирует отсутствие токена, пытаясь
-  распарсить px из `entry.value` (`parseLegacyRadiusPx()` — первое
-  `\d+px` в строке, покрывает и `'16px'`, и `'pill (9999px)'`) и
-  выставляет `radiusStyle`/`data-resolve-radius` на fallback-бокс
-  напрямую — только у fallback-бокса, реального клона это не
-  касается (тот получает border-radius от собственного production
-  CSS-класса).
+- **Legacy size-таблицы без токена** (`{size, value}` без
+  `entry.token`, например `value: 'pill (9999px)'`,
+  `value: '16px'`) — сам факт отсутствия `entry.token` НЕ обязателен
+  к fallback-боксу: `entry.part` (не `entry.token`) — вот что решает,
+  клонировать реальный узел или нет (см. §1). `deriveRadius()`
+  проставляет `entry.part` автоматически из `spec.aspects.borders`,
+  но `guide.radius`, заданный вручную в `DS_COMPONENT_GUIDE` (а не
+  выведенный через `deriveRadius()`), может дописать `entry.part`
+  вручную сам — `renderRadius()` прокидывает его как есть
+  (`radiusPart: entry.part || ''`), независимо от того, откуда взялся
+  массив. Если у компонента при этом есть валидный
+  `DS_COMPONENT_SPEC.parts` с нужным id — клон работает даже для
+  ручной legacy-таблицы (пример: `counter-value.html`, обе строки
+  `{size, value}` вручную помечены `part: 'container'` → реальный
+  клон `.scv`).
+- **Fallback навсегда, а не временно — только когда клонировать
+  физически нечего**, то есть `DS_COMPONENT_SPEC` для страницы вообще
+  не определён (пример: `button-text.html` — на странице нет ни
+  одного `window.DS_COMPONENT_SPEC`, соответственно нет `spec.parts`
+  ни для одной anatomy-части) — задокументированное ограничение
+  именно этой категории, не «legacy без token» само по себе.
+- `renderRadius()` компенсирует отсутствие токена (не отсутствие
+  part), пытаясь распарсить px из `entry.value`
+  (`parseLegacyRadiusPx()` — первое `\d+px` в строке, покрывает и
+  `'16px'`, и `'pill (9999px)'`) и выставляет `radiusStyle`/
+  `data-resolve-radius` на fallback-бокс напрямую — только у
+  fallback-бокса (когда до него всё-таки дошло, то есть `entry.part`
+  не задан или не резолвится), реального клона это не касается (тот
+  получает border-radius от собственного production CSS-класса).
 
 ## 2. Геометрия дуги — единый SVG-рендерер для клона и fallback
 
