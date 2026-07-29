@@ -1,0 +1,14 @@
+---
+description: Radius-preview arc geometry standard — resolveRadiusArcs contract
+globs: ["**/measure-agents.js", "**/guide-page.js", "**/storybook-spec-inspector.css"]
+alwaysApply: true
+---
+
+Перед любым изменением, касающимся radius-preview секции 
+("Скругления"), .ds-agent-radius__arc, resolveRadiusArcs(), 
+cornerRadius(), renderRadius() — прочитать skills/_shared/
+radius-preview-standard.md и подтвердить в первой строке ответа: 
+"Прочитал radius-preview-standard.md, применяю пункты: [номера]".
+
+Запрещено вносить изменения в эту зону кода, если они 
+противоречат стандарту (см. п. 3 — запрещённые паттерны).
