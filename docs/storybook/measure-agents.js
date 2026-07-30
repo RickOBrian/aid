@@ -228,8 +228,18 @@
       const radius = Math.max(0, Math.min(realRadiusPx, Math.min(targetRect.width, targetRect.height) / 2));
       const boxSize = radius + RADIUS_ARC_OUTSET;
 
-      arcHost.style.top = `${targetRect.top - previewRect.top - RADIUS_ARC_OUTSET}px`;
-      arcHost.style.right = `${previewRect.right - targetRect.right - RADIUS_ARC_OUTSET}px`;
+      // CSS `top`/`right` on an absolutely-positioned child are measured from
+      // the *padding* edge of its positioned ancestor (`previewEl`), not from
+      // the border-box that getBoundingClientRect() returns — so a preview
+      // with its own border (the fallback box's `border: 2px solid`) eats
+      // into the offset unless compensated here. Real-clone previews have
+      // `border: none` (see storybook-spec-inspector.css), so this is a
+      // no-op for them and only matters for the fallback box.
+      const previewBorderTop = parseFloat(getComputedStyle(previewEl).borderTopWidth) || 0;
+      const previewBorderRight = parseFloat(getComputedStyle(previewEl).borderRightWidth) || 0;
+
+      arcHost.style.top = `${targetRect.top - previewRect.top - RADIUS_ARC_OUTSET - previewBorderTop}px`;
+      arcHost.style.right = `${previewRect.right - targetRect.right - RADIUS_ARC_OUTSET - previewBorderRight}px`;
       arcHost.style.width = `${boxSize}px`;
       arcHost.style.height = `${boxSize}px`;
 
