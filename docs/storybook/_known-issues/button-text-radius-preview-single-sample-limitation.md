@@ -9,7 +9,7 @@
 ## Symptom
 
 После добавления `window.DS_COMPONENT_SPEC` в `button-text.html`
-(изменение в working tree; отдельный коммит с spec ещё pending) секция
+(коммит `2f45a08`) секция
 «Скругления» клонирует реальную кнопку вместо fallback-бокса 72×56 — но
 `mountRadiusPreviews()` использует **один и тот же** DOM-сэмпл (`.sbt.sbt--large`
 из `guide.anatomyPreview`) для всех 4 записей: **Large**, **Medium**, **Small**,
