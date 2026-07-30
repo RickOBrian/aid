@@ -89,6 +89,33 @@
 <script src="../../../product-legacy-colors.js"></script>
 <script src="../../../product-sutochno-button-text.js"></script>
 <script>
+window.DS_COMPONENT_SPEC = {
+  name: 'ButtonText',
+  interactive: true,
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.sbt',
+      description: 'Кликабельная оболочка кнопки: фон, скругление (per-size), отступы. Несёт border-radius, демонстрируемый в «Скругления».',
+    },
+    {
+      id: 'icon',
+      label: 'Icon',
+      selector: '.sbt__icon',
+      description: 'Ведущая иконка перед текстом. Недоступна в size tiny.',
+      optional: true,
+    },
+    {
+      id: 'text',
+      label: 'Text',
+      selector: '.sbt__text',
+      description: 'Единственный обязательный контент кнопки.',
+    },
+  ],
+  aspects: { size: [], spacing: [], colors: [], borders: [] },
+};
+
 window.DS_COMPONENT_GUIDE = {
   name: 'ButtonText',
   description: 'Кнопка с текстовым слотом. Основной интерактивный контрол Sutochno (Surface View, Role-семья Button). Структура из Figma Components Mobile; цвета — legacy-токены продукта.',
@@ -110,10 +137,10 @@ window.DS_COMPONENT_GUIDE = {
       description: 'Числовой индикатор поверх/рядом с кнопкой — отдельный DS-компонент CounterValue со своим spec; в текущей реализации live-рендерера не подключён.' },
   ],
   radius: [
-    { size: 'Large', value: '16px' },
-    { size: 'Medium', value: '12px' },
-    { size: 'Small', value: '12px' },
-    { size: 'Tiny', value: 'pill (9999px)' },
+    { size: 'Large', value: '16px', part: 'root' },
+    { size: 'Medium', value: '12px', part: 'root' },
+    { size: 'Small', value: '12px', part: 'root' },
+    { size: 'Tiny', value: 'pill (9999px)', part: 'root' },
   ],
   dimensions: [
     { label: 'Large min-height', value: '52px' },
