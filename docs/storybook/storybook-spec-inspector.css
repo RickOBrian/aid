@@ -1517,6 +1517,28 @@
   pointer-events: none;
 }
 
+.ds-agent-radius__arc-svg {
+  /* Path endpoints sit exactly on the viewport's own edges/corner (see
+     resolveRadiusArcs() point 5) — the 2px stroke's half-width bleeds ~1px
+     past that edge at each tangent point. `<svg>` defaults to
+     `overflow: hidden` in the UA stylesheet, which shaves that sliver off;
+     none of the ancestors up to .storybook-layout clip, so nothing needs
+     the arc confined to its own box. */
+  overflow: visible;
+  /* `<svg>` is inline by default, so the browser reserves baseline/descent
+     space for it as if it were a line of text — the svg's painted box then
+     sits a few px BELOW the top of its `.ds-agent-radius__arc` host (the
+     gap size tracks the ambient font's line-height, not the svg's own
+     size), silently breaking the host's JS-computed top/right offset
+     (resolveRadiusArcs()). Small on a large corner arc (near-invisible on
+     ButtonText's 20px arc box), but glaring on a small full-circle target
+     like CounterValue's 14px arc box, where a few px reads as the arc not
+     tracing the circle's actual corner at all. `display: block` removes
+     the svg from inline flow so it always fills its host exactly,
+     independent of ambient font metrics. */
+  display: block;
+}
+
 .ds-agent-radius__arc-svg path {
   fill: none;
   stroke: var(--line-measure-radius);

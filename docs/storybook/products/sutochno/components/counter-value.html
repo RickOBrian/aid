@@ -130,8 +130,14 @@ window.DS_COMPONENT_GUIDE = {
     { name: 'Android', status: 'planned' },
   ],
   radius: [
-    { size: 'Medium', value: 'pill (9999px)', part: 'container' },
-    { size: 'Small', value: 'pill (9999px)', part: 'container' },
+    // Each row carries its OWN scv--<size> sample (see `sample` /
+    // radius-preview-standard.md) — the page-wide anatomyPreview above is
+    // always Medium, so without this override the Small row would clone
+    // that Medium instance instead of its own (smaller) pill.
+    { size: 'Medium', value: 'pill (9999px)', part: 'container',
+      sample: '<span class="scv scv--medium"><span class="scv__value">1</span></span>' },
+    { size: 'Small', value: 'pill (9999px)', part: 'container',
+      sample: '<span class="scv scv--small"><span class="scv__value">1</span></span>' },
   ],
   dimensions: [
     { label: 'Medium min-size', value: '20×20px' },
