@@ -84,9 +84,75 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
   (см. resolveAnatomySample() в guide-page.js) с минимальным 
   набором инстансов специально для anatomy-стейджа.
 
+## 4.2. Multi-size анатомия (per-size состав элементов)
+
+Применяется, когда состав обязательных/опциональных элементов 
+различается между размерами (ButtonText: large/medium/small — 
+icon (optional) + text; tiny — text + chevron, icon отсутствует 
+в разметке вовсе). Один статичный сэмпл в таком случае физически 
+не может показать анатомию остальных размеров.
+
+Механизм (общий, в guide-page.js — не под конкретный компонент):
+
+1. **`guide.sizeSamples: [{ id, label, sample }]`** — один 
+   упорядоченный реестр реальной разметки по размерам на всю 
+   страницу. Его читают И anatomy-стейдж (dropdown размера), 
+   И radius-превью (`renderRadius` → `sampleHtml`, см. 
+   radius-preview-standard.md §1.1). Разметка размера пишется 
+   ОДИН раз — расхождение между секциями структурно невозможно.
+2. **`parts[].sizes: ['large','medium','small']`** — availability. 
+   Часть без `sizes` присутствует во всех размерах (обычный 
+   случай — существующие страницы не требуют миграции). Часть, 
+   отсутствующая в размере, исключается из списка целиком — не 
+   помечается «опциональной». Номера hotspot'ов и строки легенды 
+   нумеруются по списку ТЕКУЩЕГО размера, поэтому badge на 
+   стейдже и строка легенды всегда совпадают.
+3. **`parts[].bySize: { tiny: { description, optional, label } }`** — 
+   точечный патч того, что реально отличается в конкретном 
+   размере. Дублировать весь список частей на каждый размер 
+   запрещено: расхождение описаний между размерами — тот же класс 
+   ошибки, что расхождение sample-строк.
+4. Дефолтный размер — первая запись реестра, либо явный 
+   `guide.anatomyDefaultSize`.
+5. Геометрия/anchor/halo НЕ дублируются под размеры: при смене 
+   размера стейдж перемонтируется тем же 
+   `agents.mountAnatomyCallouts()` по реальному 
+   `getBoundingClientRect()` нового инстанса (пп. 1–2 этого 
+   файла остаются единственным источником правды).
+
+**Обязательная сверка с реальным DOM (по аналогии с 
+radius-preview-standard.md).** Состав элементов каждого размера 
+подтверждается outerHTML фактически отрендеренного инстанса 
+(devtools или live-матрица страницы), а не аналогией с соседним 
+размером. Перед коммитом — explicitly сравнить состав детей 
+между всеми размерами и по каждому расхождению явно решить: это 
+обоснованно или упущение. Прецедент: пропущенный chevron в 
+Tiny-сэмпле ButtonText возник именно из копирования по аналогии.
+
 ## 5. Список файлов для регрессии
-[чек-лист всех presentbook-файлов — дополнять при добавлении 
-новых компонентов]
+
+Полный список presentbook-страниц, рендерящих anatomy-стейдж 
+(`DSGuidePage.render()` / `mountAnatomyCallouts()`) — прогонять 
+ВСЕ при любой правке этой зоны, не только страницу с багом. 
+Дополнять при добавлении новых компонентов.
+
+- `docs/storybook/components/badge.html`
+- `docs/storybook/components/button-icon.html`
+- `docs/storybook/components/card.html`
+- `docs/storybook/components/chip.html`
+- `docs/storybook/components/chip-select.html`
+- `docs/storybook/components/color-swatch.html`
+- `docs/storybook/components/search.html`
+- `docs/storybook/components/storybook-button.html`
+- `docs/storybook/components/switch.html`
+- `docs/storybook/components/table.html`
+- `docs/storybook/products/sutochno/components/button-text.html`
+- `docs/storybook/products/sutochno/components/counter-value.html`
+
+Известное baseline-состояние (не регрессия, проверять на 
+изменение, а не на отсутствие): `color-swatch.html` — 0 
+callout'ов (части без selector'ов); `card.html`, 
+`color-swatch.html` — 0 radius-арок.
 
 ## 6. Запрещено
 - Менять production-разметку компонентов ради аннотационного 

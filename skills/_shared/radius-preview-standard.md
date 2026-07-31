@@ -100,6 +100,18 @@ anatomy-annotation-standard.md — тот файл ограничен строг
   `data-radius-sample-html`, `mountRadiusPreviews()` парсит его в
   приватный detached wrapper для ЭТОЙ строки вместо общего `sample`, лукап
   `spec.parts`/`anatomy.parts` работает по нему как обычно.
+- **Источник разметки размера — общий реестр `guide.sizeSamples`, не
+  строка внутри radius-таблицы.** `renderRadius()` резолвит
+  `sampleHtml` как `entry.sample || sizeSampleHtml(guide, entry.size)`:
+  штатный путь — реестр `guide.sizeSamples: [{ id, label, sample }]`,
+  который читает и anatomy-стейдж (per-size анатомия с dropdown'ом
+  размера, см. anatomy-annotation-standard.md §4.2). Разметка одного
+  размера существует в одном месте на всю страницу — расхождение между
+  «Скруглениями» и «Анатомией» структурно невозможно, и правка размера
+  делается один раз. `entry.sample` остаётся поддержанным как локальный
+  escape hatch для строки, чья разметка действительно не совпадает с
+  реестровым инстансом — но это исключение, требующее объяснения в
+  комментарии рядом.
 - **Источник `entry.sample` — только фактически отрендеренный DOM, не
   аналогия с соседней строкой.** `entry.sample` пишется вручную как
   HTML-литерал в `DS_COMPONENT_GUIDE`, поэтому ничего не мешает написать

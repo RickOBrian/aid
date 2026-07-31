@@ -247,6 +247,12 @@
       optional: part.optional ?? part.isOptional,
       nested: part.nested || null,
       callout: part.callout || null,
+      // Per-size availability + overrides (multi-size components, see
+      // sizeSamples / partsForSize below). Absent `sizes` means "present in
+      // every size" — the common case, so existing single-size pages need
+      // no migration.
+      sizes: Array.isArray(part.sizes) ? part.sizes.map(normalizeSizeId) : null,
+      bySize: part.bySize || null,
     };
   }
 
@@ -255,7 +261,69 @@
     return raw.map(normalizeAnatomyPart);
   }
 
-  function resolveAnatomySample(guide) {
+  function normalizeSizeId(value) {
+    return String(value == null ? '' : value).trim().toLowerCase();
+  }
+
+  /* ---------- per-size samples (shared registry) ----------
+     `guide.sizeSamples: [{ id, label, sample }]` — ONE ordered registry of
+     real per-size markup for the whole page, written once and consumed by
+     both the anatomy stage (size dropdown below) and the radius previews
+     (renderRadius → mountRadiusPreviews' per-row sample override). Keeping
+     it single means a size's markup is never transcribed twice and can't
+     drift between the two sections. Absent registry → every consumer keeps
+     its previous single-sample behaviour untouched. */
+
+  function normalizeSizeSamples(guide) {
+    return (guide.sizeSamples || [])
+      .map((entry, index) => ({
+        id: normalizeSizeId(entry.id || entry.size || `size-${index + 1}`),
+        label: entry.label || entry.size || entry.id || `Size ${index + 1}`,
+        sample: entry.sample || '',
+      }))
+      .filter((entry) => entry.sample);
+  }
+
+  function defaultSizeId(guide, sizeSamples) {
+    const requested = normalizeSizeId(guide.anatomyDefaultSize);
+    const match = sizeSamples.find((entry) => entry.id === requested);
+    return (match || sizeSamples[0] || {}).id || '';
+  }
+
+  function sizeSampleHtml(guide, sizeLabelOrId) {
+    const id = normalizeSizeId(sizeLabelOrId);
+    if (!id) return '';
+    const match = normalizeSizeSamples(guide).find((entry) => entry.id === id);
+    return match ? match.sample : '';
+  }
+
+  /* A part participates in a given size unless it declares a `sizes`
+     whitelist that excludes it — e.g. ButtonText's leading icon exists in
+     large/medium/small only, its trailing chevron in tiny only. `bySize`
+     patches whatever genuinely differs for that size (description, the
+     required/optional flag, label) instead of duplicating the whole part
+     list per size. */
+  function partsForSize(guide, sizeId) {
+    return normalizeAnatomyParts(guide)
+      .filter((part) => !sizeId || !part.sizes || part.sizes.includes(sizeId))
+      .map((part) => {
+        const override = part.bySize && sizeId ? part.bySize[sizeId] : null;
+        return override ? Object.assign({}, part, override) : part;
+      });
+  }
+
+  function resolveAnatomySample(guide, sizeId) {
+    // Registry first (multi-size pages): the anatomy stage shows the markup
+    // of the size currently picked in the dropdown, so a size whose element
+    // composition differs (ButtonText tiny — no icon, mandatory chevron) is
+    // annotated against its OWN instance instead of the page's single
+    // default one.
+    const sizeSample = sizeSampleHtml(guide, sizeId);
+    if (sizeSample) {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = sizeSample;
+      return wrap;
+    }
     // guide.anatomyPreview is an explicit, anatomy-only override — takes
     // priority whenever set, even if #spec-sample also exists on the page.
     // #spec-sample is the shared Preview block (visible standalone section,
@@ -273,15 +341,17 @@
     return document.getElementById('spec-sample') || document.getElementById('guide-anatomy-sample') || null;
   }
 
-  function renderAnatomy(guide) {
-    const parts = normalizeAnatomyParts(guide);
-    if (!parts.length) return '';
-
-    const overloadWarning = parts.length > 4
-      ? '<p class="guide-anatomy__overload">⚠️ Более 4 элементов — риск визуального перегруза. Рассмотрите группировку (например, Container + Content вместо отдельных padding/text слоёв).</p>'
+  function anatomyOverloadHtml(parts) {
+    return parts.length > 4
+      ? '⚠️ Более 4 элементов — риск визуального перегруза. Рассмотрите группировку (например, Container + Content вместо отдельных padding/text слоёв).'
       : '';
+  }
 
-    const legend = parts
+  function anatomyLegendHtml(parts) {
+    // Numbering follows the CURRENT size's part list, so badges on the stage
+    // and rows in the legend renumber together when the size changes (tiny's
+    // list starts at Text because it has no leading icon at all).
+    return parts
       .map((part, i) => {
         if (agents && agents.anatomyLegendItem) {
           return agents.anatomyLegendItem({
@@ -297,43 +367,171 @@
         return `<div class="spec-anatomy__item"><span class="spec-anatomy__bullet">${i + 1}</span><div class="spec-anatomy__body"><p class="spec-anatomy__title">${esc(part.label)}</p></div></div>`;
       })
       .join('');
+  }
+
+  /* Size dropdown for the anatomy stage — rendered only when the page ships
+     a `sizeSamples` registry with more than one entry, so single-size pages
+     keep the exact markup they had before. Visual language is the existing
+     presentbook one: the trigger reads as the same uppercase size chip used
+     in «Скругления» (.spec-spatial-chip--token), the panel/options reuse
+     .spec-select__* from the spec-inspector dropdowns. */
+  function anatomySizeSelectHtml(sizeSamples, currentId) {
+    if (sizeSamples.length < 2) return '';
+    const current = sizeSamples.find((entry) => entry.id === currentId) || sizeSamples[0];
+    const options = sizeSamples
+      .map(
+        (entry) => `
+          <button type="button" role="option" class="spec-select__option${entry.id === current.id ? ' is-selected' : ''}"
+                  aria-selected="${entry.id === current.id ? 'true' : 'false'}" data-size="${esc(entry.id)}">
+            <span class="guide-anatomy-size__option-label">${esc(entry.label)}</span>
+          </button>`
+      )
+      .join('');
+    return `
+      <div class="guide-anatomy-size" data-guide-anatomy-size>
+        <span class="guide-anatomy-size__label" id="guide-anatomy-size-label">Размер</span>
+        <div class="guide-anatomy-size__control">
+          <button type="button" class="guide-anatomy-size__trigger" aria-haspopup="listbox" aria-expanded="false"
+                  aria-labelledby="guide-anatomy-size-label" data-guide-anatomy-size-trigger>
+            <span class="spec-spatial-chip spec-spatial-chip--token" data-guide-anatomy-size-current>${esc(current.label)}</span>
+            <span class="spec-select__chevron" aria-hidden="true">▾</span>
+          </button>
+          <div class="guide-anatomy-size__panel spec-select__panel" role="listbox" aria-labelledby="guide-anatomy-size-label" hidden>${options}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderAnatomy(guide) {
+    const sizeSamples = normalizeSizeSamples(guide);
+    const currentSize = defaultSizeId(guide, sizeSamples);
+    const parts = partsForSize(guide, currentSize);
+    if (!parts.length) return '';
+
+    const overload = anatomyOverloadHtml(parts);
 
     return `
       <section class="guide-section" aria-labelledby="guide-anatomy-heading">
         <h2 class="guide-section__title" id="guide-anatomy-heading">Анатомия</h2>
-        ${overloadWarning}
+        ${anatomySizeSelectHtml(sizeSamples, currentSize)}
+        <p class="guide-anatomy__overload" data-guide-anatomy-overload${overload ? '' : ' hidden'}>${overload}</p>
         <div class="spec-anatomy">
           <div class="spec-anatomy__frame">
             <div class="spec-anatomy__stage" data-guide-anatomy-stage aria-label="Диаграмма анатомии компонента"></div>
           </div>
-          <div class="spec-anatomy__legend">${legend}</div>
+          <div class="spec-anatomy__legend">${anatomyLegendHtml(parts)}</div>
         </div>
       </section>`;
   }
 
+  /* Click/keyboard wiring for the size dropdown. `onPick(sizeId)` gets the
+     newly chosen size; the trigger chip label and option selection state are
+     updated here so the caller only has to re-render the stage + legend. */
+  function wireAnatomySizeSelect(root, sizeSamples, onPick) {
+    const wrap = root && root.querySelector('[data-guide-anatomy-size]');
+    if (!wrap) return;
+    const trigger = wrap.querySelector('[data-guide-anatomy-size-trigger]');
+    const panel = wrap.querySelector('.guide-anatomy-size__panel');
+    const currentLabel = wrap.querySelector('[data-guide-anatomy-size-current]');
+    if (!trigger || !panel) return;
+
+    const close = () => {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    };
+    const open = () => {
+      panel.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      const target = panel.querySelector('.is-selected') || panel.querySelector('.spec-select__option');
+      if (target) target.focus();
+    };
+
+    trigger.addEventListener('click', () => (panel.hidden ? open() : close()));
+
+    panel.addEventListener('click', (event) => {
+      const option = event.target.closest('.spec-select__option');
+      if (!option) return;
+      const sizeId = option.dataset.size;
+      panel.querySelectorAll('.spec-select__option').forEach((el) => {
+        const selected = el === option;
+        el.classList.toggle('is-selected', selected);
+        el.setAttribute('aria-selected', String(selected));
+      });
+      const picked = sizeSamples.find((entry) => entry.id === sizeId);
+      if (currentLabel && picked) currentLabel.textContent = picked.label;
+      close();
+      trigger.focus();
+      onPick(sizeId);
+    });
+
+    panel.addEventListener('keydown', (event) => {
+      const options = [...panel.querySelectorAll('.spec-select__option')];
+      const index = options.indexOf(document.activeElement);
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const next = event.key === 'ArrowDown' ? index + 1 : index - 1;
+        const target = options[(next + options.length) % options.length];
+        if (target) target.focus();
+      } else if (event.key === 'Escape') {
+        close();
+        trigger.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!panel.hidden && !wrap.contains(event.target)) close();
+    });
+  }
+
   function mountAnatomyStage(container, guide) {
     const stage = container && container.querySelector('[data-guide-anatomy-stage]');
-    const sample = resolveAnatomySample(guide);
-    if (!stage || !sample || !agents) return;
+    if (!stage || !agents) return;
 
-    const parts = normalizeAnatomyParts(guide).filter((part) => part.selector);
-    stage.innerHTML = sample.innerHTML;
-    stage.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
-    stage.querySelectorAll('input, button, a').forEach((el) => el.setAttribute('tabindex', '-1'));
+    const sizeSamples = normalizeSizeSamples(guide);
+    const legendRoot = container.querySelector('.spec-anatomy__legend');
+    const overloadEl = container.querySelector('[data-guide-anatomy-overload]');
+    let paint = () => {};
 
-    const legend = container.querySelector('.spec-anatomy__legend');
-    // legend is passed through so canvas hover (badge/line) and legend-row
-    // hover drive the same is-active state — see anatomyPartToggle.
-    const paint = () => agents.mountAnatomyCallouts(stage, parts, legend);
-    paint();
+    // One code path for the initial mount and for every size switch — the
+    // stage always shows the selected size's own sample, annotated with the
+    // part list that size actually has (partsForSize), so numbers, callout
+    // geometry and legend flags stay in sync by construction instead of
+    // being kept aligned by hand.
+    const mountSize = (sizeId) => {
+      const sample = resolveAnatomySample(guide, sizeId);
+      if (!sample) return;
+      const sizeParts = partsForSize(guide, sizeId);
+      const calloutParts = sizeParts.filter((part) => part.selector);
 
-    if (agents.wireAnatomyLegend) agents.wireAnatomyLegend(stage, legend);
-    if (agents.wireAnatomyPartSwitches) agents.wireAnatomyPartSwitches(stage, legend, parts, paint);
+      stage.innerHTML = sample.innerHTML;
+      stage.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      stage.querySelectorAll('input, button, a').forEach((el) => el.setAttribute('tabindex', '-1'));
+
+      if (legendRoot) legendRoot.innerHTML = anatomyLegendHtml(sizeParts);
+      if (overloadEl) {
+        const overload = anatomyOverloadHtml(sizeParts);
+        overloadEl.textContent = overload;
+        overloadEl.hidden = !overload;
+      }
+
+      // legendRoot is passed through so canvas hover (badge/line) and
+      // legend-row hover drive the same is-active state — see
+      // anatomyPartToggle. Re-wired on every size switch because the legend
+      // rows above are brand-new nodes.
+      paint = () => agents.mountAnatomyCallouts(stage, calloutParts, legendRoot);
+      paint();
+      if (agents.wireAnatomyLegend) agents.wireAnatomyLegend(stage, legendRoot);
+      if (agents.wireAnatomyPartSwitches) {
+        agents.wireAnatomyPartSwitches(stage, legendRoot, calloutParts, () => paint());
+      }
+    };
+
+    mountSize(defaultSizeId(guide, sizeSamples));
+    wireAnatomySizeSelect(container, sizeSamples, mountSize);
 
     let raf = null;
     window.addEventListener('resize', () => {
       if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(paint);
+      raf = requestAnimationFrame(() => paint());
     });
   }
 
@@ -367,6 +565,16 @@
           // instead of falling back to the generic preview box. Legacy rows
           // have no entry.part, so they correctly stay on the fallback box.
           radiusPart: entry.part || '',
+          // Per-row real markup for THIS row's own size, so
+          // mountRadiusPreviews() clones it instead of repeating the
+          // page-wide anatomy sample's single size on every legacy
+          // {size, value} row (see cornerRadius() / mountRadiusPreviews() in
+          // measure-agents.js). Resolved from the page's shared sizeSamples
+          // registry by `entry.size`, which the anatomy stage reads too —
+          // one markup string per size for the whole page. `entry.sample`
+          // stays supported as a row-local escape hatch for a row whose
+          // markup genuinely isn't the registry's instance.
+          sampleHtml: entry.sample || sizeSampleHtml(guide, entry.size),
           // entry.label — anatomy-part descriptor (token-schema entries);
           // entry.size — size-variant descriptor (legacy {size, value} rows,
           // e.g. button-text.html Large/Medium/Small/Tiny) — same chip slot.
@@ -620,7 +828,11 @@
     // resolveRadiusArcs() so the arc math reads the clone's real geometry,
     // not the empty fallback box's.
     if (agents && agents.mountRadiusPreviews) {
-      agents.mountRadiusPreviews(container, resolveAnatomySample(guide), normalizeAnatomyParts(guide));
+      // Page-wide fallback sample for rows without their own per-row markup:
+      // the default size's registry entry when there is one, else the single
+      // anatomyPreview/#spec-sample as before.
+      const fallbackSample = resolveAnatomySample(guide, defaultSizeId(guide, normalizeSizeSamples(guide)));
+      agents.mountRadiusPreviews(container, fallbackSample, normalizeAnatomyParts(guide));
     }
     // Static section, computed once against the just-inserted previews'
     // real rendered geometry — see resolveRadiusArcs() in measure-agents.js.

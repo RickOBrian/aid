@@ -85,6 +85,17 @@
     // 'root' with a real selector) — read by mountRadiusPreviews() to try
     // cloning the real DOM node instead of leaving the generic fallback box.
     const radiusPart = options.radiusPart || '';
+    // Legacy {size, value} radius tables (button-text.html, counter-value.html)
+    // list several SIZE VARIANTS of the same part (Large/Medium/Small/Tiny —
+    // all part: 'root') against a single page-wide anatomy sample that is
+    // only ever ONE size. Without an override, mountRadiusPreviews() would
+    // clone that same single instance into every row, so every row draws an
+    // identical arc regardless of its own label (e.g. the "Tiny — pill
+    // 9999px" row would show the Large sample's plain rounded-rect corner,
+    // not a pill). `sampleHtml` lets a row carry its OWN small real-markup
+    // snippet (e.g. `sbt sbt--tiny`) so mountRadiusPreviews() clones from it
+    // instead of the shared sample — see mountRadiusPreviews() below.
+    const sampleHtml = options.sampleHtml || '';
     // Entries without a real design token (legacy {size, value} rows) pass
     // the same string as both tokenName and value — showing both lines
     // would just repeat it twice ("16px 16px"). Show the token-name line
@@ -93,7 +104,7 @@
 
     return `
       <div class="ds-agent-radius"${entryAttr(entryId)}>
-        <div class="ds-agent-radius__preview"${radiusStyle ? ` style="${radiusStyle}"` : ''}${resolveToken ? ` data-resolve-radius="${esc(resolveToken)}"` : ''}${radiusPart ? ` data-radius-part="${esc(radiusPart)}"` : ''}>
+        <div class="ds-agent-radius__preview"${radiusStyle ? ` style="${radiusStyle}"` : ''}${resolveToken ? ` data-resolve-radius="${esc(resolveToken)}"` : ''}${radiusPart ? ` data-radius-part="${esc(radiusPart)}"` : ''}${sampleHtml ? ` data-radius-sample-html="${esc(sampleHtml)}"` : ''}>
           <span class="ds-agent-radius__arc" aria-hidden="true"></span>
         </div>
         <span class="ds-agent-radius__bubble">
@@ -122,21 +133,35 @@
    *     `parts` (legend namespace), in case a page defines the part only
    *     there.
    * No match at all → leave the static fallback box untouched.
+   *
+   * Per-row sample override (`data-radius-sample-html`, see cornerRadius()):
+   * a legacy size-variant row (Large/Medium/Small/Tiny, all the same
+   * `part`) parses its OWN markup into a private detached wrapper and
+   * resolves `sourceEl` against THAT instead of the shared `sample` — so
+   * each row clones the real node for its own size instead of every row
+   * repeating whichever single instance the page-wide sample happens to be.
    */
   function mountRadiusPreviews(container, sample, parts) {
-    if (!container || !sample) return;
+    if (!container) return;
     const spec = window.DS_COMPONENT_SPEC;
 
     container.querySelectorAll('[data-radius-part]').forEach((previewEl) => {
       const partId = previewEl.dataset.radiusPart;
       const specPart = spec && (spec.parts || []).find((p) => p.id === partId);
 
+      let rowSample = sample;
+      if (previewEl.dataset.radiusSampleHtml) {
+        rowSample = document.createElement('div');
+        rowSample.innerHTML = previewEl.dataset.radiusSampleHtml;
+      }
+      if (!rowSample) return;
+
       let sourceEl = null;
-      if (specPart && specPart.selector) sourceEl = sample.querySelector(specPart.selector);
-      if (!sourceEl && partId === 'root') sourceEl = sample.firstElementChild || null;
+      if (specPart && specPart.selector) sourceEl = rowSample.querySelector(specPart.selector);
+      if (!sourceEl && partId === 'root') sourceEl = rowSample.firstElementChild || null;
       if (!sourceEl) {
         const anatomyPart = (parts || []).find((p) => p.id === partId);
-        if (anatomyPart && anatomyPart.selector) sourceEl = sample.querySelector(anatomyPart.selector);
+        if (anatomyPart && anatomyPart.selector) sourceEl = rowSample.querySelector(anatomyPart.selector);
       }
       if (!sourceEl) return;
 
@@ -193,20 +218,36 @@
    *     and height-based value, or a non-square target (a wide pill Chip/
    *     Badge, not just a square Switch) draws an ellipse instead of a
    *     true quarter-circle.
-   *  3. The path traces a circle of that same `radius`, offset outward by
-   *     `RADIUS_ARC_OUTSET` on both axes so it floats just past the
-   *     target's own edge instead of sitting flush on top of it: the arc
-   *     box grows to `radius + RADIUS_ARC_OUTSET` per side and is
-   *     repositioned `RADIUS_ARC_OUTSET` further up/right, while the path
-   *     itself keeps the untouched `radius` — only its position within the
-   *     (now bigger) box shifts by the outset. Tangent points
-   *     `(outset, 0)` → `(outset + radius, radius)` around a center at
-   *     `(outset, radius)`, in the arc box's own local coordinates.
+   *  3. The path traces a circle around the SAME center as the target's
+   *     real corner curvature (`(targetRect.right - radius, targetRect.top
+   *     + radius)`), just with its radius grown to `radius +
+   *     RADIUS_ARC_OUTSET` — a same-center, bigger-radius circle is the
+   *     only offset that stays perpendicular-uniform (a true "hover"
+   *     distance) around the *entire* visible quarter, on every target
+   *     shape. Translating the same-size circle diagonally by the outset
+   *     (the previous approach) keeps that property for an isolated
+   *     rounded-rect corner (radius ≪ target size) but silently breaks it
+   *     for a pill/circle target (`radius === min(width, height) / 2`,
+   *     e.g. CounterValue, Switch, radius-full chips): there the "corner"
+   *     IS the whole boundary, so a center-shifted copy visibly drifts off
+   *     the real circle instead of floating uniformly outside it. Keeping
+   *     the center fixed and growing the radius fixes both cases with the
+   *     same formula — no shape-specific branch needed.
    *  4. `.ds-agent-radius__arc` is kept as a *sibling* of the target inside
    *     `.ds-agent-radius__preview` (never injected into the clone itself,
    *     so a component's own `position` context is never touched) and
    *     positioned via `top`/`right` deltas between the target's and the
    *     preview's `getBoundingClientRect()`, minus the outset.
+   *  5. The path's two endpoints sit exactly on two adjoining edges of its
+   *     own SVG viewport (`(0,0)` and `(drawRadius,drawRadius)`), so the
+   *     2px stroke's half-width bleeds ~1px past the viewport at each
+   *     endpoint. `<svg>` defaults to `overflow: hidden` in the UA
+   *     stylesheet, which shaves that sliver off the two tips — fixed once
+   *     in CSS (`.ds-agent-radius__arc-svg { overflow: visible }`, see
+   *     storybook-spec-inspector.css) rather than by padding every path's
+   *     coordinates here, since none of the ancestors up to
+   *     `.storybook-layout` clip (all `overflow: visible`), so nothing
+   *     downstream needs the arc to stay confined to its own box.
    *
    * Static demonstration section (Guide Page «Скругления», not the
    * anatomy halo) — run once after every `.ds-agent-radius__preview` on
@@ -226,7 +267,15 @@
 
       const realRadiusPx = parseFloat(getComputedStyle(target).borderTopRightRadius) || 0;
       const radius = Math.max(0, Math.min(realRadiusPx, Math.min(targetRect.width, targetRect.height) / 2));
-      const boxSize = radius + RADIUS_ARC_OUTSET;
+
+      if (radius <= 0) {
+        arcHost.innerHTML = '';
+        return;
+      }
+
+      // Same-center, bigger-radius circle (see point 3 above) — the arc
+      // box's own size grows to this new radius on both axes.
+      const drawRadius = radius + RADIUS_ARC_OUTSET;
 
       // CSS `top`/`right` on an absolutely-positioned child are measured from
       // the *padding* edge of its positioned ancestor (`previewEl`), not from
@@ -240,20 +289,16 @@
 
       arcHost.style.top = `${targetRect.top - previewRect.top - RADIUS_ARC_OUTSET - previewBorderTop}px`;
       arcHost.style.right = `${previewRect.right - targetRect.right - RADIUS_ARC_OUTSET - previewBorderRight}px`;
-      arcHost.style.width = `${boxSize}px`;
-      arcHost.style.height = `${boxSize}px`;
+      arcHost.style.width = `${drawRadius}px`;
+      arcHost.style.height = `${drawRadius}px`;
 
-      if (radius <= 0) {
-        arcHost.innerHTML = '';
-        return;
-      }
-      // Local box coordinates, boxSize×boxSize: start at the outset-shifted
-      // top tangent point (outset,0), sweep clockwise to the outset-shifted
-      // right-edge tangent point (outset+radius,radius) around a center at
-      // (outset,radius). `radius` alone sets the curve on both axes (rx===ry
-      // always) — see point 2 above — so the arc stays a true quarter-circle
-      // regardless of the target's own width/height ratio.
-      arcHost.innerHTML = `<svg class="ds-agent-radius__arc-svg" width="${boxSize}" height="${boxSize}" viewBox="0 0 ${boxSize} ${boxSize}" aria-hidden="true"><path d="M ${RADIUS_ARC_OUTSET} 0 A ${radius} ${radius} 0 0 1 ${RADIUS_ARC_OUTSET + radius} ${radius}"/></svg>`;
+      // Local box coordinates, drawRadius×drawRadius: start at the box's own
+      // top-left corner (0,0), sweep clockwise to its bottom-right corner
+      // (drawRadius,drawRadius) around a center at (0,drawRadius) — that
+      // center, translated back to page coordinates, lands exactly on the
+      // target's real corner-curvature center (see point 3), so the curve
+      // is a uniform radial offset of the real corner, not a diagonal copy.
+      arcHost.innerHTML = `<svg class="ds-agent-radius__arc-svg" width="${drawRadius}" height="${drawRadius}" viewBox="0 0 ${drawRadius} ${drawRadius}" aria-hidden="true"><path d="M 0 0 A ${drawRadius} ${drawRadius} 0 0 1 ${drawRadius} ${drawRadius}"/></svg>`;
     });
   }
 

@@ -380,6 +380,77 @@
   color: var(--text-secondary);
 }
 
+/* Size dropdown — rendered only for pages with a multi-entry sizeSamples
+   registry (see anatomySizeSelectHtml in guide-page.js). The trigger wraps
+   the same uppercase size chip used in «Скругления»
+   (.spec-spatial-chip--token) so the control reads as that chip made
+   interactive; the panel/options reuse .spec-select__* from
+   storybook-spec-inspector.css. */
+
+.guide-anatomy-size {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+}
+
+.guide-anatomy-size__label {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.guide-anatomy-size__control {
+  position: relative;
+}
+
+.guide-anatomy-size__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px 3px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.guide-anatomy-size__trigger:hover,
+.guide-anatomy-size__trigger:focus-visible,
+.guide-anatomy-size__trigger[aria-expanded='true'] {
+  border-color: var(--line-strong);
+  background: var(--bg-base-main-secondary);
+  outline: none;
+}
+
+/* The chip inside the trigger is decorative — the button owns the pointer */
+.guide-anatomy-size__trigger .spec-spatial-chip {
+  margin-right: 0;
+  pointer-events: none;
+}
+
+.guide-anatomy-size__panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 140px;
+  max-width: none;
+  z-index: 10;
+}
+
+/* .spec-select__panel sets display:flex, which outranks the UA stylesheet's
+   display:none for [hidden] — without this the closed panel stays visible
+   and in the a11y tree. */
+.guide-anatomy-size__panel[hidden] {
+  display: none;
+}
+
+.guide-anatomy-size__option-label {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+}
+
 .spec-anatomy__frame {
   padding: calc(var(--inset-container-v-xl) + var(--gap-m)) calc(var(--inset-container-h-xl) + var(--gap-m));
   border-radius: var(--radius-xl);
