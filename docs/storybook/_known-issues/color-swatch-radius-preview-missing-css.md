@@ -1,6 +1,10 @@
 # ColorSwatch — missing storybook-colors.css, zero-size radius-preview
 
-**Status:** open  
+**Status:** resolved  
+**Resolved in:** `76f3bfaa5f75a25a3a4f31ea21409720dc8a0908` — добавлен
+`<link rel="stylesheet" href="../storybook-colors.css">` в `<head>`
+`color-swatch.html`; `.color-swatch` получает 32×32 и `border-radius:
+var(--radius-s)`, radius-preview в «Скруглениях» отрисовывает дугу.
 **Component:** `docs/storybook/components/color-swatch.html`  
 **Section:** Guide Page «Скругления» (и, вероятно, anatomy stage)  
 **Token affected:** `radius-s` (Swatch / `part: 'root'`)
@@ -29,7 +33,14 @@
 `storybook-colors.css` отсутствует — элемент в `#spec-sample` / anatomyPreview
 не имеет габаритов и radius даже до клонирования.
 
-## Proposed fix
+## Resolution
+
+Применён proposed fix (коммит `76f3bfa`): в `<head>` `color-swatch.html`
+подключён `../storybook-colors.css`. После фикса клон `.color-swatch` в
+секции «Скругления» — 32×32 px, `resolveRadiusArcs()` рисует дугу
+`radius-s`.
+
+## Proposed fix (historical)
 
 ```html
 <link rel="stylesheet" href="../storybook-colors.css">
