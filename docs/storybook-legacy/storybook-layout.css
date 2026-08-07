@@ -1,0 +1,740 @@
+/* Storybook layout — header + sidebar + content (no TOC column) */
+
+.storybook-layout {
+  display: grid;
+  grid-template-columns: 256px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "header header"
+    "sidenav content";
+  min-height: 100vh;
+  background: var(--bg-base-main);
+}
+
+.storybook-layout__header  { grid-area: header; }
+.storybook-layout__sidenav { grid-area: sidenav; }
+.storybook-layout__content {
+  grid-area: content;
+  min-width: 0;
+  padding: 20px 32px 96px 24px;
+  background: var(--bg-base-main);
+}
+
+.storybook-layout .layout__header {
+  border-bottom: 1px solid var(--line-default);
+  box-shadow: none;
+}
+
+.storybook-layout .layout__sidebar {
+  background: var(--bg-card-main);
+  border-right: 1px solid var(--line-default);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 20px 8px 16px;
+  position: sticky;
+  top: 57px;
+  height: calc(100vh - 57px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.storybook-nav {
+  flex: 1;
+}
+
+.storybook-nav__section-label {
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-secondary);
+  padding: 20px 12px 6px;
+  line-height: 1;
+}
+
+.storybook-nav__section-label:first-child {
+  padding-top: 8px;
+}
+
+.storybook-nav__group-label {
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-disabled);
+  padding: 10px 12px 2px 20px;
+  line-height: 1;
+}
+
+.storybook-nav__item--grouped {
+  padding-left: 20px;
+}
+
+.storybook-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1px 4px;
+  padding: 7px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: var(--label-s-weight);
+  border-radius: var(--radius-full);
+  transition: background-color 0.18s var(--doc-ease-spring, ease),
+              color 0.18s var(--doc-ease-spring, ease);
+}
+
+.storybook-nav__item:hover {
+  background-color: var(--bg-accent-states-hover);
+  color: var(--text-primary);
+}
+
+.storybook-nav__item.is-active {
+  background-color: var(--bg-accent-main);
+  color: var(--text-inverse);
+  font-weight: 600;
+}
+
+.storybook-nav__item.is-planned {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.storybook-nav__status {
+  margin-left: auto;
+  font-size: var(--meta-xs-size);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-disabled);
+}
+
+.storybook-nav__item.is-active .storybook-nav__status {
+  color: var(--text-inverse);
+  opacity: 0.8;
+}
+
+.storybook-nav__footer {
+  margin-top: auto;
+  padding: 16px 8px 8px;
+  border-top: 1px solid var(--line-default);
+}
+
+.storybook-nav__back {
+  display: block;
+  padding: 8px 12px;
+  font-size: var(--label-s-size);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-full);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.storybook-nav__back:hover {
+  background: var(--bg-accent-states-hover);
+  color: var(--text-accent);
+}
+
+.storybook-header__title {
+  font-size: var(--heading-s-size);
+  line-height: var(--heading-s-lh);
+  font-weight: var(--heading-s-weight);
+  color: var(--text-primary);
+}
+
+.storybook-page-header {
+  margin-bottom: 28px;
+}
+
+.storybook-page-header h1 {
+  font-size: var(--heading-xl-size);
+  line-height: var(--heading-xl-lh);
+  font-weight: var(--heading-xl-weight);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.storybook-page-header p {
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+}
+
+.storybook-section {
+  margin-bottom: 40px;
+}
+
+.storybook-section h2 {
+  font-size: var(--heading-m-size);
+  line-height: var(--heading-m-lh);
+  font-weight: var(--heading-m-weight);
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.token-editor-input {
+  width: 100%;
+  min-width: 88px;
+  padding: 6px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-s);
+  transition: border-color 0.15s ease;
+}
+
+.token-editor-input:focus {
+  outline: none;
+  border-color: var(--line-accent);
+}
+
+.token-editor-input.is-modified {
+  border-color: var(--line-accent);
+  background: var(--bg-accent-ghost);
+}
+
+.storybook-token-group {
+  margin-bottom: 32px;
+}
+
+.storybook-token-group:last-child {
+  margin-bottom: 0;
+}
+
+.storybook-token-group h3 {
+  font-size: var(--heading-s-size);
+  line-height: var(--heading-s-lh);
+  font-weight: var(--heading-s-weight);
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.storybook-token-scope-note {
+  margin-top: 16px;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.component-doc-breadcrumb {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: var(--gap-xs);
+}
+
+.component-doc-breadcrumb a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.component-doc-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.storybook-token-scope-note a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.storybook-token-scope-note a:hover {
+  text-decoration: underline;
+}
+
+.storybook-token-scope-note code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-xs-size);
+}
+
+.token-preview-cell {
+  vertical-align: middle;
+  width: 32%;
+}
+
+.token-preview {
+  display: block;
+  max-width: 100%;
+  color: var(--text-primary);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.token-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.token-category {
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.storybook-save-bar {
+  position: fixed;
+  bottom: 24px;
+  right: 32px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-l);
+  box-shadow: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.storybook-save-bar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.storybook-save-bar__count {
+  font-size: var(--label-s-size);
+  color: var(--text-secondary);
+}
+
+.storybook-btn {
+  padding: 8px 16px;
+  font-size: var(--label-m-size);
+  font-weight: var(--label-m-weight);
+  line-height: var(--label-m-lh);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.storybook-btn--primary {
+  background: var(--bg-accent-main);
+  color: var(--text-inverse);
+}
+
+.storybook-btn--primary:hover {
+  background: var(--bg-accent-states-pressed);
+}
+
+.storybook-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.storybook-btn--secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--line-default);
+}
+
+.storybook-btn--secondary:hover {
+  color: var(--text-primary);
+  background: var(--bg-accent-states-hover);
+  border-color: var(--line-strong);
+}
+
+.storybook-btn--secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.storybook-status {
+  font-size: var(--label-s-size);
+  color: var(--text-secondary);
+}
+
+.storybook-status.is-error {
+  color: var(--text-error);
+}
+
+.storybook-status.is-success {
+  color: var(--text-accent);
+}
+
+/* ============================================================
+   Component specs — read-only spec pages (Storybook → Components)
+   ============================================================
+   Pattern: wide single-column spec page (title + metadata badges →
+   full-width preview → two-column body: prose/definition/alert blocks
+   in the main column, Confidence detail + token chips in a sticky
+   sidebar). Replaces the old card-grid + table-of-key-values layout,
+   which squeezed long-form rationale, slot/variant descriptions and
+   violation notes into narrow table cells. Tables are reserved for
+   genuinely tabular data (e.g. the live Table-component preview
+   sample) — everything below is key→long-value or list content, so
+   it renders as prose, <dl> definition blocks, chip clouds and alert
+   cards instead. */
+
+.spec-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gap-m);
+  margin-bottom: 4px;
+}
+
+.spec-title-row h1 {
+  margin-bottom: 0;
+}
+
+.spec-alt-name {
+  font-size: var(--heading-s-size);
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.spec-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding-top: 6px;
+  flex-wrap: wrap;
+}
+
+.spec-confidence {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--inset-control-v-xs) var(--inset-control-h-xs);
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  line-height: var(--meta-xs-lh);
+  font-weight: var(--meta-xs-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.spec-confidence--high {
+  background: var(--bg-accent-status-success);
+  color: var(--text-success);
+}
+
+.spec-confidence--medium {
+  background: var(--bg-accent-status-warning);
+  color: var(--text-primary);
+}
+
+.spec-confidence--low {
+  background: var(--bg-accent-status-error);
+  color: var(--text-error);
+}
+
+.spec-preview {
+  margin-bottom: 32px;
+}
+
+.spec-preview__label {
+  display: block;
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.spec-preview__stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: var(--inset-container-v-xl) var(--inset-container-h-xl);
+  background: var(--bg-base-main-secondary);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-m);
+  min-height: 96px;
+}
+
+.spec-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  align-items: start;
+}
+
+.spec-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+.spec-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  position: sticky;
+  top: 20px;
+}
+
+.spec-block__title {
+  font-size: var(--heading-xs-size);
+  line-height: var(--heading-xs-lh);
+  font-weight: var(--heading-xs-weight);
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.spec-block__text {
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.spec-block__text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
+
+.spec-block__note {
+  margin-top: 12px;
+  max-width: 72ch;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+  padding: 10px 12px;
+  background: var(--bg-accent-status-attention);
+  border-radius: var(--radius-s);
+}
+
+.spec-block__note code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+/* Definition-style blocks — slots / variants: structured name → long-form
+   description. A table would force every description into one row height
+   and one narrow column; a definition list lets each value wrap and breathe. */
+.spec-defs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  max-width: 72ch;
+}
+
+.spec-defs__row {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: var(--gap-m);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-defs__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.spec-defs__row dt {
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-defs__row dd {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-defs__row code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+/* Violations — independent list items with a severity tag, not table rows. */
+.spec-alerts {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  max-width: 72ch;
+}
+
+.spec-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-alert__tag {
+  align-self: flex-start;
+  font-size: var(--meta-xs-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.spec-alert--blocker .spec-alert__tag {
+  background: var(--bg-accent-status-error);
+  color: var(--text-error);
+}
+
+.spec-alert--gap .spec-alert__tag {
+  background: var(--bg-accent-status-warning);
+  color: var(--text-primary);
+}
+
+.spec-alert--quality .spec-alert__tag {
+  background: var(--bg-base-main-secondary);
+  color: var(--text-secondary);
+}
+
+.spec-alert__text {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-alert__text code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
+
+.spec-clean-note {
+  max-width: 72ch;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-success);
+}
+
+/* Sidebar cards — Confidence detail + semantic-token chip cloud. */
+.spec-card {
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-l);
+}
+
+.spec-card__title {
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.spec-card__text {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-card__hint {
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.spec-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+}
+
+@media (max-width: 1100px) {
+  .spec-layout {
+    grid-template-columns: 1fr;
+  }
+  .spec-aside {
+    position: static;
+  }
+}
+
+.component-category {
+  margin-bottom: 28px;
+}
+
+.component-category:last-child {
+  margin-bottom: 0;
+}
+
+.component-category__title {
+  font-size: var(--heading-s-size);
+  line-height: var(--heading-s-lh);
+  font-weight: var(--heading-s-weight);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.component-category__desc {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.component-category__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding: 0;
+}
+
+.component-category__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  padding: var(--inset-control-v-s) var(--inset-control-h-m);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+}
+
+.component-category__item a {
+  font-size: var(--label-m-size);
+  line-height: var(--label-m-lh);
+  font-weight: var(--label-m-weight);
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+.component-category__item a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .storybook-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "content";
+  }
+  .storybook-layout__sidenav { display: none; }
+  .storybook-save-bar {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}

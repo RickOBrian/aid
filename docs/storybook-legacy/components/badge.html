@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badge — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/docs-theme.css">
+  <link rel="stylesheet" href="../storybook-color-tokens.css">
+  <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="components/badge">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
+    <header class="storybook-page-header">
+      <div class="spec-title-row">
+        <h1>Badge</h1>
+        <div class="spec-badges">
+          <span class="chip">Surface View</span>
+          <span class="spec-confidence spec-confidence--high">high</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="component-heading">
+
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <span class="badge badge--stable">Stable</span>
+          <span class="badge badge--draft">Draft</span>
+          <span class="badge badge--core">Core</span>
+          <span class="badge badge--semantic">Semantic</span>
+        </div>
+      </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">Surface View — прямой пример из <code>ds-component-architecture-guide.md</code> (раздел 5).</p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--blocker">
+                <span class="spec-alert__tag">Blocker</span>
+                <p class="spec-alert__text">
+                  <code>padding: 2px var(--inset-control-h-xs)</code> — вертикальный отступ
+                  захардкожен (<code>2px</code>), нет ссылки на inset-токен.
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">high — уровень подтверждён прямым примером («Badge | Бейдж без вариантов», раздел 5).</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'Badge',
+  interactive: false,
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.badge',
+      description: 'Пилюля бейджа; текст — прямой контент без отдельного DOM-узла.',
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      { part: 'root', property: 'padding (гориз.)', token: 'inset-control-h-xs',
+        edit: { file: 'docs/assets/style.css', selector: '.badge' } },
+      {
+        part: 'root',
+        property: 'padding (верт.)',
+        value: '2px',
+        hardcoded: true,
+        note: 'Blocker — нет ссылки на inset-токен; см. «Нарушения».',
+        edit: { file: 'docs/assets/style.css', selector: '.badge', prop: 'padding' },
+      },
+    ],
+    colors: [
+      { context: 'variant: stable', part: 'root', property: 'background', token: 'bg-accent-status-success', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--stable' } },
+      { context: 'variant: stable', part: 'root', property: 'color', token: 'text-success', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--stable' } },
+      { context: 'variant: draft', part: 'root', property: 'background', token: 'bg-accent-status-warning', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--draft' } },
+      { context: 'variant: draft', part: 'root', property: 'color', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--draft' } },
+      { context: 'variant: core', part: 'root', property: 'background', token: 'bg-accent-ghost', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: core', part: 'root', property: 'color', token: 'text-accent', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: core', part: 'root', property: 'border', token: 'bg-accent-fade', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--core' } },
+      { context: 'variant: semantic', part: 'root', property: 'background', token: 'bg-accent-status-attention', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--semantic' } },
+      { context: 'variant: semantic', part: 'root', property: 'color', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.badge--semantic' } },
+    ],
+    borders: [
+      // derived: radius-full дублируется правилом .badge в docs-theme.css —
+      // авто-правка одного из двух источников была бы частичной
+      { part: 'root', property: 'border-radius', token: 'radius-full' },
+    ],
+    typography: [
+      {
+        part: 'root',
+        role: 'label-xs',
+        tokens: ['label-xs-size', 'label-xs-lh', 'label-xs-weight'],
+        sample: 'Stable',
+        edit: { file: 'docs/assets/style.css', selector: '.badge', roles: ['label'] },
+      },
+    ],
+  },
+};
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'Badge',
+  description: 'Пилюля-метка статуса без текстового слота-контента — прямой текст. Некликабельна, всегда рядом с сущностью, которую описывает.',
+  version: '1.0.0',
+  status: 'stable',
+  // #spec-sample выше — общий Preview-блок (4 appearance-варианта), нужен
+  // целиком для секции Preview и для «Цвета и состояния» — не сокращаем.
+  // Для anatomy-стейджа достаточно 1 инстанса (container+label — один и тот
+  // же .badge), поэтому отдельный минимальный сэмпл — anatomy-annotation-
+  // standard.md п. 4.1.
+  anatomyPreview: '<span class="badge badge--stable">Stable</span>',
+  anatomy: [
+    { id: 'container', label: 'Container', selector: '.badge', optional: false,
+      description: 'Пилюля-оболочка: фон (по variant), border-radius, padding.' },
+    { id: 'label', label: 'Label', selector: '.badge', targetType: 'text', optional: false,
+      description: 'Прямой текстовый контент пилюли, без отдельного DOM-узла.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  appearance: [
+    { fillType: 'Tinted (единственный тип заливки)', variants: [
+      { name: 'Stable', bg: 'bg-accent-status-success', text: 'text-success', sample: 'Stable' },
+      { name: 'Draft', bg: 'bg-accent-status-warning', text: 'text-primary', sample: 'Draft' },
+      { name: 'Core', bg: 'bg-accent-ghost', text: 'text-accent', border: 'bg-accent-fade', sample: 'Core' },
+      { name: 'Semantic', bg: 'bg-accent-status-attention', text: 'text-primary', sample: 'Semantic' },
+    ] },
+  ],
+  states: [],
+};
+</script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+/* Product Typography — read-only overrides on top of storybook-layout.css */
+
+.product-typo-preview__role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.product-typo-preview__badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.product-typo-preview__desc {
+  margin: 8px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}

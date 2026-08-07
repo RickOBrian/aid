@@ -1,0 +1,1711 @@
+/* ============================================================
+   Spec Inspector — стили inspection/measure blocks для
+   component spec pages (рендерятся spec-inspector.js).
+   Все цвета — только через semantic-токены.
+   ============================================================ */
+
+/* Mount прозрачен для flex-потока spec-main: блоки инспектора
+   становятся её прямыми детьми и получают общий вертикальный ритм. */
+#spec-inspector {
+  display: contents;
+}
+
+.spec-inspect__hint {
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+  margin-bottom: 14px;
+}
+
+/* ---------- measure rows (inspect-panel style) ---------- */
+
+.spec-measure {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  overflow: hidden;
+}
+
+.spec-measure + .spec-measure {
+  margin-top: var(--gap-s);
+}
+
+.spec-measure__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.2fr) minmax(160px, 1fr) minmax(90px, auto);
+  gap: var(--gap-s) var(--gap-m);
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-measure__row:last-child {
+  border-bottom: none;
+}
+
+.spec-measure__row--violation {
+  background: var(--bg-accent-status-error);
+}
+
+.spec-measure__target {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-measure__token {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  min-width: 0;
+}
+
+.spec-measure__value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.spec-measure__value--violation {
+  color: var(--text-error);
+  font-weight: 600;
+}
+
+.spec-measure__note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-measure__note code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-measure__context {
+  font-size: var(--label-xs-size);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 14px 0 6px;
+}
+
+.spec-measure__context:first-child {
+  margin-top: 0;
+}
+
+/* Захардкоженное значение — visually отличимо от токена */
+.spec-hardcode {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--line-strong);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.spec-hardcode--violation {
+  border-color: var(--text-error);
+  color: var(--text-error);
+}
+
+/* ---------- color swatch in rows ---------- */
+
+.spec-swatch {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-default);
+}
+
+/* ---------- anatomy (Figma guide block · node 16:3754) ---------- */
+
+.spec-anatomy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.spec-anatomy__frame {
+  padding: calc(var(--inset-container-v-xl) + var(--gap-s)) calc(var(--inset-container-h-xl) + var(--gap-s));
+  border-radius: var(--radius-2xl);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-anatomy__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--inset-container-v-xl) * 10);
+  padding: var(--inset-container-v-l) var(--inset-container-h-l);
+}
+
+.spec-anatomy__stage > :not(.spec-anatomy-callout-svg) {
+  position: relative;
+  z-index: 1;
+}
+
+.spec-anatomy-callout-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.spec-anatomy-callout__line {
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+  transition: stroke-width 180ms ease;
+}
+
+/* Widens the hit-area for hover without widening the visible stroke —
+   sits on top of the thin visible line, fully transparent. */
+.spec-anatomy-callout__line-hit {
+  stroke: transparent;
+  stroke-width: 12;
+  fill: none;
+  pointer-events: stroke;
+}
+
+.spec-anatomy-callout__dot {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout__badge {
+  fill: var(--bg-accent-main);
+}
+
+.spec-anatomy-callout {
+  pointer-events: auto;
+  cursor: default;
+}
+
+.spec-anatomy-callout__label {
+  fill: var(--text-inverse);
+  font-family: var(--font-family-sans, Inter, system-ui, sans-serif);
+  font-size: var(--label-s-size);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Small-target disambiguation + hover halo: tick at the anchor for small
+   targets, and — for every anatomy target, unconditionally — either a
+   tonal backdrop (normal size) or a full outline (too tiny for a point to
+   read unambiguously) — see measure-agents.js mountAnatomyCallouts.
+   Badges/lines/ticks stay visible at rest; the halo (highlight fill /
+   outline stroke) is hover-only — see .is-active rules below — so the
+   resting preview reads clean and the halo appears only on demand. */
+.spec-anatomy-callout__tick {
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+}
+
+.spec-anatomy-callout__highlight {
+  fill: none;
+  stroke: var(--bg-accent-main);
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.spec-anatomy-callout__outline {
+  fill: none;
+  stroke: var(--bg-accent-main);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.spec-anatomy-callout.is-active .spec-anatomy-callout__badge {
+  stroke: var(--bg-card-main);
+  stroke-width: 2;
+}
+
+/* .is-active is set directly on each node sharing data-part (see
+   wireAnatomyLegend) — line/tick/outline/highlight are siblings at the SVG
+   root, not descendants of the .spec-anatomy-callout badge group, so they
+   need their own is-active rule rather than the descendant form above. */
+.spec-anatomy-callout__line.is-active {
+  stroke-width: 2;
+}
+
+.spec-anatomy-callout__tick.is-active {
+  stroke-width: 2.5;
+}
+
+.spec-anatomy-callout__outline.is-active {
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.spec-anatomy-callout__highlight.is-active {
+  opacity: 1;
+}
+
+.spec-anatomy__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  max-width: 72ch;
+}
+
+.spec-anatomy__item {
+  display: flex;
+  gap: var(--gap-m);
+  align-items: flex-start;
+}
+
+.spec-anatomy__bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--bg-anatomy-bullet);
+  color: var(--text-inverse);
+  font-size: var(--label-s-size);
+  line-height: 16px;
+  font-weight: 600;
+}
+
+.spec-anatomy__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.spec-anatomy__title {
+  margin: 0;
+  font-size: var(--body-m-size);
+  line-height: var(--body-m-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-anatomy__title--nested a,
+.spec-anatomy__title--nested {
+  color: var(--text-anatomy-nested);
+}
+
+.spec-anatomy__title--nested a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.spec-anatomy__title--nested a:hover {
+  color: var(--text-accent);
+}
+
+.spec-anatomy__desc {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-anatomy__desc code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+.spec-anatomy__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-primary);
+}
+
+/* Legend row hosts the real production Switch (.switch / .switch__knob,
+   docs/assets/style.css) directly — see anatomyLegendItem in
+   measure-agents.js. No legend-specific switch styles needed here. */
+
+/* legacy pin styles — больше не используются на stage, оставлены для совместимости */
+.spec-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: var(--radius-full);
+  background: var(--bg-accent-main);
+  color: var(--text-inverse);
+  font-size: var(--meta-xs-size);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.spec-pin--stage {
+  position: absolute;
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--bg-card-main);
+  pointer-events: none;
+}
+
+.spec-anatomy__legend .spec-nested {
+  margin-top: 0;
+}
+
+.spec-anatomy__name {
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+}
+
+.spec-anatomy__name code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.spec-anatomy__desc {
+  margin: 0;
+  font-size: var(--body-s-size);
+  line-height: var(--body-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-anatomy__desc code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+.spec-nested {
+  margin: 4px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  display: inline-block;
+}
+
+.spec-nested a {
+  color: var(--text-accent);
+}
+
+/* Подсветка части на сэмпле при hover по строке */
+.spec-part-highlight {
+  outline: 2px solid var(--bg-accent-main);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
+}
+
+.spec-measure__row[data-part],
+.spec-anatomy__item[data-part],
+.spec-inset-diagram[data-part],
+.spec-gap-diagram[data-part],
+.spec-offset-diagram[data-part],
+.spec-radius-diagram[data-part] {
+  cursor: default;
+}
+
+.spec-measure__row[data-part]:hover,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title,
+.spec-anatomy__item[data-part]:hover .spec-anatomy__title a,
+.spec-inset-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-gap-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-offset-diagram[data-part]:hover .spec-spatial-frame__part,
+.spec-radius-diagram[data-part]:hover .spec-spatial-frame__part {
+  color: var(--text-accent);
+}
+
+/* ---------- typography views ---------- */
+
+.spec-type {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.spec-type + .spec-type {
+  margin-top: var(--gap-s);
+}
+
+.spec-type__sample {
+  margin: 0 0 6px;
+  color: var(--text-primary);
+}
+
+.spec-type__role {
+  margin: 0 0 10px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-type__tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-s) var(--gap-m);
+  margin-bottom: 6px;
+}
+
+.spec-type__token {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.spec-type .spec-measure {
+  margin-top: var(--gap-s);
+}
+
+/* ---------- hit area ---------- */
+
+.spec-hit-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-s-size);
+  color: var(--text-primary);
+}
+
+.spec-hit-ok {
+  color: var(--text-success);
+}
+
+.spec-hit-warn {
+  color: var(--text-error);
+  font-weight: 600;
+}
+
+/* ---------- sidebar: inspection index ---------- */
+
+.spec-index__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  padding: 6px 0;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-default);
+}
+
+.spec-index__item:last-of-type {
+  border-bottom: none;
+}
+
+.spec-index__item:hover {
+  color: var(--text-accent);
+}
+
+.spec-index__count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.spec-index__skipped {
+  margin: 10px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 700px) {
+  .spec-measure__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .spec-measure__value {
+    text-align: left;
+  }
+}
+
+/* ============================================================
+   Spec Editor — editable-слой (spec-editor.js)
+   ============================================================ */
+
+.spec-editor-note {
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  max-width: 72ch;
+  margin: 0;
+}
+
+/* Trigger typed dropdown — сохраняет вид token-chip + chevron */
+.spec-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+}
+
+.spec-select__trigger:hover,
+.spec-select__trigger[aria-expanded='true'] {
+  border-color: var(--line-strong);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-select__trigger--role {
+  margin-left: var(--gap-s);
+  font-size: var(--label-xs-size);
+  color: var(--text-accent);
+}
+
+.spec-select__chevron {
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* Overlay-панель — портал в body, fixed: не обрезается контейнерами */
+.spec-select__panel {
+  z-index: 1000;
+  min-width: 260px;
+  max-width: 360px;
+  overflow-y: auto;
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-select__option {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-primary);
+}
+
+.spec-select__option:hover,
+.spec-select__option:focus-visible {
+  background: var(--bg-accent-states-hover);
+  outline: none;
+}
+
+.spec-select__option.is-selected {
+  color: var(--text-accent);
+}
+
+.spec-select__option-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spec-select__option-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Direct value fields */
+.spec-hardcode--editable {
+  cursor: pointer;
+}
+
+.spec-hardcode--editable:hover,
+.spec-hardcode--editable:focus-visible {
+  border-style: solid;
+  border-color: var(--line-strong);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.spec-edit-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-accent);
+  background: var(--bg-card-main);
+  color: var(--text-primary);
+  width: 110px;
+  outline: none;
+}
+
+/* Несохранённое изменение строки */
+.spec-measure__row.is-modified,
+.spec-type.is-modified {
+  border-left: 3px solid var(--bg-accent-main);
+}
+
+/* ---------- spatial measure presentation ---------- */
+
+.spec-spatial-group + .spec-spatial-group,
+.spec-spatial-scope + .spec-spatial-group,
+.spec-spatial-group + .spec-spatial-scope {
+  margin-top: var(--gap-m);
+}
+
+.spec-spatial-scope--nested {
+  margin-top: var(--gap-m);
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-spatial-scope__label {
+  margin: 0 0 8px;
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-spatial-group__label {
+  margin: 0 0 4px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: var(--label-xs-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.spec-spatial-group__hint {
+  margin: 0 0 12px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+.spec-spatial-frame {
+  margin-bottom: 12px;
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.spec-spatial-frame__part {
+  margin: 0 0 10px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spec-spatial-frame__derived {
+  margin: 8px 0 0;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-spatial-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  margin-right: 6px;
+  border: 1px solid var(--line-default);
+  color: var(--text-secondary);
+  background: var(--bg-card-main);
+}
+
+.spec-spatial-chip--token {
+  border-color: var(--line-accent);
+  color: var(--text-accent);
+}
+
+.spec-spatial-chip--hardcode {
+  border-style: dashed;
+  color: var(--text-error);
+  border-color: var(--text-error);
+}
+
+.spec-spatial-chip--editable {
+  border-color: var(--line-strong);
+  color: var(--text-primary);
+}
+
+.spec-spatial-chip--derived {
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+
+/* outer / container inset diagram */
+.spec-inset-diagram__shell {
+  display: flex;
+  flex-direction: column;
+  max-width: 280px;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  background: var(--bg-card-main);
+}
+
+.spec-inset-diagram__mid {
+  display: flex;
+  align-items: stretch;
+  min-height: 56px;
+}
+
+.spec-spatial-group__controls {
+  margin: 12px 0 6px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.spec-inset-diagram__band {
+  position: relative;
+  background: var(--bg-accent-states-hover);
+  border: 1px solid var(--line-accent);
+}
+
+.spec-inset-diagram__band-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-accent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.spec-inset-diagram__axis,
+.spec-gap-diagram__axis,
+.spec-offset-diagram__axis {
+  display: inline-flex;
+  padding: 0 4px;
+  border-radius: var(--radius-s);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: var(--bg-card-main);
+  border: 1px solid var(--line-default);
+}
+
+/* inner gap diagram */
+.spec-gap-diagram__bridge {
+  --spec-gap-width: 64px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 320px;
+}
+
+.spec-inset-diagram__band--top {
+  height: var(--spec-pad-top, 14px);
+  min-height: 10px;
+}
+
+.spec-inset-diagram__band--bottom {
+  height: var(--spec-pad-bottom, 14px);
+  min-height: 10px;
+}
+
+.spec-inset-diagram__band--left {
+  width: var(--spec-pad-left, 14px);
+  min-width: 10px;
+}
+
+.spec-inset-diagram__band--right {
+  width: var(--spec-pad-right, 14px);
+  min-width: 10px;
+}
+
+.spec-inset-diagram__content {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+  border: 1px dashed var(--line-default);
+  background: var(--bg-card-main);
+}
+
+.spec-inset-diagram__anns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.spec-inset-diagram__ann-row + .spec-inset-diagram__ann-row {
+  margin-top: 4px;
+}
+
+.spec-inset-diagram__ann {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-inset-diagram__ann code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-inset-diagram__ann em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-radius-diagram__callout {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  padding: 2px 6px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--line-accent);
+  background: var(--bg-accent-states-hover);
+  font-size: var(--meta-xs-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-accent);
+}
+
+.spec-gap-diagram__bridge + .spec-gap-diagram__bridge {
+  margin-top: 10px;
+}
+
+.spec-gap-diagram__cell {
+  flex: 0 0 48px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.spec-gap-diagram__measure {
+  flex: 0 0 var(--spec-gap-width, 64px);
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 48px;
+  padding: 0 4px;
+}
+
+.spec-gap-diagram__line {
+  display: block;
+  width: 100%;
+  height: 0;
+  border-top: 2px solid var(--line-accent);
+  position: relative;
+}
+
+.spec-gap-diagram__line::before,
+.spec-gap-diagram__line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.spec-gap-diagram__line::before {
+  left: 0;
+  border-right: 6px solid var(--line-accent);
+}
+
+.spec-gap-diagram__line::after {
+  right: 0;
+  border-left: 6px solid var(--line-accent);
+}
+
+.spec-gap-diagram__label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-gap-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-gap-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* zone offset diagram */
+.spec-offset-diagram__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.spec-offset-diagram__stack + .spec-offset-diagram__stack {
+  margin-top: 12px;
+}
+
+.spec-offset-diagram__zone {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-offset-diagram__bridge {
+  font-size: var(--label-s-size);
+  color: var(--line-accent);
+  line-height: 1;
+}
+
+.spec-offset-diagram__label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--line-accent);
+  border-radius: var(--radius-s);
+  background: var(--bg-accent-states-hover);
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-offset-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-offset-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* radius diagram */
+.spec-radius-diagram__stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-m);
+}
+
+.spec-radius-diagram__box {
+  width: 96px;
+  height: 72px;
+  border: 2px solid var(--line-accent);
+  background: var(--bg-card-main);
+  position: relative;
+}
+
+.spec-radius-diagram__corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-top: 2px solid var(--line-accent);
+  border-left: 2px solid var(--line-accent);
+  border-top-left-radius: inherit;
+  pointer-events: none;
+}
+
+.spec-radius-diagram__label {
+  margin: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: var(--label-xs-size);
+  color: var(--text-primary);
+}
+
+.spec-radius-diagram__label code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.spec-radius-diagram__label em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* ---------- prototype: outer inset measure card (Card page) ----------
+   Documentation-card подача: спокойный сэмпл-объект, один акцент на
+   dimension lines, metadata — secondary area под разделителем. */
+
+.spec-measure-card {
+  border: 1px solid var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-card-main);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.spec-measure-card__stage {
+  padding: var(--inset-container-v-m) var(--inset-container-h-m);
+}
+
+.spec-measure-card__caption {
+  margin: 0 0 14px;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+/* Границы объекта: контур компонента, отступ задаётся живыми pad-переменными */
+.spec-measure-card__object {
+  position: relative;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: var(--spec-pad-top, 14px) var(--spec-pad-right, 14px)
+    var(--spec-pad-bottom, 14px) var(--spec-pad-left, 14px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+}
+
+.spec-measure-card__content {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-s);
+  background: var(--bg-base-main-secondary);
+  font-size: var(--meta-xs-size);
+  color: var(--text-secondary);
+}
+
+/* dimension lines — единственный акцентный элемент кадра */
+.spec-measure-card__dim {
+  position: absolute;
+  pointer-events: none;
+}
+
+.spec-measure-card__dim--v {
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: var(--spec-pad-top, 14px);
+  border-left: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--h {
+  top: 50%;
+  left: 0;
+  width: var(--spec-pad-left, 14px);
+  height: 0;
+  border-top: 1px solid var(--line-accent);
+}
+
+/* концевые засечки */
+.spec-measure-card__dim--v::before,
+.spec-measure-card__dim--v::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 6px;
+  height: 0;
+  border-top: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--v::before { top: 0; }
+.spec-measure-card__dim--v::after { bottom: 0; }
+
+.spec-measure-card__dim--h::before,
+.spec-measure-card__dim--h::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  height: 6px;
+  width: 0;
+  border-left: 1px solid var(--line-accent);
+}
+
+.spec-measure-card__dim--h::before { left: 0; }
+.spec-measure-card__dim--h::after { right: 0; }
+
+.spec-measure-card__val {
+  position: absolute;
+  z-index: 1;
+  padding: 1px 5px;
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--meta-xs-size);
+  color: var(--text-accent);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.spec-measure-card__val--v {
+  top: calc(var(--spec-pad-top, 14px) / 2);
+  left: 50%;
+  transform: translate(7px, -50%);
+}
+
+.spec-measure-card__val--h {
+  top: 50%;
+  left: calc(var(--spec-pad-left, 14px) / 2);
+  transform: translate(-50%, calc(-100% - 5px));
+}
+
+/* статусы без токена: derived — нейтральный, hardcode — предупреждающий */
+.spec-measure-card__dim--derived,
+.spec-measure-card__dim--derived::before,
+.spec-measure-card__dim--derived::after {
+  border-color: var(--line-strong);
+}
+
+.spec-measure-card__val--derived {
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__dim--hardcode,
+.spec-measure-card__dim--hardcode::before,
+.spec-measure-card__dim--hardcode::after {
+  border-color: var(--text-error);
+}
+
+.spec-measure-card__val--hardcode {
+  color: var(--text-error);
+}
+
+/* metadata — secondary area внутри той же карточки */
+.spec-measure-card__meta {
+  border-top: 1px solid var(--line-default);
+}
+
+.spec-measure-card__meta-caption {
+  margin: 12px 14px 4px;
+  font-size: var(--meta-xs-size);
+  line-height: var(--label-s-lh);
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__meta .spec-measure {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.spec-spatial-group--nested .spec-spatial-frame {
+  border-style: dashed;
+}
+
+.spec-spatial-group--nested .spec-measure {
+  border-style: dashed;
+}
+
+/* ============================================================
+   DS Measure Agents — Figma [AGENT] kit (node 2507:1085)
+   ============================================================ */
+
+.ds-agent-gap-pad {
+  --ds-agent-band-size: 24px;
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+}
+
+.ds-agent-gap-pad--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 8px;
+  min-height: 55px;
+}
+
+.ds-agent-gap-pad--horizontal {
+  flex-direction: row;
+  align-items: center;
+  width: max(var(--ds-agent-band-size), 44px);
+  height: 8px;
+}
+
+.ds-agent-gap-pad__band {
+  flex: 1 1 auto;
+  min-width: 1px;
+  min-height: 1px;
+}
+
+.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  width: 100%;
+  height: var(--ds-agent-band-size);
+}
+
+.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  width: var(--ds-agent-band-size);
+  height: 100%;
+}
+
+.ds-agent-gap-pad--gap .ds-agent-gap-pad__band {
+  background: var(--bg-measure-gap-fill);
+  border: 1px dashed var(--line-measure-gap);
+}
+
+.ds-agent-gap-pad--gap.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  border-left: none;
+  border-right: none;
+}
+
+.ds-agent-gap-pad--gap.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  border-top: none;
+  border-bottom: none;
+}
+
+.ds-agent-gap-pad--padding .ds-agent-gap-pad__band {
+  background: var(--bg-measure-inset-fill);
+  border: 1px dashed var(--line-measure-inset);
+}
+
+.ds-agent-gap-pad--padding.ds-agent-gap-pad--vertical .ds-agent-gap-pad__band {
+  border-left: none;
+  border-right: none;
+}
+
+.ds-agent-gap-pad--padding.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__band {
+  border-top: none;
+  border-bottom: none;
+}
+
+.ds-agent-gap-pad__bubble {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 3px;
+  border-radius: 3.5px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-gap-pad--vertical .ds-agent-gap-pad__bubble {
+  left: 50%;
+  bottom: -21px;
+  transform: translateX(-50%);
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ds-agent-gap-pad--horizontal .ds-agent-gap-pad__bubble {
+  top: 50%;
+  left: calc(100% + 6px);
+  transform: translateY(-50%);
+}
+
+.ds-agent-gap-pad--gap .ds-agent-gap-pad__bubble {
+  background: var(--bg-measure-gap-bubble);
+  color: var(--text-inverse);
+}
+
+.ds-agent-gap-pad--padding .ds-agent-gap-pad__bubble {
+  background: var(--bg-measure-inset-bubble);
+  color: var(--text-inverse);
+}
+
+.ds-agent-gap-pad__token {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-gap-pad__value {
+  color: var(--text-measure-bubble-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-dimension {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ds-agent-dimension--height {
+  flex-direction: row;
+  height: 30px;
+}
+
+.ds-agent-dimension--width {
+  flex-direction: column;
+  width: 56px;
+}
+
+.ds-agent-dimension__line {
+  position: relative;
+  flex: 1 1 auto;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line {
+  width: 1px;
+  height: 100%;
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line::before,
+.ds-agent-dimension--height .ds-agent-dimension__line::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  width: 7px;
+  height: 1px;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--height .ds-agent-dimension__line::before { top: 0; }
+.ds-agent-dimension--height .ds-agent-dimension__line::after { bottom: 0; }
+
+.ds-agent-dimension--width .ds-agent-dimension__line {
+  width: 100%;
+  height: 1px;
+}
+
+.ds-agent-dimension--width .ds-agent-dimension__line::before,
+.ds-agent-dimension--width .ds-agent-dimension__line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--line-measure-inset);
+}
+
+.ds-agent-dimension--width .ds-agent-dimension__line::before { left: 0; }
+.ds-agent-dimension--width .ds-agent-dimension__line::after { right: 0; }
+
+.ds-agent-dimension__bubble {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--bg-measure-inset-bubble);
+  color: var(--text-inverse);
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+.ds-agent-radius {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.ds-agent-radius__preview {
+  width: 72px;
+  height: 56px;
+  border: 2px solid var(--line-default);
+  background: var(--bg-card-main);
+  position: relative;
+}
+
+/* Real cloned component (mountRadiusPreviews() in measure-agents.js) —
+   drops the generic box's own border/background/fixed size so the real
+   node's own visual (pill Switch track, rounded Card surface, …) shows
+   through instead of sitting inside an unrelated rectangle. */
+.ds-agent-radius__preview--real {
+  width: auto;
+  height: auto;
+  min-width: 40px;
+  min-height: 40px;
+  border: none;
+  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.ds-agent-radius__clone {
+  pointer-events: none;
+}
+
+.ds-agent-radius__arc {
+  /* Size/position/curve are computed at runtime by resolveRadiusArcs()
+     from the target's (real clone or this fallback box's own) rendered
+     geometry — see measure-agents.js. Never set width/height/border here:
+     a static value can't track a per-token radius or a per-component real
+     corner size, and CSS `border-*-radius: inherit` pulls the unclamped
+     token value irrespective of the target's own size — exactly the bug
+     resolveRadiusArcs() exists to prevent. */
+  position: absolute;
+  pointer-events: none;
+}
+
+.ds-agent-radius__arc-svg {
+  /* Path endpoints sit exactly on the viewport's own edges/corner (see
+     resolveRadiusArcs() point 5) — the 2px stroke's half-width bleeds ~1px
+     past that edge at each tangent point. `<svg>` defaults to
+     `overflow: hidden` in the UA stylesheet, which shaves that sliver off;
+     none of the ancestors up to .storybook-layout clip, so nothing needs
+     the arc confined to its own box. */
+  overflow: visible;
+  /* `<svg>` is inline by default, so the browser reserves baseline/descent
+     space for it as if it were a line of text — the svg's painted box then
+     sits a few px BELOW the top of its `.ds-agent-radius__arc` host (the
+     gap size tracks the ambient font's line-height, not the svg's own
+     size), silently breaking the host's JS-computed top/right offset
+     (resolveRadiusArcs()). Small on a large corner arc (near-invisible on
+     ButtonText's 20px arc box), but glaring on a small full-circle target
+     like CounterValue's 14px arc box, where a few px reads as the arc not
+     tracing the circle's actual corner at all. `display: block` removes
+     the svg from inline flow so it always fills its host exactly,
+     independent of ambient font metrics. */
+  display: block;
+}
+
+.ds-agent-radius__arc-svg path {
+  fill: none;
+  stroke: var(--line-measure-radius);
+  stroke-width: 2;
+}
+
+.ds-agent-radius__bubble {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bg-measure-radius-fill);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-radius__token {
+  color: var(--text-measure-radius);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-radius__value {
+  color: var(--text-measure-radius-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ds-agent-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.ds-agent-marker--left,
+.ds-agent-marker--right {
+  width: 53px;
+}
+
+.ds-agent-marker--top,
+.ds-agent-marker--bottom {
+  flex-direction: column;
+  height: 53px;
+}
+
+.ds-agent-marker__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--line-measure-gap);
+  flex: 0 0 6px;
+}
+
+.ds-agent-marker__line {
+  flex: 1 1 auto;
+  background: var(--line-measure-gap);
+}
+
+.ds-agent-marker--left .ds-agent-marker__line,
+.ds-agent-marker--right .ds-agent-marker__line {
+  height: 1px;
+}
+
+.ds-agent-marker--top .ds-agent-marker__line,
+.ds-agent-marker--bottom .ds-agent-marker__line {
+  width: 1px;
+}
+
+.ds-agent-marker__bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--bg-measure-gap-bubble);
+  color: var(--text-inverse);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ds-agent-marker__label {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* agent-backed spatial frames */
+.spec-inset-diagram--agents .spec-inset-diagram__agent-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-slot--v {
+  display: flex;
+  justify-content: center;
+  min-height: 72px;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__agent-slot--h {
+  flex: 0 0 auto;
+}
+
+.spec-inset-diagram--agents .spec-inset-diagram__content,
+.spec-measure-card__object.spec-inset-diagram--agents .spec-measure-card__content {
+  flex: 1 1 auto;
+  min-width: 72px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-s);
+  background: var(--bg-card-main);
+  font-size: var(--label-xs-size);
+  color: var(--text-secondary);
+}
+
+.spec-measure-card__object.spec-inset-diagram--agents {
+  padding: var(--spec-pad-top, 14px) var(--spec-pad-right, 14px)
+    var(--spec-pad-bottom, 14px) var(--spec-pad-left, 14px);
+}
+
+.spec-gap-diagram--agents .spec-gap-diagram__bridge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.spec-gap-diagram--agents .spec-gap-diagram__bridge + .spec-gap-diagram__bridge {
+  margin-top: 16px;
+}
+
+.spec-offset-diagram--agents .spec-offset-diagram__stack {
+  align-items: center;
+  gap: 8px;
+}
+
+.spec-radius-diagram--agents .spec-radius-diagram__stage {
+  align-items: center;
+}
+
+.spec-size-agents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-m);
+  margin-bottom: 12px;
+  padding: var(--inset-container-v-s) var(--inset-container-h-s);
+  border: 1px dashed var(--line-default);
+  border-radius: var(--radius-m);
+  background: var(--bg-base-main-secondary);
+}
+
+.ds-agent-gap-pad .spec-spatial-chip,
+.ds-agent-radius .spec-spatial-chip,
+.ds-agent-marker .spec-spatial-chip {
+  margin-right: 0;
+  font-size: 9px;
+  padding: 0 4px;
+}
