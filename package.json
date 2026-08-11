@@ -7,6 +7,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "dev:driver-colors": "vite --config pages/driver-color-tokens/vite.config.ts",
+    "build:driver-colors": "vite build --config pages/driver-color-tokens/vite.config.ts",
     "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs"
   },
   "dependencies": {

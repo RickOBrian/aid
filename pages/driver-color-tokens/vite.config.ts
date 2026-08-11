@@ -9,6 +9,10 @@ export default defineConfig({
   esbuild: {
     jsx: 'automatic',
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
   server: {
     port: 3000,
     strictPort: true,
