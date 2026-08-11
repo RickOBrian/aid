@@ -14,45 +14,61 @@ destination: ./
 Дизайн-система **aid** — архитектурная документация и скиллы для трёх платформ:
 Web (React + TypeScript), iOS (SwiftUI / UIKit), Android (Jetpack Compose).
 
-Репо не содержит продуктового кода. Только:
-- правила и гайды дизайн-системы
-- скиллы для AI-агентов
-- спецификации компонентов
-- логи памяти скиллов
+Репо содержит документацию дизайн-системы, skill-гайды для AI-агентов, логи памяти
+скиллов, а также рабочий Web-слой: Storybook-портал (`src/`, `stories/`, `.storybook/`),
+token JSON (`tokens/`) и presentbook (`docs/storybook/` — ~10 spec-страниц, активная
+зона последних коммитов).
+
+Код iOS и Android в репозитории **физически отсутствует** — для этих платформ есть
+только документация и skill-гайды.
 
 ---
 
-## Структура репо
+## Структура репозитория верхнего уровня
+
+| Каталог | Назначение |
+|---|---|
+| `.cursor/` | Правила Cursor (`.cursor/rules/*.mdc`) |
+| `docs/` | Архитектурные гайды, presentbook, token registry, HTML-просмотр |
+| `memory/` | Логи памяти скиллов (`log.<имя>.json`) |
+| `scripts/` | Dev-серверы и утилиты (`docs-server.py`, `preview.py`) |
+| `skills/` | **Канонические** скиллы и shared-гайды — единственное место для правок |
+| `src/` | React-компоненты и token loader (Web) |
+| `stories/` | Storybook stories |
+| `tokens/` | Token JSON bundles (ui-kit-a, ui-kit-b, sutochno) |
+
+---
+
+## Структура репо (детальнее)
 
 ```
 aid/
 ├── skills/                        ← КАНОНИЧЕСКИЕ файлы. Редактируй только здесь.
 │   ├── _shared/                   ← Shared-правила: токены, платформы, git, типографика
-│   │   ├── token-rules.md         ← Правила токенов Core → Semantic (v1.3.0)
+│   │   ├── token-rules.md         ← Правила токенов Core → Semantic (v1.5.1)
 │   │   ├── platforms.md           ← Особенности Web / iOS / Android
 │   │   ├── git-workflow.md        ← Git-команды для памяти скиллов
 │   │   ├── core-typography-tokens-guide.md
 │   │   └── semantic-typography-tokens-guide.md
 │   └── ds-component-spec/
-│       └── SKILL.md               ← Скилл генерации спеки компонента (v1.2.0)
+│       └── SKILL.md               ← Скилл генерации спеки компонента (v1.3.0)
 │
 ├── docs/                          ← Архитектурные гайды (для людей)
 │   ├── design-system/
-│   │   ├── colors/                ← Core/Semantic гайды цвета и типографики
+│   │   ├── tokens/                ← Core/Semantic гайды цвета и типографики
 │   │   └── typography/            ← Продуктовый типографический гайд
-│   ├── ds-component-architecture-guide.md  ← 4-уровневая архитектура компонентов
-│   ├── claude-skills-guide.md
+│   ├── storybook/                 ← Presentbook: spec-страницы компонентов
+│   ├── ds-component-architecture-guide.md
 │   └── semver-guide.md
 │
-├── perplexity-skills/             ← Копии для Perplexity Space (с frontmatter)
-│                                    НЕ редактируй вручную — синхронизируется из skills/
-│
-├── .claude/skills/                ← Legacy-копии для Claude Code
-│                                    НЕ редактируй вручную
+├── src/                           ← React-компоненты, token loader
+├── stories/                       ← Storybook stories
+├── .storybook/                    ← Конфиг Storybook-портала
+├── tokens/                        ← Token JSON bundles
 │
 ├── memory/                        ← Логи памяти скиллов
 │   └── ds-component-spec/
-│       └── log.<имя>.json         ← Один файл на сотрудника
+│       └── log.<имя>.json
 │
 ├── .cursor/rules/
 │   ├── git-push.mdc               ← Release flow: версия → changelog → push
@@ -65,8 +81,9 @@ aid/
 └── VERSION
 ```
 
-**Главное правило:** `skills/` — единственное место для правок.
-Всё остальное синхронизируется из него.
+**Главное правило:** `skills/` — единственное место для правок shared-гайдов и скиллов.
+Остальные копии и зеркала синхронизируются из него или помечены как открытый вопрос
+(см. `docs/design-system/tokens/`).
 
 ---
 
@@ -131,9 +148,7 @@ aid/
 
 ## Что не делать
 
-- Не редактировать `.claude/skills/` и `perplexity-skills/` вручную
 - Не создавать component-уровень токенов
 - Не использовать точечную нотацию токенов (`color.blue.500`)
 - Не добавлять суффикс `Item` в самостоятельные компоненты
 - Не каскадить версии при изменении одного файла
-- Не коммитить `.claude/intake-user` (он в `.gitignore`)
