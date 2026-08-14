@@ -6,11 +6,12 @@ import {
 import {
   DEFAULT_ICON_DOWNLOAD_FORMAT,
   downloadIconArchive,
+  downloadSingleIcon,
   getIconDownloadFormatLabel,
   ICON_DOWNLOAD_FORMATS,
   type IconDownloadFormat,
 } from './downloadIcons';
-import { filterSectionsBySelectionKeys } from './iconSelection';
+import { countIconsInSections, filterSectionsBySelectionKeys } from './iconSelection';
 import type { IconSection } from './iconsData';
 
 function DownloadIcon() {
@@ -104,8 +105,17 @@ export function IconDownloadActions({
     try {
       if (selectionMode && selectedKeys && selectedKeys.size > 0) {
         const selectedSections = filterSectionsBySelectionKeys(visibleSections, selectedKeys);
+        const selectedIconCount = countIconsInSections(selectedSections);
+
+        if (selectedIconCount === 1) {
+          const section = selectedSections[0];
+          const item = section.items[0];
+          await downloadSingleIcon(section.id, item, format);
+          return;
+        }
+
         await downloadIconArchive(selectedSections, format, {
-          zipName: `icons-selected-${format.id}.zip`,
+          zipName: 'Icons.zip',
         });
         return;
       }
