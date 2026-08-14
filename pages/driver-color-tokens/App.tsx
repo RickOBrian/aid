@@ -13,11 +13,11 @@ function normalizePathname(pathname: string): string {
 function resolvePage(pathname: string) {
   const path = normalizePathname(pathname);
 
-  if (path === HUB_ROUTES.hub) {
+  if (path === HUB_ROUTES.hub || path === '/') {
     return 'hub' as const;
   }
 
-  if (path === HUB_ROUTES.colors || path === '/') {
+  if (path === HUB_ROUTES.colors) {
     return 'colors' as const;
   }
 
