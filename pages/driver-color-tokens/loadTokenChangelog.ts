@@ -1,9 +1,16 @@
 import type { TokenChangelog } from './ChangelogTable';
 
-const changelogModules = import.meta.glob('../../tokens/*-changelog.json', {
+const repoChangelogModules = import.meta.glob('../../tokens/*-changelog.json', {
   eager: true,
   import: 'default',
 }) as Record<string, TokenChangelog>;
+
+const appChangelogModules = import.meta.glob('./tokens/*-changelog.json', {
+  eager: true,
+  import: 'default',
+}) as Record<string, TokenChangelog>;
+
+const changelogModules = { ...repoChangelogModules, ...appChangelogModules };
 
 export function loadTokenChangelog(collectionName: string): TokenChangelog | null {
   const suffix = `/${collectionName}-changelog.json`;
