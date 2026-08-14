@@ -1,7 +1,15 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
-import { IconContextMenu, type IconContextMenuState } from './IconContextMenu';
+import {
+  IconContextMenu,
+  createIconDownloadMenuItem,
+  createIconSelectMenuItem,
+  type IconContextMenuState,
+} from './IconContextMenu';
 import { IconDownloadActions } from './IconDownloadActions';
+import { IconRoundCheckbox } from './IconRoundCheckbox';
+import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
 import {
   DS_INTERACTIVE_CARD_CLASS,
   DS_INTERACTIVE_CARD_STYLE,
@@ -19,15 +27,23 @@ import {
   downloadSingleIcon,
   type IconDownloadFormat,
 } from './downloadIcons';
-import { iconAssetPath, iconSections, formatIconDefaultSize, ICON_DEFAULT_SIZE, type IconItem, type IconSection } from './iconsData';
+import { iconAssetPath, iconCollection, iconSections, formatIconDefaultSize, ICON_DEFAULT_SIZE, type IconItem, type IconSection } from './iconsData';
+import {
+  countIconsInSections,
+  getSectionSelectionState,
+  iconSelectionKey,
+} from './iconSelection';
+import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterIconSections } from './searchIcons';
 
 const LONG_PRESS_MS = 500;
+const iconChangelog = loadTokenChangelog(iconCollection.collectionName);
 
 const PAGE_STYLE = `
 ${DS_INTERACTIVE_CARD_STYLE}
 ${DS_DROPDOWN_BUTTON_STYLE}
 ${DS_VALUE_META_STYLE}
+${DS_CHANGELOG_TABLE_STYLE}
 .dip,
 .dip *,
 .dip *::before,
@@ -49,6 +65,12 @@ ${DS_VALUE_META_STYLE}
   line-height: 20px;
 }
 .dip-download-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.dip-download-group {
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
@@ -69,6 +91,13 @@ ${DS_VALUE_META_STYLE}
   border-right: none;
   min-width: 96px;
 }
+.dip-download-btn--more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
 .dip-download-btn--submit {
   display: inline-flex;
   align-items: center;
@@ -76,6 +105,104 @@ ${DS_VALUE_META_STYLE}
   border-radius: 0 8px 8px 0;
   border-left: 1px solid #ebedf0;
   padding: 8px 10px;
+}
+.dip-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border: 1px solid #ebedf0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+.dip-selection-bar__stats {
+  font-size: 13px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.54);
+}
+.dip-selection-bar__stats strong {
+  color: #2d2c2e;
+  font-weight: 500;
+}
+.dip-selection-bar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.dip-selection-bar__btn {
+  font-family: 'Google Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #2d2c2e;
+  background: #ffffff;
+  border: 1px solid #ebedf0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.dip-selection-bar__btn:hover:not(:disabled) {
+  background: #f5f5f5;
+}
+.dip-selection-bar__btn:disabled {
+  color: rgba(0, 0, 0, 0.26);
+  cursor: not-allowed;
+}
+.dip-round-checkbox {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.dip-round-checkbox__input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.dip-round-checkbox__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid rgba(0, 0, 0, 0.26);
+  border-radius: 50%;
+  background: #ffffff;
+  color: #ffffff;
+  pointer-events: none;
+}
+.dip-round-checkbox__input:checked + .dip-round-checkbox__mark,
+.dip-round-checkbox__input:indeterminate + .dip-round-checkbox__mark {
+  border-color: #2d2c2e;
+  background: #2d2c2e;
+}
+.dip-round-checkbox__dash {
+  display: block;
+  width: 8px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.dip-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.dip-section-heading__title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
 }
 .dip-download-btn:hover:not(:disabled) {
   background: #f5f5f5;
@@ -159,15 +286,6 @@ ${DS_VALUE_META_STYLE}
 .dip section {
   margin-bottom: 48px;
 }
-.dip h2 {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 0 0 16px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-}
 .dip-section-count {
   font-size: 13px;
   line-height: 24px;
@@ -186,6 +304,16 @@ ${DS_VALUE_META_STYLE}
   gap: 8px;
   padding: 16px 8px 12px;
   min-height: 112px;
+  position: relative;
+}
+.dip-cell--selection {
+  cursor: pointer;
+}
+.dip-cell__checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
 }
 .dip-preview {
   width: 48px;
@@ -215,12 +343,29 @@ ${DS_VALUE_META_STYLE}
   .dip {
     padding: 20px 16px 40px;
   }
+  .dip-download-group {
+    flex: 1 1 auto;
+  }
   .dip-download-btn--format {
     flex: 1 1 auto;
   }
   .dip-download-btn--submit {
     flex: 0 0 44px;
     padding-inline: 0;
+  }
+  .dip-download-btn--more {
+    flex: 0 0 44px;
+    padding-inline: 0;
+  }
+  .dip-selection-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dip-selection-bar__actions {
+    width: 100%;
+  }
+  .dip-selection-bar__btn {
+    flex: 1 1 auto;
   }
 }
 @media (max-width: 768px) {
@@ -236,7 +381,12 @@ ${DS_VALUE_META_STYLE}
     align-items: center;
     gap: 12px;
     min-height: 0;
-    padding: 8px 12px;
+    padding: 8px 40px 8px 12px;
+  }
+  .dip-cell__checkbox {
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
   }
   .dip-preview {
     width: 32px;
@@ -267,10 +417,16 @@ ${DS_VALUE_META_STYLE}
 function IconCell({
   sectionId,
   item,
+  selectionMode,
+  selected,
+  onToggle,
   onOpenContextMenu,
 }: {
   sectionId: string;
   item: IconItem;
+  selectionMode: boolean;
+  selected: boolean;
+  onToggle: () => void;
   onOpenContextMenu: (coords: { x: number; y: number }) => void;
 }) {
   const src = iconAssetPath(sectionId, item.id);
@@ -314,7 +470,7 @@ function IconCell({
 
   return (
     <article
-      className={`dip-cell ${DS_INTERACTIVE_CARD_CLASS} ds-interactive-card--context-menu`}
+      className={`dip-cell ${selectionMode ? 'dip-cell--selection' : ''} ${DS_INTERACTIVE_CARD_CLASS} ds-interactive-card--context-menu`}
       onContextMenu={handleContextMenu}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -324,9 +480,23 @@ function IconCell({
         if (longPressTriggeredRef.current) {
           event.preventDefault();
           longPressTriggeredRef.current = false;
+          return;
+        }
+
+        if (selectionMode) {
+          onToggle();
         }
       }}
     >
+      {selectionMode ? (
+        <div className="dip-cell__checkbox">
+          <IconRoundCheckbox
+            checked={selected}
+            ariaLabel={`Выбрать ${item.name}`}
+            onChange={onToggle}
+          />
+        </div>
+      ) : null}
       <div className="dip-preview">
         <img
           src={src}
@@ -347,16 +517,36 @@ function IconCell({
 
 function IconSectionView({
   section,
+  selectionMode,
+  selectedKeys,
+  onToggleSection,
+  onToggleIcon,
   onOpenContextMenu,
 }: {
   section: IconSection;
+  selectionMode: boolean;
+  selectedKeys: ReadonlySet<string>;
+  onToggleSection: (section: IconSection) => void;
+  onToggleIcon: (sectionId: string, itemId: string) => void;
   onOpenContextMenu: (sectionId: string, item: IconItem, coords: { x: number; y: number }) => void;
 }) {
+  const sectionSelection = getSectionSelectionState(section, selectedKeys);
+
   return (
     <section>
-      <h2>
-        <span>{section.title}</span>
-        <span className="dip-section-count">{section.items.length}</span>
+      <h2 className="dip-section-heading">
+        {selectionMode ? (
+          <IconRoundCheckbox
+            checked={sectionSelection.all}
+            indeterminate={sectionSelection.some}
+            ariaLabel={`Выбрать все иконки раздела ${section.title}`}
+            onChange={() => onToggleSection(section)}
+          />
+        ) : null}
+        <span className="dip-section-heading__title">
+          <span>{section.title}</span>
+          <span className="dip-section-count">{section.items.length}</span>
+        </span>
       </h2>
       <div className="dip-grid">
         {section.items.map((item) => (
@@ -364,6 +554,9 @@ function IconSectionView({
             key={item.id}
             sectionId={section.id}
             item={item}
+            selectionMode={selectionMode}
+            selected={selectedKeys.has(iconSelectionKey(section.id, item.id))}
+            onToggle={() => onToggleIcon(section.id, item.id)}
             onOpenContextMenu={(coords) => onOpenContextMenu(section.id, item, coords)}
           />
         ))}
@@ -377,24 +570,81 @@ export function IconsPage() {
   const [downloadFormat, setDownloadFormat] = useState<IconDownloadFormat>(
     DEFAULT_ICON_DOWNLOAD_FORMAT,
   );
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set());
   const [contextMenu, setContextMenu] = useState<IconContextMenuState | null>(null);
   const [isDownloadingIcon, setIsDownloadingIcon] = useState(false);
   const filteredSections = useMemo(
     () => filterIconSections(iconSections, searchQuery),
     [searchQuery],
   );
-
-  const handleOpenContextMenu = useCallback(
-    (sectionId: string, item: IconItem, coords: { x: number; y: number }) => {
-      setContextMenu({
-        x: coords.x,
-        y: coords.y,
-        sectionId,
-        item,
-      });
-    },
-    [],
+  const visibleIconCount = useMemo(
+    () => countIconsInSections(filteredSections),
+    [filteredSections],
   );
+  const selectedVisibleCount = useMemo(() => {
+    let count = 0;
+    for (const section of filteredSections) {
+      for (const item of section.items) {
+        if (selectedKeys.has(iconSelectionKey(section.id, item.id))) {
+          count += 1;
+        }
+      }
+    }
+    return count;
+  }, [filteredSections, selectedKeys]);
+  const allVisibleSelected =
+    visibleIconCount > 0 && selectedVisibleCount === visibleIconCount;
+
+  const handleEnterSelectionMode = useCallback(() => {
+    setSelectionMode(true);
+    setSelectedKeys(new Set());
+  }, []);
+
+  const handleExitSelectionMode = useCallback(() => {
+    setSelectionMode(false);
+    setSelectedKeys(new Set());
+  }, []);
+
+  const handleToggleIcon = useCallback((sectionId: string, itemId: string) => {
+    const key = iconSelectionKey(sectionId, itemId);
+    setSelectedKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleToggleSection = useCallback((section: IconSection) => {
+    setSelectedKeys((prev) => {
+      const sectionSelection = getSectionSelectionState(section, prev);
+      const next = new Set(prev);
+      if (sectionSelection.all) {
+        for (const item of section.items) {
+          next.delete(iconSelectionKey(section.id, item.id));
+        }
+      } else {
+        for (const item of section.items) {
+          next.add(iconSelectionKey(section.id, item.id));
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const handleSelectAllVisible = useCallback(() => {
+    const next = new Set<string>();
+    for (const section of filteredSections) {
+      for (const item of section.items) {
+        next.add(iconSelectionKey(section.id, item.id));
+      }
+    }
+    setSelectedKeys(next);
+  }, [filteredSections]);
 
   const handleCloseContextMenu = useCallback(() => {
     setContextMenu(null);
@@ -417,6 +667,36 @@ export function IconsPage() {
     [downloadFormat, isDownloadingIcon],
   );
 
+  const handleOpenContextMenu = useCallback(
+    (sectionId: string, item: IconItem, coords: { x: number; y: number }) => {
+      setContextMenu({
+        x: coords.x,
+        y: coords.y,
+        items: [
+          createIconDownloadMenuItem(() => {
+            void handleDownloadIcon(sectionId, item);
+          }, isDownloadingIcon),
+        ],
+      });
+    },
+    [handleDownloadIcon, isDownloadingIcon],
+  );
+
+  const handleOpenMoreMenu = useCallback(
+    (coords: { x: number; y: number }) => {
+      setContextMenu({
+        x: coords.x,
+        y: coords.y,
+        items: [
+          createIconSelectMenuItem(() => {
+            handleEnterSelectionMode();
+          }),
+        ],
+      });
+    },
+    [handleEnterSelectionMode],
+  );
+
   return (
     <div className="dip">
       <style>{PAGE_STYLE}</style>
@@ -430,11 +710,41 @@ export function IconsPage() {
         actions={
           <IconDownloadActions
             sections={iconSections}
+            visibleSections={filteredSections}
             format={downloadFormat}
             onFormatChange={setDownloadFormat}
+            selectionMode={selectionMode}
+            selectedKeys={selectedKeys}
+            onMoreClick={handleOpenMoreMenu}
           />
         }
       />
+
+      {selectionMode ? (
+        <div className="dip-selection-bar">
+          <p className="dip-selection-bar__stats">
+            Всего <strong>{visibleIconCount}</strong> · Выбрано{' '}
+            <strong>{selectedVisibleCount}</strong>
+          </p>
+          <div className="dip-selection-bar__actions">
+            <button
+              type="button"
+              className="dip-selection-bar__btn"
+              disabled={allVisibleSelected || visibleIconCount === 0}
+              onClick={handleSelectAllVisible}
+            >
+              Выбрать все
+            </button>
+            <button
+              type="button"
+              className="dip-selection-bar__btn"
+              onClick={handleExitSelectionMode}
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {filteredSections.length === 0 && searchQuery.trim() ? (
         <p className="dip-search-empty">Ничего не найдено</p>
@@ -443,19 +753,18 @@ export function IconsPage() {
           <IconSectionView
             key={section.id}
             section={section}
+            selectionMode={selectionMode}
+            selectedKeys={selectedKeys}
+            onToggleSection={handleToggleSection}
+            onToggleIcon={handleToggleIcon}
             onOpenContextMenu={handleOpenContextMenu}
           />
         ))
       )}
 
-      <IconContextMenu
-        state={contextMenu}
-        onClose={handleCloseContextMenu}
-        onDownload={(sectionId, item) => {
-          void handleDownloadIcon(sectionId, item);
-        }}
-        isDownloading={isDownloadingIcon}
-      />
+      {iconChangelog ? <ChangelogTable data={iconChangelog} /> : null}
+
+      <IconContextMenu state={contextMenu} onClose={handleCloseContextMenu} />
     </div>
   );
 }

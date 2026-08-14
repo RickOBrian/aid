@@ -233,6 +233,11 @@ export const iconSections: IconSection[] = [
   },
 ];
 
+export const iconCollection = {
+  collectionName: 'icons',
+  artifact: 'Icons/Wilhelm',
+} as const;
+
 export function iconAssetPath(sectionId: string, iconId: string): string {
   return `/icons/${sectionId}/${iconId}.svg`;
 }

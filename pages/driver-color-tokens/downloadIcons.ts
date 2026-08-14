@@ -312,7 +312,7 @@ export async function downloadSingleIcon(
   const asset: IconAssetRef = {
     sectionId,
     item,
-    path: `${sectionId}/${item.id}`,
+    path: item.id,
     assetUrl: iconAssetPath(sectionId, item.id),
   };
 
@@ -325,6 +325,7 @@ export async function downloadSingleIcon(
 export async function downloadIconArchive(
   sections: IconSection[],
   formatId: IconDownloadFormat,
+  options?: { zipName?: string },
 ): Promise<void> {
   const format = ICON_DOWNLOAD_FORMATS.find((option) => option.id === formatId);
   if (!format) {
@@ -338,7 +339,7 @@ export async function downloadIconArchive(
 
   const files = await Promise.all(assets.map((asset) => exportIconAsset(asset, format)));
   const zip = createZip(files);
-  triggerBlobDownload(zip, `icons-${format.id}.zip`);
+  triggerBlobDownload(zip, options?.zipName ?? `icons-${format.id}.zip`);
 }
 
 export function getIconDownloadFormatLabel(formatId: IconDownloadFormat): string {

@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
 import {
   DS_VALUE_META_CAPTION_CLASS,
   DS_VALUE_META_CLASS,
@@ -19,6 +20,7 @@ import { filterColorTokenSections } from './searchTokens';
 
 const PAGE_STYLE = `
 ${DS_VALUE_META_STYLE}
+${DS_CHANGELOG_TABLE_STYLE}
 .dctp,
 .dctp *,
 .dctp *::before,
@@ -433,88 +435,6 @@ ${DS_VALUE_META_STYLE}
     font-size: 11px;
     line-height: 16px;
   }
-}
-.dctp-changelog {
-  margin-top: 16px;
-  padding-top: 48px;
-  border-top: 1px solid #ebedf0;
-}
-.dctp-changelog-heading {
-  margin: 0 0 16px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-}
-.dctp-changelog-table {
-  min-width: 720px;
-}
-.dctp-changelog-col-version,
-.dctp-table thead th.dctp-changelog-col-version {
-  width: 96px;
-  min-width: 88px;
-  white-space: nowrap;
-}
-.dctp-changelog-col-date,
-.dctp-table thead th.dctp-changelog-col-date {
-  width: 160px;
-  min-width: 140px;
-  border-left: 1px solid #ebedf0;
-  white-space: nowrap;
-}
-.dctp-changelog-col-author,
-.dctp-table thead th.dctp-changelog-col-author {
-  width: 120px;
-  min-width: 100px;
-  border-left: 1px solid #ebedf0;
-  white-space: nowrap;
-}
-.dctp-changelog-col-changes,
-.dctp-table thead th.dctp-changelog-col-changes {
-  min-width: 280px;
-  border-left: 1px solid #ebedf0;
-}
-.dctp-changelog-version {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #2d2c2e;
-}
-.dctp-changelog-date {
-  font-size: 13px;
-  line-height: 16px;
-  color: rgba(0, 0, 0, 0.54);
-}
-.dctp-changelog-col-author {
-  color: rgba(0, 0, 0, 0.54);
-}
-.dctp-changelog-changes {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.dctp-changelog-change {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 20px;
-  color: #2d2c2e;
-}
-.dctp-changelog-kind {
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  margin-top: 6px;
-  border-radius: 50%;
-}
-.dctp-changelog-change-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 `;
 
