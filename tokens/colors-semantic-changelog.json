@@ -1,0 +1,18 @@
+{
+  "artifact": "Colors/Semantic",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-11",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Первичный набор semantic color tokens из Figma «⚔️ Персонаж» (Bg, Texts, Icons, Strokes, Pastels, Buttons, Controls, Fields, Messages)"
+        }
+      ]
+    }
+  ]
+}

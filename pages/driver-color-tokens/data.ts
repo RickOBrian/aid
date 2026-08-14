@@ -599,6 +599,11 @@ const messagesRows: SemanticColorRow[] = [
   },
 ];
 
+export const colorTokenCollection = {
+  collectionName: 'colors-semantic',
+  artifact: 'Colors/Semantic',
+} as const;
+
 export const semanticColorSections: SemanticColorSection[] = [
   { title: 'Bg', rows: bgRows },
   { title: 'Texts', rows: textsRows },

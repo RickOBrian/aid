@@ -109,7 +109,7 @@ function getSearchVariants(query: string): string[] {
   ])];
 }
 
-function matchesSearch(target: string, query: string): boolean {
+export function matchesSearch(target: string, query: string): boolean {
   if (!query.trim()) {
     return true;
   }

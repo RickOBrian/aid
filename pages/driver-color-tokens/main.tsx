@@ -1,4 +1,4 @@
 import { createRoot } from 'react-dom/client';
-import { DriverColorTokensPage } from './DriverColorTokensPage';
+import { App } from './App';
 
-createRoot(document.getElementById('root')!).render(<DriverColorTokensPage />);
+createRoot(document.getElementById('root')!).render(<App />);

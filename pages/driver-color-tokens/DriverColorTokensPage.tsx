@@ -1,13 +1,24 @@
 import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { ChangelogTable } from './ChangelogTable';
+import { DsPageHeader } from './DsPageHeader';
 import {
+  DS_VALUE_META_CAPTION_CLASS,
+  DS_VALUE_META_CLASS,
+  DS_VALUE_META_PRIMARY_CLASS,
+  DS_VALUE_META_STYLE,
+} from './dsValueMeta';
+import {
+  colorTokenCollection,
   semanticColorSections,
   type ColorModeValue,
   type SemanticColorRow,
   type SemanticColorSection,
 } from './data';
+import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterColorTokenSections } from './searchTokens';
 
 const PAGE_STYLE = `
+${DS_VALUE_META_STYLE}
 .dctp,
 .dctp *,
 .dctp *::before,
@@ -20,50 +31,6 @@ const PAGE_STYLE = `
   background: #ffffff;
   min-height: 100vh;
   padding: 40px 48px 64px;
-}
-.dctp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #ebedf0;
-}
-.dctp-header h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 500;
-  line-height: 36px;
-}
-.dctp-header-tools {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1 1 auto;
-  justify-content: flex-end;
-  min-width: 0;
-}
-.dctp-search {
-  flex: 1 1 220px;
-  width: auto;
-  max-width: 320px;
-  min-width: 0;
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 16px;
-  color: #2d2c2e;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 8px 12px;
-}
-.dctp-search::placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-.dctp-search:focus {
-  outline: none;
-  border-color: rgba(45, 44, 46, 0.32);
 }
 .dctp-search-empty {
   margin: 0;
@@ -307,20 +274,8 @@ const PAGE_STYLE = `
   min-width: 0;
 }
 .dctp-mode-cell-meta {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: baseline;
-  gap: 4px 8px;
+  flex: 1;
   min-width: 0;
-}
-.dctp-mode-hex,
-.dctp-mode-opacity {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 12px;
-  line-height: 14px;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 @media (max-width: 1100px) {
   .dctp-table thead th {
@@ -385,19 +340,12 @@ const PAGE_STYLE = `
 }
 .dctp-token-card-mode-values {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   min-width: 0;
-  flex-wrap: wrap;
 }
 .dctp-token-card-mode-values .dctp-swatch {
   flex-shrink: 0;
-}
-.dctp-token-card-hex,
-.dctp-token-card-opacity {
-  font-size: 12px;
-  line-height: 16px;
-  white-space: nowrap;
 }
 .dctp-token-card-description {
   margin: 0;
@@ -430,38 +378,10 @@ const PAGE_STYLE = `
   .dctp {
     padding: 32px 24px 48px;
   }
-  .dctp-header {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  .dctp-header-tools {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-  .dctp-search {
-    max-width: none;
-    flex: 1 1 280px;
-  }
 }
 @media (max-width: 767px) {
   .dctp {
     padding: 20px 16px 40px;
-  }
-  .dctp-header {
-    gap: 12px;
-  }
-  .dctp-header-tools {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .dctp-search {
-    width: 100%;
-    max-width: none;
-    flex: none;
-  }
-  .dctp-json-actions {
-    width: 100%;
   }
   .dctp-json-btn--view {
     flex: 1 1 auto;
@@ -504,10 +424,6 @@ const PAGE_STYLE = `
   }
 }
 @media (max-width: 480px) {
-  .dctp-header h1 {
-    font-size: 24px;
-    line-height: 32px;
-  }
   .dctp-json-btn {
     font-size: 12px;
     padding: 8px 10px;
@@ -517,6 +433,88 @@ const PAGE_STYLE = `
     font-size: 11px;
     line-height: 16px;
   }
+}
+.dctp-changelog {
+  margin-top: 16px;
+  padding-top: 48px;
+  border-top: 1px solid #ebedf0;
+}
+.dctp-changelog-heading {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.dctp-changelog-table {
+  min-width: 720px;
+}
+.dctp-changelog-col-version,
+.dctp-table thead th.dctp-changelog-col-version {
+  width: 96px;
+  min-width: 88px;
+  white-space: nowrap;
+}
+.dctp-changelog-col-date,
+.dctp-table thead th.dctp-changelog-col-date {
+  width: 160px;
+  min-width: 140px;
+  border-left: 1px solid #ebedf0;
+  white-space: nowrap;
+}
+.dctp-changelog-col-author,
+.dctp-table thead th.dctp-changelog-col-author {
+  width: 120px;
+  min-width: 100px;
+  border-left: 1px solid #ebedf0;
+  white-space: nowrap;
+}
+.dctp-changelog-col-changes,
+.dctp-table thead th.dctp-changelog-col-changes {
+  min-width: 280px;
+  border-left: 1px solid #ebedf0;
+}
+.dctp-changelog-version {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #2d2c2e;
+}
+.dctp-changelog-date {
+  font-size: 13px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.54);
+}
+.dctp-changelog-col-author {
+  color: rgba(0, 0, 0, 0.54);
+}
+.dctp-changelog-changes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dctp-changelog-change {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #2d2c2e;
+}
+.dctp-changelog-kind {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+}
+.dctp-changelog-change-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 `;
 
@@ -613,17 +611,17 @@ function ModeCell({
     <td className="dctp-col-mode-group">
       <div className="dctp-mode-cell">
         <MiniSwatch value={value} onCopyHex={onCopyHex} />
-        <div className="dctp-mode-cell-meta">
+        <div className={`${DS_VALUE_META_CLASS} dctp-mode-cell-meta`}>
           <button
             type="button"
-            className="dctp-copyable dctp-mode-hex"
+            className={`dctp-copyable ${DS_VALUE_META_PRIMARY_CLASS}`}
             onClick={() => {
               void onCopyHex(hex);
             }}
           >
             {value.hex.toUpperCase()}
           </button>
-          <span className="dctp-mode-opacity">{value.opacity}%</span>
+          <span className={DS_VALUE_META_CAPTION_CLASS}>{value.opacity}%</span>
         </div>
       </div>
     </td>
@@ -698,7 +696,7 @@ function JsonActions({
 
   return (
     <>
-      <div className="dctp-json-actions">
+      <div className="dctp-json-actions ds-page-header__action-group">
         <button
           type="button"
           className="dctp-json-btn dctp-json-btn--view"
@@ -772,16 +770,18 @@ function ModeValueCard({
       <div className="dctp-token-card-mode-label">{label}</div>
       <div className="dctp-token-card-mode-values">
         <MiniSwatch value={value} onCopyHex={onCopyHex} />
-        <button
-          type="button"
-          className="dctp-copyable dctp-token-card-hex"
-          onClick={() => {
-            void onCopyHex(hex);
-          }}
-        >
-          {value.hex.toUpperCase()}
-        </button>
-        <span className="dctp-token-card-opacity">{value.opacity}%</span>
+        <div className={DS_VALUE_META_CLASS}>
+          <button
+            type="button"
+            className={`dctp-copyable ${DS_VALUE_META_PRIMARY_CLASS}`}
+            onClick={() => {
+              void onCopyHex(hex);
+            }}
+          >
+            {value.hex.toUpperCase()}
+          </button>
+          <span className={DS_VALUE_META_CAPTION_CLASS}>{value.opacity}%</span>
+        </div>
       </div>
     </div>
   );
@@ -896,6 +896,7 @@ function TokenSection({
 
 const PAGE_TITLE = 'Color';
 const hasColorTokens = semanticColorSections.some((section) => section.rows.length > 0);
+const tokenChangelog = loadTokenChangelog(colorTokenCollection.collectionName);
 
 export function DriverColorTokensPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -914,25 +915,21 @@ export function DriverColorTokensPage() {
     <div className="dctp">
       <style>{PAGE_STYLE}</style>
 
-      <header className="dctp-header">
-        <h1>{PAGE_TITLE}</h1>
-        <div className="dctp-header-tools">
-          <input
-            type="search"
-            className="dctp-search"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Поиск категории или токена"
-            aria-label="Поиск категории или токена"
-          />
+      <DsPageHeader
+        title={PAGE_TITLE}
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Поиск категории или токена"
+        searchAriaLabel="Поиск категории или токена"
+        actions={(
           <JsonActions
             filename={PAGE_TITLE}
             json={colorTokensJson}
             disabled={!hasColorTokens}
             onCopyText={copyText}
           />
-        </div>
-      </header>
+        )}
+      />
 
       {filteredSections.length === 0 && searchQuery.trim() ? (
         <p className="dctp-search-empty">Ничего не найдено</p>
@@ -946,6 +943,8 @@ export function DriverColorTokensPage() {
           />
         ))
       )}
+
+      {tokenChangelog ? <ChangelogTable data={tokenChangelog} /> : null}
 
       {copyNotice}
     </div>
