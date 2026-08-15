@@ -40,9 +40,9 @@ Wave 1 (component pipeline core):
 - skills/_shared/versioning-strategy.md (committed: 050a67a)
 - skills/_shared/accessibility.md (committed: 9075573)
 
-Wave 3 (testing, Presentbook):
-- skills/_shared/testing-strategy.md (new)
-- skills/_shared/presentbook-guide.md (new)
+### Wave 3 (testing, Presentbook) — completed 2026-08-15
+- skills/_shared/testing-strategy.md (committed: c8d7eab)
+- skills/_shared/presentbook-guide.md (committed: de6c842)
 
 Optional:
 - .cursor/rules/push-sync-gate.mdc (future rule для post-release sync).
