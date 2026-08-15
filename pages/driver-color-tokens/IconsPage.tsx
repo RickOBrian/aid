@@ -601,6 +601,11 @@ export function IconsPage() {
     setSelectedKeys(new Set());
   }, []);
 
+  const handleEnterSelectionModeWithIcon = useCallback((sectionId: string, itemId: string) => {
+    setSelectionMode(true);
+    setSelectedKeys(new Set([iconSelectionKey(sectionId, itemId)]));
+  }, []);
+
   const handleExitSelectionMode = useCallback(() => {
     setSelectionMode(false);
     setSelectedKeys(new Set());
@@ -676,10 +681,13 @@ export function IconsPage() {
           createIconDownloadMenuItem(() => {
             void handleDownloadIcon(sectionId, item);
           }, isDownloadingIcon),
+          createIconSelectMenuItem(() => {
+            handleEnterSelectionModeWithIcon(sectionId, item.id);
+          }),
         ],
       });
     },
-    [handleDownloadIcon, isDownloadingIcon],
+    [handleDownloadIcon, handleEnterSelectionModeWithIcon, isDownloadingIcon],
   );
 
   const handleOpenMoreMenu = useCallback(
