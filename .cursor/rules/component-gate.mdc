@@ -1,0 +1,149 @@
+---
+description: >
+  Запрещает молчаливое создание компонентов. Требует явного выбора или
+  создания компонента в контексте продукта, связывает его с токенами,
+  Figma-источником и release-очередью. Не позволяет создавать компоненты
+  вне componentsRoot продукта (или явно согласованного места).
+alwaysApply: true
+---
+
+# Component Gate
+
+## Scope
+
+This rule applies whenever the user asks to:
+
+- create, change, compose, audit or implement a UI component;
+- create or change a Presentbook component page or review sandbox;
+- prepare component changelog, versioning, release bundle, commit or push
+  that affects component artifacts.
+
+Do not apply this rule to ordinary repository work such as general documentation,
+utilities, non-UI refactoring or infrastructure that does not affect those artifacts.
+
+## Product context prerequisite
+
+Before any applicable work, follow `product-context.mdc` and resolve the product
+context.
+
+Do not start component discovery or implementation until the product context is
+confirmed.
+
+## Component source resolution
+
+After product context is confirmed, resolve the component source in this order:
+
+1. `componentsRoot` from `products/<id>/product.json`.
+2. If `componentsRoot` is `null`, treat components as not yet structured and
+   require explicit user confirmation before creating any component folder or
+   file.
+3. `relatedPrototypes` from `products/<id>/product.json` as reference only.
+
+For Driver:
+
+- `componentsRoot` is `null` in `products/driver/product.json`;
+- there is no canonical component directory yet;
+- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
+  `relatedPrototypes`. It is not a component source and must not be used as a
+  primary source of truth.
+
+Do not use component definitions from any other file or product.
+
+## Component lookup procedure
+
+Before creating or changing a component, perform a component lookup:
+
+1. Identify the component name or path required by the task (for example
+   `Button`, `Input`, `Modal`, `Card`).
+2. Search in the resolved component source (if any) for an exact match or a
+   semantically equivalent component.
+3. If an exact match is found, use that component and record the source
+   path.
+4. If no exact match is found, search for semantically equivalent components
+   (for example `PrimaryButton` vs `Button`, `TextField` vs `Input`).
+5. If a semantically equivalent component is found, propose it and ask the user
+   whether to reuse it or create a new component.
+6. If no component is found, treat this as a new component proposal.
+
+## New component proposal
+
+When a new component is proposed:
+
+1. Do not create component files or folders silently.
+2. Do not invent a component path without user confirmation.
+3. Collect the proposal in a structured form with the following fields:
+
+   - `componentName`: proposed component name (for example `Button`);
+   - `figmaSource`: Figma file/frame URL or name, if known;
+   - `tokensRequired`: list of token paths used by the component
+     (for example `color.bg.primary`, `color.text.primary`);
+   - `variants`: known variants (for example `primary`, `secondary`, `ghost`);
+   - `modes`: known modes (for example `light`, `dark`, `mobile`, `desktop`);
+   - `placement`: proposed component path relative to `componentsRoot`
+     (for example `components/Button/Button.tsx`);
+   - `confidence`: `high` | `medium` | `low` based on naming and design clarity.
+
+4. After collecting the proposal, show a single consolidated questionnaire:
+
+## New component proposal
+
+Component: [componentName]
+Figma source: [figmaSource or "not specified"]
+Tokens required: [list of token paths]
+Variants: [list]
+Modes: [list]
+Proposed path: [placement]
+Confidence: [high|medium|low]
+
+Before implementation:
+
+- confirm the component name and path;
+- confirm which tokens must be created or reused;
+- confirm whether to create the component now or defer until token gaps
+  are resolved;
+- confirm whether this component belongs to the current product scope or
+  should be created in a different product.
+
+Do not proceed with implementation until the user resolves all questions.
+
+## Component placement
+
+If `componentsRoot` is defined and not `null`:
+
+- create new components only under `componentsRoot` of the selected product;
+- do not create components in other directories without explicit user
+  confirmation and a clear reason.
+
+If `componentsRoot` is `null` (as for Driver):
+
+- do not create a component directory structure silently;
+- propose a temporary or permanent location for components inside the
+  selected product scope (for example `src/components/` or
+  `products/<id>/components/`);
+- ask the user to confirm the location before creating any component file.
+
+## Component and token coupling
+
+When proposing a new component:
+
+- list all tokens required by the component;
+- run the token lookup procedure from `token-integrity.mdc` for each token;
+- if any token gap is detected, show the combined component + token gap
+  questionnaire and do not start implementation until the user resolves
+  all gaps.
+
+Do not create a component while required tokens are unresolved, unless the
+user explicitly asks to create a prototype with hardcoded values and confirms
+that these values will later be converted to tokens.
+
+## Component changelog and release
+
+When changing or creating a component:
+
+- record the change as a pending change item under
+  `changes/<id>/pending/` for the selected product, following
+  `product-context.mdc`;
+- do not finalise component version or changelog during implementation;
+- final SemVer and changelog are determined only at an explicitly requested
+  product release boundary, after the user reviews and approves the grouped
+  pending changes for each affected artifact.
