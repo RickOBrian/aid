@@ -1,0 +1,72 @@
+---
+description: У каждого раздела токенов aid-ds — JSON changelog и таблица ChangelogTable на странице
+alwaysApply: true
+---
+
+# Правило: changelog для каждого раздела токенов
+
+Web-портал `pages/driver-color-tokens/` — каждый **активный раздел
+токенов** (страница существует) обязан иметь **таблицу changelog** внизу.
+Отсутствие changelog — блокер для merge.
+
+## Автоматическое создание (обязательно)
+
+Реестр: `pages/driver-color-tokens/token-changelog-registry.json`
+
+Скрипт: `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs` (запускается в `prebuild`)
+
+**При создании нового раздела:**
+
+1. Добавить запись в `token-changelog-registry.json`:
+   - `collectionName`, `artifact`, `pageFile` (имя `*Page.tsx`)
+   - `bootstrap` — первая запись 1.0.0 (или дефолт создастся скриптом)
+2. Создать `*Page.tsx` и data-файл с `collectionName`
+3. Подключить на странице `ChangelogTable` + `loadTokenChangelog`
+4. Запустить `npm run prebuild` — скрипт **сам создаст**
+   `tokens/<collectionName>-changelog.json` в корне репо и в
+   `pages/driver-color-tokens/tokens/`, если файла ещё нет и `pageFile` существует
+
+Changelog **не создаётся** для записей реестра, пока нет файла страницы —
+это нормально для отложенных разделов на hub.
+
+## Что должно быть на странице
+
+1. JSON: `tokens/<collectionName>-changelog.json` (канон) + зеркало в
+   `pages/driver-color-tokens/tokens/` (sync prebuild)
+2. В data-файле раздела: `collectionName` = имя файла без `-changelog.json`
+3. Внизу страницы:
+   - `loadTokenChangelog(collection.collectionName)`
+   - `<ChangelogTable data={…} />`
+   - `DS_CHANGELOG_TABLE_STYLE` в PAGE_STYLE
+4. Таблицы данных — по `ds-portal-table-standard.mdc` (table-страницы):
+   - `DS_TOKEN_TABLE_STYLE` + классы `ds-token-table-wrap` / `ds-token-table`
+   - layout-токены из `DS_PORTAL_LAYOUT_TOKENS` (`dsChangelogTable.ts`)
+   - **`IconsPage.tsx` — grid UX; table-page checklist не применяется**
+5. При изменении токенов — анкета `token-style-changelog-gate.mdc`; pending item в
+   `changes/<id>/pending/`; **не** bump `currentVersion` и **не** править release
+   changelog во время implementation. SemVer, `currentVersion` и запись в
+   `tokens/<collection>-changelog.json` — только через **Release Gate**
+   (`release-gate.mdc`) с явным подтверждением. См. `product-context.mdc`,
+   `skills/_shared/changelog-guide.md`.
+
+## Реестр разделов
+
+| Раздел | collectionName | pageFile | Changelog |
+|--------|----------------|----------|-----------|
+| Colors | `colors-semantic` | DriverColorTokensPage.tsx | ✅ |
+| Icons | `icons` | IconsPage.tsx | ✅ |
+| Typography | `typography-sem` | TypographyPage.tsx | ✅ |
+| Shadows | `effects-shadows` | ShadowsPage.tsx | ✅ |
+| Spacing | `spacing-sem` | SpacingPage.tsx | ✅ |
+| Radius | `radius-sem` | RadiusPage.tsx | ✅ |
+
+## Чеклист для агента
+
+- [ ] Запись в `token-changelog-registry.json`
+- [ ] `collectionName` в data-файле раздела
+- [ ] `ChangelogTable` на странице
+- [ ] `DS_TOKEN_TABLE_STYLE` + `ds-token-table` для table-страниц (см.
+      `ds-portal-table-standard.mdc`; **не** для `IconsPage.tsx` — grid UX)
+- [ ] `npm run prebuild` — bootstrap/mirror changelog-файлы на месте
+- [ ] При правке токенов — pending item в `changes/<id>/pending/`; release
+      changelog и `currentVersion` — только на Release Gate
