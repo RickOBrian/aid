@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "0.1.0",
+  "repoVersion": "0.4.0",
+  "defaultReleaseRoot": "CHANGELOG.md",
+  "products": [
+    {
+      "id": "driver",
+      "label": "aid: driver",
+      "status": "active",
+      "manifestPath": "products/driver/product.json",
+      "tokensRoot": null,
+      "tokenDataRoot": "pages/driver-color-tokens",
+      "tokenDataFiles": [
+        "pages/driver-color-tokens/data.ts",
+        "pages/driver-color-tokens/typographyData.ts",
+        "pages/driver-color-tokens/spacingData.ts",
+        "pages/driver-color-tokens/radiusData.ts",
+        "pages/driver-color-tokens/shadowsData.ts",
+        "pages/driver-color-tokens/iconsData.ts"
+      ],
+      "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
+      "componentsRoot": null,
+      "presentbookRoot": "pages/driver-color-tokens",
+      "presentbookType": "react-vite",
+      "routeBase": "/design-system",
+      "tokenRoutes": {
+        "hub": "/design-system",
+        "colors": "/tokens/colors",
+        "typography": "/tokens/typography",
+        "spacing": "/tokens/spacing",
+        "radius": "/tokens/radius",
+        "shadows": "/tokens/shadows",
+        "icons": "/tokens/icons"
+      },
+      "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+      "changelogRoot": "tokens",
+      "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+      "changelogFiles": [
+        "tokens/colors-semantic-changelog.json",
+        "tokens/typography-sem-changelog.json",
+        "tokens/spacing-sem-changelog.json",
+        "tokens/radius-sem-changelog.json",
+        "tokens/effects-shadows-changelog.json",
+        "tokens/icons-changelog.json"
+      ],
+      "componentRegistry": null,
+      "releaseRoot": "changes/driver",
+      "notes": "Значения токенов в TypeScript data-файлах, не в tokens/driver/*.json. Changelog JSON в tokens/ — единственная связь с tokens/."
+    },
+    {
+      "id": "ui-kit-a",
+      "label": "UI Kit A",
+      "status": "stable",
+      "tokensRoot": "tokens/ui-kit-a",
+      "tokenDataRoot": null,
+      "tokenDataFiles": [
+        "tokens/ui-kit-a/core/color.json",
+        "tokens/ui-kit-a/semantic/color.json",
+        "tokens/ui-kit-a/legacy/legacy-tokens.json"
+      ],
+      "tokenAssetsRoot": null,
+      "componentsRoot": null,
+      "presentbookRoot": "docs/storybook",
+      "presentbookType": "html",
+      "storybookRoot": "stories/ui-kit-a",
+      "routeBase": "/docs/storybook/product.html?product=ui-kit-a",
+      "tokenRoutes": {
+        "colors": "/docs/storybook/product-colors.html?product=ui-kit-a"
+      },
+      "tokenRegistry": "docs/storybook/_products.json",
+      "changelogRoot": null,
+      "changelogFiles": null,
+      "componentRegistry": "docs/storybook/_products.json",
+      "releaseRoot": null
+    },
+    {
+      "id": "ui-kit-b",
+      "label": "UI Kit B",
+      "status": "stable",
+      "tokensRoot": "tokens/ui-kit-b",
+      "tokenDataRoot": null,
+      "tokenDataFiles": [
+        "tokens/ui-kit-b/core/color.json",
+        "tokens/ui-kit-b/semantic/color.json",
+        "tokens/ui-kit-b/legacy/legacy-tokens.json"
+      ],
+      "tokenAssetsRoot": null,
+      "componentsRoot": null,
+      "presentbookRoot": "docs/storybook",
+      "presentbookType": "html",
+      "storybookRoot": "stories/ui-kit-b",
+      "routeBase": "/docs/storybook/product.html?product=ui-kit-b",
+      "tokenRoutes": {
+        "colors": "/docs/storybook/product-colors.html?product=ui-kit-b"
+      },
+      "tokenRegistry": "docs/storybook/_products.json",
+      "changelogRoot": null,
+      "changelogFiles": null,
+      "componentRegistry": "docs/storybook/_products.json",
+      "releaseRoot": null
+    },
+    {
+      "id": "sutochno",
+      "label": "Sutochno",
+      "status": "legacy",
+      "tokensRoot": "tokens/sutochno",
+      "tokenDataRoot": null,
+      "tokenDataFiles": [
+        "tokens/sutochno/legacy/legacy-tokens.json",
+        "tokens/sutochno/legacy/typography-styles.json"
+      ],
+      "tokenAssetsRoot": null,
+      "componentsRoot": "src/components/sutochno",
+      "presentbookRoot": "docs/storybook/products/sutochno",
+      "presentbookType": "html",
+      "storybookRoot": "stories/sutochno",
+      "routeBase": "/docs/storybook/product.html?product=sutochno",
+      "tokenRoutes": {
+        "colors": "/docs/storybook/product-colors.html?product=sutochno",
+        "typography": "/docs/storybook/product-typography.html?product=sutochno",
+        "components": "/docs/storybook/product-components.html?product=sutochno",
+        "button-text": "/docs/storybook/products/sutochno/components/button-text.html",
+        "counter-value": "/docs/storybook/products/sutochno/components/counter-value.html"
+      },
+      "tokenRegistry": "docs/storybook/_products.json",
+      "changelogRoot": null,
+      "changelogFiles": null,
+      "componentRegistry": "docs/storybook/_products.json",
+      "releaseRoot": null,
+      "notes": "tokens/sutochno/core/ и tokens/sutochno/semantic/ — только .gitkeep, JSON-токенов нет."
+    },
+    {
+      "id": "design-system",
+      "label": "Design System (HTML specs)",
+      "status": "stable",
+      "tokensRoot": null,
+      "tokenDataRoot": "docs/tokens",
+      "tokenDataFiles": [
+        "docs/tokens/color-tokens-registry.md",
+        "docs/tokens/typography-tokens-registry.md"
+      ],
+      "tokenAssetsRoot": null,
+      "componentsRoot": null,
+      "presentbookRoot": "docs/storybook",
+      "presentbookType": "html",
+      "routeBase": "/docs/storybook",
+      "tokenRoutes": {
+        "typography": "/docs/storybook/typography.html",
+        "colors": "/docs/storybook/colors.html",
+        "components": "/docs/storybook/components.html"
+      },
+      "tokenRegistry": "docs/tokens/color-tokens-registry.md",
+      "changelogRoot": "docs/tokens",
+      "changelogFiles": [
+        "docs/tokens/color-tokens-changelog.md",
+        "docs/tokens/typography-tokens-changelog.md"
+      ],
+      "componentRegistry": "docs/storybook/_storybook-nav.json",
+      "releaseRoot": null,
+      "notes": "Token registry в Markdown, не JSON. Отдельной папки tokens/<product>/ нет."
+    },
+    {
+      "id": "figma-styles-driver",
+      "label": "Driver App • Work (Figma styles dump)",
+      "status": "prototype",
+      "tokensRoot": null,
+      "tokenDataRoot": "src/pages/FigmaStyles",
+      "tokenDataFiles": [
+        "src/pages/FigmaStyles/data.ts"
+      ],
+      "tokenAssetsRoot": null,
+      "componentsRoot": null,
+      "presentbookRoot": "src/pages/FigmaStyles",
+      "presentbookType": "storybook-only",
+      "storybookRoot": "stories/figma-styles",
+      "routeBase": null,
+      "tokenRoutes": null,
+      "tokenRegistry": null,
+      "changelogRoot": null,
+      "changelogFiles": null,
+      "componentRegistry": null,
+      "releaseRoot": null,
+      "notes": "Presentbook только через Storybook (Figma Styles/Driver v1), отдельного URL presentbook нет."
+    }
+  ]
+}

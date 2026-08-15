@@ -1,0 +1,46 @@
+{
+  "id": "driver",
+  "label": "aid: driver",
+  "status": "active",
+  "tokensRoot": null,
+  "tokenDataRoot": "pages/driver-color-tokens",
+  "tokenDataFiles": [
+    "pages/driver-color-tokens/data.ts",
+    "pages/driver-color-tokens/typographyData.ts",
+    "pages/driver-color-tokens/spacingData.ts",
+    "pages/driver-color-tokens/radiusData.ts",
+    "pages/driver-color-tokens/shadowsData.ts",
+    "pages/driver-color-tokens/iconsData.ts"
+  ],
+  "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
+  "presentbookRoot": "pages/driver-color-tokens",
+  "presentbookType": "react-vite",
+  "routeBase": "/design-system",
+  "tokenRoutes": {
+    "hub": "/design-system",
+    "colors": "/tokens/colors",
+    "typography": "/tokens/typography",
+    "spacing": "/tokens/spacing",
+    "radius": "/tokens/radius",
+    "shadows": "/tokens/shadows",
+    "icons": "/tokens/icons"
+  },
+  "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+  "changelogRoot": "tokens",
+  "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+  "changelogFiles": [
+    "tokens/colors-semantic-changelog.json",
+    "tokens/typography-sem-changelog.json",
+    "tokens/spacing-sem-changelog.json",
+    "tokens/radius-sem-changelog.json",
+    "tokens/effects-shadows-changelog.json",
+    "tokens/icons-changelog.json"
+  ],
+  "releaseRoot": "changes/driver",
+  "releasePendingRoot": "changes/driver/pending",
+  "releaseReleasedRoot": "changes/driver/released",
+  "componentsRoot": null,
+  "componentsStatus": "not_started",
+  "componentRegistry": null,
+  "notes": "Значения токенов сейчас живут в TypeScript data-файлах, а не в tokens/driver/*.json."
+}
