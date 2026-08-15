@@ -1,0 +1,135 @@
+---
+description: >
+  Требует запуск аудита токенов/компонентов только в контексте продукта.
+  Собирает все расхождения (token gaps, unused tokens, naming inconsistencies,
+  component drift) в единую анкету. Запрещает тихие правки артефактов
+  без pending-записи в changes/<id>/pending/.
+alwaysApply: true
+---
+
+# Audit Gate
+
+## Scope
+
+This rule applies whenever the user asks to:
+
+- audit, analyse or report on design tokens, visual styles or components;
+- find unused, duplicated or inconsistent tokens or components;
+- compare Figma designs with implemented tokens or components;
+- prepare token or component changelog, versioning, release bundle, commit or
+  push that affects audit results.
+
+Do not apply this rule to ordinary repository work such as general documentation,
+utilities, non-UI refactoring or infrastructure that does not affect those artifacts.
+
+## Product context prerequisite
+
+Before any applicable work, follow `product-context.mdc` and resolve the product
+context.
+
+Do not start any audit flow until the product context is confirmed.
+
+## Audit scope resolution
+
+After product context is confirmed, resolve the audit scope in this order:
+
+1. Explicit audit target named by the user (for example "audit Driver tokens",
+   "audit Button component", "compare Figma file X with Driver tokens").
+2. Current open-file or working-area context (for example a token file,
+   component file or Figma link).
+3. The only eligible `active`/`onboarding` product in registry.
+
+For Driver:
+
+- canonical token values live in `pages/driver-color-tokens/*Data.ts`;
+- `tokens/*-changelog.json` are historical collection changelogs for other
+  products and must not be used as Driver audit sources;
+- `pages/driver-color-tokens/token-changelog-registry.json` indexes collection
+  changelogs and can be used as a reference;
+- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
+  `relatedPrototypes`. It can be used as a Figma reference, but not as a
+  canonical token or component source.
+
+Do not audit tokens or components across multiple products in a single run
+unless the user explicitly asks for a cross-product audit.
+
+## Audit types
+
+When the user asks for an audit, classify it into one or more types:
+
+1. **Token audit**:
+   - find unused tokens (defined but not referenced in components or pages);
+   - find missing tokens (used in components or Figma but not defined);
+   - find naming inconsistencies (for example `bg.surface` vs `surface.bg`);
+   - find value inconsistencies (same token name with different values across
+     files or modes).
+
+2. **Component audit**:
+   - find unused components (defined but not imported or rendered);
+   - find missing components (referenced in designs or docs but not implemented);
+   - find component drift (component implementation diverges from Figma or
+     token spec);
+   - find inconsistent naming or variant structures.
+
+3. **Skills audit** (if applicable):
+   - find unused or duplicated skills in `skills/_shared/` or product-scoped
+     skills directories;
+   - find skills that reference non-existent tokens or components.
+
+4. **Figma vs implementation audit**:
+   - compare Figma tokens or styles with implemented tokens;
+   - compare Figma components with implemented components;
+   - list mismatches in names, values, variants or modes.
+
+## Audit procedure
+
+For any audit type:
+
+1. Do not start scanning silently in the background.
+2. Show a brief audit plan:
+   - product context;
+   - audit type(s);
+   - files or directories to scan;
+   - expected output format (table, list, JSON).
+3. Ask the user to confirm or adjust the plan.
+4. After confirmation, run the audit and collect all findings.
+
+## Findings consolidation
+
+After scanning, consolidate all findings into a single structured report:
+
+1. Group findings by type (token, component, skills, Figma mismatch).
+2. Within each type, group by severity (`high`, `medium`, `low`) or by
+   category (unused, missing, inconsistent, drift).
+3. For each finding, include:
+
+   - `type`: token | component | skills | figma-mismatch;
+   - `category`: unused | missing | naming | value | drift | other;
+   - `path`: file or component path;
+   - `name`: token name, component name or skill name;
+   - `expected`: expected value, name or structure (if applicable);
+   - `actual`: actual value, name or structure;
+   - `impact`: where this finding matters (components, pages, modes);
+   - `confidence`: `high` | `medium` | `low`.
+
+4. Show the consolidated report and ask the user:
+
+   - which findings to fix now;
+   - which to defer or ignore;
+   - whether to create pending change items for selected findings.
+
+## Audit and pending changes
+
+When the user selects findings to fix:
+
+1. For each selected finding, create or update a pending change item under
+   `changes/<id>/pending/` for the selected product, following
+   `product-context.mdc`.
+2. Do not directly change token files, component files or skills as part of
+   the audit flow.
+3. Token, component or skills changes must be performed in separate tasks,
+   following `token-integrity.mdc`, `component-gate.mdc` and
+   `skills-import-gate.mdc`.
+
+Do not finalise SemVer or changelog during audit. That happens only at an
+explicitly requested product release boundary.
