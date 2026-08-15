@@ -42,6 +42,16 @@ Optional:
 - skills/_shared/testing-strategy.md (committed: c8d7eab)
 - skills/_shared/presentbook-guide.md (committed: de6c842)
 
+### Driver portal — completed 2026-08-16
+- 29752e8 — changelog infrastructure
+- 0704e97 — portal foundation
+- 434c2e3 — Typography, Spacing, Radius and Shadows token pages
+- 77c9163 — Icons selection UX
+- 5dae89f — audit reports
+- Active token sections: Colors, Typography, Spacing, Radius, Shadows, Icons
+- Build: npm run build passed
+- Routes: hub + 6 token routes wired; browser smoke test not performed
+
 ## Constraints
 
 - Не создавать компоненты до явного определения componentsRoot и подтверждения path.
