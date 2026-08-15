@@ -77,6 +77,25 @@ function ChangelogChangesList({ changes }: { changes: ChangelogChange[] }) {
   );
 }
 
+function ChangelogEntryCards({ entries }: { entries: ChangelogEntry[] }) {
+  return (
+    <div className="dctp-changelog-cards">
+      {entries.map((entry) => (
+        <article key={entry.version} className="dctp-changelog-card">
+          <div className="dctp-changelog-card-head">
+            <span className="dctp-changelog-version">{entry.version}</span>
+            <time className="dctp-changelog-date" dateTime={entry.date}>
+              {formatChangelogDate(entry.date)}
+            </time>
+          </div>
+          <p className="dctp-changelog-card-author">Автор · {entry.author}</p>
+          <ChangelogChangesList changes={entry.changes} />
+        </article>
+      ))}
+    </div>
+  );
+}
+
 export function ChangelogTable({ data }: { data: TokenChangelog }) {
   const sortedEntries = useMemo(
     () => [...data.entries].sort((left, right) => compareSemverDesc(left.version, right.version)),
@@ -93,8 +112,8 @@ export function ChangelogTable({ data }: { data: TokenChangelog }) {
         Changelog
       </h2>
 
-      <div className="dctp-table-wrap">
-        <table className="dctp-table dctp-changelog-table">
+      <div className="dctp-changelog-table-wrap ds-token-table-wrap">
+        <table className="ds-token-table dctp-table dctp-changelog-table">
           <thead>
             <tr>
               <th className="dctp-changelog-col-version">Версия</th>
@@ -123,6 +142,8 @@ export function ChangelogTable({ data }: { data: TokenChangelog }) {
           </tbody>
         </table>
       </div>
+
+      <ChangelogEntryCards entries={sortedEntries} />
     </section>
   );
 }

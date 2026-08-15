@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
-import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
+import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
 import {
   DS_VALUE_META_CAPTION_CLASS,
   DS_VALUE_META_CLASS,
@@ -21,6 +21,8 @@ import { filterColorTokenSections } from './searchTokens';
 const PAGE_STYLE = `
 ${DS_VALUE_META_STYLE}
 ${DS_CHANGELOG_TABLE_STYLE}
+${DS_COPYABLE_STYLE}
+${DS_TOAST_STYLE}
 .dctp,
 .dctp *,
 .dctp *::before,
@@ -157,58 +159,15 @@ ${DS_CHANGELOG_TABLE_STYLE}
   color: #2d2c2e;
 }
 .dctp-toast {
-  position: fixed;
-  left: 50%;
   bottom: 32px;
   z-index: 1100;
-  transform: translateX(-50%);
-  padding: 10px 16px;
-  border-radius: 8px;
-  background: #2d2c2e;
-  color: #ffffff;
-  font-size: 13px;
-  line-height: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
   pointer-events: none;
 }
-.dctp-table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-}
 .dctp-table {
-  width: 100%;
   min-width: 640px;
   table-layout: auto;
-  border-collapse: collapse;
-  font-size: 13px;
-  line-height: 16px;
-}
-.dctp-table thead th {
-  text-align: left;
-  padding: 12px 16px;
-  background: #f5f5f5;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-bottom: 1px solid #ebedf0;
-  white-space: nowrap;
-  vertical-align: bottom;
-}
-.dctp-table thead th.dctp-group-day,
-.dctp-table thead th.dctp-group-night {
-  text-align: left;
-  border-left: 1px solid #ebedf0;
-}
-.dctp-table tbody tr + tr td {
-  border-top: 1px solid #ebedf0;
 }
 .dctp-table td {
-  padding: 10px 16px;
-  vertical-align: middle;
   overflow: visible;
 }
 .dctp-col-name,
@@ -219,19 +178,6 @@ ${DS_CHANGELOG_TABLE_STYLE}
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
-}
-.dctp-copyable {
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  text-align: inherit;
-}
-.dctp-copyable:hover {
-  opacity: 0.72;
 }
 .dctp-swatch-btn:hover,
 .dctp-swatch-btn.dctp-copyable:hover {
@@ -770,8 +716,8 @@ function TokenTable({
 }) {
   return (
     <>
-      <div className="dctp-table-wrap">
-        <table className="dctp-table">
+      <div className="dctp-table-wrap ds-token-table-wrap">
+        <table className="ds-token-table dctp-table">
           <thead>
             <tr>
               <th className="dctp-col-name">Название</th>
