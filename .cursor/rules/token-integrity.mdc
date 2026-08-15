@@ -1,0 +1,132 @@
+---
+description: >
+  Запрещает молчаливое использование токенов и стилей без подтверждения
+  источника. Требует собирать все token gaps в единую анкету и не разрешает
+  хардкодить значения, пока не доказано, что токена не существует.
+alwaysApply: true
+---
+
+# Token Integrity Gate
+
+## Scope
+
+This rule applies whenever the user asks to:
+
+- read, import, analyse or implement something from a Figma link or frame;
+- add, change, delete or use a design token or visual style;
+- create, change, compose, audit or implement a component;
+- create or change a Presentbook token page, component page or review sandbox;
+- prepare component/token changelog, versioning, release bundle, commit or push
+  that affects token or component artifacts.
+
+Do not apply this rule to ordinary repository work such as general documentation,
+utilities, non-UI refactoring or infrastructure that does not affect those artifacts.
+
+## Product context prerequisite
+
+Before any applicable work, follow `product-context.mdc` and resolve the product
+context.
+
+Do not start token discovery or implementation until the product context is
+confirmed.
+
+## Token source resolution
+
+After product context is confirmed, resolve the token source in this order:
+
+1. `tokenDataRoot` from `products/<id>/product.json` (for Driver:
+   `pages/driver-color-tokens/*Data.ts` files).
+2. `tokensRoot` from `products/<id>/product.json` (for Driver: `null`).
+3. `relatedPrototypes` from `products/<id>/product.json` as reference only.
+
+For Driver:
+
+- canonical token values live in `pages/driver-color-tokens/*Data.ts`;
+- `tokens/*-changelog.json` are canonical collection changelogs;
+- `pages/driver-color-tokens/token-changelog-registry.json` indexes
+  collection changelogs;
+- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
+  `relatedPrototypes`. It is not a token source and must not be used as a
+  primary source of truth.
+
+Do not use token values from any other file or product.
+
+## Token lookup procedure
+
+Before using a token value in any implementation, changelog, component or
+sandbox, perform a token lookup:
+
+1. Identify the token name or path required by the task (for example
+   `color.primary`, `color.bg.surface`, `color.text.primary`).
+2. Search in the resolved token source files for an exact match or a
+   semantically equivalent token.
+3. If an exact match is found, use that token value and record the source
+   file path.
+4. If no exact match is found, search for semantically equivalent tokens
+   (for example `bg.surface` vs `surface.bg`, `text.primary` vs `primary.text`).
+5. If a semantically equivalent token is found, propose it and ask the user
+   whether to use it or create a new token.
+6. If no token is found, treat this as a token gap.
+
+## Token gap handling
+
+When a token gap is detected:
+
+1. Do not hardcode hex, rgb, hsl or any other raw value.
+2. Do not silently invent a new token name or path.
+3. Collect the gap in a list for the current task with the following fields:
+
+   - `tokenPath`: proposed token path (for example `color.bg.surface`);
+   - `figmaName`: original Figma token name or style name, if known;
+   - `value`: raw value from Figma or design spec;
+   - `mode`: Figma mode or context (for example `light`, `dark`, `mobile`);
+   - `usage`: where this token is required (component, page, sandbox);
+   - `confidence`: `high` | `medium` | `low` based on naming clarity.
+
+4. After scanning all required tokens for the task, if at least one gap exists,
+   stop implementation and show a single consolidated questionnaire:
+
+## Token gaps detected
+
+The following tokens are required but do not exist in the current product scope.
+
+1. `tokenPath`: [path]
+   `figmaName`: [name]
+   `value`: [value]
+   `mode`: [mode]
+   `usage`: [usage]
+   `confidence`: [high|medium|low]
+
+[Repeat for each gap]
+
+Before implementation:
+
+- confirm which gaps should be created as new tokens;
+- specify the target collection and file (for example `color`, `pages/driver-color-tokens/colorData.ts`);
+- or specify existing tokens to reuse instead.
+
+Do not proceed with implementation until the user resolves all gaps.
+
+## Hardcode prohibition
+
+Never hardcode hex, rgb, hsl or any other raw value in components, sandbox
+pages, styles or documentation when a token is expected, unless:
+
+- the user explicitly asks to hardcode a value for a prototype or experiment;
+- the token gap questionnaire has been shown and the user explicitly approves
+  hardcoding for specific tokens.
+
+If the user asks to hardcode, still show the token gap list and ask whether
+these values should later be converted to tokens.
+
+## Token reuse and naming
+
+When proposing new tokens:
+
+- prefer existing naming patterns from `pages/driver-color-tokens/*Data.ts`;
+- avoid duplicating tokens with slightly different names for the same value;
+- if a semantically equivalent token exists, propose reusing it instead of
+  creating a new one.
+
+Do not create token files or change token values as part of this rule. That
+requires a separate user task.
