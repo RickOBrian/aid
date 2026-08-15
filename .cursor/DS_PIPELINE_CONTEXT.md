@@ -35,10 +35,10 @@ Wave 1 (component pipeline core):
 - skills/_shared/figma-import-guide.md (committed: 3f40d37)
 - skills/_shared/changelog-guide.md (committed: 991ffb0)
 
-Wave 2 (naming, versions, accessibility):
-- skills/_shared/naming-conventions.md (new)
-- skills/_shared/versioning-strategy.md (new)
-- skills/_shared/accessibility.md (new)
+### Wave 2 (naming, versions, accessibility) — completed 2026-08-15
+- skills/_shared/naming-conventions.md (committed: 741b839)
+- skills/_shared/versioning-strategy.md (committed: 050a67a)
+- skills/_shared/accessibility.md (committed: 9075573)
 
 Wave 3 (testing, Presentbook):
 - skills/_shared/testing-strategy.md (new)
