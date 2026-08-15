@@ -8,7 +8,7 @@
 - Driver token sources: data.ts (color), typographyData.ts, spacingData.ts, radiusData.ts, shadowsData.ts, iconsData.ts.
 - Changelogs: tokens/colors-semantic-changelog.json, typography-sem-changelog.json, spacing-sem-changelog.json, radius-sem-changelog.json, effects-shadows-changelog.json, icons-changelog.json.
 - Release queues: changes/driver/pending/, changes/driver/released/ (пустые).
-- Skills (_shared): 22 гайда, включая token-rules.md, platforms.md, детальные color/typography/space guides, component architecture/audit/migration.
+- Skills (_shared): 30 гайдов, включая token-rules.md, platforms.md, детальные color/typography/space guides, component architecture/audit/migration.
 - Figma reference: src/pages/FigmaStyles/ (не source of truth).
 
 ## Architectural decisions
@@ -23,10 +23,8 @@
 
 ## Pending work (priorities)
 
-Wave 1 (component pipeline core):
-- skills/_shared/component-standards.md (new) ✅
-- skills/_shared/figma-import-guide.md (new) ✅
-- skills/_shared/changelog-guide.md (new) ✅
+Optional:
+- .cursor/rules/push-sync-gate.mdc (future rule для post-release sync).
 
 ## Completed waves
 
@@ -43,9 +41,6 @@ Wave 1 (component pipeline core):
 ### Wave 3 (testing, Presentbook) — completed 2026-08-15
 - skills/_shared/testing-strategy.md (committed: c8d7eab)
 - skills/_shared/presentbook-guide.md (committed: de6c842)
-
-Optional:
-- .cursor/rules/push-sync-gate.mdc (future rule для post-release sync).
 
 ## Constraints
 
