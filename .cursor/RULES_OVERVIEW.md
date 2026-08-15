@@ -8,11 +8,22 @@
 
 - **active/onboarding продукты:** `driver` (`aid: driver`, status: `active`) — единственный продукт в pipeline; `onboarding`-продуктов в registry пока нет.
 - **Driver:**
-  - токены: `pages/driver-color-tokens/*Data.ts` (`data.ts`, `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts`);
+  - токены: `pages/driver-color-tokens/data.ts` (color tokens),
+    `pages/driver-color-tokens/typographyData.ts`,
+    `pages/driver-color-tokens/spacingData.ts`,
+    `pages/driver-color-tokens/radiusData.ts`,
+    `pages/driver-color-tokens/shadowsData.ts`,
+    `pages/driver-color-tokens/iconsData.ts`;
   - `componentsRoot: null`, `componentsStatus: "not_started"` — канонической директории компонентов пока нет;
   - skills: дефолтное назначение импорта — `skills/_shared/` (product-scoped skills не созданы);
   - release-очереди: `changes/driver/pending/` (pending changes) и `changes/driver/released/` (обработанные release);
-  - changelog: `tokens/*-changelog.json` + реестр `pages/driver-color-tokens/token-changelog-registry.json`;
+  - changelog: `tokens/colors-semantic-changelog.json`,
+    `tokens/typography-sem-changelog.json`,
+    `tokens/spacing-sem-changelog.json`,
+    `tokens/radius-sem-changelog.json`,
+    `tokens/effects-shadows-changelog.json`,
+    `tokens/icons-changelog.json`;
+    реестр: `pages/driver-color-tokens/token-changelog-registry.json`;
   - reference-only: `src/pages/FigmaStyles/` (не source of truth).
 
 **Исторические продукты** (`ui-kit-a`, `ui-kit-b`, `sutochno`, `design-system`) — status `stable`/`legacy`; не участвуют в pipeline без явного запроса.
@@ -49,12 +60,12 @@
 
 - **When it applies:** Использование, добавление или изменение design tokens и visual styles; любая реализация, где нужны token values (компоненты, sandbox, Figma import).
 - **What it enforces:**
-  - После Product Gate — lookup токена в `tokenDataRoot` продукта (для Driver: `*Data.ts`).
+  - После Product Gate — lookup токена в `tokenDataRoot` продукта (для Driver: `data.ts` для color, `*Data.ts` для остальных коллекций).
   - Exact match → использовать и зафиксировать source path; semantic equivalent → спросить reuse vs create.
   - Token gap → единая анкета «Token gaps detected»; реализация останавливается.
   - Запрет хардкода hex/rgb/hsl без явного разрешения пользователя.
   - Предпочитать reuse существующих токенов; не создавать token files в рамках этого gate.
-- **Key artifacts:** `pages/driver-color-tokens/*Data.ts`, `tokens/*-changelog.json`, `token-changelog-registry.json`; не использовать `src/pages/FigmaStyles/` как source.
+- **Key artifacts:** `pages/driver-color-tokens/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `pages/driver-color-tokens/token-changelog-registry.json`; не использовать `src/pages/FigmaStyles/` как source.
 - **Example dialog:**
   ```
   ## Token gaps detected
@@ -131,13 +142,13 @@
   - Consolidated report с полями type, category, path, expected, actual, impact, confidence.
   - Audit read-only: fixes → pending items; прямые правки артефактов запрещены.
   - SemVer/changelog — только через Release Gate.
-- **Key artifacts:** `*Data.ts`, `componentsRoot`, `skills/_shared/`, `changes/<id>/pending/`, `token-changelog-registry.json`.
+- **Key artifacts:** `pages/driver-color-tokens/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `componentsRoot`, `skills/_shared/`, `changes/<id>/pending/`, `pages/driver-color-tokens/token-changelog-registry.json`.
 - **Example dialog:**
   ```
   ## Audit plan
   Product: driver
   Type: Token audit + Figma mismatch
-  Scan: pages/driver-color-tokens/*Data.ts, Figma node 1763:113
+  Scan: pages/driver-color-tokens/data.ts (color), *Data.ts (остальные), Figma node 1763:113
   Output: structured table
 
   Confirm or adjust the plan?
@@ -155,7 +166,7 @@
   - Propose SemVer bump + changelog entry; финализация только с явным OK пользователя.
   - Update changelog files; move pending → `released/`; не менять token values / implementations.
   - Stage только release files; commit и push — с подтверждением (`git-push.mdc`).
-- **Key artifacts:** `changes/<id>/pending/`, `changes/<id>/released/`, `tokens/*-changelog.json`, `token-changelog-registry.json`.
+- **Key artifacts:** `changes/<id>/pending/`, `changes/<id>/released/`, `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`, `pages/driver-color-tokens/token-changelog-registry.json`.
 - **Example dialog:**
   ```
   ## Release plan
@@ -178,12 +189,12 @@
 
 1. **User request:** «Импортировать токены из Figma и сделать компонент Button».
 2. **Product Gate** — подтвердить `driver`, показать token source и release queue.
-3. **Token Integrity** — lookup required tokens из Figma; показать gaps или подтвердить reuse.
+3. **Token Integrity** — lookup required tokens из Figma в `pages/driver-color-tokens/data.ts` (color) и `*Data.ts` (остальные коллекции); показать gaps или подтвердить reuse.
 4. **Skills Import Gate** (если импорт skills) — destination `skills/_shared/`, координация с `ds-import.mdc`.
 5. **Component Gate** — proposal Button, coupling с tokens, подтверждение path при `componentsRoot: null`.
 6. **Implementation** — отдельные задачи; каждое изменение → pending item в `changes/driver/pending/`.
 7. **Audit Gate** (optional) — plan → scan → report → pending items для выбранных findings.
-8. **Release Gate** — group pending → SemVer + changelog → move to `released/` → commit (push по OK).
+8. **Release Gate** — group pending → SemVer + changelog (`tokens/*-sem-changelog.json`, `tokens/colors-semantic-changelog.json`, `tokens/effects-shadows-changelog.json`) → move to `released/` → commit (push по OK).
 
 ```
 User request
@@ -232,3 +243,4 @@ Commit / Push (explicit approval)
 4. Обновить секцию **Products context** в этом overview.
 5. В product-specific gates (Token Integrity, Component, Release) — добавить блок «For `<id>`:» только если пути отличаются от Driver defaults.
 6. При появлении `componentsRoot` для Driver — обновить Component Gate examples и Maintenance notes; не менять gate-логику, только product manifest.
+7. При добавлении продуктов ориентироваться на фактический naming в репозитории (например `data.ts` для color, `*-sem-changelog.json` для collection changelogs), а не на абстрактные имена из первоначального плана.
