@@ -1,0 +1,18 @@
+{
+  "artifact": "Typography/Semantic",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-15",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Страница Typography: Headline, Subtitle, Body — значения typography-sem (Roboto) из Figma"
+        }
+      ]
+    }
+  ]
+}

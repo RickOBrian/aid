@@ -1,0 +1,79 @@
+{
+  "defaultAuthor": "sergej",
+  "collections": [
+    {
+      "collectionName": "colors-semantic",
+      "artifact": "Colors/Semantic",
+      "pageFile": "DriverColorTokensPage.tsx"
+    },
+    {
+      "collectionName": "icons",
+      "artifact": "Icons/Wilhelm",
+      "pageFile": "IconsPage.tsx"
+    },
+    {
+      "collectionName": "typography-sem",
+      "artifact": "Typography/Semantic",
+      "pageFile": "TypographyPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Typography: Headline, Subtitle, Body — значения typography-sem (Roboto) из Figma"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "effects-shadows",
+      "artifact": "Effects/Shadows",
+      "pageFile": "ShadowsPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Shadows: shadow 1–7 (effects · Shadows) из Figma с preview и таблицей параметров"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "spacing-sem",
+      "artifact": "Spacing/Semantic",
+      "pageFile": "SpacingPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Spacing: space-0 … space-128 — значения spacing-sem из Figma (Название · Превью · px · rem)"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "radius-sem",
+      "artifact": "Radius/Semantic",
+      "pageFile": "RadiusPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Radius: radius-flat … radius-pill — значения radius-sem из Figma (Name · Visual · px)"
+          }
+        ]
+      }
+    }
+  ]
+}
