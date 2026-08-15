@@ -1,6 +1,10 @@
 import { DriverColorTokensPage } from './DriverColorTokensPage';
 import { HubPage } from './HubPage';
 import { IconsPage } from './IconsPage';
+import { RadiusPage } from './RadiusPage';
+import { SpacingPage } from './SpacingPage';
+import { ShadowsPage } from './ShadowsPage';
+import { TypographyPage } from './TypographyPage';
 import { HUB_ROUTES } from './hubData';
 
 function normalizePathname(pathname: string): string {
@@ -23,6 +27,22 @@ function resolvePage(pathname: string) {
 
   if (path === HUB_ROUTES.icons) {
     return 'icons' as const;
+  }
+
+  if (path === HUB_ROUTES.typography) {
+    return 'typography' as const;
+  }
+
+  if (path === HUB_ROUTES.shadows) {
+    return 'shadows' as const;
+  }
+
+  if (path === HUB_ROUTES.radius) {
+    return 'radius' as const;
+  }
+
+  if (path === HUB_ROUTES.spacing) {
+    return 'spacing' as const;
   }
 
   return 'not-found' as const;
@@ -66,6 +86,22 @@ export function App() {
 
   if (page === 'icons') {
     return <IconsPage />;
+  }
+
+  if (page === 'typography') {
+    return <TypographyPage />;
+  }
+
+  if (page === 'shadows') {
+    return <ShadowsPage />;
+  }
+
+  if (page === 'radius') {
+    return <RadiusPage />;
+  }
+
+  if (page === 'spacing') {
+    return <SpacingPage />;
   }
 
   return <NotFoundPage />;
