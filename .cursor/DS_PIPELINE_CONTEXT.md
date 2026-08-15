@@ -24,9 +24,16 @@
 ## Pending work (priorities)
 
 Wave 1 (component pipeline core):
-- skills/_shared/component-standards.md (new)
-- skills/_shared/figma-import-guide.md (new)
-- skills/_shared/changelog-guide.md (new)
+- skills/_shared/component-standards.md (new) ✅
+- skills/_shared/figma-import-guide.md (new) ✅
+- skills/_shared/changelog-guide.md (new) ✅
+
+## Completed waves
+
+### Wave 1 (component pipeline core) — completed 2026-08-15
+- skills/_shared/component-standards.md (committed: 03ad5bc)
+- skills/_shared/figma-import-guide.md (committed: 3f40d37)
+- skills/_shared/changelog-guide.md (committed: 991ffb0)
 
 Wave 2 (naming, versions, accessibility):
 - skills/_shared/naming-conventions.md (new)
