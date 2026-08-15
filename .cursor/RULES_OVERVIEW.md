@@ -181,6 +181,17 @@
   Confirm SemVer and changelog? Proceed with release?
   ```
 
+## Portal governance
+
+Эти правила описывают стандарты Driver portal и не являются pipeline gates.
+Они применяются только к работе с токенами и страницами портала.
+
+| Правило | Файл | Описание |
+|---|---|---|
+| Portal table standard | `ds-portal-table-standard.mdc` | Table layout для token pages, исключения для grid UX (IconsPage) |
+| Token section changelog | `token-section-changelog.mdc` | Registry, ChangelogTable, prebuild; pending items → Release Gate |
+| Token style changelog gate | `token-style-changelog-gate.mdc` | Pre-implementation анкета; pending, без immediate SemVer bump |
+
 ---
 
 ## Execution order
