@@ -45,6 +45,15 @@
       ],
       "componentRegistry": null,
       "releaseRoot": "changes/driver",
+      "relatedPrototypes": [
+        {
+          "path": "src/pages/FigmaStyles",
+          "type": "figma-style-dump",
+          "status": "prototype",
+          "notSourceOfTruth": true,
+          "note": "Reference-only Figma style dump. Do not use as token, component, changelog or release source."
+        }
+      ],
       "notes": "Значения токенов в TypeScript data-файлах, не в tokens/driver/*.json. Changelog JSON в tokens/ — единственная связь с tokens/."
     },
     {
@@ -158,29 +167,6 @@
       "componentRegistry": "docs/storybook/_storybook-nav.json",
       "releaseRoot": null,
       "notes": "Token registry в Markdown, не JSON. Отдельной папки tokens/<product>/ нет."
-    },
-    {
-      "id": "figma-styles-driver",
-      "label": "Driver App • Work (Figma styles dump)",
-      "status": "prototype",
-      "tokensRoot": null,
-      "tokenDataRoot": "src/pages/FigmaStyles",
-      "tokenDataFiles": [
-        "src/pages/FigmaStyles/data.ts"
-      ],
-      "tokenAssetsRoot": null,
-      "componentsRoot": null,
-      "presentbookRoot": "src/pages/FigmaStyles",
-      "presentbookType": "storybook-only",
-      "storybookRoot": "stories/figma-styles",
-      "routeBase": null,
-      "tokenRoutes": null,
-      "tokenRegistry": null,
-      "changelogRoot": null,
-      "changelogFiles": null,
-      "componentRegistry": null,
-      "releaseRoot": null,
-      "notes": "Presentbook только через Storybook (Figma Styles/Driver v1), отдельного URL presentbook нет."
     }
   ]
 }

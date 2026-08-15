@@ -42,5 +42,14 @@
   "componentsRoot": null,
   "componentsStatus": "not_started",
   "componentRegistry": null,
+  "relatedPrototypes": [
+    {
+      "path": "src/pages/FigmaStyles",
+      "type": "figma-style-dump",
+      "status": "prototype",
+      "notSourceOfTruth": true,
+      "note": "Reference-only Figma style dump. Do not use as token, component, changelog or release source."
+    }
+  ],
   "notes": "Значения токенов сейчас живут в TypeScript data-файлах, а не в tokens/driver/*.json."
 }
