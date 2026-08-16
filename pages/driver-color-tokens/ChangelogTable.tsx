@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export type ChangelogChangeKind = 'added' | 'changed' | 'fixed' | 'removed';
+export type ChangelogChangeKind = 'added' | 'changed' | 'fixed' | 'deprecated' | 'removed';
 
 export type ChangelogReleaseType = 'major' | 'minor' | 'patch';
 
@@ -27,6 +27,7 @@ const CHANGE_KIND_COLORS: Record<ChangelogChangeKind, string> = {
   added: '#23AD58',
   changed: '#005AFF',
   fixed: '#F0A11D',
+  deprecated: '#9E9E9E',
   removed: '#D62347',
 };
 
