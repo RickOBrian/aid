@@ -1,0 +1,15 @@
+{
+  "defaultAuthor": "sergej",
+  "components": [
+    {
+      "componentId": "switch",
+      "canonicalName": "Switch",
+      "artifact": "Switch",
+      "pageFile": "SwitchPage.tsx",
+      "metaFile": "components/switch.meta.json",
+      "changelogFile": "switch-changelog.json",
+      "reviewRoute": "/components/switch",
+      "componentsGroup": "Controls"
+    }
+  ]
+}

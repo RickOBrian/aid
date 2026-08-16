@@ -1,0 +1,22 @@
+{
+  "id": "component-switch-initial",
+  "type": "component",
+  "changeType": "added",
+  "artifact": "Switch",
+  "componentId": "switch",
+  "product": "driver",
+  "changeSummary": "Initial Switch implementation: Surface View control in Controls group; states checked/unchecked, loading, disabled; semantic Driver color tokens (Controls · Checked/Unchecked/Key, Strokes · Primary); review sandbox at /components/switch",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Switch: Surface View on/off control; props checked, onChange, isDisabled, isLoading; Web platform; Day/Night semantic color tokens"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/switch",
+  "sourcePath": "pages/driver-color-tokens/components/Switch.tsx",
+  "status": "pending",
+  "created": "2026-08-16",
+  "author": "sergej"
+}

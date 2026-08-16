@@ -1,0 +1,17 @@
+{
+  "id": "switch",
+  "canonicalName": "Switch",
+  "aliases": ["Toggle"],
+  "product": "driver",
+  "architectureLevel": "Surface View",
+  "supportedPlatforms": ["web"],
+  "sourcePath": "pages/driver-color-tokens/components/Switch.tsx",
+  "reviewRoute": "/components/switch",
+  "pageFile": "SwitchPage.tsx",
+  "componentsGroup": "Controls",
+  "changelogSource": "components/switch-changelog.json",
+  "currentVersion": null,
+  "status": "pending_release",
+  "createdDate": "2026-08-16",
+  "figmaSource": "Wilhelm Library, node 9872:15"
+}
