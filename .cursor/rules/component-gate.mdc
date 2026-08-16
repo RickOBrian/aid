@@ -82,6 +82,12 @@ When a new component is proposed:
    - `placement`: proposed component path relative to `componentsRoot`
      (for example `components/Button/Button.tsx`);
    - `confidence`: `high` | `medium` | `low` based on naming and design clarity.
+   - `namingException`: `true` | `false` — component name deviates from DS
+     naming standard (Role+Entity, Item suffix rules);
+   - `architectureException`: `true` | `false` — component structure/slots
+     deviate from DS architecture guide;
+   - `exceptionNote`: short reason if either exception flag is `true`;
+   - `reviewAt`: `release` | `next-major` — when to revisit the exception.
 
 4. After collecting the proposal, show a single consolidated questionnaire:
 
@@ -94,17 +100,71 @@ Variants: [list]
 Modes: [list]
 Proposed path: [placement]
 Confidence: [high|medium|low]
+Naming exception: [yes/no — exceptionNote if yes]
+Architecture exception: [yes/no — exceptionNote if yes]
+Review at: [release | next-major | n/a]
 
 Before implementation:
 
 - confirm the component name and path;
+- confirm architecture/naming standard compliance **or** document an approved
+  exception (`namingException` / `architectureException` + `exceptionNote`);
 - confirm which tokens must be created or reused;
 - confirm whether to create the component now or defer until token gaps
   are resolved;
 - confirm whether this component belongs to the current product scope or
   should be created in a different product.
 
-Do not proceed with implementation until the user resolves all questions.
+Do not proceed with implementation until the user resolves all questions,
+**except** when the user explicitly approves a documented exception: record
+the pending exception item (below), then proceed.
+
+## Documented component exceptions
+
+When `namingException` or `architectureException` is `true` and the user
+confirms the deviation:
+
+1. Create a pending exception item under `changes/<id>/pending/` using the
+   unified format:
+
+```json
+{
+  "id": "component-deviation-[slug]",
+  "type": "component",
+  "exceptionType": "naming | architecture",
+  "standard": "[expected DS standard]",
+  "actual": "[actual component name/structure]",
+  "reason": "[exceptionNote]",
+  "recommendation": "[preferred fix or follow-up]",
+  "status": "temporary | accepted",
+  "reviewAt": "release | next-major",
+  "pendingRef": "changes/<id>/pending/[filename].json"
+}
+```
+
+2. Add an `exceptions` block to the component spec frontmatter (when the spec
+   file exists or is created in the same task):
+
+```yaml
+exceptions:
+  - id: component-deviation-[slug]
+    type: naming | architecture
+    standard: "Role+Entity → ButtonText"
+    actual: "Button"
+    reason: "Figma library legacy; rename in v2"
+    status: temporary | accepted
+    reviewAt: release | next-major
+    pendingRef: changes/<id>/pending/[filename].json
+```
+
+3. Include in the component description template:
+
+> **Standard deviation (accepted):** Component `[actual]` deviates from
+> `[standard]`. Reason: `[reason]`. Status: `[status]`; review at
+> `[reviewAt]`. Tracked in `[pendingRef]`.
+
+After confirmation and pending item + spec note, **proceed with implementation**.
+Classify matching audit findings as `accepted-exception` per `audit-gate.mdc`.
 
 ## Component placement
 
