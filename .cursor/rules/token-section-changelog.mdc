@@ -5,9 +5,13 @@ alwaysApply: true
 
 # Правило: changelog для каждого раздела токенов
 
-Web-портал `pages/driver-color-tokens/` — каждый **активный раздел
-токенов** (страница существует) обязан иметь **таблицу changelog** внизу.
-Отсутствие changelog — блокер для merge.
+Web-портал `pages/driver-color-tokens/` — каждый **merge-ready активный раздел
+токенов** (страница существует и готовится к merge) обязан иметь **таблицу
+changelog** внизу.
+
+**Requirement** для merge-ready token sections. Hub-only или WIP sections без
+`pageFile` в registry — changelog **не требуется** до открытия страницы.
+Отсутствие changelog на merge-ready section — блокер для merge.
 
 ## Автоматическое создание (обязательно)
 
