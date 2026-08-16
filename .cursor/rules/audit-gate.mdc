@@ -94,23 +94,41 @@ For any audit type:
 3. Ask the user to confirm or adjust the plan.
 4. After confirmation, run the audit and collect all findings.
 
+## Disposition taxonomy
+
+Each finding must include a `disposition` in addition to `severity`:
+
+| disposition | Meaning |
+|---|---|
+| `blocker` | Must fix before merge/release; blocks token lookup, product isolation, or release integrity |
+| `recommendation` | Should fix; default for naming/value drift without user-marked blocker |
+| `accepted-exception` | User-approved documented deviation; tracked in `changes/<id>/pending/` |
+| `deferred` | Acknowledged; fix later; no immediate action |
+
+**Guidance:** Naming/value drift is **`recommendation` by default**. Use
+**`blocker`** only if token lookup fails, product isolation is violated,
+release integrity is at risk, or the user explicitly marks the finding as a
+blocker. When a matching pending exception exists, use **`accepted-exception`**.
+
 ## Findings consolidation
 
 After scanning, consolidate all findings into a single structured report:
 
 1. Group findings by type (token, component, skills, Figma mismatch).
-2. Within each type, group by severity (`high`, `medium`, `low`) or by
-   category (unused, missing, inconsistent, drift).
+2. Within each type, group by `disposition`, then by severity (`high`,
+   `medium`, `low`) or by category (unused, missing, naming, value, drift).
 3. For each finding, include:
 
    - `type`: token | component | skills | figma-mismatch;
    - `category`: unused | missing | naming | value | drift | other;
+   - `disposition`: blocker | recommendation | accepted-exception | deferred;
    - `path`: file or component path;
    - `name`: token name, component name or skill name;
    - `expected`: expected value, name or structure (if applicable);
    - `actual`: actual value, name or structure;
    - `impact`: where this finding matters (components, pages, modes);
-   - `confidence`: `high` | `medium` | `low`.
+   - `confidence`: `high` | `medium` | `low`;
+   - `pendingRef`: path to matching exception item, if `accepted-exception`.
 
 4. Show the consolidated report and ask the user:
 
