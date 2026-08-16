@@ -107,6 +107,67 @@ Before implementation:
 
 Do not proceed with implementation until the user resolves all gaps.
 
+Unresolved token gaps remain a **hard stop**. Documented standard deviations
+(option c below) apply only when a token **exists** but deviates from DS
+naming/value standards — not when the token is missing.
+
+## Standard deviation
+
+When a token **is found** in the product source, but its name or value does
+not match the DS standard (naming guide, Figma spec, expected semantic role):
+
+1. Show a single consolidated questionnaire with the deviation and four
+   explicit choices. Default recommendation: option **a**.
+
+## Standard deviation detected
+
+Token: [name/path in source]
+Standard expected: [DS standard name/value/role]
+Actual in source: [actual name/value]
+Usage: [component, page, sandbox]
+Confidence: [high|medium|low]
+
+Choose one:
+
+a) **Use existing semantic token** (recommended) — reuse the found token as-is;
+   record a pending item if naming/value drift should be tracked for audit.
+b) **Add new semantic token** — create a correctly named token in a separate
+   implementation task; do not rename silently during this task.
+c) **Temporary deviation with documented exception** — proceed only after
+   explicit user confirmation; record a pending exception item (see below).
+d) **Stop until source of truth is clarified** — do not implement until the
+   user resolves Figma vs product source conflict.
+
+If the user chooses **c**, create a pending exception item under
+`changes/<id>/pending/` before continuing implementation. Use the unified
+exception format (shared with `component-gate.mdc` and `audit-gate.mdc`):
+
+```json
+{
+  "id": "token-deviation-[slug]",
+  "type": "token",
+  "exceptionType": "naming | value | architecture | layout",
+  "standard": "[expected DS standard]",
+  "actual": "[actual token name/value in source]",
+  "reason": "[why deviation is accepted]",
+  "recommendation": "[preferred fix or follow-up]",
+  "status": "temporary | accepted",
+  "reviewAt": "release | next-major",
+  "pendingRef": "changes/<id>/pending/[filename].json"
+}
+```
+
+After the user confirms option **c** and the pending item is recorded,
+**proceed with implementation** using the documented deviation. Do not treat
+a confirmed documented exception as an unresolved gap.
+
+Options **a** and **b** may proceed after user confirmation without a full
+exception block unless audit tracking is requested. Option **d** is a hard
+stop until clarified.
+
+Product isolation, release integrity and unresolved token gaps without
+approval remain **requirements** — documented exceptions do not override them.
+
 ## Hardcode prohibition
 
 Never hardcode hex, rgb, hsl or any other raw value in components, sandbox
