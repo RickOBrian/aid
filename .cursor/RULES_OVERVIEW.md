@@ -192,6 +192,42 @@
 | Token section changelog | `token-section-changelog.mdc` | Registry, ChangelogTable, prebuild; pending items → Release Gate |
 | Token style changelog gate | `token-style-changelog-gate.mdc` | Pre-implementation анкета; pending, без immediate SemVer bump |
 
+## Exception philosophy
+
+These rules sit **alongside** pipeline gates — not as a separate exception gate.
+Safety constraints remain **requirements**: product isolation, release integrity,
+unresolved token gaps without approval.
+
+For **conscious deviations** from DS naming/value/architecture standards, use the
+middle path:
+
+```
+recommendation → user choice → confirm → record → proceed
+```
+
+| Layer | Role |
+|---|---|
+| **Recommendation** | Prefer DS standard (`prefer`, `should`, `recommended`) |
+| **Requirement** | Hard stop without approval (`must`, `Never`, unresolved gap) |
+| **Exception path** | User explicitly approves documented deviation |
+
+**Template for agents:**
+
+> Recommend [standard]. Require user confirmation before deviation. Record
+> exception in `changes/<id>/pending/` with `id`, `type`, `standard`, `actual`,
+> `reason`, `recommendation`, `status`, `reviewAt`, `pendingRef`; classify in
+> audit as `accepted-exception`.
+
+**Where implemented:**
+
+- `token-integrity.mdc` — Standard deviation (token found, non-standard name/value)
+- `component-gate.mdc` — naming/architecture exceptions in proposal + spec frontmatter
+- `audit-gate.mdc` — disposition: `blocker` | `recommendation` | `accepted-exception` | `deferred`
+
+Documented exceptions **do not** bypass Product Gate, Release Gate, or unresolved
+token gaps. They allow implementation to proceed after explicit confirmation and
+a pending record.
+
 ---
 
 ## Execution order
