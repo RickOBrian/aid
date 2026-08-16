@@ -41,7 +41,7 @@
   "releaseReleasedRoot": "changes/driver/released",
   "componentsRoot": null,
   "componentsStatus": "not_started",
-  "componentRegistry": null,
+  "componentRegistry": "pages/driver-color-tokens/component-registry.json",
   "relatedPrototypes": [
     {
       "path": "src/pages/FigmaStyles",
@@ -51,5 +51,16 @@
       "note": "Reference-only Figma style dump. Do not use as token, component, changelog or release source."
     }
   ],
+  "colorModeMapping": {
+    "Day": "light",
+    "Night": "dark",
+    "sourceFields": {
+      "Day": "day",
+      "Night": "night"
+    },
+    "preserveLabels": true,
+    "renameRequiresProductRelease": true,
+    "note": "Driver color mode mapping: Day represents light mode; Night represents dark mode. Day/Night labels are current product terminology and must be preserved."
+  },
   "notes": "Значения токенов сейчас живут в TypeScript data-файлах, а не в tokens/driver/*.json."
 }
