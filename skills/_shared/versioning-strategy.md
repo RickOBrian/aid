@@ -99,7 +99,20 @@ Colors/Semantic: v1.3.0 → v2.0.0   (MAJOR: обязательно, синхр�
 
 ## SemVer for components
 
-Каждый компонент (`ButtonText`, `BadgeStatus`, `FieldCheckbox`) — **независимая** единица версионирования. Для Driver `componentsRoot: null` — component changelog structure TBD; правила bump действуют уже сейчас.
+Каждый компонент (`Switch`, `ButtonText`, `BadgeStatus`) — **независимая**
+единица версионирования, отдельно от token collections.
+
+Driver artifact paths (review sandbox while `componentsRoot: null`):
+
+| Concern | Path |
+|---|---|
+| Changelog | `components/{componentId}-changelog.json` |
+| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` |
+| Registry | `pages/driver-color-tokens/component-registry.json` |
+| Pending | `changes/driver/pending/component-*.json` |
+
+Reference component: **Switch** (`componentId: switch`, route `/components/switch`,
+`currentVersion: null`, pending initial release → `1.0.0`).
 
 ### MAJOR — breaking change
 
@@ -227,8 +240,9 @@ Release commit (release files only) → push via git-push.mdc
 ### Component release
 
 - Scope: one or more components
-- Artifacts: component changelog (TBD for Driver)
+- Artifacts: `components/*-changelog.json`, `{id}.meta.json`, registry
 - Coupling: verify token dependencies already released or included in same train
+- **Do not bump** `currentVersion` or append `entries` during implementation
 
 ### Combined release
 

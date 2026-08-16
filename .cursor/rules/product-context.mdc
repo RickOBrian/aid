@@ -159,6 +159,15 @@ For the current active product `driver`:
 - `pages/driver-color-tokens/token-changelog-registry.json` indexes
   collection changelogs;
 - product-specific `componentsRoot` does not exist yet;
+- Product DS Component artifacts (review sandbox): source in
+  `pages/driver-color-tokens/components/`, metadata in
+  `pages/driver-color-tokens/components/*.meta.json`, changelog in
+  `components/*-changelog.json`, registry in
+  `pages/driver-color-tokens/component-registry.json`;
+- Portal UI (`ChangelogTable`, `ComponentReleaseStatus`) is not a Product DS
+  Component and does not receive component version/changelog;
+- component version and final changelog update **only** on Release Gate — not
+  during implementation, preview, or sandbox updates;
 - `changes/driver/pending/` and `changes/driver/released/` are the
   product-scoped release queues;
 - `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
@@ -167,3 +176,16 @@ For the current active product `driver`:
 
 Do not migrate Driver token values from TypeScript to JSON as part of a normal
 token/component task. That requires a separate migration task.
+
+### Driver color mode mapping
+
+Driver color mode mapping: `Day` represents light mode; `Night` represents dark
+mode. The `Day`/`Night` labels are current product terminology and must be
+preserved. Use their semantic mapping when implementing platform themes or
+component modes. This is not a token naming violation and does not require a
+per-component exception. Any future rename to `Light`/`Dark` requires an
+explicit product and release decision.
+
+Canonical metadata: `products/driver/product.json` → `colorModeMapping`.
+Source fields in `pages/driver-color-tokens/data.ts`: `day` (light), `night`
+(dark). Portal column labels stay `Day` / `Night`.

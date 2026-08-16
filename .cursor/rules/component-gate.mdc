@@ -97,7 +97,8 @@ Component: [componentName]
 Figma source: [figmaSource or "not specified"]
 Tokens required: [list of token paths]
 Variants: [list]
-Modes: [list]
+Modes: [list — for Driver color: platform `light`/`dark` maps to `day`/`night`
+source fields; portal labels `Day`/`Night`; not a naming violation]
 Proposed path: [placement]
 Confidence: [high|medium|low]
 Naming exception: [yes/no — exceptionNote if yes]
@@ -118,6 +119,21 @@ Before implementation:
 Do not proceed with implementation until the user resolves all questions,
 **except** when the user explicitly approves a documented exception: record
 the pending exception item (below), then proceed.
+
+## Driver color modes in component specs
+
+For product `driver`, component `modes` may be documented as `light` / `dark`
+(platform themes) while color token source uses `day` / `night` fields and
+portal labels `Day` / `Night`.
+
+- light mode → lookup `row.day` in `pages/driver-color-tokens/data.ts`
+- dark mode → lookup `row.night` in `pages/driver-color-tokens/data.ts`
+
+Driver color mode mapping: `Day` represents light mode; `Night` represents dark
+mode. The `Day`/`Night` labels are current product terminology and must be
+preserved. This is not a token naming violation and does not require a
+per-component exception. See `products/driver/product.json` →
+`colorModeMapping` and `product-context.mdc` (Driver color mode mapping).
 
 ## Documented component exceptions
 
@@ -203,7 +219,74 @@ When changing or creating a component:
 - record the change as a pending change item under
   `changes/<id>/pending/` for the selected product, following
   `product-context.mdc`;
-- do not finalise component version or changelog during implementation;
+- create or update machine-readable component metadata and changelog
+  **source files** (see Component artifact model below);
+- add changelog display to the component review page using portal
+  primitives (`ChangelogTable`, `ComponentReleaseStatus`) — display only;
+- do **not** finalise component version or changelog during implementation;
+- do **not** bump `currentVersion`, append release entries, move pending
+  to `released`, create release commits, or push;
 - final SemVer and changelog are determined only at an explicitly requested
   product release boundary, after the user reviews and approves the grouped
   pending changes for each affected artifact.
+
+Portal UI (`DsPageHeader`, `ChangelogTable`, table styles in
+`dsChangelogTable.ts`) is **not** a Product DS Component. Do not version
+portal chrome or copy portal implementation into product component source.
+
+## Component artifact model
+
+Each Product DS Component requires machine-readable artifacts independent
+from token collections:
+
+| Artifact | Driver path (review sandbox) | Purpose |
+|---|---|---|
+| Registry | `pages/driver-color-tokens/component-registry.json` | Index of product components |
+| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` | Canonical name, aliases, architecture, routes, status |
+| Changelog source | `components/{id}-changelog.json` | `currentVersion`, structured release entries |
+| Pending item | `changes/driver/pending/component-{slug}.json` | Proposed change + SemVer impact (not released) |
+| Review page | `pages/driver-color-tokens/{Name}Page.tsx` | Sandbox + changelog display |
+
+Metadata fields (minimum):
+
+- `canonicalName`, `aliases`, `product`, `architectureLevel`,
+  `supportedPlatforms`, `sourcePath`, `reviewRoute`, `componentsGroup`,
+  `changelogSource`, `currentVersion`, `status`, `createdDate`
+
+Changelog source fields (minimum):
+
+- `artifact`, `componentId`, `product`, `currentVersion` (`null` until first
+  release), `releaseStatus`, `reviewRoute`, `entries[]` with `version`, `date`,
+  `type`, `impact`, `author`, `changes[]` (`kind`: added/changed/fixed/
+  deprecated/removed, `description`, optional `relatedTokenChanges`)
+
+During implementation:
+
+- new component → `currentVersion: null`, `entries: []`,
+  `releaseStatus: "pending"`, `status: "pending_release"`, initial pending item
+  with `proposedSemVerImpact: "initial"`, `proposedVersion: "1.0.0"`,
+  `changeType: "added"`;
+- changed component (already released) → update pending item only; do not
+  append release entry; `currentVersion` stays at last released value.
+
+On Release Gate only (explicit Principal Designer approval):
+
+- group pending component items;
+- **first approved release of a new component** → always propose `1.0.0`
+  with impact `initial` (not major/minor/patch); first changelog entry:
+  `version: "1.0.0"`, `type: "added"`, `impact: "initial"`;
+- **after first release** → usual SemVer: new public variant/state/slot →
+  minor; visual/token fix without API change → patch;
+  removal/rename/breaking API → major;
+- after confirmation: set `currentVersion`, append changelog entry,
+  update metadata status, move pending → `released/`, release commit + push.
+
+## Component review page requirements
+
+Component review/sandbox pages must include:
+
+- component name, current version, release status;
+- review route;
+- `Pending release` indicator when pending items exist;
+- changelog table section (empty state until first release);
+- **no** release button and **no** automatic version bump on save/build.

@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/
 name: presentbook-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   platforms: [web, ios, android]
   owner: design-system-team
 ---
@@ -48,7 +48,7 @@ metadata:
 ├── DsPageHeader (title, back to hub, search, optional actions)
 ├── Collection overview (sections / groups)
 ├── Value table или cards (responsive)
-├── Mode columns (Day/Night для color; light/dark где applicable)
+├── Mode columns (Driver color: Day/Night labels; semantically light/dark)
 ├── Optional: JSON view/download, copy-to-clipboard
 └── ChangelogTable (loadTokenChangelog(collectionName))
 ```
@@ -62,7 +62,7 @@ metadata:
 | **Page header** | Навигация + поиск | `DsPageHeader` — «Colors», «Spacing» |
 | **Description / sections** | Группировка токенов по semantic category | `semanticColorSections` — Bg, Texts, Icons |
 | **Value table** | Name, preview, values (hex, px, rem) | `ds-token-table` + `DS_TOKEN_TABLE_STYLE` |
-| **Mode switch / columns** | Day + Night для color tokens | Columns Day / Night в `DriverColorTokensPage` |
+| **Mode switch / columns** | Day + Night для color tokens (`Day` → light, `Night` → dark) | Columns Day / Night в `DriverColorTokensPage`; source fields `day` / `night` in `data.ts` |
 | **Search** | Filter по имени/id | `searchTokens.ts`, `searchSpacing.ts`, … |
 | **Changelog** | Collection version history | `<ChangelogTable data={…} />` внизу страницы |
 | **Usage guidelines** | 2–5 do/don't (optional, recommended) | В description секции или intro block |
@@ -94,7 +94,7 @@ const changelog = loadTokenChangelog(collection.collectionName);
 | Page | `DriverColorTokensPage.tsx` |
 | Data | `data.ts` — `colorTokenCollection`, `semanticColorSections` |
 | Collection | `colors-semantic` / artifact `Colors/Semantic` |
-| Modes | Day / Night columns + swatch preview |
+| Modes | Day / Night columns + swatch preview (`Day` = light, `Night` = dark) |
 | Actions | JSON view/download, copy hex |
 | Changelog | `loadTokenChangelog('colors-semantic')` |
 
@@ -112,36 +112,54 @@ const changelog = loadTokenChangelog(collection.collectionName);
 
 ## Component pages
 
-> Driver: `componentsRoot: null`, component pages **ещё не созданы**. Структура ниже — target для первого component scope после Component Gate.
+> Driver: `componentsRoot: null` — product components live in review sandbox
+> (`pages/driver-color-tokens/components/`) with versioning via
+> `components/*-changelog.json`. **Switch** is the reference component.
 
 ### Структура component page
 
 ```
 ComponentPage.tsx
-├── DsPageHeader (component name, version badge)
-├── Overview (purpose, architecture level, Figma link)
-├── Variants (grid или tabs)
-├── States (interactive matrix)
-├── Props table (name, type, default, description)
-├── Slots (leading, trailing, content, …)
-├── Platform examples (Web / iOS / Android snippets)
-├── Usage guidelines (do / don't)
-├── Playground / sandbox (optional controlled props)
-└── Changelog section (component changelog TBD per product)
+├── DsPageHeader (component name)
+├── Version / status badges (currentVersion, Pending release)
+├── Overview (purpose, architecture level, Figma link, review route)
+├── Variants / states matrix
+├── Props table (optional)
+├── Accessibility notes
+├── ComponentReleaseStatus (pending panel + ChangelogTable)
+└── No release button — version bump only on Release Gate
 ```
 
-### Interactive sandbox (playground)
+### Changelog integration
 
-- Controlled props panel: `variant`, `size`, `isDisabled`, `isLoading`
-- Live preview — isolated iframe или Storybook embed
-- Matrix shortcut links: «Open primary × disabled in sandbox»
-- Не смешивать несколько компонентов на одной sandbox page без explicit scope
+Reuse portal primitives — do **not** copy portal UI into product component source:
 
-### Changelog section
+```tsx
+import { loadComponentChangelog } from './loadComponentChangelog';
+import { loadComponentPendingItems } from './loadComponentPending';
+import { ComponentReleaseStatus, COMPONENT_RELEASE_STATUS_STYLE } from './ComponentReleaseStatus';
+import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
+import componentMeta from './components/switch.meta.json';
 
-- Component SemVer independent — см. `versioning-strategy.md`
-- Display-only на page; updates через Release Gate
-- Link to `changes/<id>/pending/` items for in-progress work (optional)
+const changelog = loadComponentChangelog('switch');
+const pendingItems = loadComponentPendingItems('switch');
+
+// PAGE_STYLE: ${DS_CHANGELOG_TABLE_STYLE} ${COMPONENT_RELEASE_STATUS_STYLE}
+
+<ComponentReleaseStatus
+  componentName={componentMeta.canonicalName}
+  changelog={changelog}
+  pendingItems={pendingItems}
+  reviewRoute={componentMeta.reviewRoute}
+/>
+```
+
+- Canonical changelog: `components/{componentId}-changelog.json`
+- Metadata: `pages/driver-color-tokens/components/{id}.meta.json`
+- Registry: `pages/driver-color-tokens/component-registry.json`
+- Pending: `changes/driver/pending/component-*.json`
+- **Display only** on page; bumps on Release Gate after explicit approval
+- Show `Pending release` when pending items exist; empty changelog until first release
 
 ### Documentation requirements (from component-standards)
 
@@ -178,14 +196,16 @@ secondary  ✓        ✓        ✓         ✓          ✓          —
 ghost      ✓        ✓        ✓         ✓          ✓          ✓
 ```
 
-× **modes:** light, dark (отдельные строки или toggle).
+× **modes (components):** light, dark — platform themes. For Driver **color
+  tokens** use portal labels `Day` / `Night` and source fields `day` / `night`
+  (`Day` → light, `Night` → dark); not a naming violation.
 
-Для token review matrix:
+Для token review matrix (Driver color):
 
 ```
-token name     day value    night value    contrast OK?
-text-primary   …            …              ✓
-bg-accent-main …            …              ✓
+token name     Day (light)   Night (dark)   contrast OK?
+text-primary   …             …              ✓
+bg-accent-main …             …              ✓
 ```
 
 ### Design / dev review workflow
@@ -213,8 +233,9 @@ Hub (/design-system)
 │   ├── Radius      (/tokens/radius)
 │   ├── Shadows     (/tokens/shadows)
 │   └── Icons       (/tokens/icons)
-└── Components      (TBD — placeholder on Driver hub)
-    └── [ComponentName]  (/components/…)
+└── Components      (/components/…)
+    └── Controls
+        └── Switch  (/components/switch) — reference component
 ```
 
 **Driver files:**
@@ -226,7 +247,9 @@ Hub (/design-system)
 | Routing | `App.tsx` — pathname → page component |
 | Shared header | `DsPageHeader.tsx` |
 | Table styles | `dsChangelogTable.ts` — `DS_TOKEN_TABLE_STYLE`, `DS_PORTAL_LAYOUT_TOKENS` |
-| Changelog UI | `ChangelogTable.tsx`, `loadTokenChangelog.ts` |
+| Changelog UI | `ChangelogTable.tsx`, `loadTokenChangelog.ts`, `loadComponentChangelog.ts` |
+| Component release UI | `ComponentReleaseStatus.tsx`, `loadComponentPending.ts` |
+| Component registry | `component-registry.json`, `components/*.meta.json` |
 | Prebuild | `scripts/ensure-token-changelogs.mjs` |
 
 ### Навигация
@@ -311,4 +334,6 @@ Hub (/design-system)
 
 ## Changelog
 
+- **1.0.1** — 2026-08-16. Уточнён Driver color mode mapping: `Day` → light,
+  `Night` → dark; labels сохраняются.
 - **1.0.0** — 2026-08-15. Первая версия: token/component page structure, review sandbox, Driver portal reference, best practices, anti-patterns.

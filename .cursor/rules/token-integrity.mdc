@@ -80,6 +80,9 @@ When a token gap is detected:
    - `figmaName`: original Figma token name or style name, if known;
    - `value`: raw value from Figma or design spec;
    - `mode`: Figma mode or context (for example `light`, `dark`, `mobile`);
+     for Driver color tokens use semantic modes in the gap list (`light` /
+     `dark`) and map to source fields `day` / `night`; portal labels stay
+     `Day` / `Night` (see Driver color mode resolution below);
    - `usage`: where this token is required (component, page, sandbox);
    - `confidence`: `high` | `medium` | `low` based on naming clarity.
 
@@ -110,6 +113,24 @@ Do not proceed with implementation until the user resolves all gaps.
 Unresolved token gaps remain a **hard stop**. Documented standard deviations
 (option c below) apply only when a token **exists** but deviates from DS
 naming/value standards — not when the token is missing.
+
+## Driver color mode resolution
+
+For product `driver`, color tokens in `pages/driver-color-tokens/data.ts` use
+fields `day` and `night` and portal labels `Day` / `Night`.
+
+- `Day` → light mode → read `row.day`
+- `Night` → dark mode → read `row.night`
+
+When a task, Figma mode, component theme or token gap uses `light` / `dark`,
+map to Driver source fields above. Do **not** treat `Day` / `Night` labels or
+`day` / `night` field names as standard deviation, naming blocker or reason for
+a per-component exception. Canonical mapping:
+`products/driver/product.json` → `colorModeMapping`.
+
+Token names containing `light ind` / `dark ind` (for example `Primary light ind`)
+are semantic color roles, not color mode labels — do not confuse with light/dark
+theme mapping.
 
 ## Standard deviation
 

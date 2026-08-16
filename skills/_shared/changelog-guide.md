@@ -35,8 +35,8 @@ Changelog — контракт между дизайном, разработко
 
 | Тип | Файл / location | Status |
 |---|---|---|
-| **Token collection** | `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json` | ✅ Driver |
-| **Component** | TBD per product (`componentsRoot` + component registry) | 🔜 Driver (`componentsRoot: null`) |
+| **Token collection** | `tokens/colors-semantic-changelog.json`, … | ✅ Driver |
+| **Component** | `components/{componentId}-changelog.json` + `pages/driver-color-tokens/components/{id}.meta.json` | ✅ Driver (review sandbox; `componentsRoot: null`) |
 | **Skills** | TBD (`metadata.version` in frontmatter + optional changelog file) | 🔜 |
 
 Mirror для Driver portal: `pages/driver-color-tokens/tokens/` (sync prebuild).
@@ -76,7 +76,7 @@ Mirror для Driver portal: `pages/driver-color-tokens/tokens/` (sync prebuild)
 | `entries[].date` | ISO date |
 | `entries[].author` | Author |
 | `entries[].type` | `major` / `minor` / `patch` |
-| `changes[].kind` | `added` / `changed` / `removed` / `fixed` |
+| `changes[].kind` | `added` / `changed` / `removed` / `fixed` / `deprecated` |
 | `changes[].description` | Human-readable description |
 
 ### Формат записей
@@ -87,8 +87,41 @@ Mirror для Driver portal: `pages/driver-color-tokens/tokens/` (sync prebuild)
 | `changed` | Изменено значение или behavior без breaking API |
 | `removed` | Удалён токен / component / variant (обычно MAJOR) |
 | `fixed` | Bug fix, visual correction без API change |
+| `deprecated` | Public API marked deprecated; removal planned in future MAJOR |
 
----
+### Component changelog (Product DS Components)
+
+Independent from token collections. One changelog file per component.
+
+```json
+{
+  "artifact": "Switch",
+  "componentId": "switch",
+  "product": "driver",
+  "currentVersion": null,
+  "releaseStatus": "pending",
+  "reviewRoute": "/components/switch",
+  "entries": []
+}
+```
+
+| Field | Назначение |
+|---|---|
+| `componentId` | Registry slug (`switch`) |
+| `currentVersion` | Last **released** version; `null` until first Release Gate |
+| `releaseStatus` | `pending` until first Release Gate; `released` after |
+| `reviewRoute` | Presentbook sandbox route |
+| `entries[].impact` | `initial` for first release; then `major` / `minor` / `patch` |
+| `entries[].type` | First release: `"added"`; later entries follow SemVer bump type |
+| `entries[].changes[].relatedTokenChanges` | Optional linked token release ids |
+
+**Portal UI is not versioned.** `ChangelogTable`, `ComponentReleaseStatus`, and
+`dsChangelogTable.ts` styles are portal primitives — reuse for display, do not
+treat as Product DS Components.
+
+During implementation: `currentVersion` stays `null` for unreleased components
+(or at last released value after first release); pending work lives in
+`changes/<id>/pending/` only.
 
 ## When to update changelog
 
@@ -159,6 +192,9 @@ Commit release files only → push via git-push.mdc
 | Registry | `pages/driver-color-tokens/token-changelog-registry.json` |
 | Pending queue | `changes/driver/pending/` |
 | Released queue | `changes/driver/released/` |
+| Component registry | `pages/driver-color-tokens/component-registry.json` |
+| Component metadata | `pages/driver-color-tokens/components/*.meta.json` |
+| Component changelogs | `components/*-changelog.json` |
 
 ### Другие продукты
 
@@ -201,14 +237,28 @@ Bump: `1.1.0` → `1.1.1`
 
 Bump: `1.1.1` → `2.0.0`
 
-### Component — added (MINOR, future)
+### Component — initial release (Release Gate only)
+
+Pending item during implementation (`proposedSemVerImpact: "initial"`,
+`proposedVersion: "1.0.0"`, `changeType: "added"`); first release entry:
 
 ```json
 {
-  "kind": "added",
-  "description": "ButtonText: variants primary, secondary, ghost; states default, hover, disabled"
+  "version": "1.0.0",
+  "date": "2026-08-16",
+  "author": "sergej",
+  "type": "added",
+  "impact": "initial",
+  "changes": [
+    {
+      "kind": "added",
+      "description": "Switch: Surface View on/off control; states checked, loading, disabled; Web"
+    }
+  ]
 }
 ```
+
+Sets `currentVersion: "1.0.0"` — unreleased components keep `currentVersion: null`.
 
 ### Skills — changed (PATCH)
 

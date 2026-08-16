@@ -42,13 +42,36 @@ For Driver:
 
 - pending changes live in `changes/driver/pending/`;
 - released changes live in `changes/driver/released/`;
-- `tokens/*-changelog.json` are historical collection changelogs for other
-  products and must not be used as Driver release sources;
-- `pages/driver-color-tokens/token-changelog-registry.json` indexes collection
-  changelogs and can be used as a reference.
+- token changelogs: `tokens/*-changelog.json` (Driver collections only);
+- component changelogs: `components/*-changelog.json` (Product DS Components);
+- component registry: `pages/driver-color-tokens/component-registry.json`;
+- component metadata: `pages/driver-color-tokens/components/*.meta.json`;
+- `pages/driver-color-tokens/token-changelog-registry.json` indexes token
+  collection changelogs and can be used as a reference.
 
 Do not release tokens, components or skills across multiple products in a single
 run unless the user explicitly asks for a cross-product release.
+
+## Version and changelog boundary (all artifact types)
+
+Version and final changelog **must not** change during:
+
+- local implementation edits;
+- review iterations;
+- preview or sandbox updates;
+- temporary placement decisions (`componentsRoot: null` review sandbox).
+
+They update **only** on Release Gate when:
+
+1. Principal Designer explicitly requests release/push preparation;
+2. Cursor groups all pending changes since the previous release;
+3. Cursor proposes SemVer impact, new version, and grouped changelog draft;
+4. Principal Designer explicitly confirms version, changelog, and push;
+5. Only after confirmation: update artifact version + changelog, move pending
+   to `released/`, create release commit, push via `git-push.mdc`.
+
+Cursor proposes; Principal Designer confirms. Version, changelog, and push
+are one linked operation — never split across silent auto-bumps.
 
 ## Release types
 
@@ -111,6 +134,21 @@ For each artifact group:
    - breaking changes (removed tokens/components, renamed tokens, changed API);
    - new features (added tokens/components/skills, new variants or modes);
    - fixes (value corrections, documentation updates, minor adjustments).
+
+For **components** (in addition to tokens/skills):
+
+| Change | Typical impact |
+|---|---|
+| First approved release of new Product DS Component | **INITIAL** → `1.0.0` (entry: `type: "added"`, `impact: "initial"`) |
+| New public variant/state/slot (after first release) | MINOR |
+| Visual/token fix without public API change | PATCH |
+| Removal, rename, breaking prop/slot/structure | MAJOR |
+
+Do **not** use `currentVersion: "0.0.0"` for unreleased components — use
+`null` until the first Release Gate approval sets `1.0.0`.
+
+Cursor **only proposes** impact, version, and changelog draft. Principal
+Designer confirms before any file update, commit, or push.
 2. Propose a changelog entry summarizing the changes.
 3. Show the proposed SemVer and changelog to the user.
 4. Ask the user to:
@@ -129,8 +167,10 @@ After SemVer and changelog are confirmed:
      `tokens/color-changelog.json` or Driver-equivalent when defined);
    - update `pages/driver-color-tokens/token-changelog-registry.json` if needed.
 2. For component releases:
-   - update or create component changelog files (when component changelog
-     structure is defined).
+   - update or create `components/{componentId}-changelog.json`;
+   - update `pages/driver-color-tokens/components/{id}.meta.json`
+     (`currentVersion`, `status`);
+   - update `pages/driver-color-tokens/component-registry.json` if needed.
 3. For skills releases:
    - update or create skill changelog files (when skills changelog structure
      is defined).

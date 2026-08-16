@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/
 name: figma-import-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   platforms: [web, ios, android]
   owner: design-system-team
 ---
@@ -91,11 +91,25 @@ metadata:
 
 ### Modes
 
-| Figma mode | Token mapping |
-|---|---|
-| Light / Day | `day` value in color rows |
-| Dark / Night | `night` value in color rows |
-| Mobile / Desktop | Document in pending item; не смешивать без explicit mode token |
+| Figma mode | Driver token mapping | Platform theme |
+|---|---|---|
+| Light / Day | `day` field in color rows | light mode |
+| Dark / Night | `night` field in color rows | dark mode |
+| Mobile / Desktop | Document in pending item; не смешивать без explicit mode token | — |
+
+Driver color mode mapping: `Day` represents light mode; `Night` represents dark
+mode. The `Day`/`Night` labels are current product terminology and must be
+preserved. Use their semantic mapping when implementing platform themes or
+component modes. This is not a token naming violation and does not require a
+per-component exception. Any future rename to `Light`/`Dark` requires an
+explicit product and release decision.
+
+Canonical metadata: `products/driver/product.json` → `colorModeMapping`.
+Source fields in `pages/driver-color-tokens/data.ts`: `day` (light), `night`
+(dark). Portal column labels stay `Day` / `Night`.
+
+Token names such as `Primary light ind` are semantic roles, not color mode
+labels — do not treat them as Light/Dark theme modes.
 
 ### Variants в Figma
 
@@ -161,4 +175,4 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 | Import skills вне `skills/_shared/` | Skills Import Gate + user confirmation |
 | Immediate changelog bump | Pending → Release Gate |
 | Component folder без path confirmation | Component Gate при `componentsRoot: null` |
-| Figma variant name → token name 1:1 | Variants = props; tokens = semantic layer |
+| Figma Light/Dark vs Driver Day/Night treated as naming drift | Product terminology; map semantically | `colorModeMapping` in `product.json` |

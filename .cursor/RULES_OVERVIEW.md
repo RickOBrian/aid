@@ -17,13 +17,11 @@
   - `componentsRoot: null`, `componentsStatus: "not_started"` — канонической директории компонентов пока нет;
   - skills: дефолтное назначение импорта — `skills/_shared/` (product-scoped skills не созданы);
   - release-очереди: `changes/driver/pending/` (pending changes) и `changes/driver/released/` (обработанные release);
-  - changelog: `tokens/colors-semantic-changelog.json`,
-    `tokens/typography-sem-changelog.json`,
-    `tokens/spacing-sem-changelog.json`,
-    `tokens/radius-sem-changelog.json`,
-    `tokens/effects-shadows-changelog.json`,
-    `tokens/icons-changelog.json`;
-    реестр: `pages/driver-color-tokens/token-changelog-registry.json`;
+  - token changelog: `tokens/colors-semantic-changelog.json`, …;
+  - component changelog: `components/{componentId}-changelog.json` (Product DS Components, independent from tokens);
+  - component registry: `pages/driver-color-tokens/component-registry.json`;
+  - component metadata: `pages/driver-color-tokens/components/*.meta.json`;
+  - reference component: **Switch** (`/components/switch`, `currentVersion: null`, pending initial release);
   - reference-only: `src/pages/FigmaStyles/` (не source of truth).
 
 **Исторические продукты** (`ui-kit-a`, `ui-kit-b`, `sutochno`, `design-system`) — status `stable`/`legacy`; не участвуют в pipeline без явного запроса.
@@ -91,7 +89,9 @@
   - Новый компонент → structured proposal (имя, Figma, tokens, variants, modes, path, confidence).
   - Связка с `token-integrity.mdc`: все required tokens проходят lookup; gaps блокируют реализацию.
   - Pending change item в `changes/<id>/pending/`; без немедленного SemVer/changelog.
-- **Key artifacts:** `componentsRoot` из `product.json`, `changes/<id>/pending/`; для Driver `componentsRoot: null`.
+  - Component metadata + changelog source + review page display; version bump только на Release Gate.
+  - Portal UI (`ChangelogTable`, `ComponentReleaseStatus`) — display primitives, не Product DS Components.
+- **Key artifacts:** `componentsRoot` из `product.json`, `changes/<id>/pending/`, `components/*-changelog.json`, `component-registry.json`; для Driver `componentsRoot: null`, review sandbox under `pages/driver-color-tokens/components/`.
 - **Example dialog:**
   ```
   ## New component proposal
@@ -164,6 +164,8 @@
 - **What it enforces:**
   - Release plan → подтверждение → группировка pending changes по artifact.
   - Propose SemVer bump + changelog entry; финализация только с явным OK пользователя.
+  - Component release: `components/*-changelog.json`, metadata, pending → released.
+  - Version/changelog/push — одна связанная операция; не менять version при implementation.
   - Update changelog files; move pending → `released/`; не менять token values / implementations.
   - Stage только release files; commit и push — с подтверждением (`git-push.mdc`).
 - **Key artifacts:** `changes/<id>/pending/`, `changes/<id>/released/`, `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`, `pages/driver-color-tokens/token-changelog-registry.json`.
