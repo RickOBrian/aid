@@ -4,6 +4,12 @@ export interface HubItem {
   description: string;
   icon: string;
   href: string | null;
+  /**
+   * Optional sub-group inside a HubSection (e.g. "Controls" per
+   * `skills/_shared/component-categories-guide.md`). Items without a group
+   * render as a flat list, preserving the previous behavior.
+   */
+  group?: string;
 }
 
 export interface HubSection {
@@ -20,6 +26,7 @@ export const HUB_ROUTES = {
   shadows: '/tokens/shadows',
   radius: '/tokens/radius',
   spacing: '/tokens/spacing',
+  switch: '/components/switch',
 } as const;
 
 /** Название дизайн-системы. */
@@ -84,6 +91,14 @@ export const HUB_SECTIONS: HubSection[] = [
         description: 'Каталог UI-компонентов дизайн-системы',
         icon: '▣',
         href: null,
+      },
+      {
+        id: 'switch',
+        title: 'Switch',
+        description: 'Переключатель on/off (review sandbox)',
+        icon: '◉',
+        href: HUB_ROUTES.switch,
+        group: 'Controls',
       },
     ],
   },

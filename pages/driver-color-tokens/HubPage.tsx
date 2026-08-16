@@ -47,6 +47,20 @@ const PAGE_STYLE = `
   flex-direction: column;
   gap: 24px;
 }
+.dsh-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.dsh-group-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.32);
+}
 .dsh-item {
   display: block;
   text-decoration: none;
@@ -171,6 +185,20 @@ function HubItemCard({ item }: { item: HubItem }) {
   );
 }
 
+function groupItems(items: HubItem[]): Array<{ group: string | null; items: HubItem[] }> {
+  const groups: Array<{ group: string | null; items: HubItem[] }> = [];
+  for (const item of items) {
+    const group = item.group ?? null;
+    const existing = groups.find((candidate) => candidate.group === group);
+    if (existing) {
+      existing.items.push(item);
+    } else {
+      groups.push({ group, items: [item] });
+    }
+  }
+  return groups;
+}
+
 export function HubPage() {
   return (
     <div className="dsh">
@@ -184,8 +212,13 @@ export function HubPage() {
                 {section.title}
               </h2>
               <div className="dsh-items">
-                {section.items.map((item) => (
-                  <HubItemCard key={item.id} item={item} />
+                {groupItems(section.items).map(({ group, items }) => (
+                  <div className="dsh-group" key={group ?? '__ungrouped'}>
+                    {group && <p className="dsh-group-title">{group}</p>}
+                    {items.map((item) => (
+                      <HubItemCard key={item.id} item={item} />
+                    ))}
+                  </div>
                 ))}
               </div>
             </section>
