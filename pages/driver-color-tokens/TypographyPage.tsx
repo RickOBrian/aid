@@ -1,7 +1,14 @@
 import { Fragment, useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
+import {
+  exportTypographyTokenJson,
+  hasTypographyTokens,
+  stringifyTokenJson,
+  TOKEN_JSON_FILENAMES,
+} from './exportTokenJson';
 import {
   formatTypographySpecCaption,
   TYPOGRAPHY_PARAMETERS,
@@ -23,6 +30,7 @@ const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
 ${DS_COPYABLE_STYLE}
 ${DS_TOAST_STYLE}
+${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dtp,
 .dtp *,
 .dtp *::before,
@@ -276,6 +284,10 @@ export function TypographyPage() {
     () => filterTypographySections(typographySections, searchQuery),
     [searchQuery],
   );
+  const typographyTokensJson = useMemo(
+    () => stringifyTokenJson(exportTypographyTokenJson()),
+    [],
+  );
 
   return (
     <div className="dtp">
@@ -287,6 +299,14 @@ export function TypographyPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Поиск стиля"
         searchAriaLabel="Поиск стиля"
+        actions={(
+          <TokenJsonActions
+            filename={TOKEN_JSON_FILENAMES.typography}
+            json={typographyTokensJson}
+            disabled={!hasTypographyTokens()}
+            onCopyText={copyText}
+          />
+        )}
       />
 
       {filteredSections.length === 0 && searchQuery.trim() ? (

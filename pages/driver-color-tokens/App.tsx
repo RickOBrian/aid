@@ -4,6 +4,7 @@ import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
 import { ShadowsPage } from './ShadowsPage';
+import { ComponentsHubPage } from './ComponentsHubPage';
 import { SwitchPage } from './SwitchPage';
 import { TypographyPage } from './TypographyPage';
 import { HUB_ROUTES } from './hubData';
@@ -44,6 +45,10 @@ function resolvePage(pathname: string) {
 
   if (path === HUB_ROUTES.spacing) {
     return 'spacing' as const;
+  }
+
+  if (path === HUB_ROUTES.components) {
+    return 'components' as const;
   }
 
   if (path === HUB_ROUTES.switch) {
@@ -107,6 +112,10 @@ export function App() {
 
   if (page === 'spacing') {
     return <SpacingPage />;
+  }
+
+  if (page === 'components') {
+    return <ComponentsHubPage />;
   }
 
   if (page === 'switch') {

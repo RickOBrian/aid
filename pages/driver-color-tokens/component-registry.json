@@ -9,7 +9,8 @@
       "metaFile": "components/switch.meta.json",
       "changelogFile": "switch-changelog.json",
       "reviewRoute": "/components/switch",
-      "componentsGroup": "Controls"
+      "componentsGroup": "Controls",
+      "description": "Переключатель on/off (review sandbox)"
     }
   ]
 }

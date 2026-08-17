@@ -26,6 +26,7 @@ export const HUB_ROUTES = {
   shadows: '/tokens/shadows',
   radius: '/tokens/radius',
   spacing: '/tokens/spacing',
+  components: '/components',
   switch: '/components/switch',
 } as const;
 
@@ -86,19 +87,11 @@ export const HUB_SECTIONS: HubSection[] = [
     title: 'Components',
     items: [
       {
-        id: 'components-hub',
+        id: 'components',
         title: 'Components',
         description: 'Каталог UI-компонентов дизайн-системы',
         icon: '▣',
-        href: null,
-      },
-      {
-        id: 'switch',
-        title: 'Switch',
-        description: 'Переключатель on/off (review sandbox)',
-        icon: '◉',
-        href: HUB_ROUTES.switch,
-        group: 'Controls',
+        href: HUB_ROUTES.components,
       },
     ],
   },

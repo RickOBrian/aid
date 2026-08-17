@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import {
   IconContextMenu,
   createIconDownloadMenuItem,
@@ -9,7 +10,13 @@ import {
 } from './IconContextMenu';
 import { IconDownloadActions } from './IconDownloadActions';
 import { IconRoundCheckbox } from './IconRoundCheckbox';
-import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
+import { DS_CHANGELOG_TABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
+import {
+  exportIconsTokenJson,
+  hasIconTokens,
+  stringifyTokenJson,
+  TOKEN_JSON_FILENAMES,
+} from './exportTokenJson';
 import {
   DS_INTERACTIVE_CARD_CLASS,
   DS_INTERACTIVE_CARD_STYLE,
@@ -43,6 +50,8 @@ const PAGE_STYLE = `
 ${DS_INTERACTIVE_CARD_STYLE}
 ${DS_DROPDOWN_BUTTON_STYLE}
 ${DS_VALUE_META_STYLE}
+${DS_TOAST_STYLE}
+${DS_TOKEN_JSON_ACTIONS_STYLE}
 ${DS_CHANGELOG_TABLE_STYLE}
 .dip,
 .dip *,
@@ -565,8 +574,38 @@ function IconSectionView({
   );
 }
 
+function useCopyNotice() {
+  const [copyNoticeVisible, setCopyNoticeVisible] = useState(false);
+  const copyNoticeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const copyText = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyNoticeVisible(true);
+      if (copyNoticeTimeoutRef.current) {
+        clearTimeout(copyNoticeTimeoutRef.current);
+      }
+      copyNoticeTimeoutRef.current = setTimeout(() => {
+        setCopyNoticeVisible(false);
+        copyNoticeTimeoutRef.current = null;
+      }, 2000);
+    } catch {
+      // noop
+    }
+  };
+
+  const copyNotice = copyNoticeVisible ? (
+    <div className="ds-toast" role="status" aria-live="polite">
+      Скопировано в буфер
+    </div>
+  ) : null;
+
+  return { copyText, copyNotice };
+}
+
 export function IconsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const { copyText, copyNotice } = useCopyNotice();
   const [downloadFormat, setDownloadFormat] = useState<IconDownloadFormat>(
     DEFAULT_ICON_DOWNLOAD_FORMAT,
   );
@@ -581,6 +620,10 @@ export function IconsPage() {
   const visibleIconCount = useMemo(
     () => countIconsInSections(filteredSections),
     [filteredSections],
+  );
+  const iconsTokensJson = useMemo(
+    () => stringifyTokenJson(exportIconsTokenJson()),
+    [],
   );
   const selectedVisibleCount = useMemo(() => {
     let count = 0;
@@ -716,15 +759,23 @@ export function IconsPage() {
         searchPlaceholder="Поиск иконки"
         searchAriaLabel="Поиск иконки"
         actions={
-          <IconDownloadActions
-            sections={iconSections}
-            visibleSections={filteredSections}
-            format={downloadFormat}
-            onFormatChange={setDownloadFormat}
-            selectionMode={selectionMode}
-            selectedKeys={selectedKeys}
-            onMoreClick={handleOpenMoreMenu}
-          />
+          <>
+            <TokenJsonActions
+              filename={TOKEN_JSON_FILENAMES.icons}
+              json={iconsTokensJson}
+              disabled={!hasIconTokens()}
+              onCopyText={copyText}
+            />
+            <IconDownloadActions
+              sections={iconSections}
+              visibleSections={filteredSections}
+              format={downloadFormat}
+              onFormatChange={setDownloadFormat}
+              selectionMode={selectionMode}
+              selectedKeys={selectedKeys}
+              onMoreClick={handleOpenMoreMenu}
+            />
+          </>
         }
       />
 
@@ -773,6 +824,7 @@ export function IconsPage() {
       {iconChangelog ? <ChangelogTable data={iconChangelog} /> : null}
 
       <IconContextMenu state={contextMenu} onClose={handleCloseContextMenu} />
+      {copyNotice}
     </div>
   );
 }

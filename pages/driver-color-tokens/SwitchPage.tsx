@@ -4,6 +4,7 @@ import {
   COMPONENT_RELEASE_STATUS_STYLE,
 } from './ComponentReleaseStatus';
 import { DsPageHeader } from './DsPageHeader';
+import { HUB_ROUTES } from './hubData';
 import { Switch } from './components/Switch';
 import { DS_CHANGELOG_TABLE_STYLE } from './dsChangelogTable';
 import { loadComponentChangelog } from './loadComponentChangelog';
@@ -186,7 +187,12 @@ export function SwitchPage() {
     <div className="dsw">
       <style>{PAGE_STYLE}</style>
       <div className="dsw-shell">
-        <DsPageHeader title="Switch" showSearch={false} />
+        <DsPageHeader
+          title="Switch"
+          backHref={HUB_ROUTES.components}
+          backAriaLabel="Назад к Components"
+          showSearch={false}
+        />
         <span className="dsw-badge">Review sandbox · componentsRoot: null</span>
         <span className="dsw-pending-badge" style={{ marginLeft: 8 }}>
           Pending initial release

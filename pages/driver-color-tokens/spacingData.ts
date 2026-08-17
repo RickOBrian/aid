@@ -32,6 +32,7 @@ export const spacingTokens: SpacingToken[] = [
   { id: 'space-128', name: 'space-128', valuePx: 128, valuePxLabel: '128', valueRemLabel: '8' },
 ];
 
+/** Высота голубого сегмента превью (между синими линиями), px. */
 export function spacingPreviewHeight(token: SpacingToken): string {
   return `${token.valuePx}px`;
 }

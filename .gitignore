@@ -4,3 +4,4 @@ memory/**/*.master.json
 node_modules/
 storybook-static/
 dist/
+.vercel

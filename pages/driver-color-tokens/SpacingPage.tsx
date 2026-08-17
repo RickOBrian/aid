@@ -1,7 +1,14 @@
 import { useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
+import {
+  exportSpacingTokenJson,
+  hasSpacingTokens,
+  stringifyTokenJson,
+  TOKEN_JSON_FILENAMES,
+} from './exportTokenJson';
 import { loadTokenChangelog } from './loadTokenChangelog';
 import {
   spacingCollection,
@@ -17,6 +24,7 @@ const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
 ${DS_COPYABLE_STYLE}
 ${DS_TOAST_STYLE}
+${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dps,
 .dps *,
 .dps *::before,
@@ -68,10 +76,19 @@ ${DS_TOAST_STYLE}
   min-height: 48px;
 }
 .dps-visual__bar {
+  display: flex;
+  flex-direction: column;
   width: 40px;
+}
+.dps-visual__bar-line {
+  flex-shrink: 0;
+  height: 2px;
+  background: #2c64e3;
+}
+.dps-visual__bar-fill {
+  flex-shrink: 0;
+  width: 100%;
   background: rgba(141, 185, 253, 0.24);
-  border-top: 2px solid #2c64e3;
-  border-bottom: 2px solid #2c64e3;
 }
 .dps-cards {
   display: none;
@@ -149,11 +166,14 @@ function useCopyNotice() {
 function SpacingVisual({ token }: { token: SpacingToken }) {
   return (
     <div className="dps-visual">
-      <div
-        className="dps-visual__bar"
-        style={{ height: spacingPreviewHeight(token) }}
-        aria-hidden="true"
-      />
+      <div className="dps-visual__bar" aria-hidden="true">
+        <div className="dps-visual__bar-line" />
+        <div
+          className="dps-visual__bar-fill"
+          style={{ height: spacingPreviewHeight(token) }}
+        />
+        <div className="dps-visual__bar-line" />
+      </div>
     </div>
   );
 }
@@ -279,6 +299,10 @@ export function SpacingPage() {
     () => filterSpacingTokens(spacingTokens, searchQuery),
     [searchQuery],
   );
+  const spacingTokensJson = useMemo(
+    () => stringifyTokenJson(exportSpacingTokenJson()),
+    [],
+  );
 
   return (
     <div className="dps">
@@ -290,6 +314,14 @@ export function SpacingPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Поиск токена"
         searchAriaLabel="Поиск токена"
+        actions={(
+          <TokenJsonActions
+            filename={TOKEN_JSON_FILENAMES.spacing}
+            json={spacingTokensJson}
+            disabled={!hasSpacingTokens()}
+            onCopyText={copyText}
+          />
+        )}
       />
 
       {filteredTokens.length === 0 && searchQuery.trim() ? (

@@ -1,7 +1,14 @@
 import { Fragment, useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
+import {
+  exportShadowsTokenJson,
+  hasShadowTokens,
+  stringifyTokenJson,
+  TOKEN_JSON_FILENAMES,
+} from './exportTokenJson';
 import {
   buildShadowTableRows,
   shadowPreviewStyle,
@@ -19,6 +26,7 @@ const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
 ${DS_COPYABLE_STYLE}
 ${DS_TOAST_STYLE}
+${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dsp,
 .dsp *,
 .dsp *::before,
@@ -284,6 +292,10 @@ export function ShadowsPage() {
     () => filterShadowSections(shadowSections, searchQuery),
     [searchQuery],
   );
+  const shadowsTokensJson = useMemo(
+    () => stringifyTokenJson(exportShadowsTokenJson()),
+    [],
+  );
 
   return (
     <div className="dsp">
@@ -295,6 +307,14 @@ export function ShadowsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Поиск тени"
         searchAriaLabel="Поиск тени"
+        actions={(
+          <TokenJsonActions
+            filename={TOKEN_JSON_FILENAMES.shadows}
+            json={shadowsTokensJson}
+            disabled={!hasShadowTokens()}
+            onCopyText={copyText}
+          />
+        )}
       />
 
       {filteredSections.length === 0 && searchQuery.trim() ? (

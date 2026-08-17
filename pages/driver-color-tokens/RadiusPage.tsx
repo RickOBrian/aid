@@ -1,7 +1,14 @@
 import { useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
+import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
+import {
+  exportRadiusTokenJson,
+  hasRadiusTokens,
+  stringifyTokenJson,
+  TOKEN_JSON_FILENAMES,
+} from './exportTokenJson';
 import { loadTokenChangelog } from './loadTokenChangelog';
 import { radiusCollection, radiusPreviewStyle, radiusTokens, type RadiusToken } from './radiusData';
 import { filterRadiusTokens } from './searchRadius';
@@ -12,6 +19,7 @@ const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
 ${DS_COPYABLE_STYLE}
 ${DS_TOAST_STYLE}
+${DS_TOKEN_JSON_ACTIONS_STYLE}
 .drp,
 .drp *,
 .drp *::before,
@@ -238,6 +246,10 @@ export function RadiusPage() {
     () => filterRadiusTokens(radiusTokens, searchQuery),
     [searchQuery],
   );
+  const radiusTokensJson = useMemo(
+    () => stringifyTokenJson(exportRadiusTokenJson()),
+    [],
+  );
 
   return (
     <div className="drp">
@@ -249,6 +261,14 @@ export function RadiusPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Поиск токена"
         searchAriaLabel="Поиск токена"
+        actions={(
+          <TokenJsonActions
+            filename={TOKEN_JSON_FILENAMES.radius}
+            json={radiusTokensJson}
+            disabled={!hasRadiusTokens()}
+            onCopyText={copyText}
+          />
+        )}
       />
 
       {filteredTokens.length === 0 && searchQuery.trim() ? (

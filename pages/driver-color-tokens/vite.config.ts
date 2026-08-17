@@ -35,7 +35,7 @@ export default defineConfig({
   esbuild: {
     jsx: 'automatic',
   },
-  plugins: [spaComponentRoutesPlugin(['/components/switch'])],
+  plugins: [spaComponentRoutesPlugin(['/components', '/components/switch'])],
   build: {
     outDir: 'dist',
     emptyOutDir: true,

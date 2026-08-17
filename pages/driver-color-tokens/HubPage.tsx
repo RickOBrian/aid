@@ -1,4 +1,4 @@
-import { HUB_PAGE_TITLE, HUB_SECTIONS, type HubItem } from './hubData';
+import { HUB_PAGE_TITLE, HUB_SECTIONS } from './hubData';
 
 const PAGE_STYLE = `
 .dsh,
@@ -46,20 +46,6 @@ const PAGE_STYLE = `
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-.dsh-group {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.dsh-group-title {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.32);
 }
 .dsh-item {
   display: block;
@@ -156,7 +142,7 @@ const PAGE_STYLE = `
 }
 `;
 
-function HubItemCard({ item }: { item: HubItem }) {
+function HubItemCard({ item }: { item: (typeof HUB_SECTIONS)[number]['items'][number] }) {
   const content = (
     <>
       <div className="dsh-item-head">
@@ -185,20 +171,6 @@ function HubItemCard({ item }: { item: HubItem }) {
   );
 }
 
-function groupItems(items: HubItem[]): Array<{ group: string | null; items: HubItem[] }> {
-  const groups: Array<{ group: string | null; items: HubItem[] }> = [];
-  for (const item of items) {
-    const group = item.group ?? null;
-    const existing = groups.find((candidate) => candidate.group === group);
-    if (existing) {
-      existing.items.push(item);
-    } else {
-      groups.push({ group, items: [item] });
-    }
-  }
-  return groups;
-}
-
 export function HubPage() {
   return (
     <div className="dsh">
@@ -212,13 +184,8 @@ export function HubPage() {
                 {section.title}
               </h2>
               <div className="dsh-items">
-                {groupItems(section.items).map(({ group, items }) => (
-                  <div className="dsh-group" key={group ?? '__ungrouped'}>
-                    {group && <p className="dsh-group-title">{group}</p>}
-                    {items.map((item) => (
-                      <HubItemCard key={item.id} item={item} />
-                    ))}
-                  </div>
+                {section.items.map((item) => (
+                  <HubItemCard key={item.id} item={item} />
                 ))}
               </div>
             </section>
