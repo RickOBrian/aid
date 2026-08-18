@@ -1,15 +1,6 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="#F2F2F2"/>
-<g id="Frame 834">
-<rect width="5722" height="1665" transform="translate(-1432 -717)" fill="white"/>
-<g id="informative">
-<rect x="-152" y="-520" width="944" height="784" rx="20" fill="white"/>
-<g id="newspaper">
 <g id="&#240;&#159;&#142;&#168; Color">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M7 4C7 3.44772 7.44772 3 8 3H21C21.5523 3 22 3.44772 22 4V19C22 20.1046 21.1046 21 20 21H6.23608C6.71112 20.4692 6.99998 19.7684 6.99998 19L7 4ZM11 6C10.4477 6 10 6.44772 10 7C10 7.55228 10.4477 8 11 8H18C18.5523 8 19 7.55228 19 7C19 6.44772 18.5523 6 18 6H11ZM10 11C10 10.4477 10.4477 10 11 10H18C18.5523 10 19 10.4477 19 11C19 11.5523 18.5523 12 18 12H11C10.4477 12 10 11.5523 10 11Z" fill="#2D2C2E"/>
 <path d="M3 8C2.44772 8 2 8.44772 2 9V19C2 20.1046 2.89543 21 4 21C5.10457 21 6 20.1046 6 19V9C6 8.44772 5.55228 8 5 8H3Z" fill="#2D2C2E"/>
-</g>
-</g>
-</g>
 </g>
 </svg>

@@ -1,0 +1,1258 @@
+{
+  "action/camera": {
+    "width": 24,
+    "height": 24
+  },
+  "action/compass": {
+    "width": 24,
+    "height": 24
+  },
+  "action/copy": {
+    "width": 24,
+    "height": 24
+  },
+  "action/date": {
+    "width": 24,
+    "height": 24
+  },
+  "action/dots": {
+    "width": 24,
+    "height": 24
+  },
+  "action/edit": {
+    "width": 24,
+    "height": 24
+  },
+  "action/filter_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "action/filter_solid": {
+    "width": 24,
+    "height": 24
+  },
+  "action/layers": {
+    "width": 24,
+    "height": 24
+  },
+  "action/location": {
+    "width": 24,
+    "height": 24
+  },
+  "action/logout": {
+    "width": 24,
+    "height": 24
+  },
+  "action/microphone": {
+    "width": 24,
+    "height": 24
+  },
+  "action/my_location": {
+    "width": 24,
+    "height": 24
+  },
+  "action/my_location_active": {
+    "width": 24,
+    "height": 24
+  },
+  "action/navigation": {
+    "width": 24,
+    "height": 24
+  },
+  "action/order_mode": {
+    "width": 24,
+    "height": 24
+  },
+  "action/phone": {
+    "width": 24,
+    "height": 24
+  },
+  "action/radar": {
+    "width": 24,
+    "height": 24
+  },
+  "action/route": {
+    "width": 24,
+    "height": 24
+  },
+  "action/scan_card": {
+    "width": 24,
+    "height": 24
+  },
+  "action/search": {
+    "width": 24,
+    "height": 24
+  },
+  "action/send": {
+    "width": 24,
+    "height": 24
+  },
+  "action/settings": {
+    "width": 24,
+    "height": 24
+  },
+  "action/star": {
+    "width": 24,
+    "height": 24
+  },
+  "action/star_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "action/stop": {
+    "width": 24,
+    "height": 24
+  },
+  "action/thumb_down": {
+    "width": 24,
+    "height": 24
+  },
+  "action/thumb_up": {
+    "width": 24,
+    "height": 24
+  },
+  "action/trash": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/bp": {
+    "width": 24,
+    "height": 30
+  },
+  "alternative/hexagon": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/mastercard": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/more": {
+    "width": 12,
+    "height": 24
+  },
+  "alternative/neftmagistral": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/plus_mini": {
+    "width": 6,
+    "height": 6
+  },
+  "alternative/qiwi": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/rosneft": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/shell": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/spinner": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/surge": {
+    "width": 24,
+    "height": 24
+  },
+  "alternative/visa": {
+    "width": 30,
+    "height": 24
+  },
+  "controls/arrow_down": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_down_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_left": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_left_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_right": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_right_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_up": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/arrow_up_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/attention_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/check": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/check_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_down": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_down_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_left": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_left_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_right": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_right_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_up": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/chevron_up_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/close": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/close_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/collapse": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/download": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/edit_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/expand": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/help_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/minus": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/pause": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/play": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/plus": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/plus_round": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/refresh": {
+    "width": 24,
+    "height": 24
+  },
+  "controls/transaction": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/badboy": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/ban": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/best_order": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/box": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/box_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/breaking": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/briefcase": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/businessman": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/cafe": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/car": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/car_front": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/chain": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/crash": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/disadvantageously": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/documents": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/driver_license": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/exclaimation_mark": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/flag": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/food": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/friends": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/geominimal": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/grocery": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/handicap": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/ic_notification": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/in_time": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/lane": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/lightning": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/lock": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/logo_round": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/menu": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/motivation": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/newspaper": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/no_parking": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/note": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/notification": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/order_in_the_back": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/palette": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/parking": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/parking_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/person_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/person_solid": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/pin_dot": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/pin_dot_big": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/pin_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/point_dot": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/police": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/roadworks": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/rouble": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/rouble_crossed": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/rouble_round_crossed": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/shield_with_tick": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/speed_bump": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/star_round": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/store": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/switch": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/tariff": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/taxi_sign": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/time_round": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/timer": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/traffic": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/two_boxes_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/type": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/vibrate": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/volume": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/volume_mute": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/waiting": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/walking": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/washer_fluid": {
+    "width": 24,
+    "height": 24
+  },
+  "informative/wc": {
+    "width": 24,
+    "height": 24
+  },
+  "navigator/ic_maneuver_crossroad_keep_left_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_keep_right_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_left_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_right_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_sharply_left_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_sharply_right_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_slightly_left_light": {
+    "width": 22,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_slightly_right_light": {
+    "width": 22,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_straight_light": {
+    "width": 18,
+    "height": 36
+  },
+  "navigator/ic_maneuver_crossroad_uturn_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_finish_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_backward_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_exit_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_forward_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_left_135_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_left_45_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_left_90_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_backward_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_forward_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_left_135_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_left_45_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_left_90_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_right_135_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_right_45_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_lefthand_right_90_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_right_135_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_right_45_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_roundabout_right_90_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/ic_maneuver_start_light": {
+    "width": 18,
+    "height": 36
+  },
+  "navigator/ic_maneuver_uturn_light": {
+    "width": 36,
+    "height": 36
+  },
+  "navigator/lane_dots_left": {
+    "width": 18,
+    "height": 32
+  },
+  "navigator/lane_dots_right": {
+    "width": 18,
+    "height": 32
+  },
+  "navigator/lane_forward_0": {
+    "width": 18,
+    "height": 32
+  },
+  "navigator/lane_forward_1": {
+    "width": 18,
+    "height": 32
+  },
+  "navigator/lane_forward_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_right_with_left_turn_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_forward_right_with_left_turn_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_forward_right_with_left_turn_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_forward_right_with_left_turn_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_forward_sharply_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_sharply_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_sharply_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_sharply_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_slightly_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_slightly_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_slightly_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_forward_slightly_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_forward_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_forward_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_forward_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_forward_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_forward_right_0_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_forward_right_0_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_forward_right_0_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_forward_right_1_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_forward_right_1_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_left_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_left_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_left_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_left_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_right_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_right_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_right_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_left_slightly_right_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_non_information": {
+    "width": 18,
+    "height": 32
+  },
+  "navigator/lane_prohibited_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_prohibited_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_public_transport_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_public_transport_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_sharply_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_sharply_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_sharply_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_sharply_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_with_left_turn_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_right_with_left_turn_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_forward_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_forward_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_forward_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_forward_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_left_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_left_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_left_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_left_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_left_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_left_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_left_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_left_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_right_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_right_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_right_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_sharply_left_slightly_right_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_sharply_right_0": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_sharply_right_1": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_0": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_1": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_forward_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_forward_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_forward_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_forward_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_right_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_right_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_right_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_right_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_sharply_right_0_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_sharply_right_0_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_sharply_right_1_0": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_sharply_right_1_1": {
+    "width": 30,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_slightly_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_slightly_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_slightly_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_left_slightly_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_0": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_1": {
+    "width": 22,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_sharply_right_0_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_sharply_right_0_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_sharply_right_1_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_slightly_right_sharply_right_1_1": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_turnover_0": {
+    "width": 28,
+    "height": 32
+  },
+  "navigator/lane_turnover_1": {
+    "width": 28,
+    "height": 32
+  },
+  "operations/achievement": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/animals_in_the_car": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/baby_chair": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/barrier": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/bonus": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/bonus_user": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/busline": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/cash": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/coefficient": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/credit_card": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/delivery": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/delivery_from_door": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/door": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/falcon": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/fast_pick_up": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/fraud": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/gas": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/heavy": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/house": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/message": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/motivation_round": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/no_smoking": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/pin": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/plane": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/point_city": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/point_railway": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/refund": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/restaurant": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/skier": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/sober": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/ticket": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/tips": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/tree": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/wallet": {
+    "width": 24,
+    "height": 24
+  },
+  "operations/water_drop": {
+    "width": 24,
+    "height": 24
+  }
+}

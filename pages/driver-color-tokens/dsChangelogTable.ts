@@ -201,6 +201,12 @@ ${DS_TOKEN_TABLE_STYLE}
   line-height: 20px;
   color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
+.dctp-changelog-change-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
 .dctp-changelog-kind {
   flex-shrink: 0;
   width: 8px;
@@ -212,6 +218,18 @@ ${DS_TOKEN_TABLE_STYLE}
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
+  font-size: 14px;
+  line-height: normal;
+}
+.dctp-changelog-change-details {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
 }
 .dctp-changelog-cards {
   display: none;

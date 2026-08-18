@@ -1,16 +1,30 @@
 {
   "artifact": "Typography/Semantic",
-  "currentVersion": "1.0.0",
+  "currentVersion": "1.1.0",
   "entries": [
     {
-      "version": "1.0.0",
-      "date": "2026-08-15",
-      "author": "sergej",
+      "version": "1.1.0",
+      "date": "2026-08-18",
+      "author": "Артур",
       "type": "minor",
       "changes": [
         {
           "kind": "added",
-          "description": "Страница Typography: Headline, Subtitle, Body — значения typography-sem (Roboto) из Figma"
+          "description": "Добавлены новые текстовые стили и семантические переменные: Subtitle 1 Bold, Title 1, Caption 1. Созданы новые core-переменные.",
+          "details": "Стиль: Subtitles/Subtitle 1 Bold (Roboto Bold, 18/24px, ls 0.15px)\nПеременные (typography-sem):\nsubtitle 1 bold/font-family → ff-Roboto\nsubtitle 1 bold/font-weight → fw-700\nsubtitle 1 bold/font-size → fs-18\nsubtitle 1 bold/line-height → lh-24\nsubtitle 1 bold/letter-spacing → ls-015\n\nСтиль: Titles/Title 1 (Roboto Semi Bold, 20/22px, ls 0.15px)\nПеременные (typography-sem):\ntitle 1/font-family → ff-Roboto\ntitle 1/font-weight → fw-600\ntitle 1/font-size → fs-20\ntitle 1/line-height → lh-22\ntitle 1/letter-spacing → ls-015\n\nСтиль: Captions/Caption 1 (Roboto Semi Bold, 12/16px, ls 0.24px, ALLCAPS)\nПеременные (typography-sem):\ncaption 1/font-family → ff-Roboto\ncaption 1/font-weight → fw-600\ncaption 1/font-size → fs-12\ncaption 1/line-height → lh-16\ncaption 1/letter-spacing → ls-024\n\nНовые core-переменные (typography-core):\nfw-600 (600)\nfs-20 (20)\nlh-22 (22)\nfs-12 (12)\nls-024 (0.24)"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-13",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Создана система типографических токенов и текстовых стилей.",
+          "details": "Коллекция typography-core (20 переменных):\nFont Family: ff-Roboto\nFont Weight: fw-400, fw-500, fw-700\nFont Size: fs-14, fs-16, fs-18, fs-22, fs-30, fs-44\nLine Height: lh-16, lh-20, lh-24, lh-28, lh-36, lh-56\nLetter Spacing: ls-000, ls-010, ls-015, ls-030\n\nКоллекция typography-sem (65 переменных):\n13 стилей с алиасами на core-переменные\n\nСтили типографики:\nHeadlines: Headline 1–6\nSubtitles: Subtitle 1–2\nBodies: Body 1, Body 2, Body 2 Medium, Body 2 Tall, Body 3"
         }
       ]
     }

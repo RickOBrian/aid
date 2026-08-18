@@ -5,6 +5,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sanitizeIconSvg } from '../sanitizeIconSvg.ts';
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
 const publicRoot = join(rootDir, '../public/icons');
@@ -16,7 +17,7 @@ async function downloadIcon(sectionId, iconId, url) {
   if (!response.ok) {
     throw new Error(`Failed ${sectionId}/${iconId}: ${response.status}`);
   }
-  const svg = await response.text();
+  const svg = sanitizeIconSvg(await response.text(), iconId);
   await writeFile(join(dir, `${iconId}.svg`), svg, 'utf8');
 }
 

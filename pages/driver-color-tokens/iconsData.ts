@@ -1,12 +1,14 @@
+import { navigatorIconItems } from './navigatorIconsData';
+
 export interface IconItem {
   id: string;
   name: string;
   figmaNodeId: string;
 }
 
-/** Базовый размер иконки в каталоге Wilhelm Icons (px). */
 export const ICON_DEFAULT_SIZE = 24;
 
+/** @deprecated Use formatIconSize from iconDimensions.ts with real width/height. */
 export function formatIconDefaultSize(size = ICON_DEFAULT_SIZE): string {
   return `${size}×${size}`;
 }
@@ -230,6 +232,11 @@ export const iconSections: IconSection[] = [
       icon('heavy', 'heavy', '2365:9'),
       icon('water_drop', 'water_drop', '2861:34'),
     ],
+  },
+  {
+    id: 'navigator',
+    title: 'Navigator',
+    items: navigatorIconItems,
   },
 ];
 

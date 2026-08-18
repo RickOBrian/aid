@@ -1,4 +1,6 @@
-import { iconAssetPath, ICON_DEFAULT_SIZE, type IconItem, type IconSection } from './iconsData';
+import { iconAssetPath, type IconItem, type IconSection } from './iconsData';
+import { parseSvgDimensions } from './parseSvgDimensions';
+import { sanitizeIconSvg } from './sanitizeIconSvg';
 
 export type IconDownloadFormat = 'svg' | 'pdf' | 'png1' | 'png2' | 'png3';
 
@@ -18,8 +20,6 @@ export const ICON_DOWNLOAD_FORMATS: IconDownloadFormatOption[] = [
 ];
 
 export const DEFAULT_ICON_DOWNLOAD_FORMAT: IconDownloadFormat = 'svg';
-
-const ICON_BASE_SIZE = ICON_DEFAULT_SIZE;
 
 export interface IconAssetRef {
   sectionId: string;
@@ -150,15 +150,21 @@ function createZip(files: { name: string; data: Uint8Array }[]): Blob {
   });
 }
 
-async function fetchSvgText(assetUrl: string): Promise<string> {
+async function fetchSvgText(assetUrl: string, iconId: string): Promise<string> {
   const response = await fetch(assetUrl);
   if (!response.ok) {
     throw new Error(`Не удалось загрузить ${assetUrl}`);
   }
-  return response.text();
+  const svgText = await response.text();
+  return sanitizeIconSvg(svgText, iconId);
 }
 
-async function svgToRasterBlob(svgText: string, size: number, mimeType: 'image/png' | 'image/jpeg'): Promise<Blob> {
+async function svgToRasterBlob(
+  svgText: string,
+  width: number,
+  height: number,
+  mimeType: 'image/png' | 'image/jpeg',
+): Promise<Blob> {
   const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
@@ -171,14 +177,14 @@ async function svgToRasterBlob(svgText: string, size: number, mimeType: 'image/p
     });
 
     const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = width;
+    canvas.height = height;
     const context = canvas.getContext('2d');
     if (!context) {
       throw new Error('Canvas unavailable');
     }
-    context.clearRect(0, 0, size, size);
-    context.drawImage(image, 0, 0, size, size);
+    context.clearRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
 
     return await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
@@ -271,7 +277,7 @@ async function exportIconAsset(
   asset: IconAssetRef,
   format: IconDownloadFormatOption,
 ): Promise<{ name: string; data: Uint8Array }> {
-  const svgText = await fetchSvgText(asset.assetUrl);
+  const svgText = await fetchSvgText(asset.assetUrl, asset.item.id);
 
   if (format.id === 'svg') {
     return {
@@ -281,18 +287,20 @@ async function exportIconAsset(
   }
 
   const scale = format.pngScale ?? 1;
-  const size = ICON_BASE_SIZE * scale;
+  const { width, height } = parseSvgDimensions(svgText);
+  const exportWidth = Math.max(1, Math.round(width * scale));
+  const exportHeight = Math.max(1, Math.round(height * scale));
 
   if (format.id === 'pdf') {
-    const jpegBlob = await svgToRasterBlob(svgText, size, 'image/jpeg');
+    const jpegBlob = await svgToRasterBlob(svgText, exportWidth, exportHeight, 'image/jpeg');
     const jpegBytes = await blobToBytes(jpegBlob);
     return {
       name: `${asset.path}.pdf`,
-      data: createPdfFromJpeg(jpegBytes, size, size),
+      data: createPdfFromJpeg(jpegBytes, exportWidth, exportHeight),
     };
   }
 
-  const pngBlob = await svgToRasterBlob(svgText, size, 'image/png');
+  const pngBlob = await svgToRasterBlob(svgText, exportWidth, exportHeight, 'image/png');
   return {
     name: `${asset.path}.png`,
     data: await blobToBytes(pngBlob),

@@ -9,6 +9,7 @@ export interface TypographyStyle {
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
+  textTransform?: CSSProperties['textTransform'];
 }
 
 export interface TypographySection {
@@ -25,6 +26,7 @@ function style(
   fontSize: number,
   lineHeight: number,
   letterSpacing: number,
+  options?: Pick<TypographyStyle, 'textTransform'>,
 ): TypographyStyle {
   return {
     id,
@@ -35,6 +37,7 @@ function style(
     fontSize,
     lineHeight,
     letterSpacing,
+    ...(options?.textTransform ? { textTransform: options.textTransform } : {}),
   };
 }
 
@@ -53,10 +56,18 @@ export const typographySections: TypographySection[] = [
     ],
   },
   {
+    id: 'title',
+    title: 'Title',
+    items: [
+      style('title-1', 'title 1', 600, 'Semi Bold (600)', 20, 22, 0.15),
+    ],
+  },
+  {
     id: 'subtitle',
     title: 'Subtitle',
     items: [
       style('subtitle-1', 'subtitle 1', 500, 'Medium (500)', 18, 24, 0.15),
+      style('subtitle-1-bold', 'subtitle 1 bold', 700, 'Bold (700)', 18, 24, 0.15),
       style('subtitle-2', 'subtitle 2', 500, 'Medium (500)', 14, 16, 0.1),
     ],
   },
@@ -69,6 +80,15 @@ export const typographySections: TypographySection[] = [
       style('body-2-medium', 'body 2 medium', 500, 'Medium (500)', 16, 20, 0.15),
       style('body-2-tall', 'body 2 tall', 500, 'Medium (500)', 16, 24, 0.15),
       style('body-3', 'body 3', 400, 'Regular (400)', 14, 16, 0),
+    ],
+  },
+  {
+    id: 'caption',
+    title: 'Captions',
+    items: [
+      style('caption-1', 'caption 1', 600, 'Semi Bold (600)', 12, 16, 0.24, {
+        textTransform: 'uppercase',
+      }),
     ],
   },
 ];
@@ -117,7 +137,8 @@ export function formatTypographySizeLine(styleItem: TypographyStyle): string {
 }
 
 export function formatTypographySpecCaption(styleItem: TypographyStyle): string {
-  return `${formatTypographySizeLine(styleItem)} · ${styleItem.fontWeightLabel}`;
+  const base = `${formatTypographySizeLine(styleItem)} · ${styleItem.fontWeightLabel}`;
+  return styleItem.textTransform === 'uppercase' ? `${base} · ALLCAPS` : base;
 }
 
 export function typographyPreviewStyle(styleItem: TypographyStyle): CSSProperties {
@@ -127,5 +148,6 @@ export function typographyPreviewStyle(styleItem: TypographyStyle): CSSPropertie
     fontSize: `${styleItem.fontSize}px`,
     lineHeight: `${styleItem.lineHeight}px`,
     letterSpacing: `${styleItem.letterSpacing}px`,
+    ...(styleItem.textTransform ? { textTransform: styleItem.textTransform } : {}),
   };
 }

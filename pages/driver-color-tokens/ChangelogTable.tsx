@@ -7,6 +7,7 @@ export type ChangelogReleaseType = 'major' | 'minor' | 'patch';
 export interface ChangelogChange {
   kind: ChangelogChangeKind;
   description: string;
+  details?: string;
 }
 
 export interface ChangelogEntry {
@@ -71,7 +72,12 @@ function ChangelogChangesList({ changes }: { changes: ChangelogChange[] }) {
             style={{ backgroundColor: CHANGE_KIND_COLORS[change.kind] }}
             aria-hidden="true"
           />
-          <span className="dctp-changelog-change-text">{change.description}</span>
+          <div className="dctp-changelog-change-body">
+            <span className="dctp-changelog-change-text">{change.description}</span>
+            {change.details ? (
+              <p className="dctp-changelog-change-details">{change.details}</p>
+            ) : null}
+          </div>
         </li>
       ))}
     </ul>

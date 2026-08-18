@@ -1,10 +1,10 @@
 import { colorTokenCollection, semanticColorSections } from './data';
 import {
-  ICON_DEFAULT_SIZE,
   iconAssetPath,
   iconCollection,
   iconSections,
 } from './iconsData';
+import { getIconDimensions } from './iconDimensions';
 import { radiusCollection, radiusTokens } from './radiusData';
 import { shadowsCollection, shadowSections } from './shadowsData';
 import { spacingCollection, spacingTokens } from './spacingData';
@@ -50,13 +50,14 @@ export function exportTypographyTokenJson() {
     sections: typographySections.map(({ title, items }) => ({
       title,
       styles: items.map(
-        ({ name, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing }) => ({
+        ({ name, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, textTransform }) => ({
           name,
           fontFamily,
           fontWeight,
           fontSize: `${fontSize}px`,
           lineHeight: `${lineHeight}px`,
           letterSpacing: `${letterSpacing}px`,
+          ...(textTransform ? { textTransform } : {}),
         }),
       ),
     })),
@@ -86,21 +87,25 @@ export function exportShadowsTokenJson() {
   };
 }
 
-/** Icons — каталог иконок Wilhelm с путями к SVG-ассетам. */
+/** Icons — каталог иконок с путями к SVG-ассетам и реальными размерами. */
 export function exportIconsTokenJson() {
   return {
     collectionName: iconCollection.collectionName,
     artifact: iconCollection.artifact,
-    defaultSize: ICON_DEFAULT_SIZE,
     sections: iconSections.map(({ id, title, items }) => ({
       id,
       title,
-      icons: items.map(({ id: iconId, name, figmaNodeId }) => ({
-        id: iconId,
-        name,
-        figmaNodeId,
-        assetPath: iconAssetPath(id, iconId),
-      })),
+      icons: items.map(({ id: iconId, name, figmaNodeId }) => {
+        const { width, height } = getIconDimensions(id, iconId);
+        return {
+          id: iconId,
+          name,
+          figmaNodeId,
+          assetPath: iconAssetPath(id, iconId),
+          width,
+          height,
+        };
+      }),
     })),
   };
 }

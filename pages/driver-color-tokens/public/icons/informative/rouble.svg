@@ -1,12 +1,3 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="#F2F2F2"/>
-<g id="Frame 834">
-<rect width="5722" height="1665" transform="translate(-1960 -803)" fill="white"/>
-<g id="informative">
-<rect x="-680" y="-606" width="944" height="784" rx="20" fill="white"/>
-<g id="rouble">
 <path id="&#240;&#159;&#142;&#168; Color" fill-rule="evenodd" clip-rule="evenodd" d="M9 2C8.44772 2 8 2.44772 8 3V11H7C6.44772 11 6 11.4477 6 12V13C6 13.5523 6.44772 14 7 14H8V16H7C6.44772 16 6 16.4477 6 17V18C6 18.5523 6.44772 19 7 19H8V21C8 21.5523 8.44772 22 9 22H10C10.5523 22 11 21.5523 11 21V19H15C15.5523 19 16 18.5523 16 18V17C16 16.4477 15.5523 16 15 16H11V14H14C17.3137 14 20 11.3137 20 8C20 4.68629 17.3137 2 14 2H9ZM11 5V11H14C15.6569 11 17 9.65685 17 8C17 6.34315 15.6569 5 14 5H11Z" fill="#2D2C2E"/>
-</g>
-</g>
-</g>
 </svg>

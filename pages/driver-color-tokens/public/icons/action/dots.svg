@@ -1,16 +1,7 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="#F2F2F2"/>
-<g id="Frame 834">
-<rect width="5722" height="1665" transform="translate(-2664 -365)" fill="white"/>
-<g id="action">
-<rect x="-240" y="-168" width="944" height="432" rx="20" fill="white"/>
-<g id="dots">
 <g id="&#240;&#159;&#142;&#168; Color">
 <path d="M7 12C7 13.6569 5.65685 15 4 15C2.34315 15 1 13.6569 1 12C1 10.3431 2.34315 9 4 9C5.65685 9 7 10.3431 7 12Z" fill="#2D2C2E"/>
 <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" fill="#2D2C2E"/>
 <path d="M20 15C21.6569 15 23 13.6569 23 12C23 10.3431 21.6569 9 20 9C18.3431 9 17 10.3431 17 12C17 13.6569 18.3431 15 20 15Z" fill="#2D2C2E"/>
-</g>
-</g>
-</g>
 </g>
 </svg>
