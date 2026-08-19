@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.0] - 2026-08-19
+
+### Added
+- Driver Switch review page: two-column layout (preview left, Code/API/Release right)
+- Shared component review primitives: `ComponentMetaHeader`, `ComponentApiSummary`, `ComponentCodeSnippet`, `CopyButton`, `dsColorSwatch`
+- Anatomy inspector pilot for Switch: leader lines, zoom controls, zone callouts
+- `skills/component-build-workflow.md` — platform scope gate for component builds
+- Component changelog empty state via `ChangelogTable` `emptyMessage` prop
+
+### Changed
+- Switch tokens tab: hex + alpha display with color swatches and copy-to-clipboard
+- `ComponentReleaseStatus`: release meta separated from token-style changelog table
+- `skills/_shared/presentbook-guide.md` v1.1.0 — component page content criteria
+- `skills/_shared/platforms.md` v1.1.0 — interactive snippet verification section
+- `skills/ds-component-build/SKILL.md` v1.1.0 — platform scope gate step
+
 ## [0.4.0] - 2026-06-27
 
 ### Added

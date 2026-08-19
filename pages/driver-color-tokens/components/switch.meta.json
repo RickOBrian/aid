@@ -4,7 +4,7 @@
   "aliases": ["Toggle"],
   "product": "driver",
   "architectureLevel": "Surface View",
-  "supportedPlatforms": ["web"],
+  "supportedPlatforms": ["web", "ios", "android"],
   "sourcePath": "pages/driver-color-tokens/components/Switch.tsx",
   "reviewRoute": "/components/switch",
   "pageFile": "SwitchPage.tsx",

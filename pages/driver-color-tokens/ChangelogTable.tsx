@@ -103,14 +103,31 @@ function ChangelogEntryCards({ entries }: { entries: ChangelogEntry[] }) {
   );
 }
 
-export function ChangelogTable({ data }: { data: TokenChangelog }) {
+export function ChangelogTable({
+  data,
+  emptyMessage,
+}: {
+  data: TokenChangelog;
+  emptyMessage?: string;
+}) {
   const sortedEntries = useMemo(
     () => [...data.entries].sort((left, right) => compareSemverDesc(left.version, right.version)),
     [data.entries],
   );
 
   if (sortedEntries.length === 0) {
-    return null;
+    if (!emptyMessage) {
+      return null;
+    }
+
+    return (
+      <section className="dctp-changelog" aria-labelledby="dctp-changelog-heading">
+        <h2 id="dctp-changelog-heading" className="dctp-changelog-heading">
+          Changelog
+        </h2>
+        <p className="dctp-changelog-empty">{emptyMessage}</p>
+      </section>
+    );
   }
 
   return (

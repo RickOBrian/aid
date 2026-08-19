@@ -1,10 +1,8 @@
 import type { ComponentChangelog } from './loadComponentChangelog';
-import { ChangelogTable } from './ChangelogTable';
 import type { ComponentPendingItem } from './loadComponentPending';
 import { formatReleasedVersionLabel } from './loadComponentPending';
 
 interface ComponentReleaseStatusProps {
-  componentName: string;
   changelog: ComponentChangelog | null;
   pendingItems: ComponentPendingItem[];
   reviewRoute: string;
@@ -18,7 +16,6 @@ function formatPendingImpactLabel(item: ComponentPendingItem): string {
 }
 
 export function ComponentReleaseStatus({
-  componentName,
   changelog,
   pendingItems,
   reviewRoute,
@@ -26,14 +23,13 @@ export function ComponentReleaseStatus({
   const releasedVersion = changelog?.currentVersion ?? null;
   const releasedVersionLabel = formatReleasedVersionLabel(releasedVersion);
   const hasPending = pendingItems.length > 0;
-  const hasReleasedEntries = (changelog?.entries.length ?? 0) > 0;
   const isInitialPending = hasPending && releasedVersion === null;
 
   return (
     <section className="dsw-release" aria-labelledby="dsw-release-heading">
       <div className="dsw-release-head">
         <h2 id="dsw-release-heading" className="dsw-release-title">
-          Version &amp; changelog
+          Release
         </h2>
         <div className="dsw-release-badges">
           <span className="dsw-version-badge">{releasedVersionLabel}</span>
@@ -87,14 +83,6 @@ export function ComponentReleaseStatus({
         </div>
       )}
 
-      {hasReleasedEntries && changelog ? (
-        <ChangelogTable data={{ ...changelog, currentVersion: changelog.currentVersion ?? '0.0.0' }} />
-      ) : (
-        <p className="dsw-changelog-empty">
-          No released changelog entries yet. Initial release will propose v1.0.0 with impact{' '}
-          <code>initial</code> at Release Gate after Principal Designer requests release/push.
-        </p>
-      )}
     </section>
   );
 }
@@ -210,14 +198,5 @@ export const COMPONENT_RELEASE_STATUS_STYLE = `
   color: rgba(0, 0, 0, 0.54);
   font-size: 12px;
   line-height: 18px;
-}
-.dsw-changelog-empty {
-  margin: 0;
-  padding: 16px 20px;
-  border: 1px dashed #ebedf0;
-  border-radius: 12px;
-  font-size: 13px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
 }
 `;

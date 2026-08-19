@@ -231,6 +231,15 @@ ${DS_TOKEN_TABLE_STYLE}
   font-weight: 500;
   line-height: normal;
 }
+.dctp-changelog-empty {
+  margin: 0;
+  padding: 16px 20px;
+  border: 1px dashed ${DS_PORTAL_LAYOUT_TOKENS.border};
+  border-radius: ${DS_PORTAL_LAYOUT_TOKENS.tableWrapRadius};
+  font-size: 13px;
+  line-height: 20px;
+  color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
+}
 .dctp-changelog-cards {
   display: none;
   flex-direction: column;

@@ -1,7 +1,7 @@
 ---
 name: ds-component-build
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -37,6 +37,7 @@ Portal primitives — только infrastructure для review page. Не sourc
 
 | Topic | Source |
 |---|---|
+| Discovery gate order (Platform scope → Composition → Token coverage) | `skills/component-build-workflow.md` |
 | Product / release gates | `.cursor/rules/product-context.mdc`, `component-gate.mdc`, `token-integrity.mdc`, `release-gate.mdc` |
 | Tokens | `skills/_shared/token-rules.md` |
 | Platforms & a11y | `skills/_shared/platforms.md`, `accessibility.md` |
@@ -101,10 +102,24 @@ Default: <безопасный выбор>.
 
 ## Workflow
 
+### 0. Platform scope gate (mandatory, before Discovery)
+
+Full rule → `skills/component-build-workflow.md` § 1.1. Summary:
+
+- Ask explicitly: «Для каких платформ реализуется этот компонент — Web, iOS,
+  Android, или подмножество?»
+- Never default silently to all three; never default silently to Web-only.
+- No answer → do not proceed to step 4 (Implementation).
+- Confirmed scope limits Composition gate (`component-gate.mdc`) and Token
+  coverage gate (`token-integrity.mdc`) to the confirmed platforms only.
+- Adding a platform to an already-built component later is a separate
+  explicit request, not automatic.
+
 ### 1. Resolve context
 
 - Product → `products/registry.json`, `products/<id>/product.json`
-- Platform target from user (Web / SwiftUI / Compose)
+- Platform target from user (Web / SwiftUI / Compose) — must match platforms
+  confirmed in step 0
 - **Figma MCP fallback** (if MCP unavailable):
   1. One explicit message: `Figma MCP недоступен — продолжаю по скриншоту, описанию и repository context.`
   2. Continue — do not auto-block implementation.
@@ -184,6 +199,8 @@ Per `references/review-page-and-routes.md`:
 
 ```text
 Component: [name] ([architecture level])
+Platform scope: [confirmed in step 0, e.g. Web, iOS, Android]
+Implementation status per platform: [repo file exists | reference-only per platforms.md | not started]
 Variants / states / motion: [...]
 Defaults / decisions: [...]
 Components group: [...]
@@ -231,4 +248,5 @@ Cursor proposes; Principal Designer confirms; version + changelog + push — one
 
 ## Changelog
 
+- **1.1.0** — 2026-08-18. Adds mandatory Platform scope gate (step 0, before Discovery) — delegates to `skills/component-build-workflow.md`; final summary now reports platform scope + implementation status per platform.
 - **1.0.0** — 2026-08-16. Universal Figma→component build orchestration: short UX, gates delegation, initial-release model, review-page changelog block, TESTING.md.

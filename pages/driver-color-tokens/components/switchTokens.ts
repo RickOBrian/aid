@@ -47,6 +47,40 @@ export interface SwitchColorVars {
   '--ds-switch-stroke': string;
 }
 
+export interface SwitchTokenSource {
+  name: string;
+  cssVar: keyof SwitchColorVars;
+  day: ColorModeValue;
+  night: ColorModeValue;
+}
+
+export const switchTokenSources: SwitchTokenSource[] = [
+  {
+    name: 'Controls · Checked',
+    cssVar: '--ds-switch-checked',
+    day: checkedRow.day,
+    night: checkedRow.night,
+  },
+  {
+    name: 'Controls · Unchecked',
+    cssVar: '--ds-switch-unchecked',
+    day: uncheckedRow.day,
+    night: uncheckedRow.night,
+  },
+  {
+    name: 'Controls · Key',
+    cssVar: '--ds-switch-key',
+    day: keyRow.day,
+    night: keyRow.night,
+  },
+  {
+    name: 'Strokes · Primary',
+    cssVar: '--ds-switch-stroke',
+    day: strokePrimaryRow.day,
+    night: strokePrimaryRow.night,
+  },
+];
+
 export const switchColorVars: { day: SwitchColorVars; night: SwitchColorVars } = {
   day: {
     '--ds-switch-checked': toCssColor(checkedRow.day),

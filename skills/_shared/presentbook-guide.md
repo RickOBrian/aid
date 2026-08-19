@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/
 name: presentbook-guide
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   platforms: [web, ios, android]
   owner: design-system-team
 ---
@@ -121,12 +121,14 @@ const changelog = loadTokenChangelog(collection.collectionName);
 ```
 ComponentPage.tsx
 ├── DsPageHeader (component name)
-├── Version / status badges (currentVersion, Pending release)
-├── Overview (purpose, architecture level, Figma link, review route)
+├── Identity (architecture level, category, source path, Figma link) —
+│   see «Критерий содержания component page» below; no version/status here
+├── API summary (props / states / modes / slots / tokens)
 ├── Variants / states matrix
-├── Props table (optional)
+├── Code snippet (per-platform, current selection)
 ├── Accessibility notes
-├── ComponentReleaseStatus (pending panel + ChangelogTable)
+├── ComponentReleaseStatus (version + status + pending panel + ChangelogTable)
+│   — the only place version/release status/review route appear
 └── No release button — version bump only on Release Gate
 ```
 
@@ -169,6 +171,76 @@ const pendingItems = loadComponentPendingItems('switch');
 4. Usage guidelines — do / don't
 
 Формат согласуется с `skills/ds-component-spec/SKILL.md`.
+
+---
+
+## Критерий содержания component page
+
+Единственный вопрос для любого элемента на странице `/components/<name>` —
+**помогает ли он разработчику правильно понять или реализовать компонент
+прямо сейчас**. Разработчик открывает страницу за одним: понять компонент и
+взять готовый код.
+
+### Критично — остаётся на странице
+
+- работающий код (реальная реализация или явно помеченный reference-сниппет);
+- реальные props / API / токены / состояния / a11y-требования компонента;
+- предупреждение о **подтверждённой ошибке** в текущем коде/реализации,
+  которая напрямую влияет на корректность использования (например
+  неработающий `Binding`, неверный токен, нарушение a11y-контракта). Это
+  единственное исключение из правила ниже.
+
+### Не критично — не попадает в published UI, независимо от формы
+
+Pipeline/process статусы, debug/infrastructure поля, заметки о происхождении
+кода, служебные пометки о процессе работы — **никогда** не показываются на
+странице, ни как крупный баннер, ни как мелкий tooltip, ни как комментарий,
+ни как лейбл, ни как dev-only блок:
+
+- pipeline/process статусы (`reference-only`, `pending review`,
+  `not yet released`, `awaiting approval` и т.п.) — **кроме** полей,
+  прямо обязательных другим gate (см. исключение ниже);
+- внутренние debug/infrastructure поля (`componentsRoot: null`, служебные id
+  sandbox, флаги окружения) — если они нужны для отладки самой
+  Presentbook-инфраструктуры, место для них — `.cursor/DS_PIPELINE_CONTEXT.md`
+  или отчёт агента в чате, **не** страница компонента, даже под
+  `import.meta.env.DEV`;
+- заметки о происхождении кода («собирался/не собирался», «есть файл в
+  репозитории или нет») — за исключением случая, когда это прямо влияет на
+  критичную ошибку;
+- комментарии-заглушки, TODO, служебные пометки о процессе работы;
+- любые фразы, объясняющие «как это было сделано» вместо «что это и как
+  использовать».
+
+Некритичная информация не удаляется бесследно, если содержит реальный факт —
+она переносится в review summary в чате, а не в новый UI-элемент страницы.
+
+### Исключение: version / release status / changelog
+
+`component-gate.mdc` и структура «Component pages» выше **обязывают**
+показывать `current version`, `release status`, `review route`, pending-
+индикатор и changelog-таблицу на странице — это осознанное исключение из
+правила «pipeline-статусы не попадают в UI», а не его нарушение. Требования:
+
+- эти поля показываются **один раз**, только в `ComponentReleaseStatus` —
+  не дублировать их в identity-блоке или где-либо ещё на странице;
+- без декоративного обёртывания (collapsed accordion с приглушённым стилем,
+  подписи «Pipeline info» и т.п.) — это те же факты, что и остальной
+  identity-блок, просто отдельная versioning-тема;
+- никаких дополнительных pipeline-полей сверх того, что требует
+  `component-gate.mdc` (`Component review page requirements`).
+
+### Обязательный шаг перед review
+
+Эта проверка — обязательный шаг перед тем, как считать страницу компонента
+готовой к review, наравне с Anatomy / Tokens / States / Accessibility.
+Пройти её перед публикацией/показом страницы:
+
+1. Для каждого блока страницы — критично или нет по вопросу выше?
+2. Если не критично и не входит в исключение — убрать полностью, независимо
+   от формы подачи.
+3. Если неочевидно — не удалять молча, вынести на обсуждение с Principal
+   Designer.
 
 ---
 
@@ -334,6 +406,14 @@ Hub (/design-system)
 
 ## Changelog
 
+- **1.1.0** — 2026-08-18. Добавлена секция «Критерий содержания component
+  page»: единственный критерий контента — помогает ли разработчику прямо
+  сейчас; pipeline/debug/process-заметки никогда не в published UI ни в
+  какой форме; единственное исключение — предупреждение о подтверждённой
+  ошибке; version/release status/changelog — обязательное исключение
+  `component-gate.mdc`, показывается один раз в `ComponentReleaseStatus`,
+  без дублирования в identity-блоке и без декоративного обёртывания.
+  Обновлена структура «Component pages» соответственно.
 - **1.0.1** — 2026-08-16. Уточнён Driver color mode mapping: `Day` → light,
   `Night` → dark; labels сохраняются.
 - **1.0.0** — 2026-08-15. Первая версия: token/component page structure, review sandbox, Driver portal reference, best practices, anti-patterns.
