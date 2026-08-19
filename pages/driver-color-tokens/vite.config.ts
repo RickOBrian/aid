@@ -1,9 +1,30 @@
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Product ids eligible for URL-prefix routing (`/driver/...`, `/rider/...`),
+ * read directly from `products/registry.json` at config time so a third
+ * product needs no edit here — only a new registry entry.
+ */
+function readSwitchableProductIds(): string[] {
+  try {
+    const registryPath = join(rootDir, '../../products/registry.json');
+    const registry = JSON.parse(readFileSync(registryPath, 'utf-8')) as {
+      products?: { id: string; status: string }[];
+    };
+    const ids = (registry.products ?? [])
+      .filter((product) => product.status === 'active' || product.status === 'onboarding')
+      .map((product) => product.id);
+    return ids.length > 0 ? ids : ['driver'];
+  } catch {
+    return ['driver'];
+  }
+}
 
 /**
  * SPA sandbox routes whose URL path collides with an on-disk source
@@ -30,12 +51,19 @@ function spaComponentRoutesPlugin(routes: string[]): Plugin {
   };
 }
 
+const COMPONENT_SANDBOX_SUFFIXES = ['/components', '/components/switch'];
+const productIds = readSwitchableProductIds();
+const componentSandboxRoutes = [
+  ...COMPONENT_SANDBOX_SUFFIXES,
+  ...productIds.flatMap((id) => COMPONENT_SANDBOX_SUFFIXES.map((suffix) => `/${id}${suffix}`)),
+];
+
 export default defineConfig({
   root: rootDir,
   esbuild: {
     jsx: 'automatic',
   },
-  plugins: [spaComponentRoutesPlugin(['/components', '/components/switch'])],
+  plugins: [spaComponentRoutesPlugin(componentSandboxRoutes)],
   build: {
     outDir: 'dist',
     emptyOutDir: true,

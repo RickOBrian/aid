@@ -57,6 +57,36 @@
       "notes": "Значения токенов в TypeScript data-файлах, не в tokens/driver/*.json. Changelog JSON в tokens/ — единственная связь с tokens/."
     },
     {
+      "id": "rider",
+      "label": "aid: rider",
+      "status": "onboarding",
+      "manifestPath": "products/rider/product.json",
+      "tokensRoot": null,
+      "tokenDataRoot": null,
+      "tokenDataFiles": [],
+      "tokenAssetsRoot": null,
+      "componentsRoot": null,
+      "presentbookRoot": "pages/driver-color-tokens",
+      "presentbookType": "react-vite",
+      "routeBase": "/rider/design-system",
+      "tokenRoutes": {
+        "hub": "/rider/design-system",
+        "colors": "/rider/tokens/colors",
+        "typography": "/rider/tokens/typography",
+        "spacing": "/rider/tokens/spacing",
+        "radius": "/rider/tokens/radius",
+        "shadows": "/rider/tokens/shadows",
+        "icons": "/rider/tokens/icons"
+      },
+      "tokenRegistry": null,
+      "changelogRoot": null,
+      "changelogFiles": null,
+      "componentRegistry": null,
+      "releaseRoot": "changes/rider",
+      "relatedPrototypes": [],
+      "notes": "Onboarding product (2026-08-19). Shares the React portal with Driver at pages/driver-color-tokens/; empty product content index at pages/driver-color-tokens/products/rider/index.ts keeps all hub sections auto-disabled until real data is added — no manual availability flags."
+    },
+    {
       "id": "ui-kit-a",
       "label": "UI Kit A",
       "status": "stable",

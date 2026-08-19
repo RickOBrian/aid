@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { DriverColorTokensPage } from './DriverColorTokensPage';
 import { HubPage } from './HubPage';
 import { IconsPage } from './IconsPage';
@@ -7,17 +8,18 @@ import { ShadowsPage } from './ShadowsPage';
 import { ComponentsHubPage } from './ComponentsHubPage';
 import { SwitchPage } from './SwitchPage';
 import { TypographyPage } from './TypographyPage';
+import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
+import { DEFAULT_PRODUCT_ID, getProductLabel, resolveProductRoute } from './productRegistry';
 
-function normalizePathname(pathname: string): string {
-  if (pathname.length > 1 && pathname.endsWith('/')) {
-    return pathname.slice(0, -1);
-  }
-  return pathname;
-}
-
-function resolvePage(pathname: string) {
-  const path = normalizePathname(pathname);
+/**
+ * Route table is unprefixed (`/tokens/colors`, `/components/switch`, …) —
+ * `resolveProductRoute` strips any leading `/driver` or `/rider` segment
+ * before this table is consulted, so old unprefixed Driver links keep
+ * resolving exactly as before (no redirect, no regression).
+ */
+function resolveSectionKey(remainder: string) {
+  const path = remainder === '' ? '/' : remainder;
 
   if (path === HUB_ROUTES.hub || path === '/') {
     return 'hub' as const;
@@ -84,10 +86,28 @@ function NotFoundPage() {
 }
 
 export function App() {
-  const page = resolvePage(window.location.pathname);
+  const { productId, remainder } = resolveProductRoute(window.location.pathname);
+  const page = resolveSectionKey(remainder);
+
+  useEffect(() => {
+    if (page !== 'not-found') {
+      document.title = getProductLabel(productId);
+    }
+  }, [productId, page]);
+
+  if (page === 'not-found') {
+    return <NotFoundPage />;
+  }
 
   if (page === 'hub') {
-    return <HubPage />;
+    return <HubPage productId={productId} />;
+  }
+
+  // Only Driver has real page implementations today. Other products
+  // (Rider) share the same routes/structure but have no content yet — see
+  // `products/<id>/index.ts` and `productContent.ts`.
+  if (productId !== DEFAULT_PRODUCT_ID) {
+    return <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
   }
 
   if (page === 'colors') {

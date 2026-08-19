@@ -1,3 +1,5 @@
+import { hasProductContent } from './productContent';
+
 export interface HubItem {
   id: string;
   title: string;
@@ -96,3 +98,32 @@ export const HUB_SECTIONS: HubSection[] = [
     ],
   },
 ];
+
+/** Section titles keyed by hub item id / page key — for the disabled-content fallback page. */
+export const SECTION_LABELS: Record<string, string> = {
+  ...Object.fromEntries(
+    HUB_SECTIONS.flatMap((section) => section.items.map((item) => [item.id, item.title] as const)),
+  ),
+  switch: 'Switch',
+};
+
+/**
+ * Per-product hub sections: same titles/descriptions/icons as `HUB_SECTIONS`
+ * (never duplicated), but `href` is `null` — and the item renders disabled —
+ * whenever `hasProductContent` finds no data for that section under this
+ * product. This is the only place availability is decided; it is never a
+ * manual boolean on a product config.
+ */
+export function buildHubSections(productId: string): HubSection[] {
+  return HUB_SECTIONS.map((section) => ({
+    ...section,
+    items: section.items.map((item) => {
+      const routeSuffix = item.href;
+      const available = routeSuffix !== null && hasProductContent(productId, item.id);
+      return {
+        ...item,
+        href: available ? `/${productId}${routeSuffix}` : null,
+      };
+    }),
+  }));
+}

@@ -1,0 +1,33 @@
+{
+  "id": "rider",
+  "label": "aid: rider",
+  "status": "onboarding",
+  "tokensRoot": null,
+  "tokenDataRoot": null,
+  "tokenDataFiles": [],
+  "tokenAssetsRoot": null,
+  "presentbookRoot": "pages/driver-color-tokens",
+  "presentbookType": "react-vite",
+  "routeBase": "/rider/design-system",
+  "tokenRoutes": {
+    "hub": "/rider/design-system",
+    "colors": "/rider/tokens/colors",
+    "typography": "/rider/tokens/typography",
+    "spacing": "/rider/tokens/spacing",
+    "radius": "/rider/tokens/radius",
+    "shadows": "/rider/tokens/shadows",
+    "icons": "/rider/tokens/icons"
+  },
+  "tokenRegistry": null,
+  "changelogRoot": null,
+  "changelogMirrorRoot": null,
+  "changelogFiles": [],
+  "releaseRoot": "changes/rider",
+  "releasePendingRoot": "changes/rider/pending",
+  "releaseReleasedRoot": "changes/rider/released",
+  "componentsRoot": null,
+  "componentsStatus": "not_started",
+  "componentRegistry": null,
+  "relatedPrototypes": [],
+  "notes": "Onboarding product (2026-08-19). Shares the React portal at pages/driver-color-tokens/ with Driver — same page structure/logic, product-specific content only. Content index lives at pages/driver-color-tokens/products/rider/index.ts and is currently empty (infrastructure only, per explicit user confirmation — no real tokens/components yet). All hub sections resolve as unavailable automatically until that index exports non-empty collections."
+}

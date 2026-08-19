@@ -1,6 +1,10 @@
-import { HUB_PAGE_TITLE, HUB_SECTIONS } from './hubData';
+import { useEffect } from 'react';
+import { buildHubSections, type HubSection } from './hubData';
+import { DEFAULT_PRODUCT_ID, getProductLabel, getProductLabelParts } from './productRegistry';
+import { ProductSwitcher, PRODUCT_SWITCHER_STYLE, ProductSwitcherNameTrigger } from './ProductSwitcher';
 
 const PAGE_STYLE = `
+${PRODUCT_SWITCHER_STYLE}
 .dsh,
 .dsh *,
 .dsh *::before,
@@ -18,8 +22,15 @@ const PAGE_STYLE = `
   max-width: 1200px;
   margin: 0 auto;
 }
-.dsh-title {
+.dsh-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
   margin: 0 0 64px;
+}
+.dsh-title {
+  margin: 0;
   font-size: 48px;
   font-weight: 500;
   line-height: 56px;
@@ -67,8 +78,7 @@ const PAGE_STYLE = `
 }
 .dsh-item--soon {
   opacity: 0.52;
-  cursor: default;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 .dsh-item-head {
   display: flex;
@@ -128,8 +138,10 @@ const PAGE_STYLE = `
   .dsh {
     padding: 24px 16px 48px;
   }
-  .dsh-title {
+  .dsh-title-row {
     margin-bottom: 40px;
+  }
+  .dsh-title {
     font-size: 36px;
     line-height: 44px;
   }
@@ -142,14 +154,14 @@ const PAGE_STYLE = `
 }
 `;
 
-function HubItemCard({ item }: { item: (typeof HUB_SECTIONS)[number]['items'][number] }) {
+function HubItemCard({ item }: { item: HubSection['items'][number] }) {
   const content = (
     <>
       <div className="dsh-item-head">
         <span className="dsh-item-icon" aria-hidden="true">{item.icon}</span>
         <div className="dsh-item-title-row">
           <p className="dsh-item-title">{item.title}</p>
-          {item.href === null && <span className="dsh-soon-badge">Скоро</span>}
+          {item.href === null && <span className="dsh-soon-badge">Нет данных</span>}
         </div>
       </div>
       <p className="dsh-item-description">{item.description}</p>
@@ -165,20 +177,44 @@ function HubItemCard({ item }: { item: (typeof HUB_SECTIONS)[number]['items'][nu
   }
 
   return (
-    <div className="dsh-item dsh-item--soon" aria-disabled="true">
+    <div
+      className="dsh-item dsh-item--soon"
+      aria-disabled="true"
+      title="Нет данных"
+      onClick={(event) => event.preventDefault()}
+    >
       {content}
     </div>
   );
 }
 
-export function HubPage() {
+export interface HubPageProps {
+  productId?: string;
+}
+
+export function HubPage({ productId = DEFAULT_PRODUCT_ID }: HubPageProps) {
+  const productLabel = getProductLabel(productId);
+  const { prefix, name } = getProductLabelParts(productId);
+  const sections = buildHubSections(productId);
+
+  useEffect(() => {
+    document.title = productLabel;
+  }, [productLabel]);
+
   return (
     <div className="dsh">
       <style>{PAGE_STYLE}</style>
       <main className="dsh-shell">
-        <h1 className="dsh-title">{HUB_PAGE_TITLE}</h1>
+        <div className="dsh-title-row">
+          <ProductSwitcher currentProductId={productId} size="hub">
+            <h1 className="dsh-title">
+              {prefix ? <span className="ds-product-switcher__prefix">{prefix}</span> : null}
+              <ProductSwitcherNameTrigger>{name}</ProductSwitcherNameTrigger>
+            </h1>
+          </ProductSwitcher>
+        </div>
         <div className="dsh-grid">
-          {HUB_SECTIONS.map((section) => (
+          {sections.map((section) => (
             <section key={section.id} aria-labelledby={`dsh-section-${section.id}`}>
               <h2 className="dsh-section-title" id={`dsh-section-${section.id}`}>
                 {section.title}
