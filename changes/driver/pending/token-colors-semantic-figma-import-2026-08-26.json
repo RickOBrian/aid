@@ -1,0 +1,40 @@
+{
+  "id": "token-colors-semantic-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Colors/Semantic",
+  "collectionName": "colors-semantic",
+  "product": "driver",
+  "changeSummary": "Import 5 missing semantic color tokens; changelog synced from Figma «🚖 WB AID Driver Tokens — Styles» Changelog (node 45:905): 1.2.0 — Bg · Warning, Bg · Overlay, Bg · Accent, Strokes · Primary Opposite; 1.1.0 — Strokes · Warning.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.2.0",
+  "proposedChangelogEntries": [
+    {
+      "version": "1.2.0",
+      "date": "2026-08-25",
+      "author": "Артур",
+      "kind": "added",
+      "description": "Добавлены переменные фона и обводки"
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-08-12",
+      "author": "Артур",
+      "kind": "added",
+      "description": "Добавлена переменная обводки"
+    }
+  ],
+  "addedTokens": [
+    "Bg · Warning",
+    "Bg · Overlay",
+    "Bg · Accent",
+    "Strokes · Primary Opposite",
+    "Strokes · Warning"
+  ],
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=3-6821",
+  "figmaChangelogSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=45-905",
+  "sourcePath": "pages/driver-color-tokens/data.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

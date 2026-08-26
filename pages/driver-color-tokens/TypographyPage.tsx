@@ -3,28 +3,33 @@ import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
 import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
-import {
-  exportTypographyTokenJson,
-  hasTypographyTokens,
-  stringifyTokenJson,
-  TOKEN_JSON_FILENAMES,
-} from './exportTokenJson';
+import { stringifyTokenJson } from './exportTokenJson';
 import {
   formatTypographySpecCaption,
   TYPOGRAPHY_PARAMETERS,
   TYPOGRAPHY_SAMPLE_TEXT,
   typographyParameterValue,
   typographyPreviewStyle,
-  typographyCollection,
-  typographySections,
   typographyTokenPath,
   type TypographySection,
   type TypographyStyle,
 } from './typographyData';
+import {
+  DEFAULT_TYPOGRAPHY_PLATFORM,
+  DEFAULT_TYPOGRAPHY_SET,
+  getProductTypographyContent,
+  type TypographyPlatform,
+  type TypographySetId,
+  type TypographySetOption,
+} from './productTypographyData';
 import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterTypographySections } from './searchTypography';
+import { DEFAULT_PRODUCT_ID } from './productRegistry';
 
-const typographyChangelog = loadTokenChangelog(typographyCollection.collectionName);
+const TYPOGRAPHY_PLATFORM_LABELS: Record<TypographyPlatform, string> = {
+  ios: 'iOS',
+  android: 'Android',
+};
 
 const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
@@ -127,6 +132,50 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dtp-col-token {
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap;
+}
+.dtp-platform-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dtp-platform-field span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+.dtp-platform-segment {
+  display: inline-flex;
+  border: 1px solid #ebedf0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.dtp-platform-segment button {
+  margin: 0;
+  padding: 6px 12px;
+  border: none;
+  border-right: 1px solid #ebedf0;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.7);
+}
+.dtp-platform-segment button:last-child {
+  border-right: none;
+}
+.dtp-platform-segment button[aria-pressed="true"],
+.dtp-set-segment button[aria-pressed="true"] {
+  background: var(--ds-accent-bg);
+  color: var(--ds-accent);
+  font-weight: 500;
+}
+.dtp-platform-segment button:focus-visible,
+.dtp-set-segment button:focus-visible {
+  outline: 2px solid var(--ds-accent);
+  outline-offset: -2px;
 }
 @media (max-width: 1024px) {
   .dtp {
@@ -277,17 +326,126 @@ function TypographyDataTable({
   );
 }
 
-export function TypographyPage() {
+function PlatformSegmentControl({
+  value,
+  platforms,
+  onChange,
+}: {
+  value: TypographyPlatform;
+  platforms: readonly TypographyPlatform[];
+  onChange: (next: TypographyPlatform) => void;
+}) {
+  return (
+    <div className="dtp-platform-field">
+      <span id="typography-platform-label">Платформа</span>
+      <div
+        className="dtp-platform-segment"
+        role="group"
+        aria-labelledby="typography-platform-label"
+      >
+        {platforms.map((platform) => (
+          <button
+            key={platform}
+            type="button"
+            aria-pressed={value === platform}
+            onClick={() => onChange(platform)}
+          >
+            {TYPOGRAPHY_PLATFORM_LABELS[platform]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SetSegmentControl({
+  value,
+  sets,
+  onChange,
+}: {
+  value: TypographySetId;
+  sets: readonly TypographySetOption[];
+  onChange: (next: TypographySetId) => void;
+}) {
+  return (
+    <div className="dtp-platform-field">
+      <span id="typography-set-label">Набор</span>
+      <div
+        className="dtp-platform-segment dtp-set-segment"
+        role="group"
+        aria-labelledby="typography-set-label"
+      >
+        {sets.map((set) => (
+          <button
+            key={set.id}
+            type="button"
+            aria-pressed={value === set.id}
+            onClick={() => onChange(set.id)}
+          >
+            {set.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function TypographyPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [setId, setSetId] = useState<TypographySetId>(DEFAULT_TYPOGRAPHY_SET);
+  // Each typography set keeps its own iOS/Android selection — switching sets
+  // never resets or shares the other set's platform choice.
+  const [platformBySet, setPlatformBySet] = useState<Record<TypographySetId, TypographyPlatform>>({
+    default: DEFAULT_TYPOGRAPHY_PLATFORM,
+    outstanding: DEFAULT_TYPOGRAPHY_PLATFORM,
+  });
   const { copyText, copyNotice } = useCopyNotice();
+  const platform = platformBySet[setId];
+  const setPlatform = (next: TypographyPlatform) => {
+    setPlatformBySet((current) => ({ ...current, [setId]: next }));
+  };
+  const { sections, collection, platforms, sets } = useMemo(
+    () => getProductTypographyContent(productId, setId, platform),
+    [productId, setId, platform],
+  );
+  const typographyChangelog = useMemo(
+    () => loadTokenChangelog(collection.collectionName),
+    [collection.collectionName],
+  );
   const filteredSections = useMemo(
-    () => filterTypographySections(typographySections, searchQuery),
-    [searchQuery],
+    () => filterTypographySections(sections, searchQuery),
+    [sections, searchQuery],
   );
   const typographyTokensJson = useMemo(
-    () => stringifyTokenJson(exportTypographyTokenJson()),
-    [],
+    () =>
+      stringifyTokenJson({
+        collectionName: collection.collectionName,
+        artifact: collection.artifact,
+        ...(platforms ? { platform } : {}),
+        sections: sections.map(({ title, items }) => ({
+          title,
+          styles: items.map(
+            ({ name, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, textTransform }) => ({
+              name,
+              fontFamily,
+              fontWeight,
+              fontSize: `${fontSize}px`,
+              lineHeight: `${lineHeight}px`,
+              letterSpacing: `${letterSpacing}px`,
+              ...(textTransform ? { textTransform } : {}),
+            }),
+          ),
+        })),
+      }),
+    [collection, platform, platforms, sections],
   );
+  // Independent JSON per set: when a product ships more than one typography
+  // set, disambiguate the filename/modal title with the full artifact name
+  // (e.g. "Rider Typography Semantic" vs "Rider Typography Semantic Outstanding").
+  const exportFilename = sets
+    ? collection.artifact.replace(/\//g, ' ')
+    : collection.artifact.split('/')[0] ?? 'Typography';
+  const hasTokens = sections.some((section) => section.items.length > 0);
 
   return (
     <div className="dtp">
@@ -300,12 +458,24 @@ export function TypographyPage() {
         searchPlaceholder="Поиск стиля"
         searchAriaLabel="Поиск стиля"
         actions={(
-          <TokenJsonActions
-            filename={TOKEN_JSON_FILENAMES.typography}
-            json={typographyTokensJson}
-            disabled={!hasTypographyTokens()}
-            onCopyText={copyText}
-          />
+          <>
+            {sets ? (
+              <SetSegmentControl value={setId} sets={sets} onChange={setSetId} />
+            ) : null}
+            {platforms ? (
+              <PlatformSegmentControl
+                value={platform}
+                platforms={platforms}
+                onChange={setPlatform}
+              />
+            ) : null}
+            <TokenJsonActions
+              filename={exportFilename}
+              json={typographyTokensJson}
+              disabled={!hasTokens}
+              onCopyText={copyText}
+            />
+          </>
         )}
       />
 

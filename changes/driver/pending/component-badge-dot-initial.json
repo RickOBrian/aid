@@ -1,0 +1,22 @@
+{
+  "id": "component-badge-dot-initial",
+  "type": "component",
+  "changeType": "added",
+  "artifact": "BadgeDot",
+  "componentId": "badge-dot",
+  "product": "driver",
+  "changeSummary": "Initial BadgeDot implementation: Surface View indicator (Indicators group) — 8×8px notification dot; semantic Driver token Icons · Warning (theme-independent); review sandbox at /components/badge-dot. Figma node named \"mini_notification\" — canonical name BadgeDot per Role+Entity; aliases MiniNotification / mini_notification.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "BadgeDot: Surface View notification indicator; props id, className, aria-label, aria-hidden; Web platform implementation, SwiftUI/Compose reference snippets; Day/Night semantic color token Icons · Warning (theme-independent)"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/badge-dot",
+  "sourcePath": "pages/driver-color-tokens/components/BadgeDot.tsx",
+  "status": "pending",
+  "created": "2026-08-20",
+  "author": "sergej"
+}

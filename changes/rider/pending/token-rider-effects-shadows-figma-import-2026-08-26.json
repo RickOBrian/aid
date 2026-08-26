@@ -1,0 +1,34 @@
+{
+  "id": "token-rider-effects-shadows-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Effects/Shadows",
+  "collectionName": "rider-effects-shadows",
+  "product": "rider",
+  "changeSummary": "Import Rider Shadows collection (effects) from Figma tokens (node 17:20) with changelog aligned to Figma Changelog • Shadow (node 21:15).",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Создана система токенов и стилей теней Effects",
+    "details": "• Коллекция переменных «effects» с режимами Day и Night\n• 32 переменных: Mini, Small (Level 1/2), Medium, Large (Level 1/2), Brand Button (Level 1/2)\n• Свойства: offset-x, offset-y, blur (FLOAT), color (COLOR)\n• Скоупинги EFFECT_FLOAT и EFFECT_COLOR\n• 5 стилей эффектов: Mini, Small, Medium, Large, Brand Button\n• Документация: таблица параметров теней с режимами Day/Night\n• Bottom Sheet (Level 1/2/3) — 12 переменных, стиль Shadows/Bottom Sheet\n• FAB — 4 переменных, стиль Shadows/FAB\n• Knob (Level 1/2) — 8 переменных, стиль Shadows/Knob\n• Cards — 4 переменных, стиль Shadows/Cards\n• Cards: обновлён color rgba(0,0,0,0.12) → rgba(0,0,0,0.15)\n• Large Air — 4 переменных (hidden from publishing), стиль Shadows/Large Air"
+  },
+  "addedStyles": [
+    "Mini",
+    "Small",
+    "Medium",
+    "Large",
+    "Large Air",
+    "Brand Button",
+    "Bottom Sheet",
+    "FAB",
+    "Knob",
+    "Cards"
+  ],
+  "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=17-20",
+  "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=21-15",
+  "sourcePath": "pages/driver-color-tokens/products/rider/shadowData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

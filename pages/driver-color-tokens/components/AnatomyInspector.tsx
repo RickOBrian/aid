@@ -139,7 +139,7 @@ const ANATOMY_INSPECTOR_STYLE = `
   pointer-events: none;
 }
 .dsw-anatomy-leader-line {
-  stroke: #0057ff;
+  stroke: var(--ds-accent);
   stroke-width: 1.5;
   opacity: 0.55;
 }
@@ -152,7 +152,7 @@ const ANATOMY_INSPECTOR_STYLE = `
   width: ${ANCHOR_DOT_RADIUS * 2}px;
   height: ${ANCHOR_DOT_RADIUS * 2}px;
   border-radius: 50%;
-  background: #0057ff;
+  background: var(--ds-accent);
   transform: translate(-50%, -50%);
   pointer-events: none;
   opacity: 0.85;
@@ -160,7 +160,7 @@ const ANATOMY_INSPECTOR_STYLE = `
 .dsw-anatomy-halo {
   position: absolute;
   box-sizing: border-box;
-  border: 2px solid #0057ff;
+  border: 2px solid var(--ds-accent);
   background: transparent;
   border-radius: inherit;
   pointer-events: none;
@@ -170,7 +170,7 @@ const ANATOMY_INSPECTOR_STYLE = `
 .dsw-anatomy-halo.is-visible {
   opacity: 1;
   border-width: 3px;
-  box-shadow: 0 0 0 4px rgba(0, 87, 255, 0.18);
+  box-shadow: 0 0 0 4px rgba(var(--ds-accent-rgb), 0.18);
 }
 .dsw-anatomy-badge {
   position: absolute;
@@ -178,10 +178,10 @@ const ANATOMY_INSPECTOR_STYLE = `
   height: ${BADGE_SIZE}px;
   margin: 0;
   padding: 0;
-  border: 2px solid #0057ff;
+  border: 2px solid var(--ds-accent);
   border-radius: 50%;
   background: #ffffff;
-  color: #0057ff;
+  color: var(--ds-accent);
   font-size: 12px;
   font-weight: 600;
   line-height: ${BADGE_SIZE - 4}px;
@@ -195,16 +195,16 @@ const ANATOMY_INSPECTOR_STYLE = `
 }
 .dsw-anatomy-badge:hover,
 .dsw-anatomy-badge:focus-visible {
-  background: #0057ff;
+  background: var(--ds-accent);
   color: #ffffff;
   outline: none;
-  box-shadow: 0 2px 8px rgba(0, 87, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(var(--ds-accent-rgb), 0.35);
 }
 .dsw-anatomy-badge[aria-pressed="true"] {
-  background: #0057ff;
+  background: var(--ds-accent);
   color: #ffffff;
   transform: translate(-50%, -50%) scale(1.12);
-  box-shadow: 0 4px 14px rgba(0, 87, 255, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--ds-accent-rgb), 0.4);
 }
 .dsw-anatomy-sidebar {
   display: flex;
@@ -237,20 +237,20 @@ const ANATOMY_INSPECTOR_STYLE = `
 }
 .dsw-anatomy-zone-list button:hover,
 .dsw-anatomy-zone-list button:focus-visible {
-  background: #f0f4ff;
-  border-color: #c5d8ff;
+  background: var(--ds-accent-bg);
+  border-color: color-mix(in srgb, var(--ds-accent) 35%, #fff);
   outline: none;
 }
 .dsw-anatomy-zone-list button[aria-pressed="true"] {
-  background: #e8efff;
-  border-color: #0057ff;
+  background: var(--ds-accent-bg);
+  border-color: var(--ds-accent);
 }
 .dsw-anatomy-zone-num {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #0057ff;
+  background: var(--ds-accent);
   color: #fff;
   font-size: 11px;
   font-weight: 600;

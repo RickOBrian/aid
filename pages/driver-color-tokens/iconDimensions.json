@@ -1254,5 +1254,521 @@
   "operations/water_drop": {
     "width": 24,
     "height": 24
+  },
+  "rider/actions/add_circle": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/add_home": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/add_person": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/attach": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/call": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/chat": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/copy": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/favorite": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/more": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/more_vert": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/options": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/pencil": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/scan_qr": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/schedule": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/search": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/send": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/set_photo": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/settings": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/share__android": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/share_ios": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/trash": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/countryside": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/default": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/favorite": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/home": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/person": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/work": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/apple": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/apple_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/applepay": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/applepay_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/citycoin": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/citycoin_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/dc": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/dc_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/googlepay": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/googlepay_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/maestro": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/maestro_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mastercard": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mastercard_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mir": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mir_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mirbg_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/mirbg_color_2": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/sber": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/sber_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/sberpay": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/sberpay_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/spasibo_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/spasibo_color_2": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/visa": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/visa_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/visabg": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/visabg_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/vk": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/brands/vk_color": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/arrow_down": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/arrow_left": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/arrow_right": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/arrow_up": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/back": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/change": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/close": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/delete": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/delete_circle": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/delete_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/done": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/menu": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/minus": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/plus": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/plus_mini": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/radiobutton_off": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/radiobutton_on": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/refresh": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/assistant": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/attention": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/business": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/card": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/cash": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/discount": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/discount_min": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/documents": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/done": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/eco": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/envelope": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/faq": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/finish": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/food": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/gift": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/heart": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/history": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/house": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/info": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/lightning": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/loading": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/location": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/lock": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/luggage": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/magic": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/network_offline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/number": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/people": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/person": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/phone": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/police": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/price": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/ride_experience": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/road": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/route": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/safety": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/sand_clock": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/scooter": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/seat": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/set_on_map": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/shared_account": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/squircle_star": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/squircle_wait": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/star": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/star_outlined": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/streaming": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/surge": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/surge_down": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/taxi": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/tips": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/unlock": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/wait": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/walkman": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/wheel": {
+    "width": 24,
+    "height": 24
   }
 }

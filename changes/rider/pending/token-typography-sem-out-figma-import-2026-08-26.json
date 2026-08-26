@@ -1,0 +1,34 @@
+{
+  "id": "token-typography-sem-out-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Typography/Semantic Outstanding",
+  "collectionName": "rider-typography-sem-out",
+  "product": "rider",
+  "changeSummary": "Import Rider Outstanding typography set (typography-sem-out) from Figma nodes 184:91 (styles) and 184:971 (changelog): 9 styles with iOS (SF Pro Display) / Android (Roboto) values; portal Default/Outstanding set switch with independent platform selection, changelog, and JSON actions.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Создана группа Outstanding в коллекции typography-sem: переменные и текстовые стили",
+    "details": "• typography-sem (группа typography-sem-out): 54 переменных, 2 режима (iOS, Android)\n• 9 текстовых стилей: iOS - Subtitle, iOS - Subtitle L, Title-title2 (NRD), iOS - Subtitle T, NRD - Body, iOS - Body, NRD - Action, NRD - H1, NRD - Action Bold\n• Привязка переменных к стилям: fontSize, fontWeight, fontFamily, lineHeight, letterSpacing, paragraphSpacing\n• Скоупинг переменных по категориям\n• Все переменные скрыты от публикации"
+  },
+  "addedStyles": [
+    "iOS - Subtitle",
+    "iOS - Subtitle L",
+    "Title-title2 (NRD)",
+    "iOS - Subtitle T",
+    "NRD - Body",
+    "iOS - Body",
+    "NRD - Action",
+    "NRD - H1",
+    "NRD - Action Bold"
+  ],
+  "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=184-971",
+  "figmaStylesNode": "184:91",
+  "figmaChangelogNode": "184:971",
+  "sourcePath": "pages/driver-color-tokens/products/rider/typographyOutstandingData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

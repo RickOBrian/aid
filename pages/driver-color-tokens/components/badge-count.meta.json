@@ -1,0 +1,17 @@
+{
+  "id": "badge-count",
+  "canonicalName": "BadgeCount",
+  "aliases": ["Counter"],
+  "product": "driver",
+  "architectureLevel": "Surface View",
+  "supportedPlatforms": ["web", "ios", "android"],
+  "sourcePath": "pages/driver-color-tokens/components/BadgeCount.tsx",
+  "reviewRoute": "/components/badge-count",
+  "pageFile": "BadgeCountPage.tsx",
+  "componentsGroup": "Indicators",
+  "changelogSource": "components/badge-count-changelog.json",
+  "currentVersion": null,
+  "status": "pending_release",
+  "createdDate": "2026-08-20",
+  "figmaSource": "WB AID Driver Components, node 89:4214"
+}

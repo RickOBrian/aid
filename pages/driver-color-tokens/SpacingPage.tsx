@@ -1,24 +1,14 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
 import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
-import {
-  exportSpacingTokenJson,
-  hasSpacingTokens,
-  stringifyTokenJson,
-  TOKEN_JSON_FILENAMES,
-} from './exportTokenJson';
+import { stringifyTokenJson } from './exportTokenJson';
 import { loadTokenChangelog } from './loadTokenChangelog';
-import {
-  spacingCollection,
-  spacingPreviewHeight,
-  spacingTokens,
-  type SpacingToken,
-} from './spacingData';
+import { spacingPreviewHeight, type SpacingToken } from './spacingData';
 import { filterSpacingTokens } from './searchSpacing';
-
-const spacingChangelog = loadTokenChangelog(spacingCollection.collectionName);
+import { DEFAULT_PRODUCT_ID } from './productRegistry';
+import { getProductSpacingContent } from './productSpacingData';
 
 const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
@@ -83,12 +73,12 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dps-visual__bar-line {
   flex-shrink: 0;
   height: 2px;
-  background: #2c64e3;
+  background: var(--dps-accent-line, #2c64e3);
 }
 .dps-visual__bar-fill {
   flex-shrink: 0;
   width: 100%;
-  background: rgba(141, 185, 253, 0.24);
+  background: var(--dps-accent-fill, rgba(141, 185, 253, 0.24));
 }
 .dps-cards {
   display: none;
@@ -292,20 +282,41 @@ function SpacingCards({
   );
 }
 
-export function SpacingPage() {
+export function SpacingPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
   const { copyText, copyNotice } = useCopyNotice();
+  const { tokens, collection, previewLineColor, previewFillColor } = useMemo(
+    () => getProductSpacingContent(productId),
+    [productId],
+  );
+  const spacingChangelog = useMemo(
+    () => loadTokenChangelog(collection.collectionName),
+    [collection.collectionName],
+  );
   const filteredTokens = useMemo(
-    () => filterSpacingTokens(spacingTokens, searchQuery),
-    [searchQuery],
+    () => filterSpacingTokens(tokens, searchQuery),
+    [tokens, searchQuery],
   );
   const spacingTokensJson = useMemo(
-    () => stringifyTokenJson(exportSpacingTokenJson()),
-    [],
+    () =>
+      stringifyTokenJson({
+        collectionName: collection.collectionName,
+        artifact: collection.artifact,
+        tokens: tokens.map(({ name, valuePx, valueRemLabel }) => ({
+          name,
+          valuePx,
+          valueRem: valueRemLabel,
+        })),
+      }),
+    [collection, tokens],
   );
+  const pageStyleVars = {
+    '--dps-accent-line': previewLineColor,
+    '--dps-accent-fill': previewFillColor,
+  } as CSSProperties;
 
   return (
-    <div className="dps">
+    <div className="dps" style={pageStyleVars}>
       <style>{PAGE_STYLE}</style>
 
       <DsPageHeader
@@ -316,9 +327,9 @@ export function SpacingPage() {
         searchAriaLabel="Поиск токена"
         actions={(
           <TokenJsonActions
-            filename={TOKEN_JSON_FILENAMES.spacing}
+            filename={collection.artifact.replace(/\//g, ' ')}
             json={spacingTokensJson}
-            disabled={!hasSpacingTokens()}
+            disabled={tokens.length === 0}
             onCopyText={copyText}
           />
         )}

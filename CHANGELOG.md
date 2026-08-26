@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0] - 2026-08-26
+
+### Added
+- Rider product onboarding in the DS portal: colors, typography (sem + outstanding), shadows, glass, spacing, radius, icons (129 SVG)
+- Product-aware token pages with `/rider/` routes, `ProductAccentScope`, and hub availability via `products/rider/index.ts`
+- Rider pending import items under `changes/rider/pending/` for all new token collections
+- BadgeCount and BadgeDot component review pages with anatomy, tokens, and changelog artifacts
+- Guides hub with versioning guide sync from `docs/semver-guide.md`
+- `scripts/import-rider-icons.mjs` — Figma API import for Rider icon catalog and SVG assets
+
+### Changed
+- IconsPage, SpacingPage, RadiusPage, ShadowsPage, TypographyPage, DriverColorTokensPage — accept `productId` and load product-specific data
+- Radius preview uses product accent CSS vars (`--ds-accent`) instead of hardcoded red
+- `ensure-icon-dimensions.mjs` — nested paths for `public/icons/rider/*`
+- Token changelog registry — rider collections indexed for portal display
+
 ## [0.5.0] - 2026-08-19
 
 ### Added

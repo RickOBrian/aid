@@ -1,0 +1,31 @@
+{
+  "artifact": "Guides/Versioning",
+  "guideId": "versioning",
+  "currentVersion": "1.1.0",
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-16",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Уточнена гранулярность токенов (Core/Semantic для каждого типа); добавлено правило зависимости Core → Semantic; графика детализирована по типам; таблица артефактов обновлена."
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-05-10",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Первая версия: артефакты, правила MAJOR/MINOR/PATCH, зависимости между компонентами, изоляция задач по версии."
+        }
+      ]
+    }
+  ]
+}

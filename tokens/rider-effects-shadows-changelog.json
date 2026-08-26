@@ -1,0 +1,19 @@
+{
+  "artifact": "Rider Effects/Shadows",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-14",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Создана система токенов и стилей теней Effects",
+          "details": "• Коллекция переменных «effects» с режимами Day и Night\n• 32 переменных: Mini, Small (Level 1/2), Medium, Large (Level 1/2), Brand Button (Level 1/2)\n• Свойства: offset-x, offset-y, blur (FLOAT), color (COLOR)\n• Скоупинги EFFECT_FLOAT и EFFECT_COLOR\n• 5 стилей эффектов: Mini, Small, Medium, Large, Brand Button\n• Документация: таблица параметров теней с режимами Day/Night\n• Bottom Sheet (Level 1/2/3) — 12 переменных, стиль Shadows/Bottom Sheet\n• FAB — 4 переменных, стиль Shadows/FAB\n• Knob (Level 1/2) — 8 переменных, стиль Shadows/Knob\n• Cards — 4 переменных, стиль Shadows/Cards\n• Cards: обновлён color rgba(0,0,0,0.12) → rgba(0,0,0,0.15)\n• Large Air — 4 переменных (hidden from publishing), стиль Shadows/Large Air"
+        }
+      ]
+    }
+  ]
+}

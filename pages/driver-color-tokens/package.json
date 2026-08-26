@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "prebuild": "node scripts/ensure-icon-dimensions.mjs && node scripts/ensure-token-changelogs.mjs && node scripts/sync-token-changelogs.mjs",
-    "dev": "node scripts/ensure-icon-dimensions.mjs && vite",
+    "prebuild": "node scripts/ensure-icon-dimensions.mjs && node scripts/ensure-token-changelogs.mjs && node scripts/sync-token-changelogs.mjs && node scripts/sync-guide-sources.mjs",
+    "dev": "node scripts/ensure-icon-dimensions.mjs && node scripts/sync-guide-sources.mjs && vite",
     "build": "vite build"
   },
   "dependencies": {

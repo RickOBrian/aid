@@ -79,12 +79,12 @@ export const COMPONENT_CODE_SNIPPET_STYLE = `
   border-right: none;
 }
 .ds-ccode-platforms button[aria-pressed="true"] {
-  background: #e8efff;
-  color: #0057ff;
+  background: var(--ds-accent-bg);
+  color: var(--ds-accent);
   font-weight: 500;
 }
 .ds-ccode-platforms button:focus-visible {
-  outline: 2px solid #0057ff;
+  outline: 2px solid var(--ds-accent);
   outline-offset: -2px;
 }
 .ds-ccode-body {

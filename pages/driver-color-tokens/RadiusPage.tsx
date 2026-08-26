@@ -4,16 +4,14 @@ import { DsPageHeader } from './DsPageHeader';
 import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
 import {
-  exportRadiusTokenJson,
-  hasRadiusTokens,
   stringifyTokenJson,
   TOKEN_JSON_FILENAMES,
 } from './exportTokenJson';
 import { loadTokenChangelog } from './loadTokenChangelog';
-import { radiusCollection, radiusPreviewStyle, radiusTokens, type RadiusToken } from './radiusData';
+import { type RadiusToken } from './radiusData';
 import { filterRadiusTokens } from './searchRadius';
-
-const radiusChangelog = loadTokenChangelog(radiusCollection.collectionName);
+import { DEFAULT_PRODUCT_ID } from './productRegistry';
+import { getProductRadiusContent, radiusPreviewStyle } from './productRadiusData';
 
 const PAGE_STYLE = `
 ${DS_CHANGELOG_TABLE_STYLE}
@@ -67,9 +65,9 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .drp-visual {
   width: 48px;
   height: 48px;
-  background: rgba(240, 68, 56, 0.1);
-  border-top: 4px solid #f04438;
-  border-right: 4px solid #f04438;
+  background: var(--ds-accent-bg);
+  border-top: 4px solid var(--ds-accent);
+  border-right: 4px solid var(--ds-accent);
   border-bottom: none;
   border-left: none;
 }
@@ -239,16 +237,32 @@ function RadiusCards({
   );
 }
 
-export function RadiusPage() {
+export function RadiusPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
   const { copyText, copyNotice } = useCopyNotice();
+  const { tokens, collection } = useMemo(
+    () => getProductRadiusContent(productId),
+    [productId],
+  );
+  const radiusChangelog = useMemo(
+    () => loadTokenChangelog(collection.collectionName),
+    [collection.collectionName],
+  );
   const filteredTokens = useMemo(
-    () => filterRadiusTokens(radiusTokens, searchQuery),
-    [searchQuery],
+    () => filterRadiusTokens(tokens, searchQuery),
+    [tokens, searchQuery],
   );
   const radiusTokensJson = useMemo(
-    () => stringifyTokenJson(exportRadiusTokenJson()),
-    [],
+    () =>
+      stringifyTokenJson({
+        collectionName: collection.collectionName,
+        artifact: collection.artifact,
+        tokens: tokens.map(({ name, borderTopRightRadius }) => ({
+          name,
+          value: borderTopRightRadius,
+        })),
+      }),
+    [collection, tokens],
   );
 
   return (
@@ -263,9 +277,9 @@ export function RadiusPage() {
         searchAriaLabel="Поиск токена"
         actions={(
           <TokenJsonActions
-            filename={TOKEN_JSON_FILENAMES.radius}
+            filename={productId === 'rider' ? collection.artifact : TOKEN_JSON_FILENAMES.radius}
             json={radiusTokensJson}
-            disabled={!hasRadiusTokens()}
+            disabled={tokens.length === 0}
             onCopyText={copyText}
           />
         )}

@@ -12,6 +12,19 @@ export interface HubItem {
    * render as a flat list, preserving the previous behavior.
    */
   group?: string;
+  /**
+   * Bypasses the `hasProductContent` per-product availability check —
+   * for hub items that are shared DS governance/infrastructure, not
+   * product-scoped token or component data (e.g. Guides). Never used for
+   * token or component sections, which stay derived from actual product
+   * content per `productContent.ts`.
+   */
+  alwaysAvailable?: boolean;
+  /**
+   * When set, the hub card is shown only for these product ids.
+   * Omit to include the item for every product (subject to content availability).
+   */
+  productIds?: string[];
 }
 
 export interface HubSection {
@@ -26,10 +39,15 @@ export const HUB_ROUTES = {
   icons: '/tokens/icons',
   typography: '/tokens/typography',
   shadows: '/tokens/shadows',
+  glass: '/tokens/glass',
   radius: '/tokens/radius',
   spacing: '/tokens/spacing',
   components: '/components',
   switch: '/components/switch',
+  badgeCount: '/components/badge-count',
+  badgeDot: '/components/badge-dot',
+  guides: '/guides',
+  guidesVersioning: '/guides/versioning',
 } as const;
 
 /** Название дизайн-системы. */
@@ -76,6 +94,14 @@ export const HUB_SECTIONS: HubSection[] = [
         href: HUB_ROUTES.shadows,
       },
       {
+        id: 'glass',
+        title: 'Glass',
+        description: 'iOS glass-эффект (frosted blur)',
+        icon: '◌',
+        href: HUB_ROUTES.glass,
+        productIds: ['rider'],
+      },
+      {
         id: 'icons',
         title: 'Icons',
         description: 'Иконки и логотипы',
@@ -97,6 +123,22 @@ export const HUB_SECTIONS: HubSection[] = [
       },
     ],
   },
+  {
+    id: 'guides',
+    title: 'Guides',
+    items: [
+      {
+        id: 'guides',
+        title: 'Guides',
+        description: 'Гайды дизайн-системы: версионирование, архитектура, спеки',
+        icon: '▤',
+        href: HUB_ROUTES.guides,
+        // Shared DS governance docs, not product-scoped token/component data —
+        // available for every product regardless of `productContent.ts`.
+        alwaysAvailable: true,
+      },
+    ],
+  },
 ];
 
 /** Section titles keyed by hub item id / page key — for the disabled-content fallback page. */
@@ -105,6 +147,9 @@ export const SECTION_LABELS: Record<string, string> = {
     HUB_SECTIONS.flatMap((section) => section.items.map((item) => [item.id, item.title] as const)),
   ),
   switch: 'Switch',
+  badgeCount: 'BadgeCount',
+  badgeDot: 'BadgeDot',
+  guidesVersioning: 'Версионность',
 };
 
 /**
@@ -117,9 +162,12 @@ export const SECTION_LABELS: Record<string, string> = {
 export function buildHubSections(productId: string): HubSection[] {
   return HUB_SECTIONS.map((section) => ({
     ...section,
-    items: section.items.map((item) => {
+    items: section.items
+      .filter((item) => !item.productIds || item.productIds.includes(productId))
+      .map((item) => {
       const routeSuffix = item.href;
-      const available = routeSuffix !== null && hasProductContent(productId, item.id);
+      const available =
+        routeSuffix !== null && (item.alwaysAvailable || hasProductContent(productId, item.id));
       return {
         ...item,
         href: available ? `/${productId}${routeSuffix}` : null,

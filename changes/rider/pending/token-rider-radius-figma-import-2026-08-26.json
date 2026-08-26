@@ -1,0 +1,26 @@
+{
+  "id": "token-rider-radius-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Radius",
+  "collectionName": "rider-radius",
+  "product": "rider",
+  "changeSummary": "Import Rider radius collection from Figma tokens (node 63:14) with changelog aligned to Figma Changelog • Corner Radius (node 204:50).",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Добавлены все переменные скруглений коллекции radius",
+    "details": "• radius-flat (0)\n• radius-2 (2)\n• radius-4 (4)\n• radius-6 (6)\n• radius-8 (8)\n• radius-10 (10)\n• radius-12 (12)\n• radius-14 (14)\n• radius-16 (16)\n• radius-20 (20)\n• radius-24 (24)\n• radius-28 (28)\n• radius-32 (32)\n• radius-pill (9999)"
+  },
+  "addedTokens": [
+    "radius-flat", "radius-2", "radius-4", "radius-6", "radius-8", "radius-10", "radius-12",
+    "radius-14", "radius-16", "radius-20", "radius-24", "radius-28", "radius-32", "radius-pill"
+  ],
+  "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=63-14",
+  "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=204-50",
+  "sourcePath": "pages/driver-color-tokens/products/rider/radiusData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

@@ -10,20 +10,14 @@ import {
   DS_VALUE_META_STYLE,
 } from './dsValueMeta';
 import {
-  colorTokenCollection,
-  semanticColorSections,
-  type ColorModeValue,
-  type SemanticColorRow,
-  type SemanticColorSection,
-} from './data';
+  exportColorSectionsJson,
+  stringifyTokenJson,
+} from './exportTokenJson';
+import { getProductColorContent } from './productColorData';
 import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterColorTokenSections } from './searchTokens';
-import {
-  exportColorTokenJson,
-  hasColorTokens,
-  stringifyTokenJson,
-  TOKEN_JSON_FILENAMES,
-} from './exportTokenJson';
+import type { ColorModeValue, SemanticColorRow, SemanticColorSection } from './data';
+import { DEFAULT_PRODUCT_ID } from './productRegistry';
 
 const PAGE_STYLE = `
 ${DS_VALUE_META_STYLE}
@@ -529,20 +523,23 @@ function TokenSection({
 }
 
 const PAGE_TITLE = 'Color';
-const tokenChangelog = loadTokenChangelog(colorTokenCollection.collectionName);
 
-export function DriverColorTokensPage() {
+export function DriverColorTokensPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
+  const { sections, collection } = getProductColorContent(productId);
+  const tokenChangelog = loadTokenChangelog(collection.collectionName);
   const [searchQuery, setSearchQuery] = useState('');
   const { copyText, copyNotice } = useCopyNotice();
   const colorTokensJson = useMemo(
-    () => stringifyTokenJson(exportColorTokenJson()),
-    [],
+    () => stringifyTokenJson(exportColorSectionsJson(sections)),
+    [sections],
   );
   const filteredSections = useMemo(
-    () => filterColorTokenSections(semanticColorSections, searchQuery),
-    [searchQuery],
+    () => filterColorTokenSections(sections, searchQuery),
+    [sections, searchQuery],
   );
   const copyHex = (hex: string) => copyText(hexWithoutHash(hex));
+  const exportFilename = collection.artifact.split('/').pop() ?? 'Color';
+  const hasTokens = sections.some((section) => section.rows.length > 0);
 
   return (
     <div className="dctp">
@@ -556,9 +553,9 @@ export function DriverColorTokensPage() {
         searchAriaLabel="Поиск категории или токена"
         actions={(
           <TokenJsonActions
-            filename={TOKEN_JSON_FILENAMES.color}
+            filename={exportFilename}
             json={colorTokensJson}
-            disabled={!hasColorTokens()}
+            disabled={!hasTokens}
             onCopyText={copyText}
           />
         )}

@@ -1,16 +1,42 @@
 {
   "artifact": "Colors/Semantic",
-  "currentVersion": "1.0.0",
+  "currentVersion": "1.2.0",
   "entries": [
     {
-      "version": "1.0.0",
-      "date": "2026-08-11",
-      "author": "sergej",
+      "version": "1.2.0",
+      "date": "2026-08-25",
+      "author": "Артур",
       "type": "minor",
       "changes": [
         {
           "kind": "added",
-          "description": "Первичный набор semantic color tokens из Figma «⚔️ Персонаж» (Bg, Texts, Icons, Strokes, Pastels, Buttons, Controls, Fields, Messages)"
+          "description": "Добавлены переменные фона и обводки",
+          "details": "Bg / Warning\n#F9ECEE (Day)\n#A22C3E 30% (Night)\n\nBg / Overlay\n#000000 40% (Day)\n#000000 40% (Night)\n\nBg / Accent\n#8526FF (Day)\n#9966FF (Night)\n\nStrokes / Primary Opposite\n#FFFFFF (Day)\n#2D2C2E (Night)"
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-08-12",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена переменная обводки",
+          "details": "Strokes / Warning\n#D62347 (Day)\n#D62347 (Night)"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-12",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные цветов из оригинального набора Wilhelm."
         }
       ]
     }

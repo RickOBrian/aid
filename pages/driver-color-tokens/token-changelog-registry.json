@@ -2,9 +2,57 @@
   "defaultAuthor": "sergej",
   "collections": [
     {
+      "collectionName": "rider-colors-semantic",
+      "artifact": "Rider Colors/Semantic",
+      "pageFile": "DriverColorTokensPage.tsx",
+      "productId": "rider"
+    },
+    {
       "collectionName": "colors-semantic",
       "artifact": "Colors/Semantic",
       "pageFile": "DriverColorTokensPage.tsx"
+    },
+    {
+      "collectionName": "rider-typography-sem",
+      "artifact": "Rider Typography/Semantic",
+      "pageFile": "TypographyPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-typography-sem-out",
+      "artifact": "Rider Typography/Semantic Outstanding",
+      "pageFile": "TypographyPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-effects-shadows",
+      "artifact": "Rider Effects/Shadows",
+      "pageFile": "ShadowsPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-effects-glass",
+      "artifact": "Rider Effects/Glass",
+      "pageFile": "GlassPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-space",
+      "artifact": "Rider Space",
+      "pageFile": "SpacingPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-radius",
+      "artifact": "Rider Radius",
+      "pageFile": "RadiusPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-icons",
+      "artifact": "Icons/Rider",
+      "pageFile": "IconsPage.tsx",
+      "productId": "rider"
     },
     {
       "collectionName": "icons",

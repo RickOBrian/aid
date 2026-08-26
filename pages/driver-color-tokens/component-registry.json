@@ -11,6 +11,28 @@
       "reviewRoute": "/components/switch",
       "componentsGroup": "Controls",
       "description": "Переключатель on/off (review sandbox)"
+    },
+    {
+      "componentId": "badge-count",
+      "canonicalName": "BadgeCount",
+      "artifact": "BadgeCount",
+      "pageFile": "BadgeCountPage.tsx",
+      "metaFile": "components/badge-count.meta.json",
+      "changelogFile": "badge-count-changelog.json",
+      "reviewRoute": "/components/badge-count",
+      "componentsGroup": "Indicators",
+      "description": "Числовой индикатор-бейдж (review sandbox)"
+    },
+    {
+      "componentId": "badge-dot",
+      "canonicalName": "BadgeDot",
+      "artifact": "BadgeDot",
+      "pageFile": "BadgeDotPage.tsx",
+      "metaFile": "components/badge-dot.meta.json",
+      "changelogFile": "badge-dot-changelog.json",
+      "reviewRoute": "/components/badge-dot",
+      "componentsGroup": "Indicators",
+      "description": "Точечный индикатор уведомлений (review sandbox)"
     }
   ]
 }

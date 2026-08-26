@@ -165,8 +165,8 @@ ${COMPONENT_CODE_SNIPPET_STYLE}
   outline: none;
 }
 .dsw-tab[aria-selected="true"] {
-  color: #0057ff;
-  border-bottom-color: #0057ff;
+  color: var(--ds-accent);
+  border-bottom-color: var(--ds-accent);
 }
 .dsw-section {
   margin-bottom: 48px;
@@ -287,12 +287,12 @@ ${COMPONENT_CODE_SNIPPET_STYLE}
   border-right: none;
 }
 .dsw-sandbox-segment button[aria-pressed="true"] {
-  background: #e8efff;
-  color: #0057ff;
+  background: var(--ds-accent-bg);
+  color: var(--ds-accent);
   font-weight: 500;
 }
 .dsw-sandbox-segment button:focus-visible {
-  outline: 2px solid #0057ff;
+  outline: 2px solid var(--ds-accent);
   outline-offset: -2px;
 }
 .dsw-switch-token-table {

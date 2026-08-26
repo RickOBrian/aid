@@ -15,6 +15,7 @@ export type HubSectionKey =
   | 'spacing'
   | 'radius'
   | 'shadows'
+  | 'glass'
   | 'icons'
   | 'components';
 
@@ -24,6 +25,7 @@ interface ProductContentModule {
   spacingTokens?: unknown[];
   radiusTokens?: unknown[];
   shadowSections?: unknown[];
+  glassSections?: unknown[];
   iconSections?: unknown[];
   components?: unknown[];
 }
@@ -34,6 +36,7 @@ const KEY_TO_EXPORT: Record<HubSectionKey, keyof ProductContentModule> = {
   spacing: 'spacingTokens',
   radius: 'radiusTokens',
   shadows: 'shadowSections',
+  glass: 'glassSections',
   icons: 'iconSections',
   components: 'components',
 };

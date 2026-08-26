@@ -1,4 +1,5 @@
 import { iconAssetPath, type IconItem, type IconSection } from './iconsData';
+import { productIconAssetPath } from './productIconData';
 import { parseSvgDimensions } from './parseSvgDimensions';
 import { sanitizeIconSvg } from './sanitizeIconSvg';
 
@@ -28,13 +29,21 @@ export interface IconAssetRef {
   assetUrl: string;
 }
 
-export function collectIconAssets(sections: IconSection[]): IconAssetRef[] {
+export function collectIconAssets(
+  sections: IconSection[],
+  productId?: string,
+): IconAssetRef[] {
+  const resolvePath =
+    productId && productId !== 'driver'
+      ? (sectionId: string, iconId: string) => productIconAssetPath(productId, sectionId, iconId)
+      : (sectionId: string, iconId: string) => iconAssetPath(sectionId, iconId);
+
   return sections.flatMap((section) =>
     section.items.map((item) => ({
       sectionId: section.id,
       item,
       path: `${section.id}/${item.id}`,
-      assetUrl: iconAssetPath(section.id, item.id),
+      assetUrl: resolvePath(section.id, item.id),
     })),
   );
 }
@@ -311,17 +320,23 @@ export async function downloadSingleIcon(
   sectionId: string,
   item: IconItem,
   formatId: IconDownloadFormat,
+  productId?: string,
 ): Promise<void> {
   const format = ICON_DOWNLOAD_FORMATS.find((option) => option.id === formatId);
   if (!format) {
     throw new Error(`Unknown format: ${formatId}`);
   }
 
+  const assetUrl =
+    productId && productId !== 'driver'
+      ? productIconAssetPath(productId, sectionId, item.id)
+      : iconAssetPath(sectionId, item.id);
+
   const asset: IconAssetRef = {
     sectionId,
     item,
     path: item.id,
-    assetUrl: iconAssetPath(sectionId, item.id),
+    assetUrl,
   };
 
   const file = await exportIconAsset(asset, format);
@@ -333,14 +348,14 @@ export async function downloadSingleIcon(
 export async function downloadIconArchive(
   sections: IconSection[],
   formatId: IconDownloadFormat,
-  options?: { zipName?: string },
+  options?: { zipName?: string; productId?: string },
 ): Promise<void> {
   const format = ICON_DOWNLOAD_FORMATS.find((option) => option.id === formatId);
   if (!format) {
     throw new Error(`Unknown format: ${formatId}`);
   }
 
-  const assets = collectIconAssets(sections);
+  const assets = collectIconAssets(sections, options?.productId);
   if (assets.length === 0) {
     throw new Error('Нет иконок для скачивания');
   }

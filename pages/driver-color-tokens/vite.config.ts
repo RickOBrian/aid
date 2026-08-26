@@ -51,7 +51,14 @@ function spaComponentRoutesPlugin(routes: string[]): Plugin {
   };
 }
 
-const COMPONENT_SANDBOX_SUFFIXES = ['/components', '/components/switch'];
+const COMPONENT_SANDBOX_SUFFIXES = [
+  '/components',
+  '/components/switch',
+  '/components/badge-count',
+  '/components/badge-dot',
+  '/guides',
+  '/guides/versioning',
+];
 const productIds = readSwitchableProductIds();
 const componentSandboxRoutes = [
   ...COMPONENT_SANDBOX_SUFFIXES,

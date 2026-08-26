@@ -3,13 +3,20 @@ import type { CSSProperties } from 'react';
 export interface TypographyStyle {
   id: string;
   name: string;
-  fontFamily: 'Roboto';
+  fontFamily: string;
   fontWeight: number;
   fontWeightLabel: string;
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
   textTransform?: CSSProperties['textTransform'];
+  /**
+   * Optional token-path group prefix (e.g. `Titles`) — set by products whose
+   * Figma source nests style tokens under a group, so `typographyTokenPath`
+   * can reproduce the exact canonical path (`Titles/Large Title/font-family`)
+   * instead of the flat `name/property` used by Driver.
+   */
+  tokenGroup?: string;
 }
 
 export interface TypographySection {
@@ -109,7 +116,8 @@ export const TYPOGRAPHY_PARAMETERS = [
 ] as const;
 
 export function typographyTokenPath(styleItem: TypographyStyle, property: string): string {
-  return `${styleItem.name}/${property}`;
+  const prefix = styleItem.tokenGroup ? `${styleItem.tokenGroup}/${styleItem.name}` : styleItem.name;
+  return `${prefix}/${property}`;
 }
 
 export function typographyParameterValue(

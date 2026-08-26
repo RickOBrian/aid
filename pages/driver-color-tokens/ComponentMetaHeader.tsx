@@ -88,7 +88,7 @@ export const COMPONENT_META_HEADER_STYLE = `
 .ds-cmeta-link {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 12px;
-  color: #0057ff;
+  color: var(--ds-accent);
   text-decoration: none;
   overflow-wrap: anywhere;
 }

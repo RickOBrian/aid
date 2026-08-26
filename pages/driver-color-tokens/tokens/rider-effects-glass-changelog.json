@@ -1,0 +1,19 @@
+{
+  "artifact": "Rider Effects/Glass",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-18",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена группа переменных Glass/Navbar и стиль Glass/Navbar",
+          "details": "• Glass/Navbar/Glass — 7 переменных (radius, refraction, depth, light-angle, light-intensity, dispersion, splay)\n• Glass/Navbar/Inner Shadow 1–3 — по 5 переменных (offset-x, offset-y, blur, spread, color)\n• Glass/Navbar/Drop Shadow 1–4 — по 5 переменных (offset-x, offset-y, blur, spread, color)\n• Стиль: Glass/Navbar (8 эффектов с привязкой переменных)"
+        }
+      ]
+    }
+  ]
+}

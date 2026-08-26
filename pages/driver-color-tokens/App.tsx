@@ -5,11 +5,18 @@ import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
 import { ShadowsPage } from './ShadowsPage';
+import { GlassPage } from './GlassPage';
 import { ComponentsHubPage } from './ComponentsHubPage';
 import { SwitchPage } from './SwitchPage';
+import { BadgeCountPage } from './BadgeCountPage';
+import { BadgeDotPage } from './BadgeDotPage';
+import { GuidesHubPage } from './GuidesHubPage';
+import { VersioningGuidePage } from './VersioningGuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
+import { hasProductContent } from './productContent';
+import { ProductAccentScope } from './ProductAccentScope';
 import { DEFAULT_PRODUCT_ID, getProductLabel, resolveProductRoute } from './productRegistry';
 
 /**
@@ -41,6 +48,10 @@ function resolveSectionKey(remainder: string) {
     return 'shadows' as const;
   }
 
+  if (path === HUB_ROUTES.glass) {
+    return 'glass' as const;
+  }
+
   if (path === HUB_ROUTES.radius) {
     return 'radius' as const;
   }
@@ -55,6 +66,22 @@ function resolveSectionKey(remainder: string) {
 
   if (path === HUB_ROUTES.switch) {
     return 'switch' as const;
+  }
+
+  if (path === HUB_ROUTES.badgeCount) {
+    return 'badgeCount' as const;
+  }
+
+  if (path === HUB_ROUTES.badgeDot) {
+    return 'badgeDot' as const;
+  }
+
+  if (path === HUB_ROUTES.guides) {
+    return 'guides' as const;
+  }
+
+  if (path === HUB_ROUTES.guidesVersioning) {
+    return 'guidesVersioning' as const;
   }
 
   return 'not-found' as const;
@@ -95,52 +122,51 @@ export function App() {
     }
   }, [productId, page]);
 
+  let content;
+
   if (page === 'not-found') {
-    return <NotFoundPage />;
+    content = <NotFoundPage />;
+  } else if (page === 'hub') {
+    content = <HubPage productId={productId} />;
+  } else if (page === 'colors' && hasProductContent(productId, 'colors')) {
+    content = <DriverColorTokensPage productId={productId} />;
+  } else   if (page === 'typography' && hasProductContent(productId, 'typography')) {
+    content = <TypographyPage productId={productId} />;
+  } else if (page === 'shadows' && hasProductContent(productId, 'shadows')) {
+    content = <ShadowsPage productId={productId} />;
+  } else if (page === 'glass' && hasProductContent(productId, 'glass')) {
+    content = <GlassPage />;
+  } else if (page === 'spacing' && hasProductContent(productId, 'spacing')) {
+    content = <SpacingPage productId={productId} />;
+  } else if (page === 'radius' && hasProductContent(productId, 'radius')) {
+    content = <RadiusPage productId={productId} />;
+  } else if (page === 'icons' && hasProductContent(productId, 'icons')) {
+    content = <IconsPage productId={productId} />;
+  } else if (page === 'guides') {
+    content = <GuidesHubPage />;
+  } else if (page === 'guidesVersioning') {
+    content = <VersioningGuidePage />;
+  } else if (productId !== DEFAULT_PRODUCT_ID) {
+    content = <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
+  } else if (page === 'icons') {
+    content = <IconsPage />;
+  } else if (page === 'shadows') {
+    content = <ShadowsPage />;
+  } else if (page === 'radius') {
+    content = <RadiusPage />;
+  } else if (page === 'spacing') {
+    content = <SpacingPage />;
+  } else if (page === 'components') {
+    content = <ComponentsHubPage />;
+  } else if (page === 'switch') {
+    content = <SwitchPage />;
+  } else if (page === 'badgeCount') {
+    content = <BadgeCountPage />;
+  } else if (page === 'badgeDot') {
+    content = <BadgeDotPage />;
+  } else {
+    content = <NotFoundPage />;
   }
 
-  if (page === 'hub') {
-    return <HubPage productId={productId} />;
-  }
-
-  // Only Driver has real page implementations today. Other products
-  // (Rider) share the same routes/structure but have no content yet — see
-  // `products/<id>/index.ts` and `productContent.ts`.
-  if (productId !== DEFAULT_PRODUCT_ID) {
-    return <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
-  }
-
-  if (page === 'colors') {
-    return <DriverColorTokensPage />;
-  }
-
-  if (page === 'icons') {
-    return <IconsPage />;
-  }
-
-  if (page === 'typography') {
-    return <TypographyPage />;
-  }
-
-  if (page === 'shadows') {
-    return <ShadowsPage />;
-  }
-
-  if (page === 'radius') {
-    return <RadiusPage />;
-  }
-
-  if (page === 'spacing') {
-    return <SpacingPage />;
-  }
-
-  if (page === 'components') {
-    return <ComponentsHubPage />;
-  }
-
-  if (page === 'switch') {
-    return <SwitchPage />;
-  }
-
-  return <NotFoundPage />;
+  return <ProductAccentScope productId={productId}>{content}</ProductAccentScope>;
 }

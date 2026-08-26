@@ -15,6 +15,11 @@ export function exportColorTokenJson() {
   return semanticColorSections;
 }
 
+/** Product-scoped color export for Driver, Rider, etc. */
+export function exportColorSectionsJson(sections: typeof semanticColorSections) {
+  return sections;
+}
+
 /** Spacing — semantic spacing scale с px и rem. */
 export function exportSpacingTokenJson() {
   return {

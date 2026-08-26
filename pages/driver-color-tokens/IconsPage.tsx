@@ -27,7 +27,9 @@ import {
   downloadSingleIcon,
   type IconDownloadFormat,
 } from './downloadIcons';
-import { iconAssetPath, iconCollection, iconSections, type IconItem, type IconSection } from './iconsData';
+import type { IconItem, type IconSection } from './iconsData';
+import { DEFAULT_PRODUCT_ID } from './productRegistry';
+import { getProductIconContent, productIconAssetPath } from './productIconData';
 import { formatIconSize, getIconDimensions } from './iconDimensions';
 import {
   countIconsInSections,
@@ -38,7 +40,6 @@ import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterIconSections } from './searchIcons';
 
 const LONG_PRESS_MS = 500;
-const iconChangelog = loadTokenChangelog(iconCollection.collectionName);
 
 const PAGE_STYLE = `
 ${DS_INTERACTIVE_CARD_STYLE}
@@ -416,6 +417,7 @@ ${DS_CHANGELOG_TABLE_STYLE}
 `;
 
 function IconCell({
+  productId,
   sectionId,
   item,
   selectionMode,
@@ -423,6 +425,7 @@ function IconCell({
   onToggle,
   onOpenContextMenu,
 }: {
+  productId: string;
   sectionId: string;
   item: IconItem;
   selectionMode: boolean;
@@ -430,8 +433,8 @@ function IconCell({
   onToggle: () => void;
   onOpenContextMenu: (coords: { x: number; y: number }) => void;
 }) {
-  const src = iconAssetPath(sectionId, item.id);
-  const dimensions = getIconDimensions(sectionId, item.id);
+  const src = productIconAssetPath(productId, sectionId, item.id);
+  const dimensions = getIconDimensions(sectionId, item.id, productId);
   const longPressTimerRef = useRef<number | null>(null);
   const longPressTriggeredRef = useRef(false);
 
@@ -516,6 +519,7 @@ function IconCell({
 }
 
 function IconSectionView({
+  productId,
   section,
   selectionMode,
   selectedKeys,
@@ -523,6 +527,7 @@ function IconSectionView({
   onToggleIcon,
   onOpenContextMenu,
 }: {
+  productId: string;
   section: IconSection;
   selectionMode: boolean;
   selectedKeys: ReadonlySet<string>;
@@ -552,6 +557,7 @@ function IconSectionView({
         {section.items.map((item) => (
           <IconCell
             key={item.id}
+            productId={productId}
             sectionId={section.id}
             item={item}
             selectionMode={selectionMode}
@@ -565,8 +571,16 @@ function IconSectionView({
   );
 }
 
-export function IconsPage() {
+export function IconsPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { sections, collection } = useMemo(
+    () => getProductIconContent(productId),
+    [productId],
+  );
+  const iconChangelog = useMemo(
+    () => loadTokenChangelog(collection.collectionName),
+    [collection.collectionName],
+  );
   const [downloadFormat, setDownloadFormat] = useState<IconDownloadFormat>(
     DEFAULT_ICON_DOWNLOAD_FORMAT,
   );
@@ -575,8 +589,8 @@ export function IconsPage() {
   const [contextMenu, setContextMenu] = useState<IconContextMenuState | null>(null);
   const [isDownloadingIcon, setIsDownloadingIcon] = useState(false);
   const filteredSections = useMemo(
-    () => filterIconSections(iconSections, searchQuery),
-    [searchQuery],
+    () => filterIconSections(sections, searchQuery),
+    [sections, searchQuery],
   );
   const visibleIconCount = useMemo(
     () => countIconsInSections(filteredSections),
@@ -663,13 +677,13 @@ export function IconsPage() {
 
       setIsDownloadingIcon(true);
       try {
-        await downloadSingleIcon(sectionId, item, downloadFormat);
+        await downloadSingleIcon(sectionId, item, downloadFormat, productId);
         setContextMenu(null);
       } finally {
         setIsDownloadingIcon(false);
       }
     },
-    [downloadFormat, isDownloadingIcon],
+    [downloadFormat, isDownloadingIcon, productId],
   );
 
   const handleOpenContextMenu = useCallback(
@@ -717,7 +731,8 @@ export function IconsPage() {
         searchAriaLabel="Поиск иконки"
         actions={
           <IconDownloadActions
-              sections={iconSections}
+              productId={productId}
+              sections={sections}
               visibleSections={filteredSections}
               format={downloadFormat}
               onFormatChange={setDownloadFormat}
@@ -760,6 +775,7 @@ export function IconsPage() {
         filteredSections.map((section) => (
           <IconSectionView
             key={section.id}
+            productId={productId}
             section={section}
             selectionMode={selectionMode}
             selectedKeys={selectedKeys}

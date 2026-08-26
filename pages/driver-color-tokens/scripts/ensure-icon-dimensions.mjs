@@ -7,14 +7,15 @@ const appRoot = join(fileURLToPath(import.meta.url), '..', '..');
 const iconsRoot = join(appRoot, 'public/icons');
 const outputPath = join(appRoot, 'iconDimensions.json');
 
-function collectSvgFiles(dir, sectionId = '') {
+function collectSvgFiles(dir, keyPrefix = '') {
   const entries = readdirSync(dir, { withFileTypes: true });
   const files = [];
 
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
-      files.push(...collectSvgFiles(fullPath, entry.name));
+      const nextPrefix = keyPrefix ? `${keyPrefix}/${entry.name}` : entry.name;
+      files.push(...collectSvgFiles(fullPath, nextPrefix));
       continue;
     }
 
@@ -23,7 +24,10 @@ function collectSvgFiles(dir, sectionId = '') {
     }
 
     const iconId = entry.name.replace(/\.svg$/, '');
-    files.push({ sectionId, iconId, fullPath });
+    const sectionId = keyPrefix.includes('/')
+      ? keyPrefix
+      : keyPrefix;
+    files.push({ sectionId: keyPrefix, iconId, fullPath });
   }
 
   return files;

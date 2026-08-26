@@ -1,6 +1,7 @@
 /**
- * Semantic color tokens from Figma «⚔️ Персонаж», section color-sem (node 1763:113).
- * Source: https://www.figma.com/design/qaf3M4WfYpM4BEfExdT9tD/?node-id=1763-113
+ * Semantic color tokens — Driver Colors/Semantic.
+ * Primary source: Figma «🚖 WB AID Driver Tokens — Styles» (node 3:6821).
+ * Initial import: Figma «⚔️ Персонаж», section color-sem (node 1763:113).
  */
 
 export interface ColorModeValue {
@@ -38,6 +39,24 @@ const bgRows: SemanticColorRow[] = [
     day: { hex: '#2D2C2E', opacity: 100 },
     night: { hex: '#000000', opacity: 100 },
     description: 'Обычно используется для бэкграундов с действиями — для обособления поля',
+  },
+  {
+    name: 'Warning',
+    day: { hex: '#F9ECEE', opacity: 100 },
+    night: { hex: '#A22C3E', opacity: 30 },
+    description: 'Для состояния ошибок',
+  },
+  {
+    name: 'Overlay',
+    day: { hex: '#000000', opacity: 40 },
+    night: { hex: '#000000', opacity: 40 },
+    description: 'Оверлей для модалок',
+  },
+  {
+    name: 'Accent',
+    day: { hex: '#8526FF', opacity: 100 },
+    night: { hex: '#9966FF', opacity: 100 },
+    description: 'Акцентный фон',
   },
 ];
 
@@ -259,6 +278,12 @@ const strokesRows: SemanticColorRow[] = [
     description: 'Для обводок важных элементов',
   },
   {
+    name: 'Primary Opposite',
+    day: { hex: '#FFFFFF', opacity: 100 },
+    night: { hex: '#2D2C2E', opacity: 100 },
+    description: 'Для обводок с инвертированным контрастом',
+  },
+  {
     name: 'Secondary',
     day: { hex: '#000000', opacity: 38 },
     night: { hex: '#FFFFFF', opacity: 38 },
@@ -281,6 +306,12 @@ const strokesRows: SemanticColorRow[] = [
     day: { hex: '#FFFFFF', opacity: 16 },
     night: { hex: '#FFFFFF', opacity: 16 },
     description: 'Для лёгкого отображения границ элемента. Не зависит от темы.',
+  },
+  {
+    name: 'Warning',
+    day: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#D62347', opacity: 100 },
+    description: 'Для состояния ошибок',
   },
 ];
 

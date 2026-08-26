@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Switch } from './components/Switch';
+import { BadgeCount } from './components/BadgeCount';
+import { BadgeDot } from './components/BadgeDot';
 
 type ComponentPreviewRenderer = () => ReactNode;
 
@@ -9,6 +11,8 @@ type ComponentPreviewRenderer = () => ReactNode;
  */
 const COMPONENT_PREVIEWS: Record<string, ComponentPreviewRenderer> = {
   switch: () => <Switch checked aria-label="Switch preview" />,
+  'badge-count': () => <BadgeCount value={10} />,
+  'badge-dot': () => <BadgeDot aria-label="Preview" />,
 };
 
 export function hasComponentPreview(componentId: string): boolean {

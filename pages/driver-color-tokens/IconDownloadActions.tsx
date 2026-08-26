@@ -39,6 +39,7 @@ function MoreIcon() {
 }
 
 export function IconDownloadActions({
+  productId,
   sections,
   visibleSections,
   disabled = false,
@@ -48,6 +49,7 @@ export function IconDownloadActions({
   selectedKeys,
   onMoreClick,
 }: {
+  productId?: string;
   sections: IconSection[];
   visibleSections: IconSection[];
   disabled?: boolean;
@@ -110,17 +112,18 @@ export function IconDownloadActions({
         if (selectedIconCount === 1) {
           const section = selectedSections[0];
           const item = section.items[0];
-          await downloadSingleIcon(section.id, item, format);
+          await downloadSingleIcon(section.id, item, format, productId);
           return;
         }
 
         await downloadIconArchive(selectedSections, format, {
           zipName: 'Icons.zip',
+          productId,
         });
         return;
       }
 
-      await downloadIconArchive(sections, format);
+      await downloadIconArchive(sections, format, { productId });
     } finally {
       setIsDownloading(false);
     }

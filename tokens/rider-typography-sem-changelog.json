@@ -1,0 +1,37 @@
+{
+  "artifact": "Rider Typography/Semantic",
+  "currentVersion": "1.1.0",
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-25",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлен стиль Captions/Caption CAP",
+          "details": "• Новая core-переменная: Letter Spacing/ls-n023 (-0.23)\n• Новые sem-переменные: Captions/Caption CAP (font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing)\n• Новый текстовый стиль: Captions/Caption CAP (fs=17, lh=20, ls=-0.23, fw=600, textCase=SMALL_CAPS_FORCED)"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-20",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлен стиль Captions/Caption 2",
+          "details": "• Переименование: Captions/Caption → Captions/Caption 1\n• Новые core-переменные: Font Size/fs-11, Line Height/lh-14\n• Новые sem-переменные: Captions/Caption 2 (font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing)\n• Новый текстовый стиль: Captions/Caption 2 (fs=11, lh=14, ls=0, fw=500 iOS / fw=500 Android)"
+        },
+        {
+          "kind": "added",
+          "description": "Создана система типографики Rider: коллекции переменных и текстовые стили",
+          "details": "• typography-core: 35 переменных (Font Family, Font Size, Font Weight, Line Height, Letter Spacing, Paragraph Spacing)\n• typography-sem: 78 переменных, 2 режима (iOS, Android)\n• 13 текстовых стилей: Titles (5), Subtitles (3), Bodies (4), Captions (1)\n• Привязка переменных к стилям: fontSize, fontWeight, fontFamily, lineHeight, letterSpacing, paragraphSpacing\n• Скоупинг переменных по категориям"
+        }
+      ]
+    }
+  ]
+}
