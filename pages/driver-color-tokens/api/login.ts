@@ -9,14 +9,8 @@ interface LoginRequestBody {
   password?: string;
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
+/** Vercel Web API — named HTTP method export (default export ignores returned Response). */
+export async function POST(request: Request): Promise<Response> {
   const expectedUser = process.env.BASIC_AUTH_USER;
   const expectedPassword = process.env.BASIC_AUTH_PASSWORD;
   const cookieSecret = process.env.AUTH_COOKIE_SECRET;

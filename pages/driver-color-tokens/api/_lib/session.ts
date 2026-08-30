@@ -72,14 +72,11 @@ export async function verifySessionCookie(
 
   try {
     const key = await importHmacKey(secret);
-    const signatureBytes = base64urlDecode(signatureBase64);
+    const signatureBytes = new Uint8Array(base64urlDecode(signatureBase64));
     const isValid = await crypto.subtle.verify(
       'HMAC',
       key,
-      signatureBytes.buffer.slice(
-        signatureBytes.byteOffset,
-        signatureBytes.byteOffset + signatureBytes.byteLength,
-      ),
+      signatureBytes,
       new TextEncoder().encode(payloadBase64),
     );
 
