@@ -1,65 +1,69 @@
 /**
- * Vercel Routing Middleware — Basic Auth for Presentbook (Hobby plan).
+ * Vercel Routing Middleware — cookie session auth for Presentbook (Hobby plan).
  * Runs on Edge at deploy time; local `npm run dev` (Vite) does not execute this file.
  * @see https://vercel.com/docs/routing-middleware
  */
 
-const BASIC_AUTH_REALM = 'Secure Area';
+import { readSessionCookie, verifySessionCookie } from './auth/session';
 
-function unauthorized(): Response {
-  return new Response('Authentication required', {
-    status: 401,
+const LOGIN_HTML = `<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — aid Presentbook</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <p>Форма входа будет добавлена на следующем шаге.</p>
+    <p>Для проверки через curl: POST /api/login с JSON {"username":"…","password":"…"}.</p>
+  </body>
+</html>`;
+
+function loginPageResponse(): Response {
+  return new Response(LOGIN_HTML, {
+    status: 200,
     headers: {
-      'WWW-Authenticate': `Basic realm="${BASIC_AUTH_REALM}"`,
+      'Content-Type': 'text/html; charset=utf-8',
     },
   });
 }
 
-function parseBasicAuth(authorization: string | null): { user: string; password: string } | null {
-  if (!authorization?.startsWith('Basic ')) {
-    return null;
-  }
-
-  try {
-    const encoded = authorization.slice('Basic '.length);
-    const decoded = atob(encoded);
-    const separatorIndex = decoded.indexOf(':');
-
-    if (separatorIndex === -1) {
-      return null;
-    }
-
-    return {
-      user: decoded.slice(0, separatorIndex),
-      password: decoded.slice(separatorIndex + 1),
-    };
-  } catch {
-    return null;
-  }
+function redirectToLogin(request: Request): Response {
+  return Response.redirect(new URL('/login', request.url), 302);
 }
 
-function isAuthorized(request: Request): boolean {
-  const expectedUser = process.env.BASIC_AUTH_USER;
-  const expectedPassword = process.env.BASIC_AUTH_PASSWORD;
-
-  if (!expectedUser || !expectedPassword) {
+async function hasValidSession(request: Request): Promise<boolean> {
+  const cookieSecret = process.env.AUTH_COOKIE_SECRET;
+  if (!cookieSecret) {
     return false;
   }
 
-  const credentials = parseBasicAuth(request.headers.get('authorization'));
-  if (!credentials) {
+  const sessionCookie = readSessionCookie(request.headers.get('cookie'));
+  if (!sessionCookie) {
     return false;
   }
 
-  return credentials.user === expectedUser && credentials.password === expectedPassword;
+  const payload = await verifySessionCookie(sessionCookie, cookieSecret);
+  return payload !== null;
 }
 
-export default function middleware(request: Request): Response | undefined {
-  if (isAuthorized(request)) {
+export default async function middleware(request: Request): Promise<Response | undefined> {
+  const { pathname } = new URL(request.url);
+
+  if (pathname === '/api/login') {
     return;
   }
 
-  return unauthorized();
+  if (pathname === '/login') {
+    return loginPageResponse();
+  }
+
+  if (await hasValidSession(request)) {
+    return;
+  }
+
+  return redirectToLogin(request);
 }
 
 export const config = {
