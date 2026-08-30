@@ -2,7 +2,7 @@ import {
   buildSessionSetCookieHeader,
   createSessionPayload,
   signSessionCookie,
-} from '../auth/session';
+} from './_lib/session.js';
 
 interface LoginRequestBody {
   username?: string;

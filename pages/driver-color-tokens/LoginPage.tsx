@@ -140,9 +140,15 @@ export function LoginPage() {
       }
 
       const body = (await response.json().catch(() => null)) as LoginResponseBody | null;
-      setError(body?.error === 'Invalid credentials' ? 'Неверный логин или пароль' : 'Неверный логин или пароль');
+      if (response.status === 401) {
+        setError('Неверный логин или пароль');
+      } else if (response.status >= 500) {
+        setError('Ошибка сервера. Попробуйте позже.');
+      } else {
+        setError(body?.error ?? 'Не удалось войти');
+      }
     } catch {
-      setError('Неверный логин или пароль');
+      setError('Не удалось связаться с сервером');
     } finally {
       setIsSubmitting(false);
     }

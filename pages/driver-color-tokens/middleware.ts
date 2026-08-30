@@ -4,7 +4,7 @@
  * @see https://vercel.com/docs/routing-middleware
  */
 
-import { readSessionCookie, verifySessionCookie } from './auth/session';
+import { readSessionCookie, verifySessionCookie } from './api/_lib/session.js';
 
 function redirectToLogin(request: Request): Response {
   return Response.redirect(new URL('/login', request.url), 302);
