@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { DriverColorTokensPage } from './DriverColorTokensPage';
 import { HubPage } from './HubPage';
+import { LoginPage } from './LoginPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -113,6 +114,13 @@ function NotFoundPage() {
 }
 
 export function App() {
+  // `/login` is product-agnostic (the session cookie from middleware.ts guards
+  // every product) — handled before product-prefix resolution so it never
+  // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
+  if (window.location.pathname === '/login') {
+    return <LoginPage />;
+  }
+
   const { productId, remainder } = resolveProductRoute(window.location.pathname);
   const page = resolveSectionKey(remainder);
 

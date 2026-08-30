@@ -6,29 +6,6 @@
 
 import { readSessionCookie, verifySessionCookie } from './auth/session';
 
-const LOGIN_HTML = `<!DOCTYPE html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login — aid Presentbook</title>
-  </head>
-  <body>
-    <h1>Login</h1>
-    <p>Форма входа будет добавлена на следующем шаге.</p>
-    <p>Для проверки через curl: POST /api/login с JSON {"username":"…","password":"…"}.</p>
-  </body>
-</html>`;
-
-function loginPageResponse(): Response {
-  return new Response(LOGIN_HTML, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-    },
-  });
-}
-
 function redirectToLogin(request: Request): Response {
   return Response.redirect(new URL('/login', request.url), 302);
 }
@@ -56,7 +33,9 @@ export default async function middleware(request: Request): Promise<Response | u
   }
 
   if (pathname === '/login') {
-    return loginPageResponse();
+    // No stub here — pass through so `vercel.json`'s SPA rewrite serves
+    // `index.html`, and the React app (App.tsx) renders LoginPage client-side.
+    return;
   }
 
   if (await hasValidSession(request)) {
