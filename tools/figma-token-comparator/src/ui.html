@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Token Comparator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Portal layout tokens — канон из pages/driver-color-tokens/dsChangelogTable.ts */
+      :root {
+        --ds-font: "Google Sans", system-ui, sans-serif;
+        --ds-text: #2d2c2e;
+        --ds-text-secondary: rgba(0, 0, 0, 0.54);
+        --ds-text-muted: rgba(0, 0, 0, 0.38);
+        --ds-surface: #ffffff;
+        --ds-surface-muted: #f5f5f5;
+        --ds-surface-zebra: #fafafa;
+        --ds-border: #ebedf0;
+        --ds-focus: rgba(45, 44, 46, 0.32);
+        --ds-radius: 8px;
+        --ds-toast-bg: #2d2c2e;
+        --ds-toast-text: #ffffff;
+
+        /* Driver product accent — dsProductAccent.ts */
+        --ds-accent: #3d6afe;
+        --ds-accent-bg: #ebf0ff;
+        --ds-accent-rgb: 61, 106, 254;
+
+        /* Status / changelog kind colors */
+        --ds-status-added: #23ad58;
+        --ds-status-changed: #005aff;
+        --ds-status-fixed: #f0a11d;
+        --ds-status-removed: #d62347;
+        --ds-status-released-bg: #eef8f1;
+        --ds-status-released-text: #1f7a3f;
+        --ds-status-pending-bg: #fff8e6;
+        --ds-status-pending-text: #8a6a00;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--ds-font);
+        font-size: 13px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Page shell — компактный вариант presentbook padding */
+      .ds-page {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        padding: 20px 16px 24px;
+        overflow: hidden;
+      }
+
+      /* Header — DsPageHeader.tsx */
+      .ds-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+
+      .ds-page-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 28px;
+        color: var(--ds-text);
+      }
+
+      .ds-page-header__meta {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-muted);
+      }
+
+      /* Tabs — SwitchPage .dsw-tabs + dsProductAccent .ds-accent-tab */
+      .ds-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid var(--ds-border);
+        flex-shrink: 0;
+      }
+
+      .ds-tab {
+        margin: 0;
+        padding: 10px 16px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ds-text-secondary);
+        cursor: pointer;
+        margin-bottom: -1px;
+      }
+
+      .ds-tab:hover,
+      .ds-tab:focus-visible {
+        color: var(--ds-text);
+        outline: none;
+      }
+
+      .ds-tab[aria-selected="true"] {
+        color: var(--ds-accent);
+        border-bottom-color: var(--ds-accent);
+      }
+
+      /* Panels — единый вертикальный скролл контента вкладки */
+      .ds-panel {
+        display: none;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .ds-panel[aria-hidden="false"] {
+        display: flex;
+      }
+
+      /* Результаты: toolbar + таблица + footer — без скролла всей вкладки */
+      .ds-panel--results {
+        overflow: hidden;
+        gap: 12px;
+      }
+
+      .ds-results-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      /* Export split-button — trigger + "Скачать"/"Напечатать" dropdown */
+      .ds-export-menu {
+        position: relative;
+        display: inline-flex;
+      }
+
+      .ds-export-menu__trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .ds-export-menu__dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        z-index: 25;
+        min-width: 160px;
+        padding: 4px 0;
+      }
+
+      .ds-export-menu__dropdown .ds-filter-menu__option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-align: left;
+      }
+
+      .ds-export-menu__icon {
+        flex-shrink: 0;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-export-menu__dropdown .ds-filter-menu__option:hover .ds-export-menu__icon,
+      .ds-export-menu__dropdown .ds-filter-menu__option:focus-visible .ds-export-menu__icon {
+        color: var(--ds-text);
+      }
+
+      /* Print loader — кольцо прогресса рядом со статусом "Напечатать" */
+      .tc-loader {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      .tc-loader[hidden] {
+        display: none;
+      }
+
+      .tc-loader__svg {
+        position: absolute;
+        inset: 0;
+      }
+
+      .tc-loader__track {
+        stroke: var(--ds-border);
+      }
+
+      .tc-loader__progress {
+        stroke: var(--ds-accent);
+        transform-origin: 10px 10px;
+        transform: rotate(-90deg);
+        transition: stroke-dashoffset 0.2s ease, opacity 0.2s ease;
+      }
+
+      .tc-loader--indeterminate .tc-loader__progress {
+        stroke-dasharray: 14 36.3;
+        stroke-dashoffset: 0;
+        transition: none;
+        animation: tc-loader-spin 0.9s linear infinite;
+      }
+
+      @keyframes tc-loader-spin {
+        to {
+          transform: rotate(270deg);
+        }
+      }
+
+      .tc-loader__percent {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 7px;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--ds-text);
+        pointer-events: none;
+      }
+
+      .tc-loader__check {
+        stroke: var(--ds-status-released-text);
+        opacity: 0;
+        stroke-dasharray: 13;
+        stroke-dashoffset: 13;
+      }
+
+      .tc-loader--complete .tc-loader__track,
+      .tc-loader--complete .tc-loader__progress {
+        opacity: 0;
+      }
+
+      .tc-loader--complete .tc-loader__check {
+        opacity: 1;
+        animation: tc-loader-check-draw 0.35s ease-out forwards;
+      }
+
+      @keyframes tc-loader-check-draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* Section heading — SwitchPage .dsw-section h2 */
+      .ds-section-title {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 24px;
+        color: var(--ds-text);
+      }
+
+      .ds-section-caption {
+        margin: 0 0 12px;
+        font-size: 14px;
+        line-height: 20px;
+        color: var(--ds-text-secondary);
+      }
+
+      /* Form fields — sandbox field label pattern */
+      .ds-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-width: 480px;
+      }
+
+      .ds-field label,
+      .ds-field__label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.45);
+      }
+
+      .ds-field input,
+      .ds-field select,
+      .ds-field textarea {
+        font-family: var(--ds-font);
+        font-size: 13px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 8px 12px;
+      }
+
+      .ds-field input::placeholder,
+      .ds-field textarea::placeholder {
+        color: var(--ds-text-muted);
+      }
+
+      .ds-field input:focus,
+      .ds-field select:focus,
+      .ds-field textarea:focus {
+        outline: none;
+        border-color: var(--ds-focus);
+      }
+
+      .ds-field textarea {
+        resize: vertical;
+        min-height: 56px;
+      }
+
+      /* Row layout */
+      .ds-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      /* Buttons — dsTokenJsonActions / ds-token-json-btn */
+      .ds-btn {
+        font-family: var(--ds-font);
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .ds-btn:hover:not(:disabled) {
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-btn:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 2px;
+      }
+
+      .ds-btn:disabled {
+        color: rgba(0, 0, 0, 0.26);
+        cursor: not-allowed;
+      }
+
+      .ds-btn-primary {
+        color: #ffffff;
+        background: var(--ds-accent);
+        border-color: var(--ds-accent);
+      }
+
+      .ds-btn-primary:hover:not(:disabled) {
+        background: #2f58e0;
+        border-color: #2f58e0;
+      }
+
+      .ds-btn-primary:disabled {
+        opacity: 0.5;
+        color: #ffffff;
+      }
+
+      /* Segmented control — dsProductAccent .ds-accent-segment */
+      .ds-segment {
+        display: inline-flex;
+        width: fit-content;
+        align-self: flex-start;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        overflow: hidden;
+        background: var(--ds-surface);
+      }
+
+      .ds-segment button {
+        margin: 0;
+        padding: 6px 12px;
+        border: none;
+        border-right: 1px solid var(--ds-border);
+        background: transparent;
+        font: inherit;
+        font-size: 13px;
+        color: rgba(0, 0, 0, 0.7);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .ds-segment button:last-child {
+        border-right: none;
+      }
+
+      .ds-segment button[aria-pressed="true"] {
+        background: var(--ds-accent-bg);
+        color: var(--ds-accent);
+        font-weight: 500;
+      }
+
+      .ds-segment button:focus-visible {
+        outline: 2px solid var(--ds-accent);
+        outline-offset: -2px;
+      }
+
+      /* Status line */
+      .ds-status-line {
+        font-size: 13px;
+        line-height: 20px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-settings-divider {
+        margin: 20px 0;
+        border: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .ds-settings-subtitle {
+        margin: 0 0 8px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        color: var(--ds-text);
+      }
+
+      .ds-registry-not-found {
+        margin-top: 10px;
+        padding: 12px;
+        border-radius: var(--ds-radius);
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-registry-not-found__text {
+        margin: 0 0 10px;
+        font-size: 13px;
+        line-height: 18px;
+        color: var(--ds-text-secondary);
+      }
+
+      /* Error banner */
+      .ds-banner {
+        display: none;
+        padding: 10px 16px;
+        border-radius: var(--ds-radius);
+        font-size: 13px;
+        line-height: 16px;
+        flex-shrink: 0;
+        margin-bottom: 12px;
+      }
+
+      .ds-banner.error:not(:empty) {
+        display: block;
+        background: #fdecea;
+        color: var(--ds-status-removed);
+        border: 1px solid #f4c2c2;
+      }
+
+      /* Tables — DS_TOKEN_TABLE_STYLE */
+      .ds-results-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .ds-token-table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+      }
+
+      .ds-token-table-wrap--results {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .ds-token-table-wrap--results .ds-token-table {
+        min-width: 860px;
+      }
+
+      .ds-token-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        line-height: 16px;
+      }
+
+      .ds-token-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        text-align: left;
+        padding: 10px 16px;
+        background: var(--ds-surface-muted);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+        border-bottom: 1px solid var(--ds-border);
+        white-space: nowrap;
+        vertical-align: bottom;
+      }
+
+      .ds-th-filter {
+        position: relative;
+        z-index: 3;
+      }
+
+      .ds-th-filter-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        letter-spacing: inherit;
+        text-transform: inherit;
+        vertical-align: baseline;
+      }
+
+      .ds-th-filter-btn:hover,
+      .ds-th-filter-btn[aria-expanded="true"] {
+        color: var(--ds-accent);
+      }
+
+      .ds-th-filter-btn:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      .ds-th-filter-btn__chevron {
+        flex-shrink: 0;
+        opacity: 0.55;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .ds-th-filter-btn:hover .ds-th-filter-btn__chevron,
+      .ds-th-filter-btn[aria-expanded="true"] .ds-th-filter-btn__chevron {
+        opacity: 1;
+      }
+
+      .ds-th-filter-btn[aria-expanded="true"] .ds-th-filter-btn__chevron {
+        transform: rotate(180deg);
+      }
+
+      .ds-th-filter-indicator {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--ds-accent);
+        flex-shrink: 0;
+      }
+
+      .ds-filter-menu {
+        position: absolute;
+        top: calc(100% - 1px);
+        left: 0;
+        z-index: 20;
+        min-width: 260px;
+        max-height: 320px;
+        overflow-y: auto;
+        padding: 8px 0;
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .ds-filter-menu[hidden] {
+        display: none;
+      }
+
+      .ds-filter-menu__actions {
+        display: flex;
+        gap: 8px;
+        padding: 4px 12px 8px;
+        border-bottom: 1px solid var(--ds-border);
+      }
+
+      .ds-filter-menu__link {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ds-accent);
+        cursor: pointer;
+      }
+
+      .ds-filter-menu__link:hover {
+        text-decoration: underline;
+      }
+
+      .ds-filter-menu__list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 0 4px;
+      }
+
+      .ds-filter-menu__item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: normal;
+        text-transform: none;
+        color: var(--ds-text);
+      }
+
+      .ds-filter-menu__item:hover {
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-filter-menu__item input {
+        margin: 0;
+        flex-shrink: 0;
+      }
+
+      /* Custom checkbox reskin — по мотивам .dip-round-checkbox из IconsPage, квадратная форма для списка мультивыбора */
+      .ds-filter-menu__item input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid rgba(0, 0, 0, 0.26);
+        border-radius: 4px;
+        background: var(--ds-surface);
+        cursor: pointer;
+      }
+
+      .ds-filter-menu__item input[type="checkbox"]:hover {
+        border-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .ds-filter-menu__item input[type="checkbox"]:checked {
+        border-color: var(--ds-accent);
+        background: var(--ds-accent);
+      }
+
+      .ds-filter-menu__item input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 1px;
+        width: 4px;
+        height: 8px;
+        border: solid #ffffff;
+        border-width: 0 1.5px 1.5px 0;
+        transform: rotate(45deg);
+      }
+
+      .ds-filter-menu__item input[type="checkbox"]:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 1px;
+      }
+
+      /* Shared dropdown chevron — dsDropdownButton.tsx / DsDropdownChevron */
+      .ds-dropdown-chevron {
+        flex-shrink: 0;
+        color: rgba(0, 0, 0, 0.54);
+        transition: transform 0.15s ease;
+      }
+
+      .ds-dropdown-chevron--open {
+        transform: rotate(180deg);
+      }
+
+      .ds-filter-menu__option {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 6px 12px;
+        border: none;
+        background: transparent;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: normal;
+        text-transform: none;
+        text-align: left;
+        color: var(--ds-text);
+        cursor: pointer;
+      }
+
+      .ds-filter-menu__option:hover,
+      .ds-filter-menu__option:focus-visible {
+        background: var(--ds-surface-muted);
+        outline: none;
+      }
+
+      .ds-filter-menu__empty {
+        padding: 8px 12px 4px;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--ds-text-muted);
+        letter-spacing: normal;
+        text-transform: none;
+        font-weight: 400;
+      }
+
+      .ds-badge.hardcoded-no-analog {
+        background: var(--ds-surface-muted);
+        color: var(--ds-text-muted);
+      }
+
+      .ds-badge.name-match-unresolved {
+        background: #fff4e0;
+        color: #a15c00;
+      }
+
+      .ds-token-table tbody tr + tr td {
+        border-top: 1px solid var(--ds-border);
+      }
+
+      .ds-token-table td {
+        padding: 10px 16px;
+        vertical-align: top;
+      }
+
+      .ds-token-table tbody tr.ds-row-selected td {
+        background: var(--ds-accent-bg);
+      }
+
+      .ds-table-footer {
+        display: flex;
+        justify-content: flex-end;
+        flex-shrink: 0;
+      }
+
+      /* Value meta — dsValueMeta */
+      .ds-value-meta__primary {
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 14px;
+        color: rgba(0, 0, 0, 0.87);
+      }
+
+      .ds-value-meta__caption {
+        margin-top: 4px;
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 12px;
+        color: var(--ds-text-muted);
+      }
+
+      /* Day/Night breakdown в ячейках «Сейчас»/«Предлагаем» */
+      .ds-value-meta__mode-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 4px;
+        font-size: 11px;
+        line-height: 14px;
+      }
+
+      .ds-value-meta__mode-row .ds-color-swatch {
+        margin-right: 0;
+      }
+
+      .ds-value-meta__mode-label {
+        flex-shrink: 0;
+        min-width: 34px;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--ds-text-muted);
+      }
+
+      .ds-value-meta__mode-value {
+        color: rgba(0, 0, 0, 0.87);
+        font-weight: 500;
+      }
+
+      /* Accent link — layer click */
+      .ds-accent-link {
+        color: var(--ds-accent);
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      button.ds-accent-link {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+        font: inherit;
+        text-align: left;
+      }
+
+      .ds-accent-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Status badges */
+      .ds-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 14px;
+        white-space: nowrap;
+      }
+
+      .ds-badge.mapped,
+      .ds-badge.exact {
+        background: var(--ds-status-released-bg);
+        color: var(--ds-status-released-text);
+      }
+
+      .ds-badge.value {
+        background: var(--ds-accent-bg);
+        color: var(--ds-accent);
+      }
+
+      .ds-badge.name-match {
+        background: var(--ds-status-pending-bg);
+        color: var(--ds-status-pending-text);
+      }
+
+      .ds-badge.conflict {
+        background: #fdecea;
+        color: var(--ds-status-removed);
+      }
+
+      .ds-badge.approximate {
+        background: #f5edff;
+        color: #9747ff;
+      }
+
+      .ds-badge.layout-only {
+        background: var(--ds-surface-muted);
+        color: var(--ds-text-muted);
+      }
+
+      .ds-badge.style-binding {
+        background: var(--ds-status-pending-bg);
+        color: var(--ds-status-pending-text);
+      }
+
+      .ds-badge.ghost-binding {
+        background: #fdecea;
+        color: var(--ds-status-removed);
+      }
+
+      .ds-badge.value-fix-proposed {
+        background: var(--ds-status-pending-bg);
+        color: var(--ds-status-pending-text);
+      }
+
+      .ds-decision-check {
+        color: var(--ds-status-released-text);
+        font-weight: 700;
+      }
+
+      /* Color swatch — dsColorSwatch */
+      .ds-color-swatch {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .ds-color-swatch--unknown {
+        background: var(--ds-surface-muted) !important;
+        border: 1px dashed rgba(0, 0, 0, 0.3);
+      }
+
+      /* Paint style в «Сейчас» — круг, variable/hardcoded — квадрат */
+      .ds-color-swatch--style {
+        border-radius: 50%;
+      }
+
+      .ds-value-meta__caption--warning {
+        color: #a15c00;
+      }
+
+      /* Action cell in results table */
+      .ds-action-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 220px;
+      }
+
+      /* Native <select> reskin — убираем системный chrome, оставляем DS-стиль полей */
+      .ds-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 100%;
+        margin: 0;
+        font-family: var(--ds-font);
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background-color: var(--ds-surface);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23757575' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 7px 32px 7px 10px;
+        cursor: pointer;
+      }
+
+      .ds-select:hover {
+        border-color: rgba(0, 0, 0, 0.24);
+      }
+
+      .ds-select:focus-visible {
+        outline: none;
+        border-color: var(--ds-focus);
+        box-shadow: 0 0 0 2px var(--ds-accent-bg);
+      }
+
+      /* Native text input / textarea reskin внутри ячейки «Действие» */
+      .ds-input,
+      .ds-textarea {
+        width: 100%;
+        margin: 0;
+        font-family: var(--ds-font);
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 7px 10px;
+      }
+
+      .ds-input::placeholder,
+      .ds-textarea::placeholder {
+        color: var(--ds-text-muted);
+      }
+
+      .ds-input:focus,
+      .ds-textarea:focus {
+        outline: none;
+        border-color: var(--ds-focus);
+      }
+
+      .ds-textarea {
+        resize: vertical;
+        min-height: 44px;
+        font-family: var(--ds-font);
+      }
+
+      /* Variable combobox — кастомный autocomplete вместо native datalist */
+      .ds-combobox {
+        position: relative;
+      }
+
+      .ds-combobox__input {
+        padding-right: 32px;
+      }
+
+      .ds-combobox__toggle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .ds-combobox__toggle:hover .ds-dropdown-chevron {
+        color: var(--ds-text);
+      }
+
+      .ds-combobox__toggle:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: -2px;
+        border-radius: 0 var(--ds-radius) var(--ds-radius) 0;
+      }
+
+      .ds-combobox__menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 30;
+        min-width: 100%;
+        max-height: 280px;
+      }
+
+      .ds-filter-menu__option--token {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .ds-combobox__option-modes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        margin-top: 6px;
+      }
+
+      .ds-combobox__option-mode {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        font-size: 10px;
+        line-height: 12px;
+      }
+
+      .ds-combobox__option-mode-label {
+        flex-shrink: 0;
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--ds-text-muted);
+      }
+
+      .ds-color-swatch--compact {
+        width: 10px;
+        height: 10px;
+        margin-right: 0;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .ds-combobox__option-mode-value {
+        color: rgba(0, 0, 0, 0.72);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .ds-action-extra {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .ds-action-extra.visible {
+        display: flex;
+      }
+
+      /* "Показать превью" — кнопка в ячейке "Действие", не зависит от выбора в select */
+      .tc-preview-btn {
+        align-self: flex-start;
+      }
+
+      /* "Применить в макет" — кнопка в ячейке "Действие"; единственное действие, меняющее макет */
+      .tc-apply-layout-btn {
+        align-self: flex-start;
+      }
+
+      /* Модалка подтверждения "Применить в макет" — превью операции перед реальной записью */
+      .tc-apply-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .tc-apply-summary__row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      .tc-apply-summary__row span {
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-apply-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .tc-apply-result__summary {
+        margin: 0 0 4px;
+        font-size: 13px;
+        line-height: 18px;
+        color: var(--ds-text);
+      }
+
+      .tc-apply-skipped-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        font-size: 12px;
+        line-height: 18px;
+        color: var(--ds-text-secondary);
+      }
+
+      /* Было / Стало в модалке «Применить в макет» */
+      .tc-apply-before-after {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .tc-apply-before-after__col {
+        padding: 10px 12px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        background: var(--ds-surface-zebra);
+      }
+
+      .tc-apply-before-after__title {
+        margin: 0 0 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-apply-preview-section {
+        margin-bottom: 16px;
+      }
+
+      .tc-apply-preview-section__label {
+        margin: 0 0 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-apply-preview-section__images {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .tc-apply-preview-section__images[hidden],
+      .tc-apply-preview-section__loading[hidden],
+      .tc-apply-preview-section__error[hidden] {
+        display: none;
+      }
+
+      .tc-apply-preview-section__loading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-apply-preview-section__error {
+        padding: 10px 14px;
+        border-radius: var(--ds-radius);
+        background: #fdecea;
+        color: var(--ds-status-removed);
+        border: 1px solid #f4c2c2;
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      /* Preview modal — "Было/Будет" оверлей */
+      .tc-preview-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.45);
+      }
+
+      .tc-preview-overlay[hidden] {
+        display: none;
+      }
+
+      .tc-preview-modal {
+        width: min(560px, 100%);
+        max-height: 100%;
+        overflow: auto;
+        background: var(--ds-surface);
+        border-radius: var(--ds-radius);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* «Применить в макет» — шапка и футер фиксированы, скролл только у контента */
+      .tc-preview-modal.tc-preview-modal--apply {
+        overflow: hidden;
+        max-height: calc(100vh - 48px);
+      }
+
+      .tc-preview-modal--apply .tc-preview-modal__header {
+        flex-shrink: 0;
+        background: var(--ds-surface);
+      }
+
+      .tc-preview-modal--apply .tc-preview-modal__body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 20px 20px 8px;
+      }
+
+      .tc-preview-modal--apply .tc-preview-modal__footer {
+        flex-shrink: 0;
+        padding: 16px 20px 20px;
+        border-top: 1px solid var(--ds-border);
+        background: var(--ds-surface);
+      }
+
+      .tc-preview-modal--apply .tc-preview-modal__footer[hidden] {
+        display: none;
+      }
+
+      .tc-preview-modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--ds-border);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ds-text);
+      }
+
+      .tc-preview-modal__close {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: none;
+        font-size: 20px;
+        line-height: 1;
+        color: var(--ds-text-secondary);
+        cursor: pointer;
+      }
+
+      .tc-preview-modal__close:hover {
+        color: var(--ds-text);
+      }
+
+      .tc-preview-modal__body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 140px;
+      }
+
+      .tc-preview-modal__loading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-preview-modal__loading[hidden] {
+        display: none;
+      }
+
+      .tc-preview-modal__error {
+        padding: 10px 14px;
+        border-radius: var(--ds-radius);
+        background: #fdecea;
+        color: var(--ds-status-removed);
+        border: 1px solid #f4c2c2;
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      .tc-preview-modal__error[hidden] {
+        display: none;
+      }
+
+      .tc-preview-modal__images {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .tc-preview-modal__images[hidden] {
+        display: none;
+      }
+
+      /* Одна секция на mode (Day/Night, Light/Dark и т.п.) внутри превью */
+      .tc-preview-mode-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tc-preview-mode-group + .tc-preview-mode-group {
+        padding-top: 20px;
+        border-top: 1px solid var(--ds-border);
+      }
+
+      .tc-preview-mode-group__label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-preview-mode-group__pair {
+        display: flex;
+        gap: 16px;
+      }
+
+      .tc-preview-figure {
+        flex: 1 1 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tc-preview-figure img {
+        max-width: 100%;
+        max-height: 260px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        background-image: linear-gradient(45deg, #eee 25%, transparent 25%),
+          linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%),
+          linear-gradient(-45deg, transparent 75%, #eee 75%);
+        background-size: 12px 12px;
+        background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+      }
+
+      .tc-preview-figure figcaption {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-empty-state {
+        padding: 24px 16px;
+        text-align: center;
+        color: var(--ds-text-secondary);
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      /* Changelog-style section divider */
+      .ds-section-divider {
+        margin-top: 8px;
+        padding-top: 24px;
+        border-top: 1px solid var(--ds-border);
+      }
+
+      /* Guide tab — presentbook prose */
+      .ds-guide {
+        max-width: 720px;
+        width: 100%;
+        min-width: 0;
+        font-size: 14px;
+        line-height: 20px;
+        color: var(--ds-text);
+      }
+
+      .ds-guide h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 24px;
+      }
+
+      .ds-guide h3 {
+        margin: 24px 0 8px;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 20px;
+      }
+
+      .ds-guide p {
+        margin: 0 0 12px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-guide ul {
+        margin: 0 0 12px;
+        padding-left: 20px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-guide ol {
+        margin: 0 0 12px;
+        padding-left: 20px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-guide li + li {
+        margin-top: 4px;
+      }
+
+      .ds-guide-note {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border-radius: var(--ds-radius);
+        background: var(--ds-accent-bg);
+        color: var(--ds-text);
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      .ds-guide-table-wrap {
+        overflow-x: auto;
+        margin: 12px 0 16px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+      }
+
+      .ds-guide-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        line-height: 16px;
+      }
+
+      .ds-guide-table th,
+      .ds-guide-table td {
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--ds-border);
+      }
+
+      .ds-guide-table thead th {
+        background: var(--ds-surface-muted);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-guide-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .ds-guide code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        padding: 1px 4px;
+        border-radius: 4px;
+        background: var(--ds-surface-muted);
+      }
+
+      /* Guide accordion — строка-раскрывашка */
+      .ds-guide-accordion {
+        margin-top: 16px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        overflow: hidden;
+      }
+
+      .ds-guide-accordion__item + .ds-guide-accordion__item {
+        border-top: 1px solid var(--ds-border);
+      }
+
+      .ds-guide-accordion__trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        border: none;
+        background: var(--ds-surface);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        color: var(--ds-text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .ds-guide-accordion__trigger:hover {
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-guide-accordion__trigger:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: -2px;
+      }
+
+      .ds-guide-accordion__chevron {
+        flex-shrink: 0;
+        color: var(--ds-text-secondary);
+        transition: transform 0.15s ease;
+      }
+
+      .ds-guide-accordion__item.is-open .ds-guide-accordion__chevron {
+        transform: rotate(180deg);
+      }
+
+      .ds-guide-accordion__panel {
+        padding: 16px;
+        border-top: 1px solid var(--ds-border);
+        background: var(--ds-surface);
+      }
+
+      .ds-guide-accordion__panel[hidden] {
+        display: none;
+      }
+
+      .ds-guide-accordion__panel .ds-guide h3:first-child,
+      .ds-guide-accordion__panel .ds-guide-status-list:first-child {
+        margin-top: 0;
+      }
+
+      .ds-guide-status-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .ds-guide-status-list li {
+        display: grid;
+        grid-template-columns: minmax(140px, auto) 1fr;
+        gap: 8px 16px;
+        padding: 12px 0;
+        align-items: start;
+        border-bottom: 1px solid var(--ds-border);
+      }
+
+      .ds-guide-status-list li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .ds-guide-status-list li:first-child {
+        padding-top: 0;
+      }
+
+      .ds-guide-status-list .ds-badge {
+        justify-self: start;
+        white-space: nowrap;
+      }
+
+      .ds-guide-status-list p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      /* Resize handle — правый нижний угол окна плагина */
+      .ds-resize-handle {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 16px;
+        height: 16px;
+        cursor: nwse-resize;
+        z-index: 9999;
+        touch-action: none;
+        background: linear-gradient(
+          135deg,
+          transparent 0 52%,
+          rgba(0, 0, 0, 0.1) 52% 58%,
+          transparent 58% 68%,
+          rgba(0, 0, 0, 0.1) 68% 74%,
+          transparent 74%
+        );
+      }
+
+      .ds-resize-handle:hover,
+      .ds-resize-handle:active {
+        background: linear-gradient(
+          135deg,
+          transparent 0 52%,
+          rgba(0, 0, 0, 0.22) 52% 58%,
+          transparent 58% 68%,
+          rgba(0, 0, 0, 0.22) 68% 74%,
+          transparent 74%
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ds-page">
+      <header class="ds-page-header">
+        <div>
+          <h1>Token Comparator</h1>
+        </div>
+      </header>
+
+      <div class="ds-banner" id="tc-error-banner" hidden></div>
+
+      <div class="ds-tabs" role="tablist" aria-label="Token Comparator sections">
+        <button class="ds-tab" role="tab" data-tab="settings" aria-selected="true" id="tc-tab-settings">
+          Настройки
+        </button>
+        <button class="ds-tab" role="tab" data-tab="scan" aria-selected="false" id="tc-tab-scan">
+          Сканирование
+        </button>
+        <button class="ds-tab" role="tab" data-tab="results" aria-selected="false" id="tc-tab-results">
+          Результаты
+        </button>
+        <button class="ds-tab" role="tab" data-tab="guide" aria-selected="false" id="tc-tab-guide">
+          Гайд
+        </button>
+      </div>
+
+      <section class="ds-panel" id="tc-panel-settings" role="tabpanel" aria-hidden="false">
+        <p class="ds-section-caption">
+          Personal Access Token и file_key библиотеки сохраняются локально в clientStorage плагина.
+        </p>
+        <div class="ds-field">
+          <label for="tc-token-input">Personal Access Token</label>
+          <input id="tc-token-input" type="password" placeholder="figd_..." autocomplete="off" />
+        </div>
+        <div class="ds-field">
+          <label for="tc-filekey-input">Файл библиотеки</label>
+          <input
+            id="tc-filekey-input"
+            type="text"
+            placeholder="URL или file key — после загрузки покажем имя файла"
+          />
+        </div>
+        <div class="ds-row">
+          <button class="ds-btn" id="tc-save-settings-btn">Сохранить настройки</button>
+          <button class="ds-btn ds-btn-primary" id="tc-load-library-btn">Загрузить библиотеку</button>
+        </div>
+        <div class="ds-status-line" id="tc-library-status">Библиотека ещё не загружена.</div>
+
+        <hr class="ds-settings-divider" />
+
+        <h3 class="ds-settings-subtitle">GitHub — реестр решений</h3>
+        <p class="ds-section-caption">
+          Fine-grained PAT с правами contents: read. Реестр читается из main; запись — на следующем этапе.
+          Если репозиторий недоступен — ошибка доступа; если файл реестра ещё не создан — можно начать с пустого.
+        </p>
+        <div class="ds-field">
+          <label for="tc-github-token-input">GitHub Personal Access Token</label>
+          <input id="tc-github-token-input" type="password" placeholder="github_pat_..." autocomplete="off" />
+        </div>
+        <div class="ds-field">
+          <label for="tc-github-repo-input">Owner/Repo</label>
+          <input id="tc-github-repo-input" type="text" placeholder="owner/repo или https://github.com/owner/repo" autocomplete="off" />
+        </div>
+        <div class="ds-field">
+          <label for="tc-github-registry-path-input">Путь к файлу реестра</label>
+          <input
+            id="tc-github-registry-path-input"
+            type="text"
+            placeholder="decisions-registry.json"
+            value="decisions-registry.json"
+            autocomplete="off"
+          />
+        </div>
+        <div class="ds-row">
+          <button class="ds-btn" id="tc-save-github-settings-btn">Сохранить настройки GitHub</button>
+          <button class="ds-btn ds-btn-primary" id="tc-load-registry-btn">Загрузить реестр</button>
+        </div>
+        <div class="ds-status-line" id="tc-registry-status">Реестр ещё не загружен.</div>
+        <div class="ds-registry-not-found" id="tc-registry-not-found" hidden>
+          <p class="ds-registry-not-found__text" id="tc-registry-not-found-text"></p>
+          <button type="button" class="ds-btn" id="tc-init-empty-registry-btn">Начать с пустого реестра</button>
+        </div>
+      </section>
+
+      <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">
+        <h2 class="ds-section-title">Сканирование цветов</h2>
+        <p class="ds-section-caption">Выберите область макета для сравнения с загруженной библиотекой.</p>
+        <div class="ds-field">
+          <span class="ds-field__label">Скоуп сканирования</span>
+          <div class="ds-segment" role="group" aria-label="Скоуп сканирования" id="tc-scope-segment">
+            <button type="button" data-scope="file" aria-pressed="false">Весь файл</button>
+            <button type="button" data-scope="page" aria-pressed="true">Текущая страница</button>
+            <button type="button" data-scope="selection" aria-pressed="false">Выделение</button>
+          </div>
+        </div>
+        <div class="ds-row">
+          <button class="ds-btn ds-btn-primary" id="tc-scan-btn">Сканировать цвета</button>
+        </div>
+        <div class="ds-status-line" id="tc-scan-status"></div>
+      </section>
+
+      <section class="ds-panel ds-panel--results" id="tc-panel-results" role="tabpanel" aria-hidden="true">
+        <div class="ds-results-toolbar">
+          <div class="ds-export-menu" data-format="csv">
+            <button
+              type="button"
+              class="ds-btn ds-export-menu__trigger"
+              id="tc-export-csv-btn"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>Экспорт CSV</span>
+              <svg class="ds-dropdown-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="ds-filter-menu ds-export-menu__dropdown" role="menu" hidden>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="download">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M5.5 7.5 8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M3 12.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <span>Скачать</span>
+              </button>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="print">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4.5 5.5V3.5h7v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M4.5 11.5h-1a1.5 1.5 0 0 1-1.5-1.5V7a1.5 1.5 0 0 1 1.5-1.5h9a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path d="M4.5 9.5h7v3h-7v-3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Напечатать</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="ds-export-menu" data-format="json">
+            <button
+              type="button"
+              class="ds-btn ds-export-menu__trigger"
+              id="tc-export-json-btn"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>Экспорт JSON</span>
+              <svg class="ds-dropdown-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="ds-filter-menu ds-export-menu__dropdown" role="menu" hidden>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="download">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M5.5 7.5 8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M3 12.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <span>Скачать</span>
+              </button>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="print">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4.5 5.5V3.5h7v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M4.5 11.5h-1a1.5 1.5 0 0 1-1.5-1.5V7a1.5 1.5 0 0 1 1.5-1.5h9a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path d="M4.5 9.5h7v3h-7v-3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Напечатать</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="ds-export-menu" data-format="md">
+            <button
+              type="button"
+              class="ds-btn ds-export-menu__trigger"
+              id="tc-export-md-btn"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>Экспорт MD</span>
+              <svg class="ds-dropdown-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="ds-filter-menu ds-export-menu__dropdown" role="menu" hidden>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="download">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M5.5 7.5 8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M3 12.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <span>Скачать</span>
+              </button>
+              <button type="button" class="ds-filter-menu__option" role="menuitem" data-action="print">
+                <svg class="ds-export-menu__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4.5 5.5V3.5h7v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M4.5 11.5h-1a1.5 1.5 0 0 1-1.5-1.5V7a1.5 1.5 0 0 1 1.5-1.5h9a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path d="M4.5 9.5h7v3h-7v-3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Напечатать</span>
+              </button>
+            </div>
+          </div>
+
+          <span class="tc-loader" id="tc-print-loader" hidden aria-hidden="true">
+            <svg class="tc-loader__svg" width="18" height="18" viewBox="0 0 20 20">
+              <circle class="tc-loader__track" cx="10" cy="10" r="8" fill="none" stroke-width="2"></circle>
+              <circle class="tc-loader__progress" cx="10" cy="10" r="8" fill="none" stroke-width="2" stroke-linecap="round"></circle>
+              <path class="tc-loader__check" d="M5.5 10.3 8.6 13.5 14.5 6.8" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="tc-loader__percent"></span>
+          </span>
+          <span class="ds-status-line" id="tc-print-status"></span>
+          <span class="ds-status-line" id="tc-results-summary"></span>
+        </div>
+        <div class="ds-results-block">
+          <div class="ds-token-table-wrap ds-token-table-wrap--results">
+            <table class="ds-token-table" id="tc-results-table">
+              <thead>
+                <tr>
+                  <th class="ds-th-filter" scope="col">
+                    <button
+                      type="button"
+                      class="ds-th-filter-btn"
+                      id="tc-status-filter-btn"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      aria-controls="tc-status-filter-menu"
+                    >
+                      <span>Статус</span>
+                      <span class="ds-th-filter-indicator" id="tc-status-filter-indicator" hidden></span>
+                      <svg
+                        class="ds-th-filter-btn__chevron"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4 6l4 4 4-4"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <div class="ds-filter-menu" id="tc-status-filter-menu" role="menu" hidden></div>
+                  </th>
+                  <th>Слой</th>
+                  <th>Сейчас</th>
+                  <th>Предлагаем</th>
+                  <th>Uses</th>
+                  <th>Действие</th>
+                </tr>
+              </thead>
+              <tbody id="tc-results-tbody"></tbody>
+            </table>
+          </div>
+          <div class="ds-table-footer">
+            <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
+              Применить решение
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-panel" id="tc-panel-guide" role="tabpanel" aria-hidden="true">
+        <article class="ds-guide">
+          <h2>Гайд</h2>
+          <p>Справка по работе плагина. Разделы будут дополняться по мере развития MVP.</p>
+
+          <div class="ds-guide-accordion" id="tc-guide-accordion">
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-apply"
+                id="tc-guide-trigger-apply"
+              >
+                <span>Что делает «Применить решение»</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-apply" role="region" hidden>
+                <p>
+                  Кнопка <strong>Применить решение</strong> на вкладке «Результаты» фиксирует ваш выбор по
+                  выбранной строке таблицы. Сначала кликните строку (подсветится голубым), выберите действие в
+                  выпадающем списке «Действие», при необходимости заполните дополнительные поля — затем нажмите
+                  кнопку под таблицей.
+                </p>
+
+                <div class="ds-guide-note">
+                  Плагин сейчас — инструмент <strong>аудита и учёта решений</strong>, а не автомат миграции.
+                  «Применить решение» не меняет макет Figma: цвета не перепривязываются, переменные не
+                  создаются, стили не заменяются.
+                </div>
+
+                <h3>Общее для всех вариантов</h3>
+                <ul>
+                  <li>
+                    Решение сохраняется локально в <code>clientStorage</code> плагина и переживает перезапуск
+                    Figma.
+                  </li>
+                  <li>
+                    Ключ записи — id группы (свойство + hex + тип привязки + имя источника). При повторном
+                    скане та же группа подтянет сохранённое решение автоматически.
+                  </li>
+                  <li>В строке появляется отметка ✓, обновляется счётчик «обработано: N/M».</li>
+                  <li>Решение попадает в экспорт CSV, JSON и MD (колонки «Решение», «Комментарий», «Дата решения»).</li>
+                </ul>
+
+                <h3>Варианты действия</h3>
+
+                <p><strong>1a. Использовать предложенный</strong></p>
+                <ul>
+                  <li>
+                    <strong>Требование:</strong> у строки есть предложенный токен (колонка «Предлагаем» не
+                    пуста). Доп. полей нет — используется именно этот токен, без выбора вручную.
+                  </li>
+                  <li>
+                    <strong>Сохраняется:</strong> id/имя/коллекция предложенного токена, метка
+                    <em>Mapped (suggested)</em>.
+                  </li>
+                  <li><strong>При перескане:</strong> строка исчезает из таблицы (считается обработанной).</li>
+                  <li><strong>Не делает:</strong> не привязывает fill/stroke к переменной в макете.</li>
+                </ul>
+
+                <p><strong>1b. Выбрать токен из AID</strong></p>
+                <ul>
+                  <li>
+                    <strong>Требование:</strong> выберите токен в поле «Начните вводить имя токена/стиля…» из
+                    списка библиотеки. Без точного совпадения Apply не сработает.
+                  </li>
+                  <li>
+                    <strong>Сохраняется:</strong> id и имя выбранного токена библиотеки, метка
+                    <em>Mapped (custom)</em>.
+                  </li>
+                  <li><strong>При перескане:</strong> строка исчезает из таблицы (считается обработанной).</li>
+                  <li><strong>Не делает:</strong> не привязывает fill/stroke к переменной в макете.</li>
+                </ul>
+
+                <div class="ds-guide-note">
+                  <strong>Использовать предложенный vs Выбрать токен из AID:</strong> первый — быстрый путь,
+                  когда предложение плагина в колонке «Предлагаем» подходит без изменений. Второй — когда
+                  предложенный токен не подходит (или его нет вовсе) и нужен другой токен из библиотеки AID.
+                </div>
+
+                <p><strong>2. Игнорировать</strong></p>
+                <ul>
+                  <li><strong>Требование:</strong> обязателен комментарий с обоснованием.</li>
+                  <li><strong>Сохраняется:</strong> решение <em>Ignored</em> и ваш комментарий.</li>
+                  <li><strong>При перескане:</strong> строка исчезает из таблицы.</li>
+                  <li>
+                    <strong>Смысл:</strong> расхождение осознанное — hex/стиль остаётся как есть, токен не нужен,
+                    править не будем.
+                  </li>
+                </ul>
+
+                <p><strong>3. Отметить как новый токен-кандидат</strong></p>
+                <ul>
+                  <li><strong>Требование:</strong> дополнительных полей нет.</li>
+                  <li><strong>Сохраняется:</strong> решение <em>Candidate</em>.</li>
+                  <li><strong>При перескане:</strong> строка остаётся в таблице (токена в библиотеке пока нет).</li>
+                  <li><strong>Не делает:</strong> не создаёт переменную в файле библиотеки.</li>
+                </ul>
+
+                <p><strong>4. Предложить правку значения в библиотеке</strong></p>
+                <ul>
+                  <li>
+                    <strong>Когда доступно:</strong> только если найден target-токен (Value match, Name match,
+                    Conflict, Approximate match и т.п.) — не для Hardcoded (no analog) без совпадения.
+                  </li>
+                  <li>
+                    <strong>Доп. поля:</strong> режим библиотеки (из modes target-переменной), предлагаемое
+                    значение (hex, предзаполняется из «Сейчас»), комментарий (необязателен).
+                  </li>
+                  <li><strong>Сохраняется:</strong> решение <em>Value fix proposed</em> + все поля правки.</li>
+                  <li><strong>При перескане:</strong> строка остаётся (правка в библиотеке ещё не сделана).</li>
+                  <li><strong>Не делает:</strong> не меняет variable в библиотеке и не меняет макет.</li>
+                </ul>
+
+                <div class="ds-guide-note">
+                  <strong>Candidate vs Value fix proposed:</strong> Candidate — подходящего токена в библиотеке
+                  ещё нет. Value fix proposed — токен уже есть, но значение в конкретном режиме нужно поправить
+                  вручную дизайнеру библиотеки.
+                </div>
+
+                <div class="ds-guide-table-wrap">
+                  <table class="ds-guide-table">
+                    <thead>
+                      <tr>
+                        <th>Вариант</th>
+                        <th>Меняет макет</th>
+                        <th>Исчезает при перескане</th>
+                        <th>Доп. требование</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Использовать предложенный</td>
+                        <td>Нет</td>
+                        <td>Да</td>
+                        <td>Нужен предложенный токен (target)</td>
+                      </tr>
+                      <tr>
+                        <td>Выбрать токен из AID</td>
+                        <td>Нет</td>
+                        <td>Да</td>
+                        <td>Выбор из списка библиотеки</td>
+                      </tr>
+                      <tr>
+                        <td>Игнорировать</td>
+                        <td>Нет</td>
+                        <td>Да</td>
+                        <td>Комментарий обязателен</td>
+                      </tr>
+                      <tr>
+                        <td>Новый кандидат</td>
+                        <td>Нет</td>
+                        <td>Нет</td>
+                        <td>—</td>
+                      </tr>
+                      <tr>
+                        <td>Правка значения в библиотеке</td>
+                        <td>Нет</td>
+                        <td>Нет</td>
+                        <td>Режим + предлагаемый hex</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-statuses"
+                id="tc-guide-trigger-statuses"
+              >
+                <span>Статусы сканирования</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-statuses" role="region" hidden>
+                <p>
+                  Бейдж в колонке «Статус» показывает, как значение в макете соотносится с загруженной
+                  библиотекой. Строки, где всё уже корректно (переменная из этой библиотеки), в таблицу не
+                  попадают.
+                </p>
+
+                <ul class="ds-guide-status-list">
+                  <li>
+                    <span class="ds-badge style-binding">Style binding</span>
+                    <p>
+                      Цвет задан через <strong>paint style</strong>, а не через variable. Плагин не может
+                      автоматически заменить стиль на токен — нужно ваше решение.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ghost-binding">Ghost style</span>
+                    <p>
+                      Слой ссылается на стиль, которого уже нет в файле («ghost» / битая ссылка). Цвет может
+                      отображаться, но привязка потеряна.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge hardcoded-no-analog">Hardcoded (no analog)</span>
+                    <p>
+                      Сплошной hex без совпадения в библиотеке — ни по имени, ни по значению, ни по
+                      близости (Delta&nbsp;E). Кандидат на новый токен или осознанный hardcode.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge value">Value match</span>
+                    <p>
+                      Hex и alpha <strong>точно совпадают</strong> с одним из режимов токена библиотеки (Day или
+                      Night), но имя или привязка в макете другие — например hardcoded с тем же цветом, что у
+                      переменной.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge name-match">Name match</span>
+                    <p>
+                      Имя переменной или стиля в макете совпадает с токеном библиотеки, но значения
+                      <strong>различаются</strong> умеренно (Delta&nbsp;E ≤ 20). В «Предлагаем» показан
+                      библиотечный токен с тем же именем.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge name-match-unresolved">Name match (value unknown)</span>
+                    <p>
+                      Имя совпало, но значения режимов библиотеки не удалось получить через REST API — часто
+                      это алиас на переменную из другого файла. Сравнение по hex недоступно; решение принимается
+                      вручную.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge conflict">Conflict</span>
+                    <p>
+                      Имя совпало с токеном библиотеки, но цвет <strong>существенно отличается</strong>
+                      (Delta&nbsp;E &gt; 20). Типичный случай: в макете устаревшее значение или переименованный
+                      токен с другим hex.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge approximate">Approximate match</span>
+                    <p>
+                      Точного совпадения нет, но найден ближайший цвет в библиотеке в пределах порога Delta&nbsp;E
+                      (при совпадающей alpha). В бейдже показывается ΔE — чем меньше, тем ближе оттенок.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge value-fix-proposed">Правка предложена (Night)</span>
+                    <p>
+                      Не статус сканирования, а <strong>применённое решение</strong> Value fix proposed: для
+                      target-переменной предложена ручная правка значения в указанном режиме. Показывается вместо
+                      исходного бейджа; в tooltip — исходный статус (Conflict, Name match и т.д.).
+                    </p>
+                  </li>
+                </ul>
+
+                <div class="ds-guide-note">
+                  После «Применить решение» с вариантами Mapped (suggested/custom) или Ignored строка при
+                  следующем скане скрывается. Candidate и Value fix proposed остаются с исходным статусом (или
+                  бейджем «Правка предложена») до изменений в библиотеке.
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-export"
+                id="tc-guide-trigger-export"
+              >
+                <span>Экспорт и печать: CSV, JSON, MD и таблица в Figma</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-export" role="region" hidden>
+                <p>
+                  Кнопки <strong>Экспорт CSV</strong>, <strong>Экспорт JSON</strong> и <strong>Экспорт MD</strong>
+                  на вкладке «Результаты» открывают меню из двух пунктов: <strong>Скачать</strong> — сохранить файл
+                  соответствующего формата на компьютер, <strong>Напечатать</strong> — построить визуальную таблицу
+                  в текущем Figma-файле на странице <strong>«Маппинг»</strong>. Это отчёт для аудита, ревью и
+                  передачи решений команде — плагин не отправляет данные никуда и не меняет макет.
+                </p>
+
+                <div class="ds-guide-note">
+                  <strong>Напечатать</strong> строит <strong>одну и ту же таблицу</strong> независимо от кнопки
+                  (CSV/JSON/MD влияют только на формат «Скачать»). Страница «Маппинг» создаётся автоматически, если
+                  её нет; каждая новая таблица встаёт <strong>правее</strong> предыдущих — история отчётов не
+                  затирается. Лимит печати — <strong>300 строк</strong>: если видимых строк больше, печатаются
+                  первые 300 и появляется предупреждение, а «Скачать» отдаёт полный набор.
+                </div>
+
+                <h3>Зачем нужны</h3>
+                <ul>
+                  <li>
+                    Зафиксировать результат сканирования: что в макете, что предлагает библиотека, какие
+                    решения уже приняты.
+                  </li>
+                  <li>
+                    Передать список расхождений дизайнерам, разработчикам или в трекер задач без доступа к
+                    Figma.
+                  </li>
+                  <li>
+                    Сохранить промежуточный или финальный чеклист миграции на токены (до/после правок в
+                    библиотеке).
+                  </li>
+                  <li>
+                    Подключить данные к скриптам и автоматизации — через JSON; в таблицы и Google Sheets —
+                    через CSV.
+                  </li>
+                  <li>
+                    Показать отчёт прямо в Figma — через «Напечатать», без выгрузки файлов и внешних инструментов.
+                  </li>
+                </ul>
+
+                <h3>Типичный флоу</h3>
+                <ol>
+                  <li>Настройки → загрузить библиотеку.</li>
+                  <li>Сканирование → выбрать скоуп и запустить скан.</li>
+                  <li>Результаты → пройти строки, при необходимости применить решения.</li>
+                  <li>Экспорт → «Скачать» (CSV, JSON или MD) либо «Напечатать» (таблица на странице «Маппинг»).</li>
+                  <li>При следующем скане или после правок макета — повторить и сравнить новый экспорт со старым.</li>
+                </ol>
+
+                <h3>CSV, JSON или MD?</h3>
+                <p>Все три формата содержат <strong>одни и те же данные</strong>, отличается только представление:</p>
+                <ul>
+                  <li>
+                    <strong>CSV</strong> (<code>token-comparator-mapping.csv</code>) — таблица с заголовками
+                    колонок, UTF-8. Удобно открыть в Excel, Google Sheets, Numbers; делиться с нетехническими
+                    ролями.
+                  </li>
+                  <li>
+                    <strong>JSON</strong> (<code>token-comparator-mapping.json</code>) — массив объектов с
+                    теми же полями. Удобно парсить в скриптах, CI, внутренних утилитах DS.
+                  </li>
+                  <li>
+                    <strong>MD</strong> (<code>token-comparator-mapping.md</code>) — Markdown-таблица с теми
+                    же колонками. Удобно вставить в Notion, GitHub, Confluence или PR-описание без ручной
+                    вёрстки.
+                  </li>
+                </ul>
+
+                <h3>Какие колонки / поля</h3>
+                <div class="ds-guide-table-wrap">
+                  <table class="ds-guide-table">
+                    <thead>
+                      <tr>
+                        <th>Поле</th>
+                        <th>Содержимое</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Layer / layer</td>
+                        <td>Имя представительного слоя группы</td>
+                      </tr>
+                      <tr>
+                        <td>Node Path / nodePath</td>
+                        <td>Путь к слою в документе</td>
+                      </tr>
+                      <tr>
+                        <td>Сейчас / before</td>
+                        <td>Имя переменной или стиля в макете (или hex, если без имени)</td>
+                      </tr>
+                      <tr>
+                        <td>Сейчас Day · Night</td>
+                        <td>Значения по режимам в макете; для hardcoded/style — одно и то же в обе колонки</td>
+                      </tr>
+                      <tr>
+                        <td>Binding / binding</td>
+                        <td>Тип привязки: Variable, Style, Hardcoded, Ghost</td>
+                      </tr>
+                      <tr>
+                        <td>Предлагаем / target</td>
+                        <td>Имя и коллекция предложенного токена библиотеки; пусто, если совпадения нет</td>
+                      </tr>
+                      <tr>
+                        <td>Предлагаем Day · Night</td>
+                        <td>Значения предложенного токена по режимам библиотеки</td>
+                      </tr>
+                      <tr>
+                        <td>Решение / decision</td>
+                        <td>Mapped (suggested), Mapped (custom), Ignored, Candidate или Value fix proposed</td>
+                      </tr>
+                      <tr>
+                        <td>Для режима / proposedMode</td>
+                        <td>Имя режима библиотеки — только для Value fix proposed</td>
+                      </tr>
+                      <tr>
+                        <td>Предлагаемое значение / proposedValueForMode</td>
+                        <td>Hex, который предлагается записать в библиотеку — только для Value fix proposed</td>
+                      </tr>
+                      <tr>
+                        <td>Комментарий / comment</td>
+                        <td>Текст комментария (опционально для Value fix proposed, обязателен для Ignored)</td>
+                      </tr>
+                      <tr>
+                        <td>Дата решения / timestamp</td>
+                        <td>Когда решение было зафиксировано</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="ds-guide-note">
+                  В файл попадают только строки, <strong>видимые в таблице сейчас</strong>: учитывается фильтр
+                  по статусам в шапке «Статус ▾». Если часть бейджей отфильтрована — в экспорте их не будет.
+                  Строки без решения экспортируются с пустыми полями «Решение», «Комментарий» и «Дата решения».
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <div
+      id="tc-resize-handle"
+      class="ds-resize-handle"
+      role="separator"
+      aria-orientation="horizontal"
+      aria-label="Изменить размер окна"
+      title="Изменить размер"
+    ></div>
+
+    <div class="tc-preview-overlay" id="tc-preview-overlay" hidden>
+      <div class="tc-preview-modal" role="dialog" aria-modal="true" aria-label="Превью изменения цвета">
+        <div class="tc-preview-modal__header">
+          <span>Превью изменения цвета</span>
+          <button type="button" class="tc-preview-modal__close" id="tc-preview-close-btn" aria-label="Закрыть">
+            &times;
+          </button>
+        </div>
+        <div class="tc-preview-modal__body">
+          <div class="tc-preview-modal__loading" id="tc-preview-loading">
+            <span class="tc-loader tc-loader--indeterminate" aria-hidden="true">
+              <svg class="tc-loader__svg" width="18" height="18" viewBox="0 0 20 20">
+                <circle class="tc-loader__track" cx="10" cy="10" r="8" fill="none" stroke-width="2"></circle>
+                <circle
+                  class="tc-loader__progress"
+                  cx="10"
+                  cy="10"
+                  r="8"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                ></circle>
+              </svg>
+            </span>
+            <span>Строим превью на временном клоне слоя...</span>
+          </div>
+          <div class="tc-preview-modal__error" id="tc-preview-error" hidden></div>
+          <div class="tc-preview-modal__images" id="tc-preview-images" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tc-preview-overlay" id="tc-apply-overlay" hidden>
+      <div class="tc-preview-modal tc-preview-modal--apply" role="dialog" aria-modal="true" aria-label="Применить переменную в макет">
+        <div class="tc-preview-modal__header">
+          <span>Применить в макет</span>
+          <button type="button" class="tc-preview-modal__close" id="tc-apply-close-btn" aria-label="Закрыть">
+            &times;
+          </button>
+        </div>
+        <div class="tc-preview-modal__body">
+          <div id="tc-apply-confirm-view">
+            <div class="tc-apply-summary" id="tc-apply-summary"></div>
+            <div class="tc-apply-before-after" id="tc-apply-before-after"></div>
+            <div class="tc-apply-preview-section">
+              <div class="tc-apply-preview-section__label">Превью участка макета</div>
+              <div class="tc-apply-preview-section__loading" id="tc-apply-preview-loading">
+                <span class="tc-loader tc-loader--indeterminate" aria-hidden="true">
+                  <svg class="tc-loader__svg" width="18" height="18" viewBox="0 0 20 20">
+                    <circle class="tc-loader__track" cx="10" cy="10" r="8" fill="none" stroke-width="2"></circle>
+                    <circle
+                      class="tc-loader__progress"
+                      cx="10"
+                      cy="10"
+                      r="8"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    ></circle>
+                  </svg>
+                </span>
+                <span>Строим превью «Было / Стало»...</span>
+              </div>
+              <div class="tc-apply-preview-section__error" id="tc-apply-preview-error" hidden></div>
+              <div class="tc-apply-preview-section__images" id="tc-apply-preview-images" hidden></div>
+            </div>
+            <div class="ds-guide-note">
+              Это единственное действие плагина, которое реально меняет макет: fill/stroke/text fill указанных
+              нод будет привязан к выбранной переменной библиотеки. Отменить можно только вручную через Figma
+              (Cmd/Ctrl+Z) сразу после применения.
+            </div>
+          </div>
+          <div class="tc-preview-modal__loading" id="tc-apply-loading" hidden>
+            <span class="tc-loader tc-loader--indeterminate" aria-hidden="true">
+              <svg class="tc-loader__svg" width="18" height="18" viewBox="0 0 20 20">
+                <circle class="tc-loader__track" cx="10" cy="10" r="8" fill="none" stroke-width="2"></circle>
+                <circle
+                  class="tc-loader__progress"
+                  cx="10"
+                  cy="10"
+                  r="8"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                ></circle>
+              </svg>
+            </span>
+            <span>Применяем переменную к нодам макета...</span>
+          </div>
+          <div id="tc-apply-result-view" hidden></div>
+        </div>
+        <div class="tc-preview-modal__footer" id="tc-apply-footer">
+          <div class="tc-apply-actions">
+            <button type="button" class="ds-btn" id="tc-apply-cancel-btn">Отмена</button>
+            <button type="button" class="ds-btn ds-btn-primary" id="tc-apply-confirm-btn">
+              Подтвердить и применить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UI_BUNDLE -->
+  </body>
+</html>
