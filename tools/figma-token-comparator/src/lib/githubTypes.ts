@@ -42,7 +42,7 @@ export interface RegistryFile extends RegistryFileContent {
   sha: string;
 }
 
-/** GET /contents/{path} вернул 404 — файл ещё не создан или неверный путь. */
+/** GET /contents/{path} вернул 404 при доступном репозитории — файл реестра ещё не создан. */
 export interface RegistryNotFound {
   notFound: true;
 }

@@ -1833,7 +1833,7 @@ window.onmessage = (event: MessageEvent) => {
     }
     case "registry-not-found": {
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
-      renderRegistryStatus("Реестр не найден в репозитории.");
+      renderRegistryStatus("Файл реестра ещё не создан в репозитории.");
       showRegistryNotFoundPrompt(message.payload.repo, message.payload.registryPath);
       break;
     }
