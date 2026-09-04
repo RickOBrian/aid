@@ -54,6 +54,10 @@ function rateLimitMessage(rateLimitRemaining: string | null): string | null {
   return null;
 }
 
+function getRateLimitRemaining(response: Response): string | null {
+  return response.headers?.get("X-RateLimit-Remaining") ?? null;
+}
+
 function buildRepoAccessErrorMessage(status: number, rateLimitRemaining: string | null): string {
   if (status === 401) {
     return "Неверный GitHub-токен.";
@@ -212,7 +216,7 @@ async function assertRepoAccessible(token: string, owner: string, repo: string):
     throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
   }
 
-  const rateLimitRemaining = response.headers.get("X-RateLimit-Remaining");
+  const rateLimitRemaining = getRateLimitRemaining(response);
 
   if (response.status === 401) {
     throw new GitHubRestApiError(
@@ -281,7 +285,7 @@ export async function fetchRegistry(
     throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
   }
 
-  const rateLimitRemaining = response.headers.get("X-RateLimit-Remaining");
+  const rateLimitRemaining = getRateLimitRemaining(response);
   const body = await parseGitHubJsonResponse<GitHubContentsResponse>(response);
 
   if (response.status === 404) {
