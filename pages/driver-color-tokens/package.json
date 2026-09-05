@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "true",
     "dev": "node scripts/ensure-icon-dimensions.mjs && node scripts/sync-guide-sources.mjs && vite",
-    "build": "mkdir -p dist && echo 'no frontend build needed'",
+    "build": "mkdir -p dist && echo '<!doctype html><title>aid-ds API</title>' > dist/index.html",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck:api": "tsc -p tsconfig.api.json"
