@@ -1,0 +1,6 @@
+dist
+.vercel
+node_modules
+scripts/icons-manifest.json
+.env.local
+.env*.local
