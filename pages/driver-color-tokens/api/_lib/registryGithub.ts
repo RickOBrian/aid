@@ -30,6 +30,10 @@ interface GitHubPullResponse extends GitHubApiBody {
   number?: number;
 }
 
+interface GitHubPullDetailsResponse extends GitHubApiBody {
+  user?: { login?: string };
+}
+
 export type FetchLike = typeof fetch;
 
 function getRateLimitRemaining(response: Response): string | null {
@@ -341,10 +345,36 @@ export async function requestPullRequestReviewer(
   config: RegistryConfig,
   pullNumber: number,
 ): Promise<void> {
+  const pullPath = `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/pulls/${pullNumber}`;
+  const pullResponse = await githubRequest(fetchImpl, token, pullPath, { method: 'GET' });
+
+  if (!pullResponse.ok) {
+    const body = await parseJsonBody<GitHubApiBody>(pullResponse);
+    console.error('[registryGithub] Failed to fetch pull request author', {
+      status: pullResponse.status,
+      pullNumber,
+      message: body.message,
+    });
+    throw new RegistryGitHubError(body.message || 'Failed to fetch pull request.', pullResponse.status);
+  }
+
+  const pull = await parseJsonBody<GitHubPullDetailsResponse>(pullResponse);
+  const authorLogin = pull.user?.login?.trim();
+  if (!authorLogin) {
+    throw new RegistryGitHubError('GitHub did not return pull request author login.');
+  }
+
+  if (authorLogin.toLowerCase() === config.reviewer.trim().toLowerCase()) {
+    console.log(
+      `[registryGithub] Skipped reviewer request: author and reviewer are the same account (${config.reviewer})`,
+    );
+    return;
+  }
+
   const response = await githubRequest(
     fetchImpl,
     token,
-    `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/pulls/${pullNumber}/requested_reviewers`,
+    `${pullPath}/requested_reviewers`,
     {
       method: 'POST',
       body: JSON.stringify({

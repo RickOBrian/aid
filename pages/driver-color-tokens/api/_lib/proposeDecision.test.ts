@@ -113,8 +113,8 @@ describe('handleProposeDecision', () => {
       if (url.endsWith('/pulls') && method === 'POST') {
         return jsonResponse(201, { number: 42 });
       }
-      if (url.includes('/requested_reviewers') && method === 'POST') {
-        return jsonResponse(201, {});
+      if (url.endsWith('/pulls/42') && method === 'GET') {
+        return jsonResponse(200, { user: { login: 'RickOBrian' } });
       }
 
       throw new Error(`Unexpected fetch call: ${method} ${url}`);
@@ -135,6 +135,12 @@ describe('handleProposeDecision', () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ success: true });
+    expect(
+      fetchMock.mock.calls.some(
+        ([input, init]) =>
+          String(input).includes('/requested_reviewers') && init?.method === 'POST',
+      ),
+    ).toBe(false);
 
     const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PUT');
     expect(putCall).toBeDefined();
@@ -179,8 +185,8 @@ describe('handleProposeDecision', () => {
       if (url.endsWith('/pulls') && method === 'POST') {
         return jsonResponse(201, { number: 7 });
       }
-      if (url.includes('/requested_reviewers') && method === 'POST') {
-        return jsonResponse(201, {});
+      if (url.endsWith('/pulls/7') && method === 'GET') {
+        return jsonResponse(200, { user: { login: 'RickOBrian' } });
       }
 
       throw new Error(`Unexpected fetch call: ${method} ${url}`);
@@ -201,6 +207,12 @@ describe('handleProposeDecision', () => {
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ success: true });
+    expect(
+      fetchMock.mock.calls.some(
+        ([input, init]) =>
+          String(input).includes('/requested_reviewers') && init?.method === 'POST',
+      ),
+    ).toBe(false);
 
     const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PUT');
     const putBody = JSON.parse(String(putCall?.[1]?.body));
@@ -209,5 +221,60 @@ describe('handleProposeDecision', () => {
     const decoded = JSON.parse(Buffer.from(putBody.content, 'base64').toString('utf8'));
     expect(decoded.registryVersion).toBe(3);
     expect(decoded.entries).toHaveLength(2);
+  });
+
+  it('requests reviewer when PR author differs from configured reviewer', async () => {
+    vi.stubEnv('REGISTRY_REVIEWER', 'other-reviewer');
+
+    fetchMock.mockImplementation(async (input, init) => {
+      const url = String(input);
+      const method = init?.method ?? 'GET';
+
+      if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
+        return jsonResponse(404, { message: 'Not Found' });
+      }
+      if (url.endsWith('/git/ref/heads/main') && method === 'GET') {
+        return jsonResponse(200, { object: { sha: 'main-sha' } });
+      }
+      if (url.endsWith('/git/refs') && method === 'POST') {
+        return jsonResponse(201, {});
+      }
+      if (url.includes('/contents/decisions-registry.json') && method === 'PUT') {
+        return jsonResponse(200, { content: { sha: 'new-file-sha' } });
+      }
+      if (url.endsWith('/pulls') && method === 'POST') {
+        return jsonResponse(201, { number: 99 });
+      }
+      if (url.endsWith('/pulls/99') && method === 'GET') {
+        return jsonResponse(200, { user: { login: 'registry-bot' } });
+      }
+      if (url.includes('/requested_reviewers') && method === 'POST') {
+        return jsonResponse(201, {});
+      }
+
+      throw new Error(`Unexpected fetch call: ${method} ${url}`);
+    });
+
+    const response = await handleProposeDecision(
+      new Request('https://example.com/api/registry/propose-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sharedSecret: VALID_SECRET,
+          proposedBy: 'designer@example.com',
+          entries: [{ signature: 'sig-bot', decision: 'mapped' }],
+        }),
+      }),
+      { fetchImpl: fetchMock, now: () => fixedNow },
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ success: true });
+    expect(
+      fetchMock.mock.calls.some(
+        ([input, init]) =>
+          String(input).includes('/requested_reviewers') && init?.method === 'POST',
+      ),
+    ).toBe(true);
   });
 });
