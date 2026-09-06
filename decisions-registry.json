@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "registryVersion": 1,
+  "updatedAt": "2026-09-06T14:10:00.167Z",
+  "entries": [
+    {
+      "signature": "curl-smoke-test-DELETE-ME-2",
+      "decision": "ignored",
+      "comment": "Verify reviewer-skip fix, safe to close/delete.",
+      "proposedBy": "curl-smoke-test-2",
+      "proposedAt": "2026-09-06T14:10:00.167Z"
+    }
+  ]
+}
