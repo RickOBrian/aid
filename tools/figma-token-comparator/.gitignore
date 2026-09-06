@@ -1,3 +1,6 @@
 node_modules/
 dist/
 *.log
+.env.local
+server/.env.local
+server/.env.local.rtf
