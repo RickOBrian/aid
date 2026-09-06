@@ -121,6 +121,14 @@ export interface ApplyToLayoutMessage {
   recordId: string;
 }
 
+export interface ToggleAdminModeMessage {
+  type: "toggle-admin-mode";
+}
+
+export interface ProposeDecisionsMessage {
+  type: "propose-decisions";
+}
+
 export type UiToCodeMessage =
   | UiReadyMessage
   | SaveSettingsMessage
@@ -136,7 +144,9 @@ export type UiToCodeMessage =
   | ResizeWindowEndMessage
   | PrintToFigmaMessage
   | BuildPreviewMessage
-  | ApplyToLayoutMessage;
+  | ApplyToLayoutMessage
+  | ToggleAdminModeMessage
+  | ProposeDecisionsMessage;
 
 export interface InitStateMessage {
   type: "init-state";
@@ -149,6 +159,8 @@ export interface InitStateMessage {
     githubRepo: string | null;
     githubRegistryPath: string | null;
     registryCache: { registryVersion: number; entryCount: number; fetchedAt: string; localOnly: boolean } | null;
+    adminMode: boolean;
+    pendingProposeCount: number;
   };
 }
 
@@ -285,6 +297,29 @@ export interface ApplyToLayoutResultMessage {
   skipped: Array<{ nodeId: string; reason: string }>;
 }
 
+export interface AdminModeChangedMessage {
+  type: "admin-mode-changed";
+  payload: { enabled: boolean };
+}
+
+export interface PendingProposeCountMessage {
+  type: "pending-propose-count";
+  payload: { count: number };
+}
+
+export interface DecisionsSubmittedMessage {
+  type: "decisions-submitted";
+  payload: { count: number };
+}
+
+export interface DecisionsSubmitFailedMessage {
+  type: "decisions-submit-failed";
+}
+
+export interface RegistryUnavailableMessage {
+  type: "registry-unavailable";
+}
+
 export type CodeToUiMessage =
   | InitStateMessage
   | SettingsSavedMessage
@@ -304,4 +339,9 @@ export type CodeToUiMessage =
   | PrintErrorMessage
   | PreviewReadyMessage
   | PreviewErrorMessage
-  | ApplyToLayoutResultMessage;
+  | ApplyToLayoutResultMessage
+  | AdminModeChangedMessage
+  | PendingProposeCountMessage
+  | DecisionsSubmittedMessage
+  | DecisionsSubmitFailedMessage
+  | RegistryUnavailableMessage;

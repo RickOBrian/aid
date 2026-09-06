@@ -174,9 +174,20 @@ TypeError: cannot read property 'get' of undefined
 4. Backend возвращает плагину только статус успеха/ошибки (без ссылки на PR, без деталей git).
 
 **Требования к безопасности backend-эндпоинта (реализовано и верифицировано)**:
-- Endpoint принимает запросы от Figma plugin sandbox (CORS `Access-Control-Allow-Origin: *`, методы `POST, OPTIONS`).
+- Endpoint принимает запросы от Figma plugin sandbox (CORS `Access-Control-Allow-Origin: *`, методы `GET, POST, OPTIONS`).
 - Защита от произвольных внешних вызовов — shared secret между плагином и backend (`PLUGIN_SHARED_SECRET`, сравнивается constant-time через `crypto.timingSafeEqual`).
 - Rate limiting — не реализован на этапе 2, отмечен как желательный на будущее.
+
+### ⚠️ Известное ограничение безопасности: build-time `PLUGIN_SHARED_SECRET`
+
+MVP-плагин (этап 2 UI, 06.09.2026) передаёт `PLUGIN_SHARED_SECRET` через **build-time inject** в `dist/code.js` (`esbuild define`). Это осознанный компромисс для внутренней команды; **не менять auth-модель в рамках текущего MVP без отдельного архитектурного решения.**
+
+- **Build-time injected `PLUGIN_SHARED_SECRET` — общий credential артефакта плагина**, не per-user authentication. Одна сборка → один секрет для всех установок этой версии.
+- Секрет **не показывается в UI** и **не записывается в `clientStorage`**, но **технически доступен для извлечения из bundle** (`dist/code.js`) любым, у кого есть файл плагина. Это **не server-only secret**.
+- Текущая модель **допустима только для доверенной внутренней команды** с контролируемым распространением сборки (Figma org / ручная выдача PD).
+- При расширении аудитории, публикации плагина широко или необходимости **аудита авторства** (кто именно отправил решение) — нужна **отдельная модель реальной аутентификации** (OAuth, per-user token, signed identity от Figma и т.п.), **а не новый shared secret** и не перенос secret в admin-поле.
+
+**GET `/api/registry`** использует тот же секрет в header `X-Plugin-Secret` — та же поверхность: credential артефакта, не пользователя.
 
 ## UX-принцип для финального UI плагина
 

@@ -89,6 +89,36 @@
         font-weight: 500;
         line-height: 28px;
         color: var(--ds-text);
+        cursor: default;
+        user-select: none;
+      }
+
+      .ds-admin-badge {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        background: var(--ds-status-pending-bg);
+        color: var(--ds-status-pending-text);
+        vertical-align: middle;
+      }
+
+      .ds-admin-badge[hidden],
+      #tc-admin-github-panel[hidden] {
+        display: none !important;
+      }
+
+      .ds-propose-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--ds-border-subtle);
       }
 
       .ds-page-header__meta {
@@ -1653,7 +1683,8 @@
     <div class="ds-page">
       <header class="ds-page-header">
         <div>
-          <h1>Token Comparator</h1>
+          <h1 id="tc-plugin-title">Token Comparator</h1>
+          <span class="ds-admin-badge" id="tc-admin-badge" hidden>Admin</span>
         </div>
       </header>
 
@@ -1696,9 +1727,12 @@
         </div>
         <div class="ds-status-line" id="tc-library-status">Библиотека ещё не загружена.</div>
 
+        <div class="ds-status-line" id="tc-prod-registry-status">Загрузка реестра решений...</div>
+
         <hr class="ds-settings-divider" />
 
-        <h3 class="ds-settings-subtitle">GitHub — реестр решений</h3>
+        <div id="tc-admin-github-panel" hidden>
+        <h3 class="ds-settings-subtitle">GitHub — реестр решений (admin)</h3>
         <p class="ds-section-caption">
           Fine-grained PAT с правами contents: read. Реестр читается из main; запись — на следующем этапе.
           Если репозиторий недоступен — ошибка доступа; если файл реестра ещё не создан — можно начать с пустого.
@@ -1730,6 +1764,7 @@
           <p class="ds-registry-not-found__text" id="tc-registry-not-found-text"></p>
           <button type="button" class="ds-btn" id="tc-init-empty-registry-btn">Начать с пустого реестра</button>
         </div>
+        </div>
       </section>
 
       <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">
@@ -1750,6 +1785,12 @@
       </section>
 
       <section class="ds-panel ds-panel--results" id="tc-panel-results" role="tabpanel" aria-hidden="true">
+        <div class="ds-propose-bar" id="tc-propose-bar">
+          <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
+            Отправить 0 решений на согласование
+          </button>
+          <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
+        </div>
         <div class="ds-results-toolbar">
           <div class="ds-export-menu" data-format="csv">
             <button

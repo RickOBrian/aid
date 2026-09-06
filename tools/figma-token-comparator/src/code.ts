@@ -16,6 +16,7 @@ import type {
   LibraryToken,
   LibraryTokenModeValue,
   ScanScope,
+  StoredDecision,
 } from "./comparators/types";
 import { hexToRgb, rgbToHex } from "./lib/colorUtils";
 import { pairModesByIndex } from "./lib/modePairing";
@@ -26,7 +27,18 @@ import {
   createEmptyRegistryContent,
   isRegistryNotFound,
   parseGitHubRepo,
+  type RegistryDecision,
 } from "./lib/githubTypes";
+import {
+  DEFAULT_REGISTRY_OWNER,
+  DEFAULT_REGISTRY_REPO,
+} from "./lib/registryApiConfig";
+import {
+  fetchRegistryFromBackend,
+  proposeDecisionsOnBackend,
+  RegistryBackendError,
+  type ProposeDecisionEntryPayload,
+} from "./lib/registryBackendApi";
 import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
@@ -114,17 +126,29 @@ async function resolveLibraryDisplayName(
 }
 
 async function handleUiReady(): Promise<void> {
-  const [token, libraryFileKey, libraryFileName, libraryCache, githubToken, githubRepo, githubRegistryPath, registryCache] =
-    await Promise.all([
-      storage.getPersonalAccessToken(),
-      storage.getLibraryFileKey(),
-      storage.getLibraryFileName(),
-      storage.getLibraryCache(),
-      storage.getGitHubToken(),
-      storage.getGitHubRepo(),
-      storage.getGitHubRegistryPath(),
-      storage.getRegistryCache(),
-    ]);
+  const [
+    token,
+    libraryFileKey,
+    libraryFileName,
+    libraryCache,
+    githubToken,
+    githubRepo,
+    githubRegistryPath,
+    registryCache,
+    adminMode,
+    mappingHistory,
+  ] = await Promise.all([
+    storage.getPersonalAccessToken(),
+    storage.getLibraryFileKey(),
+    storage.getLibraryFileName(),
+    storage.getLibraryCache(),
+    storage.getGitHubToken(),
+    storage.getGitHubRepo(),
+    storage.getGitHubRegistryPath(),
+    storage.getRegistryCache(),
+    storage.getAdminMode(),
+    storage.getMappingHistory(),
+  ]);
 
   if (libraryCache) {
     lastLibrary = libraryCache.tokens;
@@ -132,6 +156,8 @@ async function handleUiReady(): Promise<void> {
 
   const effectiveLibraryFileName =
     libraryFileName ?? libraryCache?.fileName ?? libraryFileKey ?? libraryCache?.fileKey ?? null;
+
+  const pendingProposeCount = await storage.countPendingProposals(mappingHistory);
 
   send({
     type: "init-state",
@@ -152,8 +178,111 @@ async function handleUiReady(): Promise<void> {
             localOnly: !registryCache.sha,
           }
         : null,
+      adminMode,
+      pendingProposeCount,
     },
   });
+
+  void loadRegistryFromBackend();
+}
+
+async function sendPendingProposeCount(): Promise<void> {
+  const history = await storage.getMappingHistory();
+  const count = await storage.countPendingProposals(history);
+  send({ type: "pending-propose-count", payload: { count } });
+}
+
+async function loadRegistryFromBackend(): Promise<void> {
+  send({ type: "registry-loading" });
+  try {
+    const result = await fetchRegistryFromBackend();
+    const fetchedAt = new Date().toISOString();
+    await storage.setRegistryCache({
+      registry: result.registry,
+      sha: result.sha,
+      fetchedAt,
+      owner: DEFAULT_REGISTRY_OWNER,
+      repo: DEFAULT_REGISTRY_REPO,
+      path: DEFAULT_REGISTRY_PATH,
+    });
+
+    send({
+      type: "registry-loaded",
+      payload: {
+        registryVersion: result.registry.registryVersion,
+        entryCount: result.registry.entries.length,
+        updatedAt: result.registry.updatedAt,
+        fetchedAt,
+        localOnly: !result.exists,
+      },
+    });
+  } catch (error) {
+    if (!(error instanceof RegistryBackendError)) {
+      console.error("[registry-backend] Unexpected load error");
+    }
+    send({ type: "registry-unavailable" });
+  }
+}
+
+function mapDecisionToRegistry(decision: Decision): RegistryDecision {
+  if (decision === "mapped_suggested" || decision === "mapped") {
+    return "mapped";
+  }
+  return decision;
+}
+
+function buildProposeComment(stored: StoredDecision): string | undefined {
+  if (stored.comment?.trim()) {
+    return stored.comment.trim();
+  }
+  if (stored.decision === "value_fix_proposed" && stored.proposedModeName && stored.proposedValue) {
+    return `mode: ${stored.proposedModeName}, proposed: ${stored.proposedValue}`;
+  }
+  return undefined;
+}
+
+function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDecisionEntryPayload {
+  return {
+    signature: recordId,
+    decision: mapDecisionToRegistry(stored.decision),
+    targetVariableId: stored.targetVariableId,
+    targetVariableName: stored.targetName,
+    comment: buildProposeComment(stored),
+  };
+}
+
+async function handleToggleAdminMode(): Promise<void> {
+  const enabled = !(await storage.getAdminMode());
+  await storage.setAdminMode(enabled);
+  send({ type: "admin-mode-changed", payload: { enabled } });
+}
+
+async function handleProposeDecisions(): Promise<void> {
+  const history = await storage.getMappingHistory();
+  const submitted = await storage.getSubmittedSignatures();
+  const pendingEntries = Object.entries(history).filter(([recordId]) => !submitted.has(recordId));
+
+  if (pendingEntries.length === 0) {
+    send({ type: "decisions-submit-failed" });
+    return;
+  }
+
+  const proposedBy =
+    figma.currentUser?.name?.trim() || figma.currentUser?.id?.trim() || "figma-user";
+
+  const entries = pendingEntries.map(([recordId, stored]) => buildProposeEntry(recordId, stored));
+
+  try {
+    await proposeDecisionsOnBackend({ proposedBy, entries });
+    await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
+    send({ type: "decisions-submitted", payload: { count: entries.length } });
+    await sendPendingProposeCount();
+  } catch (error) {
+    if (!(error instanceof RegistryBackendError)) {
+      console.error("[registry-backend] Unexpected propose error");
+    }
+    send({ type: "decisions-submit-failed" });
+  }
 }
 
 async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Promise<void> {
@@ -512,6 +641,7 @@ async function handleApplyDecision(
   // только при следующем полном скане (см. GUIDE.md, раздел 7).
   const [result] = computeColorComparisonResults([record], lastLibrary, history);
   send({ type: "decision-applied", payload: { recordId, result } });
+  await sendPendingProposeCount();
 }
 
 async function handleClearDecision(recordId: string): Promise<void> {
@@ -520,6 +650,7 @@ async function handleClearDecision(recordId: string): Promise<void> {
   if (!record) return;
   const [result] = computeColorComparisonResults([record], lastLibrary, history);
   send({ type: "decision-applied", payload: { recordId, result } });
+  await sendPendingProposeCount();
 }
 
 // ---------------------------------------------------------------------------
@@ -1190,6 +1321,12 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
       case "apply-to-layout":
         await handleApplyToLayout(message.recordId);
+        break;
+      case "toggle-admin-mode":
+        await handleToggleAdminMode();
+        break;
+      case "propose-decisions":
+        await handleProposeDecisions();
         break;
       default:
         break;
