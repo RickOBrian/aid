@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "registryVersion": 1,
+  "updatedAt": "2026-09-06T18:31:28.499Z",
+  "entries": [
+    {
+      "signature": "1yjw2j2",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    },
+    {
+      "signature": "1csdzkh",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:38",
+      "targetVariableName": "Background/Secondary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    },
+    {
+      "signature": "jdqsd8",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:84",
+      "targetVariableName": "Pastel/Lisa",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    },
+    {
+      "signature": "1nldplk",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    },
+    {
+      "signature": "999a86",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:44",
+      "targetVariableName": "Background/Accent",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    },
+    {
+      "signature": "1xdjplv",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-06T18:31:28.499Z"
+    }
+  ]
+}
