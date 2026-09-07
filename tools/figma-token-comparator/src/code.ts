@@ -248,6 +248,22 @@ function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDec
     targetVariableId: stored.targetVariableId,
     targetVariableName: stored.targetName,
     comment: buildProposeComment(stored),
+    // Transient review-projection metadata — используется backend только для
+    // GitHub PR body, НЕ попадает в decisions-registry.json (см.
+    // buildProposedEntries на backend — whitelist только machine-полей).
+    sourceProperty: stored.sourceProperty,
+    sourceBindingType: stored.sourceBindingType,
+    sourceName: stored.sourceName,
+    sourceDisplayValue: stored.sourceDisplayValue,
+    nodePath: stored.nodePath,
+    nodeName: stored.nodeName,
+    occurrenceCount: stored.occurrenceCount,
+    targetCollectionName: stored.targetCollectionName,
+    targetModeName: stored.targetModeName,
+    targetDisplayValue: stored.targetDisplayValue,
+    proposedModeName: stored.proposedModeName,
+    currentLibraryValue: stored.currentLibraryValue,
+    proposedValue: stored.proposedValue,
   };
 }
 
@@ -612,6 +628,17 @@ async function handleApplyDecision(
     proposedModeName?: string;
     currentLibraryValue?: string;
     proposedValue?: string;
+    // Transient review-projection metadata — только для GitHub PR body,
+    // не является частью реестра решений (decisions-registry.json).
+    sourceProperty?: string;
+    sourceBindingType?: string;
+    sourceName?: string;
+    sourceDisplayValue?: string;
+    nodePath?: string;
+    nodeName?: string;
+    occurrenceCount?: number;
+    targetModeName?: string;
+    targetDisplayValue?: string;
   }
 ): Promise<void> {
   const timestamp = new Date().toISOString();
@@ -626,6 +653,15 @@ async function handleApplyDecision(
     currentLibraryValue: fields.currentLibraryValue,
     proposedValue: fields.proposedValue,
     timestamp,
+    sourceProperty: fields.sourceProperty,
+    sourceBindingType: fields.sourceBindingType,
+    sourceName: fields.sourceName,
+    sourceDisplayValue: fields.sourceDisplayValue,
+    nodePath: fields.nodePath,
+    nodeName: fields.nodeName,
+    occurrenceCount: fields.occurrenceCount,
+    targetModeName: fields.targetModeName,
+    targetDisplayValue: fields.targetDisplayValue,
   });
 
   const record = lastRecords.find((item) => item.id === recordId);
@@ -1302,6 +1338,15 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
           proposedModeName: message.payload.proposedModeName,
           currentLibraryValue: message.payload.currentLibraryValue,
           proposedValue: message.payload.proposedValue,
+          sourceProperty: message.payload.sourceProperty,
+          sourceBindingType: message.payload.sourceBindingType,
+          sourceName: message.payload.sourceName,
+          sourceDisplayValue: message.payload.sourceDisplayValue,
+          nodePath: message.payload.nodePath,
+          nodeName: message.payload.nodeName,
+          occurrenceCount: message.payload.occurrenceCount,
+          targetModeName: message.payload.targetModeName,
+          targetDisplayValue: message.payload.targetDisplayValue,
         });
         break;
       case "clear-decision":

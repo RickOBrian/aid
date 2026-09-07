@@ -12,6 +12,7 @@ import {
   requestPullRequestReviewer,
   type FetchLike,
 } from './registryGithub.js';
+import { buildPullRequestBody } from './pullRequestBody.js';
 import {
   REGISTRY_DECISIONS,
   type ProposeDecisionRequestBody,
@@ -28,6 +29,31 @@ export interface ProposeDecisionDeps {
 
 function isRegistryDecision(value: unknown): value is ProposedEntryInput['decision'] {
   return typeof value === 'string' && (REGISTRY_DECISIONS as readonly string[]).includes(value);
+}
+
+/**
+ * Transient review-projection string fields — accepted (whitelist-validated)
+ * from the client, but NEVER passed to buildProposedEntries / RegistryFileEntry
+ * / decisions-registry.json. Used only by buildPullRequestBody for the
+ * human-readable GitHub PR description.
+ */
+const TRANSIENT_STRING_FIELDS = [
+  'sourceProperty',
+  'sourceBindingType',
+  'sourceName',
+  'sourceDisplayValue',
+  'nodePath',
+  'nodeName',
+  'targetCollectionName',
+  'targetModeName',
+  'targetDisplayValue',
+  'proposedModeName',
+  'currentLibraryValue',
+  'proposedValue',
+] as const;
+
+function isPositiveInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0;
 }
 
 export function validateProposeDecisionBody(body: unknown): ProposeDecisionRequestBody | null {
@@ -68,12 +94,37 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
       return null;
     }
 
+    // Transient review-projection metadata — whitelist-validated, but kept
+    // out of RegistryFileEntry (see buildProposedEntries below).
+    for (const field of TRANSIENT_STRING_FIELDS) {
+      const value = record[field];
+      if (value !== undefined && typeof value !== 'string') {
+        return null;
+      }
+    }
+    if (record.occurrenceCount !== undefined && !isPositiveInteger(record.occurrenceCount)) {
+      return null;
+    }
+
     entries.push({
       signature: record.signature.trim(),
       decision: record.decision,
       targetVariableId: record.targetVariableId,
       targetVariableName: record.targetVariableName,
       comment: record.comment,
+      sourceProperty: record.sourceProperty,
+      sourceBindingType: record.sourceBindingType,
+      sourceName: record.sourceName,
+      sourceDisplayValue: record.sourceDisplayValue,
+      nodePath: record.nodePath,
+      nodeName: record.nodeName,
+      occurrenceCount: record.occurrenceCount,
+      targetCollectionName: record.targetCollectionName,
+      targetModeName: record.targetModeName,
+      targetDisplayValue: record.targetDisplayValue,
+      proposedModeName: record.proposedModeName,
+      currentLibraryValue: record.currentLibraryValue,
+      proposedValue: record.proposedValue,
     });
   }
 
@@ -98,13 +149,6 @@ function buildProposedEntries(
     proposedBy,
     proposedAt,
   }));
-}
-
-function buildPullRequestBody(entries: ProposedEntryInput[]): string {
-  const lines = entries.map(
-    (entry) => `- \`${entry.signature}\` → ${entry.decision}`,
-  );
-  return ['## Proposed decisions', '', ...lines].join('\n');
 }
 
 function createBranchName(now: Date): string {
@@ -183,7 +227,7 @@ export async function handleProposeDecision(
     );
 
     const prTitle = `chore(registry): propose ${body.entries.length} decisions from ${body.proposedBy}`;
-    const prBody = buildPullRequestBody(body.entries);
+    const prBody = buildPullRequestBody(body.entries, body.proposedBy, proposedAt);
     const pullNumber = await openPullRequest(
       deps.fetchImpl,
       githubToken,

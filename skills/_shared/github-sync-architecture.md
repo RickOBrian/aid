@@ -281,13 +281,62 @@ Middleware bypass добавлен для эндпоинта в co-located prese
 
 Backend при мердже новых entries не проставляет `status` вообще — только `proposedAt`/`proposedBy`.
 
+## Transient review metadata vs registry data (PR body enrichment, 06.09.2026)
+
+**Проблема:** до этого изменения PR body был машинным списком `signature → decision` — Principal Designer не мог принять решение по PR без обращения к самому плагину/макету. `decisions-registry.json` при этом намеренно компактен (машинный/audit формат) — расширять его presentation-полями означало бы смешать источник истины с презентацией.
+
+**Решение:** ввести отдельный, **transient** (не персистентный) слой review-metadata, который существует только на пути "Apply → Submit → PR body" и никогда не сериализуется в `decisions-registry.json`.
+
+### Разделение machine data и transient review metadata
+
+| | Machine/audit data (`RegistryFileEntry`, JSON) | Transient review metadata (только PR body) |
+|---|---|---|
+| Поля | `signature`, `decision`, `targetVariableId?`, `targetVariableName?`, `comment?`, `proposedBy?`, `proposedAt?`, `status?`, `approvedBy?`, `approvedAt?` | `sourceProperty`, `sourceBindingType`, `sourceName`, `sourceDisplayValue`, `nodePath`, `nodeName`, `occurrenceCount`, `targetCollectionName`, `targetModeName`, `targetDisplayValue`, `proposedModeName`, `currentLibraryValue`, `proposedValue` |
+| Персистентность | Персистятся в `decisions-registry.json`, переживают merge, читаются approve-flow | НЕ персистятся нигде за пределами request/response одного Submit; после генерации PR body — забываются |
+| Источник | `ProposedEntryInput` → `buildProposedEntries` (explicit whitelist) | `ComparisonResult`/`LayoutRecord`/`ComparisonTarget` на момент Apply → `StoredDecision` (clientStorage) → `ProposeDecisionEntryPayload` → validated `ProposedEntryInput` → `buildPullRequestBody` |
+| Назначение | Source of truth для approve/reject, machine-читаемый аудит | Презентационная проекция для человека — "за 10–20 секунд понятно, что предлагается" |
+
+**Гарантия отсутствия утечки:** `buildProposedEntries` (`server/api/_lib/proposeDecision.ts`) строит `RegistryFileEntry` явным whitelist'ом полей (`signature`, `decision`, `targetVariableId`, `targetVariableName`, `comment`, `proposedBy`, `proposedAt`) — transient-поля физически не читаются в этой функции, даже если присутствуют на входном `ProposedEntryInput`. Эта граница закрыта тестом (`proposeDecision.test.ts`, "renders transient review metadata into the PR body but never persists it into decisions-registry.json").
+
+### Flow: Apply snapshot → Submit payload → PR body
+
+```
+ComparisonResult (LayoutRecord + ComparisonTarget, в памяти плагина на момент Apply)
+  → ApplyDecisionMessage.payload  (UI → code.ts, снимок делает ui.ts::buildSourceReviewContext)
+  → StoredDecision                (clientStorage, снимок сохраняется вместе с решением)
+  → ProposeDecisionEntryPayload   (code.ts::buildProposeEntry, на Submit)
+  → POST /api/registry/propose-decision → validateProposeDecisionBody (whitelist-валидация, включая occurrenceCount: только finite positive integer)
+  → buildPullRequestBody (server/api/_lib/pullRequestBody.ts) — ЕДИНСТВЕННОЕ место чтения transient-полей
+  → GitHub PR description
+```
+
+Снимок делается **на момент Apply**, а не на момент Submit или во время рендера PR — если библиотека токенов изменится между Apply и Submit, PR body покажет то значение, которое дизайнер видел и одобрил, а не текущее состояние библиотеки. Это осознанное поведение (аудит решения), не баг.
+
+Вычисление source/target HEX/RGBA происходит **только в плагине** (Plugin API для источника, уже загрученная через REST библиотека — для таргета). Backend не делает никаких новых обращений к Figma REST API и не получает новых секретов/file key — весь enrichment строится из того, что клиент уже прислал.
+
+### PR body — не source of truth
+
+PR description — чисто презентационная проекция. Approve-flow (проставление `status: approved`/`approvedBy`/`approvedAt` в `decisions-registry.json` при мердже) **не должен парсить PR body как данные** — он либо ручной (Principal Designer правит JSON вручную перед мерджем), либо, если станет автоматическим, обязан читать только `decisions-registry.json`/структурированный payload, никогда markdown PR description. На момент 06.09.2026 в репозитории не найдено кода (`.github/workflows` отсутствует, скриптов approve не обнаружено), который читал бы содержимое PR body — это ручной процесс.
+
+### Legacy fallback
+
+Entries, отправленные более старой версией плагина (до этого изменения) или без снимка контекста, не содержат ни одного transient-поля. `buildPullRequestBody` в этом случае рендерит явный текст:
+
+> _Контекст слоя недоступен: решение предложено версией плагина без review metadata._
+
+— вместо `undefined`/`null`/пустых bullet-points. Machine-поля (`targetVariableName`, `comment`), не зависящие от этой фичи, продолжают отображаться как прежде.
+
+### Central decision → icon + label mapping
+
+`pullRequestBody.ts` содержит единый маппинг `RegistryDecision → { icon, label на русском }` (`mapped`, `ignored`, `hardcoded`, `candidate`, `value_fix_proposed`). Неизвестный/будущий `decision` не роняет рендер — попадает в generic-карточку с `⚪ Неизвестное решение` и raw-значением в backticks.
+
 ## Флоу дизайнера ("Отправить на ревью") — актуализированный план этапа 2
 
 Технический план интеграции (не дублирует UX-принцип выше — здесь шаги backend и контракт API):
 
 1. Дизайнер сканирует макет, решения копятся в `clientStorage` локально.
 2. По кнопке «Отправить N решений на согласование» плагин отправляет решения на `POST https://aid-registry-api.vercel.app/api/registry/propose-decision`. **Кнопка и весь новый UI-флоу пока не реализованы в плагине** — backend существует и верифицирован end-to-end (curl + PR #7); клиентский код требует обновления URL и UI.
-3. Backend: читает `sha` реестра из `main` → создаёт ветку `registry/propose-{timestamp}-{shortRandomId}` → коммитит обновлённый `decisions-registry.json` → открывает PR с `requested_reviewers: [RickOBrian]` (или skip, если author === reviewer).
+3. Backend: читает `sha` реестра из `main` → создаёт ветку `registry/propose-{timestamp}-{shortRandomId}` → коммитит обновлённый `decisions-registry.json` → открывает PR с человекочитаемым body (карточки по каждому решению — см. раздел "Transient review metadata vs registry data" выше) и `requested_reviewers: [RickOBrian]` (или skip, если author === reviewer).
 4. При устаревшем `sha` (409 от GitHub) — backend возвращает нейтральную ошибку (`{ success: false }`).
 
 ## Что не входит в фичу

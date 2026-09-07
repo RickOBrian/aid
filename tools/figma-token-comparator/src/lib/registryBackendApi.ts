@@ -19,6 +19,23 @@ export interface ProposeDecisionEntryPayload {
   targetVariableId?: string;
   targetVariableName?: string;
   comment?: string;
+  // Transient review-projection metadata — used ONLY by backend to render the
+  // human-readable GitHub PR body. MUST NOT be persisted into
+  // decisions-registry.json (backend whitelists machine fields when writing
+  // the registry file — see buildProposedEntries in server/api/_lib/proposeDecision.ts).
+  sourceProperty?: string;
+  sourceBindingType?: string;
+  sourceName?: string;
+  sourceDisplayValue?: string;
+  nodePath?: string;
+  nodeName?: string;
+  occurrenceCount?: number;
+  targetCollectionName?: string;
+  targetModeName?: string;
+  targetDisplayValue?: string;
+  proposedModeName?: string;
+  currentLibraryValue?: string;
+  proposedValue?: string;
 }
 
 export interface ProposeDecisionsPayload {

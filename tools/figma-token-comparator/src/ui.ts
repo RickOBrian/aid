@@ -1537,6 +1537,33 @@ function buildActionCell(result: ComparisonResult): HTMLTableCellElement {
   return cell;
 }
 
+/**
+ * Transient review-projection metadata, снятая с текущего ComparisonResult
+ * (LayoutRecord) на момент Apply — нужна ИСКЛЮЧИТЕЛЬНО для человекочитаемого
+ * GitHub PR body (см. server/api/_lib/pullRequestBody.ts). Эти поля никогда
+ * не попадают в decisions-registry.json — только в ApplyDecisionMessage /
+ * StoredDecision / ProposeDecisionEntryPayload по пути к PR body.
+ */
+function buildSourceReviewContext(result: ComparisonResult): {
+  sourceProperty: string;
+  sourceBindingType: string;
+  sourceName?: string;
+  sourceDisplayValue: string;
+  nodePath: string;
+  nodeName: string;
+  occurrenceCount: number;
+} {
+  return {
+    sourceProperty: result.property,
+    sourceBindingType: result.bindingType,
+    sourceName: result.sourceName || undefined,
+    sourceDisplayValue: result.displayValue,
+    nodePath: result.representativeNodePath,
+    nodeName: result.representativeNodeName,
+    occurrenceCount: result.count,
+  };
+}
+
 function applyDecision(
   result: ComparisonResult,
   select: HTMLSelectElement,
@@ -1559,6 +1586,9 @@ function applyDecision(
         targetVariableId: result.target.variableId,
         targetName: result.target.name,
         targetCollectionName: result.target.collectionName,
+        targetModeName: result.target.modeName,
+        targetDisplayValue: result.target.displayValue,
+        ...buildSourceReviewContext(result),
       },
     });
     return;
@@ -1576,9 +1606,20 @@ function applyDecision(
       showError("Выберите токен из списка AID — точное совпадение по имени не найдено.");
       return;
     }
+    // Ручной выбор токена не привязан к конкретному режиму библиотеки —
+    // targetModeName/targetDisplayValue здесь намеренно не заполняются
+    // (не выдумываем режим, который дизайнер не выбирал явно).
+    const manuallySelectedToken = currentLibraryTokens.find((token) => token.variableId === variableId);
     post({
       type: "apply-decision",
-      payload: { recordId: result.id, decision, targetVariableId: variableId, targetName: label },
+      payload: {
+        recordId: result.id,
+        decision,
+        targetVariableId: variableId,
+        targetName: label,
+        targetCollectionName: manuallySelectedToken?.collectionName,
+        ...buildSourceReviewContext(result),
+      },
     });
     return;
   }
@@ -1589,7 +1630,10 @@ function applyDecision(
       showError("Для решения «Игнорировать» комментарий обязателен.");
       return;
     }
-    post({ type: "apply-decision", payload: { recordId: result.id, decision, comment } });
+    post({
+      type: "apply-decision",
+      payload: { recordId: result.id, decision, comment, ...buildSourceReviewContext(result) },
+    });
     return;
   }
 
@@ -1637,12 +1681,13 @@ function applyDecision(
         currentLibraryValue,
         proposedValue: normalizeHex(proposedRaw),
         comment: commentInput?.value.trim() || undefined,
+        ...buildSourceReviewContext(result),
       },
     });
     return;
   }
 
-  post({ type: "apply-decision", payload: { recordId: result.id, decision } });
+  post({ type: "apply-decision", payload: { recordId: result.id, decision, ...buildSourceReviewContext(result) } });
 }
 
 function downloadTextFile(filename: string, mimeType: string, content: string): void {

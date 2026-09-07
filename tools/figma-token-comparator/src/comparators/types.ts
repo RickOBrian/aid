@@ -188,6 +188,35 @@ export interface StoredDecision {
   currentLibraryValue?: string;
   /** value_fix_proposed — предлагаемое значение (hex). */
   proposedValue?: string;
+
+  // ---------------------------------------------------------------------
+  // Transient review-projection metadata — снимок ComparisonResult /
+  // ComparisonTarget НА МОМЕНТ Apply, нужен ИСКЛЮЧИТЕЛЬНО для человекочитаемого
+  // GitHub PR body (см. server/api/_lib/pullRequestBody.ts).
+  //
+  // ВАЖНО: эти поля НЕ являются частью реестра решений. Они не должны
+  // попадать в RegistryFileEntry / decisions-registry.json — единственный
+  // machine/audit source of truth. См. skills/_shared/github-sync-architecture.md,
+  // раздел "Transient review metadata vs registry data".
+  // ---------------------------------------------------------------------
+  /** LayoutRecord.property на момент Apply (fill/stroke/text-fill). */
+  sourceProperty?: string;
+  /** LayoutRecord.bindingType на момент Apply (variable/style/hardcoded/ghost). */
+  sourceBindingType?: string;
+  /** LayoutRecord.sourceName на момент Apply — имя переменной/стиля источника. */
+  sourceName?: string;
+  /** LayoutRecord.displayValue на момент Apply — отображаемое значение источника (hex/alpha). */
+  sourceDisplayValue?: string;
+  /** LayoutRecord.representativeNodePath на момент Apply — breadcrumb от страницы. */
+  nodePath?: string;
+  /** LayoutRecord.representativeNodeName на момент Apply. */
+  nodeName?: string;
+  /** LayoutRecord.count на момент Apply — сколько слоёв затронуто группой. */
+  occurrenceCount?: number;
+  /** ComparisonTarget.modeName на момент Apply (для mapped/mapped_suggested). */
+  targetModeName?: string;
+  /** ComparisonTarget.displayValue на момент Apply — отображаемое значение целевого токена (hex/alpha). */
+  targetDisplayValue?: string;
 }
 
 /** Скоуп сканирования, выбираемый пользователем в UI. */

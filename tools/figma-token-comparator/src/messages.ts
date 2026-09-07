@@ -58,6 +58,18 @@ export interface ApplyDecisionMessage {
     proposedModeName?: string;
     currentLibraryValue?: string;
     proposedValue?: string;
+    // Transient review-projection metadata — снимок ComparisonResult /
+    // ComparisonTarget на момент Apply, нужен только для человекочитаемого
+    // GitHub PR body. НЕ является частью реестра решений (decisions-registry.json).
+    sourceProperty?: string;
+    sourceBindingType?: string;
+    sourceName?: string;
+    sourceDisplayValue?: string;
+    nodePath?: string;
+    nodeName?: string;
+    occurrenceCount?: number;
+    targetModeName?: string;
+    targetDisplayValue?: string;
   };
 }
 
