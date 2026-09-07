@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "registryVersion": 1,
+  "updatedAt": "2026-09-07T08:28:47.899Z",
+  "entries": [
+    {
+      "signature": "ym9f3i",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-07T08:28:47.899Z"
+    },
+    {
+      "signature": "1o7jqm0",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-07T08:28:47.899Z"
+    }
+  ]
+}
