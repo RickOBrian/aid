@@ -25,6 +25,8 @@ const KEYS = {
   GITHUB_REPO: "tc_github_repo",
   GITHUB_REGISTRY_PATH: "tc_github_registry_path",
   REGISTRY_CACHE: "tc_registry_cache",
+  ADMIN_MODE: "tc_admin_mode",
+  SUBMITTED_SIGNATURES: "tc_submitted_signatures",
 } as const;
 
 export async function getWindowSize(): Promise<WindowSize | null> {
@@ -161,4 +163,32 @@ export async function getRegistryCache(): Promise<RegistryCache | null> {
 
 export async function setRegistryCache(cache: RegistryCache): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.REGISTRY_CACHE, cache);
+}
+
+export async function getAdminMode(): Promise<boolean> {
+  const value = await figma.clientStorage.getAsync(KEYS.ADMIN_MODE);
+  return value === true;
+}
+
+export async function setAdminMode(enabled: boolean): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.ADMIN_MODE, enabled);
+}
+
+export async function getSubmittedSignatures(): Promise<Set<string>> {
+  const value = await figma.clientStorage.getAsync(KEYS.SUBMITTED_SIGNATURES);
+  if (!Array.isArray(value)) return new Set();
+  return new Set(value.filter((item): item is string => typeof item === "string"));
+}
+
+export async function markSignaturesSubmitted(signatures: string[]): Promise<void> {
+  const submitted = await getSubmittedSignatures();
+  for (const signature of signatures) {
+    submitted.add(signature);
+  }
+  await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
+}
+
+export async function countPendingProposals(history: Record<string, StoredDecision>): Promise<number> {
+  const submitted = await getSubmittedSignatures();
+  return Object.keys(history).filter((recordId) => !submitted.has(recordId)).length;
 }

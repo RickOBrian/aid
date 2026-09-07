@@ -7,6 +7,9 @@
  *   2. ui.ts    -> dist/ui.bundle.js   (UI-логика, bundle iife)
  *   3. src/ui.html + dist/ui.bundle.js -> dist/ui.html (инлайним <script>)
  *
+ * PLUGIN_SHARED_SECRET читается из .env.local (gitignored) и инлайнится только
+ * в dist/code.js через esbuild define — не попадает в git при коммите src/.
+ *
  * Запуск: node build.js [--watch]
  */
 
@@ -17,6 +20,31 @@ const path = require("path");
 const isWatch = process.argv.includes("--watch");
 const srcDir = path.join(__dirname, "src");
 const distDir = path.join(__dirname, "dist");
+
+function loadPluginSharedSecretFromEnvLocal() {
+  const envPath = path.join(__dirname, ".env.local");
+  if (!fs.existsSync(envPath)) {
+    return process.env.PLUGIN_SHARED_SECRET ?? "";
+  }
+  const text = fs.readFileSync(envPath, "utf8");
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const match = trimmed.match(/^PLUGIN_SHARED_SECRET=(.*)$/);
+    if (match) {
+      const raw = match[1].trim();
+      return raw.replace(/^["']|["']$/g, "");
+    }
+  }
+  return process.env.PLUGIN_SHARED_SECRET ?? "";
+}
+
+const pluginSharedSecret = loadPluginSharedSecretFromEnvLocal();
+if (!pluginSharedSecret && !isWatch) {
+  console.warn(
+    "[build] PLUGIN_SHARED_SECRET is empty — set tools/figma-token-comparator/.env.local before production build.",
+  );
+}
 
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
@@ -36,6 +64,10 @@ function inlineUiHtml() {
   fs.writeFileSync(path.join(distDir, "ui.html"), inlined, "utf8");
 }
 
+const codeDefine = {
+  __PLUGIN_SHARED_SECRET__: JSON.stringify(pluginSharedSecret),
+};
+
 const codeConfig = {
   entryPoints: [path.join(srcDir, "code.ts")],
   outfile: path.join(distDir, "code.js"),
@@ -44,6 +76,7 @@ const codeConfig = {
   target: "es2019",
   format: "iife",
   logLevel: "info",
+  define: codeDefine,
 };
 
 const uiConfig = {

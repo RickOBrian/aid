@@ -5,3 +5,8 @@ memory/**/*.master.json
 node_modules/
 storybook-static/
 dist/
+.env.local
+.vercel/
+.vercel
+.env*
+!.env*.example

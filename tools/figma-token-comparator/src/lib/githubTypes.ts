@@ -82,4 +82,4 @@ export function parseGitHubRepo(input: string): { owner: string; repo: string } 
   return null;
 }
 
-export const DEFAULT_REGISTRY_PATH = "decisions-registry.json";
+export { DEFAULT_REGISTRY_PATH } from "./registryApiConfig";
