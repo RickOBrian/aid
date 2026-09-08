@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
-  "registryVersion": 1,
-  "updatedAt": "2026-09-07T13:43:06.501Z",
+  "registryVersion": 2,
+  "updatedAt": "2026-09-08T10:10:54.185Z",
   "entries": [
     {
       "signature": "4qlpbs",
@@ -18,6 +18,14 @@
       "targetVariableName": "Stories/Smithers",
       "proposedBy": "Sergey AI",
       "proposedAt": "2026-09-07T13:43:06.501Z"
+    },
+    {
+      "signature": "17d9ut0",
+      "decision": "mapped",
+      "targetVariableId": "VariableID:23:3",
+      "targetVariableName": "Text/Primary",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-09-08T10:10:54.185Z"
     }
   ]
 }
