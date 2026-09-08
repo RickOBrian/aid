@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ButtonText — Sutochno — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../../../assets/style.css">
+  <link rel="stylesheet" href="../../../../assets/docs-theme.css">
+  <link rel="stylesheet" href="../../../storybook-color-tokens.css">
+  <link rel="stylesheet" href="../../../storybook-layout.css">
+  <link rel="stylesheet" href="../../../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../../../guide-page.css">
+  <link rel="stylesheet" href="../../../storybook-product-sutochno-typography.css">
+  <link rel="stylesheet" href="../../../storybook-product-sutochno-button-text.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="sutochno/components/button-text" data-product="sutochno">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="../../../../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../../../../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../../../product.html?product=sutochno">← Sutochno</a>
+      ·
+      <a href="../../../product-components.html?product=sutochno">Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
+    <section class="storybook-section" aria-labelledby="sbt-matrix-heading">
+      <h2 id="sbt-matrix-heading">Live preview — все варианты × размеры</h2>
+      <p>7 вариантов × 4 размера. Tiny — pill + trailing chevron, без leading icon.</p>
+      <div id="sbt-matrix"></div>
+    </section>
+
+    <section class="storybook-section" aria-labelledby="sbt-states-heading">
+      <h2 id="sbt-states-heading">Live preview — состояния</h2>
+      <div id="sbt-states" class="sbt-preview-states"></div>
+    </section>
+  </main>
+
+</div>
+
+<script src="../../../storybook.js"></script>
+<script src="../../../product-storybook.js"></script>
+<script src="../../../product-legacy-colors.js"></script>
+<script src="../../../product-sutochno-button-text.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'ButtonText',
+  interactive: true,
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.sbt',
+      description: 'Кликабельная оболочка кнопки: фон, скругление (per-size), отступы. Несёт border-radius, демонстрируемый в «Скругления».',
+    },
+    {
+      id: 'icon',
+      label: 'Icon',
+      selector: '.sbt__icon',
+      description: 'Ведущая иконка перед текстом. Недоступна в size tiny.',
+      optional: true,
+      // createButton() gates the icon behind `icon && size !== 'tiny'` — the
+      // tiny variant has no leading icon slot at all (verified against every
+      // #sbt-matrix instance, not inferred from the other sizes).
+      sizes: ['large', 'medium', 'small'],
+    },
+    {
+      id: 'text',
+      label: 'Text',
+      selector: '.sbt__text',
+      description: 'Единственный обязательный контент кнопки.',
+    },
+    {
+      id: 'chevron',
+      label: 'Chevron',
+      selector: '.sbt__chevron',
+      description: 'Trailing chevron. Добавляется безусловно при size tiny — не опция.',
+      optional: false,
+      sizes: ['tiny'],
+    },
+  ],
+  aspects: { size: [], spacing: [], colors: [], borders: [] },
+};
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'ButtonText',
+  description: 'Кнопка с текстовым слотом. Основной интерактивный контрол Sutochno (Surface View, Role-семья Button). Структура из Figma Components Mobile; цвета — legacy-токены продукта.',
+  version: '1.0.0',
+  status: 'legacy',
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  // One markup string per size for the whole page: the anatomy stage
+  // (size dropdown) and the «Скругления» previews both read this registry,
+  // so a size's markup is written once and can't drift between sections.
+  // Each string is the verbatim child structure of that size's real rendered
+  // instance in #sbt-matrix (copied from outerHTML — l/m/s: icon + text;
+  // tiny: text + chevron, no icon), with only the text content swapped to a
+  // doc-friendly label and aria-hidden/tabindex added because these clones
+  // are decorative. See radius-preview-standard.md «Источник entry.sample».
+  sizeSamples: [
+    { id: 'large', label: 'Large',
+      sample: '<button class="sbt sbt--primary sbt--large" type="button" aria-hidden="true" tabindex="-1"><span class="sbt__icon"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="sbt__text">Сохранить</span></button>' },
+    { id: 'medium', label: 'Medium',
+      sample: '<button class="sbt sbt--primary sbt--medium" type="button" aria-hidden="true" tabindex="-1"><span class="sbt__icon"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="sbt__text">Сохранить</span></button>' },
+    { id: 'small', label: 'Small',
+      sample: '<button class="sbt sbt--primary sbt--small" type="button" aria-hidden="true" tabindex="-1"><span class="sbt__icon"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="sbt__text">Сохранить</span></button>' },
+    { id: 'tiny', label: 'Tiny',
+      sample: '<button class="sbt sbt--primary sbt--tiny" type="button" aria-hidden="true" tabindex="-1"><span class="sbt__text">Сохранить</span><svg class="sbt__chevron" width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' },
+  ],
+  anatomy: [
+    { id: 'icon', label: 'Icon', selector: '.sbt__icon', optional: true,
+      // Absent from the tiny part list entirely, not just marked optional —
+      // tiny has no icon slot in the markup at all.
+      sizes: ['large', 'medium', 'small'],
+      description: 'Ведущая иконка перед текстом. Недоступна в size tiny — там только текст + trailing chevron.' },
+    { id: 'text', label: 'Text', selector: '.sbt__text', optional: false,
+      description: 'Единственный обязательный контент кнопки. 1 строка, ellipsis при переполнении.',
+      // In tiny the text is no longer the *only* mandatory child — the
+      // chevron is mandatory too, so the shared wording would be factually
+      // wrong for that size.
+      bySize: { tiny: { description: 'Обязательный контент кнопки — в size tiny соседствует с обязательным chevron. 1 строка, ellipsis при переполнении.' } } },
+    { id: 'chevron', label: 'Chevron', selector: '.sbt__chevron', optional: false,
+      sizes: ['tiny'],
+      description: 'Trailing chevron — маркер перехода. Добавляется безусловно во всех tiny-кнопках (createButton(), не опция) и существует только в этом размере.' },
+    { id: 'counter', label: 'Counter', optional: true,
+      nested: { name: 'CounterValue', href: 'counter-value.html' },
+      description: 'Числовой индикатор поверх/рядом с кнопкой — отдельный DS-компонент CounterValue со своим spec; в текущей реализации live-рендерера не подключён.' },
+  ],
+  radius: [
+    // No per-row `sample` — each row's markup comes from the page-level
+    // sizeSamples registry above, matched by `size` (see sampleHtml in
+    // renderRadius). Without it every row would clone the single default
+    // instance and draw a Large corner under a "Tiny — pill" label.
+    { size: 'Large', value: '16px', part: 'root' },
+    { size: 'Medium', value: '12px', part: 'root' },
+    { size: 'Small', value: '12px', part: 'root' },
+    { size: 'Tiny', value: 'pill (9999px)', part: 'root' },
+  ],
+  dimensions: [
+    { label: 'Large min-height', value: '52px' },
+    { label: 'Medium min-height', value: '44px' },
+    { label: 'Small min-height', value: '36px' },
+    { label: 'Tiny min-height / min-width', value: '24px / 44px' },
+  ],
+  sizes: [
+    { size: 'Large', inset: '16px 24px', gap: '8px' },
+    { size: 'Medium', inset: '12px 16px', gap: '8px' },
+    { size: 'Small', inset: '8px 12px', gap: '4px' },
+    { size: 'Tiny', inset: '4px 12px', gap: '4px' },
+  ],
+  fillTypes: [
+    { name: 'Primary', bg: 'main/primary', text: 'main/basic', sample: 'Aa', description: 'Основной CTA — тёмная заливка.' },
+    { name: 'Secondary', bg: 'transparent', text: 'main/primary', sample: 'Aa', description: 'Outline 2px main/primary.' },
+    { name: 'Outline', bg: 'transparent', text: 'main/primary', sample: 'Aa', description: 'Outline 1px gray/03.' },
+    { name: 'Tertiary', bg: 'gray/02', text: 'main/primary', sample: 'Aa', description: 'Светло-серая заливка.' },
+    { name: 'Primary Inverse', bg: 'main/basic', text: 'main/primary', sample: 'Aa', description: 'Светлая заливка на тёмном фоне.' },
+    { name: 'Primary Inverse Static', bg: 'fixed/main/-basic', text: 'fixed/main/-primary', sample: 'Aa', description: 'Fixed-токены — не инвертируются с темой.' },
+    { name: 'Transparent', bg: 'transparent', text: 'main/primary', sample: 'Aa', description: 'Только текст, без оболочки.' },
+  ],
+  appearance: [],
+  states: [
+    { name: 'Default', bg: 'main/primary', text: 'main/basic', sample: 'Aa' },
+    { name: 'Pressed', bg: 'gray/07', text: 'main/basic', sample: 'Aa' },
+    { name: 'Disabled', bg: 'gray/03', text: 'gray/05', sample: 'Aa', description: 'Неинтерактивен.' },
+    { name: 'Loading', bg: 'main/primary', text: 'main/basic', sample: '…', description: 'Текст и иконка скрыты, loading dots.' },
+  ],
+  tapArea: {
+    text: 'Область тапа равна физическому размеру контейнера. Tiny: min-width 44px.',
+    value: 'min 44×24px (Tiny)',
+  },
+  constraints: [
+    { label: 'Макс. строк текста', value: '1 — ellipsis при переполнении.' },
+    { label: 'Tiny leading icon', value: 'Недоступен — только text + chevron.' },
+    { label: 'Legacy-токены', value: 'Цвета через <code>tokens/sutochno/legacy/legacy-tokens.json</code>; space/radius — raw px до появления токенов.' },
+  ],
+  animation: {
+    text: 'Переход между состояниями — background/color/border 0.15s ease. Loading — blink-анимация dots.',
+  },
+};
+</script>
+<script src="../../../measure-agents.js"></script>
+<script src="../../../guide-page.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const sb = window.DSProductStorybook;
+  const productId = 'sutochno';
+  sb.setActivePage(productId, 'components/button-text');
+  await sb.applyProductAssets(productId);
+  await window.DSProductLegacyColors.apply('/tokens/sutochno/legacy/legacy-tokens.json');
+  DSGuidePage.render(document.getElementById('guide-page'));
+  window.DSSutochnoButtonText.renderMatrix(document.getElementById('sbt-matrix'));
+  window.DSSutochnoButtonText.renderStates(document.getElementById('sbt-states'));
+});
+</script>
+</body>
+</html>

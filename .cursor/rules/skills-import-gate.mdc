@@ -1,0 +1,103 @@
+---
+description: >
+  Связывает ds-import.mdc с продуктовым контекстом. Не позволяет импортировать
+  skills вне skills/_shared/ или явно согласованного product scope. Требует
+  явного выбора продукта перед импортом и запрещает тихое создание
+  skills-файлов в непредусмотренных местах.
+alwaysApply: true
+---
+
+# Skills Import Gate
+
+## Scope
+
+This rule applies whenever the user asks to:
+
+- import skills, tokens, styles or components from Figma via MCP or any other
+  import flow;
+- run, modify or extend the `ds-import.mdc` workflow;
+- create, change or reorganize files under `skills/` or any product-scoped
+  skills directory.
+
+Do not apply this rule to ordinary repository work such as general documentation,
+utilities, non-UI refactoring or infrastructure that does not affect those artifacts.
+
+## Product context prerequisite
+
+Before any applicable work, follow `product-context.mdc` and resolve the product
+context.
+
+Do not start any import flow until the product context is confirmed.
+
+## Skills destination resolution
+
+After product context is confirmed, resolve the skills destination in this order:
+
+1. `skillsRoot` or equivalent field from `products/<id>/product.json`, if present.
+2. Default shared skills path: `skills/_shared/`.
+3. Any explicitly requested product-scoped skills path, confirmed by the user.
+
+For Driver:
+
+- there is no dedicated `skillsRoot` in `products/driver/product.json`;
+- `skills/_shared/` is the default destination for imported skills;
+- product-scoped skills directories do not exist yet and must not be created
+  silently.
+
+Do not import skills into any other directory without explicit user confirmation
+and a clear reason.
+
+## Import flow coordination
+
+When the user asks to import skills:
+
+1. Follow `ds-import.mdc` for the technical import procedure.
+2. Before running the import, confirm:
+   - the product context (from `product-context.mdc`);
+   - the destination path for imported skills (from this rule);
+   - whether the imported skills are product-specific or shared.
+3. If the import requires new directories or files, show the planned structure
+   and ask for confirmation before creating anything.
+
+Do not run the import flow silently or with hardcoded paths.
+
+## Skills placement
+
+If `skills/_shared/` is used:
+
+- treat imported skills as shared across products unless explicitly marked
+  as product-specific;
+- do not create product-scoped subdirectories under `skills/` without
+  explicit user confirmation.
+
+If a product-scoped skills path is requested:
+
+- confirm the path with the user (for example `products/<id>/skills/` or
+  `skills/<id>/`);
+- ensure this path does not conflict with existing skills or components;
+- record the decision in the product context for future imports.
+
+## Skills and token coupling
+
+When importing skills that depend on tokens:
+
+- run the token lookup procedure from `token-integrity.mdc` for each required
+  token;
+- if any token gap is detected, show the combined skills + token gap
+  questionnaire and do not start import until the user resolves all gaps.
+
+Do not import skills while required tokens are unresolved, unless the user
+explicitly asks to import with placeholders and confirms that these will be
+resolved later.
+
+## Skills changelog and release
+
+When importing or changing skills:
+
+- record the change as a pending change item under
+  `changes/<id>/pending/` for the selected product, following
+  `product-context.mdc`;
+- do not finalise skills version or changelog during import;
+- final SemVer and changelog are determined only at an explicitly requested
+  product release boundary, after the user reviews and approves the grouped
+  pending changes for each affected artifact.

@@ -1,0 +1,48 @@
+/* Product Colors — read-only overrides on top of storybook-colors.css */
+
+.token-value-readonly {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--label-xs-size);
+  line-height: var(--label-xs-lh);
+  color: var(--text-primary);
+}
+
+.product-token-legacy-chip {
+  margin-left: 8px;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.product-token-row--legacy td {
+  background: var(--bg-accent-ghost);
+}
+
+.product-token-value-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-token-table--modes th.product-token-mode-cell--active,
+.product-token-table--modes td.product-token-mode-cell--active {
+  background: var(--bg-accent-ghost);
+}
+
+body[data-product-color-mode="light"] .product-token-mode-cell--light,
+body[data-product-color-mode="dark"] .product-token-mode-cell--dark {
+  background: var(--bg-accent-ghost);
+}
+
+body[data-product-color-mode="light"] .product-token-table--modes th:nth-child(2),
+body[data-product-color-mode="dark"] .product-token-table--modes th:nth-child(3) {
+  color: var(--text-accent);
+}
+
+.product-token-deviation {
+  color: var(--text-secondary);
+  font-size: var(--label-s-size);
+  line-height: var(--label-s-lh);
+  max-width: 320px;
+  word-break: break-word;
+}

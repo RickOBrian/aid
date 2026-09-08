@@ -1,0 +1,127 @@
+{
+  "defaultAuthor": "sergej",
+  "collections": [
+    {
+      "collectionName": "rider-colors-semantic",
+      "artifact": "Rider Colors/Semantic",
+      "pageFile": "DriverColorTokensPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "colors-semantic",
+      "artifact": "Colors/Semantic",
+      "pageFile": "DriverColorTokensPage.tsx"
+    },
+    {
+      "collectionName": "rider-typography-sem",
+      "artifact": "Rider Typography/Semantic",
+      "pageFile": "TypographyPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-typography-sem-out",
+      "artifact": "Rider Typography/Semantic Outstanding",
+      "pageFile": "TypographyPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-effects-shadows",
+      "artifact": "Rider Effects/Shadows",
+      "pageFile": "ShadowsPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-effects-glass",
+      "artifact": "Rider Effects/Glass",
+      "pageFile": "GlassPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-space",
+      "artifact": "Rider Space",
+      "pageFile": "SpacingPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-radius",
+      "artifact": "Rider Radius",
+      "pageFile": "RadiusPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "rider-icons",
+      "artifact": "Icons/Rider",
+      "pageFile": "IconsPage.tsx",
+      "productId": "rider"
+    },
+    {
+      "collectionName": "icons",
+      "artifact": "Icons/Wilhelm",
+      "pageFile": "IconsPage.tsx"
+    },
+    {
+      "collectionName": "typography-sem",
+      "artifact": "Typography/Semantic",
+      "pageFile": "TypographyPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Typography: Headline, Subtitle, Body — значения typography-sem (Roboto) из Figma"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "effects-shadows",
+      "artifact": "Effects/Shadows",
+      "pageFile": "ShadowsPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Shadows: shadow 1–7 (effects · Shadows) из Figma с preview и таблицей параметров"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "spacing-sem",
+      "artifact": "Spacing/Semantic",
+      "pageFile": "SpacingPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Spacing: space-0 … space-128 — значения spacing-sem из Figma (Название · Превью · px · rem)"
+          }
+        ]
+      }
+    },
+    {
+      "collectionName": "radius-sem",
+      "artifact": "Radius/Semantic",
+      "pageFile": "RadiusPage.tsx",
+      "bootstrap": {
+        "version": "1.0.0",
+        "date": "2026-08-15",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Страница Radius: radius-flat … radius-pill — значения radius-sem из Figma (Name · Visual · px)"
+          }
+        ]
+      }
+    }
+  ]
+}

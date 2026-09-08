@@ -1,0 +1,19 @@
+{
+  "artifact": "Rider Space",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-21",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены все переменные отступов (spacings) дизайн-системы",
+          "details": "• space-0 (0)\n• space-1 (1)\n• space-2 (2)\n• space-4 (4)\n• space-6 (6)\n• space-8 (8)\n• space-10 (10)\n• space-12 (12)\n• space-14 (14)\n• space-16 (16)\n• space-20 (20)\n• space-24 (24)\n• space-28 (28)\n• space-32 (32)\n• space-36 (36)\n• space-40 (40)\n• space-48 (48)\n• space-52 (52)\n• space-60 (60)\n• space-64 (64)\n• space-72 (72)\n• space-80 (80)"
+        }
+      ]
+    }
+  ]
+}

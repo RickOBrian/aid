@@ -1,0 +1,90 @@
+# DS Pipeline Context
+
+## Current state (as of 2026-08-15)
+
+- 6 gates committed: product-context, token-integrity, component-gate, skills-import-gate, audit-gate, release-gate.
+- RULES_OVERVIEW.md согласован с фактической структурой репозитория (data.ts, *-sem-changelog.json).
+- Active продукт: driver (единственный в pipeline).
+- Driver token sources: data.ts (color), typographyData.ts, spacingData.ts, radiusData.ts, shadowsData.ts, iconsData.ts.
+- Changelogs: tokens/colors-semantic-changelog.json, typography-sem-changelog.json, spacing-sem-changelog.json, radius-sem-changelog.json, effects-shadows-changelog.json, icons-changelog.json.
+- Release queues: `changes/driver/pending/`, `changes/driver/released/` (Switch pending item present).
+- Component artifacts: `components/switch-changelog.json`, `pages/driver-color-tokens/component-registry.json`, `pages/driver-color-tokens/components/switch.meta.json`.
+- Component build skill: `skills/ds-component-build/SKILL.md` v1.1.0.
+- Discovery gate order: `skills/component-build-workflow.md` v1.0.0 — Platform scope gate (new) → Composition gate (delegates to `component-gate.mdc`) → Token coverage gate (delegates to `token-integrity.mdc`).
+- Reference Product DS Component: **Switch** (`/components/switch`, pending initial release, `currentVersion: null` → proposed `1.0.0`).
+- Skills (_shared): 30 гайдов, включая token-rules.md, platforms.md, детальные color/typography/space guides, component architecture/audit/migration.
+- Figma reference: src/pages/FigmaStyles/ (не source of truth).
+
+## Architectural decisions
+
+- Product Gate — обязательный первый шаг для любой работы с Figma, токенами, компонентами, skills, changelog, release.
+- Token Integrity — lookup в *Data.ts/data.ts, запрет хардкода без явного разрешения, token gaps → единая анкета.
+- Component Gate — componentsRoot: null для Driver, создание компонентов только с явным подтверждением path и coupling с токенами.
+- Skills Import — дефолт skills/_shared/, product-scoped skills только с подтверждением.
+- Audit — read-only, consolidated report, fixes → pending items, без прямых правок артефактов.
+- Release — группировка pending changes, SemVer + changelog только с явным подтверждением, pending → released/, commit/push через git-push.mdc.
+- Naming — ориентироваться на фактические имена в репозитории (data.ts, *-sem-changelog.json), не на абстрактный план.
+- Driver color modes — product labels `Day` / `Night`; semantic mapping
+  `Day` → light (`day` field), `Night` → dark (`night` field). Canonical:
+  `products/driver/product.json` → `colorModeMapping`. Not a naming violation;
+  rename only via explicit product + release decision.
+
+## Pending work (priorities)
+
+Optional:
+- .cursor/rules/push-sync-gate.mdc (future rule для post-release sync).
+
+## Completed waves
+
+### Wave 1 (component pipeline core) — completed 2026-08-15
+- skills/_shared/component-standards.md (committed: 03ad5bc)
+- skills/_shared/figma-import-guide.md (committed: 3f40d37)
+- skills/_shared/changelog-guide.md (committed: 991ffb0)
+
+### Wave 2 (naming, versions, accessibility) — completed 2026-08-15
+- skills/_shared/naming-conventions.md (committed: 741b839)
+- skills/_shared/versioning-strategy.md (committed: 050a67a)
+- skills/_shared/accessibility.md (committed: 9075573)
+
+### Wave 3 (testing, Presentbook) — completed 2026-08-15
+- skills/_shared/testing-strategy.md (committed: c8d7eab)
+- skills/_shared/presentbook-guide.md (committed: de6c842)
+
+### Driver portal — completed 2026-08-16
+- 29752e8 — changelog infrastructure
+- 0704e97 — portal foundation
+- 434c2e3 — Typography, Spacing, Radius and Shadows token pages
+- 77c9163 — Icons selection UX
+- 5dae89f — audit reports
+- Active token sections: Colors, Typography, Spacing, Radius, Shadows, Icons
+- Build: npm run build passed
+- Routes: hub + 6 token routes wired; browser smoke test not performed
+- Color mode mapping: `Day` → light (`day` field), `Night` → dark (`night`
+  field); labels preserved — see `products/driver/product.json` →
+  `colorModeMapping`
+
+## Constraints
+
+- Не создавать компоненты до явного определения componentsRoot и подтверждения path.
+- Не менять token values в рамках audit/release gates.
+- Не коммить несколько файлов в одном коммите (правила, overview, skills — отдельно).
+- При добавлении новых продуктов обновлять RULES_OVERVIEW.md и этот файл.
+
+## Maintenance: periodic rules audit
+
+- Проводить аудит правил и контекста не реже чем раз в 2 недели или при добавлении:
+  - нового gate;
+  - нового продукта;
+  - существенного изменения структуры токенов/компонентов.
+- На аудите проверять:
+  - соответствие RULES_OVERVIEW.md и DS_PIPELINE_CONTEXT.md фактической структуре репозитория;
+  - отсутствие противоречий между gates;
+  - актуальность списков missing/extra файлов;
+  - приоритеты pending work.
+- Результаты аудита фиксировать в отдельном MD-файле (например `.cursor/audit-YYYY-MM-DD.md`) и при необходимости обновлять этот контекст.
+
+## How to use this file
+
+- Это точка входа для любого нового контекста (включая Cursor).
+- Перед генерацией новых файлов или правкой gates — перечитывать этот файл и RULES_OVERVIEW.md.
+- При расхождениях между планом и репозиторием — ориентироваться на этот файл.

@@ -1,0 +1,292 @@
+---
+description: >
+  Запрещает молчаливое создание компонентов. Требует явного выбора или
+  создания компонента в контексте продукта, связывает его с токенами,
+  Figma-источником и release-очередью. Не позволяет создавать компоненты
+  вне componentsRoot продукта (или явно согласованного места).
+alwaysApply: true
+---
+
+# Component Gate
+
+## Scope
+
+This rule applies whenever the user asks to:
+
+- create, change, compose, audit or implement a UI component;
+- create or change a Presentbook component page or review sandbox;
+- prepare component changelog, versioning, release bundle, commit or push
+  that affects component artifacts.
+
+Do not apply this rule to ordinary repository work such as general documentation,
+utilities, non-UI refactoring or infrastructure that does not affect those artifacts.
+
+## Product context prerequisite
+
+Before any applicable work, follow `product-context.mdc` and resolve the product
+context.
+
+Do not start component discovery or implementation until the product context is
+confirmed.
+
+## Component source resolution
+
+After product context is confirmed, resolve the component source in this order:
+
+1. `componentsRoot` from `products/<id>/product.json`.
+2. If `componentsRoot` is `null`, treat components as not yet structured and
+   require explicit user confirmation before creating any component folder or
+   file.
+3. `relatedPrototypes` from `products/<id>/product.json` as reference only.
+
+For Driver:
+
+- `componentsRoot` is `null` in `products/driver/product.json`;
+- there is no canonical component directory yet;
+- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
+  `relatedPrototypes`. It is not a component source and must not be used as a
+  primary source of truth.
+
+Do not use component definitions from any other file or product.
+
+## Component lookup procedure
+
+Before creating or changing a component, perform a component lookup:
+
+1. Identify the component name or path required by the task (for example
+   `Button`, `Input`, `Modal`, `Card`).
+2. Search in the resolved component source (if any) for an exact match or a
+   semantically equivalent component.
+3. If an exact match is found, use that component and record the source
+   path.
+4. If no exact match is found, search for semantically equivalent components
+   (for example `PrimaryButton` vs `Button`, `TextField` vs `Input`).
+5. If a semantically equivalent component is found, propose it and ask the user
+   whether to reuse it or create a new component.
+6. If no component is found, treat this as a new component proposal.
+
+## New component proposal
+
+When a new component is proposed:
+
+1. Do not create component files or folders silently.
+2. Do not invent a component path without user confirmation.
+3. Collect the proposal in a structured form with the following fields:
+
+   - `componentName`: proposed component name (for example `Button`);
+   - `figmaSource`: Figma file/frame URL or name, if known;
+   - `tokensRequired`: list of token paths used by the component
+     (for example `color.bg.primary`, `color.text.primary`);
+   - `variants`: known variants (for example `primary`, `secondary`, `ghost`);
+   - `modes`: known modes (for example `light`, `dark`, `mobile`, `desktop`);
+   - `placement`: proposed component path relative to `componentsRoot`
+     (for example `components/Button/Button.tsx`);
+   - `confidence`: `high` | `medium` | `low` based on naming and design clarity.
+   - `namingException`: `true` | `false` — component name deviates from DS
+     naming standard (Role+Entity, Item suffix rules);
+   - `architectureException`: `true` | `false` — component structure/slots
+     deviate from DS architecture guide;
+   - `exceptionNote`: short reason if either exception flag is `true`;
+   - `reviewAt`: `release` | `next-major` — when to revisit the exception.
+
+4. After collecting the proposal, show a single consolidated questionnaire:
+
+## New component proposal
+
+Component: [componentName]
+Figma source: [figmaSource or "not specified"]
+Tokens required: [list of token paths]
+Variants: [list]
+Modes: [list — for Driver color: platform `light`/`dark` maps to `day`/`night`
+source fields; portal labels `Day`/`Night`; not a naming violation]
+Proposed path: [placement]
+Confidence: [high|medium|low]
+Naming exception: [yes/no — exceptionNote if yes]
+Architecture exception: [yes/no — exceptionNote if yes]
+Review at: [release | next-major | n/a]
+
+Before implementation:
+
+- confirm the component name and path;
+- confirm architecture/naming standard compliance **or** document an approved
+  exception (`namingException` / `architectureException` + `exceptionNote`);
+- confirm which tokens must be created or reused;
+- confirm whether to create the component now or defer until token gaps
+  are resolved;
+- confirm whether this component belongs to the current product scope or
+  should be created in a different product.
+
+Do not proceed with implementation until the user resolves all questions,
+**except** when the user explicitly approves a documented exception: record
+the pending exception item (below), then proceed.
+
+## Driver color modes in component specs
+
+For product `driver`, component `modes` may be documented as `light` / `dark`
+(platform themes) while color token source uses `day` / `night` fields and
+portal labels `Day` / `Night`.
+
+- light mode → lookup `row.day` in `pages/driver-color-tokens/data.ts`
+- dark mode → lookup `row.night` in `pages/driver-color-tokens/data.ts`
+
+Driver color mode mapping: `Day` represents light mode; `Night` represents dark
+mode. The `Day`/`Night` labels are current product terminology and must be
+preserved. This is not a token naming violation and does not require a
+per-component exception. See `products/driver/product.json` →
+`colorModeMapping` and `product-context.mdc` (Driver color mode mapping).
+
+## Documented component exceptions
+
+When `namingException` or `architectureException` is `true` and the user
+confirms the deviation:
+
+1. Create a pending exception item under `changes/<id>/pending/` using the
+   unified format:
+
+```json
+{
+  "id": "component-deviation-[slug]",
+  "type": "component",
+  "exceptionType": "naming | architecture",
+  "standard": "[expected DS standard]",
+  "actual": "[actual component name/structure]",
+  "reason": "[exceptionNote]",
+  "recommendation": "[preferred fix or follow-up]",
+  "status": "temporary | accepted",
+  "reviewAt": "release | next-major",
+  "pendingRef": "changes/<id>/pending/[filename].json"
+}
+```
+
+2. Add an `exceptions` block to the component spec frontmatter (when the spec
+   file exists or is created in the same task):
+
+```yaml
+exceptions:
+  - id: component-deviation-[slug]
+    type: naming | architecture
+    standard: "Role+Entity → ButtonText"
+    actual: "Button"
+    reason: "Figma library legacy; rename in v2"
+    status: temporary | accepted
+    reviewAt: release | next-major
+    pendingRef: changes/<id>/pending/[filename].json
+```
+
+3. Include in the component description template:
+
+> **Standard deviation (accepted):** Component `[actual]` deviates from
+> `[standard]`. Reason: `[reason]`. Status: `[status]`; review at
+> `[reviewAt]`. Tracked in `[pendingRef]`.
+
+After confirmation and pending item + spec note, **proceed with implementation**.
+Classify matching audit findings as `accepted-exception` per `audit-gate.mdc`.
+
+## Component placement
+
+If `componentsRoot` is defined and not `null`:
+
+- create new components only under `componentsRoot` of the selected product;
+- do not create components in other directories without explicit user
+  confirmation and a clear reason.
+
+If `componentsRoot` is `null` (as for Driver):
+
+- do not create a component directory structure silently;
+- propose a temporary or permanent location for components inside the
+  selected product scope (for example `src/components/` or
+  `products/<id>/components/`);
+- ask the user to confirm the location before creating any component file.
+
+## Component and token coupling
+
+When proposing a new component:
+
+- list all tokens required by the component;
+- run the token lookup procedure from `token-integrity.mdc` for each token;
+- if any token gap is detected, show the combined component + token gap
+  questionnaire and do not start implementation until the user resolves
+  all gaps.
+
+Do not create a component while required tokens are unresolved, unless the
+user explicitly asks to create a prototype with hardcoded values and confirms
+that these values will later be converted to tokens.
+
+## Component changelog and release
+
+When changing or creating a component:
+
+- record the change as a pending change item under
+  `changes/<id>/pending/` for the selected product, following
+  `product-context.mdc`;
+- create or update machine-readable component metadata and changelog
+  **source files** (see Component artifact model below);
+- add changelog display to the component review page using portal
+  primitives (`ChangelogTable`, `ComponentReleaseStatus`) — display only;
+- do **not** finalise component version or changelog during implementation;
+- do **not** bump `currentVersion`, append release entries, move pending
+  to `released`, create release commits, or push;
+- final SemVer and changelog are determined only at an explicitly requested
+  product release boundary, after the user reviews and approves the grouped
+  pending changes for each affected artifact.
+
+Portal UI (`DsPageHeader`, `ChangelogTable`, table styles in
+`dsChangelogTable.ts`) is **not** a Product DS Component. Do not version
+portal chrome or copy portal implementation into product component source.
+
+## Component artifact model
+
+Each Product DS Component requires machine-readable artifacts independent
+from token collections:
+
+| Artifact | Driver path (review sandbox) | Purpose |
+|---|---|---|
+| Registry | `pages/driver-color-tokens/component-registry.json` | Index of product components |
+| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` | Canonical name, aliases, architecture, routes, status |
+| Changelog source | `components/{id}-changelog.json` | `currentVersion`, structured release entries |
+| Pending item | `changes/driver/pending/component-{slug}.json` | Proposed change + SemVer impact (not released) |
+| Review page | `pages/driver-color-tokens/{Name}Page.tsx` | Sandbox + changelog display |
+
+Metadata fields (minimum):
+
+- `canonicalName`, `aliases`, `product`, `architectureLevel`,
+  `supportedPlatforms`, `sourcePath`, `reviewRoute`, `componentsGroup`,
+  `changelogSource`, `currentVersion`, `status`, `createdDate`
+
+Changelog source fields (minimum):
+
+- `artifact`, `componentId`, `product`, `currentVersion` (`null` until first
+  release), `releaseStatus`, `reviewRoute`, `entries[]` with `version`, `date`,
+  `type`, `impact`, `author`, `changes[]` (`kind`: added/changed/fixed/
+  deprecated/removed, `description`, optional `relatedTokenChanges`)
+
+During implementation:
+
+- new component → `currentVersion: null`, `entries: []`,
+  `releaseStatus: "pending"`, `status: "pending_release"`, initial pending item
+  with `proposedSemVerImpact: "initial"`, `proposedVersion: "1.0.0"`,
+  `changeType: "added"`;
+- changed component (already released) → update pending item only; do not
+  append release entry; `currentVersion` stays at last released value.
+
+On Release Gate only (explicit Principal Designer approval):
+
+- group pending component items;
+- **first approved release of a new component** → always propose `1.0.0`
+  with impact `initial` (not major/minor/patch); first changelog entry:
+  `version: "1.0.0"`, `type: "added"`, `impact: "initial"`;
+- **after first release** → usual SemVer: new public variant/state/slot →
+  minor; visual/token fix without API change → patch;
+  removal/rename/breaking API → major;
+- after confirmation: set `currentVersion`, append changelog entry,
+  update metadata status, move pending → `released/`, release commit + push.
+
+## Component review page requirements
+
+Component review/sandbox pages must include:
+
+- component name, current version, release status;
+- review route;
+- `Pending release` indicator when pending items exist;
+- changelog table section (empty state until first release);
+- **no** release button and **no** automatic version bump on save/build.

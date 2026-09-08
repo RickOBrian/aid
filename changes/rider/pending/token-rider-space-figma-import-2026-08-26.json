@@ -1,0 +1,27 @@
+{
+  "id": "token-rider-space-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Space",
+  "collectionName": "rider-space",
+  "product": "rider",
+  "changeSummary": "Import Rider space collection from Figma tokens (node 62:34) with changelog aligned to Figma Changelog • Spacings (node 208:54).",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Добавлены все переменные отступов (spacings) дизайн-системы",
+    "details": "• space-0 (0)\n• space-1 (1)\n• space-2 (2)\n• space-4 (4)\n• space-6 (6)\n• space-8 (8)\n• space-10 (10)\n• space-12 (12)\n• space-14 (14)\n• space-16 (16)\n• space-20 (20)\n• space-24 (24)\n• space-28 (28)\n• space-32 (32)\n• space-36 (36)\n• space-40 (40)\n• space-48 (48)\n• space-52 (52)\n• space-60 (60)\n• space-64 (64)\n• space-72 (72)\n• space-80 (80)"
+  },
+  "addedTokens": [
+    "space-0", "space-1", "space-2", "space-4", "space-6", "space-8", "space-10", "space-12",
+    "space-14", "space-16", "space-20", "space-24", "space-28", "space-32", "space-36", "space-40",
+    "space-48", "space-52", "space-60", "space-64", "space-72", "space-80"
+  ],
+  "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=62-34",
+  "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=208-54",
+  "sourcePath": "pages/driver-color-tokens/products/rider/spacingData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

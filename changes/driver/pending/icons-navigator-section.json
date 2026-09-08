@@ -1,0 +1,21 @@
+{
+  "id": "icons-navigator-section",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Icons/Wilhelm",
+  "collectionName": "icons",
+  "product": "driver",
+  "changeSummary": "Добавлена секция Navigator: 136 SVG из Figma Driver-Icons (frame navigator 2641:4) — lane_* и ic_maneuver_*_light; двуслойные иконки с opacity сохранены через REST API export символов",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Navigator: 136 иконок навигации (lane, maneuver light) в public/icons/navigator/; секция Navigator на странице Icons"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/icons",
+  "sourcePath": "pages/driver-color-tokens/public/icons/navigator/",
+  "status": "pending",
+  "created": "2026-08-18",
+  "author": "sergej"
+}

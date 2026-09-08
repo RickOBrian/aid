@@ -1,0 +1,24 @@
+{
+  "id": "token-rider-icons-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Icons/Rider",
+  "collectionName": "rider-icons",
+  "product": "rider",
+  "changeSummary": "Import Rider icon catalog from Figma Rider-Icons (node 3691:4): 129 SVG assets in 5 sections matching Driver Icons page structure.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Каталог Rider Icons: 129 SVG в 5 категориях (Brands, Controls, Informative, Actions, Addresses) с preview, поиском и скачиванием"
+  },
+  "addedTokens": [],
+  "iconCount": 129,
+  "sections": ["brands", "controls", "informative", "actions", "addresses"],
+  "figmaSource": "https://www.figma.com/design/n6LppQbTv85yI29h6u30DI/Rider-Icons?node-id=3691-4",
+  "sourcePath": "pages/driver-color-tokens/products/rider/iconsData.ts",
+  "assetsPath": "pages/driver-color-tokens/public/icons/rider/",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

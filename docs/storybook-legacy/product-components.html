@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Components — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/docs-theme.css">
+  <link rel="stylesheet" href="storybook-color-tokens.css">
+  <link rel="stylesheet" href="storybook-layout.css">
+  <link rel="stylesheet" href="storybook-product-tokens.css">
+</head>
+<body data-storybook-page="product-components">
+
+<div class="storybook-layout storybook-layout--product-colors">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <header class="storybook-page-header">
+      <p class="component-doc-breadcrumb" id="product-breadcrumb"></p>
+      <h1 id="product-title">Product Components</h1>
+      <p>Read-only хаб компонентов продукта. Источник: <code>stories/{product}/components/</code>.</p>
+    </header>
+
+    <div id="product-components-root">
+      <p class="storybook-status">Загрузка…</p>
+    </div>
+  </main>
+
+</div>
+
+<script src="storybook.js"></script>
+<script src="product-storybook.js"></script>
+<script src="product-components-viewer.js"></script>
+</body>
+</html>

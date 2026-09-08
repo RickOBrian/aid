@@ -1,0 +1,18 @@
+{
+  "artifact": "Effects/Shadows",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-15",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Страница Shadows: shadow 1–7 (effects · Shadows) из Figma с preview и таблицей параметров"
+        }
+      ]
+    }
+  ]
+}

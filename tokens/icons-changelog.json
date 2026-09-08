@@ -1,0 +1,18 @@
+{
+  "artifact": "Icons/Wilhelm",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-14",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Каталог Wilhelm Icons: 178 SVG в 5 категориях (Alternative, Action, Informative, Controls, Operations) с preview, поиском и скачиванием"
+        }
+      ]
+    }
+  ]
+}

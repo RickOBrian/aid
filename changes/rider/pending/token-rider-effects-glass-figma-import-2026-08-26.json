@@ -1,0 +1,23 @@
+{
+  "id": "token-rider-effects-glass-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Effects/Glass",
+  "collectionName": "rider-effects-glass",
+  "product": "rider",
+  "changeSummary": "Import Rider Glass collection from Figma tokens (node 70:12) with changelog aligned to Figma Changelog • Effects (node 71:17).",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Добавлена группа переменных Glass/Navbar и стиль Glass/Navbar",
+    "details": "• Glass/Navbar/Glass — 7 переменных (radius, refraction, depth, light-angle, light-intensity, dispersion, splay)\n• Glass/Navbar/Inner Shadow 1–3 — по 5 переменных (offset-x, offset-y, blur, spread, color)\n• Glass/Navbar/Drop Shadow 1–4 — по 5 переменных (offset-x, offset-y, blur, spread, color)\n• Стиль: Glass/Navbar (8 эффектов с привязкой переменных)"
+  },
+  "addedStyles": ["Glass/Navbar"],
+  "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=70-12",
+  "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=71-17",
+  "sourcePath": "pages/driver-color-tokens/products/rider/glassData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

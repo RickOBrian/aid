@@ -1,0 +1,18 @@
+{
+  "artifact": "Icons/Rider",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-26",
+      "author": "sergej",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Каталог Rider Icons: 129 SVG в 5 категориях (Brands, Controls, Informative, Actions, Addresses) с preview, поиском и скачиванием"
+        }
+      ]
+    }
+  ]
+}

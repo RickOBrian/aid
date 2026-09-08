@@ -1,0 +1,19 @@
+{
+  "artifact": "Rider Radius",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-21",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены все переменные скруглений коллекции radius",
+          "details": "• radius-flat (0)\n• radius-2 (2)\n• radius-4 (4)\n• radius-6 (6)\n• radius-8 (8)\n• radius-10 (10)\n• radius-12 (12)\n• radius-14 (14)\n• radius-16 (16)\n• radius-20 (20)\n• radius-24 (24)\n• radius-28 (28)\n• radius-32 (32)\n• radius-pill (9999)"
+        }
+      ]
+    }
+  ]
+}
