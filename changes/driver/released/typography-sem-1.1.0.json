@@ -1,0 +1,23 @@
+{
+  "id": "typography-sem-1.1.0",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Typography/Semantic",
+  "collectionName": "typography-sem",
+  "product": "driver",
+  "changeSummary": "Синхронизация typography-sem с Figma Driver Typography Styles (node 19:748): добавлены title 1, subtitle 1 bold, caption 1; существующие Headline/Subtitle/Body без изменений значений",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Title, subtitle 1 bold, caption 1 — новые стили typography-sem из Figma WB AID Driver Tokens"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/tokens/typography",
+  "sourcePath": "pages/driver-color-tokens/typographyData.ts",
+  "status": "released",
+  "releasedVersion": "1.1.0",
+  "created": "2026-08-18",
+  "released": "2026-08-18",
+  "author": "Артур"
+}

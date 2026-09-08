@@ -1,0 +1,355 @@
+/* Sutochno product typography — from Figma DS Tokens (node 12001-146) */
+/* Font: Inter. Values from tokens/sutochno/legacy/typography-styles.json */
+
+[data-product="sutochno"] {
+  --font-family-sutochno: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --sutochno-display-l-size: 46px;
+  --sutochno-display-l-lh: 50px;
+  --sutochno-display-l-weight: 700;
+  --sutochno-display-l-tracking: 0px;
+  --sutochno-display-m-size: 38px;
+  --sutochno-display-m-lh: 42px;
+  --sutochno-display-m-weight: 700;
+  --sutochno-display-m-tracking: 0px;
+  --sutochno-title-l-size: 32px;
+  --sutochno-title-l-lh: 38px;
+  --sutochno-title-l-weight: 700;
+  --sutochno-title-l-tracking: 0px;
+  --sutochno-title-m-size: 28px;
+  --sutochno-title-m-lh: 32px;
+  --sutochno-title-m-weight: 700;
+  --sutochno-title-m-tracking: 0px;
+  --sutochno-title-s-size: 22px;
+  --sutochno-title-s-lh: 26px;
+  --sutochno-title-s-weight: 700;
+  --sutochno-title-s-tracking: 0px;
+  --sutochno-subhead-l-size: 18px;
+  --sutochno-subhead-l-lh: 22px;
+  --sutochno-subhead-l-weight: 700;
+  --sutochno-subhead-l-tracking: 0px;
+  --sutochno-subhead-m-size: 16px;
+  --sutochno-subhead-m-lh: 20px;
+  --sutochno-subhead-m-weight: 700;
+  --sutochno-subhead-m-tracking: 0px;
+  --sutochno-subhead-s-size: 14px;
+  --sutochno-subhead-s-lh: 18px;
+  --sutochno-subhead-s-weight: 700;
+  --sutochno-subhead-s-tracking: 0px;
+  --sutochno-label-l-size: 18px;
+  --sutochno-label-l-lh: 22px;
+  --sutochno-label-l-weight: 600;
+  --sutochno-label-l-tracking: 0px;
+  --sutochno-body-l-medium-size: 18px;
+  --sutochno-body-l-medium-lh: 28px;
+  --sutochno-body-l-medium-weight: 500;
+  --sutochno-body-l-medium-tracking: 0px;
+  --sutochno-body-l-medium-tight-size: 18px;
+  --sutochno-body-l-medium-tight-lh: 22px;
+  --sutochno-body-l-medium-tight-weight: 500;
+  --sutochno-body-l-medium-tight-tracking: 0px;
+  --sutochno-body-l-size: 18px;
+  --sutochno-body-l-lh: 28px;
+  --sutochno-body-l-weight: 400;
+  --sutochno-body-l-tracking: 0px;
+  --sutochno-body-l-tight-size: 18px;
+  --sutochno-body-l-tight-lh: 22px;
+  --sutochno-body-l-tight-weight: 400;
+  --sutochno-body-l-tight-tracking: 0px;
+  --sutochno-label-m-size: 16px;
+  --sutochno-label-m-lh: 20px;
+  --sutochno-label-m-weight: 600;
+  --sutochno-label-m-tracking: 0px;
+  --sutochno-body-m-medium-size: 16px;
+  --sutochno-body-m-medium-lh: 24px;
+  --sutochno-body-m-medium-weight: 500;
+  --sutochno-body-m-medium-tracking: 0px;
+  --sutochno-body-m-medium-tight-size: 16px;
+  --sutochno-body-m-medium-tight-lh: 20px;
+  --sutochno-body-m-medium-tight-weight: 500;
+  --sutochno-body-m-medium-tight-tracking: 0px;
+  --sutochno-body-m-size: 16px;
+  --sutochno-body-m-lh: 24px;
+  --sutochno-body-m-weight: 400;
+  --sutochno-body-m-tracking: 0px;
+  --sutochno-body-m-tight-size: 16px;
+  --sutochno-body-m-tight-lh: 20px;
+  --sutochno-body-m-tight-weight: 400;
+  --sutochno-body-m-tight-tracking: 0px;
+  --sutochno-label-s-size: 14px;
+  --sutochno-label-s-lh: 20px;
+  --sutochno-label-s-weight: 600;
+  --sutochno-label-s-tracking: 0px;
+  --sutochno-body-s-medium-size: 14px;
+  --sutochno-body-s-medium-lh: 20px;
+  --sutochno-body-s-medium-weight: 500;
+  --sutochno-body-s-medium-tracking: 0px;
+  --sutochno-body-s-size: 14px;
+  --sutochno-body-s-lh: 20px;
+  --sutochno-body-s-weight: 400;
+  --sutochno-body-s-tracking: 0px;
+  --sutochno-caption-bold-size: 12px;
+  --sutochno-caption-bold-lh: 16px;
+  --sutochno-caption-bold-weight: 700;
+  --sutochno-caption-bold-tracking: 0.2px;
+  --sutochno-caption-semi-bold-size: 12px;
+  --sutochno-caption-semi-bold-lh: 16px;
+  --sutochno-caption-semi-bold-weight: 600;
+  --sutochno-caption-semi-bold-tracking: 0.2px;
+  --sutochno-caption-medium-size: 12px;
+  --sutochno-caption-medium-lh: 16px;
+  --sutochno-caption-medium-weight: 500;
+  --sutochno-caption-medium-tracking: 0.2px;
+  --sutochno-caption-regular-size: 12px;
+  --sutochno-caption-regular-lh: 16px;
+  --sutochno-caption-regular-weight: 400;
+  --sutochno-caption-regular-tracking: 0.2px;
+  --sutochno-micro-bold-size: 10px;
+  --sutochno-micro-bold-lh: 14px;
+  --sutochno-micro-bold-weight: 700;
+  --sutochno-micro-bold-tracking: 0.2px;
+  --sutochno-micro-semi-bold-size: 10px;
+  --sutochno-micro-semi-bold-lh: 14px;
+  --sutochno-micro-semi-bold-weight: 600;
+  --sutochno-micro-semi-bold-tracking: 0.2px;
+  --sutochno-micro-medium-size: 10px;
+  --sutochno-micro-medium-lh: 14px;
+  --sutochno-micro-medium-weight: 500;
+  --sutochno-micro-medium-tracking: 0.2px;
+  --sutochno-micro-regular-size: 10px;
+  --sutochno-micro-regular-lh: 14px;
+  --sutochno-micro-regular-weight: 400;
+  --sutochno-micro-regular-tracking: 0.2px;
+}
+
+.product-typo-display-l {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-display-l-size);
+  line-height: var(--sutochno-display-l-lh);
+  font-weight: var(--sutochno-display-l-weight);
+  letter-spacing: var(--sutochno-display-l-tracking);
+}
+
+.product-typo-display-m {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-display-m-size);
+  line-height: var(--sutochno-display-m-lh);
+  font-weight: var(--sutochno-display-m-weight);
+  letter-spacing: var(--sutochno-display-m-tracking);
+}
+
+.product-typo-title-l {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-title-l-size);
+  line-height: var(--sutochno-title-l-lh);
+  font-weight: var(--sutochno-title-l-weight);
+  letter-spacing: var(--sutochno-title-l-tracking);
+}
+
+.product-typo-title-m {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-title-m-size);
+  line-height: var(--sutochno-title-m-lh);
+  font-weight: var(--sutochno-title-m-weight);
+  letter-spacing: var(--sutochno-title-m-tracking);
+}
+
+.product-typo-title-s {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-title-s-size);
+  line-height: var(--sutochno-title-s-lh);
+  font-weight: var(--sutochno-title-s-weight);
+  letter-spacing: var(--sutochno-title-s-tracking);
+}
+
+.product-typo-subhead-l {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-subhead-l-size);
+  line-height: var(--sutochno-subhead-l-lh);
+  font-weight: var(--sutochno-subhead-l-weight);
+  letter-spacing: var(--sutochno-subhead-l-tracking);
+}
+
+.product-typo-subhead-m {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-subhead-m-size);
+  line-height: var(--sutochno-subhead-m-lh);
+  font-weight: var(--sutochno-subhead-m-weight);
+  letter-spacing: var(--sutochno-subhead-m-tracking);
+}
+
+.product-typo-subhead-s {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-subhead-s-size);
+  line-height: var(--sutochno-subhead-s-lh);
+  font-weight: var(--sutochno-subhead-s-weight);
+  letter-spacing: var(--sutochno-subhead-s-tracking);
+}
+
+.product-typo-label-l {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-label-l-size);
+  line-height: var(--sutochno-label-l-lh);
+  font-weight: var(--sutochno-label-l-weight);
+  letter-spacing: var(--sutochno-label-l-tracking);
+}
+
+.product-typo-body-l-medium {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-l-medium-size);
+  line-height: var(--sutochno-body-l-medium-lh);
+  font-weight: var(--sutochno-body-l-medium-weight);
+  letter-spacing: var(--sutochno-body-l-medium-tracking);
+}
+
+.product-typo-body-l-medium-tight {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-l-medium-tight-size);
+  line-height: var(--sutochno-body-l-medium-tight-lh);
+  font-weight: var(--sutochno-body-l-medium-tight-weight);
+  letter-spacing: var(--sutochno-body-l-medium-tight-tracking);
+}
+
+.product-typo-body-l {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-l-size);
+  line-height: var(--sutochno-body-l-lh);
+  font-weight: var(--sutochno-body-l-weight);
+  letter-spacing: var(--sutochno-body-l-tracking);
+}
+
+.product-typo-body-l-tight {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-l-tight-size);
+  line-height: var(--sutochno-body-l-tight-lh);
+  font-weight: var(--sutochno-body-l-tight-weight);
+  letter-spacing: var(--sutochno-body-l-tight-tracking);
+}
+
+.product-typo-label-m {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-label-m-size);
+  line-height: var(--sutochno-label-m-lh);
+  font-weight: var(--sutochno-label-m-weight);
+  letter-spacing: var(--sutochno-label-m-tracking);
+}
+
+.product-typo-body-m-medium {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-m-medium-size);
+  line-height: var(--sutochno-body-m-medium-lh);
+  font-weight: var(--sutochno-body-m-medium-weight);
+  letter-spacing: var(--sutochno-body-m-medium-tracking);
+}
+
+.product-typo-body-m-medium-tight {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-m-medium-tight-size);
+  line-height: var(--sutochno-body-m-medium-tight-lh);
+  font-weight: var(--sutochno-body-m-medium-tight-weight);
+  letter-spacing: var(--sutochno-body-m-medium-tight-tracking);
+}
+
+.product-typo-body-m {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-m-size);
+  line-height: var(--sutochno-body-m-lh);
+  font-weight: var(--sutochno-body-m-weight);
+  letter-spacing: var(--sutochno-body-m-tracking);
+}
+
+.product-typo-body-m-tight {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-m-tight-size);
+  line-height: var(--sutochno-body-m-tight-lh);
+  font-weight: var(--sutochno-body-m-tight-weight);
+  letter-spacing: var(--sutochno-body-m-tight-tracking);
+}
+
+.product-typo-label-s {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-label-s-size);
+  line-height: var(--sutochno-label-s-lh);
+  font-weight: var(--sutochno-label-s-weight);
+  letter-spacing: var(--sutochno-label-s-tracking);
+}
+
+.product-typo-body-s-medium {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-s-medium-size);
+  line-height: var(--sutochno-body-s-medium-lh);
+  font-weight: var(--sutochno-body-s-medium-weight);
+  letter-spacing: var(--sutochno-body-s-medium-tracking);
+}
+
+.product-typo-body-s {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-body-s-size);
+  line-height: var(--sutochno-body-s-lh);
+  font-weight: var(--sutochno-body-s-weight);
+  letter-spacing: var(--sutochno-body-s-tracking);
+}
+
+.product-typo-caption-bold {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-caption-bold-size);
+  line-height: var(--sutochno-caption-bold-lh);
+  font-weight: var(--sutochno-caption-bold-weight);
+  letter-spacing: var(--sutochno-caption-bold-tracking);
+}
+
+.product-typo-caption-semi-bold {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-caption-semi-bold-size);
+  line-height: var(--sutochno-caption-semi-bold-lh);
+  font-weight: var(--sutochno-caption-semi-bold-weight);
+  letter-spacing: var(--sutochno-caption-semi-bold-tracking);
+}
+
+.product-typo-caption-medium {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-caption-medium-size);
+  line-height: var(--sutochno-caption-medium-lh);
+  font-weight: var(--sutochno-caption-medium-weight);
+  letter-spacing: var(--sutochno-caption-medium-tracking);
+}
+
+.product-typo-caption-regular {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-caption-regular-size);
+  line-height: var(--sutochno-caption-regular-lh);
+  font-weight: var(--sutochno-caption-regular-weight);
+  letter-spacing: var(--sutochno-caption-regular-tracking);
+}
+
+.product-typo-micro-bold {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-micro-bold-size);
+  line-height: var(--sutochno-micro-bold-lh);
+  font-weight: var(--sutochno-micro-bold-weight);
+  letter-spacing: var(--sutochno-micro-bold-tracking);
+}
+
+.product-typo-micro-semi-bold {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-micro-semi-bold-size);
+  line-height: var(--sutochno-micro-semi-bold-lh);
+  font-weight: var(--sutochno-micro-semi-bold-weight);
+  letter-spacing: var(--sutochno-micro-semi-bold-tracking);
+}
+
+.product-typo-micro-medium {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-micro-medium-size);
+  line-height: var(--sutochno-micro-medium-lh);
+  font-weight: var(--sutochno-micro-medium-weight);
+  letter-spacing: var(--sutochno-micro-medium-tracking);
+}
+
+.product-typo-micro-regular {
+  font-family: var(--font-family-sutochno);
+  font-size: var(--sutochno-micro-regular-size);
+  line-height: var(--sutochno-micro-regular-lh);
+  font-weight: var(--sutochno-micro-regular-weight);
+  letter-spacing: var(--sutochno-micro-regular-tracking);
+}
+

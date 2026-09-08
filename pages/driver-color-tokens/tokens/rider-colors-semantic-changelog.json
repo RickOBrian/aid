@@ -1,0 +1,90 @@
+{
+  "artifact": "Rider Colors/Semantic",
+  "currentVersion": "1.2.0",
+  "entries": [
+    {
+      "version": "1.2.0",
+      "date": "2026-08-19",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Attention Deep для текста, иконок и обводок",
+          "details": "Text/Attention Deep — #FF7200\nIcon/Attention Deep — #FF7200\nStroke/Attention — #FFC700"
+        },
+        {
+          "kind": "changed",
+          "description": "Переименована переменная Stroke/Attention в Stroke/Attention Deep",
+          "details": "Stroke/Attention → Stroke/Attention Deep"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлены 5 новых переменных в группу Pastel с поддержкой Night-режима",
+          "details": "Pastel/Milhouse — Day: #EFE7F9, Night: #3F3D42\nPastel/Nelson — Day: #D6EDE1, Night: #393F3B\nPastel/Patty — Day: #E6EFF8, Night: #3D3F42\nPastel/Selma — Day: #F8E6F3, Night: #413D40\nPastel/Maggie — Day: #ECE3FF, Night: #3E3C44"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Background/Energy и Background/Badge Mark",
+          "details": "Background/Energy — Day: #21CA8B, Night: #27D494\nBackground/Badge Mark — Day: #9DFF00, Night: #9DFF00"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Separator для дивайдеров и разделителей в Background и Stroke",
+          "details": "Background/Separator — Day: #777788 20%, Night: #777788 30%\nStroke/Separator — Day: #777788 20%, Night: #777788 30%"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Stroke/Contrast",
+          "details": "Stroke/Contrast — Day: #FFFFFF, Night: #0F0F1F"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Stroke/Special Deep",
+          "details": "Stroke/Special Deep — Day: #3458E9, Night: #A8C6FF"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Background/Overlay для фона модалок",
+          "details": "Background/Overlay — Day: #000000 30%, Night: #000000 30%"
+        },
+        {
+          "kind": "changed",
+          "description": "Переименована переменная Background/Badge Mark в Background/Neon",
+          "details": "Background/Badge Mark → Background/Neon"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Neon для текста, иконок и обводок",
+          "details": "Text/Neon — #9DFF00\nIcon/Neon — #9DFF00\nStroke/Neon — #9DFF00"
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-08-18",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Background/Navbar для фона навигационной панели",
+          "details": "Background/Navbar\nDay: #F5F5F5, 60%\nNight: #2A2A31, 60%"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-14",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Создана коллекция переменных color-sem с режимами Day и Night",
+          "details": "• Text (17 переменных)\n• Icon (17 переменных)\n• Background (22 переменные)\n• Button (8 переменных)\n• Field (2 переменные)\n• Stroke (7 переменных)\n• Route (6 переменных)\n• Pastel (11 переменных)\n• Stories (11 переменных)\n• Technical (3 переменные)\n• Legacy Button (7 переменных)"
+        }
+      ]
+    }
+  ]
+}

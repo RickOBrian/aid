@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: token-rules
 metadata:
-  version: "1.5.1"
+  version: "1.5.2"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -12,7 +12,7 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.5.1
+# Правила токенов дизайн-системы — v1.5.2
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -210,8 +210,30 @@ Web не использует `-ios` и `-android` токены.
 
 ---
 
+## Product-specific color modes (Driver)
+
+Общие правила выше используют термины **light mode** / **dark mode**. Продукт
+`driver` хранит значения в `pages/driver-color-tokens/data.ts` как `day` /
+`night`; portal и Figma artifacts показывают колонки **Day** / **Night**.
+
+Driver color mode mapping: `Day` represents light mode; `Night` represents dark
+mode. The `Day`/`Night` labels are current product terminology and must be
+preserved. Use their semantic mapping when implementing platform themes or
+component modes. This is not a token naming violation and does not require a
+per-component exception. Any future rename to `Light`/`Dark` requires an
+explicit product and release decision.
+
+Canonical metadata: `products/driver/product.json` → `colorModeMapping`.
+Source fields in `pages/driver-color-tokens/data.ts`: `day` (light), `night`
+(dark).
+
+---
+
 ## Changelog
 
+- **1.5.2** — 2026-08-16. Добавлен раздел «Product-specific color modes
+  (Driver)»: mapping `Day` → light, `Night` → dark; сохранение product labels;
+  не считать naming violation.
 - **1.5.1** — 2026-07-03. Уточнено в разделе «Состав типографического
   стиля»: `font-weight` (включая `type-weight-700`) допустим для любой
   роли, включая `label-*`, если задокументирован как отдельный полный

@@ -1,0 +1,19 @@
+{
+  "artifact": "Rider Typography/Semantic Outstanding",
+  "currentVersion": "1.0.0",
+  "entries": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-20",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Создана группа Outstanding в коллекции typography-sem: переменные и текстовые стили",
+          "details": "• typography-sem (группа typography-sem-out): 54 переменных, 2 режима (iOS, Android)\n• 9 текстовых стилей: iOS - Subtitle, iOS - Subtitle L, Title-title2 (NRD), iOS - Subtitle T, NRD - Body, iOS - Body, NRD - Action, NRD - H1, NRD - Action Bold\n• Привязка переменных к стилям: fontSize, fontWeight, fontFamily, lineHeight, letterSpacing, paragraphSpacing\n• Скоупинг переменных по категориям\n• Все переменные скрыты от публикации"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FieldSearch — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/docs-theme.css">
+  <link rel="stylesheet" href="../storybook-color-tokens.css">
+  <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="components/search">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <div id="guide-page"></div>
+
+    <header class="storybook-page-header">
+      <div class="spec-title-row">
+        <h1>FieldSearch</h1>
+        <div class="spec-badges">
+          <span class="chip">Surface View</span>
+          <span class="spec-confidence spec-confidence--medium">medium</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="component-heading">
+
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <div class="search" style="width:100%">
+            <svg class="search__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M7 13A6 6 0 1 0 7 1a6 6 0 0 0 0 12ZM14 14l-3-3"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input class="search__input" type="text" placeholder="Поиск по гайдам…" readonly aria-label="Пример FieldSearch">
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">
+              Surface View — подтверждено Principal Designer. Состав компонента —
+              Icon (Item-примитив, декоративный) + Input (Item-примитив, аналогичный
+              <code>Text</code>/<code>Number</code>), ни один элемент не является
+              самостоятельным Role/Entity-компонентом → критерий
+              <code>ds-component-spec/SKILL.md</code> (Шаг 2, v1.3.0) даёт Surface View.
+              Компонент переименован в <code>FieldSearch</code> (конвенция полей ввода —
+              префикс <code>Field*</code>, как у <code>FieldCheckbox</code>/<code>FieldRadio</code>).
+              Открытый вопрос остаётся только по обязательности leading-иконки —
+              в репозитории нет реализации, которая подтвердила бы это по коду.
+            </p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--gap">
+                <span class="spec-alert__tag">Gap</span>
+                <p class="spec-alert__text">
+                  <code>padding-left: 36px</code> (отступ под иконку) — захардкожен,
+                  semantic-токен под отступ иконки в контроле не заведён, нужно предложить новый.
+                </p>
+              </li>
+              <li class="spec-alert spec-alert--quality">
+                <span class="spec-alert__tag">Quality note</span>
+                <p class="spec-alert__text">
+                  <code>width: 280px</code> на контейнере — захардкожен, но это ширина конкретного
+                  инстанса в шапке сайта, а не переиспользуемое значение стиля; ограничение метода
+                  анализа (только один инстанс использования в разметке).
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">medium — уровень подтверждён Principal Designer; открыт только вопрос обязательности leading-иконки (нет реализации для проверки по коду).</p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'FieldSearch',
+  interactive: true,
+  parts: [
+    {
+      id: 'root',
+      label: 'Field container',
+      selector: '.search',
+      description: 'Позиционирующий контейнер; связка иконки и инпута — Item-примитивы в одной Surface View-оболочке (см. «Уровень архитектуры»).',
+    },
+    {
+      id: 'icon',
+      label: 'Leading icon',
+      selector: '.search__icon',
+      description: 'Декоративная иконка поверх поля; цвет — icon-токен.',
+    },
+    {
+      id: 'input',
+      label: 'Input',
+      selector: '.search__input',
+      description: 'Само поле ввода: фон, рамка, типографика и состояния focus/placeholder.',
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      { part: 'input', property: 'padding (верт.)', token: 'inset-control-v-s',
+        edit: { file: 'docs/assets/style.css', selector: '.search__input' } },
+      { part: 'input', property: 'padding (гориз.)', token: 'inset-control-h-m',
+        edit: { file: 'docs/assets/style.css', selector: '.search__input' } },
+      {
+        // derived: canonical 36px перекрыт docs-theme.css (padding-left: 38px)
+        part: 'input',
+        property: 'padding-left (под иконку)',
+        value: '36px',
+        hardcoded: true,
+        note: 'Gap — semantic-токен под отступ иконки в контроле не заведён; см. «Нарушения».',
+      },
+    ],
+    colors: [
+      { context: 'default', part: 'input', property: 'background', token: 'bg-base-main-secondary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__input' } },
+      { context: 'default', part: 'input', property: 'color', token: 'text-primary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__input' } },
+      { context: 'default', part: 'icon', property: 'color', token: 'icon-secondary', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__icon' } },
+      { context: 'placeholder', part: 'input', property: 'color', token: 'text-disabled', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__input::placeholder' } },
+      // derived: outline дублируется правилом в docs-theme.css — авто-правка была бы частичной
+      { context: 'focus', part: 'input', property: 'border-color / outline', token: 'line-accent', swatch: true },
+      { context: 'focus', part: 'input', property: 'background', token: 'bg-card-main', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__input:focus' } },
+    ],
+    borders: [
+      { part: 'input', property: 'border', token: 'line-default', swatch: true,
+        edit: { file: 'docs/assets/style.css', selector: '.search__input' } },
+      // derived: перекрыт docs-theme.css (border-radius: var(--radius-full))
+      { part: 'input', property: 'border-radius', token: 'radius-m' },
+    ],
+    typography: [
+      {
+        part: 'input',
+        role: 'label-s',
+        tokens: ['label-s-size', 'label-s-lh', 'label-s-weight'],
+        sample: 'Поиск по гайдам…',
+        edit: { file: 'docs/assets/style.css', selector: '.search__input', roles: ['label'] },
+      },
+    ],
+  },
+};
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'FieldSearch',
+  description: 'Поле поиска с leading-иконкой. Surface View — уровень подтверждён Principal Designer (см. «Уровень архитектуры»).',
+  version: '1.0.0',
+  status: 'stable',
+  anatomy: [
+    { id: 'icon', label: 'Leading icon', selector: '.search__icon',
+      description: 'Декоративная иконка поверх поля; цвет — icon-токен. Обязательность и возможность отключения — ⚠️ требует уточнения, нет реализации для проверки по коду.' },
+    { id: 'input', label: 'Input', selector: '.search__input', optional: false,
+      description: 'Само поле ввода: фон, рамка, типографика, состояния focus/placeholder.' },
+  ],
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  states: [
+    { name: 'Default', bg: 'bg-base-main-secondary', text: 'text-primary', sample: 'Aa' },
+    { name: 'Focused', bg: 'bg-card-main', text: 'text-primary', sample: 'Aa',
+      description: 'border-color/outline — line-accent.' },
+  ],
+  constraints: [
+    { label: 'Отступ под иконку', value: '<code>padding-left: 36px</code> захардкожен — Gap, semantic-токен не заведён; см. «Нарушения».' },
+  ],
+};
+</script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
+</body>
+</html>

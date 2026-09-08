@@ -1,0 +1,50 @@
+{
+  "id": "token-typography-sem-figma-import-2026-08-26",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Typography/Semantic",
+  "collectionName": "rider-typography-sem",
+  "product": "rider",
+  "changeSummary": "Import Rider semantic typography tokens; changelog synced from Figma «🙋🏻‍♀️ WB AID Rider Tokens — Styles» Changelog (node 11:502): 1.0.0 — initial typography system + Caption 2; 1.1.0 — Caption CAP.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-25",
+      "author": "Артур",
+      "kind": "added",
+      "description": "Добавлен стиль Captions/Caption CAP"
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-20",
+      "author": "Артур",
+      "kind": "added",
+      "description": "Добавлен стиль Captions/Caption 2; создана система типографики Rider"
+    }
+  ],
+  "addedStyles": [
+    "Titles/Large Title",
+    "Titles/Title 1",
+    "Titles/Title 2",
+    "Titles/Title 3",
+    "Titles/Title 4",
+    "Subtitles/Subtitle 1",
+    "Subtitles/Subtitle 2",
+    "Subtitles/Subtitle 3",
+    "Bodies/Body Large",
+    "Bodies/Body 1",
+    "Bodies/Body 2",
+    "Bodies/Body 3",
+    "Captions/Caption 1",
+    "Captions/Caption 2",
+    "Captions/Caption CAP"
+  ],
+  "figmaTokenSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=11-8",
+  "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=11-502",
+  "sourcePath": "pages/driver-color-tokens/products/rider/typographyData.ts",
+  "status": "pending",
+  "created": "2026-08-26",
+  "author": "sergej"
+}

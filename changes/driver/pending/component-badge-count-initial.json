@@ -1,0 +1,22 @@
+{
+  "id": "component-badge-count-initial",
+  "type": "component",
+  "changeType": "added",
+  "artifact": "BadgeCount",
+  "componentId": "badge-count",
+  "product": "driver",
+  "changeSummary": "Initial BadgeCount implementation: Surface View indicator (Indicators group) showing a formatted numeric count; single Warning color variant with overflow capping (value > max → \"{max}+\"); semantic Driver tokens (Fields · Warning, Texts · Primary light ind, radius-12, space-2/6, shadow-1, subtitle-2); review sandbox at /components/badge-count. Figma node named \"Counter\" — renamed to BadgeCount per Role+Entity formula (ds-component-architecture-guide.md), confirmed by Principal Designer; \"Counter\" kept as alias.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "BadgeCount: Surface View numeric indicator; props value, max, id, className, aria-label; Web platform implementation, SwiftUI/Compose reference snippets; Day/Night semantic color tokens (theme-independent)"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/badge-count",
+  "sourcePath": "pages/driver-color-tokens/components/BadgeCount.tsx",
+  "status": "pending",
+  "created": "2026-08-20",
+  "author": "sergej"
+}

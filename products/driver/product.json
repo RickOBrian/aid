@@ -1,0 +1,66 @@
+{
+  "id": "driver",
+  "label": "aid: driver",
+  "status": "active",
+  "tokensRoot": null,
+  "tokenDataRoot": "pages/driver-color-tokens",
+  "tokenDataFiles": [
+    "pages/driver-color-tokens/data.ts",
+    "pages/driver-color-tokens/typographyData.ts",
+    "pages/driver-color-tokens/spacingData.ts",
+    "pages/driver-color-tokens/radiusData.ts",
+    "pages/driver-color-tokens/shadowsData.ts",
+    "pages/driver-color-tokens/iconsData.ts"
+  ],
+  "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
+  "presentbookRoot": "pages/driver-color-tokens",
+  "presentbookType": "react-vite",
+  "routeBase": "/design-system",
+  "tokenRoutes": {
+    "hub": "/design-system",
+    "colors": "/tokens/colors",
+    "typography": "/tokens/typography",
+    "spacing": "/tokens/spacing",
+    "radius": "/tokens/radius",
+    "shadows": "/tokens/shadows",
+    "icons": "/tokens/icons"
+  },
+  "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+  "changelogRoot": "tokens",
+  "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+  "changelogFiles": [
+    "tokens/colors-semantic-changelog.json",
+    "tokens/typography-sem-changelog.json",
+    "tokens/spacing-sem-changelog.json",
+    "tokens/radius-sem-changelog.json",
+    "tokens/effects-shadows-changelog.json",
+    "tokens/icons-changelog.json"
+  ],
+  "releaseRoot": "changes/driver",
+  "releasePendingRoot": "changes/driver/pending",
+  "releaseReleasedRoot": "changes/driver/released",
+  "componentsRoot": null,
+  "componentsStatus": "not_started",
+  "componentRegistry": "pages/driver-color-tokens/component-registry.json",
+  "relatedPrototypes": [
+    {
+      "path": "src/pages/FigmaStyles",
+      "type": "figma-style-dump",
+      "status": "prototype",
+      "notSourceOfTruth": true,
+      "note": "Reference-only Figma style dump. Do not use as token, component, changelog or release source."
+    }
+  ],
+  "colorModeMapping": {
+    "Day": "light",
+    "Night": "dark",
+    "sourceFields": {
+      "Day": "day",
+      "Night": "night"
+    },
+    "preserveLabels": true,
+    "renameRequiresProductRelease": true,
+    "note": "Driver color mode mapping: Day represents light mode; Night represents dark mode. Day/Night labels are current product terminology and must be preserved."
+  },
+  "notes": "Значения токенов сейчас живут в TypeScript data-файлах, а не в tokens/driver/*.json."
+}

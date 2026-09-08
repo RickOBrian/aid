@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StorybookButton — System Storybook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="stylesheet" href="../../assets/docs-theme.css">
+  <link rel="stylesheet" href="../storybook-color-tokens.css">
+  <link rel="stylesheet" href="../storybook-layout.css">
+  <link rel="stylesheet" href="../storybook-spec-inspector.css">
+  <link rel="stylesheet" href="../guide-page.css">
+
+  <style>
+    html,
+    body,
+    .storybook-layout {
+      background-color: var(--bg-base-main);
+    }
+  </style>
+</head>
+<body data-storybook-page="components/storybook-button">
+
+<div class="storybook-layout">
+
+  <header class="layout__header storybook-layout__header">
+    <div class="header__logo">
+      <a href="../index.html" style="text-decoration:none">
+        <span class="header__eyebrow">Design System</span>
+        <span class="header__title storybook-header__title">System Storybook</span>
+      </a>
+    </div>
+
+    <div class="header__controls">
+      <button class="btn-icon" id="theme-toggle"
+              aria-label="Переключить тему" title="Переключить тему">
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:none">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 10A6 6 0 0 1 6 2.5a6 6 0 1 0 7.5 7.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="layout__sidebar storybook-layout__sidenav" aria-label="Storybook navigation">
+    <nav class="storybook-nav" id="storybook-nav" aria-label="Storybook sections"></nav>
+    <div class="storybook-nav__footer">
+      <a class="storybook-nav__back" href="../../index.html">← Docs</a>
+    </div>
+  </aside>
+
+  <main class="storybook-layout__content">
+    <p class="component-doc-breadcrumb">
+      <a href="../components.html">← Components</a>
+    </p>
+
+    <!--
+      Инфраструктурный элемент инструмента Storybook, не входит в DS-каталог
+      компонентов. Spec не требуется. Решение Principal Designer, 2026-07-24
+      (см. memory/ds-component-spec/log.sergej.json, запись spec-007).
+    -->
+    <ul class="spec-alerts" aria-labelledby="storybook-button-infra-heading">
+      <li class="spec-alert spec-alert--quality">
+        <span class="spec-alert__tag" id="storybook-button-infra-heading">Infra, не DS</span>
+        <p class="spec-alert__text">
+          Инфраструктурный элемент инструмента Storybook: класс <code>.storybook-btn</code> используется
+          для собственного UI редактора токенов (save-bar, модалки создания/удаления в
+          <code>spec-editor.js</code>, <code>token-create.js</code>, <code>token-confirm.js</code>,
+          <code>colors.html</code>, <code>typography.html</code>). Не входит в DS-каталог компонентов —
+          spec-файл не ведётся. Решение Principal Designer, 2026-07-24
+          (<code>memory/ds-component-spec/log.sergej.json</code>, запись spec-007).
+        </p>
+      </li>
+    </ul>
+
+    <div id="guide-page"></div>
+
+    <header class="storybook-page-header">
+      <div class="spec-title-row">
+        <h1>StorybookButton <span class="spec-alt-name">(ButtonText)</span></h1>
+        <div class="spec-badges">
+          <span class="chip">Surface View</span>
+          <span class="spec-confidence spec-confidence--medium">medium</span>
+        </div>
+      </div>
+      <p>Карточка компонента с editable-слоем: component-side значения редактируются на месте (typed dropdown для токенов, инлайн — для прямых значений).</p>
+    </header>
+
+    <section class="storybook-section" aria-labelledby="component-heading">
+
+      <div class="spec-preview">
+        <span class="spec-preview__label">Preview</span>
+        <div class="spec-preview__stage" id="spec-sample">
+          <button class="storybook-btn storybook-btn--primary" type="button" tabindex="-1">Apply &amp; Save</button>
+        </div>
+      </div>
+
+      <div class="spec-layout">
+        <div class="spec-main">
+
+          <section class="spec-block" aria-labelledby="spec-level-heading">
+            <h3 class="spec-block__title" id="spec-level-heading">Уровень архитектуры</h3>
+            <p class="spec-block__text">
+              Surface View — Role-семья <code>Button</code> зафиксирована как Surface View
+              в разделе 9; по составу (текст в оболочке) соответствует <code>ButtonText</code>.
+            </p>
+          </section>
+
+          <div id="spec-inspector"></div>
+
+          <section class="spec-block" aria-labelledby="spec-violations-heading">
+            <h3 class="spec-block__title" id="spec-violations-heading">Нарушения</h3>
+            <ul class="spec-alerts">
+              <li class="spec-alert spec-alert--blocker">
+                <span class="spec-alert__tag">Blocker</span>
+                <p class="spec-alert__text">
+                  <code>padding: 8px 16px</code> — захардкожены отступы вместо уже существующих
+                  <code>inset-control-*</code>-токенов.
+                </p>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <aside class="spec-aside">
+          <section class="spec-card" aria-labelledby="spec-confidence-heading">
+            <h4 class="spec-card__title" id="spec-confidence-heading">Confidence</h4>
+            <p class="spec-card__text">
+              medium — Role-семья <code>Button</code> напрямую зафиксирована как Surface View
+              (раздел 9), но конкретное сопоставление CSS-класса <code>.storybook-btn</code>
+              с примером <code>ButtonText</code> — вывод по составу, не буквальное имя из гайда.
+            </p>
+          </section>
+
+          <section class="spec-card" aria-labelledby="spec-index-heading">
+            <h4 class="spec-card__title" id="spec-index-heading">Inspection index</h4>
+            <p class="spec-card__hint">Токены и measure-блоки компонента по аспектам.</p>
+            <div id="spec-token-index"></div>
+          </section>
+        </aside>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<script src="../storybook.js"></script>
+<script>
+window.DS_COMPONENT_SPEC = {
+  name: 'StorybookButton',
+  interactive: true,
+  parts: [
+    {
+      id: 'root',
+      label: 'Container',
+      selector: '.storybook-btn',
+      description: 'Оболочка кнопки; текст — прямой контент без отдельного DOM-узла.',
+    },
+  ],
+  aspects: {
+    size: [],
+    spacing: [
+      {
+        part: 'root',
+        property: 'padding',
+        value: '8px 16px',
+        hardcoded: true,
+        note: 'Blocker — существуют <code>inset-control-*</code>-токены; см. «Нарушения».',
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn', prop: 'padding' },
+      },
+    ],
+    colors: [
+      { context: 'default', part: 'root', property: 'background', token: 'bg-accent-main', swatch: true,
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn--primary' } },
+      { context: 'default', part: 'root', property: 'color', token: 'text-inverse', swatch: true,
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn--primary' } },
+      { context: 'hover', part: 'root', property: 'background', token: 'bg-accent-states-pressed', swatch: true,
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn--primary:hover' } },
+    ],
+    borders: [
+      { part: 'root', property: 'border-radius', token: 'radius-full',
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn' } },
+    ],
+    typography: [
+      {
+        part: 'root',
+        role: 'label-m',
+        tokens: ['label-m-size', 'label-m-lh', 'label-m-weight'],
+        sample: 'Apply & Save',
+        edit: { file: 'docs/storybook/storybook-layout.css', selector: '.storybook-btn', roles: ['label'] },
+      },
+    ],
+  },
+};
+
+window.DS_COMPONENT_GUIDE = {
+  name: 'ButtonText',
+  description: 'Кнопка с текстовым слотом. Основной интерактивный контрол для подтверждения действия (Surface View, Role-семья Button).',
+  version: '1.0.0',
+  status: 'stable',
+  platforms: [
+    { name: 'Web', status: 'ready' },
+    { name: 'iOS', status: 'planned' },
+    { name: 'Android', status: 'planned' },
+  ],
+  dimensions: [
+    { label: 'Высота', value: '40px' },
+    { label: 'Мин. ширина', value: '96px' },
+  ],
+  fillTypes: [
+    { name: 'Solid', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa',
+      description: 'Насыщенная плотная заливка — основной CTA.' },
+    { name: 'Fade', bg: 'bg-accent-fade', text: 'text-accent', sample: 'Aa',
+      description: 'Приглушённая полупрозрачная заливка — второй по значимости акцент.' },
+    { name: 'Ghost', bg: 'bg-accent-ghost', text: 'text-accent', sample: 'Aa',
+      description: 'Пастельная заливка — третичное действие, минимум визуального веса.' },
+    { name: 'Inverse', bg: 'bg-accent-inverse', text: 'text-accent', backdrop: 'bg-accent-main', sample: 'Aa',
+      description: 'Inverse-цвет из той же семантической группы — контраст на цветной подложке.' },
+  ],
+  appearance: [
+    { fillType: 'Solid', variants: [
+      { name: 'Main', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Success', bg: 'bg-accent-status-success', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Warning', bg: 'bg-accent-status-warning', text: 'text-primary', sample: 'Aa' },
+      { name: 'Error', bg: 'bg-accent-status-error', text: 'text-inverse', sample: 'Aa' },
+      { name: 'Attention', bg: 'bg-accent-status-attention', text: 'text-inverse', sample: 'Aa' },
+    ] },
+  ],
+  states: [
+    { name: 'Default', bg: 'bg-accent-main', text: 'text-inverse', sample: 'Aa' },
+    { name: 'Hover', bg: 'bg-accent-states-hover', text: 'text-accent', sample: 'Aa',
+      description: 'Оверлей над base-фоном страницы.' },
+    { name: 'Pressed', bg: 'bg-accent-states-pressed', text: 'text-accent', sample: 'Aa' },
+    { name: 'Focused', bg: 'bg-accent-states-focused', text: 'text-accent', sample: 'Aa' },
+    { name: 'Disabled', bg: 'bg-accent-states-disable', text: 'text-disabled', sample: 'Aa',
+      description: 'Opacity 40% + неинтерактивен.' },
+  ],
+  tapArea: {
+    text: 'Область тапа равна физическому размеру контейнера — отдельного hit-slop нет.',
+    value: '40×96px',
+  },
+  constraints: [
+    { label: 'Мин. ширина', value: '<code>96px</code> — иначе текст CTA обрезается.' },
+    { label: 'Макс. строк текста', value: '1 — переполнение обрезается эллипсисом.' },
+  ],
+  animation: {
+    text: 'Переход между состояниями — background-color 0.15s ease. Нет входной/выходной анимации самого контрола.',
+  },
+};
+</script>
+<script src="../measure-agents.js"></script>
+<script src="../guide-page.js"></script>
+<script>DSGuidePage.render(document.getElementById('guide-page'));</script>
+<script src="../spec-inspector.js"></script>
+<script src="../spec-editor.js"></script>
+</body>
+</html>
