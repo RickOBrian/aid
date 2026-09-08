@@ -28,7 +28,7 @@ async function hasValidSession(request: Request): Promise<boolean> {
 export default async function middleware(request: Request): Promise<Response | undefined> {
   const { pathname } = new URL(request.url);
 
-  if (pathname === '/api/login' || pathname === '/api/registry/propose-decision') {
+  if (pathname === '/api/login') {
     return;
   }
 

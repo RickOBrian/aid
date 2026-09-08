@@ -6,7 +6,7 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node", "vitest/globals"]
+    "types": ["node"]
   },
-  "include": ["api/**/*.ts", "middleware.ts"]
+  "include": ["api/login.ts", "api/_lib/session.ts", "middleware.ts"]
 }
