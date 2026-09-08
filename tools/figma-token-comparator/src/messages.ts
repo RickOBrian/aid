@@ -67,6 +67,8 @@ export interface ApplyDecisionMessage {
     sourceDisplayValue?: string;
     nodePath?: string;
     nodeName?: string;
+    /** LayoutRecord.nodeIds на момент Apply — для навигации к слою в макете из UI. */
+    nodeIds?: string[];
     occurrenceCount?: number;
     targetModeName?: string;
     targetDisplayValue?: string;
@@ -137,8 +139,24 @@ export interface ToggleAdminModeMessage {
   type: "toggle-admin-mode";
 }
 
+/**
+ * UI запрашивает у code.ts свежий список ещё не отправленных решений перед
+ * показом подтверждающей модалки — единственное место, где backend/history
+ * читаются как source of truth для этого списка (не currentResults в UI,
+ * который может быть устаревшим относительно clientStorage).
+ */
+export interface RequestProposePreviewMessage {
+  type: "request-propose-preview";
+}
+
+/**
+ * Отправить на согласование — теперь только выбранные в модалке подтверждения
+ * решения (пользователь мог снять чекбоксы у части строк), а не всегда весь
+ * pending-набор.
+ */
 export interface ProposeDecisionsMessage {
   type: "propose-decisions";
+  payload: { recordIds: string[] };
 }
 
 export type UiToCodeMessage =
@@ -158,6 +176,7 @@ export type UiToCodeMessage =
   | BuildPreviewMessage
   | ApplyToLayoutMessage
   | ToggleAdminModeMessage
+  | RequestProposePreviewMessage
   | ProposeDecisionsMessage;
 
 export interface InitStateMessage {
@@ -319,6 +338,37 @@ export interface PendingProposeCountMessage {
   payload: { count: number };
 }
 
+/**
+ * Одна строка в подтверждающей модалке "Отправить решения на согласование".
+ * Строится code.ts из StoredDecision (mappingHistory) — тех же данных, что
+ * пойдут в ProposeDecisionEntryPayload на backend. Это read-only проекция
+ * для показа пользователю, не отдельный источник истины.
+ */
+export interface ProposePreviewEntry {
+  recordId: string;
+  decision: Decision;
+  comment?: string;
+  nodeName?: string;
+  nodePath?: string;
+  /** LayoutRecord.nodeIds на момент Apply — для перехода к слою из модалки подтверждения. */
+  nodeIds?: string[];
+  sourceProperty?: string;
+  sourceDisplayValue?: string;
+  occurrenceCount?: number;
+  targetVariableName?: string;
+  targetCollectionName?: string;
+  targetModeName?: string;
+  targetDisplayValue?: string;
+  proposedModeName?: string;
+  currentLibraryValue?: string;
+  proposedValue?: string;
+}
+
+export interface ProposePreviewMessage {
+  type: "propose-preview";
+  payload: { entries: ProposePreviewEntry[] };
+}
+
 export interface DecisionsSubmittedMessage {
   type: "decisions-submitted";
   payload: { count: number };
@@ -354,6 +404,7 @@ export type CodeToUiMessage =
   | ApplyToLayoutResultMessage
   | AdminModeChangedMessage
   | PendingProposeCountMessage
+  | ProposePreviewMessage
   | DecisionsSubmittedMessage
   | DecisionsSubmitFailedMessage
   | RegistryUnavailableMessage;

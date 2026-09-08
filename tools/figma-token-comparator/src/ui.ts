@@ -15,7 +15,7 @@ import { isValidHex, normalizeHex } from "./lib/colorUtils";
 import { findLayoutValueForTargetMode, sortModesStable } from "./lib/modePairing";
 import { filterSemanticColorTokens } from "./lib/semanticColorLibrary";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
-import type { CodeToUiMessage, UiToCodeMessage } from "./messages";
+import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
 
 function post(message: UiToCodeMessage): void {
@@ -404,7 +404,234 @@ function initProposePanel(): void {
     if (pendingProposeCount === 0) return;
     renderProposeStatus("");
     $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = true;
-    post({ type: "propose-decisions" });
+    post({ type: "request-propose-preview" });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Модалка подтверждения "Отправить решения на согласование"
+//
+// Показывает те же поля, что попадут в человекочитаемое PR body на GitHub
+// (см. server/api/_lib/pullRequestBody.ts) — Путь / Свойство / Значение /
+// Токен / Коллекция-режим / Комментарий в зависимости от decision. Чекбокс у
+// строки решает, попадёт ли она в отправку: снятые решения остаются pending
+// и не отправляются вовсе (не "отмена" на backend — они просто не включаются
+// в текущий payload propose-decisions).
+// ---------------------------------------------------------------------------
+
+const PROPOSE_DECISION_META: Record<Decision, { icon: string; label: string }> = {
+  mapped: { icon: "🟢", label: "Использовать токен" },
+  mapped_suggested: { icon: "🟢", label: "Использовать токен" },
+  ignored: { icon: "🔴", label: "Игнорировать" },
+  candidate: { icon: "🔵", label: "Кандидат на новый токен" },
+  value_fix_proposed: { icon: "🟡", label: "Предложить правку значения токена" },
+};
+
+let proposePreviewEntries: ProposePreviewEntry[] = [];
+const proposeSelectedIds = new Set<string>();
+
+function bulletHtml(label: string, value: string | number | undefined): string | null {
+  if (value === undefined || value === null) return null;
+  const text = String(value).trim();
+  if (!text) return null;
+  return `<div><strong>${escapeHtml(label)}:</strong> ${escapeHtml(text)}</div>`;
+}
+
+function collectionModeHtml(collectionName?: string, modeName?: string): string | null {
+  const collection = collectionName?.trim();
+  const mode = modeName?.trim();
+  if (!collection && !mode) return null;
+  const text = collection && mode ? `${collection} / ${mode}` : collection || mode || "";
+  return `<div><strong>Коллекция / режим:</strong> ${escapeHtml(text)}</div>`;
+}
+
+function renderProposeItemDetails(entry: ProposePreviewEntry): string {
+  const lines: Array<string | null> = [];
+  switch (entry.decision) {
+    case "mapped":
+    case "mapped_suggested":
+      lines.push(
+        bulletHtml("Свойство", entry.sourceProperty),
+        bulletHtml("Затронуто слоёв", entry.occurrenceCount),
+        bulletHtml("Текущее значение", entry.sourceDisplayValue),
+        bulletHtml("Токен", entry.targetVariableName),
+        bulletHtml("Значение токена", entry.targetDisplayValue),
+        collectionModeHtml(entry.targetCollectionName, entry.targetModeName),
+        bulletHtml("Комментарий", entry.comment)
+      );
+      break;
+    case "ignored":
+      lines.push(
+        bulletHtml("Свойство", entry.sourceProperty),
+        bulletHtml("Затронуто слоёв", entry.occurrenceCount),
+        bulletHtml("Значение", entry.sourceDisplayValue),
+        bulletHtml("Причина", entry.comment?.trim() || "не указана")
+      );
+      break;
+    case "value_fix_proposed":
+      lines.push(
+        bulletHtml("Токен", entry.targetVariableName),
+        collectionModeHtml(entry.targetCollectionName, entry.proposedModeName),
+        bulletHtml("Текущее значение библиотеки", entry.currentLibraryValue),
+        bulletHtml("Предлагаемое значение", entry.proposedValue),
+        bulletHtml("Комментарий", entry.comment)
+      );
+      break;
+    case "candidate":
+      lines.push(
+        bulletHtml("Свойство", entry.sourceProperty),
+        bulletHtml("Значение", entry.sourceDisplayValue),
+        bulletHtml("Комментарий", entry.comment)
+      );
+      break;
+    default:
+      break;
+  }
+  return lines.filter((line): line is string => line !== null).join("");
+}
+
+function resolveProposeEntryNodeIds(entry: ProposePreviewEntry): string[] {
+  if (entry.nodeIds && entry.nodeIds.length > 0) return entry.nodeIds;
+  const result = currentResults.find((item) => item.id === entry.recordId);
+  if (result?.nodeIds && result.nodeIds.length > 0) return result.nodeIds;
+  return [];
+}
+
+function renderProposeItemHtml(entry: ProposePreviewEntry): string {
+  const meta = PROPOSE_DECISION_META[entry.decision] ?? { icon: "⚪", label: entry.decision };
+  const checked = proposeSelectedIds.has(entry.recordId);
+  const title = entry.nodeName?.trim() || entry.recordId;
+  const nodeIds = resolveProposeEntryNodeIds(entry);
+  const pathHtml = entry.nodePath
+    ? nodeIds.length > 0
+      ? `<button type="button" class="ds-accent-link tc-propose-item__path tc-propose-item__path-link" data-record-id="${escapeHtml(
+          entry.recordId
+        )}" title="Перейти к слою в макете">${escapeHtml(entry.nodePath)}</button>`
+      : `<div class="tc-propose-item__path">${escapeHtml(entry.nodePath)}</div>`
+    : "";
+  return `
+    <div class="tc-propose-item${checked ? "" : " tc-propose-item--unchecked"}" data-record-id="${escapeHtml(
+    entry.recordId
+  )}">
+      <label class="tc-propose-item__checkbox">
+        <input type="checkbox" class="tc-propose-item__check" data-record-id="${escapeHtml(
+          entry.recordId
+        )}" ${checked ? "checked" : ""} />
+      </label>
+      <div class="tc-propose-item__body">
+        <div class="tc-propose-item__title">
+          <span class="tc-propose-item__decision">${meta.icon} ${escapeHtml(meta.label)}</span>
+          <span class="tc-propose-item__name">${escapeHtml(title)}</span>
+        </div>
+        ${pathHtml}
+        <div class="tc-propose-item__details">${renderProposeItemDetails(entry)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function updateProposeModalFooter(): void {
+  const total = proposePreviewEntries.length;
+  const selected = proposeSelectedIds.size;
+  $<HTMLElement>("tc-propose-selected-count").textContent = `Выбрано ${selected} из ${total}`;
+  const confirmBtn = $<HTMLButtonElement>("tc-propose-confirm-btn");
+  confirmBtn.textContent = `Отправить ${selected} ${pluralizeDecisions(selected)}`;
+  confirmBtn.disabled = selected === 0;
+  const selectAll = $<HTMLInputElement>("tc-propose-select-all");
+  selectAll.checked = total > 0 && selected === total;
+  selectAll.indeterminate = selected > 0 && selected < total;
+}
+
+function renderProposeList(): void {
+  const container = $<HTMLElement>("tc-propose-list");
+  if (proposePreviewEntries.length === 0) {
+    container.innerHTML = `<div class="tc-propose-empty">Нет решений, ожидающих отправки.</div>`;
+  } else {
+    container.innerHTML = proposePreviewEntries.map((entry) => renderProposeItemHtml(entry)).join("");
+  }
+  updateProposeModalFooter();
+}
+
+function toggleProposeItem(recordId: string, checked: boolean): void {
+  if (checked) {
+    proposeSelectedIds.add(recordId);
+  } else {
+    proposeSelectedIds.delete(recordId);
+  }
+  const row = $<HTMLElement>("tc-propose-list").querySelector<HTMLElement>(
+    `.tc-propose-item[data-record-id="${cssEscapeRecordId(recordId)}"]`
+  );
+  if (row) row.classList.toggle("tc-propose-item--unchecked", !checked);
+  updateProposeModalFooter();
+}
+
+function cssEscapeRecordId(recordId: string): string {
+  return typeof CSS !== "undefined" && CSS.escape ? CSS.escape(recordId) : recordId.replace(/"/g, '\\"');
+}
+
+function openProposeConfirmModal(entries: ProposePreviewEntry[]): void {
+  proposePreviewEntries = entries;
+  proposeSelectedIds.clear();
+  entries.forEach((entry) => proposeSelectedIds.add(entry.recordId));
+  renderProposeList();
+  $("tc-propose-overlay").hidden = false;
+  $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = pendingProposeCount === 0;
+}
+
+function closeProposeConfirmModal(): void {
+  $("tc-propose-overlay").hidden = true;
+  proposePreviewEntries = [];
+  proposeSelectedIds.clear();
+  $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = pendingProposeCount === 0;
+}
+
+function confirmProposeSubmit(): void {
+  const recordIds = Array.from(proposeSelectedIds);
+  if (recordIds.length === 0) return;
+  closeProposeConfirmModal();
+  renderProposeStatus("");
+  $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = true;
+  post({ type: "propose-decisions", payload: { recordIds } });
+}
+
+function initProposeConfirmModal(): void {
+  $<HTMLButtonElement>("tc-propose-close-btn").addEventListener("click", closeProposeConfirmModal);
+  $<HTMLButtonElement>("tc-propose-cancel-btn").addEventListener("click", closeProposeConfirmModal);
+  $<HTMLButtonElement>("tc-propose-confirm-btn").addEventListener("click", confirmProposeSubmit);
+  $("tc-propose-overlay").addEventListener("click", (event) => {
+    if (event.target === $("tc-propose-overlay")) closeProposeConfirmModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !$("tc-propose-overlay").hidden) closeProposeConfirmModal();
+  });
+  $<HTMLInputElement>("tc-propose-select-all").addEventListener("change", (event) => {
+    const checked = (event.target as HTMLInputElement).checked;
+    proposeSelectedIds.clear();
+    if (checked) {
+      proposePreviewEntries.forEach((entry) => proposeSelectedIds.add(entry.recordId));
+    }
+    renderProposeList();
+  });
+  $<HTMLElement>("tc-propose-list").addEventListener("change", (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.classList.contains("tc-propose-item__check")) return;
+    const recordId = target.getAttribute("data-record-id");
+    if (!recordId) return;
+    toggleProposeItem(recordId, (target as HTMLInputElement).checked);
+  });
+  $<HTMLElement>("tc-propose-list").addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const pathLink = target.closest<HTMLElement>(".tc-propose-item__path-link");
+    if (!pathLink) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const recordId = pathLink.getAttribute("data-record-id");
+    if (!recordId) return;
+    const entry = proposePreviewEntries.find((item) => item.recordId === recordId);
+    if (!entry) return;
+    const nodeIds = resolveProposeEntryNodeIds(entry);
+    if (nodeIds.length === 0) return;
+    post({ type: "select-nodes", payload: { nodeIds } });
   });
 }
 
@@ -1551,6 +1778,7 @@ function buildSourceReviewContext(result: ComparisonResult): {
   sourceDisplayValue: string;
   nodePath: string;
   nodeName: string;
+  nodeIds: string[];
   occurrenceCount: number;
 } {
   return {
@@ -1560,6 +1788,7 @@ function buildSourceReviewContext(result: ComparisonResult): {
     sourceDisplayValue: result.displayValue,
     nodePath: result.representativeNodePath,
     nodeName: result.representativeNodeName,
+    nodeIds: result.nodeIds,
     occurrenceCount: result.count,
   };
 }
@@ -1948,6 +2177,9 @@ window.onmessage = (event: MessageEvent) => {
     case "pending-propose-count":
       updateProposeButton(message.payload.count);
       break;
+    case "propose-preview":
+      openProposeConfirmModal(message.payload.entries);
+      break;
     case "decisions-submitted":
       renderProposeStatus(PROPOSE_SUCCESS);
       break;
@@ -2230,6 +2462,7 @@ initExportMenus();
 initApplyFooterButton();
 initPreviewModal();
 initApplyToLayoutModal();
+initProposeConfirmModal();
 initWindowResize();
 renderResultsTable();
 applyAdminMode(false);
