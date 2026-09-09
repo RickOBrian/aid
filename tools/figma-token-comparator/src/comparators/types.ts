@@ -211,6 +211,8 @@ export interface StoredDecision {
   nodePath?: string;
   /** LayoutRecord.representativeNodeName на момент Apply. */
   nodeName?: string;
+  /** LayoutRecord.nodeIds на момент Apply — для навигации к слою в макете из UI. */
+  nodeIds?: string[];
   /** LayoutRecord.count на момент Apply — сколько слоёв затронуто группой. */
   occurrenceCount?: number;
   /** ComparisonTarget.modeName на момент Apply (для mapped/mapped_suggested). */

@@ -19,24 +19,47 @@
         --ds-surface-zebra: #fafafa;
         --ds-border: #ebedf0;
         --ds-focus: rgba(45, 44, 46, 0.32);
+        /* tableWrapRadius — dsChangelogTable.ts */
         --ds-radius: 8px;
+        /* card/modal surfaces — ComponentReleaseStatus.tsx, dsTokenJsonActions.tsx */
+        --ds-radius-card: 12px;
         --ds-toast-bg: #2d2c2e;
         --ds-toast-text: #ffffff;
 
-        /* Driver product accent — dsProductAccent.ts */
+        /* Driver product accent — pages/driver-color-tokens/dsProductAccent.ts */
         --ds-accent: #3d6afe;
         --ds-accent-bg: #ebf0ff;
         --ds-accent-rgb: 61, 106, 254;
+        /* Presentbook не задаёт accent primary CTA; pressed tone для plugin-only primary buttons */
+        --ds-accent-hover: #2f58e0;
+        --ds-text-on-accent: #ffffff;
 
-        /* Status / changelog kind colors */
+        /* dsTokenJsonActions.tsx modal + DS_TOAST_STYLE */
+        --ds-overlay-backdrop: rgba(0, 0, 0, 0.38);
+        --ds-shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.16);
+        --ds-shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+        /* ChangelogTable.tsx CHANGE_KIND_COLORS */
         --ds-status-added: #23ad58;
         --ds-status-changed: #005aff;
         --ds-status-fixed: #f0a11d;
         --ds-status-removed: #d62347;
+        /* ComponentReleaseStatus.tsx released/pending badges */
         --ds-status-released-bg: #eef8f1;
         --ds-status-released-text: #1f7a3f;
+        --ds-status-released-border: #b9e6c9;
         --ds-status-pending-bg: #fff8e6;
         --ds-status-pending-text: #8a6a00;
+        --ds-status-pending-border: #f0d48a;
+
+        /* Plugin comparator semantics — нет прямого эквивалента в Presentbook portal chrome */
+        --ds-status-error-bg: #fdecea;
+        --ds-status-error-border: #f4c2c2;
+        --ds-status-warning-alt-bg: #fff4e0;
+        --ds-status-warning-alt-text: #a15c00;
+        /* PRODUCT_ACCENT.rider — только для approximate match badge */
+        --ds-status-rider-bg: #f5edff;
+        --ds-status-rider-text: #9747ff;
       }
 
       *,
@@ -63,70 +86,69 @@
         overflow: hidden;
       }
 
-      /* Page shell — компактный вариант presentbook padding */
+      /* Page shell — DS_PORTAL_LAYOUT_TOKENS.pagePaddingMobile */
       .ds-page {
         display: flex;
         flex-direction: column;
         flex: 1;
         min-height: 0;
-        padding: 20px 16px 24px;
+        padding: 20px 16px 40px;
         overflow: hidden;
       }
 
-      /* Header — DsPageHeader.tsx */
+      /* Header — компактный plugin chrome (без portal border-bottom) */
       .ds-page-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 16px;
+        gap: 16px;
+        margin-bottom: 12px;
         flex-shrink: 0;
+      }
+
+      .ds-page-header__lead {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        min-width: 0;
       }
 
       .ds-page-header h1 {
         margin: 0;
-        font-size: 20px;
+        font-size: 28px;
         font-weight: 500;
-        line-height: 28px;
+        line-height: 36px;
         color: var(--ds-text);
         cursor: default;
         user-select: none;
       }
 
+      @media (max-width: 480px) {
+        .ds-page-header h1 {
+          font-size: 24px;
+          line-height: 32px;
+        }
+      }
+
       .ds-admin-badge {
-        display: inline-block;
-        margin-left: 8px;
-        padding: 2px 8px;
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding: 2px 10px;
         font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: none;
         border-radius: 999px;
         background: var(--ds-status-pending-bg);
         color: var(--ds-status-pending-text);
-        vertical-align: middle;
+        border: 1px solid var(--ds-status-pending-border);
       }
 
       .ds-admin-badge[hidden],
       #tc-admin-github-panel[hidden] {
         display: none !important;
-      }
-
-      .ds-propose-bar {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 12px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--ds-border-subtle);
-      }
-
-      .ds-page-header__meta {
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: var(--ds-text-muted);
       }
 
       /* Tabs — SwitchPage .dsw-tabs + dsProductAccent .ds-accent-tab */
@@ -322,7 +344,7 @@
       }
 
       .ds-section-caption {
-        margin: 0 0 12px;
+        margin: 0 0 20px;
         font-size: 14px;
         line-height: 20px;
         color: var(--ds-text-secondary);
@@ -412,19 +434,20 @@
       }
 
       .ds-btn-primary {
-        color: #ffffff;
+        color: var(--ds-text-on-accent);
         background: var(--ds-accent);
         border-color: var(--ds-accent);
       }
 
       .ds-btn-primary:hover:not(:disabled) {
-        background: #2f58e0;
-        border-color: #2f58e0;
+        background: var(--ds-accent-hover);
+        border-color: var(--ds-accent-hover);
       }
 
       .ds-btn-primary:disabled {
         opacity: 0.5;
-        color: #ffffff;
+        color: var(--ds-text-on-accent);
+        cursor: not-allowed;
       }
 
       /* Segmented control — dsProductAccent .ds-accent-segment */
@@ -474,17 +497,38 @@
       }
 
       .ds-settings-divider {
-        margin: 20px 0;
+        margin: 0;
         border: none;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        border-top: 1px solid var(--ds-border);
       }
 
       .ds-settings-subtitle {
         margin: 0 0 8px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         line-height: 20px;
         color: var(--ds-text);
+      }
+
+      /* Admin GitHub block — вложен в .ds-panel, поэтому gap панели не распространяется на поля */
+      #tc-admin-github-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      #tc-admin-github-panel > .ds-settings-divider {
+        margin: 0;
+      }
+
+      #tc-admin-github-panel > .ds-settings-subtitle,
+      #tc-admin-github-panel > .ds-section-caption {
+        margin: 0;
+      }
+
+      #tc-admin-github-panel > .ds-registry-not-found {
+        margin-top: 0;
       }
 
       .ds-registry-not-found {
@@ -514,9 +558,9 @@
 
       .ds-banner.error:not(:empty) {
         display: block;
-        background: #fdecea;
+        background: var(--ds-status-error-bg);
         color: var(--ds-status-removed);
-        border: 1px solid #f4c2c2;
+        border: 1px solid var(--ds-status-error-border);
       }
 
       /* Tables — DS_TOKEN_TABLE_STYLE */
@@ -637,7 +681,7 @@
         background: var(--ds-surface);
         border: 1px solid var(--ds-border);
         border-radius: var(--ds-radius);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        box-shadow: var(--ds-shadow-dropdown);
       }
 
       .ds-filter-menu[hidden] {
@@ -785,8 +829,8 @@
       }
 
       .ds-badge.name-match-unresolved {
-        background: #fff4e0;
-        color: #a15c00;
+        background: var(--ds-status-warning-alt-bg);
+        color: var(--ds-status-warning-alt-text);
       }
 
       .ds-token-table tbody tr + tr td {
@@ -804,7 +848,27 @@
 
       .ds-table-footer {
         display: flex;
-        justify-content: flex-end;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      .ds-table-footer__start {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      #tc-propose-decisions-btn {
+        width: auto;
+        max-width: 100%;
+        white-space: nowrap;
+      }
+
+      .ds-table-footer #tc-apply-decision-btn {
         flex-shrink: 0;
       }
 
@@ -817,7 +881,7 @@
       }
 
       .ds-value-meta__caption {
-        margin-top: 4px;
+        margin-top: 2px;
         font-size: 10px;
         font-weight: 400;
         line-height: 12px;
@@ -853,11 +917,10 @@
         font-weight: 500;
       }
 
-      /* Accent link — layer click */
+      /* Accent link — dsProductAccent.ts DS_PRODUCT_ACCENT_STYLE */
       .ds-accent-link {
         color: var(--ds-accent);
         cursor: pointer;
-        font-weight: 500;
         text-decoration: none;
       }
 
@@ -874,23 +937,32 @@
         text-decoration: underline;
       }
 
-      /* Status badges */
+      .ds-accent-link:focus-visible {
+        outline: 2px solid var(--ds-accent);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* Status badges — ComponentReleaseStatus.tsx + plugin comparator semantics */
       .ds-badge {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 2px 8px;
+        padding: 2px 10px;
         border-radius: 999px;
         font-size: 11px;
         font-weight: 500;
         line-height: 14px;
+        letter-spacing: 0.02em;
         white-space: nowrap;
+        border: 1px solid transparent;
       }
 
       .ds-badge.mapped,
       .ds-badge.exact {
         background: var(--ds-status-released-bg);
         color: var(--ds-status-released-text);
+        border-color: var(--ds-status-released-border);
       }
 
       .ds-badge.value {
@@ -901,16 +973,18 @@
       .ds-badge.name-match {
         background: var(--ds-status-pending-bg);
         color: var(--ds-status-pending-text);
+        border-color: var(--ds-status-pending-border);
       }
 
       .ds-badge.conflict {
-        background: #fdecea;
+        background: var(--ds-status-error-bg);
         color: var(--ds-status-removed);
+        border-color: var(--ds-status-error-border);
       }
 
       .ds-badge.approximate {
-        background: #f5edff;
-        color: #9747ff;
+        background: var(--ds-status-rider-bg);
+        color: var(--ds-status-rider-text);
       }
 
       .ds-badge.layout-only {
@@ -921,16 +995,19 @@
       .ds-badge.style-binding {
         background: var(--ds-status-pending-bg);
         color: var(--ds-status-pending-text);
+        border-color: var(--ds-status-pending-border);
       }
 
       .ds-badge.ghost-binding {
-        background: #fdecea;
+        background: var(--ds-status-error-bg);
         color: var(--ds-status-removed);
+        border-color: var(--ds-status-error-border);
       }
 
       .ds-badge.value-fix-proposed {
         background: var(--ds-status-pending-bg);
         color: var(--ds-status-pending-text);
+        border-color: var(--ds-status-pending-border);
       }
 
       .ds-decision-check {
@@ -938,12 +1015,12 @@
         font-weight: 700;
       }
 
-      /* Color swatch — dsColorSwatch */
+      /* Color swatch — dsColorSwatch.tsx (compact 12×12 для таблицы; канон portal 28×28) */
       .ds-color-swatch {
         display: inline-block;
         width: 12px;
         height: 12px;
-        border-radius: 3px;
+        border-radius: 4px;
         border: 1px solid rgba(0, 0, 0, 0.12);
         margin-right: 6px;
         vertical-align: middle;
@@ -960,7 +1037,7 @@
       }
 
       .ds-value-meta__caption--warning {
-        color: #a15c00;
+        color: var(--ds-status-warning-alt-text);
       }
 
       /* Action cell in results table */
@@ -1113,7 +1190,7 @@
         width: 10px;
         height: 10px;
         margin-right: 0;
-        border-radius: 2px;
+        border-radius: 4px;
         flex-shrink: 0;
       }
 
@@ -1244,14 +1321,125 @@
       .tc-apply-preview-section__error {
         padding: 10px 14px;
         border-radius: var(--ds-radius);
-        background: #fdecea;
+        background: var(--ds-status-error-bg);
         color: var(--ds-status-removed);
-        border: 1px solid #f4c2c2;
+        border: 1px solid var(--ds-status-error-border);
         font-size: 12px;
         line-height: 18px;
       }
 
-      /* Preview modal — "Было/Будет" оверлей */
+      /* Модалка подтверждения "Отправить решения на согласование" — превью PR body перед отправкой */
+      .tc-propose-modal__toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .tc-propose-modal__select-all {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--ds-text);
+        cursor: pointer;
+      }
+
+      .tc-propose-modal__count {
+        font-size: 12px;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-propose-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tc-propose-item {
+        display: flex;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        background: var(--ds-surface);
+      }
+
+      .tc-propose-item--unchecked {
+        background: var(--ds-surface-muted);
+      }
+
+      .tc-propose-item__checkbox {
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+
+      .tc-propose-item__body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .tc-propose-item__title {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      .tc-propose-item__decision {
+        font-weight: 600;
+        color: var(--ds-text);
+      }
+
+      .tc-propose-item__name {
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-propose-item__path {
+        margin-top: 2px;
+        font-size: 11px;
+        line-height: 16px;
+        color: var(--ds-text-muted);
+        word-break: break-word;
+      }
+
+      button.tc-propose-item__path-link {
+        display: block;
+        width: 100%;
+        text-align: left;
+        word-break: break-word;
+      }
+
+      .tc-propose-item__details {
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 12px;
+        line-height: 17px;
+        color: var(--ds-text-secondary);
+      }
+
+      .tc-propose-item__details strong {
+        color: var(--ds-text);
+      }
+
+      .tc-propose-item__chain {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 11px;
+      }
+
+      .tc-propose-empty {
+        padding: 16px;
+        text-align: center;
+        color: var(--ds-text-secondary);
+        font-size: 13px;
+      }
+
+      /* Preview modal — dsTokenJsonActions.tsx modal pattern */
       .tc-preview-overlay {
         position: fixed;
         inset: 0;
@@ -1260,7 +1448,7 @@
         align-items: center;
         justify-content: center;
         padding: 24px;
-        background: rgba(0, 0, 0, 0.45);
+        background: var(--ds-overlay-backdrop);
       }
 
       .tc-preview-overlay[hidden] {
@@ -1272,8 +1460,9 @@
         max-height: 100%;
         overflow: auto;
         background: var(--ds-surface);
-        border-radius: var(--ds-radius);
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius-card);
+        box-shadow: var(--ds-shadow-elevated);
         display: flex;
         flex-direction: column;
       }
@@ -1359,9 +1548,9 @@
       .tc-preview-modal__error {
         padding: 10px 14px;
         border-radius: var(--ds-radius);
-        background: #fdecea;
+        background: var(--ds-status-error-bg);
         color: var(--ds-status-removed);
-        border: 1px solid #f4c2c2;
+        border: 1px solid var(--ds-status-error-border);
         font-size: 13px;
         line-height: 18px;
       }
@@ -1520,7 +1709,7 @@
 
       .ds-guide-table th,
       .ds-guide-table td {
-        padding: 10px 12px;
+        padding: 10px 16px;
         text-align: left;
         vertical-align: top;
         border-bottom: 1px solid var(--ds-border);
@@ -1530,7 +1719,7 @@
         background: var(--ds-surface-muted);
         font-size: 11px;
         font-weight: 500;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         color: var(--ds-text-secondary);
       }
@@ -1551,7 +1740,7 @@
       .ds-guide-accordion {
         margin-top: 16px;
         border: 1px solid var(--ds-border);
-        border-radius: var(--ds-radius);
+        border-radius: var(--ds-radius-card);
         overflow: hidden;
       }
 
@@ -1682,7 +1871,7 @@
   <body>
     <div class="ds-page">
       <header class="ds-page-header">
-        <div>
+        <div class="ds-page-header__lead">
           <h1 id="tc-plugin-title">Token Comparator</h1>
           <span class="ds-admin-badge" id="tc-admin-badge" hidden>Admin</span>
         </div>
@@ -1729,10 +1918,9 @@
 
         <div class="ds-status-line" id="tc-prod-registry-status">Загрузка реестра решений...</div>
 
-        <hr class="ds-settings-divider" />
-
         <div id="tc-admin-github-panel" hidden>
-        <h3 class="ds-settings-subtitle">GitHub — реестр решений (admin)</h3>
+          <hr class="ds-settings-divider" />
+          <h3 class="ds-settings-subtitle">GitHub — реестр решений (admin)</h3>
         <p class="ds-section-caption">
           Fine-grained PAT с правами contents: read. Реестр читается из main; запись — на следующем этапе.
           Если репозиторий недоступен — ошибка доступа; если файл реестра ещё не создан — можно начать с пустого.
@@ -1785,12 +1973,6 @@
       </section>
 
       <section class="ds-panel ds-panel--results" id="tc-panel-results" role="tabpanel" aria-hidden="true">
-        <div class="ds-propose-bar" id="tc-propose-bar">
-          <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
-            Отправить 0 решений на согласование
-          </button>
-          <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
-        </div>
         <div class="ds-results-toolbar">
           <div class="ds-export-menu" data-format="csv">
             <button
@@ -1966,6 +2148,12 @@
             </table>
           </div>
           <div class="ds-table-footer">
+            <div class="ds-table-footer__start">
+              <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
+                Отправить 0 решений на согласование
+              </button>
+              <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
+            </div>
             <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
               Применить решение
             </button>
@@ -2541,6 +2729,45 @@
             <button type="button" class="ds-btn" id="tc-apply-cancel-btn">Отмена</button>
             <button type="button" class="ds-btn ds-btn-primary" id="tc-apply-confirm-btn">
               Подтвердить и применить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tc-preview-overlay" id="tc-propose-overlay" hidden>
+      <div
+        class="tc-preview-modal tc-preview-modal--apply"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Подтверждение отправки решений на согласование"
+      >
+        <div class="tc-preview-modal__header">
+          <span>Отправить решения на согласование</span>
+          <button type="button" class="tc-preview-modal__close" id="tc-propose-close-btn" aria-label="Закрыть">
+            &times;
+          </button>
+        </div>
+        <div class="tc-preview-modal__body">
+          <div class="tc-propose-modal__toolbar">
+            <label class="tc-propose-modal__select-all">
+              <input type="checkbox" id="tc-propose-select-all" />
+              <span>Выбрать все</span>
+            </label>
+            <span class="tc-propose-modal__count" id="tc-propose-selected-count"></span>
+          </div>
+          <div class="tc-propose-list" id="tc-propose-list"></div>
+          <div class="ds-guide-note">
+            В <code>decisions-registry.json</code> попадут только машинные поля решения. Путь слоя и значения ниже
+            — только для читаемого описания в PR на GitHub. Снятое решение останется неотправленным — его можно
+            отправить позже.
+          </div>
+        </div>
+        <div class="tc-preview-modal__footer">
+          <div class="tc-apply-actions">
+            <button type="button" class="ds-btn" id="tc-propose-cancel-btn">Отмена</button>
+            <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-confirm-btn" disabled>
+              Отправить 0 решений
             </button>
           </div>
         </div>

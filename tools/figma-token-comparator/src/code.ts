@@ -43,7 +43,7 @@ import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
 import * as storage from "./lib/storage";
-import type { CodeToUiMessage, UiToCodeMessage } from "./messages";
+import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
   figma.ui.postMessage(message);
@@ -273,10 +273,49 @@ async function handleToggleAdminMode(): Promise<void> {
   send({ type: "admin-mode-changed", payload: { enabled } });
 }
 
-async function handleProposeDecisions(): Promise<void> {
+/** Записи из mappingHistory, ещё не отправленные на согласование (не в submittedSignatures). */
+async function getPendingProposeEntries(): Promise<Array<[string, StoredDecision]>> {
   const history = await storage.getMappingHistory();
   const submitted = await storage.getSubmittedSignatures();
-  const pendingEntries = Object.entries(history).filter(([recordId]) => !submitted.has(recordId));
+  return Object.entries(history).filter(([recordId]) => !submitted.has(recordId));
+}
+
+/**
+ * Строит превью для подтверждающей модалки перед отправкой — те же поля,
+ * что уйдут в ProposeDecisionEntryPayload (buildProposeEntry), но как
+ * read-only проекция для UI, без реального похода на backend.
+ */
+async function handleRequestProposePreview(): Promise<void> {
+  const pendingEntries = await getPendingProposeEntries();
+  const entries: ProposePreviewEntry[] = pendingEntries.map(([recordId, stored]) => ({
+    recordId,
+    decision: stored.decision,
+    comment: buildProposeComment(stored),
+    nodeName: stored.nodeName,
+    nodePath: stored.nodePath,
+    nodeIds: stored.nodeIds,
+    sourceProperty: stored.sourceProperty,
+    sourceDisplayValue: stored.sourceDisplayValue,
+    occurrenceCount: stored.occurrenceCount,
+    targetVariableName: stored.targetName,
+    targetCollectionName: stored.targetCollectionName,
+    targetModeName: stored.targetModeName,
+    targetDisplayValue: stored.targetDisplayValue,
+    proposedModeName: stored.proposedModeName,
+    currentLibraryValue: stored.currentLibraryValue,
+    proposedValue: stored.proposedValue,
+  }));
+  send({ type: "propose-preview", payload: { entries } });
+}
+
+/**
+ * Отправляет на согласование только те pending-записи, чьи recordId явно
+ * выбраны в подтверждающей модалке UI (recordIds). Записи, снятые с
+ * чекбокса пользователем, остаются pending и не отправляются.
+ */
+async function handleProposeDecisions(recordIds: string[]): Promise<void> {
+  const requested = new Set(recordIds);
+  const pendingEntries = (await getPendingProposeEntries()).filter(([recordId]) => requested.has(recordId));
 
   if (pendingEntries.length === 0) {
     send({ type: "decisions-submit-failed" });
@@ -636,6 +675,7 @@ async function handleApplyDecision(
     sourceDisplayValue?: string;
     nodePath?: string;
     nodeName?: string;
+    nodeIds?: string[];
     occurrenceCount?: number;
     targetModeName?: string;
     targetDisplayValue?: string;
@@ -659,6 +699,7 @@ async function handleApplyDecision(
     sourceDisplayValue: fields.sourceDisplayValue,
     nodePath: fields.nodePath,
     nodeName: fields.nodeName,
+    nodeIds: fields.nodeIds,
     occurrenceCount: fields.occurrenceCount,
     targetModeName: fields.targetModeName,
     targetDisplayValue: fields.targetDisplayValue,
@@ -791,7 +832,9 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
           continue;
         }
         if (typeof strokesNode.strokeStyleId === "string" && strokesNode.strokeStyleId) {
-          strokesNode.strokeStyleId = ""; // снимаем привязку к paint style перед прямой записью strokes
+          // snapshot из скана мог быть снят со style-привязанного слоя — синхронный
+          // сеттер strokeStyleId запрещён в dynamic-page document access (см. GUIDE.md).
+          await (strokesNode as unknown as { setStrokeStyleIdAsync(styleId: string): Promise<void> }).setStrokeStyleIdAsync("");
         }
         const newPaint = figma.variables.setBoundVariableForPaint(strokes[index] as SolidPaint, "color", variable);
         const newStrokes = strokes.slice();
@@ -818,7 +861,9 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
           continue;
         }
         if (typeof fillsNode.fillStyleId === "string" && fillsNode.fillStyleId) {
-          fillsNode.fillStyleId = ""; // снимаем привязку к paint style перед прямой записью fills
+          // slot был привязан к paint style — синхронный сеттер fillStyleId
+          // запрещён в dynamic-page document access, обязателен async вариант.
+          await (fillsNode as unknown as { setFillStyleIdAsync(styleId: string): Promise<void> }).setFillStyleIdAsync("");
         }
         const newPaint = figma.variables.setBoundVariableForPaint(fills[index] as SolidPaint, "color", variable);
         const newFills = fills.slice();
@@ -1344,6 +1389,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
           sourceDisplayValue: message.payload.sourceDisplayValue,
           nodePath: message.payload.nodePath,
           nodeName: message.payload.nodeName,
+          nodeIds: message.payload.nodeIds,
           occurrenceCount: message.payload.occurrenceCount,
           targetModeName: message.payload.targetModeName,
           targetDisplayValue: message.payload.targetDisplayValue,
@@ -1370,8 +1416,11 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
       case "toggle-admin-mode":
         await handleToggleAdminMode();
         break;
+      case "request-propose-preview":
+        await handleRequestProposePreview();
+        break;
       case "propose-decisions":
-        await handleProposeDecisions();
+        await handleProposeDecisions(message.payload.recordIds);
         break;
       default:
         break;

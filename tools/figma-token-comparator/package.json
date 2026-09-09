@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.js",
     "watch": "node build.js --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release:pack": "node scripts/release.mjs"
   },
   "license": "UNLICENSED",
   "devDependencies": {
