@@ -1,0 +1,14 @@
+{
+  "plugins": [
+    {
+      "pluginId": "token-comparator",
+      "canonicalName": "Token Comparator",
+      "reviewRoute": "/tools/token-comparator",
+      "pluginsGroup": "Plugins",
+      "description": "Figma-плагин сравнения токенов макета с реестром решений команды",
+      "sourcePath": "tools/figma-token-comparator/",
+      "downloadUrl": "https://github.com/RickOBrian/aid/releases/latest/download/token-comparator.zip",
+      "downloadLabel": "Скачать плагин для Figma"
+    }
+  ]
+}

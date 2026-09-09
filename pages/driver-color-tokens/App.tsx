@@ -12,6 +12,8 @@ import { SwitchPage } from './SwitchPage';
 import { BadgeCountPage } from './BadgeCountPage';
 import { BadgeDotPage } from './BadgeDotPage';
 import { GuidesHubPage } from './GuidesHubPage';
+import { ToolsHubPage } from './ToolsHubPage';
+import { TokenComparatorPluginPage } from './TokenComparatorPluginPage';
 import { VersioningGuidePage } from './VersioningGuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
@@ -85,6 +87,14 @@ function resolveSectionKey(remainder: string) {
     return 'guidesVersioning' as const;
   }
 
+  if (path === HUB_ROUTES.tools) {
+    return 'tools' as const;
+  }
+
+  if (path === HUB_ROUTES.toolsTokenComparator) {
+    return 'toolsTokenComparator' as const;
+  }
+
   return 'not-found' as const;
 }
 
@@ -154,6 +164,10 @@ export function App() {
     content = <GuidesHubPage />;
   } else if (page === 'guidesVersioning') {
     content = <VersioningGuidePage />;
+  } else if (page === 'tools') {
+    content = <ToolsHubPage />;
+  } else if (page === 'toolsTokenComparator') {
+    content = <TokenComparatorPluginPage />;
   } else if (productId !== DEFAULT_PRODUCT_ID) {
     content = <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
   } else if (page === 'icons') {

@@ -48,6 +48,8 @@ export const HUB_ROUTES = {
   badgeDot: '/components/badge-dot',
   guides: '/guides',
   guidesVersioning: '/guides/versioning',
+  tools: '/tools',
+  toolsTokenComparator: '/tools/token-comparator',
 } as const;
 
 /** Название дизайн-системы. */
@@ -139,6 +141,20 @@ export const HUB_SECTIONS: HubSection[] = [
       },
     ],
   },
+  {
+    id: 'tools',
+    title: 'Tools',
+    items: [
+      {
+        id: 'tools',
+        title: 'Plugins',
+        description: 'Плагины и инструменты — Figma-плагины и утилиты DS',
+        icon: '⎘',
+        href: HUB_ROUTES.tools,
+        alwaysAvailable: true,
+      },
+    ],
+  },
 ];
 
 /** Section titles keyed by hub item id / page key — for the disabled-content fallback page. */
@@ -150,6 +166,7 @@ export const SECTION_LABELS: Record<string, string> = {
   badgeCount: 'BadgeCount',
   badgeDot: 'BadgeDot',
   guidesVersioning: 'Версионность',
+  toolsTokenComparator: 'Token Comparator',
 };
 
 /**
