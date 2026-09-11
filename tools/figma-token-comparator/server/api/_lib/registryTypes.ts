@@ -8,6 +8,8 @@ export const REGISTRY_DECISIONS = [
 
 export type RegistryDecision = (typeof REGISTRY_DECISIONS)[number];
 
+export type RegistryTokenCategory = 'colors' | 'typography';
+
 /**
  * Входная запись от плагина. Помимо machine-полей (см. RegistryFileEntry)
  * содержит transient review-projection metadata — используется ТОЛЬКО для
@@ -21,8 +23,12 @@ export type RegistryDecision = (typeof REGISTRY_DECISIONS)[number];
 export interface ProposedEntryInput {
   signature: string;
   decision: RegistryDecision;
+  category?: RegistryTokenCategory;
   targetVariableId?: string;
   targetVariableName?: string;
+  targetStyleId?: string;
+  targetStyleName?: string;
+  mismatchedProperties?: string[];
   comment?: string;
 
   // --- Transient review-projection metadata (PR body only) ---
@@ -50,8 +56,12 @@ export interface ProposeDecisionRequestBody {
 export interface RegistryFileEntry {
   signature: string;
   decision: RegistryDecision;
+  category?: RegistryTokenCategory;
   targetVariableId?: string;
   targetVariableName?: string;
+  targetStyleId?: string;
+  targetStyleName?: string;
+  mismatchedProperties?: string[];
   comment?: string;
   proposedBy?: string;
   proposedAt?: string;

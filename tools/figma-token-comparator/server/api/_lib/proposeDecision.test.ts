@@ -117,6 +117,34 @@ describe('validateProposeDecisionBody', () => {
       }),
     ).toBeNull();
   });
+
+  it('accepts typography registry extension fields', () => {
+    const result = validateProposeDecisionBody({
+      sharedSecret: 'secret',
+      proposedBy: 'designer@example.com',
+      entries: [
+        {
+          signature: 'typo-1',
+          decision: 'mapped',
+          category: 'typography',
+          targetStyleId: 'S:abc',
+          targetStyleName: 'body-m',
+          mismatchedProperties: ['fontSize', 'lineHeight'],
+          sourceProperty: 'text-style',
+          sourceDisplayValue: 'Roboto 16/24 w500',
+          proposedValue: 'Roboto 16/24 Medium',
+        },
+      ],
+    });
+    expect(result).not.toBeNull();
+    expect(result?.entries[0]).toMatchObject({
+      category: 'typography',
+      targetStyleId: 'S:abc',
+      targetStyleName: 'body-m',
+      mismatchedProperties: ['fontSize', 'lineHeight'],
+      sourceProperty: 'text-style',
+    });
+  });
 });
 
 describe('handleProposeDecision', () => {

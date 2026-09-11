@@ -56,6 +56,14 @@ function isPositiveInteger(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0;
 }
 
+function isRegistryCategory(value: unknown): value is ProposedEntryInput['category'] {
+  return value === 'colors' || value === 'typography';
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === 'string');
+}
+
 export function validateProposeDecisionBody(body: unknown): ProposeDecisionRequestBody | null {
   if (!body || typeof body !== 'object') {
     return null;
@@ -90,6 +98,18 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     if (record.targetVariableName !== undefined && typeof record.targetVariableName !== 'string') {
       return null;
     }
+    if (record.category !== undefined && !isRegistryCategory(record.category)) {
+      return null;
+    }
+    if (record.targetStyleId !== undefined && typeof record.targetStyleId !== 'string') {
+      return null;
+    }
+    if (record.targetStyleName !== undefined && typeof record.targetStyleName !== 'string') {
+      return null;
+    }
+    if (record.mismatchedProperties !== undefined && !isStringArray(record.mismatchedProperties)) {
+      return null;
+    }
     if (record.comment !== undefined && typeof record.comment !== 'string') {
       return null;
     }
@@ -109,8 +129,12 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     entries.push({
       signature: record.signature.trim(),
       decision: record.decision,
+      category: record.category,
       targetVariableId: record.targetVariableId,
       targetVariableName: record.targetVariableName,
+      targetStyleId: record.targetStyleId,
+      targetStyleName: record.targetStyleName,
+      mismatchedProperties: record.mismatchedProperties,
       comment: record.comment,
       sourceProperty: record.sourceProperty,
       sourceBindingType: record.sourceBindingType,
@@ -143,8 +167,14 @@ function buildProposedEntries(
   return entries.map((entry) => ({
     signature: entry.signature,
     decision: entry.decision,
+    ...(entry.category ? { category: entry.category } : {}),
     ...(entry.targetVariableId ? { targetVariableId: entry.targetVariableId } : {}),
     ...(entry.targetVariableName ? { targetVariableName: entry.targetVariableName } : {}),
+    ...(entry.targetStyleId ? { targetStyleId: entry.targetStyleId } : {}),
+    ...(entry.targetStyleName ? { targetStyleName: entry.targetStyleName } : {}),
+    ...(entry.mismatchedProperties && entry.mismatchedProperties.length > 0
+      ? { mismatchedProperties: entry.mismatchedProperties }
+      : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
     proposedBy,
     proposedAt,

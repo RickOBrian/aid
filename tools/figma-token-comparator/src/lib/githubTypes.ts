@@ -15,12 +15,19 @@ export type RegistryDecision =
 /** Статус записи в файле реестра. `stale` вычисляется плагином в рантайме, в main хранится `approved`. */
 export type RegistryEntryStatus = "approved" | "stale";
 
+/** Категория comparator-модуля (schema extension v1.1+). */
+export type TokenCategory = "colors" | "typography";
+
 /** Одна запись реестра — решение по сигнатуре группы макета. */
 export interface RegistryEntry {
   signature: string;
   decision: RegistryDecision;
+  category?: TokenCategory;
   targetVariableId?: string;
   targetVariableName?: string;
+  targetStyleId?: string;
+  targetStyleName?: string;
+  mismatchedProperties?: string[];
   comment?: string;
   proposedBy?: string;
   proposedAt?: string;

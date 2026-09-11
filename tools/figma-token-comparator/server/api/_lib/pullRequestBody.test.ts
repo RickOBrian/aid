@@ -147,6 +147,34 @@ describe('buildPullRequestBody — unknown decision', () => {
   });
 });
 
+describe('buildPullRequestBody — typography', () => {
+  it('renders human-readable typography diff for mapped text-style entries', () => {
+    const body = build([
+      {
+        signature: 'typo-1',
+        decision: 'mapped',
+        category: 'typography',
+        targetStyleId: 'S:abc',
+        targetStyleName: 'body-m',
+        sourceProperty: 'text-style',
+        sourceDisplayValue: 'Roboto 16/24 w500',
+        targetDisplayValue: 'Roboto 16/24 Medium',
+        mismatchedProperties: ['fontSize'],
+        nodeName: 'Title',
+      },
+    ]);
+
+    expect(body).toContain('**Text Style:** body-m');
+    expect(body).toContain('**Целевая типографика:** Roboto 16/24 Medium');
+    expect(body).toContain('**Typography diff:**');
+    expect(body).toContain('before: `Roboto 16/24 w500`');
+    expect(body).toContain('after: `Roboto 16/24 Medium`');
+    expect(body).toContain('mismatched: fontSize');
+    expect(body).toContain('category: `typography`');
+    expect(body).toContain('targetStyleId: `S:abc`');
+  });
+});
+
 describe('buildPullRequestBody — no secret leakage', () => {
   it('never includes secret-like fixture values in the rendered body', () => {
     const FAKE_SECRET = 'super-secret-shared-value-should-never-leak';
