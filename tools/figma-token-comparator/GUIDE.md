@@ -115,7 +115,11 @@ npm run build
 **Как получить PAT:**
 
 1. Figma → **Settings** → **Security** → **Personal access tokens** → **Generate new token**.
-2. Убедитесь, что у токена есть scope **`file_variables:read`** (для Enterprise может потребоваться доступ уровня организации).
+2. Убедитесь, что у токена есть нужные scopes (для Enterprise может потребоваться доступ уровня организации):
+   - **`file_variables:read`** — загрузка цветовых Variables (`/variables/local`);
+   - **`file_content:read`** — чтение свойств Text Styles (`/nodes`);
+   - **`library_content:read`** — список опубликованных Text Styles (`/styles`);
+   - альтернатива: устаревший **`files:read`** покрывает все три.
 3. Скопируйте токен сразу — повторно посмотреть нельзя.
 4. Вставьте в поле **Personal Access Token** на вкладке «Настройки».
 
