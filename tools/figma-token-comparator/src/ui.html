@@ -1010,6 +1010,35 @@
         border-color: var(--ds-status-pending-border);
       }
 
+      .ds-badge.name-mismatch {
+        background: var(--ds-status-rider-bg);
+        color: var(--ds-status-rider-text);
+        border-color: var(--ds-status-rider-border, transparent);
+      }
+
+      .ds-badge.mixed-unresolved {
+        background: var(--ds-surface-muted);
+        color: var(--ds-text-muted);
+        border-color: var(--ds-border-subtle, transparent);
+      }
+
+      .tc-override-badge {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 6px;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 14px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        background: var(--ds-status-pending-bg);
+        color: var(--ds-status-pending-text);
+        border: 1px solid var(--ds-status-pending-border);
+        vertical-align: middle;
+      }
+
       .ds-decision-check {
         color: var(--ds-status-released-text);
         font-weight: 700;
@@ -1897,6 +1926,9 @@
       <section class="ds-panel" id="tc-panel-settings" role="tabpanel" aria-hidden="false">
         <p class="ds-section-caption">
           Personal Access Token и file_key библиотеки сохраняются локально в clientStorage плагина.
+          Для цветов нужен scope <code>file_variables:read</code>; для типографики дополнительно
+          <code>file_content:read</code> и <code>library_content:read</code> (или устаревший
+          <code>files:read</code>).
         </p>
         <div class="ds-field">
           <label for="tc-token-input">Personal Access Token</label>
@@ -1956,8 +1988,17 @@
       </section>
 
       <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">
-        <h2 class="ds-section-title">Сканирование цветов</h2>
-        <p class="ds-section-caption">Выберите область макета для сравнения с загруженной библиотекой.</p>
+        <h2 class="ds-section-title" id="tc-scan-title">Сканирование цветов</h2>
+        <p class="ds-section-caption" id="tc-scan-caption">
+          Выберите область макета для сравнения с загруженной библиотекой.
+        </p>
+        <div class="ds-field">
+          <span class="ds-field__label">Категория</span>
+          <div class="ds-segment" role="group" aria-label="Категория сканирования" id="tc-category-segment">
+            <button type="button" data-category="colors" aria-pressed="true">Цвета</button>
+            <button type="button" data-category="typography" aria-pressed="false">Типографика</button>
+          </div>
+        </div>
         <div class="ds-field">
           <span class="ds-field__label">Скоуп сканирования</span>
           <div class="ds-segment" role="group" aria-label="Скоуп сканирования" id="tc-scope-segment">
@@ -1970,6 +2011,11 @@
           <button class="ds-btn ds-btn-primary" id="tc-scan-btn">Сканировать цвета</button>
         </div>
         <div class="ds-status-line" id="tc-scan-status"></div>
+        <div
+          class="ds-status-line ds-value-meta__caption--warning"
+          id="tc-typography-library-notice"
+          hidden
+        ></div>
       </section>
 
       <section class="ds-panel ds-panel--results" id="tc-panel-results" role="tabpanel" aria-hidden="true">
@@ -2102,9 +2148,9 @@
           <span class="ds-status-line" id="tc-print-status"></span>
           <span class="ds-status-line" id="tc-results-summary"></span>
         </div>
-        <div class="ds-results-block">
+        <div class="ds-results-block" id="tc-results-block-colors">
           <div class="ds-token-table-wrap ds-token-table-wrap--results">
-            <table class="ds-token-table" id="tc-results-table">
+            <table class="ds-token-table" id="tc-results-table-colors">
               <thead>
                 <tr>
                   <th class="ds-th-filter" scope="col">
@@ -2144,19 +2190,48 @@
                   <th>Действие</th>
                 </tr>
               </thead>
-              <tbody id="tc-results-tbody"></tbody>
+              <tbody id="tc-results-tbody-colors"></tbody>
             </table>
           </div>
-          <div class="ds-table-footer">
-            <div class="ds-table-footer__start">
-              <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
-                Отправить 0 решений на согласование
-              </button>
-              <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
-            </div>
+          <div class="ds-table-footer" id="tc-results-footer-colors">
             <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
               Применить решение
             </button>
+          </div>
+        </div>
+
+        <div class="ds-results-block" id="tc-results-block-typography" hidden>
+          <div class="ds-token-table-wrap ds-token-table-wrap--results">
+            <table class="ds-token-table" id="tc-results-table-typography">
+              <thead>
+                <tr>
+                  <th scope="col">Статус</th>
+                  <th scope="col">Слой / Node name</th>
+                  <th scope="col">Используемый Text Style (Figma)</th>
+                  <th scope="col">Ожидаемый Semantic-токен</th>
+                  <th scope="col">Несовпадающие свойства</th>
+                  <th scope="col">Действие</th>
+                </tr>
+              </thead>
+              <tbody id="tc-results-tbody-typography"></tbody>
+            </table>
+          </div>
+          <div class="ds-table-footer" id="tc-results-footer-typography" hidden>
+            <div class="ds-table-footer__start">
+              <button type="button" class="ds-btn" id="tc-rescan-typography-btn">Пересканировать</button>
+            </div>
+            <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn-typography" type="button" disabled>
+              Применить решение
+            </button>
+          </div>
+        </div>
+
+        <div class="ds-table-footer" id="tc-results-footer-shared">
+          <div class="ds-table-footer__start">
+            <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
+              Отправить 0 решений на согласование
+            </button>
+            <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
           </div>
         </div>
       </section>

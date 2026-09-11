@@ -7,10 +7,15 @@
 import type {
   ComparisonResult,
   Decision,
+  LibraryTextStyle,
   LibraryToken,
   MatchStatus,
   ScanScope,
+  TokenCategory,
+  TypographyComparisonValue,
 } from "./comparators/types";
+import { filterSemanticTypographyStyles } from "./lib/semanticTypographyLibrary";
+import { formatTypographyDisplayValue, readTypographyComparisonValue } from "./lib/typographyUtils";
 import { isValidHex, normalizeHex } from "./lib/colorUtils";
 import { findLayoutValueForTargetMode, sortModesStable } from "./lib/modePairing";
 import { filterSemanticColorTokens } from "./lib/semanticColorLibrary";
@@ -32,11 +37,23 @@ function $<T extends HTMLElement>(id: string): T {
 // Состояние UI
 // ---------------------------------------------------------------------------
 
+let activeCategory: TokenCategory = "colors";
+const resultsByCategory: Record<TokenCategory, ComparisonResult[]> = {
+  colors: [],
+  typography: [],
+};
 let currentResults: ComparisonResult[] = [];
 let currentLibraryTokens: LibraryToken[] = [];
+let currentLibraryTextStyles: LibraryTextStyle[] = [];
 let selectedRecordId: string | null = null;
 let adminModeEnabled = false;
 let pendingProposeCount = 0;
+let pendingProposeCountByCategory: Record<TokenCategory, number> = {
+  colors: 0,
+  typography: 0,
+};
+let typographyLibraryAvailable = false;
+let typographyLibraryError: string | null = null;
 
 const PROD_REGISTRY_LOADING = "Загрузка реестра решений...";
 const PROD_REGISTRY_READY = "Реестр решений готов.";
@@ -57,11 +74,13 @@ const rowControls = new Map<string, RowControls>();
 const STATUS_LABELS: Record<MatchStatus, string> = {
   mapped: "Mapped",
   exact: "Exact match",
-  value: "Value match",
+  value: "Property match",
   "name-match": "Name match",
   conflict: "Conflict",
   "name-match-unresolved": "Name match (value unknown)",
   approximate: "Approximate match",
+  "name-mismatch": "Style mismatch",
+  "mixed-unresolved": "Mixed (needs review)",
   "layout-only": "Layout only",
 };
 
@@ -354,11 +373,15 @@ function applyAdminMode(adminMode: boolean): void {
   $<HTMLElement>("tc-admin-badge").hidden = !adminMode;
 }
 
-function updateProposeButton(count: number): void {
+function updateProposeButton(count: number, byCategory?: Record<TokenCategory, number>): void {
+  if (byCategory) {
+    pendingProposeCountByCategory = byCategory;
+  }
   pendingProposeCount = count;
+  const categoryPending = pendingProposeCountByCategory[activeCategory];
   const btn = $<HTMLButtonElement>("tc-propose-decisions-btn");
-  btn.textContent = `Отправить ${count} ${pluralizeDecisions(count)} на согласование`;
-  btn.disabled = count === 0;
+  btn.textContent = `Отправить ${categoryPending} ${pluralizeDecisions(categoryPending)} на согласование`;
+  btn.disabled = categoryPending === 0;
 }
 
 function pluralizeDecisions(count: number): string {
@@ -401,10 +424,10 @@ function initAdminUnlock(): void {
 
 function initProposePanel(): void {
   $<HTMLButtonElement>("tc-propose-decisions-btn").addEventListener("click", () => {
-    if (pendingProposeCount === 0) return;
+    if (pendingProposeCountByCategory[activeCategory] === 0) return;
     renderProposeStatus("");
     $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = true;
-    post({ type: "request-propose-preview" });
+    post({ type: "request-propose-preview", payload: { category: activeCategory } });
   });
 }
 
@@ -445,18 +468,30 @@ function collectionModeHtml(collectionName?: string, modeName?: string): string 
   return `<div><strong>Коллекция / режим:</strong> ${escapeHtml(text)}</div>`;
 }
 
+function isTypographyProposeEntry(entry: ProposePreviewEntry): boolean {
+  return entry.category === "typography" || entry.sourceProperty === "text-style";
+}
+
 function renderProposeItemDetails(entry: ProposePreviewEntry): string {
   const lines: Array<string | null> = [];
+  const typography = isTypographyProposeEntry(entry);
   switch (entry.decision) {
     case "mapped":
     case "mapped_suggested":
       lines.push(
         bulletHtml("Свойство", entry.sourceProperty),
         bulletHtml("Затронуто слоёв", entry.occurrenceCount),
-        bulletHtml("Текущее значение", entry.sourceDisplayValue),
-        bulletHtml("Токен", entry.targetVariableName),
-        bulletHtml("Значение токена", entry.targetDisplayValue),
-        collectionModeHtml(entry.targetCollectionName, entry.targetModeName),
+        bulletHtml("Текущая типографика", entry.sourceDisplayValue),
+        typography
+          ? bulletHtml("Text Style", entry.targetStyleName ?? entry.targetVariableName)
+          : bulletHtml("Токен", entry.targetVariableName),
+        typography
+          ? bulletHtml("Целевая типографика", entry.targetDisplayValue)
+          : bulletHtml("Значение токена", entry.targetDisplayValue),
+        typography && entry.mismatchedProperties?.length
+          ? bulletHtml("Несовпадающие свойства", entry.mismatchedProperties.join(", "))
+          : null,
+        typography ? null : collectionModeHtml(entry.targetCollectionName, entry.targetModeName),
         bulletHtml("Комментарий", entry.comment)
       );
       break;
@@ -470,10 +505,18 @@ function renderProposeItemDetails(entry: ProposePreviewEntry): string {
       break;
     case "value_fix_proposed":
       lines.push(
-        bulletHtml("Токен", entry.targetVariableName),
-        collectionModeHtml(entry.targetCollectionName, entry.proposedModeName),
-        bulletHtml("Текущее значение библиотеки", entry.currentLibraryValue),
-        bulletHtml("Предлагаемое значение", entry.proposedValue),
+        typography
+          ? bulletHtml("Text Style", entry.targetStyleName ?? entry.targetVariableName)
+          : bulletHtml("Токен", entry.targetVariableName),
+        typography ? null : collectionModeHtml(entry.targetCollectionName, entry.proposedModeName),
+        bulletHtml(
+          typography ? "Текущая типографика библиотеки" : "Текущее значение библиотеки",
+          entry.currentLibraryValue
+        ),
+        bulletHtml(
+          typography ? "Предлагаемая типографика" : "Предлагаемое значение",
+          entry.proposedValue
+        ),
         bulletHtml("Комментарий", entry.comment)
       );
       break;
@@ -726,13 +769,149 @@ function initScopeSegment(): void {
   });
 }
 
+function getSelectedCategory(): TokenCategory {
+  const pressed = document.querySelector<HTMLButtonElement>(
+    '#tc-category-segment button[aria-pressed="true"]'
+  );
+  return (pressed?.dataset.category ?? "colors") as TokenCategory;
+}
+
+function updateTypographyCategoryAvailability(): void {
+  const typographyBtn = document.querySelector<HTMLButtonElement>(
+    '#tc-category-segment button[data-category="typography"]'
+  );
+  const notice = $<HTMLElement>("tc-typography-library-notice");
+  const unavailable = !typographyLibraryAvailable;
+
+  if (typographyBtn) {
+    typographyBtn.disabled = unavailable;
+    typographyBtn.title = unavailable
+      ? typographyLibraryError ??
+        "Text Styles недоступны — обновите PAT (file_content:read + library_content:read) и перезагрузите библиотеку."
+      : "";
+  }
+
+  if (unavailable) {
+    notice.hidden = false;
+    notice.textContent = typographyLibraryError
+      ? `Text styles library unavailable: ${typographyLibraryError}`
+      : "Text styles library unavailable: загрузите библиотеку с PAT scopes file_content:read и library_content:read.";
+  } else {
+    notice.hidden = true;
+    notice.textContent = "";
+  }
+
+  if (unavailable && activeCategory === "typography") {
+    activeCategory = "colors";
+    setCategorySegmentPressed("colors");
+    applyActiveCategoryView();
+  }
+}
+
+function updateScanPanelCopy(): void {
+  const isTypography = activeCategory === "typography";
+  $<HTMLElement>("tc-scan-title").textContent = isTypography
+    ? "Сканирование типографики"
+    : "Сканирование цветов";
+  $<HTMLElement>("tc-scan-caption").textContent = isTypography
+    ? "Выберите область макета для сравнения Text Styles с semantic-токенами библиотеки."
+    : "Выберите область макета для сравнения с загруженной библиотекой.";
+  $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
+    ? "Сканировать типографику"
+    : "Сканировать цвета";
+}
+
+function setCategorySegmentPressed(category: TokenCategory): void {
+  const segment = $("tc-category-segment");
+  segment.querySelectorAll<HTMLButtonElement>("button[data-category]").forEach((button) => {
+    button.setAttribute("aria-pressed", button.dataset.category === category ? "true" : "false");
+  });
+}
+
+function updateResultsBlocksVisibility(): void {
+  const isTypography = activeCategory === "typography";
+  $<HTMLElement>("tc-results-block-colors").hidden = isTypography;
+  $<HTMLElement>("tc-results-block-typography").hidden = !isTypography;
+  $<HTMLElement>("tc-results-footer-colors").hidden = isTypography;
+  $<HTMLElement>("tc-results-footer-typography").hidden = !isTypography;
+  setExportButtonsDisabled(isTypography || currentResults.length === 0);
+  updateProposeButton(pendingProposeCount);
+}
+
+function syncCurrentResultsFromCategory(): void {
+  currentResults = resultsByCategory[activeCategory];
+}
+
+function applyActiveCategoryView(resetStatusFilters = false): void {
+  syncCurrentResultsFromCategory();
+  updateScanPanelCopy();
+  updateResultsBlocksVisibility();
+  if (activeCategory === "colors") {
+    if (resetStatusFilters) {
+      syncStatusFiltersFromResults(currentResults, true);
+    }
+    closeStatusFilterMenu();
+  }
+  renderResultsTable();
+}
+
+function switchActiveCategory(nextCategory: TokenCategory): void {
+  if (nextCategory === activeCategory) return;
+  if (nextCategory === "typography" && !typographyLibraryAvailable) {
+    setCategorySegmentPressed(activeCategory);
+    return;
+  }
+
+  const pendingForCurrent = pendingProposeCountByCategory[activeCategory];
+  if (pendingForCurrent > 0) {
+    const confirmed = window.confirm(
+      "Переключение сканирования очистит текущие результаты и несохранённые предложения. Продолжить?"
+    );
+    if (!confirmed) {
+      setCategorySegmentPressed(activeCategory);
+      return;
+    }
+    post({ type: "clear-pending-proposals", payload: { category: activeCategory } });
+    pendingProposeCountByCategory[activeCategory] = 0;
+    resultsByCategory[activeCategory] = [];
+    updateProposeButton(
+      pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography,
+      pendingProposeCountByCategory
+    );
+  }
+
+  activeCategory = nextCategory;
+  setCategorySegmentPressed(nextCategory);
+  applyActiveCategoryView();
+}
+
+function initCategorySegment(): void {
+  const segment = $("tc-category-segment");
+  segment.querySelectorAll<HTMLButtonElement>("button[data-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextCategory = (button.dataset.category ?? "colors") as TokenCategory;
+      switchActiveCategory(nextCategory);
+    });
+  });
+  updateScanPanelCopy();
+}
+
 function initScanPanel(): void {
   const scanBtn = $<HTMLButtonElement>("tc-scan-btn");
   scanBtn.addEventListener("click", () => {
     const scope = getSelectedScope();
+    const category = getSelectedCategory();
+    if (category === "typography" && !typographyLibraryAvailable) {
+      showError(
+        typographyLibraryError
+          ? `Text styles library unavailable: ${typographyLibraryError}`
+          : "Text styles library unavailable: загрузите библиотеку с PAT scopes file_content:read и library_content:read."
+      );
+      return;
+    }
     scanBtn.disabled = true;
     $("tc-scan-status").textContent = "Сканирование...";
-    post({ type: "scan", payload: { scope } });
+    post({ type: "scan", payload: { scope, category } });
   });
 }
 
@@ -751,7 +930,14 @@ const ACTION_OPTIONS: Array<{ value: Decision; label: string }> = [
   },
 ];
 
-function canProposeValueFix(_result: ComparisonResult): boolean {
+function canProposeValueFix(result: ComparisonResult): boolean {
+  if (activeCategory === "typography" || result.category === "typography") {
+    return (
+      currentLibraryTextStyles.length > 0 &&
+      Boolean(result.target) &&
+      Boolean(result.mismatchedProperties && result.mismatchedProperties.length > 0)
+    );
+  }
   return currentLibraryTokens.length > 0;
 }
 
@@ -884,8 +1070,14 @@ function initPreviewModal(): void {
 // решение" и требует явного подтверждения в модальном окне перед отправкой.
 // ---------------------------------------------------------------------------
 
-/** Доступно только для строк со статусом "Mapped" (решение mapped/mapped_suggested) с известной переменной библиотеки. */
+/** Доступно только для строк со статусом "Mapped" с известной переменной или Text Style библиотеки. */
 function canApplyToLayout(result: ComparisonResult): boolean {
+  if (result.category === "typography" || activeCategory === "typography") {
+    if (result.decision === "value_fix_proposed") {
+      return readTypographyComparisonValue(result.comparisonValue) !== null;
+    }
+    return result.status === "mapped" && Boolean(result.target?.styleKey || result.target?.styleId);
+  }
   return result.status === "mapped" && Boolean(result.target?.variableId);
 }
 
@@ -1010,9 +1202,56 @@ function requestApplyModalPreview(recordId: string): void {
   post({ type: "build-preview", recordId });
 }
 
+function renderTypographyApplyBeforeAfterHtml(result: ComparisonResult): string {
+  const layoutValue = readTypographyComparisonValue(result.comparisonValue);
+  const beforeText = layoutValue
+    ? formatTypographyDisplayValue(layoutValue)
+    : result.displayValue;
+  const afterText = result.target?.displayValue ?? result.decisionProposedValue ?? "—";
+  return `
+    <div class="tc-apply-before-after__col">
+      <div class="tc-apply-before-after__title">Было</div>
+      <div class="ds-value-meta__primary">${escapeHtml(beforeText)}</div>
+      <div class="ds-value-meta__caption">${escapeHtml(result.sourceName || result.bindingType)}</div>
+    </div>
+    <div class="tc-apply-before-after__col">
+      <div class="tc-apply-before-after__title">Стало</div>
+      <div class="ds-value-meta__primary">${escapeHtml(afterText)}</div>
+      <div class="ds-value-meta__caption">Text Style binding</div>
+    </div>
+  `;
+}
+
 function openApplyToLayoutModal(result: ComparisonResult): void {
   activeApplyRecordId = result.id;
   applyModalPreviewPending = false;
+
+  const isTypography = result.category === "typography" || activeCategory === "typography";
+
+  if (isTypography) {
+    $("tc-apply-summary").innerHTML = `
+      <div class="tc-apply-summary__row"><span>Слой/группа</span><strong>${escapeHtml(
+        result.representativeNodeName || "(без имени)"
+      )}</strong></div>
+      <div class="tc-apply-summary__row"><span>Свойство</span><strong>text-style</strong></div>
+      <div class="tc-apply-summary__row"><span>Затронуто нод (uses)</span><strong>${result.count}</strong></div>
+      <div class="tc-apply-summary__row"><span>Text Style</span><strong>${escapeHtml(
+        result.target?.name ?? ""
+      )}</strong></div>
+    `;
+    $("tc-apply-before-after").innerHTML = renderTypographyApplyBeforeAfterHtml(result);
+    $("tc-apply-confirm-view").hidden = false;
+    $("tc-apply-footer").hidden = false;
+    $("tc-apply-loading").hidden = true;
+    const resultView = $("tc-apply-result-view");
+    resultView.hidden = true;
+    resultView.innerHTML = "";
+    $("tc-apply-preview-loading").hidden = true;
+    $("tc-apply-preview-images").hidden = true;
+    $("tc-apply-preview-error").hidden = true;
+    $("tc-apply-overlay").hidden = false;
+    return;
+  }
 
   $("tc-apply-summary").innerHTML = `
     <div class="tc-apply-summary__row"><span>Слой/группа</span><strong>${escapeHtml(
@@ -1057,7 +1296,11 @@ function confirmApplyToLayout(): void {
   post({ type: "apply-to-layout", recordId: activeApplyRecordId });
 }
 
-function showApplyToLayoutResult(applied: number, skipped: Array<{ nodeId: string; reason: string }>): void {
+function showApplyToLayoutResult(
+  applied: number,
+  skipped: Array<{ nodeId: string; reason: string }>,
+  partial?: boolean
+): void {
   $("tc-apply-loading").hidden = true;
   const resultView = $("tc-apply-result-view");
   resultView.hidden = false;
@@ -1070,12 +1313,17 @@ function showApplyToLayoutResult(applied: number, skipped: Array<{ nodeId: strin
           .join("")}</ul>`
       : "";
 
+  const partialNote = partial
+    ? `<p class="ds-status-line ds-status-line--warning">Решение применено частично: успешные слои обновлены, остальные остаются в pending с указанной причиной.</p>`
+    : "";
+
   resultView.innerHTML = `
     <p class="tc-apply-result__summary">Применено к ${applied} из ${total} нод${
     skipped.length > 0 ? `, пропущено: ${skipped.length}` : ""
   }.</p>
+    ${partialNote}
     ${skippedHtml}
-    <p class="ds-status-line">Пересканируйте макет, чтобы обновить таблицу результатов.</p>
+    <p class="ds-status-line">Пересканируйте макет, чтобы обновить таблицу результатов (необязательно, но рекомендуется).</p>
   `;
 }
 
@@ -1534,19 +1782,33 @@ function renderTargetCellHtml(result: ComparisonResult): string {
 
 function setSelectedRow(recordId: string): void {
   selectedRecordId = recordId;
-  document.querySelectorAll<HTMLTableRowElement>("#tc-results-tbody tr[data-record-id]").forEach((row) => {
+  const tbodySelector =
+    activeCategory === "typography" ? "#tc-results-tbody-typography" : "#tc-results-tbody-colors";
+  document.querySelectorAll<HTMLTableRowElement>(`${tbodySelector} tr[data-record-id]`).forEach((row) => {
     row.classList.toggle("ds-row-selected", row.dataset.recordId === recordId);
   });
   updateApplyButtonState();
 }
 
 function updateApplyButtonState(): void {
-  const btn = $<HTMLButtonElement>("tc-apply-decision-btn");
-  btn.disabled = !selectedRecordId || !rowControls.has(selectedRecordId);
+  const hasControls = Boolean(selectedRecordId && rowControls.has(selectedRecordId));
+  $<HTMLButtonElement>("tc-apply-decision-btn").disabled = !hasControls;
+  $<HTMLButtonElement>("tc-apply-decision-btn-typography").disabled = !hasControls;
 }
 
 function renderResultsSummary(): void {
   const total = currentResults.length;
+
+  if (activeCategory === "typography") {
+    if (total === 0) {
+      $("tc-results-summary").textContent =
+        "Расхождений типографики нет (или запустите сканирование типографики).";
+      return;
+    }
+    $("tc-results-summary").textContent = `${total} групп текстовых стилей требуют внимания.`;
+    return;
+  }
+
   const visible = getFilteredResults();
   const visibleCount = visible.length;
   const decided = visible.filter((r) => r.decision).length;
@@ -1569,8 +1831,378 @@ function renderResultsSummary(): void {
   $("tc-results-summary").textContent = `${total} случаев требуют решения, обработано: ${decided}/${total}`;
 }
 
-function renderResultsTable(preferredSelectedId?: string): void {
-  const tbody = $("tc-results-tbody");
+const TYPOGRAPHY_STATUS_SORT_ORDER: Record<StatusFilterKey, number> = {
+  "hardcoded-no-analog": 0,
+  "mixed-unresolved": 1,
+  "ghost-binding": 2,
+  "name-mismatch": 3,
+  conflict: 4,
+  "name-match": 5,
+  exact: 6,
+  value: 6,
+  mapped: 7,
+  "style-binding": 8,
+  "name-match-unresolved": 9,
+  approximate: 10,
+  "layout-only": 11,
+};
+
+function typographyResultsHaveFontSizeMismatch(result: ComparisonResult): boolean {
+  return result.mismatchedProperties?.includes("fontSize") === true;
+}
+
+function compareTypographyResults(a: ComparisonResult, b: ComparisonResult): number {
+  const keyA = getResultStatusFilterKey(a);
+  const keyB = getResultStatusFilterKey(b);
+  const orderDiff = (TYPOGRAPHY_STATUS_SORT_ORDER[keyA] ?? 99) - (TYPOGRAPHY_STATUS_SORT_ORDER[keyB] ?? 99);
+  if (orderDiff !== 0) return orderDiff;
+
+  if (keyA === "conflict" || keyA === "name-match") {
+    const fontSizeDiff =
+      Number(typographyResultsHaveFontSizeMismatch(b)) - Number(typographyResultsHaveFontSizeMismatch(a));
+    if (fontSizeDiff !== 0) return fontSizeDiff;
+  }
+
+  return (a.representativeNodeName || "").localeCompare(b.representativeNodeName || "", "ru");
+}
+
+function formatTypographyPropertySummary(value: TypographyComparisonValue | null): string {
+  if (!value) return "";
+  const weightLabel = value.fontWeightApproximate ? `w${value.fontWeight}≈` : `w${value.fontWeight}`;
+  return `${value.fontFamily} · ${value.fontSize}px · ${weightLabel}`;
+}
+
+function renderTypographyUsedStyleCell(result: ComparisonResult): string {
+  const value = readTypographyComparisonValue(result.comparisonValue);
+  const summary = formatTypographyPropertySummary(value);
+  if (result.bindingType === "hardcoded") {
+    const hardcodedSummary = summary || escapeHtml(result.displayValue);
+    return `<div>— (hardcoded)</div><div class="ds-value-meta__caption">${hardcodedSummary}</div>`;
+  }
+  const styleName = result.sourceName ? escapeHtml(result.sourceName) : "—";
+  const summaryHtml = summary ? `<div class="ds-value-meta__caption">${escapeHtml(summary)}</div>` : "";
+  return `<div>${styleName}</div>${summaryHtml}`;
+}
+
+function formatLibraryTextStyleLabel(style: LibraryTextStyle): string {
+  return style.name;
+}
+
+function filterLibraryTextStyles(query: string): LibraryTextStyle[] {
+  const normalized = query.trim().toLowerCase();
+  const styles = filterSemanticTypographyStyles(currentLibraryTextStyles);
+  const filtered = normalized
+    ? styles.filter((style) => style.name.toLowerCase().includes(normalized))
+    : styles;
+  return filtered.slice(0, 80);
+}
+
+function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void {
+  const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
+  if (!menu) return;
+  const styles = filterLibraryTextStyles(query);
+  if (styles.length === 0) {
+    menu.innerHTML = `<div class="ds-filter-menu__empty">Text Styles не найдены</div>`;
+    return;
+  }
+  menu.innerHTML = `
+    <div class="ds-filter-menu__options">
+      ${styles
+        .map(
+          (style) => `
+        <button
+          type="button"
+          class="ds-filter-menu__option"
+          role="option"
+          data-style-id="${escapeHtml(style.styleId)}"
+          data-label="${escapeHtml(formatLibraryTextStyleLabel(style))}"
+        >
+          <span class="ds-value-meta__primary">${escapeHtml(style.name)}</span>
+          <div class="ds-value-meta__caption">${escapeHtml(style.displayValue)}</div>
+        </button>`
+        )
+        .join("")}
+    </div>
+  `;
+  menu.querySelectorAll<HTMLButtonElement>(".ds-filter-menu__option").forEach((option) => {
+    option.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const styleId = option.dataset.styleId ?? "";
+      const label = option.dataset.label ?? "";
+      selectTextStyleComboboxOption(combobox, styleId, label);
+    });
+  });
+}
+
+function selectTextStyleComboboxOption(combobox: HTMLElement, styleId: string, label: string): void {
+  const input = combobox.querySelector<HTMLInputElement>(".ds-combobox__input");
+  const host = combobox.closest<HTMLElement>(".ds-action-extra");
+  if (!input || !host || !styleId) return;
+  input.value = label;
+  host.dataset.selectedStyleId = styleId;
+  setComboboxOpen(combobox, false);
+}
+
+function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: string): void {
+  mappedExtra.innerHTML = `
+    <div class="ds-combobox">
+      <input
+        type="text"
+        class="ds-combobox__input ds-input"
+        placeholder="Начните вводить имя Text Style..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button type="button" class="ds-combobox__toggle" aria-label="Показать Text Styles" aria-expanded="false">
+        ${DROPDOWN_CHEVRON_SVG}
+      </button>
+      <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
+    </div>
+  `;
+
+  const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
+  const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
+  const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
+  if (!combobox || !input || !toggle) return;
+
+  input.addEventListener("input", () => {
+    delete mappedExtra.dataset.selectedStyleId;
+    renderTextStyleComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, true);
+  });
+  toggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    if (open) renderTextStyleComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, open);
+  });
+
+  if (initialStyleId) {
+    const initialStyle = currentLibraryTextStyles.find((style) => style.styleId === initialStyleId);
+    if (initialStyle) {
+      selectTextStyleComboboxOption(combobox, initialStyle.styleId, formatLibraryTextStyleLabel(initialStyle));
+    }
+  }
+}
+
+function setupTypographyValueFixExtra(result: ComparisonResult, valueFixExtra: HTMLElement): void {
+  const layoutValue = readTypographyComparisonValue(result.comparisonValue);
+  const targetStyle = result.target
+    ? currentLibraryTextStyles.find(
+        (style) => style.styleId === result.target!.styleId || style.key === result.target!.styleKey
+      )
+    : undefined;
+  valueFixExtra.innerHTML = `
+    <div class="ds-value-meta__caption">Текущая типографика библиотеки</div>
+    <div class="ds-value-meta__primary">${escapeHtml(targetStyle?.displayValue ?? result.target?.displayValue ?? "—")}</div>
+    <div class="ds-value-meta__caption">Предлагаемая типографика (из макета)</div>
+    <div class="ds-value-meta__primary">${escapeHtml(
+      layoutValue ? formatTypographyDisplayValue(layoutValue) : result.displayValue
+    )}</div>
+    <textarea rows="2" placeholder="Комментарий (необязательно)" class="tc-value-fix-comment ds-textarea"></textarea>
+  `;
+  if (targetStyle) {
+    valueFixExtra.dataset.selectedStyleId = targetStyle.styleId;
+  }
+}
+
+function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellElement {
+  const cell = document.createElement("td");
+  const wrap = document.createElement("div");
+  wrap.className = "ds-action-cell";
+
+  const select = document.createElement("select");
+  select.className = "ds-select";
+  ACTION_OPTIONS.forEach((option) => {
+    if (option.value === "value_fix_proposed" && !canProposeValueFix(result)) return;
+    if (option.value === "mapped_suggested" && !canUseSuggestedToken(result)) return;
+    const opt = document.createElement("option");
+    opt.value = option.value;
+    opt.textContent =
+      option.value === "mapped" && (result.category === "typography" || activeCategory === "typography")
+        ? "Выбрать Text Style из AID"
+        : option.label;
+    select.appendChild(opt);
+  });
+  if (result.decision) select.value = result.decision;
+  wrap.appendChild(select);
+
+  if (canApplyToLayout(result)) {
+    const applyLayoutBtn = document.createElement("button");
+    applyLayoutBtn.type = "button";
+    applyLayoutBtn.className = "ds-btn tc-apply-layout-btn";
+    applyLayoutBtn.textContent = "Применить в макет";
+    applyLayoutBtn.disabled = applyToLayoutInFlight;
+    applyLayoutBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openApplyToLayoutModal(result);
+    });
+    wrap.appendChild(applyLayoutBtn);
+  }
+
+  const mappedExtra = document.createElement("div");
+  mappedExtra.className = "ds-action-extra";
+  setupTextStyleCombobox(mappedExtra, result.decisionTargetStyleId);
+  wrap.appendChild(mappedExtra);
+
+  const commentExtra = document.createElement("div");
+  commentExtra.className = "ds-action-extra";
+  commentExtra.innerHTML = `<textarea rows="2" placeholder="Комментарий (обязателен)" class="tc-comment-input ds-textarea"></textarea>`;
+  wrap.appendChild(commentExtra);
+
+  const valueFixExtra = document.createElement("div");
+  valueFixExtra.className = "ds-action-extra";
+  if (canProposeValueFix(result)) {
+    setupTypographyValueFixExtra(result, valueFixExtra);
+  }
+  wrap.appendChild(valueFixExtra);
+
+  if (result.applyPartial) {
+    const partialNote = document.createElement("div");
+    partialNote.className = "ds-status-line ds-status-line--warning";
+    partialNote.textContent = "Применено частично — см. пропущенные слои после apply-to-layout.";
+    wrap.appendChild(partialNote);
+  }
+
+  function syncExtraVisibility(): void {
+    mappedExtra.classList.toggle("visible", select.value === "mapped");
+    commentExtra.classList.toggle("visible", select.value === "ignored");
+    valueFixExtra.classList.toggle("visible", select.value === "value_fix_proposed");
+  }
+  select.addEventListener("change", syncExtraVisibility);
+  syncExtraVisibility();
+
+  if (result.decisionComment && result.decision === "ignored") {
+    (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value = result.decisionComment;
+  }
+
+  rowControls.set(result.id, { select, mappedExtra, commentExtra, valueFixExtra });
+  cell.appendChild(wrap);
+  return cell;
+}
+
+function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement {
+  const row = document.createElement("tr");
+  row.dataset.recordId = result.id;
+
+  const statusCell = document.createElement("td");
+  const badgeClass =
+    result.bindingType === "style"
+      ? "style-binding"
+      : result.bindingType === "ghost"
+        ? "ghost-binding"
+        : result.status === "layout-only" && result.bindingType === "hardcoded"
+          ? "hardcoded-no-analog"
+          : result.status;
+  const badge = document.createElement("span");
+  badge.className = `ds-badge ${badgeClass}`;
+  badge.textContent = statusLabel(result);
+  statusCell.appendChild(badge);
+  if (result.isOverride) {
+    const overrideBadge = document.createElement("span");
+    overrideBadge.className = "tc-override-badge";
+    overrideBadge.textContent = "Override";
+    overrideBadge.title = "Типографика переопределена относительно main component или linked Text Style";
+    statusCell.appendChild(overrideBadge);
+  }
+  if (result.decision && result.decision !== "value_fix_proposed") {
+    const check = document.createElement("span");
+    check.className = "ds-decision-check";
+    check.textContent = " ✓";
+    check.title = `Решение: ${result.decision}`;
+    statusCell.appendChild(check);
+  }
+  if (result.applyPartial) {
+    const partialBadge = document.createElement("span");
+    partialBadge.className = "tc-override-badge";
+    partialBadge.textContent = "Частично";
+    partialBadge.title = "Apply-to-layout применён не ко всем слоям группы";
+    statusCell.appendChild(partialBadge);
+  }
+  row.appendChild(statusCell);
+
+  const layerCell = document.createElement("td");
+  const layerLink = document.createElement("button");
+  layerLink.type = "button";
+  layerLink.className = "ds-accent-link";
+  layerLink.title = "Перейти к слою в макете";
+  layerLink.textContent = result.representativeNodeName || "(без имени)";
+  layerLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    post({ type: "select-nodes", payload: { nodeIds: result.nodeIds } });
+  });
+  layerCell.appendChild(layerLink);
+  const path = document.createElement("div");
+  path.className = "ds-value-meta__caption";
+  path.textContent = result.representativeNodePath;
+  layerCell.appendChild(path);
+  row.appendChild(layerCell);
+
+  row.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("button, select, input, textarea, option, datalist")) return;
+    setSelectedRow(result.id);
+  });
+
+  const usedStyleCell = document.createElement("td");
+  usedStyleCell.innerHTML = renderTypographyUsedStyleCell(result);
+  row.appendChild(usedStyleCell);
+
+  const targetCell = document.createElement("td");
+  targetCell.textContent = result.target?.name?.trim() ? result.target.name : "—";
+  row.appendChild(targetCell);
+
+  const mismatchCell = document.createElement("td");
+  mismatchCell.textContent =
+    result.mismatchedProperties && result.mismatchedProperties.length > 0
+      ? result.mismatchedProperties.join(", ")
+      : "—";
+  row.appendChild(mismatchCell);
+
+  row.appendChild(buildTypographyActionCell(result));
+
+  return row;
+}
+
+function renderTypographyResultsTable(preferredSelectedId?: string): void {
+  const tbody = $("tc-results-tbody-typography");
+  tbody.innerHTML = "";
+  rowControls.clear();
+  selectedRecordId = null;
+  renderResultsSummary();
+
+  const sortedResults = [...currentResults].sort(compareTypographyResults);
+
+  if (sortedResults.length === 0) {
+    const row = document.createElement("tr");
+    const libraryHint =
+      currentLibraryTextStyles.length === 0
+        ? " Загрузите библиотеку с Text Styles (scopes file_content:read + library_content:read)."
+        : "";
+    row.innerHTML =
+      `<td colspan="6" class="ds-empty-state">Расхождений типографики нет — все текстовые стили совпадают с библиотекой или не требуют замены.${libraryHint} Запустите сканирование заново после изменений в макете.</td>`;
+    tbody.appendChild(row);
+    updateApplyButtonState();
+    return;
+  }
+
+  for (const result of sortedResults) {
+    tbody.appendChild(buildTypographyResultRow(result));
+  }
+
+  const nextSelectedId =
+    preferredSelectedId && sortedResults.some((item) => item.id === preferredSelectedId)
+      ? preferredSelectedId
+      : sortedResults[0].id;
+  setSelectedRow(nextSelectedId);
+}
+
+function renderColorResultsTable(preferredSelectedId?: string): void {
+  const tbody = $("tc-results-tbody-colors");
   tbody.innerHTML = "";
   rowControls.clear();
   selectedRecordId = null;
@@ -1604,6 +2236,15 @@ function renderResultsTable(preferredSelectedId?: string): void {
       ? preferredSelectedId
       : visibleResults[0].id;
   setSelectedRow(nextSelectedId);
+}
+
+function renderResultsTable(preferredSelectedId?: string): void {
+  updateResultsBlocksVisibility();
+  if (activeCategory === "typography") {
+    renderTypographyResultsTable();
+    return;
+  }
+  renderColorResultsTable(preferredSelectedId);
 }
 
 function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
@@ -1781,16 +2422,134 @@ function buildSourceReviewContext(result: ComparisonResult): {
   nodeIds: string[];
   occurrenceCount: number;
 } {
+  const layoutValue = readTypographyComparisonValue(result.comparisonValue);
+  const typographySummary = layoutValue ? formatTypographyDisplayValue(layoutValue) : result.displayValue;
+  const isTypography = result.category === "typography" || activeCategory === "typography";
   return {
-    sourceProperty: result.property,
+    sourceProperty: isTypography ? "text-style" : result.property,
     sourceBindingType: result.bindingType,
     sourceName: result.sourceName || undefined,
-    sourceDisplayValue: result.displayValue,
+    sourceDisplayValue: isTypography ? typographySummary : result.displayValue,
     nodePath: result.representativeNodePath,
     nodeName: result.representativeNodeName,
     nodeIds: result.nodeIds,
     occurrenceCount: result.count,
   };
+}
+
+function applyTypographyDecision(
+  result: ComparisonResult,
+  select: HTMLSelectElement,
+  mappedExtra: HTMLElement,
+  commentExtra: HTMLElement,
+  valueFixExtra: HTMLElement
+): void {
+  const decision = select.value as Decision;
+  const review = buildSourceReviewContext(result);
+  const layoutValue = readTypographyComparisonValue(result.comparisonValue);
+  const layoutSummary = layoutValue ? formatTypographyDisplayValue(layoutValue) : result.displayValue;
+
+  if (decision === "mapped_suggested") {
+    if (!result.target?.styleId && !result.target?.styleKey) {
+      showError("Для этой строки нет предложенного Text Style — выберите «Выбрать Text Style из AID».");
+      return;
+    }
+    const suggestedStyle = currentLibraryTextStyles.find(
+      (style) => style.styleId === result.target!.styleId || style.key === result.target!.styleKey
+    );
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "typography",
+        targetStyleId: suggestedStyle?.styleId ?? result.target?.styleId,
+        targetStyleName: suggestedStyle?.name ?? result.target?.name,
+        targetName: suggestedStyle?.name ?? result.target?.name,
+        mismatchedProperties: result.mismatchedProperties,
+        targetDisplayValue: suggestedStyle?.displayValue ?? result.target?.displayValue,
+        ...review,
+      },
+    });
+    return;
+  }
+
+  if (decision === "mapped") {
+    const input = mappedExtra.querySelector(".ds-combobox__input") as HTMLInputElement | null;
+    const label = input?.value.trim() ?? "";
+    let styleId = mappedExtra.dataset.selectedStyleId;
+    if (!styleId && label) {
+      const matchedStyle = currentLibraryTextStyles.find((style) => formatLibraryTextStyleLabel(style) === label);
+      styleId = matchedStyle?.styleId;
+    }
+    if (!styleId) {
+      showError("Выберите Text Style из списка AID — точное совпадение по имени не найдено.");
+      return;
+    }
+    const selectedStyle = currentLibraryTextStyles.find((style) => style.styleId === styleId);
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "typography",
+        targetStyleId: styleId,
+        targetStyleName: label,
+        targetName: label,
+        mismatchedProperties: result.mismatchedProperties,
+        targetDisplayValue: selectedStyle?.displayValue,
+        ...review,
+      },
+    });
+    return;
+  }
+
+  if (decision === "ignored") {
+    const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
+    if (!comment) {
+      showError("Для решения «Игнорировать» комментарий обязателен.");
+      return;
+    }
+    post({
+      type: "apply-decision",
+      payload: { recordId: result.id, decision, category: "typography", comment, ...review },
+    });
+    return;
+  }
+
+  if (decision === "value_fix_proposed") {
+    const styleId = valueFixExtra.dataset.selectedStyleId ?? result.target?.styleId;
+    const selectedStyle = styleId
+      ? currentLibraryTextStyles.find((style) => style.styleId === styleId)
+      : undefined;
+    if (!selectedStyle) {
+      showError("Выберите Text Style библиотеки, значение которого нужно исправить.");
+      return;
+    }
+    const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "typography",
+        targetStyleId: selectedStyle.styleId,
+        targetStyleName: selectedStyle.name,
+        targetName: selectedStyle.name,
+        mismatchedProperties: result.mismatchedProperties,
+        currentLibraryValue: selectedStyle.displayValue,
+        proposedValue: layoutSummary,
+        comment: commentInput?.value.trim() || undefined,
+        ...review,
+      },
+    });
+    return;
+  }
+
+  post({
+    type: "apply-decision",
+    payload: { recordId: result.id, decision, category: "typography", ...review },
+  });
 }
 
 function applyDecision(
@@ -1932,12 +2691,33 @@ function downloadTextFile(filename: string, mimeType: string, content: string): 
 }
 
 function initApplyFooterButton(): void {
-  $<HTMLButtonElement>("tc-apply-decision-btn").addEventListener("click", () => {
+  const runApplyDecision = () => {
     if (!selectedRecordId) return;
     const controls = rowControls.get(selectedRecordId);
     const result = currentResults.find((item) => item.id === selectedRecordId);
     if (!controls || !result) return;
+    if (activeCategory === "typography") {
+      applyTypographyDecision(
+        result,
+        controls.select,
+        controls.mappedExtra,
+        controls.commentExtra,
+        controls.valueFixExtra
+      );
+      return;
+    }
     applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
+  };
+  $<HTMLButtonElement>("tc-apply-decision-btn").addEventListener("click", runApplyDecision);
+  $<HTMLButtonElement>("tc-apply-decision-btn-typography").addEventListener("click", runApplyDecision);
+}
+
+function initRescanTypographyButton(): void {
+  $<HTMLButtonElement>("tc-rescan-typography-btn").addEventListener("click", () => {
+    const scope = getSelectedScope();
+    $<HTMLButtonElement>("tc-scan-btn").disabled = true;
+    $("tc-scan-status").textContent = "Сканирование...";
+    post({ type: "scan", payload: { scope, category: "typography" } });
   });
 }
 
@@ -2132,14 +2912,28 @@ window.onmessage = (event: MessageEvent) => {
         registryCache,
         adminMode,
         pendingProposeCount: initialPendingCount,
+        pendingProposeCountByCategory: initialPendingByCategory,
+        libraryTextStylesCache,
+        textStylesAvailable: initialTextStylesAvailable,
       } = message.payload;
       if (libraryFileName) $<HTMLInputElement>("tc-filekey-input").value = libraryFileName;
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
+      typographyLibraryAvailable = initialTextStylesAvailable;
+      typographyLibraryError = initialTextStylesAvailable
+        ? null
+        : "загрузите библиотеку с PAT scopes file_content:read и library_content:read.";
+      updateTypographyCategoryAvailability();
       renderLibraryStatus(
         libraryCache
-          ? `Библиотека загружена: ${libraryCache.count} цветовых переменных, обновлена ${new Date(
-              libraryCache.fetchedAt
-            ).toLocaleString("ru-RU")}.`
+          ? [
+              `Библиотека загружена: ${libraryCache.count} цветовых переменных`,
+              initialTextStylesAvailable && libraryTextStylesCache
+                ? `, ${libraryTextStylesCache.count} Text Styles`
+                : initialTextStylesAvailable
+                  ? ""
+                  : " (Text Styles недоступны)",
+              `, обновлена ${new Date(libraryCache.fetchedAt).toLocaleString("ru-RU")}.`,
+            ].join("")
           : "Библиотека ещё не загружена."
       );
 
@@ -2162,7 +2956,7 @@ window.onmessage = (event: MessageEvent) => {
         );
       }
       applyAdminMode(adminMode === true);
-      updateProposeButton(initialPendingCount);
+      updateProposeButton(initialPendingCount, initialPendingByCategory);
       if (registryCache) {
         applyProdRegistryLoaded(registryCache.localOnly, registryCache.entryCount);
       } else {
@@ -2175,7 +2969,7 @@ window.onmessage = (event: MessageEvent) => {
       applyAdminMode(message.payload.enabled === true);
       break;
     case "pending-propose-count":
-      updateProposeButton(message.payload.count);
+      updateProposeButton(message.payload.count, message.payload.byCategory);
       break;
     case "propose-preview":
       openProposeConfirmModal(message.payload.entries);
@@ -2248,9 +3042,16 @@ window.onmessage = (event: MessageEvent) => {
     case "library-loaded": {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
       currentLibraryTokens = message.payload.tokens;
+      currentLibraryTextStyles = message.payload.textStyles;
+      typographyLibraryAvailable = message.payload.textStylesAvailable;
+      typographyLibraryError = message.payload.textStylesError ?? null;
+      updateTypographyCategoryAvailability();
       $<HTMLInputElement>("tc-filekey-input").value = message.payload.fileName;
+      const textStylesPart = message.payload.textStylesAvailable
+        ? `, ${message.payload.textStyles.length} Text Styles`
+        : " (Text Styles недоступны)";
       renderLibraryStatus(
-        `Библиотека загружена: ${message.payload.tokens.length} цветовых переменных, обновлена ${new Date(
+        `Библиотека загружена: ${message.payload.tokens.length} цветовых переменных${textStylesPart}, обновлена ${new Date(
           message.payload.fetchedAt
         ).toLocaleString("ru-RU")}.`
       );
@@ -2261,12 +3062,14 @@ window.onmessage = (event: MessageEvent) => {
       break;
     case "scan-results": {
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
-      $("tc-scan-status").textContent = `Готово: найдено ${message.payload.results.length} групп значений.`;
-      currentResults = message.payload.results;
-      currentLibraryTokens = message.payload.libraryTokens;
-      syncStatusFiltersFromResults(currentResults, true);
-      closeStatusFilterMenu();
-      renderResultsTable();
+      const { category, results, libraryTokens, libraryTextStyles } = message.payload;
+      $("tc-scan-status").textContent = `Готово: найдено ${results.length} групп значений.`;
+      activeCategory = category;
+      setCategorySegmentPressed(category);
+      resultsByCategory[category] = results;
+      currentLibraryTokens = libraryTokens;
+      currentLibraryTextStyles = libraryTextStyles;
+      applyActiveCategoryView(true);
       switchToTab("results");
       break;
     }
@@ -2274,11 +3077,8 @@ window.onmessage = (event: MessageEvent) => {
       const index = currentResults.findIndex((r) => r.id === message.payload.recordId);
       if (index !== -1) {
         currentResults[index] = message.payload.result;
-        // После Mapped строка меняет status на "mapped" — новый ключ фильтра,
-        // которого не было при первом скане. Без добавления в activeStatusFilters
-        // строка исчезает из таблицы сразу после «Применить решение», и кнопка
-        // «Применить в макет» становится недоступна.
-        if (message.payload.result.status === "mapped") {
+        resultsByCategory[activeCategory] = currentResults;
+        if (activeCategory === "colors" && message.payload.result.status === "mapped") {
           activeStatusFilters.add("mapped");
           updateStatusFilterIndicator();
         }
@@ -2340,7 +3140,7 @@ window.onmessage = (event: MessageEvent) => {
       applyToLayoutInFlight = false;
       setApplyToLayoutButtonsDisabled(false);
       if (activeApplyRecordId === message.recordId) {
-        showApplyToLayoutResult(message.applied, message.skipped);
+        showApplyToLayoutResult(message.applied, message.skipped, message.partial);
       }
       break;
     }
@@ -2451,6 +3251,7 @@ function initWindowResize(): void {
 initTabs();
 initGuideAccordion();
 initScopeSegment();
+initCategorySegment();
 initSettingsPanel();
 initGitHubSettingsPanel();
 initAdminUnlock();
@@ -2460,6 +3261,7 @@ initStatusFilterMenu();
 initComboboxGlobalHandlers();
 initExportMenus();
 initApplyFooterButton();
+initRescanTypographyButton();
 initPreviewModal();
 initApplyToLayoutModal();
 initProposeConfirmModal();
