@@ -8,8 +8,21 @@
  * для группы хранится count и представитель (path + node ids).
  */
 
-import type { BindingType, LayoutRecord, LayoutRecordModeValue, ScanScope } from "../comparators/types";
+import type {
+  BindingType,
+  LayoutRecord,
+  LayoutRecordModeValue,
+  ScanScope,
+  TypographyComparisonValue,
+} from "../comparators/types";
 import { colorValueKey, formatColorValue, rgbToHex, stableHash } from "./colorUtils";
+import {
+  formatTypographyDisplayValue,
+  readTypographyFromTextNode,
+  readTypographyFromTextStyle,
+  typographyValueKey,
+  typographyValuesEqual,
+} from "./typographyUtils";
 
 type ColorProperty = "fill" | "stroke" | "text-fill";
 
@@ -342,4 +355,310 @@ export async function scanColors(scope: ScanScope): Promise<LayoutRecord[]> {
     await walk(root, hits);
   }
   return groupHits(hits);
+}
+
+// ---------------------------------------------------------------------------
+// Typography scan (TEXT nodes + Text Styles)
+// ---------------------------------------------------------------------------
+
+type TypographyProperty = "text-style";
+
+interface RawTypographyHit {
+  property: TypographyProperty;
+  bindingType: BindingType;
+  sourceName: string;
+  styleId?: string;
+  styleKey?: string;
+  displayValue: string;
+  comparisonValue: TypographyComparisonValue | Record<string, never>;
+  typographyUnresolved: boolean;
+  isOverride: boolean;
+  structuralDriftDetected: boolean;
+  node: TextNode;
+  nodePath: string;
+}
+
+function findInstanceAncestor(node: BaseNode): InstanceNode | null {
+  let current = node.parent;
+  while (current && current.type !== "DOCUMENT") {
+    if (current.type === "INSTANCE") return current;
+    current = current.parent;
+  }
+  return null;
+}
+
+/**
+ * Сопоставляет TEXT-ноду внутри instance с одноимённой нодой в main component
+ * по индексному пути от INSTANCE до TEXT.
+ *
+ * Ограничение: при несовпадении структуры instance/main component (reorder,
+ * swap) сопоставление возвращает null — isOverride в этом случае false.
+ */
+function findCorrespondingComponentNode(instance: InstanceNode, node: SceneNode): SceneNode | null {
+  const pathIndices: number[] = [];
+  let current: BaseNode | null = node;
+  while (current && current !== instance) {
+    const parent: BaseNode | null = current.parent;
+    if (!parent || !("children" in parent)) return null;
+    const children = (parent as ChildrenMixin).children as readonly SceneNode[];
+    const index = children.indexOf(current as SceneNode);
+    if (index < 0) return null;
+    pathIndices.unshift(index);
+    current = parent;
+  }
+  if (current !== instance) return null;
+
+  const mainComponent = instance.mainComponent;
+  if (!mainComponent) return null;
+
+  let componentNode: BaseNode = mainComponent;
+  for (const index of pathIndices) {
+    if (!("children" in componentNode)) return null;
+    const children = (componentNode as ChildrenMixin).children as readonly SceneNode[];
+    if (index >= children.length) return null;
+    componentNode = children[index];
+  }
+  return componentNode as SceneNode;
+}
+
+interface TypographyOverrideDetection {
+  isOverride: boolean;
+  structuralDriftDetected: boolean;
+}
+
+/**
+ * isOverride = true только если resolved typography на instance-ноде отличается
+ * от соответствующей ноды main component. Для нод вне instance — сравнение с
+ * linked TextStyle (если textStyleId задан).
+ */
+function detectTypographyOverride(node: TextNode, linkedStyle: TextStyle | null): TypographyOverrideDetection {
+  const instance = findInstanceAncestor(node);
+  if (instance) {
+    const componentNode = findCorrespondingComponentNode(instance, node);
+    if (!componentNode || componentNode.type !== "TEXT") {
+      return { isOverride: false, structuralDriftDetected: true };
+    }
+
+    const instanceValue = readTypographyFromTextNode(node);
+    const componentValue = readTypographyFromTextNode(componentNode);
+    if (
+      instanceValue.typographyUnresolved ||
+      componentValue.typographyUnresolved ||
+      !instanceValue.comparisonValue ||
+      !componentValue.comparisonValue
+    ) {
+      return { isOverride: false, structuralDriftDetected: false };
+    }
+    return {
+      isOverride: !typographyValuesEqual(instanceValue.comparisonValue, componentValue.comparisonValue),
+      structuralDriftDetected: false,
+    };
+  }
+
+  if (!linkedStyle) return { isOverride: false, structuralDriftDetected: false };
+
+  const { comparisonValue: nodeValue, typographyUnresolved } = readTypographyFromTextNode(node);
+  if (typographyUnresolved || !nodeValue) return { isOverride: false, structuralDriftDetected: false };
+
+  try {
+    const styleValue = readTypographyFromTextStyle(linkedStyle);
+    return {
+      isOverride: !typographyValuesEqual(nodeValue, styleValue),
+      structuralDriftDetected: false,
+    };
+  } catch {
+    return { isOverride: false, structuralDriftDetected: false };
+  }
+}
+
+function isMixedSymbol(value: unknown): boolean {
+  return value === figma.mixed;
+}
+
+async function resolveTextStyleBinding(
+  textStyleId: string
+): Promise<{ sourceName: string; styleKey?: string; isGhost: boolean; linkedStyle: TextStyle | null }> {
+  try {
+    const style = await figma.getStyleByIdAsync(textStyleId);
+    if (!style || style.type !== "TEXT") {
+      return { sourceName: "(стиль удалён)", isGhost: true, linkedStyle: null };
+    }
+    return {
+      sourceName: style.name,
+      styleKey: style.key,
+      isGhost: false,
+      linkedStyle: style,
+    };
+  } catch {
+    return { sourceName: "(стиль недоступен)", isGhost: true, linkedStyle: null };
+  }
+}
+
+async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): Promise<RawTypographyHit | null> {
+  const textStyleIdRaw = node.textStyleId;
+  const hasMixedStyleId = isMixedSymbol(textStyleIdRaw);
+  const textStyleId = typeof textStyleIdRaw === "string" && textStyleIdRaw ? textStyleIdRaw : undefined;
+
+  if (textStyleId) {
+    const { sourceName, styleKey, isGhost, linkedStyle } = await resolveTextStyleBinding(textStyleId);
+    const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
+    const overrideDetection = detectTypographyOverride(node, linkedStyle);
+
+    if (typographyUnresolved || !comparisonValue) {
+      return {
+        property: "text-style",
+        bindingType: isGhost ? "ghost" : "style",
+        sourceName,
+        styleId: textStyleId,
+        styleKey,
+        displayValue: typographyUnresolved ? "(mixed typography)" : sourceName,
+        comparisonValue: comparisonValue ? { ...comparisonValue } : ({} as Record<string, never>),
+        typographyUnresolved: true,
+        isOverride: overrideDetection.isOverride,
+        structuralDriftDetected: overrideDetection.structuralDriftDetected,
+        node,
+        nodePath,
+      };
+    }
+
+    return {
+      property: "text-style",
+      bindingType: isGhost ? "ghost" : "style",
+      sourceName,
+      styleId: textStyleId,
+      styleKey,
+      displayValue: formatTypographyDisplayValue(comparisonValue),
+      comparisonValue: { ...comparisonValue } as TypographyComparisonValue,
+      typographyUnresolved: false,
+      isOverride: overrideDetection.isOverride,
+      structuralDriftDetected: overrideDetection.structuralDriftDetected,
+      node,
+      nodePath,
+    };
+  }
+
+  if (hasMixedStyleId) {
+    const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
+    const overrideDetection = detectTypographyOverride(node, null);
+    return {
+      property: "text-style",
+      bindingType: "hardcoded",
+      sourceName: "",
+      displayValue: "(mixed typography)",
+      comparisonValue: comparisonValue ? { ...comparisonValue } : {},
+      typographyUnresolved: typographyUnresolved || true,
+      isOverride: overrideDetection.isOverride,
+      structuralDriftDetected: overrideDetection.structuralDriftDetected,
+      node,
+      nodePath,
+    };
+  }
+
+  const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
+  if (!comparisonValue) {
+    const overrideDetection = detectTypographyOverride(node, null);
+    return {
+      property: "text-style",
+      bindingType: "hardcoded",
+      sourceName: "",
+      displayValue: "(mixed typography)",
+      comparisonValue: {},
+      typographyUnresolved: true,
+      isOverride: overrideDetection.isOverride,
+      structuralDriftDetected: overrideDetection.structuralDriftDetected,
+      node,
+      nodePath,
+    };
+  }
+
+  const overrideDetection = detectTypographyOverride(node, null);
+  return {
+    property: "text-style",
+    bindingType: "hardcoded",
+    sourceName: "",
+    displayValue: formatTypographyDisplayValue(comparisonValue),
+    comparisonValue: { ...comparisonValue },
+    typographyUnresolved,
+    isOverride: overrideDetection.isOverride,
+    structuralDriftDetected: overrideDetection.structuralDriftDetected,
+    node,
+    nodePath,
+  };
+}
+
+async function walkTypography(node: SceneNode, hits: RawTypographyHit[]): Promise<void> {
+  if (isNodeHidden(node)) return;
+  if (isMaskNode(node)) return;
+
+  const nodePath = buildNodePath(node);
+
+  if (node.type === "TEXT") {
+    const hit = await collectTextNodeTypographyHit(node, nodePath);
+    if (hit) hits.push(hit);
+  }
+
+  if (node.type === "BOOLEAN_OPERATION") return;
+
+  if ("children" in node) {
+    for (const child of (node as ChildrenMixin).children as SceneNode[]) {
+      await walkTypography(child, hits);
+    }
+  }
+}
+
+function groupTypographyHits(hits: RawTypographyHit[]): LayoutRecord[] {
+  const groups = new Map<string, LayoutRecord>();
+
+  for (const hit of hits) {
+    const comparisonForKey =
+      hit.typographyUnresolved || Object.keys(hit.comparisonValue).length === 0
+        ? `unresolved|${hit.bindingType}|${hit.sourceName}`
+        : typographyValueKey(hit.comparisonValue as TypographyComparisonValue & Record<string, unknown>);
+
+    const groupKey = stableHash(
+      `typography|${hit.property}|${comparisonForKey}|${hit.bindingType}|${hit.sourceName}|${hit.typographyUnresolved ? "u" : "r"}|${hit.isOverride ? "o" : "n"}`
+    );
+
+    const existing = groups.get(groupKey);
+    if (existing) {
+      existing.count += 1;
+      if (existing.nodeIds.length < MAX_NODE_IDS_PER_GROUP) {
+        existing.nodeIds.push(hit.node.id);
+      }
+      if (hit.structuralDriftDetected) {
+        existing.structuralDriftDetected = true;
+      }
+      continue;
+    }
+
+    groups.set(groupKey, {
+      id: groupKey,
+      category: "typography",
+      property: hit.property,
+      bindingType: hit.bindingType,
+      displayValue: hit.displayValue,
+      comparisonValue: hit.comparisonValue as Record<string, unknown>,
+      sourceName: hit.sourceName,
+      count: 1,
+      representativeNodePath: hit.nodePath,
+      representativeNodeName: hit.node.name,
+      nodeIds: [hit.node.id],
+      styleId: hit.styleId,
+      styleKey: hit.styleKey,
+      typographyUnresolved: hit.typographyUnresolved ? true : undefined,
+      isOverride: hit.isOverride ? true : undefined,
+      structuralDriftDetected: hit.structuralDriftDetected ? true : undefined,
+    });
+  }
+
+  return [...groups.values()];
+}
+
+export async function scanTypography(scope: ScanScope): Promise<LayoutRecord[]> {
+  const roots = await collectRootsForScope(scope);
+  const hits: RawTypographyHit[] = [];
+  for (const root of roots) {
+    await walkTypography(root, hits);
+  }
+  return groupTypographyHits(hits);
 }
