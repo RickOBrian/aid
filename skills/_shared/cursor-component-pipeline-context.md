@@ -121,7 +121,7 @@ Cursor обязан:
 2. Найти существующие компоненты и опубликованные token JSON.
 3. Предложить уровень: `Item`, `Surface View`, `Structural View` или `Layout`.
 4. Выявить composition dependencies: существующие части, возможные новые
-  атомарные/переиспользуемые части, уникальные private details.
+   атомарные/переиспользуемые части, уникальные private details.
 5. Сопоставить все визуальные свойства с Semantic-токенами.
 6. Не создавать файлы и не писать реализацию до прохождения нужных гейтов.
 
@@ -147,11 +147,12 @@ Cursor **не создаёт новый атомарник автоматиче�
 Срабатывает до реализации, если хотя бы одно требуемое свойство Figma не
 покрыто точным существующим Semantic-токеном.
 
-Cursor агрегирует все gaps в одну анкету. Для каждого gap:
+Cursor агрегирует все gaps в одну анкету, а не прерывает работу на каждом
+свойстве. Для каждого gap показывает:
 - свойство;
 - значение из Figma;
 - ближайший существующий Semantic-токен;
-- оценка несоответствия;
+- оценку несоответствия;
 - рекомендуемый вариант.
 
 Варианты решения, в порядке приоритета:
@@ -159,7 +160,7 @@ Cursor агрегирует все gaps в одну анкету. Для каж�
 A. Использовать существующий Semantic-токен, если отклонение допустимо.
 B. Добавить новый Semantic-токен, если потребность системная.
 C. Добавить Core + Semantic, если нужного базового значения нет и оно
-  повторяемо.
+   повторяемо.
 D. Оформить temporary raw exception — только после явного согласия.
 
 Добавление token/style должно подчиняться отдельному Cursor changelog gate,
@@ -182,10 +183,14 @@ Cursor:
 ### Фаза 3 — Review sandbox
 
 Каждый новый или существенно изменённый компонент обязан иметь полноценную
-review-песочницу в Presentbook. Рекомендуемый маршрут: `/components/<component-kebab-name>`.
+review-песочницу в Presentbook. Это не Storybook и не отдельный Storybook engine.
 
-Sandbox должен позволять Principal Designer проверять:
-- interactive controls для variant, size, state, label/content, slots и modes;
+Рекомендуемый маршрут: `/components/<component-kebab-name>`.
+
+Sandbox должен позволять Principal Designer проверять не только визуальное
+сходство с Figma, а все corner cases:
+
+- интерактивные controls для variant, size, state, label/content, slots и modes;
 - state matrix для всех применимых состояний;
 - edge cases: длинный/короткий текст, пустые слоты, экстремальные числа,
   multiline, truncation, overflow, min/max width;
@@ -249,7 +254,7 @@ changes/
 1. Собирает все pending changes с момента предыдущего release.
 2. Группирует их по артефактам: token collection, component и т.д.
 3. Для каждого артефакта определяет максимальный impact:
-  `major > minor > patch`.
+   `major > minor > patch`.
 4. Предлагает версию и единый grouped changelog draft на артефакт.
 5. Отдельно проверяет зависимости:
    major Core → синхронный major Semantic того же типа;
@@ -271,6 +276,75 @@ changes/
 - **MINOR** — новый токен, вариант, состояние, slot или компонент.
 - **PATCH** — исправление значения/визуального дефекта без изменения контракта.
 
+Использование существующего токена без изменения системы не создаёт
+changelog entry. Temporary raw exception не повышает версию токен-артефакта,
+но фиксируется в exception registry.
+
+---
+
+## Планируемые материалы Cursor
+
+### Always-on Cursor Rules
+
+- `.cursor/rules/ds-principal.mdc`
+- `.cursor/rules/token-integrity.mdc`
+- `.cursor/rules/component-release-gate.mdc`
+- `.cursor/rules/figma-import.mdc`
+- `.cursor/rules/git-push.mdc`
+
+### Workflow and shared guides
+
+- `skills/component-build-workflow.md`
+- `skills/_shared/component-discovery-guide.md`
+- `skills/_shared/token-coverage-guide.md`
+- `skills/_shared/component-sandbox-guide.md`
+- `skills/_shared/release-bundle-guide.md`
+- `skills/_shared/raw-value-exceptions-guide.md`
+
+### Existing shared sources to reference
+
+- `skills/_shared/token-rules.md`
+- `skills/_shared/core-color-tokens-guide.md`
+- `skills/_shared/semantic-color-tokens-guide.md`
+- `skills/_shared/core-space-tokens-guide.md`
+- `skills/_shared/semantic-space-tokens-guide.md`
+- `skills/_shared/core-typography-tokens-guide.md`
+- `skills/_shared/semantic-typography-tokens-guide.md`
+- `skills/_shared/ds-component-architecture-guide.md`
+- `skills/_shared/component-categories-guide.md`
+- `skills/_shared/component-states-guide.md`
+- `skills/_shared/anatomy-annotation-standard.md`
+- `skills/_shared/editable-component-spec-layer-guide.md`
+- `skills/_shared/semver-guide.md`
+- `skills/_shared/git-workflow.md`
+
+### Planned machine-readable sources
+
+```text
+tokens/
+  <collection>.json
+  registry.json
+  <collection>-changelog.json
+
+components/
+  registry.json
+  changelog.json
+
+changes/
+  pending/
+  released/
+
+docs/exceptions/
+  raw-values.json
+```
+
+### Planned Presentbook infrastructure
+
+- `ComponentSandbox`
+- `TokenInspector`
+- component pages at `/components/<component-kebab-name>`
+- existing TokenTable and ChangelogTable remain token review primitives
+
 ---
 
 ## Constraints and non-goals
@@ -284,6 +358,21 @@ changes/
 - Do not create reusable atoms automatically without Principal Designer
   approval when there is a composition decision.
 - Do not bump version/changelog for each iterative local change.
+
+---
+
+## Open decisions
+
+These points are recommended but not yet implemented/confirmed in code:
+
+1. Use `/components/<component-kebab-name>` as the Presentbook sandbox route.
+2. Use an explicit Principal Designer command as the release boundary.
+3. Component versions: new components start at `v1.0.0`; exact storage of
+   component changelog (individual vs shared file) remains to be finalised.
+4. `tokens/registry.json` should be a small index to collection JSON files,
+   not a duplicate of all token values.
+5. `components/registry.json` should index existing components, level, status,
+   source path, sandbox route and version.
 
 ---
 

@@ -125,7 +125,23 @@ tools/figma-token-comparator/src/ui.html
 tools/figma-token-comparator/src/ui.ts
 ```
 
+Функционально включены visual polish, propose modal и перенос Propose action в
+footer. Проверенные markers:
+
+```text
+ds-table-footer__start
+tc-propose-modal__toolbar
+```
+
 ### Packaging contract
+
+Release packaging добавлен commit `7a6c85a`:
+
+```text
+tools/figma-token-comparator/package.json          ← npm run release:pack
+tools/figma-token-comparator/README-install.txt
+tools/figma-token-comparator/scripts/release.mjs
+```
 
 ZIP v0.1.0 содержит только:
 
@@ -134,6 +150,19 @@ token-comparator/manifest.json
 token-comparator/README-install.txt
 token-comparator/dist/code.js
 token-comparator/dist/ui.html
+```
+
+ZIP не включает:
+
+```text
+node_modules/
+src/
+server/
+.git/
+.env / .env.local
+credentials / PLUGIN_SHARED_SECRET
+.DS_Store
+local logs, caches, temporary artifacts
 ```
 
 Проверенный SHA-256 финального v0.1.0 ZIP:
@@ -150,15 +179,53 @@ b6f0beda8f9a17acdf9fd94b6cbfac579ab986d44877562554892963300c3689
 4. Выбрать `token-comparator/manifest.json` внутри распакованного ZIP.
 5. Для обновления импортировать manifest из новой распакованной версии.
 
+ZIP нельзя импортировать в Figma напрямую. Перед проверкой новой сборки следует
+удалить/отключить старую development plugin registration, чтобы не тестировать
+устаревший manifest path.
+
 ---
 
 ## 3. Download URLs и asset policy
 
 ### Stable URL для Presentbook
 
+Кнопка Presentbook должна использовать **ровно один** URL:
+
 ```text
 https://github.com/RickOBrian/aid/releases/latest/download/token-comparator.zip
 ```
+
+Постоянное имя alias asset:
+
+```text
+token-comparator.zip
+```
+
+Не использовать в UI:
+
+```text
+token-comparator-latest.zip
+token-comparator-v0.1.0.zip
+ссылку на исходники или tree branch
+ссылку на конкретный commit
+```
+
+### Versioned URL
+
+Каждый релиз дополнительно имеет immutable asset:
+
+```text
+token-comparator-vX.Y.Z.zip
+```
+
+Пример:
+
+```text
+https://github.com/RickOBrian/aid/releases/download/v0.1.0/token-comparator-v0.1.0.zip
+```
+
+Versioned URL применяется для аудита, rollback, конкретных release notes и
+воспроизводимости. Он не является primary CTA в Presentbook.
 
 ### Mandatory dual asset rule
 
@@ -170,17 +237,26 @@ https://github.com/RickOBrian/aid/releases/latest/download/token-comparator.zip
 | `token-comparator.zip` | Stable alias для latest published Release |
 
 **Push в main не обновляет alias.** Alias обновляется только после явной
-публикации нового GitHub Release.
+публикации нового GitHub Release. Это защищает дизайнеров от непроверенного
+кода, который мог попасть в main между релизами.
 
 ### Текущий незакрытый v0.1.0 gate
 
-До реализации Presentbook CTA нужно получить Cursor-отчёт, что:
+После первоначальной публикации v0.1.0 был добавлен/планировался alias с именем
+`token-comparator-latest.zip`, но принято новое публичное имя: `token-comparator.zip`.
+
+До реализации Presentbook CTA нужно получить фактический Cursor-отчёт, что:
 
 1. В Release `v0.1.0` существует `token-comparator-v0.1.0.zip`.
 2. В Release `v0.1.0` существует `token-comparator.zip`.
-3. Alias и versioned asset имеют SHA-256 `b6f0beda8f9a17acdf9fd94b6cbfac579ab986d44877562554892963300c3689`.
-4. URL `.../releases/latest/download/token-comparator.zip` отвечает redirect/200, не 404.
-5. Старый alias `token-comparator-latest.zip` удалён или явно оставлен.
+3. Alias и versioned asset имеют SHA-256
+   `b6f0beda8f9a17acdf9fd94b6cbfac579ab986d44877562554892963300c3689`.
+4. URL `.../releases/latest/download/token-comparator.zip` отвечает redirect/200,
+   а не 404.
+5. Старый alias `token-comparator-latest.zip`, если был создан, удалён или явно
+   оставлен по отдельному решению. Он не используется в Presentbook.
+
+Не считать этот gate пройденным только по плану или по ожидаемому результату.
 
 ---
 
@@ -188,21 +264,31 @@ https://github.com/RickOBrian/aid/releases/latest/download/token-comparator.zip
 
 ### Trigger
 
-Release начинается только явной командой Principal Designer.
+Release начинается только явной командой Principal Designer, например:
+
+```text
+Опубликуй Token Comparator v0.1.1
+```
+
+Это означает подготовку и публикацию версии для дизайнеров, а не просто
+локальный `npm run build`.
 
 ### Preconditions
 
 До любых write operations Cursor обязан:
 
 1. Уточнить SemVer target и причину версии.
-2. Подтвердить, что release code уже в `main`.
+2. Подтвердить, что release code уже в `main`, либо подготовить отдельный PR.
 3. Не выпускать из WIP, Preview или случайной feature branch.
 4. Проверить отсутствие существующего tag/release с тем же номером.
 5. Проверить чистоту выбранного release worktree.
+6. Изолировать несвязанный WIP, если основной worktree грязный.
 
 ### Verification gate
 
-```bash
+На выбранном release commit:
+
+```text
 cd tools/figma-token-comparator
 npm ci
 npm run typecheck
@@ -211,10 +297,18 @@ npm run release:pack
 ```
 
 Обязательно подтвердить:
+
 - manifest paths существуют в staged ZIP;
 - ZIP соответствует allowlist;
 - forbidden files и secrets отсутствуют;
-- Figma Desktop smoke test пройден на именно этом ZIP.
+- реальные секреты не содержатся в `dist/code.js`, `dist/ui.html` или ZIP;
+- уникальные markers ожидаемых UI изменений находятся в ZIP;
+- Figma Desktop smoke test пройден на именно этом ZIP;
+- если используется main, build берётся из актуального merge commit, а не из
+  устаревшего локального worktree.
+
+Vercel checks не заменяют typecheck/build/package Figma plugin: это другой
+build target.
 
 ### Publication sequence
 
@@ -226,12 +320,19 @@ npm run release:pack
 4. Push tag.
 5. Создать GitHub Release и upload **обоих** assets.
 6. Проверить versioned URL и stable alias URL.
-7. Только затем публиковать/мержить Presentbook CTA.
+7. Только затем публиковать/мержить Presentbook CTA или metadata, если они
+   зависят от нового asset.
+
+Если Presentbook CTA уже опубликована, новый stable alias должен быть доступен
+сразу после GitHub Release publication.
 
 ### Rollback
 
-- Не удалять immutable versioned artifact и tag.
+- Не удалять immutable versioned artifact и tag как способ rollback.
 - Исправлять через новый semver release.
+- При необходимости новый релиз может нести последнюю проверенную сборку с
+  более высоким номером.
+- После rollback/release проверить stable alias и Presentbook CTA.
 
 ---
 
@@ -244,7 +345,86 @@ npm run release:pack
 /tools/token-comparator
 ```
 
+При product prefix ожидаются также варианты:
+
+```text
+/driver/tools
+/driver/tools/token-comparator
+```
+
+Presentbook использует client-side routing через `window.location.pathname`, не
+React Router.
+
+### Текущий WIP и изоляция
+
+Основной worktree ранее был в состоянии:
+
+```text
+/Users/desexpert/Projects/aid
+branch: main @ 33dc4c3
+origin/main: 89bbf35
+```
+
+В нём находятся незакоммиченные Presentbook Tools изменения:
+
+```text
+pages/driver-color-tokens/App.tsx                 modified
+pages/driver-color-tokens/hubData.ts              modified
+pages/driver-color-tokens/ToolsHubPage.tsx        untracked
+pages/driver-color-tokens/TokenComparatorPluginPage.tsx  untracked
+pages/driver-color-tokens/tools-registry.json     untracked
+```
+
+Они не находятся в `origin/main`. Локальная `presentbook/icons` устарела;
+`origin/presentbook/icons` не существует. Для реализации нельзя использовать её
+как base branch.
+
+Текущий WIP изолирован в patch вне репозитория:
+
+```text
+/tmp/aid-pr-a-presentbook-tools.patch
+```
+
+Patch содержит **только**:
+
+```text
+pages/driver-color-tokens/App.tsx
+pages/driver-color-tokens/hubData.ts
+pages/driver-color-tokens/ToolsHubPage.tsx
+pages/driver-color-tokens/TokenComparatorPluginPage.tsx
+pages/driver-color-tokens/tools-registry.json
+```
+
+Patch не содержит `tools/figma-token-comparator/**`. Изменения tracked files
+между base `33dc4c3` и `origin/main @ 89bbf35` отсутствуют; ожидается clean
+apply на свежий worktree от `origin/main`, но перед apply обязателен
+`git apply --check`.
+
+### Scope будущего Presentbook PR
+
+Один целостный UI PR:
+
+```text
+feat(presentbook): add Tools hub and Token Comparator download
+```
+
+Создаётся в новой чистой ветке от `origin/main @ 89bbf35` (например,
+`feat/presentbook-tools-download`) и содержит только пять Tools files.
+
+Не включать:
+
+```text
+tools/figma-token-comparator/package.json
+tools/figma-token-comparator/README-install.txt
+tools/figma-token-comparator/scripts/release.mjs
+```
+
+Эти локальные файлы в основном worktree являются дубликатами уже смерженного
+packaging scope и не должны попасть в Presentbook PR.
+
 ### Token Comparator page contract
+
+Страница `TokenComparatorPluginPage` не должна оставаться placeholder.
 
 Primary CTA:
 
@@ -255,7 +435,13 @@ target: _blank
 rel: noreferrer noopener
 ```
 
-`downloadUrl` — единственный source of truth:
+Рекомендуемый optional `aria-label`:
+
+```text
+Скачать Token Comparator для Figma Desktop (ZIP, откроется в новой вкладке)
+```
+
+`downloadUrl` должен быть единственным source of truth:
 
 ```json
 {
@@ -264,57 +450,255 @@ rel: noreferrer noopener
 }
 ```
 
+Не добавлять без отдельной продуктовой потребности:
+
+```text
+releaseVersion
+zipSha256
+githubRepoUrl
+sourcePath as visible link
+```
+
+На странице не хардкодить `v0.1.0` или future SemVer. Рекомендуемый текст:
+
+```text
+Скачивается последняя опубликованная версия плагина.
+```
+
+Install block:
+
+1. Скачайте ZIP и распакуйте архив.
+2. В Figma Desktop откройте `Plugins → Development → Import plugin from manifest…`.
+3. Выберите `token-comparator/manifest.json` в распакованной папке.
+4. Для обновления повторите импорт manifest из новой распакованной версии.
+
+Не добавлять:
+
+- ссылку на source tree;
+- client-side fetch к GitHub API;
+- GitHub secrets, API URLs, file/node IDs;
+- hardcoded hex colors.
+
+Использовать существующие portal accent/layout patterns, `ProductAccentScope` и
+действующий focus-visible pattern для button-like external CTA.
+
 ### Merge dependency
 
-Нельзя merge/deploy Presentbook CTA, пока stable URL возвращает 404.
+Нельзя merge/deploy Presentbook CTA, пока stable URL с
+`token-comparator.zip` возвращает 404. Сначала завершить alias gate (§3), затем
+реализовать и мержить Tools page.
+
+### Post-merge checks
+
+- `/tools` открывает Tools hub.
+- `/tools/token-comparator` открывает Token Comparator page.
+- Карточка ведёт на корректный route.
+- CTA href точно равен stable URL с `token-comparator.zip`.
+- CTA содержит `target="_blank"` и `rel="noreferrer noopener"`.
+- В UI/href нет hardcoded SemVer.
+- Нет source link или browser-side GitHub API request.
+- Нет новых hardcoded hex colors.
+- `curl -I -L` stable URL не возвращает 404.
+- Portal build и релевантные type checks проходят.
 
 ---
 
 ## 6. Git safety и cleanup
 
+### Main worktree
+
+Не выполнять `git pull`, checkout или reset в грязном основном worktree, пока
+Presentbook WIP и локальные packaging duplicates не изолированы patch/commit или
+не обработаны явным решением. Не force-push без анализа divergence и явного
+approval.
+
 ### Recovery stash
 
-`stash@{1}` — исходный recovery source. Перед `git stash drop stash@{1}` показать
-`git stash list`, подтвердить название и получить явное подтверждение.
+`stash@{1}` содержит исходный recovery source и должен был сохраняться до:
+
+1. merge PR #15;
+2. подтверждения commits `75b1b3d`/`7a6c85a` в `origin/main`;
+3. tag `v0.1.0`;
+4. успешного final Figma smoke test;
+5. опубликованного GitHub Release.
+
+Эти release gates выполнены. Однако `git stash drop stash@{1}` — отдельная
+необратимая операция: перед ней показать `git stash list`, подтвердить, что
+нужный stash всё ещё называется `api work in progress`, и получить явное
+подтверждение Principal Designer.
 
 ### Temporary worktree
+
+Recovery worktree:
 
 ```text
 /Users/desexpert/Projects/aid-token-comparator-v0.1.0
 branch: cursor/token-comparator-v0.1.0
 ```
 
-Можно удалить только отдельным подтверждённым cleanup шагом.
+Его можно удалить только отдельным подтверждённым cleanup шагом после проверки,
+что `origin/main` содержит release commits, tag и release существуют. Не
+удалять автоматом вместе с merge или release.
 
 ---
 
-## 7. Security
+## 7. Security и access
 
-- `PLUGIN_SHARED_SECRET` не должен попасть в Git, ZIP, bundles, UI, URLs, README, logs.
-- Если `RickOBrian/aid` private, пользователь должен иметь GitHub access. Проверить этот UX до beta rollout.
+- `PLUGIN_SHARED_SECRET` не должен попадать в Git, ZIP, bundles, UI, URLs,
+  README, logs или Presentbook.
+- Если persistent shared secret доступен runtime-клиенту Figma plugin, он не
+  является настоящим секретом. Для широкого rollout рассмотреть user/session
+  auth, short-lived scoped tokens или server-side broker.
+- Если `RickOBrian/aid` private, пользователь должен иметь GitHub access для
+  direct asset download. Presentbook auth не даёт GitHub asset access сам по
+  себе. Проверить этот UX до beta rollout.
 
 ---
 
 ## 8. Не делать
 
-- Не коммитить ZIP в Git.
+- Не коммитить ZIP в Git, `public/`, `dist/` history или Presentbook assets.
+- Не распространять ZIP вручную через чат как постоянный канал.
 - Не публиковать релиз из WIP/Preview/feature branch.
 - Не перезаписывать versioned asset после публикации.
 - Не считать Vercel green checks проверкой Figma plugin build.
+- Не обновлять stable download link при каждом push.
 - Не мержить Presentbook CTA до доступности stable alias.
+- Не смешивать Token Comparator release tooling и Presentbook Tools UI scope.
 
 ---
 
 ## 9. Следующие задачи
 
-1. **Alias gate v0.1.0:** фактически подтвердить `token-comparator.zip` в GitHub Release, проверить SHA и stable URL.
-2. **Presentbook PR:** из чистого worktree от `origin/main` применить patch, реализовать CTA и install guide.
-3. **Release pipeline PR:** обновить `release.mjs` для dual asset publishing.
-4. **Cleanup:** обработать `stash@{1}`, временный worktree отдельными подтверждёнными шагами.
+1. **Alias gate v0.1.0:** фактически подтвердить/закончить `token-comparator.zip`
+   в GitHub Release `v0.1.0`, проверить SHA и stable URL.
+2. **Presentbook PR:** из чистого worktree от `origin/main` применить
+   `/tmp/aid-pr-a-presentbook-tools.patch`, реализовать CTA и install guide,
+   затем review → commit → PR → Preview → merge.
+3. **Release pipeline PR:** обновить `release.mjs`/runbook так, чтобы каждый
+   future release создавал и публиковал versioned ZIP + `token-comparator.zip`.
+4. **Cleanup:** отдельными подтверждениями обработать `stash@{1}`, временный
+   worktree и stale local branches только после проверки актуального состояния.
 
 ---
 
 ## 10. Cleanup-сессия 2026-09-09
+
+### Исходное состояние (до cleanup)
+
+**Основной worktree:**
+
+- Путь: `/Users/desexpert/Projects/aid`
+- Branch: `main`
+- HEAD: `33dc4c3`
+- `origin/main`: `f35561c` (включает merge PR #15 и PR #16)
+- Статус: `behind origin/main` на 5 commits
+
+**Локальный WIP (грязный working tree):**
+
+Modified tracked:
+
+- `pages/driver-color-tokens/App.tsx` (+14 строк)
+- `pages/driver-color-tokens/hubData.ts` (+17 строк)
+- `tools/figma-token-comparator/package.json` (+3/-1)
+
+Untracked:
+
+- `pages/driver-color-tokens/TokenComparatorPluginPage.tsx`
+- `pages/driver-color-tokens/ToolsHubPage.tsx`
+- `pages/driver-color-tokens/tools-registry.json`
+- `tools/figma-token-comparator/README-install.txt`
+- `tools/figma-token-comparator/scripts/release.mjs`
+
+Этот WIP частично дублировал уже merged PR #15 (plugin packaging) и PR #16 (Presentbook tools).
+
+**Stash:**
+
+- `stash@{0}`: pre-merge-presentbook working tree cleanup
+- `stash@{1}`: api work in progress
+- `stash@{2}`: wip: driver-color-tokens local changes
+
+**Worktrees:**
+
+- `/Users/desexpert/Projects/aid` — основной, `main @ 33dc4c3`
+- `/Users/desexpert/Projects/aid-presentbook-tools` — `feat/presentbook-tools-download @ 09eba93`
+- `/Users/desexpert/Projects/aid-token-comparator-v0.1.0` — detached @ `89bbf35`
+
+### Выполненные шаги
+
+**A. Backup основного WIP (read-only):**
+
+- Patch: `/tmp/aid-main-wip-pre-cleanup.patch`
+  - Размер: ~19 KB (~603 строки)
+  - SHA-256: `f90b7a4ac32a75052e87dbf73d1ec431c867c04368f9ec599079f2fea768fd28`
+  - Scope: `pages/driver-color-tokens/` + `tools/figma-token-comparator/`
+
+- Archive branch: `archive/main-wip-pre-cleanup-20260909 → 33dc4c3`
+
+- Inventory: `/tmp/aid-main-wip-pre-cleanup-20260909.txt`
+
+**B. Сравнение WIP vs origin/main:**
+
+Tracked diff (vs локальный HEAD 33dc4c3) — все три файла идентичны `origin/main`:
+
+- `pages/driver-color-tokens/App.tsx`
+- `pages/driver-color-tokens/hubData.ts`
+- `tools/figma-token-comparator/package.json`
+
+Untracked:
+
+| Файл | Статус | Вывод |
+|---|---|---|
+| `TokenComparatorPluginPage.tsx` | отличается от `origin/main` | локальный WIP без download UI/guard |
+| `ToolsHubPage.tsx` | отличается от `origin/main` | локальный WIP с hardcoded colors |
+| `tools-registry.json` | отличается от `origin/main` | нет `downloadUrl` / `downloadLabel` |
+| `README-install.txt` | идентичен `origin/main` | safe to remove |
+| `scripts/release.mjs` | идентичен `origin/main` | safe to remove |
+
+**C. Сохранение отличающегося Presentbook WIP:**
+
+- Каталог: `/tmp/aid-main-wip-presentbook-20260909/`
+- Файлы:
+  - `pages/driver-color-tokens/TokenComparatorPluginPage.tsx`
+  - `pages/driver-color-tokens/ToolsHubPage.tsx`
+  - `pages/driver-color-tokens/tools-registry.json`
+- Manifest: `/tmp/aid-main-wip-presentbook-20260909/MANIFEST.sha256`
+
+SHA-256 всех трёх файлов совпали с оригиналами.
+
+**D. Сброс tracked-дубликатов:**
+
+```bash
+git restore -- \
+  pages/driver-color-tokens/App.tsx \
+  pages/driver-color-tokens/hubData.ts \
+  tools/figma-token-comparator/package.json
+```
+
+**E. Удаление untracked plugin-дубликатов:**
+
+Удалены после byte-verify:
+
+- `tools/figma-token-comparator/README-install.txt`
+- `tools/figma-token-comparator/scripts/release.mjs`
+
+Presentbook untracked-файлы не удалялись на этом этапе.
+
+**F. Fast-forward main:**
+
+```bash
+rm -- \
+  pages/driver-color-tokens/TokenComparatorPluginPage.tsx \
+  pages/driver-color-tokens/ToolsHubPage.tsx \
+  pages/driver-color-tokens/tools-registry.json
+
+git pull --ff-only origin main
+```
+
+Результат:
+
+- `main` обновлён: `33dc4c3 → f35561c`
+- Working tree: clean
 
 ### Итоговое состояние (после cleanup)
 
@@ -323,7 +707,9 @@ branch: cursor/token-comparator-v0.1.0
 | Основной worktree | clean |
 | `main` | `f35561c` |
 | `origin/main` | `f35561c` |
+| `archive/main-wip-pre-cleanup-20260909` | `33dc4c3` (не изменялась) |
 | Stash | 3 записи, без изменений |
+| Worktrees | 3 штуки, не удалялись |
 | Presentbook WIP backup | `/tmp/aid-main-wip-presentbook-20260909/` |
 | Полный patch backup | `/tmp/aid-main-wip-pre-cleanup.patch` |
 
@@ -335,13 +721,24 @@ branch: cursor/token-comparator-v0.1.0
 - `/tmp/aid-main-wip-pre-cleanup.patch`
 - `/tmp/aid-main-wip-presentbook-20260909/`
 - worktree `/Users/desexpert/Projects/aid-token-comparator-v0.1.0`
-- worktree `/Users/desexpert/Projects/aid-presentbook-tools`
+- worktree `/Users/desexpert/Projects/aid-presentbook-tools` (после отдельной проверки)
 
 ---
 
 ## Changelog
 
-- **1.3.0 — 2026-09-09.** Cleanup-сессия: фиксация состояния worktree, список артефактов для сохранения.
-- **1.2.0 — 2026-09-09.** v0.1.0 release record, stable alias `token-comparator.zip`.
-- **1.1.0 — 2026-09-08.** Правила Perplexity vs Cursor и Composer default.
-- **1.0.0 — 2026-09-08.** Первое решение по архитектуре release.
+- **1.3.0 — 2026-09-09.** Добавлена секция 10: полная фиксация cleanup-сессии
+  основного worktree 2026-09-09 — исходное состояние, выполненные шаги, итоговое
+  состояние, список артефактов, которые нельзя удалять без отдельного решения.
+  Актуализирован статус основного worktree: `main @ f35561c`, working tree clean.
+- **1.2.0 — 2026-09-09.** Зафиксирован фактический выпуск Token Comparator
+  v0.1.0: recovery из stash, commits, PR #15, merge commit, tag, GitHub Release,
+  final Figma smoke test, ZIP contract и SHA. Уточнён публичный stable alias:
+  `token-comparator.zip` вместо `token-comparator-latest.zip`. Добавлены
+  изоляция Presentbook Tools WIP, CTA contract, dependency gate и следующий
+  dual-asset release pipeline.
+- **1.1.0 — 2026-09-08.** Добавлены правила Perplexity vs Cursor и Composer
+  default для задач release workflow.
+- **1.0.0 — 2026-09-08.** Первое решение: исходники в Git, ZIP artifacts в
+  GitHub Releases, versioned artifacts и stable latest URL, Presentbook Tools
+  как distribution entry point, release gates и rollout phases.
