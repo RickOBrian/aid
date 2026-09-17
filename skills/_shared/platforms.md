@@ -1,125 +1,32 @@
 ---
+destination: skills/_shared/
+name: platforms
 title: Платформенные правила дизайн-системы
-version: "1.1.0"
+version: "2.0.0"
 owner: design-system-team
-platforms: [web, ios, android]
+platforms: [ios, android, web]
+stack: Kotlin / Compose Multiplatform (CMP)
 ---
 
-# Платформенные правила — v1.0.0
+# Платформенные правила — v2.0.0
 
-Особенности реализации компонентов на Web, iOS и Android.
+Единая кодовая база на Kotlin с Compose Multiplatform (CMP): iOS, Android, Web
+(веб — через CMP for Web, без React/TypeScript). Нет раздельных нативных
+стеков (SwiftUI/UIKit не используется). API компонента, токены и слоты
+описываются один раз и применяются на все три таргета.
+
 Этот файл читается скиллами автоматически — не дублируй эти правила
 в отдельных скиллах.
 
----
-
-## Web (React + TypeScript)
-
-### API компонента
-
-```tsx
-interface ButtonTextProps {
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  isDisabled?: boolean;
-  isLoading?: boolean;
-  onClick?: () => void;
-  children: React.ReactNode;
-}
-```
-
-- API описывается через `interface` в TypeScript
-- Булевы пропы: `isDisabled`, `isLoading` (префикс `is`)
-- Колбэки: `onClick`, `onChange`, `onBlur` (префикс `on`)
-- Слоты: через `children`, `leading`, `trailing` (React.ReactNode)
-- Enum-пропы: union types `'primary' | 'secondary'`, не enum-объекты
-
-### Токены
-
-- CSS-переменные через design-token утилиту: `var(--color-surface-default)`
-- Именование переменной: kebab-case от имени токена
-- Темизация через CSS custom properties на `:root` и `[data-theme="dark"]`
-
-### Доступность
-
-| Свойство | Когда использовать |
-|---|---|
-| `role` | Только если нативный элемент не подходит (`role="button"` на `<div>`) |
-| `aria-label` | Когда нет видимого текста (иконка-кнопка) |
-| `aria-disabled` | `true` когда компонент disabled — вместо `disabled` атрибута для кастомных элементов |
-| `aria-expanded` | Для раскрывающихся компонентов (Accordion, Select) |
-| `aria-live` | Для динамически обновляемого контента (Toast, уведомления) |
-
-- Touch target: минимум `44×44px`
-- Keyboard: Tab фокус, Enter/Space активация для кнопок
-- Предпочитать нативные HTML-элементы (`<button>`, `<input>`) — они дают семантику бесплатно
+> ⚠️ **Открытый вопрос (требует решения Principal Designer):** для touch target
+> и accessibility ниже приведены черновые значения по умолчанию из практики
+> Compose/Android (48dp) и общий accessibility-слой CMP. Нужно подтвердить,
+> используется ли единое значение touch target на все таргеты, или требуются
+> платформенные исключения (например, отдельно для web-курсора).
 
 ---
 
-## iOS (SwiftUI)
-
-### API компонента
-
-```swift
-struct ButtonTextView: View {
-    let title: String
-    var variant: ButtonTextVariant = .primary
-    var size: ButtonTextSize = .md
-    var isDisabled: Bool = false
-    var isLoading: Bool = false
-    var action: (() -> Void)? = nil
-
-    var body: some View { ... }
-}
-
-enum ButtonTextVariant { case primary, secondary, ghost }
-enum ButtonTextSize { case sm, md, lg }
-```
-
-- Структура: `struct [ComponentName]View: View`
-- Enum для вариантов: `[ComponentName]Variant`, `[ComponentName]Size`
-- Слоты через `@ViewBuilder`: `var leading: (() -> some View)? = nil`
-- Опциональные действия: `var action: (() -> Void)? = nil`
-
-### Токены
-
-```swift
-// DSTokens extension
-extension DSTokens {
-    struct Button {
-        static let backgroundDefault = Color("bg.accent.main")
-        static let backgroundHover   = Color("bg.accent.states.pressed")
-        static let corner            = CGFloat(8)
-    }
-}
-
-// Использование
-.background(DSTokens.Button.backgroundDefault)
-.cornerRadius(DSTokens.Button.corner)
-```
-
-- Токены через `DSTokens` extension
-- Цвета через `Color("token.name")` из Asset Catalog
-- Размеры через `CGFloat` константы
-
-### Доступность
-
-| Свойство | Когда использовать |
-|---|---|
-| `accessibilityLabel` | Всегда для элементов без видимого текста |
-| `accessibilityTraits` | `.button`, `.image`, `.isSelected`, `.isDisabled` |
-| `accessibilityValue` | Для Switch, Slider — текущее значение |
-| `accessibilityHint` | Что произойдёт при активации (опционально) |
-
-- Touch target: минимум `44×44pt`
-- `accessibilityElement(children: .ignore)` для составных компонентов
-- Тестировать с VoiceOver на реальном устройстве
-
----
-
-## Android (Compose)
-
-### API компонента
+## API компонента (CMP, общий для iOS/Android/Web)
 
 ```kotlin
 @Composable
@@ -142,8 +49,11 @@ enum class ButtonTextSize { Sm, Md, Lg }
 - `modifier: Modifier = Modifier` — всегда последним параметром перед лямбдами
 - Слоты через `@Composable` лямбды: `leadingContent: (@Composable () -> Unit)? = null`
 - Булев параметр: `enabled` (не `isEnabled` — Compose-конвенция)
+- Одна реализация компилируется на iOS, Android и Web — не создавать платформенные форки API
 
-### Токены
+---
+
+## Токены
 
 ```kotlin
 // DSTheme
@@ -163,20 +73,45 @@ fun ButtonText(...) {
 - Токены через `DSTheme.tokens.[компонент].[свойство]`
 - Цвета: `Color` из Compose
 - Размеры: `Dp` через `tokens.[компонент].corner.dp`
-- Темизация через `CompositionLocal` и `MaterialTheme`
+- Темизация через `CompositionLocal`
 
-### Доступность
+---
 
-| Свойство | Когда использовать |
+## Доступность
+
+Единый accessibility-слой CMP (`Modifier.semantics { ... }`), фактическое
+поведение на экране всё равно зависит от платформенного screen reader
+(TalkBack на Android, VoiceOver на iOS, screen reader/keyboard nav в браузере
+на Web).
+
+| Свойство / API | Когда использовать |
 |---|---|
 | `contentDescription` | Всегда для `Image`, `Icon` без текста |
 | `semantics { role = Role.Button }` | Для кастомных кликабельных элементов |
 | `semantics { disabled() }` | Когда `enabled = false` |
 | `semantics { stateDescription }` | Для Switch, Checkbox — текущее состояние |
 
-- Touch target: минимум `48×48dp`
-- `Modifier.minimumInteractiveComponentSize()` — Compose M3 утилита
-- Тестировать с TalkBack
+Платформенная проверка:
+
+| Платформа | Что тестировать |
+|---|---|
+| Android | TalkBack |
+| iOS | VoiceOver (через CMP accessibility bridge) |
+| Web | Screen reader + keyboard-навигация (Tab, Enter/Space) |
+
+---
+
+## Touch targets
+
+> Черновое значение по умолчанию — требует подтверждения.
+
+| Платформа | Минимум |
+|---|---|
+| Android | 48×48dp |
+| iOS | 48×48dp (через CMP, единое значение) |
+| Web | 48×48px (курсорный ввод допускает меньше, но не рекомендуется) |
+
+- `Modifier.minimumInteractiveComponentSize()` — Compose M3 утилита, применяется на всех таргетах
 
 ---
 
@@ -188,7 +123,7 @@ fun ButtonText(...) {
 |---|---|
 | `leading` | Элемент слева / перед основным контентом |
 | `trailing` | Элемент справа / после основного контента |
-| `content` | Основной контент (если `children` недостаточно) |
+| `content` | Основной контент (если основного параметра недостаточно) |
 | `header` | Заголовочная зона |
 | `footer` | Нижняя зона |
 | `title` | Заголовок компонента |
@@ -197,26 +132,18 @@ fun ButtonText(...) {
 
 Не изобретай платформенные варианты: `leading` — не `leftContent`, не `startSlot`.
 
-### Touch targets
-
-| Платформа | Минимум |
-|---|---|
-| Web | 44×44px |
-| iOS | 44×44pt |
-| Android | 48×48dp |
-
 ### Состояния (единая модель)
 
-| Состояние | Web | iOS | Android |
+| Состояние | Android | iOS | Web |
 |---|---|---|---|
 | default | ✅ | ✅ | ✅ |
-| hover | ✅ | — | — |
+| hover | — | — | ✅ (курсор) |
 | pressed | ✅ | ✅ | ✅ |
-| focused | ✅ | ✅ (focused-ios) | — |
+| focused | ✅ | ✅ | ✅ (keyboard focus) |
 | active/selected | ✅ | ✅ | ✅ |
 | disabled | ✅ | ✅ | ✅ |
 | loading | ✅ | ✅ | ✅ |
-| ripple | — | — | ✅ |
+| ripple | ✅ | — | — |
 
 ---
 
@@ -228,21 +155,7 @@ fun ButtonText(...) {
 **не освобождают** от корректности паттерна: заглушки, ломающие
 интерактивность, недопустимы даже в «примерном» коде.
 
-### SwiftUI
-
-- Любой `Binding`, передаваемый в интерактивный элемент (`Toggle`,
-  `Slider`, `TextField` и т.п.), должен быть **настоящим двусторонним**
-  `Binding` — через `@State`, `@Binding`, или вычисляемый
-  `Binding(get:set:)`. **Не** `.constant(...)`.
-- `.constant(...)` допустим **только** в Preview / `#Preview` /
-  Xcode preview provider — **никогда** в реальном или reference-компоненте,
-  который позиционируется как рабочий пример использования.
-- Если компонент принимает `action` / `onChange` как параметр — явно
-  проверить, что путь от пользовательского взаимодействия до вызова
-  колбэка **не прерывается** внутри тела компонента (read-only Binding
-  = hard stop).
-
-### Compose
+### Состояние и обработчики
 
 - `checked` / `selected` / `value` и аналоги передаются в нативный
   Composable **напрямую** от входных параметров обёртки, не как
@@ -250,19 +163,13 @@ fun ButtonText(...) {
 - `onCheckedChange` / `onValueChange` / `onClick` **не** заменяются на
   `null` или пустую лямбду `{}` в reference-реализации — это делает
   компонент неинтерактивным при видимой доступности.
-- `enabled` учитывает **все** источники недоступности (`isDisabled`,
-  `isLoading` и т.п.), например `enabled = enabled && !isLoading`, а не
-  только один флаг.
+- `enabled` учитывает **все** источники недоступности (`isLoading` и т.п.),
+  например `enabled = enabled && !isLoading`, а не только один флаг.
 
-### Web (React)
+Правило действует на все три таргета: реализация одна, и заглушка ломает
+интерактивность сразу везде.
 
-- Controlled props (`checked`, `value`) не подменяются константами в
-  обёртке; `onChange` / `onClick` не заменяются на `undefined` или
-  no-op, если компонент позиционируется как интерактивный.
-- `disabled` / `aria-disabled` / `aria-busy` должны согласованно
-  отражать все блокирующие состояния (`isDisabled`, `isLoading`).
-
-### Общее (все платформы)
+### Перед выдачей
 
 - Перед выдачей snippet или сборкой Presentbook sandbox для
   интерактивного компонента — подтвердить в review summary, что состояние
@@ -278,9 +185,17 @@ fun ButtonText(...) {
 
 ## Changelog
 
+- **2.0.0** — переход на единый стек Kotlin / Compose Multiplatform (CMP)
+  для iOS, Android и Web. Убраны отдельные разделы React/TypeScript и
+  SwiftUI как самостоятельные API-конвенции; один общий раздел API и
+  токенов для всех таргетов. Touch target и accessibility-таблицы помечены
+  как черновые до подтверждения Principal Designer. Чеклист проверки
+  интерактивности сохранён и сужен до Compose: подразделы SwiftUI и
+  Web/React удалены как неприменимые к новому стеку.
 - **1.1.0** — добавлена секция «Проверка интерактивности (обязательный
   чеклист)»: запрет `.constant()` в SwiftUI reference/real code, прямой
   проброс state/callbacks в Compose, общие правила для snippet/sandbox и
   UI-пометки для reference-only.
-- **1.0.0** — первая версия: API-конвенции для трёх платформ,
-  токены, доступность, кросс-платформенные слоты и состояния.
+- **1.0.0** — первая версия: API-конвенции для трёх платформ (Web/React,
+  iOS/SwiftUI, Android/Compose), токены, доступность, кросс-платформенные
+  слоты и состояния. (устарело)
