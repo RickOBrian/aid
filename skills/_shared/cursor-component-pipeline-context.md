@@ -1,0 +1,293 @@
+---
+destination: skills/_shared/
+name: cursor-component-pipeline-context
+metadata:
+  version: "0.1.0"
+  owner: design-system-team
+  status: draft
+description: >
+  Контекст интеграции Perplexity и Cursor для реализации компонентов из Figma:
+  source of truth токенов, mandatory gates, Presentbook sandbox, pending changes
+  и release-based changelog/versioning. Загружать в Perplexity Space для
+  восстановления контекста между сессиями.
+---
+
+# Cursor Component Pipeline Context
+
+## Назначение
+
+Этот файл — persistent-контекст для Perplexity в Space **Design System Pipeline**.
+Он фиксирует рабочий процесс, по которому Cursor реализует компоненты из Figma
+в репозитории `aid` и Presentbook. Использовать его при подготовке промтов,
+правил Cursor, планов и аудитов. Не считать этот файл готовой Cursor Rule:
+на его основе будут подготовлены отдельные `.cursor/rules/*.mdc`, workflow-гайды
+и машиночитаемые реестры.
+
+---
+
+## Инструменты и роли
+
+- **Principal Designer** принимает архитектурные, token- и release-решения.
+- **Perplexity** — стратегический консультант: проектирует процесс, готовит
+  промты для Cursor, проверяет риски и поддерживает связность решений.
+- **Cursor** (Composer / Sonnet / Opus) — исполнитель работ в репозитории:
+  читает Figma через подключённый MCP, создаёт и изменяет код, страницы
+  Presentbook, JSON-реестры и документацию.
+- **Claude Code не используется.** В августе 2026 legacy-папка `.claude/`,
+  `perplexity-skills/` и Claude-specific материалы удалены из репозитория.
+
+Модель в Cursor выбирается по задаче:
+- **Composer** — стандарт для чётко сформулированных вёрсток, CRUD-файлов,
+  реестров, sandbox и механических многофайловых изменений.
+- **Sonnet / Opus** — только если Cursor столкнулся с неочевидным
+  архитектурным выбором, который нельзя решить правилами или вопросом
+  Principal Designer.
+
+---
+
+## Репозиторий и source of truth
+
+Репозиторий: `aid`.
+
+### Канонические источники
+
+- `skills/_shared/` — канонические human-readable гайды ДС.
+- `tokens/<collection>.json` — машиночитаемые данные токен-коллекций;
+  эти же данные рендерятся в Presentbook и скачиваются разработчиками как JSON.
+- Presentbook — web-витрина и review-среда токенов/компонентов.
+- Figma — **reference input**, не source of truth для реализации.
+- Git-репозиторий — source of truth принятых и закоммиченных изменений.
+
+### Удалённые источники
+
+Не ссылаться и не восстанавливать без явного решения:
+- `.claude/`
+- `perplexity-skills/`
+- `docs/claude-skills-guide.md`
+- `docs/design-system/tokens/` как ручное зеркало токен-гайдов
+
+---
+
+## Токены
+
+### Текущий контракт
+
+- Токены отображаются в сверстанных страницах Presentbook.
+- Для каждой TokenTable есть скачивание одного универсального JSON.
+- JSON одинаков для всех платформ; Swift/Kotlin/CSS-генерация — будущая
+  отдельная задача (возможный Style Dictionary pipeline), не часть
+  текущего component workflow.
+- Коллекции могут иметь произвольные названия, группы и modes. Компоненты
+  не должны хардкодить их семантику.
+- Для одного внешнего продукта Figma использует modes `day` / `night`,
+  внутренне временно применяется mapping `day → light`, `night → dark`.
+  Исходные Figma-названия не переименовываются. Решение точечное,
+  не становится глобальным правилом для других компаний/китов.
+
+### Архитектурное правило
+
+Целевая модель ДС: `Core → Semantic`.
+
+- Компоненты используют Semantic-токены.
+- Core-токены не используются в компонентах напрямую.
+- Отдельный component-token layer не создаётся.
+- Raw values (hex, px, opacity, radius и т.п.) не вставляются молча.
+
+### Raw value policy
+
+Raw value — не стандартная альтернатива токену. Он допускается только как
+явно подтверждённое **temporary exception** с причиной, владельцем и условием
+удаления/миграции. Позже registry исключений будет храниться в
+`docs/exceptions/raw-values.json`.
+
+---
+
+## Component workflow
+
+### Вход
+
+Principal Designer даёт Cursor ссылку на Figma. Cursor использует Figma MCP,
+затем сверяет визуальные свойства с опубликованными token JSON и существующими
+компонентами в репозитории.
+
+### Фаза 1 — Discovery (без кода)
+
+Триггерный запрос: «Проанализируй компонент для реализации. Не пиши код до
+прохождения composition и token coverage gate».
+
+Cursor обязан:
+
+1. Прочитать Figma-фрейм через MCP.
+2. Найти существующие компоненты и опубликованные token JSON.
+3. Предложить уровень: `Item`, `Surface View`, `Structural View` или `Layout`.
+4. Выявить composition dependencies: существующие части, возможные новые
+  атомарные/переиспользуемые части, уникальные private details.
+5. Сопоставить все визуальные свойства с Semantic-токенами.
+6. Не создавать файлы и не писать реализацию до прохождения нужных гейтов.
+
+### Composition gate
+
+Срабатывает до реализации, только если есть неоднозначность.
+
+Cursor показывает:
+- предлагаемый уровень и обоснование;
+- существующие части, которые будут использованы;
+- недостающую часть;
+- варианты: создать новый reusable компонент / оставить private частью
+  родителя / расширить существующий компонент;
+- рекомендацию и trade-offs.
+
+Cursor **не создаёт новый атомарник автоматически**. Маленькая деталь не
+становится Item/Surface View только потому, что её удобно вынести в файл.
+Переиспользуемый компонент должен иметь самостоятельную роль и ожидаемую
+повторяемость.
+
+### Token coverage gate
+
+Срабатывает до реализации, если хотя бы одно требуемое свойство Figma не
+покрыто точным существующим Semantic-токеном.
+
+Cursor агрегирует все gaps в одну анкету. Для каждого gap:
+- свойство;
+- значение из Figma;
+- ближайший существующий Semantic-токен;
+- оценка несоответствия;
+- рекомендуемый вариант.
+
+Варианты решения, в порядке приоритета:
+
+A. Использовать существующий Semantic-токен, если отклонение допустимо.
+B. Добавить новый Semantic-токен, если потребность системная.
+C. Добавить Core + Semantic, если нужного базового значения нет и оно
+  повторяемо.
+D. Оформить temporary raw exception — только после явного согласия.
+
+Добавление token/style должно подчиняться отдельному Cursor changelog gate,
+но финальные версия и changelog не обновляются на этой стадии: создаётся
+pending change item.
+
+### Фаза 2 — Implementation
+
+Начинается только после ответов Principal Designer на требуемые гейты.
+
+Cursor:
+- создаёт утверждённые токены/исключения и pending change manifest;
+- сначала создаёт новый atomic/reusable component, если он утверждён;
+- затем собирает родительский компонент;
+- применяет только одобренные token references;
+- не создаёт компонентный слой токенов;
+- создаёт/обновляет Presentbook sandbox компонента;
+- не делает финальный changelog, version bump, commit или push без Release gate.
+
+### Фаза 3 — Review sandbox
+
+Каждый новый или существенно изменённый компонент обязан иметь полноценную
+review-песочницу в Presentbook. Рекомендуемый маршрут: `/components/<component-kebab-name>`.
+
+Sandbox должен позволять Principal Designer проверять:
+- interactive controls для variant, size, state, label/content, slots и modes;
+- state matrix для всех применимых состояний;
+- edge cases: длинный/короткий текст, пустые слоты, экстремальные числа,
+  multiline, truncation, overflow, min/max width;
+- геометрия: padding, gap, radius, border, outline, elevation, touch target;
+- все поддерживаемые mode/темы;
+- a11y: keyboard focus, native semantics, Enter/Space для интерактивных частей;
+- Token Inspector: `property → token reference → resolved value/mode`;
+- список approved raw exceptions, если они есть.
+
+Sandbox должен быть data-driven; не копировать вручную десятки экземпляров
+компонента в JSX.
+
+### Review gate
+
+После sandbox Cursor показывает краткий review summary:
+- путь sandbox;
+- что реализовано;
+- какие токены использованы/добавлены;
+- какие pending changes накоплены;
+- raw exceptions;
+- открытые риски.
+
+Principal Designer выбирает: approve / нужны правки / отклонить.
+
+---
+
+## Release workflow
+
+### Главное правило
+
+Version bump и финальный changelog происходят **не при каждом изменении**,
+а перед явным согласованным release push.
+
+Push boundary — не любой `git push` и не автоматическое событие. Это явная
+команда Principal Designer, например: «Подготовь релиз текущего набора изменений».
+
+### Pending changes
+
+До release все системно значимые изменения сохраняются как pending manifests:
+
+```text
+changes/
+  pending/
+    <batch-id>.json
+  released/
+    <batch-id>.json
+```
+
+Один pending manifest содержит:
+- затронутые компоненты и token collections;
+- список изменений (`added`, `changed`, `fixed`, `removed`);
+- semver impact каждого изменения (`major`, `minor`, `patch`);
+- ссылки на sandbox;
+- raw exceptions;
+- review status.
+
+### Release gate
+
+По явной команде Cursor:
+
+1. Собирает все pending changes с момента предыдущего release.
+2. Группирует их по артефактам: token collection, component и т.д.
+3. Для каждого артефакта определяет максимальный impact:
+  `major > minor > patch`.
+4. Предлагает версию и единый grouped changelog draft на артефакт.
+5. Отдельно проверяет зависимости:
+   major Core → синхронный major Semantic того же типа;
+   breaking change дочернего компонента → проверка зависимых компонентов.
+6. Ждёт явного подтверждения Principal Designer.
+7. Только после подтверждения обновляет version/changelog, переносит manifest
+   в `changes/released/`, создаёт commit и выполняет push.
+
+### SemVer
+
+Каждый артефакт версионируется независимо:
+- `Colors/Semantic`;
+- `Typography/Semantic`;
+- отдельный компонент, например `ButtonIcon`;
+- и т.д.
+
+Правила:
+- **MAJOR** — удаление/переименование токена или breaking API/structure.
+- **MINOR** — новый токен, вариант, состояние, slot или компонент.
+- **PATCH** — исправление значения/визуального дефекта без изменения контракта.
+
+---
+
+## Constraints and non-goals
+
+- Do not use Storybook for component sandbox work; use Presentbook pages.
+- Do not restore Claude Code-specific folders or instructions.
+- Do not create a third component-token layer.
+- Do not commit or push automatically during implementation.
+- Do not treat a Figma value as a valid production token merely because it
+  exists in the Figma frame.
+- Do not create reusable atoms automatically without Principal Designer
+  approval when there is a composition decision.
+- Do not bump version/changelog for each iterative local change.
+
+---
+
+## Changelog
+
+- **0.1.0** — initial context: component workflow, composition/token gates,
+  Presentbook sandbox, pending changes and release-based versioning.
