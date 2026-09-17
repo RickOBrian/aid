@@ -1,7 +1,9 @@
 # Design System
 
 ## Проект
-Дизайн-система для Web (React), iOS (SwiftUI), Android (Compose).
+Дизайн-система для iOS, Android и Web — единая кодовая база на Kotlin,
+Compose Multiplatform (CMP). Раздельные нативные стеки (SwiftUI/UIKit,
+React/TypeScript) не используются.
 
 ## Правила токенов
 @skills/_shared/token-rules.md
@@ -45,3 +47,63 @@ When working with any *.html, *.css, or *.scss file:
 - If a needed token doesn't exist — create it following the protocol, then use it
 - After creating new tokens — update `docs/tokens/color-tokens-registry.md`
   (create the file if it doesn't exist)
+
+## Границы продуктов — обязательно к соблюдению
+
+Репозиторий содержит ДВА независимых продукта. Не смешивай их код, ветки, коммиты, зависимости и деплой.
+
+### Token Comparator
+- Назначение: Figma-плагин для scan, comparison, принятия решений и proposal в общий registry
+- Расположение: tools/figma-token-comparator/
+- Backend: standalone Vercel-проект aid-registry-api (Root Directory: tools/figma-token-comparator/server)
+- Production URL: https://aid-registry-api.vercel.app
+
+### Presentbook
+- Назначение: web-витрина и review-среда токенов/компонентов
+- Расположение: pages/driver-color-tokens/
+- Vercel-проект: aid-ds
+
+### Жёсткая граница
+Изменения в Token Comparator и aid-registry-api НЕ должны требовать инфраструктуру Presentbook и НЕ должны иметь возможность случайно сломать production Presentbook. Контуры физически и инфраструктурно разделены.
+
+### Правила веток и деплоя
+- Push в feature branch → Vercel Preview deployment, production alias не меняется
+- Merge/push в main → Vercel Production deployment
+- npm run build обновляет только локальный dist/ — это НЕ равно production deployment backend
+
+### Роли и git-полномочия
+
+Principal Designer (человек) принимает design-, mapping-, review- и release-решения.
+
+Claude сам решает, что и когда коммитить и как разложить работу по веткам —
+но только если уверен, что не заденет другую задачу и другой продукт.
+При любом сомнении — останавливается и спрашивает.
+
+Claude делает сам, без спроса:
+- коммиты и выбор, что попадает в какой коммит
+- создание веток и разнесение работы по веткам
+- push в feature-ветку (это Preview deployment, production не затрагивается)
+- откат собственных незакоммиченных правок
+
+Claude обязан спросить до действия:
+- merge или push в `main` — это production deployment
+- production promote любого продукта
+- force-push, удаление веток и worktree
+- откат или перезапись незакоммиченной работы, которую Claude не создавал
+- изменение Vercel-конфигов, зависимостей, CI
+- задача, которая задевает оба продукта сразу
+
+Если изменение подходит к границе между продуктами — остановиться и спросить,
+даже если на вид всё безопасно.
+
+### Источники истины
+- decisions-registry.json — canonical registry решений
+- GitHub PR body — ТОЛЬКО human-readable review-проекция, не источник истины
+- main — source of truth для Presentbook, но не равно production автоматически
+
+### Обязательная проверка перед любым изменением
+Перед тем как трогать файлы, ветки или деплой, подтверди явно:
+1. К какому из двух продуктов относится задача
+2. Какую ветку и какой Vercel-проект это затрагивает
+3. Что изменение не пересекает границу между контурами
+Если задача выглядит так, что затрагивает оба продукта — остановись и спроси Principal Designer.
