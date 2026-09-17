@@ -814,7 +814,7 @@ function updateScanPanelCopy(): void {
     ? "Сканирование типографики"
     : "Сканирование цветов";
   $<HTMLElement>("tc-scan-caption").textContent = isTypography
-    ? "Выберите область макета для сравнения Text Styles с semantic-токенами библиотеки."
+    ? "Выберите область макета для сравнения Text Styles макета с Text Styles библиотеки."
     : "Выберите область макета для сравнения с загруженной библиотекой.";
   $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
     ? "Сканировать типографику"
@@ -1866,10 +1866,21 @@ function compareTypographyResults(a: ComparisonResult, b: ComparisonResult): num
   return (a.representativeNodeName || "").localeCompare(b.representativeNodeName || "", "ru");
 }
 
+function formatPartiallyMixedHint(value: TypographyComparisonValue): string {
+  if (!value.partiallyMixed) return "";
+  const fields = value.partiallyMixedFields ?? [];
+  const labels: string[] = [];
+  if (fields.includes("letterSpacing")) labels.push("spacing");
+  if (fields.includes("textCase")) labels.push("case");
+  if (fields.includes("textDecoration")) labels.push("decoration");
+  if (labels.length === 0) return " · mixed fmt";
+  return ` · mixed ${labels.join(", ")}`;
+}
+
 function formatTypographyPropertySummary(value: TypographyComparisonValue | null): string {
   if (!value) return "";
   const weightLabel = value.fontWeightApproximate ? `w${value.fontWeight}≈` : `w${value.fontWeight}`;
-  return `${value.fontFamily} · ${value.fontSize}px · ${weightLabel}`;
+  return `${value.fontFamily} · ${value.fontSize}px · ${weightLabel}${formatPartiallyMixedHint(value)}`;
 }
 
 function renderTypographyUsedStyleCell(result: ComparisonResult): string {
@@ -1881,6 +1892,18 @@ function renderTypographyUsedStyleCell(result: ComparisonResult): string {
   }
   const styleName = result.sourceName ? escapeHtml(result.sourceName) : "—";
   const summaryHtml = summary ? `<div class="ds-value-meta__caption">${escapeHtml(summary)}</div>` : "";
+  return `<div>${styleName}</div>${summaryHtml}`;
+}
+
+function renderTypographyTargetStyleCell(result: ComparisonResult): string {
+  if (!result.target) {
+    return "—";
+  }
+  const styleName = result.target.name?.trim() ? escapeHtml(result.target.name) : "—";
+  const displayValue = result.target.displayValue?.trim();
+  const summaryHtml = displayValue
+    ? `<div class="ds-value-meta__caption">${escapeHtml(displayValue)}</div>`
+    : "";
   return `<div>${styleName}</div>${summaryHtml}`;
 }
 
@@ -2153,7 +2176,7 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   row.appendChild(usedStyleCell);
 
   const targetCell = document.createElement("td");
-  targetCell.textContent = result.target?.name?.trim() ? result.target.name : "—";
+  targetCell.innerHTML = renderTypographyTargetStyleCell(result);
   row.appendChild(targetCell);
 
   const mismatchCell = document.createElement("td");

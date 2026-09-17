@@ -184,6 +184,9 @@ function findRecordStatus(
     return {
       status: "name-mismatch",
       target: fontSizeFallback ? toTypographyTarget(fontSizeFallback) : undefined,
+      mismatchedProperties: fontSizeFallback
+        ? diffTypographyProperties(layoutValue, fontSizeFallback.comparisonValue)
+        : undefined,
     };
   }
 

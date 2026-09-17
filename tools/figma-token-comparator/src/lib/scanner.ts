@@ -293,9 +293,11 @@ async function walk(node: SceneNode, hits: RawColorHit[]): Promise<void> {
 
 async function collectRootsForScope(scope: ScanScope): Promise<SceneNode[]> {
   if (scope === "selection") {
+    await figma.currentPage.loadAsync();
     return [...figma.currentPage.selection];
   }
   if (scope === "page") {
+    await figma.currentPage.loadAsync();
     return [...figma.currentPage.children];
   }
   // scope === "file": обходим все страницы документа
@@ -394,7 +396,10 @@ function findInstanceAncestor(node: BaseNode): InstanceNode | null {
  * Ограничение: при несовпадении структуры instance/main component (reorder,
  * swap) сопоставление возвращает null — isOverride в этом случае false.
  */
-function findCorrespondingComponentNode(instance: InstanceNode, node: SceneNode): SceneNode | null {
+async function findCorrespondingComponentNode(
+  instance: InstanceNode,
+  node: SceneNode
+): Promise<SceneNode | null> {
   const pathIndices: number[] = [];
   let current: BaseNode | null = node;
   while (current && current !== instance) {
@@ -408,7 +413,7 @@ function findCorrespondingComponentNode(instance: InstanceNode, node: SceneNode)
   }
   if (current !== instance) return null;
 
-  const mainComponent = instance.mainComponent;
+  const mainComponent = await instance.getMainComponentAsync();
   if (!mainComponent) return null;
 
   let componentNode: BaseNode = mainComponent;
@@ -431,10 +436,13 @@ interface TypographyOverrideDetection {
  * от соответствующей ноды main component. Для нод вне instance — сравнение с
  * linked TextStyle (если textStyleId задан).
  */
-function detectTypographyOverride(node: TextNode, linkedStyle: TextStyle | null): TypographyOverrideDetection {
+async function detectTypographyOverride(
+  node: TextNode,
+  linkedStyle: TextStyle | null
+): Promise<TypographyOverrideDetection> {
   const instance = findInstanceAncestor(node);
   if (instance) {
-    const componentNode = findCorrespondingComponentNode(instance, node);
+    const componentNode = await findCorrespondingComponentNode(instance, node);
     if (!componentNode || componentNode.type !== "TEXT") {
       return { isOverride: false, structuralDriftDetected: true };
     }
@@ -502,7 +510,7 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
   if (textStyleId) {
     const { sourceName, styleKey, isGhost, linkedStyle } = await resolveTextStyleBinding(textStyleId);
     const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
-    const overrideDetection = detectTypographyOverride(node, linkedStyle);
+    const overrideDetection = await detectTypographyOverride(node, linkedStyle);
 
     if (typographyUnresolved || !comparisonValue) {
       return {
@@ -539,7 +547,7 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
 
   if (hasMixedStyleId) {
     const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
-    const overrideDetection = detectTypographyOverride(node, null);
+    const overrideDetection = await detectTypographyOverride(node, null);
     return {
       property: "text-style",
       bindingType: "hardcoded",
@@ -556,7 +564,7 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
 
   const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
   if (!comparisonValue) {
-    const overrideDetection = detectTypographyOverride(node, null);
+    const overrideDetection = await detectTypographyOverride(node, null);
     return {
       property: "text-style",
       bindingType: "hardcoded",
@@ -571,7 +579,7 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
     };
   }
 
-  const overrideDetection = detectTypographyOverride(node, null);
+  const overrideDetection = await detectTypographyOverride(node, null);
   return {
     property: "text-style",
     bindingType: "hardcoded",

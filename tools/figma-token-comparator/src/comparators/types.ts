@@ -52,6 +52,13 @@ export interface TypographyComparisonValue {
    * а не нативный numeric fontWeight TEXT-ноды.
    */
   fontWeightApproximate?: boolean;
+  /**
+   * true — на TEXT-ноде figma.mixed только на некритичных полях (letterSpacing,
+   * textCase, textDecoration); критичные поля резолвлены.
+   */
+  partiallyMixed?: boolean;
+  /** Какие некритичные поля были figma.mixed (для подписи в UI). */
+  partiallyMixedFields?: Array<"letterSpacing" | "textCase" | "textDecoration">;
 }
 
 /** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */

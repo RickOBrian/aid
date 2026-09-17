@@ -124,6 +124,8 @@ export function buildTypographyComparisonValue(fields: {
   textCase: TypographyTextCase;
   textDecoration: TypographyTextDecoration;
   lineHeightApproximate?: boolean;
+  partiallyMixed?: boolean;
+  partiallyMixedFields?: Array<"letterSpacing" | "textCase" | "textDecoration">;
 }): TypographyComparisonValue {
   return {
     fontFamily: fields.fontFamily.trim(),
@@ -134,6 +136,10 @@ export function buildTypographyComparisonValue(fields: {
     textCase: fields.textCase,
     textDecoration: fields.textDecoration,
     ...(fields.lineHeightApproximate ? { lineHeightApproximate: true } : {}),
+    ...(fields.partiallyMixed ? { partiallyMixed: true } : {}),
+    ...(fields.partiallyMixedFields && fields.partiallyMixedFields.length > 0
+      ? { partiallyMixedFields: fields.partiallyMixedFields }
+      : {}),
   };
 }
 
@@ -178,13 +184,16 @@ export interface ReadTypographyFromNodeResult {
   typographyUnresolved: boolean;
 }
 
+type NonCriticalTypographyField = "letterSpacing" | "textCase" | "textDecoration";
+
 /**
  * Читает resolved типографику с TEXT-ноды (Plugin API).
- * figma.mixed на fontName/fontSize → typographyUnresolved, без throw.
+ * figma.mixed на критичных полях → typographyUnresolved, без throw.
+ *
+ * Критичные: fontFamily, fontSize, fontWeight, lineHeight.
+ * Некритичные (только для подписи): letterSpacing, textCase, textDecoration.
  */
 export function readTypographyFromTextNode(node: TextNode): ReadTypographyFromNodeResult {
-  let typographyUnresolved = false;
-
   if (isPluginMixed(node.fontName) || isPluginMixed(node.fontSize) || isPluginMixed(node.fontWeight)) {
     return { comparisonValue: null, typographyUnresolved: true };
   }
@@ -193,29 +202,31 @@ export function readTypographyFromTextNode(node: TextNode): ReadTypographyFromNo
   const fontSize = node.fontSize as number;
   const fontWeight = node.fontWeight as number;
 
-  if (isPluginMixed(node.lineHeight) || isPluginMixed(node.letterSpacing)) {
-    typographyUnresolved = true;
-  }
+  const lineHeightMixed = isPluginMixed(node.lineHeight);
+  const letterSpacingMixed = isPluginMixed(node.letterSpacing);
+  const textCaseMixed = isPluginMixed(node.textCase);
+  const textDecorationMixed = isPluginMixed(node.textDecoration);
 
-  const lineHeightRaw = isPluginMixed(node.lineHeight)
+  const typographyUnresolved = lineHeightMixed;
+
+  const lineHeightRaw = lineHeightMixed
     ? ({ unit: "AUTO", value: 0 } as LineHeight)
     : (node.lineHeight as LineHeight);
   const { lineHeight, approximate: lineHeightApproximate } = normalizeLineHeightFromPlugin(lineHeightRaw, fontSize);
 
-  const letterSpacing = isPluginMixed(node.letterSpacing)
+  const letterSpacing = letterSpacingMixed
     ? 0
     : normalizeLetterSpacingFromPlugin(node.letterSpacing as LetterSpacing, fontSize);
 
-  const textCase = isPluginMixed(node.textCase)
-    ? "ORIGINAL"
-    : mapPluginTextCase(node.textCase as TextCase);
-  const textDecoration = isPluginMixed(node.textDecoration)
+  const textCase = textCaseMixed ? "ORIGINAL" : mapPluginTextCase(node.textCase as TextCase);
+  const textDecoration = textDecorationMixed
     ? "NONE"
     : mapPluginTextDecoration(node.textDecoration as TextDecoration);
 
-  if (isPluginMixed(node.textCase) || isPluginMixed(node.textDecoration)) {
-    typographyUnresolved = true;
-  }
+  const partiallyMixedFields: NonCriticalTypographyField[] = [];
+  if (letterSpacingMixed) partiallyMixedFields.push("letterSpacing");
+  if (textCaseMixed) partiallyMixedFields.push("textCase");
+  if (textDecorationMixed) partiallyMixedFields.push("textDecoration");
 
   const comparisonValue = buildTypographyComparisonValue({
     fontFamily: fontName.family,
@@ -226,6 +237,9 @@ export function readTypographyFromTextNode(node: TextNode): ReadTypographyFromNo
     textCase,
     textDecoration,
     lineHeightApproximate,
+    ...(partiallyMixedFields.length > 0
+      ? { partiallyMixed: true, partiallyMixedFields }
+      : {}),
   });
 
   return { comparisonValue, typographyUnresolved };
@@ -317,6 +331,15 @@ export function readTypographyComparisonValue(
     ),
     lineHeightApproximate: value.lineHeightApproximate === true,
     fontWeightApproximate: value.fontWeightApproximate === true,
+    partiallyMixed: value.partiallyMixed === true,
+    ...(Array.isArray(value.partiallyMixedFields) && value.partiallyMixedFields.length > 0
+      ? {
+          partiallyMixedFields: value.partiallyMixedFields.filter(
+            (field): field is NonCriticalTypographyField =>
+              field === "letterSpacing" || field === "textCase" || field === "textDecoration"
+          ),
+        }
+      : {}),
   };
 }
 

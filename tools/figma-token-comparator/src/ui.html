@@ -573,6 +573,10 @@
         overflow: hidden;
       }
 
+      .ds-results-block[hidden] {
+        display: none;
+      }
+
       .ds-token-table-wrap {
         overflow-x: auto;
         border: 1px solid var(--ds-border);
@@ -852,6 +856,10 @@
         justify-content: space-between;
         gap: 12px;
         flex-shrink: 0;
+      }
+
+      .ds-table-footer[hidden] {
+        display: none;
       }
 
       .ds-table-footer__start {
@@ -2208,7 +2216,7 @@
                   <th scope="col">Статус</th>
                   <th scope="col">Слой / Node name</th>
                   <th scope="col">Используемый Text Style (Figma)</th>
-                  <th scope="col">Ожидаемый Semantic-токен</th>
+                  <th scope="col">Предлагаемый Text Style</th>
                   <th scope="col">Несовпадающие свойства</th>
                   <th scope="col">Действие</th>
                 </tr>

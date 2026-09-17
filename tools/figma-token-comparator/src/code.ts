@@ -703,21 +703,11 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
 
     await Promise.all(persistOps);
 
-    if (!colorsOk) {
-      send({
-        type: "error",
-        payload: {
-          message:
-            colorsError ??
-            "Неизвестная ошибка при загрузке цветовых Variables. Попробуйте ещё раз.",
-        },
-      });
-      return;
-    }
-
-    const tokens = colorsResult.value;
+    const tokens = colorsOk ? colorsResult.value : [];
     const textStyles = textStylesOk ? textStylesResult.value : [];
 
+    // library-loaded — всегда, если хотя бы один fetch успешен (см. early-return выше).
+    // Typography availability зависит только от textStylesOk, не от colorsOk.
     send({
       type: "library-loaded",
       payload: {
@@ -729,6 +719,18 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
         textStylesError: textStylesError ?? undefined,
       },
     });
+
+    if (!colorsOk) {
+      send({
+        type: "error",
+        payload: {
+          message:
+            colorsError ??
+            "Неизвестная ошибка при загрузке цветовых Variables. Попробуйте ещё раз.",
+        },
+      });
+      return;
+    }
   } catch (error) {
     const message =
       error instanceof FigmaRestApiError
