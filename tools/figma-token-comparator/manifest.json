@@ -16,6 +16,6 @@
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ],
-    "reasoning": "api.figma.com — чтение Color Variables библиотеки; api.github.com — чтение реестра в admin-режиме; raw.githubusercontent.com — чтение публичного реестра решений без авторизации; aid-registry-api.vercel.app — чтение и отправка решений через backend; fonts.googleapis.com / fonts.gstatic.com — шрифт Google Sans."
+    "reasoning": "api.figma.com — чтение переменных и стилей текста библиотеки; api.github.com — чтение реестра в admin-режиме; raw.githubusercontent.com — чтение публичного реестра решений без авторизации; aid-registry-api.vercel.app — отправка решений на согласование; fonts.googleapis.com / fonts.gstatic.com — шрифт Google Sans."
   }
 }
