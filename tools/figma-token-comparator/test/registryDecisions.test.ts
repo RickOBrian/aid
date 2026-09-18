@@ -23,6 +23,7 @@ import {
 import { computeColorComparisonResults, requiresUserAction } from "../src/comparators/colorComparator";
 import type { StoredDecision } from "../src/comparators/types";
 import type { RegistryEntry } from "../src/lib/githubTypes";
+import { parseRegistryEntry } from "../src/lib/githubApi";
 import { colorRecord, libraryToken, mode } from "./fixtures";
 import { resetFigmaStub } from "./figmaStub";
 
@@ -169,5 +170,35 @@ describe("countResolvedByTeam", () => {
     const records = [{ id: "rec-1" }, { id: "rec-shown" }, { id: "rec-local" }, { id: "rec-new" }];
     const results = [{ id: "rec-shown" }, { id: "rec-new" }];
     expect(countResolvedByTeam(records, results, history)).toBe(1);
+  });
+});
+
+describe("чтение записи реестра (находка №25)", () => {
+  it("сохраняет категорию, стиль-цель, свойства и библиотеку", () => {
+    const entry = parseRegistryEntry(
+      {
+        signature: "t-1",
+        decision: "mapped",
+        status: "approved",
+        category: "typography",
+        targetStyleId: "10:1",
+        targetStyleName: "body-m",
+        mismatchedProperties: ["fontSize"],
+        targetLibraryFileKey: "LIB",
+      },
+      0
+    );
+    expect(entry).toMatchObject({
+      category: "typography",
+      targetStyleId: "10:1",
+      targetStyleName: "body-m",
+      mismatchedProperties: ["fontSize"],
+      targetLibraryFileKey: "LIB",
+    });
+    expect(registryEntryToStoredDecision(entry)).toMatchObject({
+      category: "typography",
+      targetStyleId: "10:1",
+      libraryFileKey: "LIB",
+    });
   });
 });

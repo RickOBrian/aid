@@ -29,6 +29,8 @@ export interface RegistryEntry {
   targetStyleName?: string;
   mismatchedProperties?: string[];
   comment?: string;
+  /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). */
+  targetLibraryFileKey?: string;
   proposedBy?: string;
   proposedAt?: string;
   status: RegistryEntryStatus;

@@ -39,6 +39,7 @@ export function registryEntryToStoredDecision(entry: RegistryEntry): StoredDecis
     ...(entry.targetStyleName ? { targetStyleName: entry.targetStyleName } : {}),
     ...(entry.mismatchedProperties ? { mismatchedProperties: entry.mismatchedProperties } : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
+    ...(entry.targetLibraryFileKey ? { libraryFileKey: entry.targetLibraryFileKey } : {}),
     timestamp: entry.approvedAt ?? entry.proposedAt ?? "",
     source: "registry",
   };

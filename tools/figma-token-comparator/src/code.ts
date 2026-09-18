@@ -60,6 +60,7 @@ import {
   type ApplyToLayoutSkip,
 } from "./lib/decisionPersistence";
 import { countResolvedByTeam, mergeRegistryDecisions } from "./lib/registryDecisions";
+import { isLibraryBoundDecision, scopeHistoryToLibrary } from "./lib/libraryScope";
 import type { CodeToUiMessage, PreviewModeResult, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
@@ -80,6 +81,64 @@ let lastLibraryColors: LibraryToken[] = [];
 let lastLibraryTypography: LibraryTextStyle[] = [];
 /** Ошибка последней попытки загрузки Text Styles; null — fetch не выполнялся или успешен. */
 let typographyLibraryLoadError: string | null = null;
+
+/**
+ * Текущая библиотека — выбранная на вкладке «Сканирование». Всё сравнение,
+ * превью и применение работают с ней через lastLibraryColors /
+ * lastLibraryTypography; список загруженных — в storage.getLibraries().
+ */
+let activeLibraryKey: string | null = null;
+/** fileKey → имя библиотеки: для описания решений в запросе на согласование. */
+const libraryNames = new Map<string, string>();
+
+const TEXT_STYLES_NOT_LOADED =
+  "Стили текста этой библиотеки не загружены. Перезагрузите её токеном, у которого есть доступ к содержимому файла и библиотек.";
+
+/** Делает библиотеку текущей: подгружает её токены и стили в память. */
+async function activateLibrary(fileKey: string | null): Promise<void> {
+  const libraries = await storage.getLibraries();
+  libraryNames.clear();
+  for (const item of libraries) libraryNames.set(item.fileKey, item.fileName);
+
+  const meta = fileKey ? libraries.find((item) => item.fileKey === fileKey) : undefined;
+  const data = meta ? await storage.getLibraryData(meta.fileKey) : null;
+  activeLibraryKey = meta && data ? meta.fileKey : null;
+  await storage.setActiveLibraryKey(activeLibraryKey);
+
+  lastLibraryColors = data?.tokens ?? [];
+  lastLibraryTypography = data?.styles ?? [];
+  typographyLibraryLoadError =
+    meta && meta.textStyleCount === null ? meta.textStylesError ?? TEXT_STYLES_NOT_LOADED : null;
+}
+
+/** Список библиотек и текущая — в UI, вместе с токенами и стилями текущей для списков выбора. */
+async function sendLibrariesChanged(loadedFileName?: string): Promise<void> {
+  const libraries = await storage.getLibraries();
+  send({
+    type: "libraries-changed",
+    payload: {
+      libraries,
+      activeLibraryKey,
+      tokens: lastLibraryColors,
+      textStyles: lastLibraryTypography,
+      textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
+      textStylesError: typographyLibraryLoadError ?? undefined,
+      ...(loadedFileName ? { loadedFileName } : {}),
+    },
+  });
+}
+
+async function handleSetActiveLibrary(fileKey: string): Promise<void> {
+  await activateLibrary(fileKey);
+  await sendLibrariesChanged();
+}
+
+async function handleRemoveLibrary(fileKey: string): Promise<void> {
+  const remaining = await storage.removeLibrary(fileKey);
+  const nextActive = activeLibraryKey === fileKey ? remaining[0]?.fileKey ?? null : activeLibraryKey;
+  await activateLibrary(nextActive);
+  await sendLibrariesChanged();
+}
 
 function formatLibraryFetchError(error: unknown, fallback: string): string {
   if (error instanceof FigmaRestApiError) return error.message;
@@ -111,18 +170,9 @@ async function resolveLibraryFileKey(input: string): Promise<string | null> {
   const trimmed = input.trim();
   if (!trimmed) return null;
 
-  const [storedKey, storedName, cache] = await Promise.all([
-    storage.getLibraryFileKey(),
-    storage.getLibraryFileName(),
-    storage.getLibraryCache(),
-  ]);
-
-  const knownName = storedName ?? cache?.fileName ?? null;
-  if (knownName && trimmed === knownName) {
-    return storedKey ?? cache?.fileKey ?? null;
-  }
-
-  return null;
+  // Имя уже загруженной библиотеки — тоже годится.
+  const known = (await storage.getLibraries()).find((item) => item.fileName === trimmed);
+  return known?.fileKey ?? null;
 }
 
 async function resolvePersonalAccessToken(tokenFromUi: string): Promise<string | null> {
@@ -159,47 +209,35 @@ async function resolveLibraryDisplayName(
   if (apiName !== fileKey) return apiName;
   const fromUrl = parseFigmaFileTitleFromUrl(libraryInput);
   if (fromUrl) return fromUrl;
-  const storedName = (await storage.getLibraryFileName()) ?? (await storage.getLibraryCache())?.fileName;
-  if (storedName) return storedName;
-  return fileKey;
+  const known = (await storage.getLibraries()).find((item) => item.fileKey === fileKey);
+  return known?.fileName ?? fileKey;
 }
 
 async function handleUiReady(): Promise<void> {
+  await storage.migrateLegacyLibrary();
+  const [libraries, storedActiveKey] = await Promise.all([
+    storage.getLibraries(),
+    storage.getActiveLibraryKey(),
+  ]);
+  await activateLibrary(storedActiveKey ?? libraries[0]?.fileKey ?? null);
+
   const [
     token,
-    libraryFileKey,
-    libraryFileName,
-    libraryCache,
     githubToken,
     githubRepo,
     githubRegistryPath,
     registryCache,
     adminMode,
     mappingHistory,
-    libraryTextStylesCache,
   ] = await Promise.all([
     storage.getPersonalAccessToken(),
-    storage.getLibraryFileKey(),
-    storage.getLibraryFileName(),
-    storage.getLibraryCache(),
     storage.getGitHubToken(),
     storage.getGitHubRepo(),
     storage.getGitHubRegistryPath(),
     storage.getRegistryCache(),
     storage.getAdminMode(),
     storage.getMappingHistory(),
-    storage.getLibraryTextStylesCache(),
   ]);
-
-  if (libraryCache) {
-    lastLibraryColors = libraryCache.tokens;
-  }
-  if (libraryTextStylesCache) {
-    lastLibraryTypography = libraryTextStylesCache.styles;
-  }
-
-  const effectiveLibraryFileName =
-    libraryFileName ?? libraryCache?.fileName ?? libraryFileKey ?? libraryCache?.fileKey ?? null;
 
   const pendingProposeCountByCategory = await storage.countPendingProposalsByCategory(mappingHistory);
   const pendingProposeCount =
@@ -210,14 +248,11 @@ async function handleUiReady(): Promise<void> {
     payload: {
       hasToken: Boolean(token),
       hasRegistrySecret: Boolean(await storage.getRegistrySecret()),
-      libraryFileName: effectiveLibraryFileName,
-      libraryCache: libraryCache
-        ? { count: libraryCache.tokens.length, fetchedAt: libraryCache.fetchedAt }
-        : null,
-      libraryTextStylesCache: libraryTextStylesCache
-        ? { count: libraryTextStylesCache.styles.length, fetchedAt: libraryTextStylesCache.fetchedAt }
-        : null,
-      textStylesAvailable: libraryTextStylesCache !== null,
+      libraries: await storage.getLibraries(),
+      activeLibraryKey,
+      tokens: lastLibraryColors,
+      textStyles: lastLibraryTypography,
+      textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
       hasGitHubToken: Boolean(githubToken),
       githubRepo,
       githubRegistryPath: githubRegistryPath ?? DEFAULT_REGISTRY_PATH,
@@ -247,7 +282,7 @@ async function withRegistryDecisions(
   local: Record<string, StoredDecision>
 ): Promise<Record<string, StoredDecision>> {
   const cache = await storage.getRegistryCache();
-  return mergeRegistryDecisions(local, cache?.registry.entries ?? []);
+  return scopeHistoryToLibrary(mergeRegistryDecisions(local, cache?.registry.entries ?? []), activeLibraryKey);
 }
 
 async function getComparisonHistory(): Promise<Record<string, StoredDecision>> {
@@ -358,9 +393,13 @@ function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDec
           targetVariableName: stored.targetName,
         }),
     comment: buildProposeComment(stored),
+    ...(stored.libraryFileKey ? { targetLibraryFileKey: stored.libraryFileKey } : {}),
     // Transient review-projection metadata — используется backend только для
     // GitHub PR body, НЕ попадает в decisions-registry.json (см.
     // buildProposedEntries на backend — whitelist только machine-полей).
+    ...(stored.libraryFileKey && libraryNames.has(stored.libraryFileKey)
+      ? { targetLibraryName: libraryNames.get(stored.libraryFileKey) }
+      : {}),
     sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
     sourceBindingType: stored.sourceBindingType,
     sourceName: stored.sourceName,
@@ -479,11 +518,7 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   }
 }
 
-async function handleSaveSettings(
-  tokenFromUi: string,
-  libraryInput: string,
-  registrySecret: string
-): Promise<void> {
+async function handleSaveSettings(tokenFromUi: string, registrySecret: string): Promise<void> {
   const token = await resolvePersonalAccessToken(tokenFromUi);
   if (!token) {
     send({
@@ -493,29 +528,14 @@ async function handleSaveSettings(
     return;
   }
 
-  const libraryFileKey = await resolveLibraryFileKey(libraryInput);
-  if (!libraryFileKey) {
-    send({
-      type: "error",
-      payload: {
-        message:
-          "Не удалось определить библиотеку. Вставьте ссылку на файл Figma, его ключ — или оставьте имя уже загруженной библиотеки.",
-      },
-    });
-    return;
-  }
-
-  const libraryFileName = await resolveLibraryDisplayName(libraryFileKey, token, libraryInput);
   await Promise.all([
     storage.setPersonalAccessToken(token),
-    storage.setLibraryFileKey(libraryFileKey),
-    storage.setLibraryFileName(libraryFileName),
     // Пустое поле означает «оставить как есть»: в UI сохранённый ключ
     // показывается маской, а не значением.
     registrySecret.trim() ? storage.setRegistrySecret(registrySecret.trim()) : Promise.resolve(),
   ]);
 
-  send({ type: "settings-saved", payload: { libraryFileName } });
+  send({ type: "settings-saved", payload: {} });
 }
 
 async function handleSaveGitHubSettings(
@@ -732,58 +752,30 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
     }
 
     const fileName = await resolveLibraryDisplayName(fileKey, token, libraryInput);
-    const fetchedAt = new Date().toISOString();
-    const persistOps: Promise<void>[] = [
-      storage.setLibraryFileKey(fileKey),
-      storage.setLibraryFileName(fileName),
-    ];
-
-    if (colorsOk) {
-      lastLibraryColors = colorsResult.value;
-      persistOps.push(
-        storage.setLibraryCache({
-          tokens: colorsResult.value,
-          fetchedAt,
-          fileKey,
-          fileName,
-        })
-      );
-    }
-
-    if (textStylesOk) {
-      typographyLibraryLoadError = null;
-      lastLibraryTypography = textStylesResult.value;
-      persistOps.push(
-        storage.setLibraryTextStylesCache({
-          styles: textStylesResult.value,
-          fetchedAt,
-          fileKey,
-          fileName,
-        })
-      );
-    } else {
-      typographyLibraryLoadError = textStylesError;
-      lastLibraryTypography = [];
-    }
-
-    await Promise.all(persistOps);
-
     const tokens = colorsOk ? colorsResult.value : [];
     const textStyles = textStylesOk ? textStylesResult.value : [];
 
-    // library-loaded — всегда, если хотя бы один fetch успешен (см. early-return выше).
-    // Typography availability зависит только от textStylesOk, не от colorsOk.
-    send({
-      type: "library-loaded",
-      payload: {
-        tokens,
-        textStyles,
-        fetchedAt,
+    await storage.upsertLibrary(
+      {
+        fileKey,
         fileName,
-        textStylesAvailable: textStylesOk,
-        textStylesError: textStylesError ?? undefined,
+        colorCount: colorsOk ? tokens.length : null,
+        textStyleCount: textStylesOk ? textStyles.length : null,
+        fetchedAt: new Date().toISOString(),
+        ...(textStylesError ? { textStylesError } : {}),
       },
-    });
+      { tokens, styles: textStyles }
+    );
+
+    // Первая загруженная библиотека сразу становится текущей; повторная
+    // загрузка текущей — обновляет её данные в памяти. Остальные просто
+    // добавляются в список: выбирают их на вкладке «Сканирование».
+    if (!activeLibraryKey || activeLibraryKey === fileKey) {
+      await activateLibrary(fileKey);
+    } else {
+      libraryNames.set(fileKey, fileName);
+    }
+    await sendLibrariesChanged(fileName);
 
     if (!colorsOk) {
       send({
@@ -805,6 +797,9 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
   }
 }
 
+const NO_ACTIVE_LIBRARY =
+  "Сначала загрузите библиотеку на вкладке «Настройки» и выберите её здесь, в поле «Библиотека».";
+
 async function handleScan(
   scope: "file" | "page" | "selection",
   category: TokenCategory = "colors"
@@ -819,30 +814,20 @@ async function handleScan(
         send({
           type: "error",
           payload: {
-            message: `Text styles library unavailable: ${typographyLibraryLoadError}`,
+            message: typographyLibraryLoadError,
           },
         });
         return;
       }
 
-      const textStylesCache = await storage.getLibraryTextStylesCache();
-      if (!textStylesCache) {
-        send({
-          type: "error",
-          payload: {
-            message:
-              "Стили текста не загружены. Перезагрузите библиотеку токеном, у которого есть доступ к содержимому файла и библиотек.",
-          },
-        });
+      if (!activeLibraryKey) {
+        send({ type: "error", payload: { message: NO_ACTIVE_LIBRARY } });
         return;
       }
 
       const records = await typographyComparator.scanLayout(scope);
       setLastRecords("typography", records);
 
-      if (lastLibraryTypography.length === 0) {
-        lastLibraryTypography = textStylesCache.styles;
-      }
 
       const history = await getComparisonHistory();
       const results = typographyComparator.compareWithLibrary(records, lastLibraryTypography, history);
@@ -859,13 +844,14 @@ async function handleScan(
       return;
     }
 
+    if (!activeLibraryKey) {
+      send({ type: "error", payload: { message: NO_ACTIVE_LIBRARY } });
+      return;
+    }
+
     const records = await colorComparator.scanLayout(scope);
     setLastRecords("colors", records);
 
-    if (lastLibraryColors.length === 0) {
-      const cache = await storage.getLibraryCache();
-      lastLibraryColors = cache?.tokens ?? [];
-    }
 
     const history = await getComparisonHistory();
     const results = colorComparator.compareWithLibrary(records, lastLibraryColors, history);
@@ -1006,6 +992,7 @@ async function handleApplyDecision(
   const history = await storage.setMappingHistoryEntry(recordId, {
     decision,
     category,
+    ...(isLibraryBoundDecision({ decision }) && activeLibraryKey ? { libraryFileKey: activeLibraryKey } : {}),
     targetVariableId: fields.targetVariableId,
     targetStyleId: fields.targetStyleId,
     targetStyleName: fields.targetStyleName,
@@ -1215,6 +1202,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     const base: StoredDecision = stored ?? {
       decision: result.decision ?? "mapped_suggested",
       category: "typography",
+      ...(activeLibraryKey ? { libraryFileKey: activeLibraryKey } : {}),
       targetStyleId: targetStyle?.nodeId,
       targetStyleName: targetStyle?.name,
       timestamp: new Date().toISOString(),
@@ -1917,11 +1905,7 @@ async function handlePrintToFigma(
 
     const nextX = computeNextTableX(page);
 
-    const libraryFileName =
-      (await storage.getLibraryFileName()) ??
-      (await storage.getLibraryCache())?.fileName ??
-      (await storage.getLibraryFileKey()) ??
-      null;
+    const libraryFileName = activeLibraryKey ? libraryNames.get(activeLibraryKey) ?? activeLibraryKey : null;
     const table = await buildMappingTable(
       page,
       rows,
@@ -1975,11 +1959,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleUiReady();
         break;
       case "save-settings":
-        await handleSaveSettings(
-          message.payload.token,
-          message.payload.libraryInput,
-          message.payload.registrySecret
-        );
+        await handleSaveSettings(message.payload.token, message.payload.registrySecret);
         break;
       case "save-github-settings":
         await handleSaveGitHubSettings(
@@ -1996,6 +1976,12 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
       case "load-library":
         await handleLoadLibrary(message.payload.libraryInput, message.payload.token);
+        break;
+      case "remove-library":
+        await handleRemoveLibrary(message.payload.fileKey);
+        break;
+      case "set-active-library":
+        await handleSetActiveLibrary(message.payload.fileKey);
         break;
       case "scan":
         await handleScan(message.payload.scope, message.payload.category ?? "colors");

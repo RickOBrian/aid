@@ -22,6 +22,8 @@ export interface ProposeDecisionEntryPayload {
   targetStyleName?: string;
   mismatchedProperties?: string[];
   comment?: string;
+  /** fileKey библиотеки, в которой выбран токен. Пишется в реестр. */
+  targetLibraryFileKey?: string;
   // Transient review-projection metadata — used ONLY by backend to render the
   // human-readable GitHub PR body. MUST NOT be persisted into
   // decisions-registry.json (backend whitelists machine fields when writing
@@ -39,6 +41,8 @@ export interface ProposeDecisionEntryPayload {
   proposedModeName?: string;
   currentLibraryValue?: string;
   proposedValue?: string;
+  /** Название библиотеки — только для описания запроса на согласование. */
+  targetLibraryName?: string;
 }
 
 export interface ProposeDecisionsPayload {

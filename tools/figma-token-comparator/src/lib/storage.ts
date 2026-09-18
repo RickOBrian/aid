@@ -9,6 +9,7 @@
 
 import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
+import { isLibraryBoundDecision } from "./libraryScope";
 import { clampWindowSize, type WindowSize } from "./windowSize";
 
 export type { WindowSize } from "./windowSize";
@@ -29,7 +30,12 @@ const KEYS = {
   ADMIN_MODE: "tc_admin_mode",
   REGISTRY_SECRET: "tc_registry_secret",
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
+  LIBRARIES: "tc_libraries",
+  ACTIVE_LIBRARY: "tc_active_library",
 } as const;
+
+/** Данные каждой библиотеки — под своим ключом: в одну запись все кэши не влезут в лимит clientStorage. */
+const LIBRARY_DATA_PREFIX = "tc_library_data:";
 
 export async function getWindowSize(): Promise<WindowSize | null> {
   const value = await figma.clientStorage.getAsync(KEYS.WINDOW_SIZE);
@@ -126,6 +132,123 @@ export async function getLibraryTextStylesCache(): Promise<LibraryTextStylesCach
 
 export async function setLibraryTextStylesCache(cache: LibraryTextStylesCache): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.LIBRARY_TEXT_STYLES_CACHE, cache);
+}
+
+// ---------------------------------------------------------------------------
+// Несколько библиотек. В настройках загружается список, в сканировании
+// выбирается одна — «текущая». Прежние ключи одной библиотеки
+// (LIBRARY_FILE_KEY, LIBRARY_CACHE, LIBRARY_TEXT_STYLES_CACHE) читаются только
+// миграцией и не удаляются: откат на прошлую версию плагина их найдёт.
+// ---------------------------------------------------------------------------
+
+/** Запись в списке библиотек — без самих токенов и стилей. */
+export interface LibraryMeta {
+  fileKey: string;
+  fileName: string;
+  /** null — цвета не загрузились. */
+  colorCount: number | null;
+  /** null — стили текста не загрузились (например, токену не хватает доступа). */
+  textStyleCount: number | null;
+  fetchedAt: string;
+  textStylesError?: string;
+}
+
+export interface LibraryData {
+  tokens: LibraryToken[];
+  styles: LibraryTextStyle[];
+}
+
+export async function getLibraries(): Promise<LibraryMeta[]> {
+  const value = await figma.clientStorage.getAsync(KEYS.LIBRARIES);
+  return Array.isArray(value) ? (value as LibraryMeta[]) : [];
+}
+
+/** Добавляет библиотеку в конец списка или обновляет существующую на её месте. */
+export async function upsertLibrary(meta: LibraryMeta, data: LibraryData): Promise<LibraryMeta[]> {
+  const libraries = await getLibraries();
+  const index = libraries.findIndex((item) => item.fileKey === meta.fileKey);
+  if (index === -1) libraries.push(meta);
+  else libraries[index] = meta;
+  await figma.clientStorage.setAsync(LIBRARY_DATA_PREFIX + meta.fileKey, data);
+  await figma.clientStorage.setAsync(KEYS.LIBRARIES, libraries);
+  return libraries;
+}
+
+/** Удаляет библиотеку и её данные. Решения, принятые с ней, остаются в истории. */
+export async function removeLibrary(fileKey: string): Promise<LibraryMeta[]> {
+  const libraries = (await getLibraries()).filter((item) => item.fileKey !== fileKey);
+  await figma.clientStorage.setAsync(KEYS.LIBRARIES, libraries);
+  await figma.clientStorage.deleteAsync(LIBRARY_DATA_PREFIX + fileKey);
+  if ((await getActiveLibraryKey()) === fileKey) await setActiveLibraryKey(null);
+  return libraries;
+}
+
+export async function getLibraryData(fileKey: string): Promise<LibraryData | null> {
+  const value = await figma.clientStorage.getAsync(LIBRARY_DATA_PREFIX + fileKey);
+  if (!value || typeof value !== "object") return null;
+  const data = value as LibraryData;
+  // Стили из кэша прошлых версий могли быть записаны с `styleId` вместо `nodeId`.
+  const styles = normalizeTextStylesCache({ styles: data.styles ?? [], fetchedAt: "", fileKey }).styles;
+  return { tokens: data.tokens ?? [], styles };
+}
+
+export async function getActiveLibraryKey(): Promise<string | null> {
+  const value = await figma.clientStorage.getAsync(KEYS.ACTIVE_LIBRARY);
+  return typeof value === "string" && value ? value : null;
+}
+
+export async function setActiveLibraryKey(fileKey: string | null): Promise<void> {
+  if (fileKey) await figma.clientStorage.setAsync(KEYS.ACTIVE_LIBRARY, fileKey);
+  else await figma.clientStorage.deleteAsync(KEYS.ACTIVE_LIBRARY);
+}
+
+/**
+ * Одна библиотека из прошлых версий → первый элемент списка.
+ *
+ * Выполняется один раз: признак — наличие списка в хранилище. Решения с
+ * конкретным токеном (использовать токен, правка значения) привязываются к
+ * этой библиотеке: они принимались именно в ней, а идентификаторы токенов
+ * в другой библиотеке могут совпасть случайно (lib/libraryScope.ts).
+ *
+ * Возвращает true, если было что переносить.
+ */
+export async function migrateLegacyLibrary(): Promise<boolean> {
+  if ((await figma.clientStorage.getAsync(KEYS.LIBRARIES)) !== undefined) return false;
+
+  const [colors, textStyles, storedKey, storedName] = await Promise.all([
+    getLibraryCache(),
+    getLibraryTextStylesCache(),
+    getLibraryFileKey(),
+    getLibraryFileName(),
+  ]);
+  const fileKey = colors?.fileKey ?? textStyles?.fileKey ?? storedKey;
+  if (!fileKey || (!colors && !textStyles)) {
+    await figma.clientStorage.setAsync(KEYS.LIBRARIES, []);
+    return false;
+  }
+
+  await upsertLibrary(
+    {
+      fileKey,
+      fileName: storedName ?? colors?.fileName ?? textStyles?.fileName ?? fileKey,
+      colorCount: colors ? colors.tokens.length : null,
+      textStyleCount: textStyles ? textStyles.styles.length : null,
+      fetchedAt: colors?.fetchedAt ?? textStyles?.fetchedAt ?? new Date().toISOString(),
+    },
+    { tokens: colors?.tokens ?? [], styles: textStyles?.styles ?? [] }
+  );
+  await setActiveLibraryKey(fileKey);
+
+  const history = await getMappingHistory();
+  let changed = false;
+  for (const entry of Object.values(history)) {
+    if (isLibraryBoundDecision(entry) && !entry.libraryFileKey) {
+      entry.libraryFileKey = fileKey;
+      changed = true;
+    }
+  }
+  if (changed) await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  return true;
 }
 
 /**

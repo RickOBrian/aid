@@ -32,6 +32,7 @@ import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./li
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
 import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
+import type { LibraryMeta } from "./lib/storage";
 import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
@@ -49,11 +50,21 @@ function $<T extends HTMLElement>(id: string): T {
 // ---------------------------------------------------------------------------
 
 let activeCategory: TokenCategory = "colors";
+/** Загруженные библиотеки (вкладка «Настройки») и выбранная для сканирования. */
+let loadedLibraries: LibraryMeta[] = [];
+let activeLibraryKey: string | null = null;
+
 const resultsByCategory: Record<TokenCategory, ComparisonResult[]> = {
   colors: [],
   typography: [],
 };
 let currentResults: ComparisonResult[] = [];
+/**
+ * Категории, по которым в текущей библиотеке уже было сканирование. Пустая
+ * таблица до сканирования — «ещё не сканировали», а не «расхождений нет».
+ */
+const scannedCategories = new Set<TokenCategory>();
+const NOT_SCANNED_TEXT = "Сканирования ещё не было — запустите его на вкладке «Сканирование».";
 let currentLibraryTokens: LibraryToken[] = [];
 let currentLibraryTextStyles: LibraryTextStyle[] = [];
 let selectedRecordId: string | null = null;
@@ -563,31 +574,160 @@ function initSettingsPanel(): void {
   const loadBtn = $<HTMLButtonElement>("tc-load-library-btn");
 
   saveBtn.addEventListener("click", () => {
-    const libraryInput = fileKeyInput.value.trim();
-    if (!libraryInput) {
-      showError("Укажите ссылку на файл библиотеки или её ключ.");
-      return;
-    }
     post({
       type: "save-settings",
       payload: {
         token: tokenInput.value.trim(),
-        libraryInput,
         registrySecret: $<HTMLInputElement>("tc-registry-secret-input").value,
       },
     });
   });
 
+  $<HTMLButtonElement>("tc-add-library-btn").addEventListener("click", () => {
+    setLibraryAddFormOpen(true);
+  });
+
+  $<HTMLButtonElement>("tc-cancel-library-btn").addEventListener("click", () => {
+    setLibraryAddFormOpen(false);
+  });
+
   loadBtn.addEventListener("click", () => {
     const libraryInput = fileKeyInput.value.trim();
-    const token = tokenInput.value.trim();
     if (!libraryInput) {
-      showError("Укажите ссылку на файл библиотеки, её ключ или имя уже загруженной библиотеки.");
+      showError("Вставьте ссылку на файл библиотеки или её ключ.");
       return;
     }
-    loadBtn.disabled = true;
-    post({ type: "load-library", payload: { libraryInput, token } });
+    requestLibraryLoad(libraryInput);
   });
+
+  fileKeyInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") loadBtn.click();
+  });
+
+  // Кнопки строк списка создаются заново при каждой отрисовке — слушаем на списке.
+  $("tc-library-list").addEventListener("click", (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-file-key]");
+    const fileKey = button?.dataset.fileKey;
+    if (!button || !fileKey) return;
+    if (button.dataset.action === "remove") {
+      post({ type: "remove-library", payload: { fileKey } });
+    } else if (button.dataset.action === "refresh") {
+      button.disabled = true;
+      requestLibraryLoad(fileKey);
+    }
+  });
+
+  $<HTMLSelectElement>("tc-library-select").addEventListener("change", (event) => {
+    const fileKey = (event.target as HTMLSelectElement).value;
+    if (!fileKey || fileKey === activeLibraryKey) return;
+    post({ type: "set-active-library", payload: { fileKey } });
+  });
+}
+
+function requestLibraryLoad(libraryInput: string): void {
+  $<HTMLButtonElement>("tc-load-library-btn").disabled = true;
+  post({
+    type: "load-library",
+    payload: { libraryInput, token: $<HTMLInputElement>("tc-token-input").value.trim() },
+  });
+}
+
+/** Форма добавления видна по кнопке «+», а пока библиотек нет — всегда. */
+function setLibraryAddFormOpen(open: boolean): void {
+  const shouldOpen = open || loadedLibraries.length === 0;
+  $("tc-library-add").hidden = !shouldOpen;
+  $("tc-add-library-btn").hidden = shouldOpen;
+  $("tc-cancel-library-btn").hidden = loadedLibraries.length === 0;
+  if (open) $<HTMLInputElement>("tc-filekey-input").focus();
+}
+
+function formatLibraryCounts(library: LibraryMeta): string {
+  const parts = [
+    library.colorCount === null ? "цвета не загрузились" : `цветов: ${library.colorCount}`,
+    library.textStyleCount === null ? "стили текста не загрузились" : `стилей текста: ${library.textStyleCount}`,
+    `обновлена ${new Date(library.fetchedAt).toLocaleDateString("ru-RU")}`,
+  ];
+  return parts.join(" · ");
+}
+
+function renderLibraryList(): void {
+  $("tc-library-list").innerHTML = loadedLibraries
+    .map(
+      (library) => `
+      <li class="tc-library-item">
+        <div class="tc-library-item__info">
+          <span class="tc-library-item__name">${escapeHtml(library.fileName)}</span>
+          <span class="ds-value-meta__caption">${escapeHtml(formatLibraryCounts(library))}</span>
+        </div>
+        <div class="tc-library-item__actions">
+          <button type="button" class="ds-btn" data-action="refresh" data-file-key="${escapeHtml(library.fileKey)}">Обновить</button>
+          <button
+            type="button"
+            class="ds-btn"
+            data-action="remove"
+            data-file-key="${escapeHtml(library.fileKey)}"
+            aria-label="Удалить библиотеку ${escapeHtml(library.fileName)}"
+          >Удалить</button>
+        </div>
+      </li>`
+    )
+    .join("");
+}
+
+/** Выбор библиотеки на вкладке «Сканирование». */
+function renderLibrarySelect(): void {
+  const select = $<HTMLSelectElement>("tc-library-select");
+  if (loadedLibraries.length === 0) {
+    select.innerHTML = `<option value="">Сначала загрузите библиотеку в «Настройках»</option>`;
+    select.disabled = true;
+    return;
+  }
+  select.disabled = false;
+  select.innerHTML = loadedLibraries
+    .map(
+      (library) =>
+        `<option value="${escapeHtml(library.fileKey)}"${
+          library.fileKey === activeLibraryKey ? " selected" : ""
+        }>${escapeHtml(library.fileName)}</option>`
+    )
+    .join("");
+}
+
+/**
+ * Результаты сканирования посчитаны против прежней библиотеки — после смены
+ * библиотеки они неверны, поэтому сбрасываются.
+ */
+function resetResultsAfterLibraryChange(): void {
+  const hadResults = resultsByCategory.colors.length > 0 || resultsByCategory.typography.length > 0;
+  resultsByCategory.colors = [];
+  resultsByCategory.typography = [];
+  scannedCategories.clear();
+  applyActiveCategoryView(true);
+  if (hadResults) {
+    $("tc-scan-status").textContent = "Библиотека изменена — запустите сканирование заново.";
+  }
+}
+
+function applyLibrariesState(state: {
+  libraries: LibraryMeta[];
+  activeLibraryKey: string | null;
+  tokens: LibraryToken[];
+  textStyles: LibraryTextStyle[];
+  textStylesAvailable: boolean;
+  textStylesError?: string;
+}): void {
+  const activeChanged = state.activeLibraryKey !== activeLibraryKey;
+  loadedLibraries = state.libraries;
+  activeLibraryKey = state.activeLibraryKey;
+  currentLibraryTokens = state.tokens;
+  currentLibraryTextStyles = state.textStyles;
+  typographyLibraryAvailable = state.textStylesAvailable;
+  typographyLibraryError = state.textStylesError ?? null;
+  updateTypographyCategoryAvailability();
+  renderLibraryList();
+  renderLibrarySelect();
+  setLibraryAddFormOpen(false);
+  if (activeChanged) resetResultsAfterLibraryChange();
 }
 
 function renderLibraryStatus(text: string): void {
@@ -1085,8 +1225,8 @@ function updateScanPanelCopy(): void {
     ? "Сканирование типографики"
     : "Сканирование цветов";
   $<HTMLElement>("tc-scan-caption").textContent = isTypography
-    ? "Выберите область макета для сравнения стилей текста с библиотекой."
-    : "Выберите область макета для сравнения с загруженной библиотекой.";
+    ? "Выберите библиотеку и область макета для сравнения стилей текста."
+    : "Выберите библиотеку и область макета для сравнения цветов.";
   $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
     ? "Сканировать типографику"
     : "Сканировать цвета";
@@ -2140,8 +2280,9 @@ function updateApplyButtonState(): void {
  */
 function renderResultsSummary(): void {
   const total = currentResults.length;
-  const emptyText =
-    activeCategory === "typography"
+  const emptyText = !scannedCategories.has(activeCategory)
+    ? NOT_SCANNED_TEXT
+    : activeCategory === "typography"
       ? "Расхождений в типографике нет. Запустите сканирование после изменений в макете."
       : "Расхождений нет. Запустите сканирование после изменений в макете.";
 
@@ -2569,7 +2710,9 @@ function renderTypographyResultsTable(preferredSelectedId?: string): void {
       currentLibraryTextStyles.length === 0 ? " Загрузите библиотеку со стилями текста." : "";
     appendEmptyStateRow(
       tbody,
-      `Расхождений нет: стили текста совпадают с библиотекой.${libraryHint} Запустите сканирование заново после изменений в макете.`
+      scannedCategories.has("typography")
+        ? `Расхождений нет: стили текста совпадают с библиотекой.${libraryHint} Запустите сканирование заново после изменений в макете.`
+        : NOT_SCANNED_TEXT
     );
     updateApplyButtonState();
     return;
@@ -2635,7 +2778,11 @@ function renderColorResultsTable(preferredSelectedId?: string): void {
 
   if (currentResults.length === 0) {
     const row = document.createElement("tr");
-    row.innerHTML = `<td colspan="6" class="ds-empty-state">Расхождений нет: цвета уже привязаны к токенам библиотеки. Запустите сканирование заново после изменений в макете.</td>`;
+    row.innerHTML = `<td colspan="6" class="ds-empty-state">${escapeHtml(
+      scannedCategories.has("colors")
+        ? "Расхождений нет: цвета уже привязаны к токенам библиотеки. Запустите сканирование заново после изменений в макете."
+        : NOT_SCANNED_TEXT
+    )}</td>`;
     tbody.appendChild(row);
     updateApplyButtonState();
     return;
@@ -3312,8 +3459,10 @@ window.onmessage = (event: MessageEvent) => {
       const {
         hasToken,
         hasRegistrySecret,
-        libraryFileName,
-        libraryCache,
+        libraries,
+        activeLibraryKey: initialActiveLibraryKey,
+        tokens,
+        textStyles,
         hasGitHubToken,
         githubRepo,
         githubRegistryPath,
@@ -3321,32 +3470,20 @@ window.onmessage = (event: MessageEvent) => {
         adminMode,
         pendingProposeCount: initialPendingCount,
         pendingProposeCountByCategory: initialPendingByCategory,
-        libraryTextStylesCache,
         textStylesAvailable: initialTextStylesAvailable,
       } = message.payload;
-      if (libraryFileName) $<HTMLInputElement>("tc-filekey-input").value = libraryFileName;
+      applyLibrariesState({
+        libraries,
+        activeLibraryKey: initialActiveLibraryKey,
+        tokens,
+        textStyles,
+        textStylesAvailable: initialTextStylesAvailable,
+      });
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
       $<HTMLInputElement>("tc-registry-secret-input").placeholder = hasRegistrySecret
         ? "•••••••• (сохранён)"
         : "Нужен только для отправки решений";
-      typographyLibraryAvailable = initialTextStylesAvailable;
-      typographyLibraryError = initialTextStylesAvailable
-        ? null
-        : null;
-      updateTypographyCategoryAvailability();
-      renderLibraryStatus(
-        libraryCache
-          ? [
-              `Библиотека загружена: ${libraryCache.count} цветовых переменных`,
-              initialTextStylesAvailable && libraryTextStylesCache
-                ? `, стилей текста: ${libraryTextStylesCache.count}`
-                : initialTextStylesAvailable
-                  ? ""
-                  : " (стили текста недоступны)",
-              `, обновлена ${new Date(libraryCache.fetchedAt).toLocaleString("ru-RU")}.`,
-            ].join("")
-          : "Библиотека ещё не загружена."
-      );
+      renderLibraryStatus(libraries.length === 0 ? "Библиотек пока нет — добавьте первую." : "");
 
       if (githubRepo) $<HTMLInputElement>("tc-github-repo-input").value = githubRepo;
       if (githubRegistryPath) $<HTMLInputElement>("tc-github-registry-path-input").value = githubRegistryPath;
@@ -3397,9 +3534,6 @@ window.onmessage = (event: MessageEvent) => {
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       break;
     case "settings-saved":
-      if (message.payload.libraryFileName) {
-        $<HTMLInputElement>("tc-filekey-input").value = message.payload.libraryFileName;
-      }
       renderLibraryStatus("Настройки сохранены.");
       break;
     case "github-settings-saved":
@@ -3450,21 +3584,17 @@ window.onmessage = (event: MessageEvent) => {
     case "library-loading":
       renderLibraryStatus("Загрузка библиотеки...");
       break;
-    case "library-loaded": {
+    case "libraries-changed": {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
-      currentLibraryTokens = message.payload.tokens;
-      currentLibraryTextStyles = message.payload.textStyles;
-      typographyLibraryAvailable = message.payload.textStylesAvailable;
-      typographyLibraryError = message.payload.textStylesError ?? null;
-      updateTypographyCategoryAvailability();
-      $<HTMLInputElement>("tc-filekey-input").value = message.payload.fileName;
-      const textStylesPart = message.payload.textStylesAvailable
-        ? `, стилей текста: ${message.payload.textStyles.length}`
-        : " (стили текста недоступны)";
+      const { loadedFileName } = message.payload;
+      if (loadedFileName) $<HTMLInputElement>("tc-filekey-input").value = "";
+      applyLibrariesState(message.payload);
       renderLibraryStatus(
-        `Библиотека загружена: ${message.payload.tokens.length} цветовых переменных${textStylesPart}, обновлена ${new Date(
-          message.payload.fetchedAt
-        ).toLocaleString("ru-RU")}.`
+        loadedFileName
+          ? `Библиотека «${loadedFileName}» загружена.`
+          : message.payload.libraries.length === 0
+            ? "Библиотек пока нет — добавьте первую."
+            : ""
       );
       break;
     }
@@ -3480,6 +3610,7 @@ window.onmessage = (event: MessageEvent) => {
       activeCategory = category;
       setCategorySegmentPressed(category);
       resultsByCategory[category] = results;
+      scannedCategories.add(category);
       currentLibraryTokens = libraryTokens;
       currentLibraryTextStyles = libraryTextStyles;
       applyActiveCategoryView(true);

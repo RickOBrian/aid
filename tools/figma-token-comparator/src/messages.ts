@@ -12,6 +12,7 @@ import type {
   ScanScope,
   TokenCategory,
 } from "./comparators/types";
+import type { LibraryMeta } from "./lib/storage";
 
 export interface UiReadyMessage {
   type: "ui-ready";
@@ -19,7 +20,7 @@ export interface UiReadyMessage {
 
 export interface SaveSettingsMessage {
   type: "save-settings";
-  payload: { token: string; libraryInput: string; registrySecret: string };
+  payload: { token: string; registrySecret: string };
 }
 
 export interface SaveGitHubSettingsMessage {
@@ -37,6 +38,19 @@ export interface InitEmptyRegistryMessage {
   payload: { repo: string; registryPath: string };
 }
 
+/** Удалить библиотеку из списка вместе с её данными. Решения остаются в истории. */
+export interface RemoveLibraryMessage {
+  type: "remove-library";
+  payload: { fileKey: string };
+}
+
+/** Выбрать библиотеку для сканирования (вкладка «Сканирование»). */
+export interface SetActiveLibraryMessage {
+  type: "set-active-library";
+  payload: { fileKey: string };
+}
+
+/** Загрузить библиотеку: добавить в список или обновить уже загруженную. */
 export interface LoadLibraryMessage {
   type: "load-library";
   payload: { libraryInput: string; token: string };
@@ -195,6 +209,8 @@ export type UiToCodeMessage =
   | LoadRegistryMessage
   | InitEmptyRegistryMessage
   | LoadLibraryMessage
+  | RemoveLibraryMessage
+  | SetActiveLibraryMessage
   | ScanMessage
   | SelectNodesMessage
   | ApplyDecisionMessage
@@ -214,11 +230,11 @@ export interface InitStateMessage {
   payload: {
     hasToken: boolean;
     hasRegistrySecret: boolean;
-    /** Имя Figma-файла библиотеки для отображения в поле настроек. */
-    libraryFileName: string | null;
-    libraryCache: { count: number; fetchedAt: string } | null;
-    libraryTextStylesCache: { count: number; fetchedAt: string } | null;
-    /** true, если Text Styles были успешно закэшированы ранее (не путать с пустой библиотекой). */
+    libraries: LibraryMeta[];
+    activeLibraryKey: string | null;
+    tokens: LibraryToken[];
+    textStyles: LibraryTextStyle[];
+    /** Стили текста текущей библиотеки загружены. */
     textStylesAvailable: boolean;
     hasGitHubToken: boolean;
     githubRepo: string | null;
@@ -262,24 +278,29 @@ export interface RegistryInitializedMessage {
 
 export interface SettingsSavedMessage {
   type: "settings-saved";
-  payload: { libraryFileName: string };
+  payload: Record<string, never>;
 }
 
 export interface LibraryLoadingMessage {
   type: "library-loading";
 }
 
-export interface LibraryLoadedMessage {
-  type: "library-loaded";
+/**
+ * Список библиотек изменился: загрузили, обновили, удалили или выбрали другую.
+ * `tokens` / `textStyles` — данные текущей библиотеки для списков выбора.
+ */
+export interface LibrariesChangedMessage {
+  type: "libraries-changed";
   payload: {
+    libraries: LibraryMeta[];
+    activeLibraryKey: string | null;
     tokens: LibraryToken[];
     textStyles: LibraryTextStyle[];
-    fetchedAt: string;
-    fileName: string;
-    /** false — Text Styles fetch не удался; colors могут быть загружены успешно. */
+    /** Стили текста текущей библиотеки загружены — можно сканировать типографику. */
     textStylesAvailable: boolean;
-    /** Сообщение об ошибке Text Styles fetch (если textStylesAvailable === false). */
     textStylesError?: string;
+    /** Имя только что загруженной библиотеки — для строки статуса. */
+    loadedFileName?: string;
   };
 }
 
@@ -459,7 +480,7 @@ export type CodeToUiMessage =
   | RegistryNotFoundMessage
   | RegistryInitializedMessage
   | LibraryLoadingMessage
-  | LibraryLoadedMessage
+  | LibrariesChangedMessage
   | ScanProgressMessage
   | ScanResultsMessage
   | DecisionAppliedMessage

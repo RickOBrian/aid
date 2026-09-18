@@ -420,6 +420,59 @@
         gap: 6px;
       }
 
+      /* Список загруженных библиотек на вкладке «Настройки» */
+      .tc-library-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+      }
+
+      .tc-library-list:empty {
+        display: none;
+      }
+
+      .tc-library-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 12px;
+      }
+
+      .tc-library-item + .tc-library-item {
+        border-top: 1px solid var(--ds-border);
+      }
+
+      .tc-library-item__info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .tc-library-item__name {
+        font-weight: 500;
+        overflow-wrap: anywhere;
+      }
+
+      .tc-library-item__actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      .tc-library-add {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tc-library-add[hidden] {
+        display: none;
+      }
+
       /* ------------------------------------------------------------------ */
       /* Подсказка: кружок с вопросом рядом с заголовком или полем.          */
       /* Текст подсказки лежит в разметке рядом с кнопкой (скрытый), а       */
@@ -504,10 +557,15 @@
         font-size: 13px;
         line-height: 16px;
         color: var(--ds-text);
-        background: var(--ds-surface);
+        background-color: var(--ds-surface);
         border: 1px solid var(--ds-border);
         border-radius: var(--ds-radius);
         padding: 8px 12px;
+      }
+
+      /* Выпадающий список в поле: стрелка — фон .ds-select, под неё нужен отступ справа. */
+      .ds-field select.ds-select {
+        padding-right: 32px;
       }
 
       .ds-field input::placeholder,
@@ -2121,12 +2179,31 @@
           <input id="tc-token-input" type="password" placeholder="figd_..." autocomplete="off" />
         </div>
         <div class="ds-field">
-          <label for="tc-filekey-input">Файл библиотеки</label>
-          <input
-            id="tc-filekey-input"
-            type="text"
-            placeholder="Ссылка на файл библиотеки или его ключ"
-          />
+          <div class="ds-field__head">
+            <span class="ds-field__label">Библиотеки</span>
+            <button type="button" class="ds-hint-trigger" aria-label="Подсказка" aria-expanded="false">?</button>
+            <span class="ds-hint-text">
+              Загрузите одну или несколько библиотек. С какой сравнивать макет, выбирается на вкладке
+              «Сканирование». Если стили текста не загрузились, токену не хватает доступа к содержимому
+              файла и библиотек.
+            </span>
+          </div>
+          <ul class="tc-library-list" id="tc-library-list"></ul>
+          <div class="tc-library-add" id="tc-library-add" hidden>
+            <input
+              id="tc-filekey-input"
+              type="text"
+              placeholder="Ссылка на файл библиотеки или его ключ"
+              aria-label="Ссылка на файл библиотеки или его ключ"
+            />
+            <div class="ds-row">
+              <button type="button" class="ds-btn" id="tc-cancel-library-btn">Отмена</button>
+              <button type="button" class="ds-btn ds-btn-primary" id="tc-load-library-btn">Загрузить</button>
+            </div>
+          </div>
+          <div class="ds-row">
+            <button type="button" class="ds-btn" id="tc-add-library-btn">+ Добавить библиотеку</button>
+          </div>
         </div>
         <div class="ds-field">
           <div class="ds-field__head">
@@ -2142,9 +2219,8 @@
         </div>
         <div class="ds-row">
           <button class="ds-btn" id="tc-save-settings-btn">Сохранить настройки</button>
-          <button class="ds-btn ds-btn-primary" id="tc-load-library-btn">Загрузить библиотеку</button>
         </div>
-        <div class="ds-status-line" id="tc-library-status">Библиотека ещё не загружена.</div>
+        <div class="ds-status-line" id="tc-library-status"></div>
 
         <div class="ds-status-line" id="tc-prod-registry-status">Загрузка реестра решений...</div>
 
@@ -2191,8 +2267,12 @@
       <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">
         <h2 class="ds-section-title" id="tc-scan-title">Сканирование цветов</h2>
         <p class="ds-section-caption" id="tc-scan-caption">
-          Выберите область макета для сравнения с загруженной библиотекой.
+          Выберите библиотеку и область макета для сравнения.
         </p>
+        <div class="ds-field">
+          <label for="tc-library-select">Библиотека</label>
+          <select id="tc-library-select" class="ds-select"></select>
+        </div>
         <div class="ds-field">
           <span class="ds-field__label">Категория</span>
           <div class="ds-segment" role="group" aria-label="Категория сканирования" id="tc-category-segment">
@@ -2516,13 +2596,14 @@
 
                 <ol>
                   <li>
-                    <strong>Настройки.</strong> Вставьте токен доступа Figma и ссылку на файл библиотеки, нажмите
-                    «Загрузить библиотеку». Чтобы сравнивать типографику, токену нужен доступ не только к Variables,
-                    но и к содержимому файла и библиотек — подробности в подсказке «?» у поля токена.
+                    <strong>Настройки.</strong> Вставьте токен доступа Figma и добавьте библиотеки — кнопкой
+                    «+ Добавить библиотеку», по ссылке на файл. Их может быть несколько. Чтобы сравнивать
+                    типографику, токену нужен доступ не только к Variables, но и к содержимому файла и
+                    библиотек — подробности в подсказке «?» у поля токена.
                   </li>
                   <li>
-                    <strong>Сканирование.</strong> Выберите, что проверять — цвета или типографику, — и где: весь
-                    файл, текущую страницу или только выделенные слои.
+                    <strong>Сканирование.</strong> Выберите библиотеку, с которой сравнивать, что проверять — цвета
+                    или типографику, — и где: весь файл, текущую страницу или только выделенные слои.
                   </li>
                   <li>
                     <strong>Результаты.</strong> По каждой строке видно, что сейчас в макете, что предлагает
@@ -2541,6 +2622,13 @@
                 <div class="ds-guide-note">
                   Одинаковые значения собираются в одну строку, колонка «Слоёв» показывает, сколько их. Решение
                   принимается сразу для всей группы.
+                </div>
+
+                <div class="ds-guide-note">
+                  Решения «использовать токен» и «правка значения» относятся к библиотеке, в которой их приняли:
+                  при сканировании с другой библиотекой строка снова попросит решения. «Игнорировать» и
+                  «кандидат на новый токен» действуют с любой библиотекой. После смены библиотеки результаты
+                  сбрасываются — отсканируйте макет заново.
                 </div>
               </div>
             </div>
@@ -3080,7 +3168,7 @@
                       <tr><th>Что видите</th><th>Что сделать</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и загрузите библиотеку заново</td></tr>
+                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и нажмите «Обновить» у библиотеки. Какая библиотека выбрана — видно на вкладке «Сканирование»</td></tr>
                       <tr><td>Ошибка при загрузке библиотеки</td><td>Проверьте ссылку на файл и что у вашего аккаунта есть к нему доступ. Если токен просрочен — создайте новый</td></tr>
                       <tr><td>Таблица пустая после фильтра</td><td>Откройте «Статус ▾» и включите нужные статусы</td></tr>
                       <tr><td>«Слой не найден»</td><td>Слой удалили или переместили после сканирования — пересканируйте макет</td></tr>
