@@ -48,7 +48,9 @@ import {
 } from "./lib/registryBackendApi";
 import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
 import {
+  applyImportedTextStyleToNode,
   applyTypographyToNodeIds,
+  isTextNodeMixedUnresolved,
 } from "./lib/typographyApply";
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
@@ -57,7 +59,7 @@ import {
   persistDecisionAfterApply,
   type ApplyToLayoutSkip,
 } from "./lib/decisionPersistence";
-import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
+import type { CodeToUiMessage, PreviewModeResult, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
   figma.ui.postMessage(message);
@@ -1591,88 +1593,50 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
 }
 
 /**
- * Превью доступно в двух режимах:
- * - `variableId` передан явно — токен выбран вручную через combobox
- *   «Выбрать токен из AID», решение ещё не сохранено через «Применить
- *   решение» (history об этой записи ничего не знает) — target строится
- *   напрямую из токена библиотеки, режим по умолчанию (0); полный набор
- *   `allModes` всё равно берётся из токена целиком, поэтому пары
- *   Day/Night строятся так же, как при автоматическом совпадении;
- * - без `variableId` — как раньше, через computeColorComparisonResults
- *   (автоматически найденный target или уже сохранённое mapped-решение).
+ * Клонирует контейнер слоя строки (см. resolvePreviewContainer), уносит клон
+ * далеко вправо и передаёт его в `build` вместе с тем же слоем внутри клона.
+ * Клон удаляется в finally при любом исходе — оригинальный макет превью не
+ * меняет ни на миг.
  */
-async function handleBuildPreview(recordId: string, variableId?: string): Promise<void> {
-  if (previewInFlight) {
-    send({
-      type: "preview-error",
-      recordId,
-      message: "Дождитесь, пока построится текущее превью, и попробуйте снова.",
-    });
-    return;
+async function withPreviewClone<T>(
+  record: LayoutRecord,
+  build: (clone: SceneNode, targetInClone: SceneNode) => Promise<T>
+): Promise<T> {
+  const representativeId = record.nodeIds[0];
+  if (!representativeId) {
+    throw new Error("К этой строке не привязан слой — превью не построить.");
   }
-  previewInFlight = true;
 
-  let clone: SceneNode | null = null;
+  let anchor = await resolveSceneNodeById(representativeId);
+  if (!anchor) {
+    await figma.loadAllPagesAsync();
+    anchor = await resolveSceneNodeById(representativeId);
+  }
+  if (!anchor) {
+    throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
+  }
+
+  const container = resolvePreviewContainer(anchor);
+
+  if (
+    hasNumericDimensions(container) &&
+    (container.width > PREVIEW_MAX_DIMENSION || container.height > PREVIEW_MAX_DIMENSION)
+  ) {
+    throw new Error("Слой слишком велик для превью.");
+  }
+
+  const relativePath = getRelativeChildPath(container, anchor);
+  if (relativePath === null) {
+    throw new Error("Не удалось определить положение слоя для превью.");
+  }
+
+  if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
+    throw new Error("Для слоёв этого типа превью не строится.");
+  }
+
+  // Не переключаем figma.currentPage — клон переносится сразу на текущую страницу.
+  const clone = (container as unknown as { clone(): SceneNode }).clone();
   try {
-    const record = getLastRecords("colors").find((item) => item.id === recordId);
-    if (!record) {
-      throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
-    }
-
-    let target: ComparisonTarget;
-    if (variableId) {
-      const token = lastLibraryColors.find((item) => item.variableId === variableId);
-      if (!token) {
-        throw new Error("Переменной нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
-      }
-      const hasResolvedMode = token.modes.some((mode) => !mode.unresolved);
-      if (!hasResolvedMode) {
-        throw new Error("У выбранного токена нет значения, по которому можно построить превью.");
-      }
-      target = toTarget(token, 0);
-    } else {
-      const history = await storage.getMappingHistory();
-      const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
-      if (!result?.target || result.target.valueUnresolved) {
-        throw new Error("Для этой строки нет значения библиотеки, по которому можно построить превью.");
-      }
-      target = result.target;
-    }
-
-    const representativeId = record.nodeIds[0];
-    if (!representativeId) {
-      throw new Error("К этой строке не привязан слой — превью не построить.");
-    }
-
-    let anchor = await resolveSceneNodeById(representativeId);
-    if (!anchor) {
-      await figma.loadAllPagesAsync();
-      anchor = await resolveSceneNodeById(representativeId);
-    }
-    if (!anchor) {
-      throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
-    }
-
-    const container = resolvePreviewContainer(anchor);
-
-    if (
-      hasNumericDimensions(container) &&
-      (container.width > PREVIEW_MAX_DIMENSION || container.height > PREVIEW_MAX_DIMENSION)
-    ) {
-      throw new Error("Слой слишком велик для превью.");
-    }
-
-    const relativePath = getRelativeChildPath(container, anchor);
-    if (relativePath === null) {
-      throw new Error("Не удалось определить положение слоя для превью.");
-    }
-
-    if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
-      throw new Error("Для слоёв этого типа превью не строится.");
-    }
-
-    // Не переключаем figma.currentPage — клон переносится сразу на текущую страницу.
-    clone = (container as unknown as { clone(): SceneNode }).clone();
     figma.currentPage.appendChild(clone);
     if ("x" in clone && "y" in clone && "x" in container && "y" in container) {
       const containerPos = container as unknown as { x: number; y: number };
@@ -1686,14 +1650,62 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
       throw new Error("Не удалось найти слой в копии для превью.");
     }
 
-    const modePairs = getPreviewModePairs(record, target);
-    if (modePairs.length === 0) {
-      throw new Error("У макета и библиотеки нет общих режимов для этой строки.");
+    return await build(clone, targetInClone);
+  } finally {
+    try {
+      clone.remove();
+    } catch {
+      // клон уже недоступен/удалён — не перекрываем исходную ошибку сообщением об этом
     }
+  }
+}
 
+/**
+ * Превью цвета доступно в двух режимах:
+ * - `variableId` передан явно — токен выбран вручную через combobox
+ *   «Выбрать токен из AID», решение ещё не сохранено через «Применить
+ *   решение» (history об этой записи ничего не знает) — target строится
+ *   напрямую из токена библиотеки, режим по умолчанию (0); полный набор
+ *   `allModes` всё равно берётся из токена целиком, поэтому пары
+ *   Day/Night строятся так же, как при автоматическом совпадении;
+ * - без `variableId` — как раньше, через computeColorComparisonResults
+ *   (автоматически найденный target или уже сохранённое mapped-решение).
+ */
+async function buildColorPreview(recordId: string, variableId?: string): Promise<PreviewModeResult[]> {
+  const record = getLastRecords("colors").find((item) => item.id === recordId);
+  if (!record) {
+    throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
+  }
+
+  let target: ComparisonTarget;
+  if (variableId) {
+    const token = lastLibraryColors.find((item) => item.variableId === variableId);
+    if (!token) {
+      throw new Error("Переменной нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
+    }
+    const hasResolvedMode = token.modes.some((mode) => !mode.unresolved);
+    if (!hasResolvedMode) {
+      throw new Error("У выбранного токена нет значения, по которому можно построить превью.");
+    }
+    target = toTarget(token, 0);
+  } else {
+    const history = await storage.getMappingHistory();
+    const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
+    if (!result?.target || result.target.valueUnresolved) {
+      throw new Error("Для этой строки нет значения библиотеки, по которому можно построить превью.");
+    }
+    target = result.target;
+  }
+
+  const modePairs = getPreviewModePairs(record, target);
+  if (modePairs.length === 0) {
+    throw new Error("У макета и библиотеки нет общих режимов для этой строки.");
+  }
+
+  return withPreviewClone(record, async (clone, targetInClone) => {
     // Один клон на всю запись — по каждому общему режиму последовательно
     // перекрашиваем и экспортируем тот же клон (не создаём клон на mode).
-    const modes: Array<{ modeName: string; before: string; after: string }> = [];
+    const modes: PreviewModeResult[] = [];
     for (const pair of modePairs) {
       try {
         applyColorToProperty(targetInClone, record.property, pair.before.hex, pair.before.alpha);
@@ -1710,19 +1722,105 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
         throw new Error(`Не удалось построить превью для режима «${pair.modeName}»: ${reason}`);
       }
     }
+    return modes;
+  });
+}
 
+/**
+ * Превью типографики: «Было» — клон как есть, «Будет» — тот же клон с
+ * привязанным стилем библиотеки. Привязка та же, что у «Применить в макет»
+ * (importStyleByKeyAsync + applyImportedTextStyleToNode), поэтому превью
+ * показывает ровно результат применения, включая перенос строк и перекладку
+ * auto layout. Режимов у типографики нет — пара одна, подписана именем стиля.
+ *
+ * `styleId` — стиль, выбранный вручную через combobox «Выбрать стиль из
+ * AID» до сохранения решения; без него берётся цель строки из сравнения
+ * (автоматическая или из сохранённого mapped-решения).
+ */
+async function buildTypographyPreview(recordId: string, styleId?: string): Promise<PreviewModeResult[]> {
+  const record = getLastRecords("typography").find((item) => item.id === recordId);
+  if (!record) {
+    throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
+  }
+  if (record.typographyUnresolved) {
+    throw new Error("В группе смешанная типографика — превью не построить, как и применить автоматически.");
+  }
+
+  let targetStyle: LibraryTextStyle | undefined;
+  if (styleId) {
+    targetStyle = lastLibraryTypography.find((style) => style.nodeId === styleId);
+    if (!targetStyle) {
+      throw new Error("Стиля нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
+    }
+  } else {
+    const history = await storage.getMappingHistory();
+    const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
+    const styleKey = result?.target?.styleKey;
+    targetStyle = styleKey ? lastLibraryTypography.find((style) => style.key === styleKey) : undefined;
+    if (!targetStyle) {
+      throw new Error("Для этой строки нет стиля библиотеки, по которому можно построить превью.");
+    }
+  }
+
+  let importedStyle: BaseStyle;
+  try {
+    importedStyle = await figma.importStyleByKeyAsync(targetStyle.key);
+  } catch (importError) {
+    const reason = importError instanceof Error ? `: ${importError.message}` : ".";
+    throw new Error(`Не удалось импортировать стиль «${targetStyle.name}»${reason}`);
+  }
+  if (importedStyle.type !== "TEXT") {
+    throw new Error(`Стиль «${targetStyle.name}» не является стилем текста.`);
+  }
+  const textStyle = importedStyle as TextStyle;
+
+  return withPreviewClone(record, async (clone, targetInClone) => {
+    if (targetInClone.type !== "TEXT") {
+      throw new Error("Слой строки не текстовый — превью типографики не построить.");
+    }
+    if (isTextNodeMixedUnresolved(targetInClone)) {
+      throw new Error("В слое смешанная типографика — превью не построить, как и применить автоматически.");
+    }
+
+    await waitFrame();
+    const before = await exportNodeAsPngDataUrl(clone);
+
+    try {
+      await applyImportedTextStyleToNode(targetInClone, textStyle);
+    } catch (applyError) {
+      const reason = applyError instanceof Error ? applyError.message : "неизвестная ошибка";
+      throw new Error(
+        `Не удалось привязать стиль «${targetStyle.name}» (шрифт ${textStyle.fontName.family} ${textStyle.fontName.style}): ${reason}`
+      );
+    }
+    await waitFrame();
+    const after = await exportNodeAsPngDataUrl(clone);
+
+    return [{ modeName: targetStyle.name, before, after }];
+  });
+}
+
+async function handleBuildPreview(recordId: string, variableId?: string, styleId?: string): Promise<void> {
+  if (previewInFlight) {
+    send({
+      type: "preview-error",
+      recordId,
+      message: "Дождитесь, пока построится текущее превью, и попробуйте снова.",
+    });
+    return;
+  }
+  previewInFlight = true;
+
+  try {
+    const isTypography = getLastRecords("typography").some((item) => item.id === recordId);
+    const modes = isTypography
+      ? await buildTypographyPreview(recordId, styleId)
+      : await buildColorPreview(recordId, variableId);
     send({ type: "preview-ready", recordId, modes });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Не удалось построить превью.";
     send({ type: "preview-error", recordId, message });
   } finally {
-    if (clone) {
-      try {
-        clone.remove();
-      } catch {
-        // клон уже недоступен/удалён — не перекрываем исходную ошибку сообщением об этом
-      }
-    }
     previewInFlight = false;
   }
 }
@@ -1928,7 +2026,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handlePrintToFigma(message.payload.sourceFormat, message.payload.results);
         break;
       case "build-preview":
-        await handleBuildPreview(message.recordId, message.variableId);
+        await handleBuildPreview(message.recordId, message.variableId, message.styleId);
         break;
       case "apply-to-layout":
         await handleApplyToLayout(message.recordId);

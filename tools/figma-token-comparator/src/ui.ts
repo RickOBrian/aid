@@ -9,7 +9,6 @@ import type {
   Decision,
   LibraryTextStyle,
   LibraryToken,
-  MatchStatus,
   ScanScope,
   TokenCategory,
   TypographyComparisonValue,
@@ -26,9 +25,14 @@ import {
   formatLibraryTokenLabel,
 } from "./lib/libraryLabels";
 import { getResultStatusFilterKey, type StatusFilterKey } from "./lib/statusKeys";
+import { getStatusMeta, type BadgeTone, type StatusMeta } from "./lib/statusMeta";
+import { canShowPreview } from "./lib/previewEligibility";
+import { parseCssColor, pickPreviewBackdrop, type CheckerColors } from "./lib/previewBackdrop";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
+import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
+import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
   parent.postMessage({ pluginMessage: message }, "*");
@@ -91,113 +95,18 @@ interface RowControls {
 
 const rowControls = new Map<string, RowControls>();
 
-/** Тональность бейджа. Цвета тональностей заданы в ui.html, здесь — только выбор. */
-type BadgeTone = "neutral" | "success" | "info" | "warning" | "danger";
-
-interface StatusMeta {
-  /** Название статуса в интерфейсе. */
-  label: string;
-  /** Английский термин, которым статус называют в команде и в документации. */
-  term: string;
-  /** Тональность бейджа — единственный источник его цвета. */
-  tone: BadgeTone;
-  /** Что это значит и что с этим делать. Показывается подсказкой при наведении. */
-  hint: string;
-}
-
-/**
- * Единственный источник правды по статусам: название, термин, цвет и подсказка.
- * Любое место интерфейса (таблица цветов, таблица типографики, фильтр в шапке)
- * берёт бейдж отсюда — расхождения между ними невозможны по построению.
- */
-const STATUS_META: Record<StatusFilterKey, StatusMeta> = {
-  exact: {
-    label: "Совпадает с библиотекой",
-    term: "Exact match",
-    tone: "success",
-    hint: "Слой уже привязан к этой переменной библиотеки — делать ничего не нужно.",
-  },
-  mapped: {
-    label: "Решение принято",
-    term: "Mapped",
-    tone: "success",
-    hint: "По этой группе решение уже зафиксировано и подтянулось из истории.",
-  },
-  value: {
-    label: "Совпало значение",
-    term: "Value match",
-    tone: "info",
-    hint: "Цвет в точности совпадает со значением токена библиотеки, но слой к токену не привязан.",
-  },
-  "name-match": {
-    label: "Совпало имя",
-    term: "Name match",
-    tone: "warning",
-    hint: "Имя переменной или стиля совпало с токеном библиотеки, но значения умеренно расходятся.",
-  },
-  "name-match-unresolved": {
-    label: "Значение не прочитано",
-    term: "Name match (value unknown)",
-    tone: "warning",
-    hint: "Имя совпало, но значение токена получить не удалось — обычно это ссылка на переменную из другого файла. Сравните вручную.",
-  },
-  conflict: {
-    label: "Конфликт значений",
-    term: "Conflict",
-    tone: "danger",
-    hint: "Имя совпало с токеном библиотеки, но цвет отличается заметно. Обычно в макете осталось устаревшее значение.",
-  },
-  approximate: {
-    label: "Близкое значение",
-    term: "Approximate match",
-    tone: "warning",
-    hint: "Точного совпадения нет, но в библиотеке есть близкий цвет. Чем меньше ΔE, тем ближе оттенок.",
-  },
-  "name-mismatch": {
-    label: "Имя не по системе",
-    term: "Name mismatch",
-    tone: "warning",
-    hint: "Стиль текста применён, но его имя не совпадает с ожидаемым токеном системы.",
-  },
-  "mixed-unresolved": {
-    label: "Смешанные значения",
-    term: "Mixed (needs review)",
-    tone: "neutral",
-    hint: "В группе слоёв разные шрифты или размеры — сравнить автоматически нельзя, нужен ручной разбор.",
-  },
-  "layout-only": {
-    label: "Нет в библиотеке",
-    term: "Layout only",
-    tone: "neutral",
-    hint: "Совпадений в библиотеке не нашлось ни по имени, ни по значению.",
-  },
-  "style-binding": {
-    label: "Стиль вместо токена",
-    term: "Style binding",
-    tone: "warning",
-    hint: "Цвет задан стилем Figma, а не переменной. Автоматически заменить нельзя — нужно ваше решение.",
-  },
-  "ghost-binding": {
-    label: "Потерянный стиль",
-    term: "Ghost style",
-    tone: "danger",
-    hint: "Слой ссылается на стиль, которого больше нет в файле. Цвет виден, но привязка потеряна.",
-  },
-  "hardcoded-no-analog": {
-    label: "Цвет вручную",
-    term: "Hardcoded (no analog)",
-    tone: "neutral",
-    hint: "Цвет задан вручную, подходящего токена в библиотеке нет. Кандидат на новый токен или осознанное исключение.",
-  },
-};
-
 /** Подсказка бейджа: английский термин плюс объяснение. */
 function statusTooltip(meta: StatusMeta): string {
   return `${meta.term} — ${meta.hint}`;
 }
 
+/** Тексты статуса для активной категории — у типографики свои (lib/statusMeta.ts). */
+function statusMetaForKey(key: StatusFilterKey): StatusMeta {
+  return getStatusMeta(key, activeCategory);
+}
+
 function statusFilterKeyLabel(key: StatusFilterKey): string {
-  return STATUS_META[key].label;
+  return statusMetaForKey(key).label;
 }
 
 /** Классы бейджа для тональности. Форма и цвет не задаются больше нигде. */
@@ -310,7 +219,7 @@ function renderStatusFilterMenu(): void {
           (key) => `
         <label class="ds-filter-menu__item">
           <input type="checkbox" value="${escapeHtml(key)}" ${activeStatusFilters.has(key) ? "checked" : ""} />
-          <span class="${badgeClassName(STATUS_META[key].tone)}" title="${escapeHtml(statusTooltip(STATUS_META[key]))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
+          <span class="${badgeClassName(statusMetaForKey(key).tone)}" title="${escapeHtml(statusTooltip(statusMetaForKey(key)))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
         </label>`
         )
         .join("")}
@@ -366,7 +275,7 @@ function initStatusFilterMenu(): void {
 }
 
 function statusMetaOf(result: ComparisonResult): StatusMeta {
-  return STATUS_META[getResultStatusFilterKey(result)];
+  return getStatusMeta(getResultStatusFilterKey(result), result.category ?? activeCategory);
 }
 
 function statusLabel(result: ComparisonResult): string {
@@ -550,11 +459,76 @@ function initHints(): void {
 // Гайд — аккордеон
 // ---------------------------------------------------------------------------
 
-function initGuideAccordion(): void {
-  const root = document.getElementById("tc-guide-accordion");
-  if (!root) return;
+/** Шеврон строки аккордеона гайда — тот же, что в разметке разделов ui.html. */
+const GUIDE_CHEVRON_SVG = `<svg class="ds-guide-accordion__chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-  root.querySelectorAll<HTMLButtonElement>(".ds-guide-accordion__trigger").forEach((trigger) => {
+function formatChangelogDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function renderChangelogEntry(entry: ChangelogEntry, isOpen: boolean): string {
+  const state = getChangelogEntryState(entry, PLUGIN_VERSION);
+  const slug = entry.version.replace(/\./g, "-");
+  const badge =
+    state === "current"
+      ? `<span class="${badgeClassName("info")}">Ваша версия</span>`
+      : state === "upcoming"
+        ? `<span class="${badgeClassName("neutral")}">Готовится</span>`
+        : "";
+  const date = entry.date
+    ? `<span class="ds-guide-changelog__date">${escapeHtml(formatChangelogDate(entry.date))}</span>`
+    : "";
+  const actions = entry.actions?.length
+    ? `<div class="ds-guide-note"><strong>После обновления:</strong> ${entry.actions
+        .map((action) => escapeHtml(action))
+        .join(" ")}</div>`
+    : "";
+  const groups = entry.groups
+    .map(
+      (group) => `
+        <h3>${escapeHtml(group.title)}</h3>
+        <ul>${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+    )
+    .join("");
+
+  return `
+    <div class="ds-guide-accordion__item${isOpen ? " is-open" : ""}">
+      <button
+        type="button"
+        class="ds-guide-accordion__trigger"
+        aria-expanded="${isOpen}"
+        aria-controls="tc-changelog-panel-${slug}"
+      >
+        <span class="ds-guide-changelog__head">
+          <span>Версия ${escapeHtml(entry.version)}</span>
+          ${date}
+          ${badge}
+        </span>
+        ${GUIDE_CHEVRON_SVG}
+      </button>
+      <div class="ds-guide-accordion__panel" id="tc-changelog-panel-${slug}" role="region"${isOpen ? "" : " hidden"}>
+        <p class="ds-guide-changelog__summary">${escapeHtml(entry.summary)}</p>
+        ${actions}
+        ${groups}
+      </div>
+    </div>`;
+}
+
+/** Блок «Что нового» в гайде: по версии на строку, своя версия раскрыта. */
+function renderChangelog(): void {
+  $("tc-changelog-current").textContent = `У вас установлена версия ${PLUGIN_VERSION}.`;
+  $("tc-changelog-accordion").innerHTML = CHANGELOG.map((entry) =>
+    renderChangelogEntry(entry, entry.version === PLUGIN_VERSION)
+  ).join("");
+}
+
+function initGuideAccordion(): void {
+  document.querySelectorAll<HTMLButtonElement>(".ds-guide-accordion .ds-guide-accordion__trigger").forEach((trigger) => {
     trigger.addEventListener("click", () => {
       const item = trigger.closest(".ds-guide-accordion__item");
       const panelId = trigger.getAttribute("aria-controls");
@@ -1231,24 +1205,13 @@ function canUseSuggestedToken(result: ComparisonResult): boolean {
 // Показать превью — "Было / Будет" для строк с library target
 // ---------------------------------------------------------------------------
 
-/** Превью доступно только для статусов с реальным library target и резолвленным значением — не для Hardcoded (no analog) / layout-only. */
-const PREVIEW_ELIGIBLE_STATUSES: ReadonlySet<MatchStatus> = new Set(["value", "name-match", "conflict", "approximate"]);
-
-function canShowPreview(result: ComparisonResult): boolean {
-  return (
-    PREVIEW_ELIGIBLE_STATUSES.has(result.status) &&
-    Boolean(result.target) &&
-    result.target?.valueUnresolved !== true
-  );
-}
-
 let previewInFlight = false;
 let activePreviewRecordId: string | null = null;
 
 /**
- * `.tc-mapped-preview-btn` (комбобокс «Выбрать токен из AID») зависит ещё
- * и от того, выбран ли токен — при снятии общей блокировки (disabled =
- * false) её нельзя просто разблокировать, если токен ещё не выбран.
+ * `.tc-mapped-preview-btn` (комбобокс «Выбрать токен/стиль из AID») зависит
+ * ещё и от того, выбран ли токен или стиль — при снятии общей блокировки
+ * (disabled = false) её нельзя просто разблокировать, если выбора ещё нет.
  */
 function setPreviewButtonsDisabled(disabled: boolean): void {
   document.querySelectorAll<HTMLButtonElement>(".tc-preview-btn").forEach((btn) => {
@@ -1258,7 +1221,7 @@ function setPreviewButtonsDisabled(disabled: boolean): void {
     }
     if (btn.classList.contains("tc-mapped-preview-btn")) {
       const host = btn.closest<HTMLElement>(".ds-action-extra");
-      btn.disabled = !host?.dataset.selectedVariableId;
+      btn.disabled = !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId;
       return;
     }
     btn.disabled = false;
@@ -1271,6 +1234,54 @@ function showPreviewLoading(): void {
   errorEl.hidden = true;
   errorEl.textContent = "";
   $("tc-preview-images").hidden = true;
+}
+
+/** Длинная сторона снимка для анализа фона — точности хватает, а крупный PNG не гоняется целиком. */
+const PREVIEW_BACKDROP_SAMPLE_SIZE = 256;
+
+function readCheckerColors(baseVar: string, squareVar: string): CheckerColors | null {
+  const style = getComputedStyle(document.documentElement);
+  const base = parseCssColor(style.getPropertyValue(baseVar));
+  const square = parseCssColor(style.getPropertyValue(squareVar));
+  return base && square ? [base, square] : null;
+}
+
+/**
+ * Переключает снимок на тёмную шахматку, если на светлой он не читается —
+ * например, белый текст без подложки (см. lib/previewBackdrop.ts).
+ */
+function applyPreviewBackdrop(img: HTMLImageElement): void {
+  const light = readCheckerColors("--ds-surface-checker-base", "--ds-surface-checker");
+  const dark = readCheckerColors("--ds-surface-checker-inverse-base", "--ds-surface-checker-inverse");
+  if (!light || !dark || !img.naturalWidth || !img.naturalHeight) return;
+
+  const scale = Math.min(1, PREVIEW_BACKDROP_SAMPLE_SIZE / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  if (!context) return;
+  // Без сглаживания: иначе тонкие глифы при уменьшении становятся
+  // полупрозрачными и выпадают из подсчёта.
+  context.imageSmoothingEnabled = false;
+  context.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+
+  img.classList.toggle("tc-preview-img--inverse", pickPreviewBackdrop(data, { light, dark }) === "dark");
+}
+
+function applyPreviewBackdrops(container: HTMLElement): void {
+  container.querySelectorAll<HTMLImageElement>(".tc-preview-figure img").forEach((img) => {
+    const run = (): void => {
+      try {
+        applyPreviewBackdrop(img);
+      } catch {
+        // анализ не удался — снимок остаётся на светлой шахматке, как раньше
+      }
+    };
+    if (img.complete && img.naturalWidth) run();
+    else img.addEventListener("load", run, { once: true });
+  });
 }
 
 function showPreviewImages(modes: Array<{ modeName: string; before: string; after: string }>): void {
@@ -1296,6 +1307,7 @@ function showPreviewImages(modes: Array<{ modeName: string; before: string; afte
     </div>`
     )
     .join("");
+  applyPreviewBackdrops(container);
 }
 
 function showPreviewErrorInModal(message: string): void {
@@ -1307,6 +1319,9 @@ function showPreviewErrorInModal(message: string): void {
 }
 
 function openPreviewModal(): void {
+  const title = activeCategory === "typography" ? "Превью изменения типографики" : "Превью изменения цвета";
+  $("tc-preview-title").textContent = title;
+  $("tc-preview-modal").setAttribute("aria-label", title);
   $("tc-preview-overlay").hidden = false;
   showPreviewLoading();
 }
@@ -1317,11 +1332,12 @@ function closePreviewModal(): void {
 }
 
 /**
- * `variableId` — токен, выбранный вручную через combobox «Выбрать токен
- * из AID», ещё до сохранения решения («Применить решение»). Без него
- * превью строится по автоматически найденному target строки, как раньше.
+ * `selection` — токен (`variableId`) или стиль текста (`styleId`), выбранный
+ * вручную через combobox «Выбрать токен/стиль из AID», ещё до сохранения
+ * решения («Применить решение»). Без него превью строится по автоматически
+ * найденному target строки, как раньше.
  */
-function requestPreview(recordId: string, variableId?: string): void {
+function requestPreview(recordId: string, selection: { variableId?: string; styleId?: string } = {}): void {
   if (previewInFlight) {
     showError("Дождитесь, пока построится текущее превью.");
     return;
@@ -1330,7 +1346,7 @@ function requestPreview(recordId: string, variableId?: string): void {
   activePreviewRecordId = recordId;
   setPreviewButtonsDisabled(true);
   openPreviewModal();
-  post({ type: "build-preview", recordId, variableId });
+  post({ type: "build-preview", recordId, variableId: selection.variableId, styleId: selection.styleId });
 }
 
 function initPreviewModal(): void {
@@ -1468,6 +1484,7 @@ function showApplyModalPreviewImages(modes: Array<{ modeName: string; before: st
     </div>`
     )
     .join("");
+  applyPreviewBackdrops(container);
 }
 
 function showApplyModalPreviewError(message: string): void {
@@ -1536,10 +1553,8 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
     const resultView = $("tc-apply-result-view");
     resultView.hidden = true;
     resultView.innerHTML = "";
-    $("tc-apply-preview-loading").hidden = true;
-    $("tc-apply-preview-images").hidden = true;
-    $("tc-apply-preview-error").hidden = true;
     $("tc-apply-overlay").hidden = false;
+    requestApplyModalPreview(result.id);
     return;
   }
 
@@ -1961,7 +1976,7 @@ function setupVariableCombobox(mappedExtra: HTMLElement, recordId: string, initi
     event.stopPropagation();
     const variableId = mappedExtra.dataset.selectedVariableId;
     if (!variableId) return;
-    requestPreview(recordId, variableId);
+    requestPreview(recordId, { variableId });
   });
 
   input.addEventListener("input", () => {
@@ -2229,7 +2244,11 @@ function filterLibraryTextStyles(query: string): LibraryTextStyle[] {
   return filtered.slice(0, 80);
 }
 
-function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void {
+function renderTextStyleComboboxMenu(
+  combobox: HTMLElement,
+  query: string,
+  onSelect?: (styleId: string, label: string) => void
+): void {
   const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
   if (!menu) return;
   const styles = filterLibraryTextStyles(query);
@@ -2263,6 +2282,7 @@ function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void
       const styleId = option.dataset.styleId ?? "";
       const label = option.dataset.label ?? "";
       selectTextStyleComboboxOption(combobox, styleId, label);
+      onSelect?.(styleId, label);
     });
   });
 }
@@ -2276,7 +2296,12 @@ function selectTextStyleComboboxOption(combobox: HTMLElement, styleId: string, l
   setComboboxOpen(combobox, false);
 }
 
-function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: string): void {
+/**
+ * Combobox для решения «Выбрать стиль из AID». Как и у цветов, кнопка
+ * «Показать превью» доступна сразу после выбора стиля, ещё ДО «Применить
+ * решение» — превью строится по явному `styleId` выбранного стиля.
+ */
+function setupTextStyleCombobox(mappedExtra: HTMLElement, recordId: string, initialStyleId?: string): void {
   mappedExtra.innerHTML = `
     <div class="ds-combobox">
       <input
@@ -2291,23 +2316,38 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
       </button>
       <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
     </div>
+    <button type="button" class="ds-btn tc-preview-btn tc-mapped-preview-btn" disabled>Показать превью</button>
   `;
 
   const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
   const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
   const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
-  if (!combobox || !input || !toggle) return;
+  const previewBtn = mappedExtra.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+  if (!combobox || !input || !toggle || !previewBtn) return;
+
+  function syncPreviewButtonState(): void {
+    previewBtn!.disabled = !mappedExtra.dataset.selectedStyleId || previewInFlight;
+  }
+
+  previewBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const styleId = mappedExtra.dataset.selectedStyleId;
+    if (!styleId) return;
+    requestPreview(recordId, { styleId });
+  });
 
   input.addEventListener("input", () => {
     delete mappedExtra.dataset.selectedStyleId;
-    renderTextStyleComboboxMenu(combobox, input.value);
+    syncPreviewButtonState();
+    renderTextStyleComboboxMenu(combobox, input.value, syncPreviewButtonState);
     setComboboxOpen(combobox, true);
   });
   toggle.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     const open = toggle.getAttribute("aria-expanded") !== "true";
-    if (open) renderTextStyleComboboxMenu(combobox, input.value);
+    if (open) renderTextStyleComboboxMenu(combobox, input.value, syncPreviewButtonState);
     setComboboxOpen(combobox, open);
   });
 
@@ -2315,6 +2355,7 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
     const initialStyle = currentLibraryTextStyles.find((style) => style.nodeId === initialStyleId);
     if (initialStyle) {
       selectTextStyleComboboxOption(combobox, initialStyle.nodeId, formatLibraryTextStyleLabel(initialStyle));
+      syncPreviewButtonState();
     }
   }
 }
@@ -2361,6 +2402,20 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
   if (result.decision) select.value = result.decision;
   wrap.appendChild(select);
 
+  if (canShowPreview(result, "typography")) {
+    const previewBtn = document.createElement("button");
+    previewBtn.type = "button";
+    previewBtn.className = "ds-btn tc-preview-btn";
+    previewBtn.textContent = "Показать превью";
+    previewBtn.disabled = previewInFlight;
+    previewBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      requestPreview(result.id);
+    });
+    wrap.appendChild(previewBtn);
+  }
+
   if (canApplyToLayout(result)) {
     const applyLayoutBtn = document.createElement("button");
     applyLayoutBtn.type = "button";
@@ -2377,7 +2432,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
 
   const mappedExtra = document.createElement("div");
   mappedExtra.className = "ds-action-extra";
-  setupTextStyleCombobox(mappedExtra, result.decisionTargetStyleId);
+  setupTextStyleCombobox(mappedExtra, result.id, result.decisionTargetStyleId);
   wrap.appendChild(mappedExtra);
 
   const commentExtra = document.createElement("div");
@@ -2677,7 +2732,7 @@ function buildActionCell(result: ComparisonResult): HTMLTableCellElement {
   if (result.decision) select.value = result.decision;
   wrap.appendChild(select);
 
-  if (canShowPreview(result)) {
+  if (canShowPreview(result, "colors")) {
     const previewBtn = document.createElement("button");
     previewBtn.type = "button";
     previewBtn.className = "ds-btn tc-preview-btn";
@@ -3595,6 +3650,7 @@ function initWindowResize(): void {
 
 initTabs();
 initHints();
+renderChangelog();
 initGuideAccordion();
 initScopeSegment();
 initCategorySegment();
