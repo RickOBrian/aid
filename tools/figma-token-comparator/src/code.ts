@@ -8,19 +8,26 @@
  */
 
 import { colorComparator, computeColorComparisonResults, toTarget } from "./comparators/colorComparator";
+import {
+  computeTypographyComparisonResults,
+  typographyComparator,
+} from "./comparators/typographyComparator";
 import type {
   ComparisonResult,
   ComparisonTarget,
   Decision,
   LayoutRecord,
+  LibraryTextStyle,
   LibraryToken,
   LibraryTokenModeValue,
   ScanScope,
   StoredDecision,
+  TokenCategory,
 } from "./comparators/types";
 import { hexToRgb, rgbToHex } from "./lib/colorUtils";
 import { pairModesByIndex } from "./lib/modePairing";
 import { FigmaRestApiError, fetchFigmaFileName, fetchLibraryColorVariables } from "./lib/figmaRestApi";
+import { fetchLibraryTextStyles } from "./lib/figmaStylesRestApi";
 import { GitHubRestApiError, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
@@ -40,21 +47,50 @@ import {
   type ProposeDecisionEntryPayload,
 } from "./lib/registryBackendApi";
 import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
+import {
+  applyTypographyToNodeIds,
+} from "./lib/typographyApply";
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
 import * as storage from "./lib/storage";
+import {
+  persistDecisionAfterApply,
+  type ApplyToLayoutSkip,
+} from "./lib/decisionPersistence";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
   figma.ui.postMessage(message);
 }
 
-// Состояние последнего сканирования — нужно, чтобы применять решения
-// без повторного сканирования всего файла.
-let lastRecords: LayoutRecord[] = [];
-let lastLibrary: LibraryToken[] = [];
-// Скоуп последнего скана — только для человекочитаемого Subtitle Figma-таблицы (не влияет на данные).
-let lastScanScope: ScanScope | null = null;
+// Состояние последнего сканирования по категориям — переключение UI не затирает
+// данные другой категории до явного нового скана той же категории.
+const lastRecordsByCategory: Record<TokenCategory, LayoutRecord[]> = {
+  colors: [],
+  typography: [],
+};
+const lastScanScopeByCategory: Record<TokenCategory, ScanScope | null> = {
+  colors: null,
+  typography: null,
+};
+let lastLibraryColors: LibraryToken[] = [];
+let lastLibraryTypography: LibraryTextStyle[] = [];
+/** Ошибка последней попытки загрузки Text Styles; null — fetch не выполнялся или успешен. */
+let typographyLibraryLoadError: string | null = null;
+
+function formatLibraryFetchError(error: unknown, fallback: string): string {
+  if (error instanceof FigmaRestApiError) return error.message;
+  if (error instanceof Error) return error.message;
+  return fallback;
+}
+
+function getLastRecords(category: TokenCategory): LayoutRecord[] {
+  return lastRecordsByCategory[category];
+}
+
+function setLastRecords(category: TokenCategory, records: LayoutRecord[]): void {
+  lastRecordsByCategory[category] = records;
+}
 
 const MAPPING_PAGE_NAME = "Маппинг";
 
@@ -137,6 +173,7 @@ async function handleUiReady(): Promise<void> {
     registryCache,
     adminMode,
     mappingHistory,
+    libraryTextStylesCache,
   ] = await Promise.all([
     storage.getPersonalAccessToken(),
     storage.getLibraryFileKey(),
@@ -148,25 +185,36 @@ async function handleUiReady(): Promise<void> {
     storage.getRegistryCache(),
     storage.getAdminMode(),
     storage.getMappingHistory(),
+    storage.getLibraryTextStylesCache(),
   ]);
 
   if (libraryCache) {
-    lastLibrary = libraryCache.tokens;
+    lastLibraryColors = libraryCache.tokens;
+  }
+  if (libraryTextStylesCache) {
+    lastLibraryTypography = libraryTextStylesCache.styles;
   }
 
   const effectiveLibraryFileName =
     libraryFileName ?? libraryCache?.fileName ?? libraryFileKey ?? libraryCache?.fileKey ?? null;
 
-  const pendingProposeCount = await storage.countPendingProposals(mappingHistory);
+  const pendingProposeCountByCategory = await storage.countPendingProposalsByCategory(mappingHistory);
+  const pendingProposeCount =
+    pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography;
 
   send({
     type: "init-state",
     payload: {
       hasToken: Boolean(token),
+      hasRegistrySecret: Boolean(await storage.getRegistrySecret()),
       libraryFileName: effectiveLibraryFileName,
       libraryCache: libraryCache
         ? { count: libraryCache.tokens.length, fetchedAt: libraryCache.fetchedAt }
         : null,
+      libraryTextStylesCache: libraryTextStylesCache
+        ? { count: libraryTextStylesCache.styles.length, fetchedAt: libraryTextStylesCache.fetchedAt }
+        : null,
+      textStylesAvailable: libraryTextStylesCache !== null,
       hasGitHubToken: Boolean(githubToken),
       githubRepo,
       githubRegistryPath: githubRegistryPath ?? DEFAULT_REGISTRY_PATH,
@@ -180,6 +228,7 @@ async function handleUiReady(): Promise<void> {
         : null,
       adminMode,
       pendingProposeCount,
+      pendingProposeCountByCategory,
     },
   });
 
@@ -188,14 +237,32 @@ async function handleUiReady(): Promise<void> {
 
 async function sendPendingProposeCount(): Promise<void> {
   const history = await storage.getMappingHistory();
-  const count = await storage.countPendingProposals(history);
-  send({ type: "pending-propose-count", payload: { count } });
+  const byCategory = await storage.countPendingProposalsByCategory(history);
+  send({
+    type: "pending-propose-count",
+    payload: {
+      count: byCategory.colors + byCategory.typography,
+      byCategory,
+    },
+  });
+}
+
+async function handleClearPendingProposals(category: TokenCategory): Promise<void> {
+  await storage.clearPendingProposalsForCategory(category);
+  await sendPendingProposeCount();
 }
 
 async function loadRegistryFromBackend(): Promise<void> {
+  const sharedSecret = await storage.getRegistrySecret();
+  if (!sharedSecret) {
+    // Ключ не введён — реестр просто недоступен, это не ошибка.
+    send({ type: "registry-unavailable" });
+    return;
+  }
+
   send({ type: "registry-loading" });
   try {
-    const result = await fetchRegistryFromBackend();
+    const result = await fetchRegistryFromBackend(sharedSecret);
     const fetchedAt = new Date().toISOString();
     await storage.setRegistryCache({
       registry: result.registry,
@@ -242,16 +309,26 @@ function buildProposeComment(stored: StoredDecision): string | undefined {
 }
 
 function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDecisionEntryPayload {
+  const isTypography = stored.category === "typography";
   return {
     signature: recordId,
     decision: mapDecisionToRegistry(stored.decision),
-    targetVariableId: stored.targetVariableId,
-    targetVariableName: stored.targetName,
+    category: stored.category,
+    ...(isTypography
+      ? {
+          targetStyleId: stored.targetStyleId,
+          targetStyleName: stored.targetStyleName ?? stored.targetName,
+          mismatchedProperties: stored.mismatchedProperties,
+        }
+      : {
+          targetVariableId: stored.targetVariableId,
+          targetVariableName: stored.targetName,
+        }),
     comment: buildProposeComment(stored),
     // Transient review-projection metadata — используется backend только для
     // GitHub PR body, НЕ попадает в decisions-registry.json (см.
     // buildProposedEntries на backend — whitelist только machine-полей).
-    sourceProperty: stored.sourceProperty,
+    sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
     sourceBindingType: stored.sourceBindingType,
     sourceName: stored.sourceName,
     sourceDisplayValue: stored.sourceDisplayValue,
@@ -274,10 +351,17 @@ async function handleToggleAdminMode(): Promise<void> {
 }
 
 /** Записи из mappingHistory, ещё не отправленные на согласование (не в submittedSignatures). */
-async function getPendingProposeEntries(): Promise<Array<[string, StoredDecision]>> {
+async function getPendingProposeEntries(
+  category?: TokenCategory
+): Promise<Array<[string, StoredDecision]>> {
   const history = await storage.getMappingHistory();
   const submitted = await storage.getSubmittedSignatures();
-  return Object.entries(history).filter(([recordId]) => !submitted.has(recordId));
+  return Object.entries(history).filter(([recordId, stored]) => {
+    if (submitted.has(recordId)) return false;
+    if (!category) return true;
+    const entryCategory = stored.category ?? "colors";
+    return entryCategory === category;
+  });
 }
 
 /**
@@ -285,26 +369,33 @@ async function getPendingProposeEntries(): Promise<Array<[string, StoredDecision
  * что уйдут в ProposeDecisionEntryPayload (buildProposeEntry), но как
  * read-only проекция для UI, без реального похода на backend.
  */
-async function handleRequestProposePreview(): Promise<void> {
-  const pendingEntries = await getPendingProposeEntries();
-  const entries: ProposePreviewEntry[] = pendingEntries.map(([recordId, stored]) => ({
-    recordId,
-    decision: stored.decision,
-    comment: buildProposeComment(stored),
-    nodeName: stored.nodeName,
-    nodePath: stored.nodePath,
-    nodeIds: stored.nodeIds,
-    sourceProperty: stored.sourceProperty,
-    sourceDisplayValue: stored.sourceDisplayValue,
-    occurrenceCount: stored.occurrenceCount,
-    targetVariableName: stored.targetName,
-    targetCollectionName: stored.targetCollectionName,
-    targetModeName: stored.targetModeName,
-    targetDisplayValue: stored.targetDisplayValue,
-    proposedModeName: stored.proposedModeName,
-    currentLibraryValue: stored.currentLibraryValue,
-    proposedValue: stored.proposedValue,
-  }));
+async function handleRequestProposePreview(category: TokenCategory = "colors"): Promise<void> {
+  const pendingEntries = await getPendingProposeEntries(category);
+  const entries: ProposePreviewEntry[] = pendingEntries.map(([recordId, stored]) => {
+    const isTypography = stored.category === "typography";
+    return {
+      recordId,
+      decision: stored.decision,
+      category: stored.category,
+      comment: buildProposeComment(stored),
+      nodeName: stored.nodeName,
+      nodePath: stored.nodePath,
+      nodeIds: stored.nodeIds,
+      sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
+      sourceDisplayValue: stored.sourceDisplayValue,
+      occurrenceCount: stored.occurrenceCount,
+      targetVariableName: isTypography ? undefined : stored.targetName,
+      targetStyleId: stored.targetStyleId,
+      targetStyleName: stored.targetStyleName ?? (isTypography ? stored.targetName : undefined),
+      mismatchedProperties: stored.mismatchedProperties,
+      targetCollectionName: stored.targetCollectionName,
+      targetModeName: stored.targetModeName,
+      targetDisplayValue: stored.targetDisplayValue,
+      proposedModeName: stored.proposedModeName,
+      currentLibraryValue: stored.currentLibraryValue,
+      proposedValue: stored.proposedValue,
+    };
+  });
   send({ type: "propose-preview", payload: { entries } });
 }
 
@@ -328,9 +419,14 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   const entries = pendingEntries.map(([recordId, stored]) => buildProposeEntry(recordId, stored));
 
   try {
-    await proposeDecisionsOnBackend({ proposedBy, entries });
+    const sharedSecret = await storage.getRegistrySecret();
+    if (!sharedSecret) {
+      send({ type: "decisions-submit-failed" });
+      return;
+    }
+    const { unchanged } = await proposeDecisionsOnBackend({ proposedBy, entries }, sharedSecret);
     await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
-    send({ type: "decisions-submitted", payload: { count: entries.length } });
+    send({ type: "decisions-submitted", payload: { count: entries.length, unchanged } });
     await sendPendingProposeCount();
   } catch (error) {
     if (!(error instanceof RegistryBackendError)) {
@@ -340,12 +436,16 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   }
 }
 
-async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Promise<void> {
+async function handleSaveSettings(
+  tokenFromUi: string,
+  libraryInput: string,
+  registrySecret: string
+): Promise<void> {
   const token = await resolvePersonalAccessToken(tokenFromUi);
   if (!token) {
     send({
       type: "error",
-      payload: { message: "Укажите Personal Access Token или сохраните его ранее через «Сохранить настройки»." },
+      payload: { message: "Укажите токен доступа Figma или сохраните его кнопкой «Сохранить настройки»." },
     });
     return;
   }
@@ -356,7 +456,7 @@ async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Pr
       type: "error",
       payload: {
         message:
-          "Не удалось определить библиотеку. Вставьте полный URL Figma или file key — или оставьте имя уже загруженной библиотеки.",
+          "Не удалось определить библиотеку. Вставьте ссылку на файл Figma, его ключ — или оставьте имя уже загруженной библиотеки.",
       },
     });
     return;
@@ -367,6 +467,9 @@ async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Pr
     storage.setPersonalAccessToken(token),
     storage.setLibraryFileKey(libraryFileKey),
     storage.setLibraryFileName(libraryFileName),
+    // Пустое поле означает «оставить как есть»: в UI сохранённый ключ
+    // показывается маской, а не значением.
+    registrySecret.trim() ? storage.setRegistrySecret(registrySecret.trim()) : Promise.resolve(),
   ]);
 
   send({ type: "settings-saved", payload: { libraryFileName } });
@@ -382,7 +485,7 @@ async function handleSaveGitHubSettings(
     send({
       type: "error",
       payload: {
-        message: "Укажите GitHub Personal Access Token или сохраните его ранее через «Сохранить настройки GitHub».",
+        message: "Укажите токен доступа GitHub или сохраните его кнопкой «Сохранить настройки».",
       },
     });
     return;
@@ -420,7 +523,7 @@ async function handleLoadRegistry(
       type: "error",
       payload: {
         message:
-          "Укажите GitHub Personal Access Token в поле выше (или сохраните его ранее) перед загрузкой реестра.",
+          "Перед загрузкой реестра укажите токен доступа GitHub в поле выше или сохраните его.",
       },
     });
     return;
@@ -477,7 +580,7 @@ async function handleLoadRegistry(
     const message =
       error instanceof GitHubRestApiError
         ? error.message
-        : "Неизвестная ошибка при загрузке реестра. Попробуйте ещё раз.";
+        : "Не удалось загрузить реестр. Попробуйте ещё раз.";
     send({ type: "error", payload: { message } });
   }
 }
@@ -521,7 +624,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       type: "error",
       payload: {
         message:
-          "Укажите Personal Access Token в поле выше (или сохраните его ранее) перед загрузкой библиотеки.",
+          "Перед загрузкой библиотеки укажите токен доступа Figma в поле выше или сохраните его.",
       },
     });
     return;
@@ -533,7 +636,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       type: "error",
       payload: {
         message:
-          "Не удалось определить библиотеку. Вставьте полный URL (https://www.figma.com/design/…/…) или file key.",
+          "Не удалось определить библиотеку. Вставьте ссылку вида https://www.figma.com/design/… или ключ файла.",
       },
     });
     return;
@@ -541,46 +644,198 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
 
   send({ type: "library-loading" });
   try {
-    const tokens = await fetchLibraryColorVariables(fileKey, token);
+    type FetchOutcome<T> = { ok: true; value: T } | { ok: false; reason: unknown };
+
+    const toFetchOutcome = async <T>(promise: Promise<T>): Promise<FetchOutcome<T>> => {
+      try {
+        return { ok: true, value: await promise };
+      } catch (reason) {
+        return { ok: false, reason };
+      }
+    };
+
+    const [colorsResult, textStylesResult] = await Promise.all([
+      toFetchOutcome(fetchLibraryColorVariables(fileKey, token)),
+      toFetchOutcome(fetchLibraryTextStyles(fileKey, token)),
+    ]);
+
+    const colorsOk = colorsResult.ok;
+    const textStylesOk = textStylesResult.ok;
+
+    const colorsError = colorsOk
+      ? null
+      : formatLibraryFetchError(colorsResult.reason, "Не удалось загрузить переменные цвета.");
+    const textStylesError = textStylesOk
+      ? null
+      : formatLibraryFetchError(
+          textStylesResult.reason,
+          "Не удалось загрузить стили текста библиотеки."
+        );
+
+    if (!colorsOk && !textStylesOk) {
+      send({
+        type: "error",
+        payload: {
+          message: [
+            "Не удалось загрузить библиотеку.",
+            "",
+            `Цвета: ${colorsError}`,
+            "",
+            `Text Styles: ${textStylesError}`,
+          ].join("\n"),
+        },
+      });
+      return;
+    }
+
     const fileName = await resolveLibraryDisplayName(fileKey, token, libraryInput);
     const fetchedAt = new Date().toISOString();
-    await Promise.all([
-      storage.setLibraryCache({ tokens, fetchedAt, fileKey, fileName }),
+    const persistOps: Promise<void>[] = [
       storage.setLibraryFileKey(fileKey),
       storage.setLibraryFileName(fileName),
-    ]);
-    lastLibrary = tokens;
-    send({ type: "library-loaded", payload: { tokens, fetchedAt, fileName } });
+    ];
+
+    if (colorsOk) {
+      lastLibraryColors = colorsResult.value;
+      persistOps.push(
+        storage.setLibraryCache({
+          tokens: colorsResult.value,
+          fetchedAt,
+          fileKey,
+          fileName,
+        })
+      );
+    }
+
+    if (textStylesOk) {
+      typographyLibraryLoadError = null;
+      lastLibraryTypography = textStylesResult.value;
+      persistOps.push(
+        storage.setLibraryTextStylesCache({
+          styles: textStylesResult.value,
+          fetchedAt,
+          fileKey,
+          fileName,
+        })
+      );
+    } else {
+      typographyLibraryLoadError = textStylesError;
+      lastLibraryTypography = [];
+    }
+
+    await Promise.all(persistOps);
+
+    const tokens = colorsOk ? colorsResult.value : [];
+    const textStyles = textStylesOk ? textStylesResult.value : [];
+
+    // library-loaded — всегда, если хотя бы один fetch успешен (см. early-return выше).
+    // Typography availability зависит только от textStylesOk, не от colorsOk.
+    send({
+      type: "library-loaded",
+      payload: {
+        tokens,
+        textStyles,
+        fetchedAt,
+        fileName,
+        textStylesAvailable: textStylesOk,
+        textStylesError: textStylesError ?? undefined,
+      },
+    });
+
+    if (!colorsOk) {
+      send({
+        type: "error",
+        payload: {
+          message:
+            colorsError ??
+            "Не удалось загрузить переменные цвета. Попробуйте ещё раз.",
+        },
+      });
+      return;
+    }
   } catch (error) {
     const message =
       error instanceof FigmaRestApiError
         ? error.message
-        : "Неизвестная ошибка при загрузке библиотеки. Попробуйте ещё раз.";
+        : "Не удалось загрузить библиотеку. Попробуйте ещё раз.";
     send({ type: "error", payload: { message } });
   }
 }
 
-async function handleScan(scope: "file" | "page" | "selection"): Promise<void> {
+async function handleScan(
+  scope: "file" | "page" | "selection",
+  category: TokenCategory = "colors"
+): Promise<void> {
   try {
-    lastScanScope = scope;
-    send({ type: "scan-progress", payload: { message: "Сканирование макета..." } });
-    const records = await colorComparator.scanLayout(scope);
-    lastRecords = records;
+    lastScanScopeByCategory[category] = scope;
+    const scanLabel = category === "typography" ? "типографики" : "цветов";
+    send({ type: "scan-progress", payload: { message: `Сканирование ${scanLabel}...` } });
 
-    if (lastLibrary.length === 0) {
+    if (category === "typography") {
+      if (typographyLibraryLoadError) {
+        send({
+          type: "error",
+          payload: {
+            message: `Text styles library unavailable: ${typographyLibraryLoadError}`,
+          },
+        });
+        return;
+      }
+
+      const textStylesCache = await storage.getLibraryTextStylesCache();
+      if (!textStylesCache) {
+        send({
+          type: "error",
+          payload: {
+            message:
+              "Стили текста не загружены. Перезагрузите библиотеку токеном, у которого есть доступ к содержимому файла и библиотек.",
+          },
+        });
+        return;
+      }
+
+      const records = await typographyComparator.scanLayout(scope);
+      setLastRecords("typography", records);
+
+      if (lastLibraryTypography.length === 0) {
+        lastLibraryTypography = textStylesCache.styles;
+      }
+
+      const history = await storage.getMappingHistory();
+      const results = typographyComparator.compareWithLibrary(records, lastLibraryTypography, history);
+      send({
+        type: "scan-results",
+        payload: {
+          category: "typography",
+          results,
+          libraryTokens: lastLibraryColors,
+          libraryTextStyles: lastLibraryTypography,
+        },
+      });
+      return;
+    }
+
+    const records = await colorComparator.scanLayout(scope);
+    setLastRecords("colors", records);
+
+    if (lastLibraryColors.length === 0) {
       const cache = await storage.getLibraryCache();
-      lastLibrary = cache?.tokens ?? [];
+      lastLibraryColors = cache?.tokens ?? [];
     }
 
     const history = await storage.getMappingHistory();
-    const results: ComparisonResult[] = colorComparator.compareWithLibrary(
-      records,
-      lastLibrary,
-      history
-    );
-    send({ type: "scan-results", payload: { results, libraryTokens: lastLibrary } });
+    const results = colorComparator.compareWithLibrary(records, lastLibraryColors, history);
+    send({
+      type: "scan-results",
+      payload: {
+        category: "colors",
+        results,
+        libraryTokens: lastLibraryColors,
+        libraryTextStyles: lastLibraryTypography,
+      },
+    });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Ошибка сканирования макета.";
+    const message = error instanceof Error ? error.message : "Не удалось просканировать макет.";
     send({ type: "error", payload: { message } });
   }
 }
@@ -607,7 +862,7 @@ async function resolveSceneNodeById(id: string): Promise<SceneNode | null> {
 
 async function handleSelectNodes(nodeIds: string[]): Promise<void> {
   if (nodeIds.length === 0) {
-    send({ type: "error", payload: { message: "Нет привязки к слою для этой строки." } });
+    send({ type: "error", payload: { message: "К этой строке не привязан слой." } });
     return;
   }
 
@@ -624,7 +879,7 @@ async function handleSelectNodes(nodeIds: string[]): Promise<void> {
       type: "error",
       payload: {
         message:
-          "Слой не найден — возможно, он удалён или переименован. Пересканируйте макет и попробуйте снова.",
+          "Слой не найден — возможно, его удалили или переименовали. Пересканируйте макет и попробуйте снова.",
       },
     });
     return;
@@ -659,8 +914,12 @@ async function handleApplyDecision(
   recordId: string,
   decision: Decision,
   fields: {
+    category?: TokenCategory;
     comment?: string;
     targetVariableId?: string;
+    targetStyleId?: string;
+    targetStyleName?: string;
+    mismatchedProperties?: string[];
     targetName?: string;
     targetCollectionName?: string;
     proposedModeId?: string;
@@ -681,10 +940,31 @@ async function handleApplyDecision(
     targetDisplayValue?: string;
   }
 ): Promise<void> {
+  const category =
+    fields.category ??
+    (getLastRecords("typography").some((item) => item.id === recordId) ? "typography" : "colors");
+
+  // Сначала убеждаемся, что строка вообще есть в текущих результатах, и только
+  // потом пишем в историю. Иначе после ошибки «строка не найдена» в истории
+  // оставалось бы решение-сирота: пользователю сказали, что не получилось, а
+  // запись уже считается ожидающей отправки и уедет в реестр.
+  const record = getLastRecords(category).find((item) => item.id === recordId);
+  if (!record) {
+    send({
+      type: "error",
+      payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." },
+    });
+    return;
+  }
+
   const timestamp = new Date().toISOString();
   const history = await storage.setMappingHistoryEntry(recordId, {
     decision,
+    category,
     targetVariableId: fields.targetVariableId,
+    targetStyleId: fields.targetStyleId,
+    targetStyleName: fields.targetStyleName,
+    mismatchedProperties: fields.mismatchedProperties,
     targetName: fields.targetName,
     targetCollectionName: fields.targetCollectionName,
     comment: fields.comment,
@@ -693,7 +973,8 @@ async function handleApplyDecision(
     currentLibraryValue: fields.currentLibraryValue,
     proposedValue: fields.proposedValue,
     timestamp,
-    sourceProperty: fields.sourceProperty,
+    sourceProperty:
+      category === "typography" ? fields.sourceProperty ?? "text-style" : fields.sourceProperty,
     sourceBindingType: fields.sourceBindingType,
     sourceName: fields.sourceName,
     sourceDisplayValue: fields.sourceDisplayValue,
@@ -705,27 +986,34 @@ async function handleApplyDecision(
     targetDisplayValue: fields.targetDisplayValue,
   });
 
-  const record = lastRecords.find((item) => item.id === recordId);
-  if (!record) {
-    send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
+  if (category === "typography") {
+    const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
+    send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
     return;
   }
 
-  // Пересчёт БЕЗ фильтра requiresUserAction — decision "mapped"/"mapped_suggested"/
-  // "ignored" исключает строку из отфильтрованной выборки (см. requiresUserAction),
-  // но UI обновляет карточку именно этой строки сразу после Apply (галочка,
-  // сохранённые поля), а не убирает её из currentResults — это происходит
-  // только при следующем полном скане (см. GUIDE.md, раздел 7).
-  const [result] = computeColorComparisonResults([record], lastLibrary, history);
+  const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
   send({ type: "decision-applied", payload: { recordId, result } });
   await sendPendingProposeCount();
 }
 
 async function handleClearDecision(recordId: string): Promise<void> {
   const history = await storage.clearMappingHistoryEntry(recordId);
-  const record = lastRecords.find((item) => item.id === recordId);
+  const typographyRecord = getLastRecords("typography").find((item) => item.id === recordId);
+  if (typographyRecord) {
+    const [result] = computeTypographyComparisonResults(
+      [typographyRecord],
+      lastLibraryTypography,
+      history
+    );
+    send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
+    return;
+  }
+  const record = getLastRecords("colors").find((item) => item.id === recordId);
   if (!record) return;
-  const [result] = computeColorComparisonResults([record], lastLibrary, history);
+  const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
   send({ type: "decision-applied", payload: { recordId, result } });
   await sendPendingProposeCount();
 }
@@ -752,20 +1040,193 @@ function findMatchingPaintIndex(paints: readonly Paint[], record: LayoutRecord):
   return paints.findIndex((paint) => paintMatchesRecordValue(paint, record));
 }
 
-interface ApplyToLayoutSkip {
-  nodeId: string;
-  reason: string;
+function updateTypographyRecordOptimistic(
+  recordId: string,
+  importedStyle: TextStyle,
+  libraryStyle: LibraryTextStyle
+): void {
+  const records = getLastRecords("typography");
+  const index = records.findIndex((item) => item.id === recordId);
+  if (index === -1) return;
+  const current = records[index];
+  records[index] = {
+    ...current,
+    bindingType: "style",
+    styleId: importedStyle.id,
+    styleKey: libraryStyle.key,
+    sourceName: libraryStyle.name,
+    displayValue: libraryStyle.displayValue,
+    comparisonValue: libraryStyle.comparisonValue as unknown as Record<string, unknown>,
+    typographyUnresolved: false,
+  };
+  setLastRecords("typography", records);
 }
 
-async function handleApplyToLayout(recordId: string): Promise<void> {
-  const record = lastRecords.find((item) => item.id === recordId);
+async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
+  const record = getLastRecords("typography").find((item) => item.id === recordId);
   if (!record) {
     send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
     return;
   }
 
   const history = await storage.getMappingHistory();
-  const [result] = computeColorComparisonResults([record], lastLibrary, history);
+  const stored = history[recordId];
+  const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
+
+  const hasMappedDecision =
+    stored?.decision === "mapped" ||
+    stored?.decision === "mapped_suggested" ||
+    (result.status === "mapped" && Boolean(result.target?.styleKey || result.target?.styleId));
+
+  if (!hasMappedDecision) {
+    send({
+      type: "error",
+      payload: {
+        message: "«Применить в макет» доступно только для строк с выбранным стилем библиотеки.",
+      },
+    });
+    return;
+  }
+
+  const targetStyleId =
+    stored?.targetStyleId ?? result.decisionTargetStyleId ?? result.target?.styleId;
+  const targetStyle =
+    (targetStyleId ? lastLibraryTypography.find((style) => style.styleId === targetStyleId) : undefined) ??
+    (result.target?.styleKey
+      ? lastLibraryTypography.find((style) => style.key === result.target!.styleKey)
+      : undefined);
+
+  let importedStyle: TextStyle | undefined;
+
+  if (!targetStyle?.key) {
+    send({
+      type: "error",
+      payload: {
+        message: "Выбранного стиля нет в загруженной библиотеке. Загрузите её заново.",
+      },
+    });
+    return;
+  }
+
+  try {
+    const imported = await figma.importStyleByKeyAsync(targetStyle.key);
+    if (imported.type !== "TEXT") {
+      const skipped = record.nodeIds.map((nodeId) => ({
+        nodeId,
+        reason: `Импортированный стиль «${targetStyle.name}» не является Text Style.`,
+      }));
+      send({
+        type: "apply-to-layout-result",
+        recordId,
+        attempted: record.nodeIds.length,
+        occurrences: record.count,
+        applied: 0,
+        skipped,
+      });
+      return;
+    }
+    importedStyle = imported;
+  } catch (importError) {
+    const reason =
+      importError instanceof Error
+        ? `Не удалось импортировать Text Style «${targetStyle.name}»: ${importError.message}`
+        : `Не удалось импортировать Text Style «${targetStyle.name}».`;
+    const skipped = record.nodeIds.map((nodeId) => ({ nodeId, reason }));
+    send({
+      type: "apply-to-layout-result",
+      recordId,
+      attempted: record.nodeIds.length,
+      occurrences: record.count,
+      applied: 0,
+      skipped,
+    });
+    return;
+  }
+
+  const alreadyApplied = new Set(stored?.appliedNodeIds ?? []);
+  const nodeIdsToApply = record.nodeIds.filter((nodeId) => !alreadyApplied.has(nodeId));
+
+  const batchResult = await applyTypographyToNodeIds({
+    record,
+    nodeIds: nodeIdsToApply,
+    skipNodeIds: alreadyApplied,
+    importedStyle,
+    resolveNode: resolveSceneNodeById,
+  });
+
+  const newAppliedIds = [...alreadyApplied, ...batchResult.appliedNodeIds];
+  const previousSkips = (stored?.applySkips ?? []).filter(
+    (skip) => !batchResult.appliedNodeIds.includes(skip.nodeId)
+  );
+  const mergedSkips = [...previousSkips, ...batchResult.skipped];
+  const totalNodes = record.nodeIds.length;
+  const fullSuccess = newAppliedIds.length >= totalNodes && batchResult.skipped.length === 0;
+
+  if (batchResult.applied > 0 && importedStyle && targetStyle) {
+    updateTypographyRecordOptimistic(recordId, importedStyle, targetStyle);
+  }
+
+  if (stored || batchResult.applied > 0 || batchResult.skipped.length > 0) {
+    const base: StoredDecision = stored ?? {
+      decision: result.decision ?? "mapped_suggested",
+      category: "typography",
+      targetStyleId: targetStyle?.styleId,
+      targetStyleName: targetStyle?.name,
+      timestamp: new Date().toISOString(),
+      sourceProperty: "text-style",
+      sourceDisplayValue: record.displayValue,
+      nodePath: record.representativeNodePath,
+      nodeName: record.representativeNodeName,
+      nodeIds: record.nodeIds,
+      occurrenceCount: record.count,
+    };
+    await persistDecisionAfterApply({
+      recordId,
+      base,
+      appliedCount: newAppliedIds.length,
+      totalCount: totalNodes,
+      applySkips: mergedSkips,
+      appliedNodeIds: newAppliedIds,
+    });
+  }
+
+  const updatedHistory = await storage.getMappingHistory();
+  const updatedRecord = getLastRecords("typography").find((item) => item.id === recordId) ?? record;
+  const [updatedResult] = computeTypographyComparisonResults(
+    [updatedRecord],
+    lastLibraryTypography,
+    updatedHistory
+  );
+  if (batchResult.applied > 0) {
+    send({ type: "decision-applied", payload: { recordId, result: updatedResult } });
+  }
+
+  send({
+    type: "apply-to-layout-result",
+    recordId,
+    attempted: record.nodeIds.length,
+    occurrences: record.count,
+    applied: batchResult.applied,
+    skipped: batchResult.skipped,
+    partial: !fullSuccess && newAppliedIds.length > 0,
+    appliedNodeIds: batchResult.appliedNodeIds,
+  });
+}
+
+async function handleApplyToLayout(recordId: string): Promise<void> {
+  if (getLastRecords("typography").some((item) => item.id === recordId)) {
+    await handleApplyTypographyToLayout(recordId);
+    return;
+  }
+
+  const record = getLastRecords("colors").find((item) => item.id === recordId);
+  if (!record) {
+    send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
+    return;
+  }
+
+  const history = await storage.getMappingHistory();
+  const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
 
   // Доступно только для строк со статусом "Mapped" (решение mapped/mapped_suggested
   // с однозначно выбранной переменной библиотеки) — см. GUIDE.md, раздел 8.
@@ -773,17 +1234,17 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     send({
       type: "error",
       payload: {
-        message: "«Применить в макет» доступно только для строк со статусом Mapped с известной переменной библиотеки.",
+        message: "«Применить в макет» доступно только для строк с выбранной переменной библиотеки.",
       },
     });
     return;
   }
 
-  const libraryToken = lastLibrary.find((token) => token.variableId === result.target!.variableId);
+  const libraryToken = lastLibraryColors.find((token) => token.variableId === result.target!.variableId);
   if (!libraryToken) {
     send({
       type: "error",
-      payload: { message: "Целевая переменная не найдена в загруженной библиотеке. Загрузите библиотеку заново." },
+      payload: { message: "Выбранной переменной нет в загруженной библиотеке. Загрузите её заново." },
     });
     return;
   }
@@ -798,11 +1259,18 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     const reason =
       importError instanceof Error
         ? `Не удалось импортировать переменную библиотеки: ${importError.message}`
-        : "Не удалось импортировать переменную библиотеки.";
+        : "Не удалось подключить переменную библиотеки к файлу.";
     for (const nodeId of record.nodeIds) {
       skipped.push({ nodeId, reason });
     }
-    send({ type: "apply-to-layout-result", recordId, applied: 0, skipped });
+    send({
+      type: "apply-to-layout-result",
+      recordId,
+      attempted: record.nodeIds.length,
+      occurrences: record.count,
+      applied: 0,
+      skipped,
+    });
     return;
   }
 
@@ -814,13 +1282,13 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
         node = await figma.getNodeByIdAsync(nodeId);
       }
       if (!node || !isSceneNode(node)) {
-        skipped.push({ nodeId, reason: "Слой не найден — возможно, удалён или переименован с момента скана." });
+        skipped.push({ nodeId, reason: "Слой не найден — возможно, его удалили или переименовали после сканирования." });
         continue;
       }
 
       if (record.property === "stroke") {
         if (!("strokes" in node)) {
-          skipped.push({ nodeId, reason: "У этого слоя нет обводки (strokes)." });
+          skipped.push({ nodeId, reason: "У этого слоя нет обводки." });
           continue;
         }
         const strokesNode = node as unknown as MinimalStrokesMixin & { strokeStyleId?: string };
@@ -843,7 +1311,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
       } else {
         // "fill" и "text-fill" — оба свойства пишут в fills (для TEXT-нод заливка текста — тоже fills).
         if (!("fills" in node)) {
-          skipped.push({ nodeId, reason: "У этого слоя нет заливки (fills)." });
+          skipped.push({ nodeId, reason: "У этого слоя нет заливки." });
           continue;
         }
         const fillsNode = node as unknown as MinimalFillsMixin & { fillStyleId?: string };
@@ -851,7 +1319,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
         if (fills === figma.mixed) {
           skipped.push({
             nodeId,
-            reason: "Смешанные заливки текста (mixed) — нельзя применить переменную автоматически.",
+            reason: "В тексте несколько разных заливок — автоматически применить переменную нельзя.",
           });
           continue;
         }
@@ -873,20 +1341,31 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
 
       applied += 1;
     } catch (nodeError) {
-      const reason = nodeError instanceof Error ? nodeError.message : "Неизвестная ошибка при применении переменной.";
+      const reason = nodeError instanceof Error ? nodeError.message : "Не удалось применить переменную.";
       skipped.push({ nodeId, reason });
     }
   }
 
-  if (applied > 0) {
-    // Группа теперь реально привязана к переменной библиотеки — старое
-    // решение из истории больше не нужно (и не должно "залипать" на статусе
-    // Mapped): при следующем скане группа пересчитается заново по реальному
-    // состоянию макета, обычно как Exact match.
-    await storage.clearMappingHistoryEntry(recordId);
+  const storedDecision = history[recordId];
+  if (storedDecision) {
+    await persistDecisionAfterApply({
+      recordId,
+      base: storedDecision,
+      appliedCount: applied,
+      totalCount: record.nodeIds.length,
+      applySkips: skipped,
+    });
   }
 
-  send({ type: "apply-to-layout-result", recordId, applied, skipped });
+  send({
+    type: "apply-to-layout-result",
+    recordId,
+    attempted: record.nodeIds.length,
+    occurrences: record.count,
+    applied,
+    skipped,
+    partial: skipped.length > 0 && applied > 0,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -1074,7 +1553,7 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
 
   if (property === "stroke") {
     if (!("strokes" in node)) {
-      throw new Error("У этого слоя нет обводки (strokes) — превью недоступно.");
+      throw new Error("У этого слоя нет обводки — превью не построить.");
     }
     (node as unknown as MinimalStrokesMixin).strokes = [paint];
     return;
@@ -1082,7 +1561,7 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
 
   // "fill" и "text-fill" оба пишут в fills (для TEXT-нод заливка текста — тоже fills).
   if (!("fills" in node)) {
-    throw new Error("У этого слоя нет заливки (fills) — превью недоступно.");
+    throw new Error("У этого слоя нет заливки — превью не построить.");
   }
   (node as unknown as MinimalFillsMixin).fills = [paint];
 }
@@ -1103,7 +1582,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
     send({
       type: "preview-error",
       recordId,
-      message: "Дождитесь завершения текущего построения превью и попробуйте снова.",
+      message: "Дождитесь, пока построится текущее превью, и попробуйте снова.",
     });
     return;
   }
@@ -1111,34 +1590,34 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
   let clone: SceneNode | null = null;
   try {
-    const record = lastRecords.find((item) => item.id === recordId);
+    const record = getLastRecords("colors").find((item) => item.id === recordId);
     if (!record) {
       throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
     }
 
     let target: ComparisonTarget;
     if (variableId) {
-      const token = lastLibrary.find((item) => item.variableId === variableId);
+      const token = lastLibraryColors.find((item) => item.variableId === variableId);
       if (!token) {
-        throw new Error("Переменная не найдена в загруженной библиотеке. Обновите библиотеку и повторите выбор.");
+        throw new Error("Переменной нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
       }
       const hasResolvedMode = token.modes.some((mode) => !mode.unresolved);
       if (!hasResolvedMode) {
-        throw new Error("Для выбранного токена нет доступного значения библиотеки для превью.");
+        throw new Error("У выбранного токена нет значения, по которому можно построить превью.");
       }
       target = toTarget(token, 0);
     } else {
       const history = await storage.getMappingHistory();
-      const [result] = computeColorComparisonResults([record], lastLibrary, history);
+      const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
       if (!result?.target || result.target.valueUnresolved) {
-        throw new Error("Для этой строки нет доступного значения библиотеки для превью.");
+        throw new Error("Для этой строки нет значения библиотеки, по которому можно построить превью.");
       }
       target = result.target;
     }
 
     const representativeId = record.nodeIds[0];
     if (!representativeId) {
-      throw new Error("Нет привязанного слоя для построения превью.");
+      throw new Error("К этой строке не привязан слой — превью не построить.");
     }
 
     let anchor = await resolveSceneNodeById(representativeId);
@@ -1147,7 +1626,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
       anchor = await resolveSceneNodeById(representativeId);
     }
     if (!anchor) {
-      throw new Error("Слой не найден — возможно, он удалён. Пересканируйте макет.");
+      throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
     }
 
     const container = resolvePreviewContainer(anchor);
@@ -1161,11 +1640,11 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     const relativePath = getRelativeChildPath(container, anchor);
     if (relativePath === null) {
-      throw new Error("Не удалось определить положение слоя внутри контейнера превью.");
+      throw new Error("Не удалось определить положение слоя для превью.");
     }
 
     if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
-      throw new Error("Этот тип слоя не поддерживает построение превью.");
+      throw new Error("Для слоёв этого типа превью не строится.");
     }
 
     // Не переключаем figma.currentPage — клон переносится сразу на текущую страницу.
@@ -1180,12 +1659,12 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     const targetInClone = resolveNodeAtPath(clone, relativePath);
     if (!targetInClone) {
-      throw new Error("Не удалось найти слой внутри клона для применения цвета.");
+      throw new Error("Не удалось найти слой в копии для превью.");
     }
 
     const modePairs = getPreviewModePairs(record, target);
     if (modePairs.length === 0) {
-      throw new Error("Нет общих режимов между макетом и библиотекой для этой строки.");
+      throw new Error("У макета и библиотеки нет общих режимов для этой строки.");
     }
 
     // Один клон на всю запись — по каждому общему режиму последовательно
@@ -1210,7 +1689,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     send({ type: "preview-ready", recordId, modes });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Не удалось построить превью (неизвестная ошибка).";
+    const message = error instanceof Error ? error.message : "Не удалось построить превью.";
     send({ type: "preview-error", recordId, message });
   } finally {
     if (clone) {
@@ -1276,10 +1755,13 @@ async function handlePrintToFigma(
     if (results.length === 0) {
       send({
         type: "print-error",
-        payload: { message: "Нет строк для печати — таблица результатов пуста или всё скрыто фильтром." },
+        payload: { message: "Печатать нечего: таблица пуста или все строки скрыты фильтром." },
       });
       return;
     }
+
+    // Все строки печати приходят из одной таблицы, поэтому категория у них общая.
+    const category = results[0].category;
 
     send({ type: "print-progress", payload: { message: `Строим таблицу на странице «${MAPPING_PAGE_NAME}»...` } });
 
@@ -1303,8 +1785,11 @@ async function handlePrintToFigma(
       page,
       rows,
       {
+        category,
         libraryName: libraryFileName || "библиотека не указана",
-        scope: lastScanScope ? SCAN_SCOPE_LABELS[lastScanScope] : "не указан",
+        scope: lastScanScopeByCategory[category]
+          ? SCAN_SCOPE_LABELS[lastScanScopeByCategory[category]!]
+          : "не указан",
         printedAt: new Date().toLocaleString("ru-RU"),
       },
       (completed, total) => {
@@ -1337,7 +1822,7 @@ async function handlePrintToFigma(
     const message =
       error instanceof Error
         ? `Не удалось построить таблицу в Figma: ${error.message}`
-        : "Не удалось построить таблицу в Figma (неизвестная ошибка).";
+        : "Не удалось построить таблицу в Figma.";
     send({ type: "print-error", payload: { message } });
   }
 }
@@ -1349,7 +1834,11 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleUiReady();
         break;
       case "save-settings":
-        await handleSaveSettings(message.payload.token, message.payload.libraryInput);
+        await handleSaveSettings(
+          message.payload.token,
+          message.payload.libraryInput,
+          message.payload.registrySecret
+        );
         break;
       case "save-github-settings":
         await handleSaveGitHubSettings(
@@ -1368,15 +1857,22 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleLoadLibrary(message.payload.libraryInput, message.payload.token);
         break;
       case "scan":
-        await handleScan(message.payload.scope);
+        await handleScan(message.payload.scope, message.payload.category ?? "colors");
+        break;
+      case "clear-pending-proposals":
+        await handleClearPendingProposals(message.payload.category);
         break;
       case "select-nodes":
         await handleSelectNodes(message.payload.nodeIds);
         break;
       case "apply-decision":
         await handleApplyDecision(message.payload.recordId, message.payload.decision, {
+          category: message.payload.category,
           comment: message.payload.comment,
           targetVariableId: message.payload.targetVariableId,
+          targetStyleId: message.payload.targetStyleId,
+          targetStyleName: message.payload.targetStyleName,
+          mismatchedProperties: message.payload.mismatchedProperties,
           targetName: message.payload.targetName,
           targetCollectionName: message.payload.targetCollectionName,
           proposedModeId: message.payload.proposedModeId,
@@ -1417,7 +1913,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleToggleAdminMode();
         break;
       case "request-propose-preview":
-        await handleRequestProposePreview();
+        await handleRequestProposePreview(message.payload?.category ?? "colors");
         break;
       case "propose-decisions":
         await handleProposeDecisions(message.payload.recordIds);
@@ -1426,7 +1922,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
     }
   } catch (error) {
-    const messageText = error instanceof Error ? error.message : "Неизвестная ошибка плагина.";
+    const messageText = error instanceof Error ? error.message : "Что-то пошло не так. Попробуйте ещё раз.";
     send({ type: "error", payload: { message: messageText } });
   }
 };

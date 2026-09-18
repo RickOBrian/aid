@@ -5,13 +5,16 @@ Figma-плагин, который **детерминированно** срав
 Enterprise team library) и строит интерактивную таблицу маппинга
 «Было → Стало → Новое» прямо в UI плагина.
 
-**Никаких LLM/AI API не используется.** Всё сравнение — точные и
-перцептивные (Delta E) алгоритмы над hex/alpha значениями.
+**Никаких LLM/AI API не используется.** Всё сравнение — точные совпадения
+значений и перцептивная близость (Delta E для цвета).
 
-Категория **Colors** реализована полностью. Архитектура (`ITokenComparator`)
-подготовлена для последующего добавления Typography, Spacing, Radii,
-Effects, Gradients — каждая категория — отдельный модуль в
-`src/comparators/`.
+Реализованы две категории: **Colors** (fills/strokes/text fills против Figma
+Variables) и **Typography** (текстовые слои против опубликованных Text Styles
+библиотеки). Архитектура (`ITokenComparator`) подготовлена для последующего
+добавления Spacing, Radii, Effects, Gradients — каждая категория отдельным
+модулем в `src/comparators/`.
+
+Чем типографика отличается от цветов — `GUIDE.md`, раздел 12.
 
 ---
 
@@ -63,9 +66,11 @@ Figma REST API (`GET /v1/files/:file_key/variables/local`).
 3. Раздел **Personal access tokens** → **Generate new token**.
 4. Дайте токену понятное имя (например, `token-comparator`), выберите срок
    действия.
-5. Убедитесь, что у токена есть доступ на чтение переменных файлов
-   (`file_variables:read` / соответствующий scope в вашей организации —
-   для Enterprise-библиотек может требоваться доступ уровня организации).
+5. Убедитесь, что у токена есть нужные scopes (для Enterprise-библиотек может
+   требоваться доступ уровня организации):
+   - **`file_variables:read`** — цветовые Variables;
+   - **`file_content:read`** и **`library_content:read`** — Text Styles для
+     типографики (или устаревший **`files:read`** вместо трёх).
 6. Скопируйте токен **сразу** — повторно посмотреть его нельзя.
 7. Вставьте токен в поле **Personal Access Token** на вкладке «Настройки»
    плагина и нажмите **Сохранить настройки**.
@@ -88,18 +93,21 @@ https://www.figma.com/design/AbCdEfGhIjKlMnOpQrStUv/My-Library-Name
 
 ## 4. Как пользоваться плагином
 
-1. **Вкладка «Настройки»** — вставьте PAT и file_key библиотеки, сохраните,
+1. **Вкладка «Настройки»** — вставьте PAT, ключ доступа к реестру решений
+   (выдаёт владелец дизайн-системы) и file_key библиотеки, сохраните,
    нажмите «Загрузить библиотеку». Внизу появится статус: сколько цветовых
    переменных загружено и когда. Кнопка «Загрузить библиотеку» — она же
    «Обновить библиотеку» (повторный клик перезапрашивает REST API и обновляет
    кэш).
-2. **Вкладка «Сканирование»** — выберите скоуп (весь файл / текущая страница /
+2. **Вкладка «Сканирование»** — выберите область (весь файл / текущая страница /
    выделение) и нажмите «Сканировать цвета». Плагин обходит ноды, собирает
    fills/strokes/text fills, группирует одинаковые значения и сравнивает с
    библиотекой.
-3. **Вкладка «Результаты»** — таблица со статусами (`Mapped`, `Exact match`,
-   `Value match`, `Name match`, `Conflict`, `Name match (value unknown)`,
-   `Approximate match`, `Layout only` / `Hardcoded (no analog)`). Колонки
+3. **Вкладка «Результаты»** — таблица со статусами: «Совпало значение»,
+   «Совпало имя», «Конфликт значений», «Близкое значение», «Нет в
+   библиотеке», «Цвет вручную» и т. д. Английский термин каждого статуса
+   показывается в подсказке при наведении; полное соответствие
+   «термин → подпись → тональность» — в `GUIDE.md`, раздел 10. Колонки
    «Сейчас» и «Предлагаем» показывают значения **по обоим режимам сразу**
    (Day, затем Night) — так сразу видно, совпадение/расхождение только в
    Day, только в Night или в обоих режимах. Для hardcoded/style/ghost
@@ -159,10 +167,15 @@ src/
   messages.ts                — типизированный протокол code.ts <-> ui.ts
   comparators/
     types.ts                 — общий контракт ITokenComparator + типы (для ВСЕХ категорий)
-    colorComparator.ts        — comparator категории Colors (реализован)
+    colorComparator.ts        — comparator категории Colors
+    typographyComparator.ts   — comparator категории Typography
   lib/
-    scanner.ts                — обход нод макета, сбор и группировка цветовых свойств
+    scanner.ts                — обход нод макета, сбор и группировка свойств обеих категорий
     figmaRestApi.ts            — обёртка над GET /v1/files/:file_key/variables/local
+    figmaStylesRestApi.ts      — загрузка опубликованных Text Styles библиотеки
+    statusKeys.ts              — ключ статуса строки: что показывает бейдж и фильтр
+    decisionPersistence.ts     — судьба решения после «Применить в макет»
+    libraryLabels.ts           — подписи токенов и стилей в списках и обратный поиск
     colorUtils.ts               — hex/rgb конверсия, форматирование, Delta E (Lab/CIE76)
     storage.ts                  — обёртка над figma.clientStorage
     exporter.ts                  — сборка строк экспорта + CSV/JSON сериализация
@@ -180,18 +193,18 @@ src/
 `clientStorage` даёт до ~5MB на плагин, привязан к плагину+машине/аккаунту, а
 не к документу — то, что нужно здесь.
 
-### Как добавить новую категорию (Typography, Spacing, Radii, Effects, Gradients)
+### Как добавить новую категорию (Spacing, Radii, Effects, Gradients)
 
 1. Создать `src/comparators/<category>Comparator.ts`, реализующий
    `ITokenComparator` из `types.ts` (тот же контракт: `scanLayout` →
    `compareWithLibrary` → `ComparisonResult[]`).
 2. Определить форму `comparisonValue` для этой категории (для Colors — это
-   `{ hex, alpha }`; для Typography это может быть, например,
-   `{ fontFamily, fontWeight, fontSize, lineHeight }`).
+   `{ hex, alpha }`, для Typography — `{ fontFamily, fontWeight, fontSize,
+   lineHeight, letterSpacing, textCase, textDecoration }`).
 3. Добавить сбор соответствующих свойств в отдельный модуль
    `src/lib/<category>Scanner.ts` (по аналогии с `scanner.ts`).
 4. Расширить `figmaRestApi.ts` фильтром по нужному `resolvedType`
-   (`FLOAT`, `STRING`, `BOOLEAN` — для Spacing/Radii/Typography; Effects и
+   (`FLOAT`, `STRING`, `BOOLEAN` — для Spacing/Radii; Effects и
    Gradients не являются типами Figma Variables и потребуют отдельного
    источника правды, например paint styles / effect styles через REST
    `GET /v1/files/:file_key/styles`).

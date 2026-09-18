@@ -4,7 +4,14 @@
  * window.onmessage.
  */
 
-import type { ComparisonResult, Decision, LibraryToken, ScanScope } from "./comparators/types";
+import type {
+  ComparisonResult,
+  Decision,
+  LibraryTextStyle,
+  LibraryToken,
+  ScanScope,
+  TokenCategory,
+} from "./comparators/types";
 
 export interface UiReadyMessage {
   type: "ui-ready";
@@ -12,7 +19,7 @@ export interface UiReadyMessage {
 
 export interface SaveSettingsMessage {
   type: "save-settings";
-  payload: { token: string; libraryInput: string };
+  payload: { token: string; libraryInput: string; registrySecret: string };
 }
 
 export interface SaveGitHubSettingsMessage {
@@ -37,7 +44,14 @@ export interface LoadLibraryMessage {
 
 export interface ScanMessage {
   type: "scan";
-  payload: { scope: ScanScope };
+  payload: {
+    scope: ScanScope;
+    /**
+     * Категория сканирования. По умолчанию "colors" — текущий UI не передаёт
+     * поле; Phase 3 добавит переключатель типографики.
+     */
+    category?: TokenCategory;
+  };
 }
 
 export interface SelectNodesMessage {
@@ -50,8 +64,12 @@ export interface ApplyDecisionMessage {
   payload: {
     recordId: string;
     decision: Decision;
+    category?: TokenCategory;
     comment?: string;
     targetVariableId?: string;
+    targetStyleId?: string;
+    targetStyleName?: string;
+    mismatchedProperties?: string[];
     targetName?: string;
     targetCollectionName?: string;
     proposedModeId?: string;
@@ -147,6 +165,7 @@ export interface ToggleAdminModeMessage {
  */
 export interface RequestProposePreviewMessage {
   type: "request-propose-preview";
+  payload?: { category?: TokenCategory };
 }
 
 /**
@@ -157,6 +176,12 @@ export interface RequestProposePreviewMessage {
 export interface ProposeDecisionsMessage {
   type: "propose-decisions";
   payload: { recordIds: string[] };
+}
+
+/** Удалить pending-записи mappingHistory для категории (при переключении сканирования). */
+export interface ClearPendingProposalsMessage {
+  type: "clear-pending-proposals";
+  payload: { category: TokenCategory };
 }
 
 export type UiToCodeMessage =
@@ -177,21 +202,27 @@ export type UiToCodeMessage =
   | ApplyToLayoutMessage
   | ToggleAdminModeMessage
   | RequestProposePreviewMessage
-  | ProposeDecisionsMessage;
+  | ProposeDecisionsMessage
+  | ClearPendingProposalsMessage;
 
 export interface InitStateMessage {
   type: "init-state";
   payload: {
     hasToken: boolean;
+    hasRegistrySecret: boolean;
     /** Имя Figma-файла библиотеки для отображения в поле настроек. */
     libraryFileName: string | null;
     libraryCache: { count: number; fetchedAt: string } | null;
+    libraryTextStylesCache: { count: number; fetchedAt: string } | null;
+    /** true, если Text Styles были успешно закэшированы ранее (не путать с пустой библиотекой). */
+    textStylesAvailable: boolean;
     hasGitHubToken: boolean;
     githubRepo: string | null;
     githubRegistryPath: string | null;
     registryCache: { registryVersion: number; entryCount: number; fetchedAt: string; localOnly: boolean } | null;
     adminMode: boolean;
     pendingProposeCount: number;
+    pendingProposeCountByCategory: Record<TokenCategory, number>;
   };
 }
 
@@ -236,7 +267,16 @@ export interface LibraryLoadingMessage {
 
 export interface LibraryLoadedMessage {
   type: "library-loaded";
-  payload: { tokens: LibraryToken[]; fetchedAt: string; fileName: string };
+  payload: {
+    tokens: LibraryToken[];
+    textStyles: LibraryTextStyle[];
+    fetchedAt: string;
+    fileName: string;
+    /** false — Text Styles fetch не удался; colors могут быть загружены успешно. */
+    textStylesAvailable: boolean;
+    /** Сообщение об ошибке Text Styles fetch (если textStylesAvailable === false). */
+    textStylesError?: string;
+  };
 }
 
 export interface ScanProgressMessage {
@@ -247,8 +287,10 @@ export interface ScanProgressMessage {
 export interface ScanResultsMessage {
   type: "scan-results";
   payload: {
+    category: TokenCategory;
     results: ComparisonResult[];
     libraryTokens: LibraryToken[];
+    libraryTextStyles: LibraryTextStyle[];
   };
 }
 
@@ -325,7 +367,14 @@ export interface ApplyToLayoutResultMessage {
   type: "apply-to-layout-result";
   recordId: string;
   applied: number;
+  /** Сколько слоёв вообще пытались изменить — размер списка id группы. */
+  attempted: number;
+  /** Сколько вхождений в группе всего: больше attempted, если список обрезан лимитом. */
+  occurrences: number;
   skipped: Array<{ nodeId: string; reason: string }>;
+  /** true — часть occurrences применена, часть осталась pending (typography batch). */
+  partial?: boolean;
+  appliedNodeIds?: string[];
 }
 
 export interface AdminModeChangedMessage {
@@ -335,7 +384,10 @@ export interface AdminModeChangedMessage {
 
 export interface PendingProposeCountMessage {
   type: "pending-propose-count";
-  payload: { count: number };
+  payload: {
+    count: number;
+    byCategory: Record<TokenCategory, number>;
+  };
 }
 
 /**
@@ -347,6 +399,7 @@ export interface PendingProposeCountMessage {
 export interface ProposePreviewEntry {
   recordId: string;
   decision: Decision;
+  category?: TokenCategory;
   comment?: string;
   nodeName?: string;
   nodePath?: string;
@@ -356,6 +409,9 @@ export interface ProposePreviewEntry {
   sourceDisplayValue?: string;
   occurrenceCount?: number;
   targetVariableName?: string;
+  targetStyleId?: string;
+  targetStyleName?: string;
+  mismatchedProperties?: string[];
   targetCollectionName?: string;
   targetModeName?: string;
   targetDisplayValue?: string;
@@ -371,7 +427,11 @@ export interface ProposePreviewMessage {
 
 export interface DecisionsSubmittedMessage {
   type: "decisions-submitted";
-  payload: { count: number };
+  payload: {
+    count: number;
+    /** true — эти решения уже были в реестре, новый pull request не создавался. */
+    unchanged: boolean;
+  };
 }
 
 export interface DecisionsSubmitFailedMessage {

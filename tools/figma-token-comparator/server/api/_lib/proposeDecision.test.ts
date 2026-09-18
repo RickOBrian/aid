@@ -117,6 +117,34 @@ describe('validateProposeDecisionBody', () => {
       }),
     ).toBeNull();
   });
+
+  it('accepts typography registry extension fields', () => {
+    const result = validateProposeDecisionBody({
+      sharedSecret: 'secret',
+      proposedBy: 'designer@example.com',
+      entries: [
+        {
+          signature: 'typo-1',
+          decision: 'mapped',
+          category: 'typography',
+          targetStyleId: 'S:abc',
+          targetStyleName: 'body-m',
+          mismatchedProperties: ['fontSize', 'lineHeight'],
+          sourceProperty: 'text-style',
+          sourceDisplayValue: 'Roboto 16/24 w500',
+          proposedValue: 'Roboto 16/24 Medium',
+        },
+      ],
+    });
+    expect(result).not.toBeNull();
+    expect(result?.entries[0]).toMatchObject({
+      category: 'typography',
+      targetStyleId: 'S:abc',
+      targetStyleName: 'body-m',
+      mismatchedProperties: ['fontSize', 'lineHeight'],
+      sourceProperty: 'text-style',
+    });
+  });
 });
 
 describe('handleProposeDecision', () => {
@@ -235,6 +263,113 @@ describe('handleProposeDecision', () => {
       proposedAt: fixedNow.toISOString(),
     });
     expect(decoded.entries[0].status).toBeUndefined();
+  });
+
+  describe('повторная подпись (находка №9)', () => {
+    function registryWith(entries: unknown[]) {
+      return {
+        schemaVersion: '1.0',
+        registryVersion: 2,
+        updatedAt: '2026-09-01T00:00:00.000Z',
+        entries,
+      };
+    }
+
+    function mockGitHub(existing: unknown[]) {
+      fetchMock.mockImplementation(async (input, init) => {
+        const url = String(input);
+        const method = init?.method ?? 'GET';
+
+        if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
+          return encodeRegistry(registryWith(existing));
+        }
+        if (url.endsWith('/git/ref/heads/main') && method === 'GET') {
+          return jsonResponse(200, { object: { sha: 'main-sha' } });
+        }
+        if (url.endsWith('/git/refs') && method === 'POST') {
+          return jsonResponse(201, {});
+        }
+        if (url.includes('/contents/decisions-registry.json') && method === 'PUT') {
+          return jsonResponse(200, { content: { sha: 'new-file-sha' } });
+        }
+        if (url.endsWith('/pulls') && method === 'POST') {
+          return jsonResponse(201, { number: 7 });
+        }
+        if (url.endsWith('/pulls/7') && method === 'GET') {
+          return jsonResponse(200, { user: { login: 'RickOBrian' } });
+        }
+
+        throw new Error(`Unexpected fetch call: ${method} ${url}`);
+      });
+    }
+
+    function propose(entries: unknown[]) {
+      return handleProposeDecision(
+        new Request('https://example.com/api/registry/propose-decision', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sharedSecret: VALID_SECRET,
+            proposedBy: 'designer@example.com',
+            entries,
+          }),
+        }),
+        { fetchImpl: fetchMock, now: () => fixedNow },
+      );
+    }
+
+    function writtenRegistry() {
+      const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PUT');
+      const putBody = JSON.parse(String(putCall?.[1]?.body));
+      return JSON.parse(Buffer.from(putBody.content, 'base64').toString('utf8'));
+    }
+
+    it('заменяет существующую запись, а не дописывает вторую', async () => {
+      mockGitHub([{ signature: 'sig-1', decision: 'mapped', targetVariableName: 'bg/accent' }]);
+
+      const response = await propose([
+        { signature: 'sig-1', decision: 'ignored', comment: 'передумали' },
+      ]);
+
+      expect(response.status).toBe(200);
+      const written = writtenRegistry();
+      expect(written.entries).toHaveLength(1);
+      expect(written.entries[0]).toMatchObject({ decision: 'ignored', comment: 'передумали' });
+      expect(written.entries[0].targetVariableName).toBeUndefined();
+    });
+
+    it('новая подпись по-прежнему добавляется', async () => {
+      mockGitHub([{ signature: 'sig-1', decision: 'mapped' }]);
+
+      await propose([{ signature: 'sig-2', decision: 'candidate' }]);
+
+      const written = writtenRegistry();
+      expect(written.entries.map((item: { signature: string }) => item.signature)).toEqual([
+        'sig-1',
+        'sig-2',
+      ]);
+    });
+
+    it('повторная отправка того же решения не заводит pull request', async () => {
+      mockGitHub([
+        {
+          signature: 'sig-1',
+          decision: 'mapped',
+          targetVariableName: 'bg/accent',
+          proposedBy: 'designer@example.com',
+          proposedAt: '2026-09-01T00:00:00.000Z',
+        },
+      ]);
+
+      const response = await propose([
+        { signature: 'sig-1', decision: 'mapped', targetVariableName: 'bg/accent' },
+      ]);
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ success: true, unchanged: true });
+      expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT')).toBe(false);
+      expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith('/pulls'))).toBe(false);
+    });
   });
 
   it('returns success for existing registry happy path', async () => {

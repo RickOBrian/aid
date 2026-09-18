@@ -3,9 +3,9 @@
  * Used from code.ts only (main thread). Never log or expose the shared secret.
  */
 
-import type { RegistryDecision } from "./githubTypes";
+import type { RegistryDecision, TokenCategory } from "./githubTypes";
 import type { RegistryFileContent } from "./githubTypes";
-import { getPluginSharedSecret, REGISTRY_GET_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
+import { REGISTRY_GET_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
 
 export interface BackendRegistryResponse {
   exists: boolean;
@@ -16,8 +16,12 @@ export interface BackendRegistryResponse {
 export interface ProposeDecisionEntryPayload {
   signature: string;
   decision: RegistryDecision;
+  category?: TokenCategory;
   targetVariableId?: string;
   targetVariableName?: string;
+  targetStyleId?: string;
+  targetStyleName?: string;
+  mismatchedProperties?: string[];
   comment?: string;
   // Transient review-projection metadata — used ONLY by backend to render the
   // human-readable GitHub PR body. MUST NOT be persisted into
@@ -51,12 +55,10 @@ export class RegistryBackendError extends Error {
   }
 }
 
-function pluginSecretHeader(): Record<string, string> {
-  return { "X-Plugin-Secret": getPluginSharedSecret() };
-}
-
-export async function fetchRegistryFromBackend(): Promise<BackendRegistryResponse> {
-  if (!getPluginSharedSecret()) {
+export async function fetchRegistryFromBackend(
+  sharedSecret: string
+): Promise<BackendRegistryResponse> {
+  if (!sharedSecret) {
     throw new RegistryBackendError("registry_unavailable");
   }
 
@@ -64,7 +66,7 @@ export async function fetchRegistryFromBackend(): Promise<BackendRegistryRespons
   try {
     response = await fetch(REGISTRY_GET_URL, {
       method: "GET",
-      headers: pluginSecretHeader(),
+      headers: { "X-Plugin-Secret": sharedSecret },
     });
   } catch {
     throw new RegistryBackendError("registry_unavailable");
@@ -81,8 +83,19 @@ export async function fetchRegistryFromBackend(): Promise<BackendRegistryRespons
   }
 }
 
-export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload): Promise<void> {
-  const sharedSecret = getPluginSharedSecret();
+export interface ProposeDecisionsResult {
+  /**
+   * true — реестр уже содержит ровно эти решения, pull request не создавался.
+   * Типичный случай: повторная отправка после обрыва сети, когда клиент не
+   * увидел ответа на первую попытку.
+   */
+  unchanged: boolean;
+}
+
+export async function proposeDecisionsOnBackend(
+  payload: ProposeDecisionsPayload,
+  sharedSecret: string
+): Promise<ProposeDecisionsResult> {
   if (!sharedSecret) {
     throw new RegistryBackendError("submit_failed");
   }
@@ -106,9 +119,9 @@ export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload
     throw new RegistryBackendError("submit_failed");
   }
 
-  let body: { success?: boolean } | null = null;
+  let body: { success?: boolean; unchanged?: boolean } | null = null;
   try {
-    body = (await response.json()) as { success?: boolean };
+    body = (await response.json()) as { success?: boolean; unchanged?: boolean };
   } catch {
     body = null;
   }
@@ -116,4 +129,6 @@ export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload
   if (!response.ok || body?.success !== true) {
     throw new RegistryBackendError("submit_failed");
   }
+
+  return { unchanged: body.unchanged === true };
 }

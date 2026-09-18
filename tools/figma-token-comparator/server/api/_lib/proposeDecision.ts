@@ -13,6 +13,7 @@ import {
   type FetchLike,
 } from './registryGithub.js';
 import { buildPullRequestBody } from './pullRequestBody.js';
+import { mergeRegistryEntries, registryEntriesChanged } from './mergeRegistryEntries.js';
 import {
   REGISTRY_DECISIONS,
   type ProposeDecisionRequestBody,
@@ -56,6 +57,14 @@ function isPositiveInteger(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0;
 }
 
+function isRegistryCategory(value: unknown): value is ProposedEntryInput['category'] {
+  return value === 'colors' || value === 'typography';
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === 'string');
+}
+
 export function validateProposeDecisionBody(body: unknown): ProposeDecisionRequestBody | null {
   if (!body || typeof body !== 'object') {
     return null;
@@ -90,6 +99,18 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     if (record.targetVariableName !== undefined && typeof record.targetVariableName !== 'string') {
       return null;
     }
+    if (record.category !== undefined && !isRegistryCategory(record.category)) {
+      return null;
+    }
+    if (record.targetStyleId !== undefined && typeof record.targetStyleId !== 'string') {
+      return null;
+    }
+    if (record.targetStyleName !== undefined && typeof record.targetStyleName !== 'string') {
+      return null;
+    }
+    if (record.mismatchedProperties !== undefined && !isStringArray(record.mismatchedProperties)) {
+      return null;
+    }
     if (record.comment !== undefined && typeof record.comment !== 'string') {
       return null;
     }
@@ -109,8 +130,12 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     entries.push({
       signature: record.signature.trim(),
       decision: record.decision,
+      category: record.category,
       targetVariableId: record.targetVariableId,
       targetVariableName: record.targetVariableName,
+      targetStyleId: record.targetStyleId,
+      targetStyleName: record.targetStyleName,
+      mismatchedProperties: record.mismatchedProperties,
       comment: record.comment,
       sourceProperty: record.sourceProperty,
       sourceBindingType: record.sourceBindingType,
@@ -143,8 +168,14 @@ function buildProposedEntries(
   return entries.map((entry) => ({
     signature: entry.signature,
     decision: entry.decision,
+    ...(entry.category ? { category: entry.category } : {}),
     ...(entry.targetVariableId ? { targetVariableId: entry.targetVariableId } : {}),
     ...(entry.targetVariableName ? { targetVariableName: entry.targetVariableName } : {}),
+    ...(entry.targetStyleId ? { targetStyleId: entry.targetStyleId } : {}),
+    ...(entry.targetStyleName ? { targetStyleName: entry.targetStyleName } : {}),
+    ...(entry.mismatchedProperties && entry.mismatchedProperties.length > 0
+      ? { mismatchedProperties: entry.mismatchedProperties }
+      : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
     proposedBy,
     proposedAt,
@@ -204,11 +235,27 @@ export async function handleProposeDecision(
 
   try {
     const current = await fetchRegistryFileOnMain(deps.fetchImpl, githubToken, config);
+
+    // Подпись выводится из свойств группы детерминированно, поэтому одна и та
+    // же подпись приходит и от разных людей, и при повторной отправке.
+    // Новое решение заменяет старое; реестр хранит текущее решение по каждой
+    // подписи, а история правок остаётся в git.
+    const mergedEntries = mergeRegistryEntries(current.file.entries, newEntries);
+
+    // Отправили то, что уже записано (типичный случай — повтор после обрыва
+    // сети): заводить pull request с пустым по смыслу диффом незачем.
+    if (!registryEntriesChanged(current.file.entries, mergedEntries)) {
+      return jsonResponse({ success: true, unchanged: true }, 200);
+    }
+
     const merged: RegistryFileContent = {
       schemaVersion: current.file.schemaVersion || '1.0',
+      // Счётчик информационный: два предложения, созданные от одного
+      // состояния main, получат одинаковый номер, и при слиянии обоих он
+      // окажется занижен. Ни одна ветка логики на нём не завязана.
       registryVersion: current.file.registryVersion + 1,
       updatedAt: proposedAt,
-      entries: [...current.file.entries, ...newEntries],
+      entries: mergedEntries,
     };
 
     const mainSha = await getMainHeadSha(deps.fetchImpl, githubToken, config);

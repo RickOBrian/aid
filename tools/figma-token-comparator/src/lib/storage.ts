@@ -7,7 +7,7 @@
  * решений, которые должны переживать разные файлы макетов).
  */
 
-import type { LibraryToken, StoredDecision } from "../comparators/types";
+import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
 import { clampWindowSize, type WindowSize } from "./windowSize";
 
@@ -19,6 +19,7 @@ const KEYS = {
   LIBRARY_FILE_KEY: "tc_library_file_key",
   LIBRARY_FILE_NAME: "tc_library_file_name",
   LIBRARY_CACHE: "tc_library_cache",
+  LIBRARY_TEXT_STYLES_CACHE: "tc_library_text_styles_cache",
   MAPPING_HISTORY: "tc_mapping_history",
   WINDOW_SIZE: "tc_window_size",
   GITHUB_TOKEN: "tc_github_token",
@@ -26,6 +27,7 @@ const KEYS = {
   GITHUB_REGISTRY_PATH: "tc_github_registry_path",
   REGISTRY_CACHE: "tc_registry_cache",
   ADMIN_MODE: "tc_admin_mode",
+  REGISTRY_SECRET: "tc_registry_secret",
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
 } as const;
 
@@ -87,6 +89,23 @@ export async function setLibraryCache(cache: LibraryCache): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.LIBRARY_CACHE, cache);
 }
 
+export interface LibraryTextStylesCache {
+  styles: LibraryTextStyle[];
+  fetchedAt: string;
+  fileKey: string;
+  fileName?: string;
+}
+
+export async function getLibraryTextStylesCache(): Promise<LibraryTextStylesCache | null> {
+  const value = await figma.clientStorage.getAsync(KEYS.LIBRARY_TEXT_STYLES_CACHE);
+  if (!value || typeof value !== "object") return null;
+  return value as LibraryTextStylesCache;
+}
+
+export async function setLibraryTextStylesCache(cache: LibraryTextStylesCache): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.LIBRARY_TEXT_STYLES_CACHE, cache);
+}
+
 /**
  * История подтверждённых решений по группам записей макета.
  * Ключ записи — LayoutRecord.id (hash property+value+binding+sourceName),
@@ -99,13 +118,28 @@ export async function getMappingHistory(): Promise<Record<string, StoredDecision
   return value as Record<string, StoredDecision>;
 }
 
+export interface SetMappingHistoryOptions {
+  /**
+   * true — не возвращать запись в очередь на согласование.
+   *
+   * Нужно для служебных перезаписей, которые решением пользователя не
+   * являются: учёт применённых слоёв после «Применить в макет». Без этого
+   * уже отправленное решение уехало бы в реестр повторно.
+   */
+  keepSubmitted?: boolean;
+}
+
 export async function setMappingHistoryEntry(
   recordId: string,
-  entry: StoredDecision
+  entry: StoredDecision,
+  options: SetMappingHistoryOptions = {}
 ): Promise<Record<string, StoredDecision>> {
   const history = await getMappingHistory();
   history[recordId] = entry;
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  if (!options.keepSubmitted) {
+    await clearSubmittedSignature(recordId);
+  }
   return history;
 }
 
@@ -115,6 +149,7 @@ export async function clearMappingHistoryEntry(
   const history = await getMappingHistory();
   delete history[recordId];
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  await clearSubmittedSignature(recordId);
   return history;
 }
 
@@ -165,6 +200,22 @@ export async function setRegistryCache(cache: RegistryCache): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.REGISTRY_CACHE, cache);
 }
 
+/**
+ * Ключ доступа к бэкенду реестра.
+ *
+ * Хранится у конкретного пользователя, а не в сборке плагина: собранный
+ * dist/code.js раздаётся публичным релизом, и вшитый в него ключ читается
+ * любым, кто скачал архив.
+ */
+export async function getRegistrySecret(): Promise<string | null> {
+  const value = await figma.clientStorage.getAsync(KEYS.REGISTRY_SECRET);
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+export async function setRegistrySecret(secret: string): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.REGISTRY_SECRET, secret);
+}
+
 export async function getAdminMode(): Promise<boolean> {
   const value = await figma.clientStorage.getAsync(KEYS.ADMIN_MODE);
   return value === true;
@@ -188,7 +239,63 @@ export async function markSignaturesSubmitted(signatures: string[]): Promise<voi
   await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
 }
 
-export async function countPendingProposals(history: Record<string, StoredDecision>): Promise<number> {
+/**
+ * Снимает отметку «отправлено» — решение по этой группе снова считается
+ * ожидающим отправки.
+ *
+ * Вызывается, когда пользователь изменил или отменил решение: иначе
+ * изменённое решение навсегда оставалось бы вне очереди и отправить его
+ * повторно было бы нельзя (например, после отклонённого ревью).
+ */
+export async function clearSubmittedSignature(recordId: string): Promise<void> {
   const submitted = await getSubmittedSignatures();
-  return Object.keys(history).filter((recordId) => !submitted.has(recordId)).length;
+  if (!submitted.delete(recordId)) return;
+  await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
+}
+
+function storedDecisionCategory(entry: StoredDecision): TokenCategory {
+  return entry.category ?? "colors";
+}
+
+export function isPendingProposalRecord(recordId: string, submitted: Set<string>): boolean {
+  return !submitted.has(recordId);
+}
+
+export async function countPendingProposals(
+  history: Record<string, StoredDecision>,
+  category?: TokenCategory
+): Promise<number> {
+  const submitted = await getSubmittedSignatures();
+  return Object.entries(history).filter(
+    ([recordId, entry]) =>
+      isPendingProposalRecord(recordId, submitted) &&
+      (category === undefined || storedDecisionCategory(entry) === category)
+  ).length;
+}
+
+export async function countPendingProposalsByCategory(
+  history: Record<string, StoredDecision>
+): Promise<Record<TokenCategory, number>> {
+  const submitted = await getSubmittedSignatures();
+  const counts: Record<TokenCategory, number> = { colors: 0, typography: 0 };
+  for (const [recordId, entry] of Object.entries(history)) {
+    if (!isPendingProposalRecord(recordId, submitted)) continue;
+    counts[storedDecisionCategory(entry)] += 1;
+  }
+  return counts;
+}
+
+/** Удаляет только pending (не submitted) записи mappingHistory для категории. */
+export async function clearPendingProposalsForCategory(category: TokenCategory): Promise<void> {
+  const [history, submitted] = await Promise.all([getMappingHistory(), getSubmittedSignatures()]);
+  let changed = false;
+  for (const [recordId, entry] of Object.entries(history)) {
+    if (storedDecisionCategory(entry) !== category) continue;
+    if (submitted.has(recordId)) continue;
+    delete history[recordId];
+    changed = true;
+  }
+  if (changed) {
+    await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  }
 }

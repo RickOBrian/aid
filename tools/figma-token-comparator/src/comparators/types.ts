@@ -8,8 +8,69 @@
  * comparator-модулей.
  */
 
+/** Категория comparator-модуля. */
+export type TokenCategory = "colors" | "typography";
+
 /** Способ привязки значения в макете к источнику правды. */
-export type BindingType = "variable" | "style" | "hardcoded" | "ghost";
+export type BindingType =
+  | "variable"
+  | "style"
+  | "hardcoded"
+  | "ghost"
+  /** Зарезервировано для будущих typography variables (Phase 2+); не используется в Phase 1. */
+  | "typography-variable";
+
+/** textCase в формате Figma REST / Plugin API. */
+export type TypographyTextCase =
+  | "ORIGINAL"
+  | "UPPER"
+  | "LOWER"
+  | "TITLE"
+  | "SMALL_CAPS"
+  | "SMALL_CAPS_FORCED";
+
+/** textDecoration в формате Figma REST / Plugin API. */
+export type TypographyTextDecoration = "NONE" | "STRIKETHROUGH" | "UNDERLINE";
+
+/** Нормализованные свойства текстового стиля для программного сравнения. */
+export interface TypographyComparisonValue {
+  fontFamily: string;
+  fontWeight: number;
+  fontSize: number;
+  /** Нормализовано в px. */
+  lineHeight: number;
+  letterSpacing: number;
+  textCase: TypographyTextCase;
+  textDecoration: TypographyTextDecoration;
+  /**
+   * true — lineHeight вычислен приближённо (AUTO / INTRINSIC_% без font metrics).
+   * См. typographyUtils.normalizeLineHeightFromRest / normalizeLineHeightFromPlugin.
+   */
+  lineHeightApproximate?: boolean;
+  /**
+   * true — fontWeight получен через inferFontWeightFromFontName() (TextStyle),
+   * а не нативный numeric fontWeight TEXT-ноды.
+   */
+  fontWeightApproximate?: boolean;
+  /**
+   * true — на TEXT-ноде figma.mixed только на некритичных полях (letterSpacing,
+   * textCase, textDecoration); критичные поля резолвлены.
+   */
+  partiallyMixed?: boolean;
+  /** Какие некритичные поля были figma.mixed (для подписи в UI). */
+  partiallyMixedFields?: Array<"letterSpacing" | "textCase" | "textDecoration">;
+}
+
+/** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */
+export interface LibraryTextStyle {
+  /** node_id стиля в файле библиотеки — совпадает с textStyleId в макете после импорта. */
+  styleId: string;
+  /** Стабильный key опубликованного стиля. */
+  key: string;
+  name: string;
+  displayValue: string;
+  comparisonValue: TypographyComparisonValue;
+}
 
 /** Итог сравнения одной группы записей макета с библиотекой. */
 export type MatchStatus =
@@ -20,6 +81,8 @@ export type MatchStatus =
   | "conflict" // совпадение имени, но существенно разные значения
   | "name-match-unresolved" // совпадение имени, но значение библиотеки не резолвится (внешний алиас за пределы файла)
   | "approximate" // перцептивное совпадение ниже порога (Delta E)
+  | "name-mismatch" // typography: стиль применён, имя не соответствует ожидаемому semantic-токену
+  | "mixed-unresolved" // typography: figma.mixed для fontSize/fontName
   | "layout-only"; // нет совпадений в библиотеке вообще
 
 /**
@@ -36,8 +99,8 @@ export type Decision = "mapped_suggested" | "mapped" | "ignored" | "candidate" |
 export interface LayoutRecord {
   /** Стабильный ключ группы: hash(property + resolvedValue + bindingType + sourceName). */
   id: string;
-  /** Категория comparator-модуля, например "colors" (будущие: "typography", "spacing", ...). */
-  category: string;
+  /** Категория comparator-модуля. */
+  category: TokenCategory;
   /** Подтип свойства внутри категории, например "fill" / "stroke" / "text-fill". */
   property: string;
   bindingType: BindingType;
@@ -58,8 +121,10 @@ export interface LayoutRecord {
    * библиотеки и в макете после импорта (в отличие от variableId).
    */
   variableKey?: string;
-  /** id paint style, если bindingType === "style" | "ghost". */
+  /** id paint/text style, если bindingType === "style" | "ghost". */
   styleId?: string;
+  /** Стабильный key опубликованного Text Style (typography) или paint style. */
+  styleKey?: string;
   /** Сколько раз эта же группа встретилась в скоупе сканирования. */
   count: number;
   /** Путь для одного из представителей группы (breadcrumb от страницы). */
@@ -67,6 +132,12 @@ export interface LayoutRecord {
   representativeNodeName: string;
   /** id всех нод, попавших в группу (для выделения в Figma по клику). */
   nodeIds: string[];
+  /**
+   * true — в группе больше вхождений, чем сохранено id: список обрезан
+   * лимитом сканера. `count` в этом случае больше `nodeIds.length`, и
+   * «Применить в макет» физически не сможет затронуть всю группу.
+   */
+  nodeIdsTruncated?: boolean;
   /**
    * Значения переменной макета по ВСЕМ режимам её коллекции (например,
    * Day/Night) — заполняется только для bindingType === "variable", когда
@@ -76,6 +147,20 @@ export interface LayoutRecord {
    * переменных, которые не удалось резолвить.
    */
   modeValues?: LayoutRecordModeValue[];
+  /**
+   * Typography-only: не удалось полностью резолвить fontSize/fontName (figma.mixed).
+   * Детальная статус-модель — Phase 2; Phase 1 только сохраняет флаг и не падает.
+   */
+  typographyUnresolved?: boolean;
+  /**
+   * Typography-only: текст внутри instance и/или override свойств поверх linked Text Style.
+   */
+  isOverride?: boolean;
+  /**
+   * Typography-only: не удалось сопоставить TEXT-ноду в instance с main component
+   * (reorder/swap) — isOverride остаётся false, флаг только для диагностики.
+   */
+  structuralDriftDetected?: boolean;
 }
 
 /** Значение записи макета в конкретном режиме (day/night и т.п.), см. LayoutRecord.modeValues. */
@@ -132,6 +217,10 @@ export interface ComparisonTarget {
   modeId: string;
   modeName: string;
   displayValue: string;
+  /** Typography — style node id библиотеки (пусто для color-only target). */
+  styleId?: string;
+  /** Typography — стабильный key опубликованного Text Style. */
+  styleKey?: string;
   /** true, если это значение библиотеки не резолвится (внешний алиас) — displayValue содержит пояснение, не hex. */
   valueUnresolved?: boolean;
   /**
@@ -151,6 +240,7 @@ export interface ComparisonResult extends LayoutRecord {
   decision?: Decision;
   decisionComment?: string;
   decisionTargetVariableId?: string;
+  decisionTargetStyleId?: string;
   decisionTimestamp?: string;
   /** value_fix_proposed — режим библиотеки, который предлагается поправить. */
   decisionProposedModeId?: string;
@@ -159,15 +249,23 @@ export interface ComparisonResult extends LayoutRecord {
   decisionCurrentLibraryValue?: string;
   /** value_fix_proposed — предлагаемое новое значение (hex). */
   decisionProposedValue?: string;
+  /** Typography — несовпадающие свойства (fontSize первым при наличии). */
+  mismatchedProperties?: string[];
+  /** Typography — fontWeight на стороне макета через эвристику. */
+  fontWeightApproximate?: boolean;
+  /** Typography apply-to-layout — decision применена не ко всем occurrences. */
+  applyPartial?: boolean;
+  /** Typography apply-to-layout — пропущенные ноды с причиной (из mappingHistory). */
+  applySkips?: Array<{ nodeId: string; reason: string }>;
 }
 
 /** Общий интерфейс comparator-модуля категории. */
-export interface ITokenComparator<TScope = unknown> {
+export interface ITokenComparator<TScope = unknown, TLibrary = LibraryToken> {
   category: string;
   scanLayout(scope: TScope): Promise<LayoutRecord[]>;
   compareWithLibrary(
     records: LayoutRecord[],
-    library: LibraryToken[],
+    library: TLibrary[],
     history: Record<string, StoredDecision>
   ): ComparisonResult[];
 }
@@ -175,8 +273,22 @@ export interface ITokenComparator<TScope = unknown> {
 /** Хранимое в clientStorage подтверждённое решение по группе записей. */
 export interface StoredDecision {
   decision: Decision;
+  /** Категория comparator-модуля — для фильтрации pending при переключении UI. */
+  category?: TokenCategory;
   targetVariableId?: string;
+  /** Typography — style node id целевого Text Style библиотеки. */
+  targetStyleId?: string;
+  /** Typography — human-readable имя целевого Text Style. */
+  targetStyleName?: string;
   targetName?: string;
+  /** Typography — несовпадающие свойства на момент Apply (для propose payload). */
+  mismatchedProperties?: string[];
+  /** Typography — nodeIds, к которым apply-to-layout уже применён (частичный batch). */
+  appliedNodeIds?: string[];
+  /** Typography — причины пропуска по nodeId при частичном apply. */
+  applySkips?: Array<{ nodeId: string; reason: string }>;
+  /** Typography — decision применена не ко всем occurrences. */
+  applyPartial?: boolean;
   targetCollectionName?: string;
   comment?: string;
   timestamp: string;

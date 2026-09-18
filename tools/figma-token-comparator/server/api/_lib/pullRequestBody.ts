@@ -40,6 +40,10 @@ function resolveDecisionMeta(decision: string): DecisionMeta {
 }
 
 /** true, если у entry есть хотя бы одно transient review-поле (не legacy-запись). */
+function isTypographyEntry(entry: ProposedEntryInput): boolean {
+  return entry.category === 'typography' || entry.sourceProperty === 'text-style';
+}
+
 function hasReviewContext(entry: ProposedEntryInput): boolean {
   return Boolean(
     entry.sourceProperty ||
@@ -81,10 +85,24 @@ function renderCollectionMode(collectionName?: string, modeName?: string): strin
 /** Однострочное сопоставление source -> token -> target — только когда хватает данных для всех трёх. */
 function renderSourceTargetChain(entry: ProposedEntryInput): string | null {
   const source = entry.sourceDisplayValue?.trim();
-  const tokenName = entry.targetVariableName?.trim();
+  const tokenName = (entry.targetStyleName ?? entry.targetVariableName)?.trim();
   const target = entry.targetDisplayValue?.trim();
   if (!source || !tokenName || !target) return null;
   return `- \`${source}\` → **${tokenName}** → \`${target}\``;
+}
+
+function renderTypographyDiff(entry: ProposedEntryInput): string | null {
+  if (!isTypographyEntry(entry)) return null;
+  const before = entry.sourceDisplayValue?.trim();
+  const after = entry.targetDisplayValue?.trim() ?? entry.proposedValue?.trim();
+  if (!before && !after) return null;
+  const lines = ['- **Typography diff:**'];
+  if (before) lines.push(`  - before: \`${before}\``);
+  if (after) lines.push(`  - after: \`${after}\``);
+  if (entry.mismatchedProperties && entry.mismatchedProperties.length > 0) {
+    lines.push(`  - mismatched: ${entry.mismatchedProperties.join(', ')}`);
+  }
+  return lines.join('\n');
 }
 
 function renderLegacyNotice(): string {
@@ -94,7 +112,9 @@ function renderLegacyNotice(): string {
 function renderDetails(entry: ProposedEntryInput, proposedBy: string, proposedAt: string): string {
   const rows = [
     `- signature: \`${entry.signature}\``,
+    entry.category ? `- category: \`${entry.category}\`` : null,
     entry.targetVariableId ? `- targetVariableId: \`${entry.targetVariableId}\`` : null,
+    entry.targetStyleId ? `- targetStyleId: \`${entry.targetStyleId}\`` : null,
     `- proposedBy: ${proposedBy}`,
     `- proposedAt: ${proposedAt}`,
   ].filter((row): row is string => row !== null);
@@ -119,8 +139,9 @@ function renderMappedCard(entry: ProposedEntryInput, proposedBy: string, propose
     bullet('Свойство', entry.sourceProperty),
     bullet('Затронуто слоёв', entry.occurrenceCount),
     bullet('Текущее значение', entry.sourceDisplayValue),
-    bullet('Токен', entry.targetVariableName),
-    bullet('Значение токена', entry.targetDisplayValue),
+    bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
+    bullet(isTypographyEntry(entry) ? 'Целевая типографика' : 'Значение токена', entry.targetDisplayValue),
+    renderTypographyDiff(entry),
     renderCollectionMode(entry.targetCollectionName, entry.targetModeName),
     renderSourceTargetChain(entry),
     bullet('Комментарий', commentOrDash(entry.comment)),
@@ -162,10 +183,17 @@ function renderValueFixCard(entry: ProposedEntryInput, proposedBy: string, propo
   // current/proposed/mode — отдельные структурные поля, НЕ склеиваются с comment.
   lines.push(
     bullet('Путь', entry.nodePath),
-    bullet('Токен', entry.targetVariableName),
+    bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
     renderCollectionMode(entry.targetCollectionName, entry.proposedModeName),
-    bullet('Текущее значение библиотеки', entry.currentLibraryValue),
-    bullet('Предлагаемое значение', entry.proposedValue),
+    bullet(
+      isTypographyEntry(entry) ? 'Текущая типографика' : 'Текущее значение библиотеки',
+      entry.currentLibraryValue
+    ),
+    bullet(
+      isTypographyEntry(entry) ? 'Предлагаемая типографика' : 'Предлагаемое значение',
+      entry.proposedValue
+    ),
+    renderTypographyDiff(entry),
     bullet('Комментарий', commentOrDash(entry.comment)),
   );
 

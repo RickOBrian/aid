@@ -6,7 +6,7 @@
  * имеет DOM, поэтому здесь нет ничего, что предполагает браузерное окружение.
  */
 
-import type { ComparisonResult, Decision } from "../comparators/types";
+import type { ComparisonResult, Decision, TokenCategory } from "../comparators/types";
 
 export interface ExportRow {
   layer: string;
@@ -23,6 +23,8 @@ export interface ExportRow {
   timestamp: string;
   proposedValueForMode: string;
   proposedMode: string;
+  /** Типографика: какие свойства разошлись с предложенным стилем. */
+  mismatched: string;
 }
 
 const BINDING_LABELS: Record<string, string> = {
@@ -87,6 +89,13 @@ function extractTargetModeValues(result: ComparisonResult): { day: string; night
   return { day: pickModeValue(modes, true), night: pickModeValue(modes, false) };
 }
 
+/** Имя предложенного токена; коллекция добавляется, только если она есть. */
+function formatTargetName(result: ComparisonResult): string {
+  if (!result.target) return "";
+  const collection = result.target.collectionName?.trim();
+  return collection ? `${result.target.name} (${collection})` : result.target.name;
+}
+
 export function buildExportRows(results: ComparisonResult[]): ExportRow[] {
   return results.map((result) => {
     const before = extractBeforeModeValues(result);
@@ -98,7 +107,7 @@ export function buildExportRows(results: ComparisonResult[]): ExportRow[] {
       beforeDay: before.day,
       beforeNight: before.night,
       binding: BINDING_LABELS[result.bindingType] ?? result.bindingType,
-      target: result.target ? `${result.target.name} (${result.target.collectionName})` : "",
+      target: formatTargetName(result),
       targetDay: target.day,
       targetNight: target.night,
       decision: result.decision ? DECISION_LABELS[result.decision] : "",
@@ -108,16 +117,12 @@ export function buildExportRows(results: ComparisonResult[]): ExportRow[] {
         result.decision === "value_fix_proposed" ? (result.decisionProposedValue ?? "") : "",
       proposedMode:
         result.decision === "value_fix_proposed" ? (result.decisionProposedModeName ?? "") : "",
+      mismatched: result.mismatchedProperties?.join(", ") ?? "",
     };
   });
 }
 
-/**
- * Единый источник состава и порядка колонок — используется CSV/MD экспортом
- * ниже, а также визуальной Figma-таблицей (см. src/lib/figmaTableBuilder.ts),
- * чтобы не дублировать список полей в нескольких местах.
- */
-export const EXPORT_COLUMNS: Array<[keyof ExportRow, string]> = [
+const COLOR_COLUMNS: Array<[keyof ExportRow, string]> = [
   ["layer", "Layer"],
   ["nodePath", "Node Path"],
   ["before", "Сейчас"],
@@ -134,6 +139,33 @@ export const EXPORT_COLUMNS: Array<[keyof ExportRow, string]> = [
   ["timestamp", "Дата решения"],
 ];
 
+/**
+ * У типографики нет режимов библиотеки, зато есть перечень разошедшихся
+ * свойств — колонки отличаются, поэтому набор выбирается по категории, а не
+ * один на всех с пустыми ячейками.
+ */
+const TYPOGRAPHY_COLUMNS: Array<[keyof ExportRow, string]> = [
+  ["layer", "Layer"],
+  ["nodePath", "Node Path"],
+  ["before", "Сейчас"],
+  ["binding", "Binding"],
+  ["target", "Предлагаем"],
+  ["mismatched", "Что расходится"],
+  ["decision", "Решение"],
+  ["proposedValueForMode", "Предлагаемое значение"],
+  ["comment", "Комментарий"],
+  ["timestamp", "Дата решения"],
+];
+
+/**
+ * Единый источник состава и порядка колонок — используется CSV/JSON/MD
+ * экспортом ниже, а также визуальной Figma-таблицей (см. figmaTableBuilder.ts),
+ * чтобы не дублировать список полей в нескольких местах.
+ */
+export function exportColumns(category: TokenCategory): Array<[keyof ExportRow, string]> {
+  return category === "typography" ? TYPOGRAPHY_COLUMNS : COLOR_COLUMNS;
+}
+
 function escapeCsvCell(value: string): string {
   if (/[",\n]/.test(value)) {
     return `"${value.replace(/"/g, '""')}"`;
@@ -141,26 +173,34 @@ function escapeCsvCell(value: string): string {
   return value;
 }
 
-export function toCSV(rows: ExportRow[]): string {
-  const header = EXPORT_COLUMNS.map(([, label]) => escapeCsvCell(label)).join(",");
-  const lines = rows.map((row) => EXPORT_COLUMNS.map(([key]) => escapeCsvCell(row[key])).join(","));
+export function toCSV(rows: ExportRow[], category: TokenCategory): string {
+  const columns = exportColumns(category);
+  const header = columns.map(([, label]) => escapeCsvCell(label)).join(",");
+  const lines = rows.map((row) => columns.map(([key]) => escapeCsvCell(row[key])).join(","));
   return [header, ...lines].join("\r\n");
 }
 
-export function toJSON(rows: ExportRow[]): string {
-  return JSON.stringify(rows, null, 2);
+/**
+ * JSON отдаёт те же поля, что CSV и MD: иначе в выгрузке типографики лежали
+ * бы пустые колонки режимов, которых у неё не бывает.
+ */
+export function toJSON(rows: ExportRow[], category: TokenCategory): string {
+  const columns = exportColumns(category);
+  const projected = rows.map((row) =>
+    Object.fromEntries(columns.map(([key]) => [key, row[key]]))
+  );
+  return JSON.stringify(projected, null, 2);
 }
 
 function escapeMdCell(value: string): string {
   return value.replace(/\|/g, "\\|").replace(/\n/g, " ").replace(/\r/g, "");
 }
 
-export function toMarkdown(rows: ExportRow[]): string {
-  const header = EXPORT_COLUMNS.map(([, label]) => escapeMdCell(label)).join(" | ");
-  const separator = EXPORT_COLUMNS.map(() => "---").join(" | ");
-  const body = rows.map((row) =>
-    EXPORT_COLUMNS.map(([key]) => escapeMdCell(row[key])).join(" | ")
-  );
+export function toMarkdown(rows: ExportRow[], category: TokenCategory): string {
+  const columns = exportColumns(category);
+  const header = columns.map(([, label]) => escapeMdCell(label)).join(" | ");
+  const separator = columns.map(() => "---").join(" | ");
+  const body = rows.map((row) => columns.map(([key]) => escapeMdCell(row[key])).join(" | "));
   return [
     "# Token Comparator — mapping",
     "",
