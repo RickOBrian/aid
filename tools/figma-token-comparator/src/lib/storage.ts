@@ -279,7 +279,16 @@ function storedDecisionCategory(entry: StoredDecision): TokenCategory {
   return entry.category ?? "colors";
 }
 
-export function isPendingProposalRecord(recordId: string, submitted: Set<string>): boolean {
+/**
+ * Ждёт ли решение отправки на согласование. Решения из реестра
+ * (`source: "registry"`) уже согласованы — повторно их не отправляем.
+ */
+export function isPendingProposalRecord(
+  recordId: string,
+  submitted: Set<string>,
+  entry?: StoredDecision
+): boolean {
+  if (entry?.source === "registry") return false;
   return !submitted.has(recordId);
 }
 
@@ -290,7 +299,7 @@ export async function countPendingProposals(
   const submitted = await getSubmittedSignatures();
   return Object.entries(history).filter(
     ([recordId, entry]) =>
-      isPendingProposalRecord(recordId, submitted) &&
+      isPendingProposalRecord(recordId, submitted, entry) &&
       (category === undefined || storedDecisionCategory(entry) === category)
   ).length;
 }
@@ -301,7 +310,7 @@ export async function countPendingProposalsByCategory(
   const submitted = await getSubmittedSignatures();
   const counts: Record<TokenCategory, number> = { colors: 0, typography: 0 };
   for (const [recordId, entry] of Object.entries(history)) {
-    if (!isPendingProposalRecord(recordId, submitted)) continue;
+    if (!isPendingProposalRecord(recordId, submitted, entry)) continue;
     counts[storedDecisionCategory(entry)] += 1;
   }
   return counts;
@@ -313,7 +322,7 @@ export async function clearPendingProposalsForCategory(category: TokenCategory):
   let changed = false;
   for (const [recordId, entry] of Object.entries(history)) {
     if (storedDecisionCategory(entry) !== category) continue;
-    if (submitted.has(recordId)) continue;
+    if (!isPendingProposalRecord(recordId, submitted, entry)) continue;
     delete history[recordId];
     changed = true;
   }

@@ -246,6 +246,7 @@ function applyHistory(
     decisionTargetVariableId: stored.targetVariableId,
     decisionTargetStyleId: stored.targetStyleId,
     decisionTimestamp: stored.timestamp,
+    decisionSource: stored.source,
     fontWeightApproximate: fontWeightApproximate || undefined,
   };
 

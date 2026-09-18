@@ -2,10 +2,10 @@
 destination: skills/_shared/
 name: github-sync-architecture
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   owner: design-system-team
   status: active
-  updated: "2026-09-08"
+  updated: "2026-09-18"
 description: >
   Каноническая архитектура синхронизации реестра решений Token Comparator
   через GitHub: production submit-flow, review projection в Pull Request,
@@ -823,6 +823,12 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
    предложения можно было корректно пересмотреть, а merged записи узнавались
    как canonical.
 
+   **Частично закрыто 2026-09-18 (плагин v1.3.0):** merged записи узнаются —
+   решения из реестра `main` подмешиваются к сравнению у всех
+   (`tools/figma-token-comparator/src/lib/registryDecisions.ts`), локальное
+   решение важнее. Открыто: `open` и `closed/rejected` — плагин по-прежнему
+   не знает, что стало с отправленным предложением.
+
 2. **Success UI с PR number и URL.**
    Response API должен возвращать PR number и URL; UI плагина должен показывать
    понятный статус, например `Отправлено на согласование · PR #<number>`, и
@@ -981,6 +987,9 @@ terminal/report/PR.
 
 ## Changelog
 
+- **1.2.1 — 2026-09-18.** Бэклог P0, пункт 1: отмечено частичное закрытие — merged
+  записи реестра подмешиваются к сравнению в плагине v1.3.0; `open` и
+  `closed/rejected` остаются открытыми.
 - **1.2.0 — 2026-09-08.** Задокументирован инцидент расхождения `main` и
   реального Presentbook (§9a): корневая причина, восстановление localhost,
   structural merge PR #13, удаление legacy co-located registry API,
