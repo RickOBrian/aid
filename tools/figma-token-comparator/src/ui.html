@@ -8,58 +8,117 @@
       rel="stylesheet"
     />
     <style>
-      /* Portal layout tokens — канон из pages/driver-color-tokens/dsChangelogTable.ts */
+      /* ================================================================= */
+      /* Core tokens — сырые значения. Используются ТОЛЬКО в Semantic ниже. */
+      /* Источник значений: pages/driver-color-tokens/* (Presentbook portal) */
+      /* ================================================================= */
+      :root {
+        /* neutral — светлые ступени */
+        --core-neutral-x-0: #ffffff;
+        --core-neutral-x-5: #fafafa;
+        --core-neutral-x-10: #f5f5f5;
+        --core-neutral-x-15: #eeeeee;
+        --core-neutral-x-20: #ebedf0;
+        --core-neutral-x-90: #2d2c2e;
+
+        /* neutral — alpha-ступени на чёрном */
+        --core-neutral-x-100-a10: rgba(0, 0, 0, 0.1);
+        --core-neutral-x-100-a12: rgba(0, 0, 0, 0.12);
+        --core-neutral-x-100-a16: rgba(0, 0, 0, 0.16);
+        --core-neutral-x-100-a22: rgba(0, 0, 0, 0.22);
+        --core-neutral-x-100-a26: rgba(0, 0, 0, 0.26);
+        --core-neutral-x-100-a30: rgba(0, 0, 0, 0.3);
+        --core-neutral-x-100-a38: rgba(0, 0, 0, 0.38);
+        --core-neutral-x-100-a40: rgba(0, 0, 0, 0.4);
+        --core-neutral-x-100-a54: rgba(0, 0, 0, 0.54);
+        --core-neutral-x-90-a32: rgba(45, 44, 46, 0.32);
+
+        /* azure — продуктовый акцент Driver */
+        --core-azure-10: #ebf0ff;
+        --core-azure-25: #bccdfe;
+        --core-azure-45: #2f58e0;
+        --core-azure-55: #3d6afe;
+
+        /* moss — успешное состояние */
+        --core-moss-10: #eef8f1;
+        --core-moss-25: #b9e6c9;
+        --core-moss-60: #1f7a3f;
+
+        /* amber — состояние «требует внимания» */
+        --core-amber-10: #fff8e6;
+        --core-amber-30: #f0d48a;
+        --core-amber-60: #8a6a00;
+
+        /* carmine — ошибочное состояние */
+        --core-carmine-10: #fdecea;
+        --core-carmine-25: #f4c2c2;
+        --core-carmine-50: #d62347;
+      }
+
+      /* ================================================================= */
+      /* Semantic tokens — назначение. В компонентах используются только они. */
+      /* ================================================================= */
       :root {
         --ds-font: "Google Sans", system-ui, sans-serif;
-        --ds-text: #2d2c2e;
-        --ds-text-secondary: rgba(0, 0, 0, 0.54);
-        --ds-text-muted: rgba(0, 0, 0, 0.38);
-        --ds-surface: #ffffff;
-        --ds-surface-muted: #f5f5f5;
-        --ds-surface-zebra: #fafafa;
-        --ds-border: #ebedf0;
-        --ds-focus: rgba(45, 44, 46, 0.32);
-        /* tableWrapRadius — dsChangelogTable.ts */
+
+        /* Текст */
+        --ds-text: var(--core-neutral-x-90);
+        --ds-text-secondary: var(--core-neutral-x-100-a54);
+        --ds-text-muted: var(--core-neutral-x-100-a38);
+        --ds-text-placeholder: var(--core-neutral-x-100-a26);
+        --ds-text-on-accent: var(--core-neutral-x-0);
+
+        /* Поверхности */
+        --ds-surface: var(--core-neutral-x-0);
+        --ds-surface-muted: var(--core-neutral-x-10);
+        --ds-surface-zebra: var(--core-neutral-x-5);
+        --ds-surface-checker: var(--core-neutral-x-15);
+
+        /* Линии и границы */
+        --ds-border: var(--core-neutral-x-20);
+        --ds-line-subtle: var(--core-neutral-x-100-a12);
+        --ds-line-control: var(--core-neutral-x-100-a26);
+        --ds-line-control-hover: var(--core-neutral-x-100-a40);
+        --ds-line-dashed: var(--core-neutral-x-100-a30);
+        --ds-line-handle: var(--core-neutral-x-100-a10);
+        --ds-line-handle-hover: var(--core-neutral-x-100-a22);
+        --ds-focus: var(--core-neutral-x-90-a32);
+
+        /* Акцент */
+        --ds-accent: var(--core-azure-55);
+        --ds-accent-hover: var(--core-azure-45);
+        --ds-accent-bg: var(--core-azure-10);
+
+        /* Радиусы и тени */
         --ds-radius: 8px;
-        /* card/modal surfaces — ComponentReleaseStatus.tsx, dsTokenJsonActions.tsx */
         --ds-radius-card: 12px;
-        --ds-toast-bg: #2d2c2e;
-        --ds-toast-text: #ffffff;
+        --ds-overlay-backdrop: var(--core-neutral-x-100-a38);
+        --ds-shadow-elevated: 0 16px 48px var(--core-neutral-x-100-a16);
+        --ds-shadow-dropdown: 0 8px 24px var(--core-neutral-x-100-a16);
 
-        /* Driver product accent — pages/driver-color-tokens/dsProductAccent.ts */
-        --ds-accent: #3d6afe;
-        --ds-accent-bg: #ebf0ff;
-        --ds-accent-rgb: 61, 106, 254;
-        /* Presentbook не задаёт accent primary CTA; pressed tone для plugin-only primary buttons */
-        --ds-accent-hover: #2f58e0;
-        --ds-text-on-accent: #ffffff;
+        /* ---------------------------------------------------------------- */
+        /* Тональности бейджей — единственный источник цвета для статусов.   */
+        /* Каждый статус относится ровно к одной тональности (см. ui.ts).    */
+        /* ---------------------------------------------------------------- */
+        --ds-badge-neutral-bg: var(--core-neutral-x-10);
+        --ds-badge-neutral-text: var(--core-neutral-x-100-a54);
+        --ds-badge-neutral-border: var(--core-neutral-x-20);
 
-        /* dsTokenJsonActions.tsx modal + DS_TOAST_STYLE */
-        --ds-overlay-backdrop: rgba(0, 0, 0, 0.38);
-        --ds-shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.16);
-        --ds-shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.16);
+        --ds-badge-success-bg: var(--core-moss-10);
+        --ds-badge-success-text: var(--core-moss-60);
+        --ds-badge-success-border: var(--core-moss-25);
 
-        /* ChangelogTable.tsx CHANGE_KIND_COLORS */
-        --ds-status-added: #23ad58;
-        --ds-status-changed: #005aff;
-        --ds-status-fixed: #f0a11d;
-        --ds-status-removed: #d62347;
-        /* ComponentReleaseStatus.tsx released/pending badges */
-        --ds-status-released-bg: #eef8f1;
-        --ds-status-released-text: #1f7a3f;
-        --ds-status-released-border: #b9e6c9;
-        --ds-status-pending-bg: #fff8e6;
-        --ds-status-pending-text: #8a6a00;
-        --ds-status-pending-border: #f0d48a;
+        --ds-badge-info-bg: var(--core-azure-10);
+        --ds-badge-info-text: var(--core-azure-45);
+        --ds-badge-info-border: var(--core-azure-25);
 
-        /* Plugin comparator semantics — нет прямого эквивалента в Presentbook portal chrome */
-        --ds-status-error-bg: #fdecea;
-        --ds-status-error-border: #f4c2c2;
-        --ds-status-warning-alt-bg: #fff4e0;
-        --ds-status-warning-alt-text: #a15c00;
-        /* PRODUCT_ACCENT.rider — только для approximate match badge */
-        --ds-status-rider-bg: #f5edff;
-        --ds-status-rider-text: #9747ff;
+        --ds-badge-warning-bg: var(--core-amber-10);
+        --ds-badge-warning-text: var(--core-amber-60);
+        --ds-badge-warning-border: var(--core-amber-30);
+
+        --ds-badge-danger-bg: var(--core-carmine-10);
+        --ds-badge-danger-text: var(--core-carmine-50);
+        --ds-badge-danger-border: var(--core-carmine-25);
       }
 
       *,
@@ -131,19 +190,10 @@
         }
       }
 
+      /* Тот же примитив, что и бейдж статуса: геометрия в .ds-badge,
+         тональность — модификатором в разметке. */
       .ds-admin-badge {
-        display: inline-flex;
-        align-items: center;
         flex-shrink: 0;
-        padding: 2px 10px;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        text-transform: none;
-        border-radius: 999px;
-        background: var(--ds-status-pending-bg);
-        color: var(--ds-status-pending-text);
-        border: 1px solid var(--ds-status-pending-border);
       }
 
       .ds-admin-badge[hidden],
@@ -312,7 +362,7 @@
       }
 
       .tc-loader__check {
-        stroke: var(--ds-status-released-text);
+        stroke: var(--ds-badge-success-text);
         opacity: 0;
         stroke-dasharray: 13;
         stroke-dashoffset: 13;
@@ -364,7 +414,7 @@
         font-weight: 600;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        color: rgba(0, 0, 0, 0.45);
+        color: var(--ds-text-secondary);
       }
 
       .ds-field input,
@@ -429,7 +479,7 @@
       }
 
       .ds-btn:disabled {
-        color: rgba(0, 0, 0, 0.26);
+        color: var(--ds-text-placeholder);
         cursor: not-allowed;
       }
 
@@ -469,7 +519,7 @@
         background: transparent;
         font: inherit;
         font-size: 13px;
-        color: rgba(0, 0, 0, 0.7);
+        color: var(--ds-text);
         cursor: pointer;
         white-space: nowrap;
       }
@@ -558,9 +608,9 @@
 
       .ds-banner.error:not(:empty) {
         display: block;
-        background: var(--ds-status-error-bg);
-        color: var(--ds-status-removed);
-        border: 1px solid var(--ds-status-error-border);
+        background: var(--ds-badge-danger-bg);
+        color: var(--ds-badge-danger-text);
+        border: 1px solid var(--ds-badge-danger-border);
       }
 
       /* Tables — DS_TOKEN_TABLE_STYLE */
@@ -591,7 +641,38 @@
       }
 
       .ds-token-table-wrap--results .ds-token-table {
-        min-width: 860px;
+        /* Ниже этой ширины «Действие» начинает сжимать остальные колонки —
+           включается горизонтальная прокрутка обёртки. */
+        min-width: 1040px;
+      }
+
+      /* Ширины колонок результатов — подсказки для auto-раскладки, а не жёсткие
+         рамки: table-layout: fixed обрезает содержимое на узком окне.
+         Растягивается только «Слой», остальные несут значения предсказуемой
+         длины и не должны отбирать место. */
+      .ds-col-status {
+        width: 200px;
+      }
+
+      .ds-col-layer {
+        width: auto;
+        min-width: 220px;
+      }
+
+      .ds-col-value {
+        width: 190px;
+      }
+
+      .ds-col-diff {
+        width: 170px;
+      }
+
+      .ds-col-count {
+        width: 72px;
+      }
+
+      .ds-col-action {
+        width: 240px;
       }
 
       .ds-token-table {
@@ -751,14 +832,14 @@
         position: relative;
         width: 16px;
         height: 16px;
-        border: 1.5px solid rgba(0, 0, 0, 0.26);
+        border: 1.5px solid var(--ds-line-control);
         border-radius: 4px;
         background: var(--ds-surface);
         cursor: pointer;
       }
 
       .ds-filter-menu__item input[type="checkbox"]:hover {
-        border-color: rgba(0, 0, 0, 0.4);
+        border-color: var(--ds-line-control-hover);
       }
 
       .ds-filter-menu__item input[type="checkbox"]:checked {
@@ -773,7 +854,7 @@
         top: 1px;
         width: 4px;
         height: 8px;
-        border: solid #ffffff;
+        border: solid var(--ds-text-on-accent);
         border-width: 0 1.5px 1.5px 0;
         transform: rotate(45deg);
       }
@@ -786,7 +867,7 @@
       /* Shared dropdown chevron — dsDropdownButton.tsx / DsDropdownChevron */
       .ds-dropdown-chevron {
         flex-shrink: 0;
-        color: rgba(0, 0, 0, 0.54);
+        color: var(--ds-text-secondary);
         transition: transform 0.15s ease;
       }
 
@@ -827,16 +908,6 @@
         font-weight: 400;
       }
 
-      .ds-badge.hardcoded-no-analog {
-        background: var(--ds-surface-muted);
-        color: var(--ds-text-muted);
-      }
-
-      .ds-badge.name-match-unresolved {
-        background: var(--ds-status-warning-alt-bg);
-        color: var(--ds-status-warning-alt-text);
-      }
-
       .ds-token-table tbody tr + tr td {
         border-top: 1px solid var(--ds-border);
       }
@@ -852,10 +923,11 @@
 
       .ds-table-footer {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         gap: 12px;
         flex-shrink: 0;
+        flex-wrap: wrap;
       }
 
       .ds-table-footer[hidden] {
@@ -864,36 +936,57 @@
 
       .ds-table-footer__start {
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         gap: 8px;
         min-width: 0;
+        flex: 1 1 auto;
       }
 
-      #tc-propose-decisions-btn {
-        width: auto;
-        max-width: 100%;
-        white-space: nowrap;
-      }
-
-      .ds-table-footer #tc-apply-decision-btn {
+      .ds-table-footer__end {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         flex-shrink: 0;
       }
 
+      .ds-table-footer .ds-btn {
+        white-space: nowrap;
+      }
+
       /* Value meta — dsValueMeta */
+      /* Свотч и значение — одна строка: свотч не отрывается от своего цвета
+         на узкой колонке. */
+      .ds-value-meta__head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+
       .ds-value-meta__primary {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
-        line-height: 14px;
-        color: rgba(0, 0, 0, 0.87);
+        line-height: 16px;
+        color: var(--ds-text);
+        overflow-wrap: anywhere;
       }
 
       .ds-value-meta__caption {
         margin-top: 2px;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 400;
-        line-height: 12px;
+        line-height: 14px;
         color: var(--ds-text-muted);
+      }
+
+      /* Путь слоя бывает в шесть сегментов — две строки максимум, полный путь
+         в подсказке. Иначе строка таблицы разрастается и ломает ритм. */
+      .ds-value-meta__caption--path {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        overflow-wrap: anywhere;
       }
 
       /* Day/Night breakdown в ячейках «Сейчас»/«Предлагаем» */
@@ -906,9 +999,6 @@
         line-height: 14px;
       }
 
-      .ds-value-meta__mode-row .ds-color-swatch {
-        margin-right: 0;
-      }
 
       .ds-value-meta__mode-label {
         flex-shrink: 0;
@@ -921,8 +1011,8 @@
       }
 
       .ds-value-meta__mode-value {
-        color: rgba(0, 0, 0, 0.87);
-        font-weight: 500;
+        color: var(--ds-text-secondary);
+        font-weight: 400;
       }
 
       /* Accent link — dsProductAccent.ts DS_PRODUCT_ACCENT_STYLE */
@@ -941,6 +1031,14 @@
         text-align: left;
       }
 
+      /* Имена слоёв бывают длинными и без пробелов ({overall_description}) —
+         переносим внутри своей колонки вместо наезда на соседнюю. */
+      .ds-layer-name {
+        display: block;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+
       .ds-accent-link:hover {
         text-decoration: underline;
       }
@@ -951,7 +1049,12 @@
         border-radius: 4px;
       }
 
-      /* Status badges — ComponentReleaseStatus.tsx + plugin comparator semantics */
+      /* ------------------------------------------------------------------ */
+      /* Бейджи статусов: один примитив + пять тональностей.                  */
+      /* Цвет статуса задаётся ТОЛЬКО тональностью; соответствие              */
+      /* «статус → тональность» живёт в одном месте — STATUS_META в ui.ts.    */
+      /* Новый статус не добавляет новых цветов, он выбирает существующие.    */
+      /* ------------------------------------------------------------------ */
       .ds-badge {
         display: inline-flex;
         align-items: center;
@@ -966,106 +1069,72 @@
         border: 1px solid transparent;
       }
 
-      .ds-badge.mapped,
-      .ds-badge.exact {
-        background: var(--ds-status-released-bg);
-        color: var(--ds-status-released-text);
-        border-color: var(--ds-status-released-border);
+      .ds-badge--neutral {
+        background: var(--ds-badge-neutral-bg);
+        color: var(--ds-badge-neutral-text);
+        border-color: var(--ds-badge-neutral-border);
       }
 
-      .ds-badge.value {
-        background: var(--ds-accent-bg);
-        color: var(--ds-accent);
+      .ds-badge--success {
+        background: var(--ds-badge-success-bg);
+        color: var(--ds-badge-success-text);
+        border-color: var(--ds-badge-success-border);
       }
 
-      .ds-badge.name-match {
-        background: var(--ds-status-pending-bg);
-        color: var(--ds-status-pending-text);
-        border-color: var(--ds-status-pending-border);
+      .ds-badge--info {
+        background: var(--ds-badge-info-bg);
+        color: var(--ds-badge-info-text);
+        border-color: var(--ds-badge-info-border);
       }
 
-      .ds-badge.conflict {
-        background: var(--ds-status-error-bg);
-        color: var(--ds-status-removed);
-        border-color: var(--ds-status-error-border);
+      .ds-badge--warning {
+        background: var(--ds-badge-warning-bg);
+        color: var(--ds-badge-warning-text);
+        border-color: var(--ds-badge-warning-border);
       }
 
-      .ds-badge.approximate {
-        background: var(--ds-status-rider-bg);
-        color: var(--ds-status-rider-text);
+      .ds-badge--danger {
+        background: var(--ds-badge-danger-bg);
+        color: var(--ds-badge-danger-text);
+        border-color: var(--ds-badge-danger-border);
       }
 
-      .ds-badge.layout-only {
-        background: var(--ds-surface-muted);
-        color: var(--ds-text-muted);
-      }
-
-      .ds-badge.style-binding {
-        background: var(--ds-status-pending-bg);
-        color: var(--ds-status-pending-text);
-        border-color: var(--ds-status-pending-border);
-      }
-
-      .ds-badge.ghost-binding {
-        background: var(--ds-status-error-bg);
-        color: var(--ds-status-removed);
-        border-color: var(--ds-status-error-border);
-      }
-
-      .ds-badge.value-fix-proposed {
-        background: var(--ds-status-pending-bg);
-        color: var(--ds-status-pending-text);
-        border-color: var(--ds-status-pending-border);
-      }
-
-      .ds-badge.name-mismatch {
-        background: var(--ds-status-rider-bg);
-        color: var(--ds-status-rider-text);
-        border-color: var(--ds-status-rider-border, transparent);
-      }
-
-      .ds-badge.mixed-unresolved {
-        background: var(--ds-surface-muted);
-        color: var(--ds-text-muted);
-        border-color: var(--ds-border-subtle, transparent);
-      }
-
-      .tc-override-badge {
-        display: inline-flex;
-        align-items: center;
-        margin-left: 6px;
-        padding: 1px 6px;
-        border-radius: 4px;
+      /* Второй бейдж в той же ячейке (например «Переопределён»): та же
+         форма и тональности, уменьшенный масштаб. */
+      .ds-badge--secondary {
+        padding: 1px 8px;
         font-size: 10px;
-        font-weight: 600;
-        line-height: 14px;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-        background: var(--ds-status-pending-bg);
-        color: var(--ds-status-pending-text);
-        border: 1px solid var(--ds-status-pending-border);
-        vertical-align: middle;
+      }
+
+      /* Бейджи ячейки статуса: ряд с переносом и одинаковым промежутком.
+         Контейнер — внутри <td>, а не сам <td>: table-cell нельзя подменять на
+         flex, иначе ячейка выпадает из строки (фон, высота, ширина колонки). */
+      .ds-status-cell {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
       }
 
       .ds-decision-check {
-        color: var(--ds-status-released-text);
+        color: var(--ds-badge-success-text);
         font-weight: 700;
       }
 
       /* Color swatch — dsColorSwatch.tsx (compact 12×12 для таблицы; канон portal 28×28) */
       .ds-color-swatch {
         display: inline-block;
-        width: 12px;
-        height: 12px;
+        flex-shrink: 0;
+        width: 14px;
+        height: 14px;
         border-radius: 4px;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        margin-right: 6px;
+        border: 1px solid var(--ds-line-subtle);
         vertical-align: middle;
       }
 
       .ds-color-swatch--unknown {
         background: var(--ds-surface-muted) !important;
-        border: 1px dashed rgba(0, 0, 0, 0.3);
+        border: 1px dashed var(--ds-line-dashed);
       }
 
       /* Paint style в «Сейчас» — круг, variable/hardcoded — квадрат */
@@ -1074,7 +1143,7 @@
       }
 
       .ds-value-meta__caption--warning {
-        color: var(--ds-status-warning-alt-text);
+        color: var(--ds-badge-warning-text);
       }
 
       /* Action cell in results table */
@@ -1107,7 +1176,7 @@
       }
 
       .ds-select:hover {
-        border-color: rgba(0, 0, 0, 0.24);
+        border-color: var(--ds-line-control);
       }
 
       .ds-select:focus-visible {
@@ -1226,13 +1295,10 @@
       .ds-color-swatch--compact {
         width: 10px;
         height: 10px;
-        margin-right: 0;
-        border-radius: 4px;
-        flex-shrink: 0;
       }
 
       .ds-combobox__option-mode-value {
-        color: rgba(0, 0, 0, 0.72);
+        color: var(--ds-text);
         font-weight: 500;
         white-space: nowrap;
       }
@@ -1358,9 +1424,9 @@
       .tc-apply-preview-section__error {
         padding: 10px 14px;
         border-radius: var(--ds-radius);
-        background: var(--ds-status-error-bg);
-        color: var(--ds-status-removed);
-        border: 1px solid var(--ds-status-error-border);
+        background: var(--ds-badge-danger-bg);
+        color: var(--ds-badge-danger-text);
+        border: 1px solid var(--ds-badge-danger-border);
         font-size: 12px;
         line-height: 18px;
       }
@@ -1585,9 +1651,9 @@
       .tc-preview-modal__error {
         padding: 10px 14px;
         border-radius: var(--ds-radius);
-        background: var(--ds-status-error-bg);
-        color: var(--ds-status-removed);
-        border: 1px solid var(--ds-status-error-border);
+        background: var(--ds-badge-danger-bg);
+        color: var(--ds-badge-danger-text);
+        border: 1px solid var(--ds-badge-danger-border);
         font-size: 13px;
         line-height: 18px;
       }
@@ -1645,9 +1711,9 @@
         max-height: 260px;
         border: 1px solid var(--ds-border);
         border-radius: var(--ds-radius);
-        background-image: linear-gradient(45deg, #eee 25%, transparent 25%),
-          linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%),
-          linear-gradient(-45deg, transparent 75%, #eee 75%);
+        background-image: linear-gradient(45deg, var(--ds-surface-checker) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--ds-surface-checker) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--ds-surface-checker) 75%),
+          linear-gradient(-45deg, transparent 75%, var(--ds-surface-checker) 75%);
         background-size: 12px 12px;
         background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
       }
@@ -1885,9 +1951,9 @@
         background: linear-gradient(
           135deg,
           transparent 0 52%,
-          rgba(0, 0, 0, 0.1) 52% 58%,
+          var(--ds-line-handle) 52% 58%,
           transparent 58% 68%,
-          rgba(0, 0, 0, 0.1) 68% 74%,
+          var(--ds-line-handle) 68% 74%,
           transparent 74%
         );
       }
@@ -1897,9 +1963,9 @@
         background: linear-gradient(
           135deg,
           transparent 0 52%,
-          rgba(0, 0, 0, 0.22) 52% 58%,
+          var(--ds-line-handle-hover) 52% 58%,
           transparent 58% 68%,
-          rgba(0, 0, 0, 0.22) 68% 74%,
+          var(--ds-line-handle-hover) 68% 74%,
           transparent 74%
         );
       }
@@ -1910,7 +1976,7 @@
       <header class="ds-page-header">
         <div class="ds-page-header__lead">
           <h1 id="tc-plugin-title">Token Comparator</h1>
-          <span class="ds-admin-badge" id="tc-admin-badge" hidden>Admin</span>
+          <span class="ds-badge ds-badge--warning ds-admin-badge" id="tc-admin-badge" hidden>Режим админа</span>
         </div>
       </header>
 
@@ -1933,13 +1999,12 @@
 
       <section class="ds-panel" id="tc-panel-settings" role="tabpanel" aria-hidden="false">
         <p class="ds-section-caption">
-          Personal Access Token и file_key библиотеки сохраняются локально в clientStorage плагина.
-          Для цветов нужен scope <code>file_variables:read</code>; для типографики дополнительно
-          <code>file_content:read</code> и <code>library_content:read</code> (или устаревший
-          <code>files:read</code>).
+          Токен и ссылка на библиотеку хранятся только на этом компьютере и никуда не отправляются.
+          При создании токена на figma.com включите доступ «только чтение» для Variables; чтобы
+          сканировать типографику — дополнительно для File content и Library content.
         </p>
         <div class="ds-field">
-          <label for="tc-token-input">Personal Access Token</label>
+          <label for="tc-token-input">Токен доступа Figma</label>
           <input id="tc-token-input" type="password" placeholder="figd_..." autocomplete="off" />
         </div>
         <div class="ds-field">
@@ -1947,7 +2012,7 @@
           <input
             id="tc-filekey-input"
             type="text"
-            placeholder="URL или file key — после загрузки покажем имя файла"
+            placeholder="Ссылка на файл библиотеки или его ключ"
           />
         </div>
         <div class="ds-row">
@@ -1960,17 +2025,17 @@
 
         <div id="tc-admin-github-panel" hidden>
           <hr class="ds-settings-divider" />
-          <h3 class="ds-settings-subtitle">GitHub — реестр решений (admin)</h3>
+          <h3 class="ds-settings-subtitle">Реестр решений на GitHub</h3>
         <p class="ds-section-caption">
-          Fine-grained PAT с правами contents: read. Реестр читается из main; запись — на следующем этапе.
-          Если репозиторий недоступен — ошибка доступа; если файл реестра ещё не создан — можно начать с пустого.
+          Плагин читает реестр решений из ветки main. Нужен токен GitHub с доступом на чтение
+          содержимого репозитория. Если файла реестра ещё нет — можно начать с пустого.
         </p>
         <div class="ds-field">
-          <label for="tc-github-token-input">GitHub Personal Access Token</label>
+          <label for="tc-github-token-input">Токен доступа GitHub</label>
           <input id="tc-github-token-input" type="password" placeholder="github_pat_..." autocomplete="off" />
         </div>
         <div class="ds-field">
-          <label for="tc-github-repo-input">Owner/Repo</label>
+          <label for="tc-github-repo-input">Репозиторий</label>
           <input id="tc-github-repo-input" type="text" placeholder="owner/repo или https://github.com/owner/repo" autocomplete="off" />
         </div>
         <div class="ds-field">
@@ -1984,7 +2049,7 @@
           />
         </div>
         <div class="ds-row">
-          <button class="ds-btn" id="tc-save-github-settings-btn">Сохранить настройки GitHub</button>
+          <button class="ds-btn" id="tc-save-github-settings-btn">Сохранить настройки</button>
           <button class="ds-btn ds-btn-primary" id="tc-load-registry-btn">Загрузить реестр</button>
         </div>
         <div class="ds-status-line" id="tc-registry-status">Реестр ещё не загружен.</div>
@@ -2008,8 +2073,8 @@
           </div>
         </div>
         <div class="ds-field">
-          <span class="ds-field__label">Скоуп сканирования</span>
-          <div class="ds-segment" role="group" aria-label="Скоуп сканирования" id="tc-scope-segment">
+          <span class="ds-field__label">Область сканирования</span>
+          <div class="ds-segment" role="group" aria-label="Область сканирования" id="tc-scope-segment">
             <button type="button" data-scope="file" aria-pressed="false">Весь файл</button>
             <button type="button" data-scope="page" aria-pressed="true">Текущая страница</button>
             <button type="button" data-scope="selection" aria-pressed="false">Выделение</button>
@@ -2159,6 +2224,14 @@
         <div class="ds-results-block" id="tc-results-block-colors">
           <div class="ds-token-table-wrap ds-token-table-wrap--results">
             <table class="ds-token-table" id="tc-results-table-colors">
+              <colgroup>
+                <col class="ds-col-status" />
+                <col class="ds-col-layer" />
+                <col class="ds-col-value" />
+                <col class="ds-col-value" />
+                <col class="ds-col-count" />
+                <col class="ds-col-action" />
+              </colgroup>
               <thead>
                 <tr>
                   <th class="ds-th-filter" scope="col">
@@ -2194,52 +2267,53 @@
                   <th>Слой</th>
                   <th>Сейчас</th>
                   <th>Предлагаем</th>
-                  <th>Uses</th>
+                  <th>Слоёв</th>
                   <th>Действие</th>
                 </tr>
               </thead>
               <tbody id="tc-results-tbody-colors"></tbody>
             </table>
           </div>
-          <div class="ds-table-footer" id="tc-results-footer-colors">
-            <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
-              Применить решение
-            </button>
-          </div>
         </div>
 
         <div class="ds-results-block" id="tc-results-block-typography" hidden>
           <div class="ds-token-table-wrap ds-token-table-wrap--results">
             <table class="ds-token-table" id="tc-results-table-typography">
+              <colgroup>
+                <col class="ds-col-status" />
+                <col class="ds-col-layer" />
+                <col class="ds-col-value" />
+                <col class="ds-col-value" />
+                <col class="ds-col-diff" />
+                <col class="ds-col-action" />
+              </colgroup>
               <thead>
                 <tr>
                   <th scope="col">Статус</th>
-                  <th scope="col">Слой / Node name</th>
-                  <th scope="col">Используемый Text Style (Figma)</th>
-                  <th scope="col">Предлагаемый Text Style</th>
-                  <th scope="col">Несовпадающие свойства</th>
+                  <th scope="col">Слой</th>
+                  <th scope="col">Сейчас</th>
+                  <th scope="col">Предлагаем</th>
+                  <th scope="col">Что расходится</th>
                   <th scope="col">Действие</th>
                 </tr>
               </thead>
               <tbody id="tc-results-tbody-typography"></tbody>
             </table>
           </div>
-          <div class="ds-table-footer" id="tc-results-footer-typography" hidden>
-            <div class="ds-table-footer__start">
-              <button type="button" class="ds-btn" id="tc-rescan-typography-btn">Пересканировать</button>
-            </div>
-            <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn-typography" type="button" disabled>
-              Применить решение
-            </button>
-          </div>
         </div>
 
-        <div class="ds-table-footer" id="tc-results-footer-shared">
+        <div class="ds-table-footer" id="tc-results-footer">
           <div class="ds-table-footer__start">
-            <button type="button" class="ds-btn ds-btn-primary" id="tc-propose-decisions-btn" disabled>
+            <button type="button" class="ds-btn" id="tc-rescan-typography-btn" hidden>Пересканировать</button>
+            <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
+          </div>
+          <div class="ds-table-footer__end">
+            <button type="button" class="ds-btn" id="tc-propose-decisions-btn" disabled>
               Отправить 0 решений на согласование
             </button>
-            <div class="ds-status-line" id="tc-propose-status" aria-live="polite"></div>
+            <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
+              Применить решение
+            </button>
           </div>
         </div>
       </section>
@@ -2247,9 +2321,185 @@
       <section class="ds-panel" id="tc-panel-guide" role="tabpanel" aria-hidden="true">
         <article class="ds-guide">
           <h2>Гайд</h2>
-          <p>Справка по работе плагина. Разделы будут дополняться по мере развития MVP.</p>
+          <p>Как работать с плагином, что означает каждый статус и что происходит при каждом действии.</p>
 
           <div class="ds-guide-accordion" id="tc-guide-accordion">
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-flow"
+                id="tc-guide-trigger-flow"
+              >
+                <span>С чего начать</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-flow" role="region" hidden>
+                <p>
+                  Плагин сравнивает цвета и текстовые стили макета с библиотекой дизайн-системы и показывает,
+                  где они расходятся. Он ничего не меняет в макете сам — кроме одного действия, о котором
+                  предупреждает отдельно.
+                </p>
+
+                <ol>
+                  <li><strong>Настройки</strong> — укажите токен и файл библиотеки, нажмите «Загрузить библиотеку».</li>
+                  <li><strong>Сканирование</strong> — выберите категорию и область, запустите сканирование.</li>
+                  <li><strong>Результаты</strong> — пройдите строки: по каждой видно, что в макете, что предлагает библиотека и чем они отличаются.</li>
+                  <li>По спорным строкам зафиксируйте решение кнопкой «Применить решение».</li>
+                  <li>Выгрузите отчёт или напечатайте таблицу прямо в Figma.</li>
+                </ol>
+
+                <div class="ds-guide-note">
+                  В таблицу попадают только расхождения. Если слой уже привязан к переменной из этой
+                  библиотеки — строки не будет: там всё в порядке.
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-statuses"
+                id="tc-guide-trigger-statuses"
+              >
+                <span>Что означают статусы</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-statuses" role="region" hidden>
+                <p>
+                  Бейдж в колонке «Статус» показывает, как значение в макете соотносится с библиотекой.
+                  Цвет бейджа — это срочность: серый значит «просто зафиксируйте решение», жёлтый — «нужно
+                  разобраться», красный — «скорее всего ошибка». Английский термин и пояснение есть в
+                  подсказке при наведении.
+                </p>
+
+                <ul class="ds-guide-status-list">
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Стиль вместо токена</span>
+                    <p>
+                      Цвет задан стилем Figma, а не переменной. Автоматически заменить стиль на токен нельзя —
+                      нужно ваше решение.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--danger">Потерянный стиль</span>
+                    <p>
+                      Слой ссылается на стиль, которого больше нет в файле. Цвет ещё виден, но привязка
+                      потеряна — такой слой стоит перевести на токен.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--neutral">Цвет вручную</span>
+                    <p>
+                      Цвет проставлен вручную, и в библиотеке нет ничего похожего — ни по имени, ни по
+                      значению, ни по близости оттенка. Кандидат на новый токен или осознанное исключение.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--info">Совпало значение</span>
+                    <p>
+                      Цвет и прозрачность в точности совпадают с одним из режимов токена библиотеки (Day или
+                      Night), но слой к токену не привязан. Обычно это ручной цвет, случайно совпавший с токеном.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Совпало имя</span>
+                    <p>
+                      Имя переменной или стиля совпало с токеном библиотеки, но значения умеренно расходятся.
+                      В колонке «Предлагаем» — библиотечный токен с тем же именем.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Значение не прочитано</span>
+                    <p>
+                      Имя совпало, но значение токена библиотеки получить не удалось — чаще всего это ссылка
+                      на переменную из другого файла. Сравнить автоматически нельзя, решение принимается вручную.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--danger">Конфликт значений</span>
+                    <p>
+                      Имя совпало с токеном библиотеки, но цвет отличается заметно. Обычно в макете осталось
+                      устаревшее значение или токен переименовали.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Близкое значение</span>
+                    <p>
+                      Точного совпадения нет, но в библиотеке нашёлся близкий цвет. Рядом с названием показано
+                      расхождение ΔE — чем оно меньше, тем ближе оттенок.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Имя не по системе</span>
+                    <p>
+                      Стиль текста применён, но его имя не совпадает с ожидаемым токеном системы.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--neutral">Смешанные значения</span>
+                    <p>
+                      В группе слоёв разные шрифты или размеры — сравнить их с одним стилем нельзя, нужен
+                      ручной разбор.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--info">Правка предложена · Night</span>
+                    <p>
+                      Это не результат сканирования, а уже принятое решение: для токена библиотеки предложена
+                      ручная правка значения в указанном режиме. Бейдж заменяет собой исходный статус —
+                      исходный виден в подсказке.
+                    </p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--success">Решение принято</span>
+                    <p>
+                      По этой группе решение уже зафиксировано раньше и подтянулось из истории.
+                    </p>
+                  </li>
+                </ul>
+
+                <div class="ds-guide-note">
+                  После решения «использовать токен» или «игнорировать» строка при следующем сканировании
+                  скрывается — расхождение считается закрытым. «Кандидат на новый токен» и «правка значения»
+                  остаются в таблице до тех пор, пока библиотеку действительно не поправят.
+                </div>
+              </div>
+            </div>
+
             <div class="ds-guide-accordion__item">
               <button
                 type="button"
@@ -2279,105 +2529,97 @@
               <div class="ds-guide-accordion__panel" id="tc-guide-panel-apply" role="region" hidden>
                 <p>
                   Кнопка <strong>Применить решение</strong> на вкладке «Результаты» фиксирует ваш выбор по
-                  выбранной строке таблицы. Сначала кликните строку (подсветится голубым), выберите действие в
-                  выпадающем списке «Действие», при необходимости заполните дополнительные поля — затем нажмите
-                  кнопку под таблицей.
+                  выбранной строке. Сначала кликните строку — она подсветится, — выберите вариант в колонке
+                  «Действие», при необходимости заполните поля и нажмите кнопку под таблицей.
                 </p>
 
                 <div class="ds-guide-note">
-                  Плагин сейчас — инструмент <strong>аудита и учёта решений</strong>, а не автомат миграции.
-                  «Применить решение» не меняет макет Figma: цвета не перепривязываются, переменные не
-                  создаются, стили не заменяются.
+                  Плагин — инструмент <strong>аудита и учёта решений</strong>, а не автоматической миграции.
+                  «Применить решение» не трогает макет: цвета не перепривязываются, переменные не создаются,
+                  стили не заменяются. Макет меняет только отдельное действие «Применить в макет», которое
+                  каждый раз спрашивает подтверждение.
                 </div>
 
                 <h3>Общее для всех вариантов</h3>
                 <ul>
+                  <li>Решение сохраняется на этом компьютере и не теряется при перезапуске Figma.</li>
                   <li>
-                    Решение сохраняется локально в <code>clientStorage</code> плагина и переживает перезапуск
-                    Figma.
-                  </li>
-                  <li>
-                    Ключ записи — id группы (свойство + hex + тип привязки + имя источника). При повторном
-                    скане та же группа подтянет сохранённое решение автоматически.
+                    Решение привязано к группе одинаковых значений, а не к конкретному слою: при следующем
+                    сканировании та же группа подтянет его автоматически.
                   </li>
                   <li>В строке появляется отметка ✓, обновляется счётчик «обработано: N/M».</li>
-                  <li>Решение попадает в экспорт CSV, JSON и MD (колонки «Решение», «Комментарий», «Дата решения»).</li>
+                  <li>Решение попадает в отчёт — в колонки «Решение», «Комментарий» и «Дата решения».</li>
                 </ul>
 
-                <h3>Варианты действия</h3>
+                <h3>Варианты</h3>
 
-                <p><strong>1a. Использовать предложенный</strong></p>
+                <p><strong>Использовать предложенный</strong></p>
                 <ul>
-                  <li>
-                    <strong>Требование:</strong> у строки есть предложенный токен (колонка «Предлагаем» не
-                    пуста). Доп. полей нет — используется именно этот токен, без выбора вручную.
-                  </li>
-                  <li>
-                    <strong>Сохраняется:</strong> id/имя/коллекция предложенного токена, метка
-                    <em>Mapped (suggested)</em>.
-                  </li>
-                  <li><strong>При перескане:</strong> строка исчезает из таблицы (считается обработанной).</li>
-                  <li><strong>Не делает:</strong> не привязывает fill/stroke к переменной в макете.</li>
+                  <li><strong>Когда доступно:</strong> колонка «Предлагаем» не пуста.</li>
+                  <li><strong>Что сохраняется:</strong> предложенный токен и пометка, что выбран именно он.</li>
+                  <li><strong>При следующем сканировании:</strong> строка исчезает — расхождение закрыто.</li>
+                  <li><strong>Чего не делает:</strong> не меняет макет.</li>
                 </ul>
 
-                <p><strong>1b. Выбрать токен из AID</strong></p>
+                <p><strong>Выбрать токен из AID</strong></p>
                 <ul>
                   <li>
-                    <strong>Требование:</strong> выберите токен в поле «Начните вводить имя токена/стиля…» из
-                    списка библиотеки. Без точного совпадения Apply не сработает.
+                    <strong>Когда доступно:</strong> всегда. Выберите токен из списка библиотеки — без точного
+                    совпадения по имени решение не примется.
                   </li>
-                  <li>
-                    <strong>Сохраняется:</strong> id и имя выбранного токена библиотеки, метка
-                    <em>Mapped (custom)</em>.
-                  </li>
-                  <li><strong>При перескане:</strong> строка исчезает из таблицы (считается обработанной).</li>
-                  <li><strong>Не делает:</strong> не привязывает fill/stroke к переменной в макете.</li>
+                  <li><strong>Что сохраняется:</strong> выбранный вами токен библиотеки.</li>
+                  <li><strong>При следующем сканировании:</strong> строка исчезает.</li>
+                  <li><strong>Чего не делает:</strong> не меняет макет.</li>
                 </ul>
 
                 <div class="ds-guide-note">
-                  <strong>Использовать предложенный vs Выбрать токен из AID:</strong> первый — быстрый путь,
-                  когда предложение плагина в колонке «Предлагаем» подходит без изменений. Второй — когда
-                  предложенный токен не подходит (или его нет вовсе) и нужен другой токен из библиотеки AID.
+                  <strong>Чем отличаются:</strong> первый вариант — быстрый путь, когда предложение плагина
+                  подходит как есть. Второй — когда предложение не подходит или его нет вовсе, и нужен другой
+                  токен библиотеки.
                 </div>
 
-                <p><strong>2. Игнорировать</strong></p>
+                <p><strong>Игнорировать</strong></p>
                 <ul>
-                  <li><strong>Требование:</strong> обязателен комментарий с обоснованием.</li>
-                  <li><strong>Сохраняется:</strong> решение <em>Ignored</em> и ваш комментарий.</li>
-                  <li><strong>При перескане:</strong> строка исчезает из таблицы.</li>
+                  <li><strong>Что нужно:</strong> комментарий с обоснованием — обязателен.</li>
+                  <li><strong>Что сохраняется:</strong> решение «игнорировать» и ваш комментарий.</li>
+                  <li><strong>При следующем сканировании:</strong> строка исчезает.</li>
                   <li>
-                    <strong>Смысл:</strong> расхождение осознанное — hex/стиль остаётся как есть, токен не нужен,
-                    править не будем.
+                    <strong>Смысл:</strong> расхождение осознанное — значение остаётся как есть, токен не нужен.
                   </li>
                 </ul>
 
-                <p><strong>3. Отметить как новый токен-кандидат</strong></p>
+                <p><strong>Кандидат на новый токен</strong></p>
                 <ul>
-                  <li><strong>Требование:</strong> дополнительных полей нет.</li>
-                  <li><strong>Сохраняется:</strong> решение <em>Candidate</em>.</li>
-                  <li><strong>При перескане:</strong> строка остаётся в таблице (токена в библиотеке пока нет).</li>
-                  <li><strong>Не делает:</strong> не создаёт переменную в файле библиотеки.</li>
+                  <li><strong>Что нужно:</strong> ничего дополнительно.</li>
+                  <li><strong>Что сохраняется:</strong> пометка «нужен новый токен».</li>
+                  <li>
+                    <strong>При следующем сканировании:</strong> строка остаётся — токена в библиотеке пока нет.
+                  </li>
+                  <li><strong>Чего не делает:</strong> не создаёт переменную в библиотеке.</li>
                 </ul>
 
-                <p><strong>4. Предложить правку значения в библиотеке</strong></p>
+                <p><strong>Предложить правку значения токена</strong></p>
                 <ul>
                   <li>
-                    <strong>Когда доступно:</strong> только если найден target-токен (Value match, Name match,
-                    Conflict, Approximate match и т.п.) — не для Hardcoded (no analog) без совпадения.
+                    <strong>Когда доступно:</strong> только если библиотечный токен для строки найден — то есть
+                    не для варианта «Цвет вручную» без совпадений.
                   </li>
                   <li>
-                    <strong>Доп. поля:</strong> режим библиотеки (из modes target-переменной), предлагаемое
-                    значение (hex, предзаполняется из «Сейчас»), комментарий (необязателен).
+                    <strong>Что нужно:</strong> режим библиотеки, предлагаемое значение (подставляется из
+                    колонки «Сейчас») и, по желанию, комментарий.
                   </li>
-                  <li><strong>Сохраняется:</strong> решение <em>Value fix proposed</em> + все поля правки.</li>
-                  <li><strong>При перескане:</strong> строка остаётся (правка в библиотеке ещё не сделана).</li>
-                  <li><strong>Не делает:</strong> не меняет variable в библиотеке и не меняет макет.</li>
+                  <li><strong>Что сохраняется:</strong> предложенная правка со всеми полями.</li>
+                  <li>
+                    <strong>При следующем сканировании:</strong> строка остаётся — правка в библиотеке ещё не
+                    сделана.
+                  </li>
+                  <li><strong>Чего не делает:</strong> не меняет ни библиотеку, ни макет.</li>
                 </ul>
 
                 <div class="ds-guide-note">
-                  <strong>Candidate vs Value fix proposed:</strong> Candidate — подходящего токена в библиотеке
-                  ещё нет. Value fix proposed — токен уже есть, но значение в конкретном режиме нужно поправить
-                  вручную дизайнеру библиотеки.
+                  <strong>Кандидат или правка значения:</strong> «кандидат» — подходящего токена в библиотеке
+                  ещё нет. «Правка значения» — токен есть, но его значение в конкретном режиме нужно поправить
+                  вручную.
                 </div>
 
                 <div class="ds-guide-table-wrap">
@@ -2386,8 +2628,8 @@
                       <tr>
                         <th>Вариант</th>
                         <th>Меняет макет</th>
-                        <th>Исчезает при перескане</th>
-                        <th>Доп. требование</th>
+                        <th>Исчезает после решения</th>
+                        <th>Что нужно заполнить</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -2395,31 +2637,31 @@
                         <td>Использовать предложенный</td>
                         <td>Нет</td>
                         <td>Да</td>
-                        <td>Нужен предложенный токен (target)</td>
+                        <td>Ничего — нужен непустой «Предлагаем»</td>
                       </tr>
                       <tr>
                         <td>Выбрать токен из AID</td>
                         <td>Нет</td>
                         <td>Да</td>
-                        <td>Выбор из списка библиотеки</td>
+                        <td>Токен из списка библиотеки</td>
                       </tr>
                       <tr>
                         <td>Игнорировать</td>
                         <td>Нет</td>
                         <td>Да</td>
-                        <td>Комментарий обязателен</td>
+                        <td>Комментарий</td>
                       </tr>
                       <tr>
-                        <td>Новый кандидат</td>
+                        <td>Кандидат на новый токен</td>
                         <td>Нет</td>
                         <td>Нет</td>
-                        <td>—</td>
+                        <td>Ничего</td>
                       </tr>
                       <tr>
-                        <td>Правка значения в библиотеке</td>
+                        <td>Правка значения токена</td>
                         <td>Нет</td>
                         <td>Нет</td>
-                        <td>Режим + предлагаемый hex</td>
+                        <td>Режим и новое значение</td>
                       </tr>
                     </tbody>
                   </table>
@@ -2432,122 +2674,10 @@
                 type="button"
                 class="ds-guide-accordion__trigger"
                 aria-expanded="false"
-                aria-controls="tc-guide-panel-statuses"
-                id="tc-guide-trigger-statuses"
-              >
-                <span>Статусы сканирования</span>
-                <svg
-                  class="ds-guide-accordion__chevron"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 6l4 4 4-4"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-              <div class="ds-guide-accordion__panel" id="tc-guide-panel-statuses" role="region" hidden>
-                <p>
-                  Бейдж в колонке «Статус» показывает, как значение в макете соотносится с загруженной
-                  библиотекой. Строки, где всё уже корректно (переменная из этой библиотеки), в таблицу не
-                  попадают.
-                </p>
-
-                <ul class="ds-guide-status-list">
-                  <li>
-                    <span class="ds-badge style-binding">Style binding</span>
-                    <p>
-                      Цвет задан через <strong>paint style</strong>, а не через variable. Плагин не может
-                      автоматически заменить стиль на токен — нужно ваше решение.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge ghost-binding">Ghost style</span>
-                    <p>
-                      Слой ссылается на стиль, которого уже нет в файле («ghost» / битая ссылка). Цвет может
-                      отображаться, но привязка потеряна.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge hardcoded-no-analog">Hardcoded (no analog)</span>
-                    <p>
-                      Сплошной hex без совпадения в библиотеке — ни по имени, ни по значению, ни по
-                      близости (Delta&nbsp;E). Кандидат на новый токен или осознанный hardcode.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge value">Value match</span>
-                    <p>
-                      Hex и alpha <strong>точно совпадают</strong> с одним из режимов токена библиотеки (Day или
-                      Night), но имя или привязка в макете другие — например hardcoded с тем же цветом, что у
-                      переменной.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge name-match">Name match</span>
-                    <p>
-                      Имя переменной или стиля в макете совпадает с токеном библиотеки, но значения
-                      <strong>различаются</strong> умеренно (Delta&nbsp;E ≤ 20). В «Предлагаем» показан
-                      библиотечный токен с тем же именем.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge name-match-unresolved">Name match (value unknown)</span>
-                    <p>
-                      Имя совпало, но значения режимов библиотеки не удалось получить через REST API — часто
-                      это алиас на переменную из другого файла. Сравнение по hex недоступно; решение принимается
-                      вручную.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge conflict">Conflict</span>
-                    <p>
-                      Имя совпало с токеном библиотеки, но цвет <strong>существенно отличается</strong>
-                      (Delta&nbsp;E &gt; 20). Типичный случай: в макете устаревшее значение или переименованный
-                      токен с другим hex.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge approximate">Approximate match</span>
-                    <p>
-                      Точного совпадения нет, но найден ближайший цвет в библиотеке в пределах порога Delta&nbsp;E
-                      (при совпадающей alpha). В бейдже показывается ΔE — чем меньше, тем ближе оттенок.
-                    </p>
-                  </li>
-                  <li>
-                    <span class="ds-badge value-fix-proposed">Правка предложена (Night)</span>
-                    <p>
-                      Не статус сканирования, а <strong>применённое решение</strong> Value fix proposed: для
-                      target-переменной предложена ручная правка значения в указанном режиме. Показывается вместо
-                      исходного бейджа; в tooltip — исходный статус (Conflict, Name match и т.д.).
-                    </p>
-                  </li>
-                </ul>
-
-                <div class="ds-guide-note">
-                  После «Применить решение» с вариантами Mapped (suggested/custom) или Ignored строка при
-                  следующем скане скрывается. Candidate и Value fix proposed остаются с исходным статусом (или
-                  бейджем «Правка предложена») до изменений в библиотеке.
-                </div>
-              </div>
-            </div>
-
-            <div class="ds-guide-accordion__item">
-              <button
-                type="button"
-                class="ds-guide-accordion__trigger"
-                aria-expanded="false"
                 aria-controls="tc-guide-panel-export"
                 id="tc-guide-trigger-export"
               >
-                <span>Экспорт и печать: CSV, JSON, MD и таблица в Figma</span>
+                <span>Отчёт: выгрузка и печать в Figma</span>
                 <svg
                   class="ds-guide-accordion__chevron"
                   width="14"
@@ -2568,84 +2698,57 @@
               <div class="ds-guide-accordion__panel" id="tc-guide-panel-export" role="region" hidden>
                 <p>
                   Кнопки <strong>Экспорт CSV</strong>, <strong>Экспорт JSON</strong> и <strong>Экспорт MD</strong>
-                  на вкладке «Результаты» открывают меню из двух пунктов: <strong>Скачать</strong> — сохранить файл
-                  соответствующего формата на компьютер, <strong>Напечатать</strong> — построить визуальную таблицу
-                  в текущем Figma-файле на странице <strong>«Маппинг»</strong>. Это отчёт для аудита, ревью и
-                  передачи решений команде — плагин не отправляет данные никуда и не меняет макет.
+                  открывают меню из двух пунктов: <strong>Скачать</strong> — сохранить файл на компьютер,
+                  <strong>Напечатать</strong> — построить таблицу прямо в текущем файле Figma, на странице
+                  <strong>«Маппинг»</strong>. Плагин никуда не отправляет данные и при печати не трогает макет.
                 </p>
 
                 <div class="ds-guide-note">
-                  <strong>Напечатать</strong> строит <strong>одну и ту же таблицу</strong> независимо от кнопки
-                  (CSV/JSON/MD влияют только на формат «Скачать»). Страница «Маппинг» создаётся автоматически, если
-                  её нет; каждая новая таблица встаёт <strong>правее</strong> предыдущих — история отчётов не
-                  затирается. Лимит печати — <strong>300 строк</strong>: если видимых строк больше, печатаются
-                  первые 300 и появляется предупреждение, а «Скачать» отдаёт полный набор.
+                  <strong>Напечатать</strong> строит одну и ту же таблицу независимо от кнопки — формат
+                  влияет только на «Скачать». Страница «Маппинг» создаётся автоматически, каждая новая таблица
+                  встаёт правее предыдущих, поэтому история отчётов не затирается. В печать попадают первые
+                  <strong>300 строк</strong>; если строк больше, плагин предупредит, а «Скачать» отдаст всё.
                 </div>
 
-                <h3>Зачем нужны</h3>
+                <h3>Зачем это нужно</h3>
+                <ul>
+                  <li>Зафиксировать результат: что в макете, что предлагает библиотека, какие решения приняты.</li>
+                  <li>Передать список расхождений команде или в трекер — без доступа к Figma.</li>
+                  <li>Сохранить чеклист перехода на токены и сравнить его с прошлым прогоном.</li>
+                  <li>Подключить данные к своим скриптам — через JSON; открыть в таблицах — через CSV.</li>
+                  <li>Показать отчёт прямо в Figma, без выгрузки файлов.</li>
+                </ul>
+
+                <h3>Какой формат выбрать</h3>
+                <p>Во всех трёх форматах <strong>одни и те же данные</strong>, отличается только подача:</p>
                 <ul>
                   <li>
-                    Зафиксировать результат сканирования: что в макете, что предлагает библиотека, какие
-                    решения уже приняты.
+                    <strong>CSV</strong> — таблица с заголовками колонок. Открывается в Excel, Google Sheets и
+                    Numbers; удобно передавать тем, кто не работает с кодом.
                   </li>
                   <li>
-                    Передать список расхождений дизайнерам, разработчикам или в трекер задач без доступа к
-                    Figma.
+                    <strong>JSON</strong> — те же поля в машинном виде. Удобно разбирать скриптами и
+                    внутренними инструментами.
                   </li>
                   <li>
-                    Сохранить промежуточный или финальный чеклист миграции на токены (до/после правок в
-                    библиотеке).
-                  </li>
-                  <li>
-                    Подключить данные к скриптам и автоматизации — через JSON; в таблицы и Google Sheets —
-                    через CSV.
-                  </li>
-                  <li>
-                    Показать отчёт прямо в Figma — через «Напечатать», без выгрузки файлов и внешних инструментов.
+                    <strong>MD</strong> — таблица в Markdown. Удобно вставить в Notion, GitHub или Confluence
+                    без ручной вёрстки.
                   </li>
                 </ul>
 
-                <h3>Типичный флоу</h3>
-                <ol>
-                  <li>Настройки → загрузить библиотеку.</li>
-                  <li>Сканирование → выбрать скоуп и запустить скан.</li>
-                  <li>Результаты → пройти строки, при необходимости применить решения.</li>
-                  <li>Экспорт → «Скачать» (CSV, JSON или MD) либо «Напечатать» (таблица на странице «Маппинг»).</li>
-                  <li>При следующем скане или после правок макета — повторить и сравнить новый экспорт со старым.</li>
-                </ol>
-
-                <h3>CSV, JSON или MD?</h3>
-                <p>Все три формата содержат <strong>одни и те же данные</strong>, отличается только представление:</p>
-                <ul>
-                  <li>
-                    <strong>CSV</strong> (<code>token-comparator-mapping.csv</code>) — таблица с заголовками
-                    колонок, UTF-8. Удобно открыть в Excel, Google Sheets, Numbers; делиться с нетехническими
-                    ролями.
-                  </li>
-                  <li>
-                    <strong>JSON</strong> (<code>token-comparator-mapping.json</code>) — массив объектов с
-                    теми же полями. Удобно парсить в скриптах, CI, внутренних утилитах DS.
-                  </li>
-                  <li>
-                    <strong>MD</strong> (<code>token-comparator-mapping.md</code>) — Markdown-таблица с теми
-                    же колонками. Удобно вставить в Notion, GitHub, Confluence или PR-описание без ручной
-                    вёрстки.
-                  </li>
-                </ul>
-
-                <h3>Какие колонки / поля</h3>
+                <h3>Что внутри отчёта</h3>
                 <div class="ds-guide-table-wrap">
                   <table class="ds-guide-table">
                     <thead>
                       <tr>
-                        <th>Поле</th>
-                        <th>Содержимое</th>
+                        <th>Колонка CSV / поле JSON</th>
+                        <th>Что в ней</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Layer / layer</td>
-                        <td>Имя представительного слоя группы</td>
+                        <td>Имя слоя, представляющего группу</td>
                       </tr>
                       <tr>
                         <td>Node Path / nodePath</td>
@@ -2653,19 +2756,19 @@
                       </tr>
                       <tr>
                         <td>Сейчас / before</td>
-                        <td>Имя переменной или стиля в макете (или hex, если без имени)</td>
+                        <td>Имя переменной или стиля в макете, либо само значение, если имени нет</td>
                       </tr>
                       <tr>
                         <td>Сейчас Day · Night</td>
-                        <td>Значения по режимам в макете; для hardcoded/style — одно и то же в обе колонки</td>
+                        <td>Значения по режимам в макете. Для ручного цвета и стиля в обеих колонках одно и то же</td>
                       </tr>
                       <tr>
                         <td>Binding / binding</td>
-                        <td>Тип привязки: Variable, Style, Hardcoded, Ghost</td>
+                        <td>Чем задано значение: переменной, стилем, вручную или потерянной ссылкой</td>
                       </tr>
                       <tr>
                         <td>Предлагаем / target</td>
-                        <td>Имя и коллекция предложенного токена библиотеки; пусто, если совпадения нет</td>
+                        <td>Имя и коллекция предложенного токена. Пусто, если совпадения нет</td>
                       </tr>
                       <tr>
                         <td>Предлагаем Day · Night</td>
@@ -2673,19 +2776,19 @@
                       </tr>
                       <tr>
                         <td>Решение / decision</td>
-                        <td>Mapped (suggested), Mapped (custom), Ignored, Candidate или Value fix proposed</td>
+                        <td>Какое решение принято по строке</td>
                       </tr>
                       <tr>
                         <td>Для режима / proposedMode</td>
-                        <td>Имя режима библиотеки — только для Value fix proposed</td>
+                        <td>Режим библиотеки — только для правки значения</td>
                       </tr>
                       <tr>
                         <td>Предлагаемое значение / proposedValueForMode</td>
-                        <td>Hex, который предлагается записать в библиотеку — только для Value fix proposed</td>
+                        <td>Значение, которое предлагается записать в библиотеку</td>
                       </tr>
                       <tr>
                         <td>Комментарий / comment</td>
-                        <td>Текст комментария (опционально для Value fix proposed, обязателен для Ignored)</td>
+                        <td>Ваш комментарий к решению</td>
                       </tr>
                       <tr>
                         <td>Дата решения / timestamp</td>
@@ -2696,9 +2799,9 @@
                 </div>
 
                 <div class="ds-guide-note">
-                  В файл попадают только строки, <strong>видимые в таблице сейчас</strong>: учитывается фильтр
-                  по статусам в шапке «Статус ▾». Если часть бейджей отфильтрована — в экспорте их не будет.
-                  Строки без решения экспортируются с пустыми полями «Решение», «Комментарий» и «Дата решения».
+                  В отчёт попадают только строки, <strong>видимые в таблице сейчас</strong>: фильтр по статусам
+                  в шапке колонки учитывается. Строки без решения выгружаются с пустыми полями «Решение»,
+                  «Комментарий» и «Дата решения».
                 </div>
               </div>
             </div>
@@ -2740,7 +2843,7 @@
                 ></circle>
               </svg>
             </span>
-            <span>Строим превью на временном клоне слоя...</span>
+            <span>Готовим превью...</span>
           </div>
           <div class="tc-preview-modal__error" id="tc-preview-error" hidden></div>
           <div class="tc-preview-modal__images" id="tc-preview-images" hidden></div>
@@ -2761,7 +2864,7 @@
             <div class="tc-apply-summary" id="tc-apply-summary"></div>
             <div class="tc-apply-before-after" id="tc-apply-before-after"></div>
             <div class="tc-apply-preview-section">
-              <div class="tc-apply-preview-section__label">Превью участка макета</div>
+              <div class="tc-apply-preview-section__label">Как это выглядит в макете</div>
               <div class="tc-apply-preview-section__loading" id="tc-apply-preview-loading">
                 <span class="tc-loader tc-loader--indeterminate" aria-hidden="true">
                   <svg class="tc-loader__svg" width="18" height="18" viewBox="0 0 20 20">
@@ -2777,15 +2880,15 @@
                     ></circle>
                   </svg>
                 </span>
-                <span>Строим превью «Было / Стало»...</span>
+                <span>Готовим сравнение «Было / Стало»...</span>
               </div>
               <div class="tc-apply-preview-section__error" id="tc-apply-preview-error" hidden></div>
               <div class="tc-apply-preview-section__images" id="tc-apply-preview-images" hidden></div>
             </div>
             <div class="ds-guide-note">
-              Это единственное действие плагина, которое реально меняет макет: fill/stroke/text fill указанных
-              нод будет привязан к выбранной переменной библиотеки. Отменить можно только вручную через Figma
-              (Cmd/Ctrl+Z) сразу после применения.
+              Это единственное действие плагина, которое меняет макет: заливка, обводка или цвет текста
+              выбранных слоёв будут привязаны к переменной библиотеки. Отменить можно только сразу после
+              применения — через Cmd/Ctrl+Z в Figma.
             </div>
           </div>
           <div class="tc-preview-modal__loading" id="tc-apply-loading" hidden>
@@ -2803,7 +2906,7 @@
                 ></circle>
               </svg>
             </span>
-            <span>Применяем переменную к нодам макета...</span>
+            <span>Применяем переменную к слоям...</span>
           </div>
           <div id="tc-apply-result-view" hidden></div>
         </div>
@@ -2841,9 +2944,8 @@
           </div>
           <div class="tc-propose-list" id="tc-propose-list"></div>
           <div class="ds-guide-note">
-            В <code>decisions-registry.json</code> попадут только машинные поля решения. Путь слоя и значения ниже
-            — только для читаемого описания в PR на GitHub. Снятое решение останется неотправленным — его можно
-            отправить позже.
+            В реестр попадут только сами решения. Путь слоя и значения ниже нужны лишь для понятного описания
+            в запросе на согласование. Снятые галочки останутся неотправленными — их можно отправить позже.
           </div>
         </div>
         <div class="tc-preview-modal__footer">

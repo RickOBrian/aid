@@ -59,8 +59,19 @@ const PROD_REGISTRY_LOADING = "Загрузка реестра решений...
 const PROD_REGISTRY_READY = "Реестр решений готов.";
 const PROD_REGISTRY_EMPTY = "Реестр решений пуст — можно начинать работу.";
 const PROD_REGISTRY_UNAVAILABLE = "Не удалось загрузить реестр решений. Попробуйте позже.";
-const PROPOSE_SUCCESS = "Отправлено, ждёт согласования Principal Designer";
-const PROPOSE_FAILURE = "Не удалось отправить, попробуйте ещё раз";
+const PROPOSE_SUCCESS = "Отправлено — ждёт согласования Principal Designer.";
+const PROPOSE_FAILURE = "Не удалось отправить. Попробуйте ещё раз.";
+
+/**
+ * Единственная формулировка про недоступные стили текста: используется и в
+ * подсказке переключателя категории, и в предупреждении, и при попытке скана.
+ */
+const TEXT_STYLES_UNAVAILABLE =
+  "Стили текста недоступны. Перезагрузите библиотеку токеном, у которого есть доступ к содержимому файла и библиотек.";
+
+function textStylesUnavailableMessage(error: string | null): string {
+  return error ? `Стили текста недоступны: ${error}` : TEXT_STYLES_UNAVAILABLE;
+}
 
 interface RowControls {
   select: HTMLSelectElement;
@@ -71,21 +82,113 @@ interface RowControls {
 
 const rowControls = new Map<string, RowControls>();
 
-const STATUS_LABELS: Record<MatchStatus, string> = {
-  mapped: "Mapped",
-  exact: "Exact match",
-  value: "Property match",
-  "name-match": "Name match",
-  conflict: "Conflict",
-  "name-match-unresolved": "Name match (value unknown)",
-  approximate: "Approximate match",
-  "name-mismatch": "Style mismatch",
-  "mixed-unresolved": "Mixed (needs review)",
-  "layout-only": "Layout only",
-};
-
 /** Ключ фильтра в шапке «Статус» — может отличаться от MatchStatus (style/ghost/hardcoded). */
 type StatusFilterKey = MatchStatus | "style-binding" | "ghost-binding" | "hardcoded-no-analog";
+
+/** Тональность бейджа. Цвета тональностей заданы в ui.html, здесь — только выбор. */
+type BadgeTone = "neutral" | "success" | "info" | "warning" | "danger";
+
+interface StatusMeta {
+  /** Название статуса в интерфейсе. */
+  label: string;
+  /** Английский термин, которым статус называют в команде и в документации. */
+  term: string;
+  /** Тональность бейджа — единственный источник его цвета. */
+  tone: BadgeTone;
+  /** Что это значит и что с этим делать. Показывается подсказкой при наведении. */
+  hint: string;
+}
+
+/**
+ * Единственный источник правды по статусам: название, термин, цвет и подсказка.
+ * Любое место интерфейса (таблица цветов, таблица типографики, фильтр в шапке)
+ * берёт бейдж отсюда — расхождения между ними невозможны по построению.
+ */
+const STATUS_META: Record<StatusFilterKey, StatusMeta> = {
+  exact: {
+    label: "Совпадает с библиотекой",
+    term: "Exact match",
+    tone: "success",
+    hint: "Слой уже привязан к этой переменной библиотеки — делать ничего не нужно.",
+  },
+  mapped: {
+    label: "Решение принято",
+    term: "Mapped",
+    tone: "success",
+    hint: "По этой группе решение уже зафиксировано и подтянулось из истории.",
+  },
+  value: {
+    label: "Совпало значение",
+    term: "Value match",
+    tone: "info",
+    hint: "Цвет в точности совпадает со значением токена библиотеки, но слой к токену не привязан.",
+  },
+  "name-match": {
+    label: "Совпало имя",
+    term: "Name match",
+    tone: "warning",
+    hint: "Имя переменной или стиля совпало с токеном библиотеки, но значения умеренно расходятся.",
+  },
+  "name-match-unresolved": {
+    label: "Значение не прочитано",
+    term: "Name match (value unknown)",
+    tone: "warning",
+    hint: "Имя совпало, но значение токена получить не удалось — обычно это ссылка на переменную из другого файла. Сравните вручную.",
+  },
+  conflict: {
+    label: "Конфликт значений",
+    term: "Conflict",
+    tone: "danger",
+    hint: "Имя совпало с токеном библиотеки, но цвет отличается заметно. Обычно в макете осталось устаревшее значение.",
+  },
+  approximate: {
+    label: "Близкое значение",
+    term: "Approximate match",
+    tone: "warning",
+    hint: "Точного совпадения нет, но в библиотеке есть близкий цвет. Чем меньше ΔE, тем ближе оттенок.",
+  },
+  "name-mismatch": {
+    label: "Имя не по системе",
+    term: "Name mismatch",
+    tone: "warning",
+    hint: "Стиль текста применён, но его имя не совпадает с ожидаемым токеном системы.",
+  },
+  "mixed-unresolved": {
+    label: "Смешанные значения",
+    term: "Mixed (needs review)",
+    tone: "neutral",
+    hint: "В группе слоёв разные шрифты или размеры — сравнить автоматически нельзя, нужен ручной разбор.",
+  },
+  "layout-only": {
+    label: "Нет в библиотеке",
+    term: "Layout only",
+    tone: "neutral",
+    hint: "Совпадений в библиотеке не нашлось ни по имени, ни по значению.",
+  },
+  "style-binding": {
+    label: "Стиль вместо токена",
+    term: "Style binding",
+    tone: "warning",
+    hint: "Цвет задан стилем Figma, а не переменной. Автоматически заменить нельзя — нужно ваше решение.",
+  },
+  "ghost-binding": {
+    label: "Потерянный стиль",
+    term: "Ghost style",
+    tone: "danger",
+    hint: "Слой ссылается на стиль, которого больше нет в файле. Цвет виден, но привязка потеряна.",
+  },
+  "hardcoded-no-analog": {
+    label: "Цвет вручную",
+    term: "Hardcoded (no analog)",
+    tone: "neutral",
+    hint: "Цвет задан вручную, подходящего токена в библиотеке нет. Кандидат на новый токен или осознанное исключение.",
+  },
+};
+
+/** Подсказка бейджа: английский термин плюс объяснение. */
+function statusTooltip(meta: StatusMeta): string {
+  return `${meta.term} — ${meta.hint}`;
+}
 
 function getResultStatusFilterKey(result: ComparisonResult): StatusFilterKey {
   if (result.bindingType === "style") return "style-binding";
@@ -95,15 +198,12 @@ function getResultStatusFilterKey(result: ComparisonResult): StatusFilterKey {
 }
 
 function statusFilterKeyLabel(key: StatusFilterKey): string {
-  if (key === "style-binding") return "Style binding";
-  if (key === "ghost-binding") return "Ghost style";
-  if (key === "hardcoded-no-analog") return "Hardcoded (no analog)";
-  return STATUS_LABELS[key];
+  return STATUS_META[key].label;
 }
 
-function statusFilterBadgeClass(key: StatusFilterKey): string {
-  if (key === "hardcoded-no-analog") return "hardcoded-no-analog";
-  return key;
+/** Классы бейджа для тональности. Форма и цвет не задаются больше нигде. */
+function badgeClassName(tone: BadgeTone, secondary = false): string {
+  return `ds-badge ds-badge--${tone}${secondary ? " ds-badge--secondary" : ""}`;
 }
 
 let activeStatusFilters = new Set<StatusFilterKey>();
@@ -186,7 +286,7 @@ function renderStatusFilterMenu(): void {
           (key) => `
         <label class="ds-filter-menu__item">
           <input type="checkbox" value="${escapeHtml(key)}" ${activeStatusFilters.has(key) ? "checked" : ""} />
-          <span class="ds-badge ${escapeHtml(statusFilterBadgeClass(key))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
+          <span class="${badgeClassName(STATUS_META[key].tone)}" title="${escapeHtml(statusTooltip(STATUS_META[key]))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
         </label>`
         )
         .join("")}
@@ -240,27 +340,68 @@ function initStatusFilterMenu(): void {
   });
 }
 
+function statusMetaOf(result: ComparisonResult): StatusMeta {
+  return STATUS_META[getResultStatusFilterKey(result)];
+}
+
 function statusLabel(result: ComparisonResult): string {
-  if (result.bindingType === "style") {
-    return "Style binding";
+  const meta = statusMetaOf(result);
+  if (result.status === "approximate" && result.deltaE !== undefined) {
+    return `${meta.label} (ΔE ${result.deltaE.toFixed(1)})`;
   }
-  if (result.bindingType === "ghost") {
-    return "Ghost style";
+  return meta.label;
+}
+
+/** Бейдж статуса строки — используется и таблицей цветов, и таблицей типографики. */
+function createStatusBadge(result: ComparisonResult): HTMLSpanElement {
+  const badge = document.createElement("span");
+  if (result.decision === "value_fix_proposed") {
+    const mode = result.decisionProposedModeName;
+    badge.className = badgeClassName("info");
+    badge.textContent = mode ? `Правка предложена · ${mode}` : "Правка предложена";
+    badge.title = `Value fix proposed — для токена библиотеки предложена ручная правка значения. Статус до решения: ${statusLabel(
+      result
+    )}.`;
+    return badge;
   }
-  if (result.status === "layout-only" && result.bindingType === "hardcoded") {
-    return "Hardcoded (no analog)";
-  }
-  if (result.status === "approximate") {
-    return `Approximate match${result.deltaE !== undefined ? ` (ΔE ${result.deltaE.toFixed(1)})` : ""}`;
-  }
-  return STATUS_LABELS[result.status];
+  const meta = statusMetaOf(result);
+  badge.className = badgeClassName(meta.tone);
+  badge.textContent = statusLabel(result);
+  badge.title = statusTooltip(meta);
+  return badge;
+}
+
+/** Второй бейдж в ячейке статуса: пометка, а не самостоятельный статус. */
+function createSecondaryBadge(label: string, tone: BadgeTone, title: string): HTMLSpanElement {
+  const badge = document.createElement("span");
+  badge.className = badgeClassName(tone, true);
+  badge.textContent = label;
+  badge.title = title;
+  return badge;
+}
+
+const DECISION_LABELS: Record<Decision, string> = {
+  mapped_suggested: "выбран предложенный токен",
+  mapped: "выбран токен из библиотеки",
+  ignored: "расхождение оставлено осознанно",
+  candidate: "кандидат на новый токен",
+  value_fix_proposed: "предложена правка значения в библиотеке",
+};
+
+/** Отметка «решение принято» справа от бейджа статуса. */
+function createDecisionCheck(decision: Decision): HTMLSpanElement {
+  const check = document.createElement("span");
+  check.className = "ds-decision-check";
+  check.textContent = " ✓";
+  check.title = `Решение принято: ${DECISION_LABELS[decision]}`;
+  return check;
 }
 
 const BINDING_LABELS: Record<string, string> = {
-  variable: "Variable",
-  style: "Style",
-  hardcoded: "Hardcoded",
-  ghost: "Ghost",
+  variable: "Переменная",
+  style: "Стиль",
+  hardcoded: "Задано вручную",
+  ghost: "Потерянный стиль",
 };
 
 function showError(message: string): void {
@@ -334,7 +475,7 @@ function initSettingsPanel(): void {
   saveBtn.addEventListener("click", () => {
     const libraryInput = fileKeyInput.value.trim();
     if (!libraryInput) {
-      showError("Укажите URL, file key или уже загруженную библиотеку.");
+      showError("Укажите ссылку на файл библиотеки или её ключ.");
       return;
     }
     post({
@@ -347,7 +488,7 @@ function initSettingsPanel(): void {
     const libraryInput = fileKeyInput.value.trim();
     const token = tokenInput.value.trim();
     if (!libraryInput) {
-      showError("Укажите URL, file key или имя уже загруженной библиотеки.");
+      showError("Укажите ссылку на файл библиотеки, её ключ или имя уже загруженной библиотеки.");
       return;
     }
     loadBtn.disabled = true;
@@ -382,6 +523,15 @@ function updateProposeButton(count: number, byCategory?: Record<TokenCategory, n
   const btn = $<HTMLButtonElement>("tc-propose-decisions-btn");
   btn.textContent = `Отправить ${categoryPending} ${pluralizeDecisions(categoryPending)} на согласование`;
   btn.disabled = categoryPending === 0;
+}
+
+/** «1 расхождение», «2 расхождения», «5 расхождений». */
+function pluralizeIssues(count: number): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "расхождение";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "расхождения";
+  return "расхождений";
 }
 
 function pluralizeDecisions(count: number): string {
@@ -483,7 +633,7 @@ function renderProposeItemDetails(entry: ProposePreviewEntry): string {
         bulletHtml("Затронуто слоёв", entry.occurrenceCount),
         bulletHtml("Текущая типографика", entry.sourceDisplayValue),
         typography
-          ? bulletHtml("Text Style", entry.targetStyleName ?? entry.targetVariableName)
+          ? bulletHtml("Стиль текста", entry.targetStyleName ?? entry.targetVariableName)
           : bulletHtml("Токен", entry.targetVariableName),
         typography
           ? bulletHtml("Целевая типографика", entry.targetDisplayValue)
@@ -506,7 +656,7 @@ function renderProposeItemDetails(entry: ProposePreviewEntry): string {
     case "value_fix_proposed":
       lines.push(
         typography
-          ? bulletHtml("Text Style", entry.targetStyleName ?? entry.targetVariableName)
+          ? bulletHtml("Стиль текста", entry.targetStyleName ?? entry.targetVariableName)
           : bulletHtml("Токен", entry.targetVariableName),
         typography ? null : collectionModeHtml(entry.targetCollectionName, entry.proposedModeName),
         bulletHtml(
@@ -786,16 +936,13 @@ function updateTypographyCategoryAvailability(): void {
   if (typographyBtn) {
     typographyBtn.disabled = unavailable;
     typographyBtn.title = unavailable
-      ? typographyLibraryError ??
-        "Text Styles недоступны — обновите PAT (file_content:read + library_content:read) и перезагрузите библиотеку."
+      ? textStylesUnavailableMessage(typographyLibraryError)
       : "";
   }
 
   if (unavailable) {
     notice.hidden = false;
-    notice.textContent = typographyLibraryError
-      ? `Text styles library unavailable: ${typographyLibraryError}`
-      : "Text styles library unavailable: загрузите библиотеку с PAT scopes file_content:read и library_content:read.";
+    notice.textContent = textStylesUnavailableMessage(typographyLibraryError);
   } else {
     notice.hidden = true;
     notice.textContent = "";
@@ -814,7 +961,7 @@ function updateScanPanelCopy(): void {
     ? "Сканирование типографики"
     : "Сканирование цветов";
   $<HTMLElement>("tc-scan-caption").textContent = isTypography
-    ? "Выберите область макета для сравнения Text Styles макета с Text Styles библиотеки."
+    ? "Выберите область макета для сравнения стилей текста с библиотекой."
     : "Выберите область макета для сравнения с загруженной библиотекой.";
   $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
     ? "Сканировать типографику"
@@ -832,8 +979,7 @@ function updateResultsBlocksVisibility(): void {
   const isTypography = activeCategory === "typography";
   $<HTMLElement>("tc-results-block-colors").hidden = isTypography;
   $<HTMLElement>("tc-results-block-typography").hidden = !isTypography;
-  $<HTMLElement>("tc-results-footer-colors").hidden = isTypography;
-  $<HTMLElement>("tc-results-footer-typography").hidden = !isTypography;
+  $<HTMLElement>("tc-rescan-typography-btn").hidden = !isTypography;
   setExportButtonsDisabled(isTypography || currentResults.length === 0);
   updateProposeButton(pendingProposeCount);
 }
@@ -865,7 +1011,7 @@ function switchActiveCategory(nextCategory: TokenCategory): void {
   const pendingForCurrent = pendingProposeCountByCategory[activeCategory];
   if (pendingForCurrent > 0) {
     const confirmed = window.confirm(
-      "Переключение сканирования очистит текущие результаты и несохранённые предложения. Продолжить?"
+      "Смена категории очистит текущие результаты и неотправленные решения. Продолжить?"
     );
     if (!confirmed) {
       setCategorySegmentPressed(activeCategory);
@@ -902,11 +1048,7 @@ function initScanPanel(): void {
     const scope = getSelectedScope();
     const category = getSelectedCategory();
     if (category === "typography" && !typographyLibraryAvailable) {
-      showError(
-        typographyLibraryError
-          ? `Text styles library unavailable: ${typographyLibraryError}`
-          : "Text styles library unavailable: загрузите библиотеку с PAT scopes file_content:read и library_content:read."
-      );
+      showError(textStylesUnavailableMessage(typographyLibraryError));
       return;
     }
     scanBtn.disabled = true;
@@ -923,10 +1065,10 @@ const ACTION_OPTIONS: Array<{ value: Decision; label: string }> = [
   { value: "mapped_suggested", label: "Использовать предложенный" },
   { value: "mapped", label: "Выбрать токен из AID" },
   { value: "ignored", label: "Игнорировать" },
-  { value: "candidate", label: "Отметить как новый токен-кандидат" },
+  { value: "candidate", label: "Кандидат на новый токен" },
   {
     value: "value_fix_proposed",
-    label: "Предложить правку значения в библиотеке",
+    label: "Предложить правку значения токена",
   },
 ];
 
@@ -1042,7 +1184,7 @@ function closePreviewModal(): void {
  */
 function requestPreview(recordId: string, variableId?: string): void {
   if (previewInFlight) {
-    showError("Дождитесь завершения текущего построения превью.");
+    showError("Дождитесь, пока построится текущее превью.");
     return;
   }
   previewInFlight = true;
@@ -1082,9 +1224,9 @@ function canApplyToLayout(result: ComparisonResult): boolean {
 }
 
 const PROPERTY_LABELS: Record<string, string> = {
-  fill: "Заливка (fill)",
-  stroke: "Обводка (stroke)",
-  "text-fill": "Заливка текста (text fill)",
+  fill: "Заливка",
+  stroke: "Обводка",
+  "text-fill": "Цвет текста",
 };
 
 function propertyLabel(property: string): string {
@@ -1111,14 +1253,14 @@ function renderApplyBeforeAfterHtml(result: ComparisonResult): string {
   if (result.modeValues && result.modeValues.length > 0) {
     beforeBody = `<span class="ds-value-meta__primary">${beforePrimary}</span>${renderModeValueLines(result.modeValues, {
       styleSwatch,
-    })}<div class="ds-value-meta__caption">${escapeHtml(bindingLabel)} · uses: ${result.count}</div>`;
+    })}<div class="ds-value-meta__caption">${escapeHtml(bindingLabel)} · слоёв: ${result.count}</div>`;
   } else {
     const hex = String((result.comparisonValue as { hex?: string }).hex ?? "");
     const swatchClass = styleSwatch ? "ds-color-swatch ds-color-swatch--style" : "ds-color-swatch";
     const caption = result.sourceName
       ? `${escapeHtml(bindingLabel)} · ${escapeHtml(result.displayValue)}`
       : escapeHtml(bindingLabel);
-    beforeBody = `<span class="${swatchClass}" style="background:${hex}"></span><span class="ds-value-meta__primary">${beforePrimary}</span><div class="ds-value-meta__caption">${caption}</div>`;
+    beforeBody = `<div class="ds-value-meta__head"><span class="${swatchClass}" style="background:${hex}"></span><span class="ds-value-meta__primary">${beforePrimary}</span></div><div class="ds-value-meta__caption">${caption}</div>`;
   }
 
   const target = result.target;
@@ -1192,7 +1334,7 @@ function showApplyModalPreviewError(message: string): void {
 
 function requestApplyModalPreview(recordId: string): void {
   if (previewInFlight) {
-    showApplyModalPreviewError("Дождитесь завершения другого построения превью и откройте модалку снова.");
+    showApplyModalPreviewError("Дождитесь, пока построится другое превью, и откройте окно снова.");
     return;
   }
   previewInFlight = true;
@@ -1217,7 +1359,7 @@ function renderTypographyApplyBeforeAfterHtml(result: ComparisonResult): string 
     <div class="tc-apply-before-after__col">
       <div class="tc-apply-before-after__title">Стало</div>
       <div class="ds-value-meta__primary">${escapeHtml(afterText)}</div>
-      <div class="ds-value-meta__caption">Text Style binding</div>
+      <div class="ds-value-meta__caption">Привязан стиль текста</div>
     </div>
   `;
 }
@@ -1234,8 +1376,8 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
         result.representativeNodeName || "(без имени)"
       )}</strong></div>
       <div class="tc-apply-summary__row"><span>Свойство</span><strong>text-style</strong></div>
-      <div class="tc-apply-summary__row"><span>Затронуто нод (uses)</span><strong>${result.count}</strong></div>
-      <div class="tc-apply-summary__row"><span>Text Style</span><strong>${escapeHtml(
+      <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${result.count}</strong></div>
+      <div class="tc-apply-summary__row"><span>Стиль текста</span><strong>${escapeHtml(
         result.target?.name ?? ""
       )}</strong></div>
     `;
@@ -1260,7 +1402,7 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
     <div class="tc-apply-summary__row"><span>Свойство</span><strong>${escapeHtml(
       propertyLabel(result.property)
     )}</strong></div>
-    <div class="tc-apply-summary__row"><span>Затронуто нод (uses)</span><strong>${result.count}</strong></div>
+    <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${result.count}</strong></div>
     <div class="tc-apply-summary__row"><span>Переменная</span><strong>${escapeHtml(result.target?.name ?? "")}${
     result.target?.collectionName ? ` (${escapeHtml(result.target.collectionName)})` : ""
   }</strong></div>
@@ -1314,11 +1456,11 @@ function showApplyToLayoutResult(
       : "";
 
   const partialNote = partial
-    ? `<p class="ds-status-line ds-status-line--warning">Решение применено частично: успешные слои обновлены, остальные остаются в pending с указанной причиной.</p>`
+    ? `<p class="ds-status-line ds-status-line--warning">Применено частично: обновились не все слои — остальные остались как были, причина указана выше.</p>`
     : "";
 
   resultView.innerHTML = `
-    <p class="tc-apply-result__summary">Применено к ${applied} из ${total} нод${
+    <p class="tc-apply-result__summary">Применено к ${applied} из ${total} слоёв${
     skipped.length > 0 ? `, пропущено: ${skipped.length}` : ""
   }.</p>
     ${partialNote}
@@ -1728,6 +1870,7 @@ function renderModeValueLines(
       if (mode.unresolved) {
         return `<div class="ds-value-meta__mode-row"><span class="ds-value-meta__mode-label">${label}</span><span class="${swatchClass} ds-color-swatch--unknown"></span><span class="ds-value-meta__mode-value ds-value-meta__caption--warning">значение не получено</span></div>`;
       }
+
       const hex = mode.displayValue.split(" ")[0];
       return `<div class="ds-value-meta__mode-row"><span class="ds-value-meta__mode-label">${label}</span><span class="${swatchClass}" style="background:${escapeHtml(
         hex
@@ -1746,15 +1889,15 @@ function renderBeforeCellHtml(result: ComparisonResult): string {
     const modesHtml = renderModeValueLines(result.modeValues, { styleSwatch });
     return `<span class="ds-value-meta__primary">${primary}</span>${modesHtml}<div class="ds-value-meta__caption">${escapeHtml(
       bindingLabel
-    )} · uses: ${result.count}</div>`;
+    )} · слоёв: ${result.count}</div>`;
   }
 
   const hex = String((result.comparisonValue as { hex?: string }).hex ?? "");
   const caption = result.sourceName
-    ? `${bindingLabel} · ${escapeHtml(result.displayValue)} · uses: ${result.count}`
-    : `${bindingLabel} · uses: ${result.count}`;
+    ? `${bindingLabel} · ${escapeHtml(result.displayValue)} · слоёв: ${result.count}`
+    : `${bindingLabel} · слоёв: ${result.count}`;
 
-  return `<span class="${swatchClass}" style="background:${hex}"></span><span class="ds-value-meta__primary">${primary}</span><div class="ds-value-meta__caption">${caption}</div>`;
+  return `<div class="ds-value-meta__head"><span class="${swatchClass}" style="background:${hex}"></span><span class="ds-value-meta__primary">${primary}</span></div><div class="ds-value-meta__caption">${caption}</div>`;
 }
 
 function renderTargetCellHtml(result: ComparisonResult): string {
@@ -1793,7 +1936,6 @@ function setSelectedRow(recordId: string): void {
 function updateApplyButtonState(): void {
   const hasControls = Boolean(selectedRecordId && rowControls.has(selectedRecordId));
   $<HTMLButtonElement>("tc-apply-decision-btn").disabled = !hasControls;
-  $<HTMLButtonElement>("tc-apply-decision-btn-typography").disabled = !hasControls;
 }
 
 function renderResultsSummary(): void {
@@ -1802,10 +1944,10 @@ function renderResultsSummary(): void {
   if (activeCategory === "typography") {
     if (total === 0) {
       $("tc-results-summary").textContent =
-        "Расхождений типографики нет (или запустите сканирование типографики).";
+        "Расхождений в типографике нет. Запустите сканирование после изменений в макете.";
       return;
     }
-    $("tc-results-summary").textContent = `${total} групп текстовых стилей требуют внимания.`;
+    $("tc-results-summary").textContent = `${total} ${pluralizeIssues(total)} в типографике.`;
     return;
   }
 
@@ -1814,21 +1956,22 @@ function renderResultsSummary(): void {
   const decided = visible.filter((r) => r.decision).length;
 
   if (total === 0) {
-    $("tc-results-summary").textContent = "Все в порядке — расхождений не найдено (или запустите сканирование).";
+    $("tc-results-summary").textContent =
+      "Расхождений нет. Запустите сканирование после изменений в макете.";
     return;
   }
 
   if (visibleCount === 0) {
-    $("tc-results-summary").textContent = `0 из ${total} случаев — выберите статусы в фильтре колонки «Статус».`;
+    $("tc-results-summary").textContent = `Скрыты все ${total} — выберите статусы в фильтре колонки «Статус».`;
     return;
   }
 
   if (isStatusFilterPartial()) {
-    $("tc-results-summary").textContent = `${visibleCount} из ${total} случаев (фильтр по статусу), обработано: ${decided}/${visibleCount}`;
+    $("tc-results-summary").textContent = `${visibleCount} из ${total} (часть скрыта фильтром), обработано: ${decided}/${visibleCount}`;
     return;
   }
 
-  $("tc-results-summary").textContent = `${total} случаев требуют решения, обработано: ${decided}/${total}`;
+  $("tc-results-summary").textContent = `${total} ${pluralizeIssues(total)}, обработано: ${decided}/${total}`;
 }
 
 const TYPOGRAPHY_STATUS_SORT_ORDER: Record<StatusFilterKey, number> = {
@@ -1925,7 +2068,7 @@ function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void
   if (!menu) return;
   const styles = filterLibraryTextStyles(query);
   if (styles.length === 0) {
-    menu.innerHTML = `<div class="ds-filter-menu__empty">Text Styles не найдены</div>`;
+    menu.innerHTML = `<div class="ds-filter-menu__empty">Стили текста не найдены</div>`;
     return;
   }
   menu.innerHTML = `
@@ -1973,11 +2116,11 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
       <input
         type="text"
         class="ds-combobox__input ds-input"
-        placeholder="Начните вводить имя Text Style..."
+        placeholder="Начните вводить имя стиля..."
         autocomplete="off"
         spellcheck="false"
       />
-      <button type="button" class="ds-combobox__toggle" aria-label="Показать Text Styles" aria-expanded="false">
+      <button type="button" class="ds-combobox__toggle" aria-label="Показать стили текста" aria-expanded="false">
         ${DROPDOWN_CHEVRON_SVG}
       </button>
       <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
@@ -2045,7 +2188,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
     opt.value = option.value;
     opt.textContent =
       option.value === "mapped" && (result.category === "typography" || activeCategory === "typography")
-        ? "Выбрать Text Style из AID"
+        ? "Выбрать стиль из AID"
         : option.label;
     select.appendChild(opt);
   });
@@ -2086,7 +2229,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
   if (result.applyPartial) {
     const partialNote = document.createElement("div");
     partialNote.className = "ds-status-line ds-status-line--warning";
-    partialNote.textContent = "Применено частично — см. пропущенные слои после apply-to-layout.";
+    partialNote.textContent = "Применено частично: часть слоёв группы осталась без изменений.";
     wrap.appendChild(partialNote);
   }
 
@@ -2112,45 +2255,33 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   row.dataset.recordId = result.id;
 
   const statusCell = document.createElement("td");
-  const badgeClass =
-    result.bindingType === "style"
-      ? "style-binding"
-      : result.bindingType === "ghost"
-        ? "ghost-binding"
-        : result.status === "layout-only" && result.bindingType === "hardcoded"
-          ? "hardcoded-no-analog"
-          : result.status;
-  const badge = document.createElement("span");
-  badge.className = `ds-badge ${badgeClass}`;
-  badge.textContent = statusLabel(result);
-  statusCell.appendChild(badge);
+  const statusBadges = document.createElement("div");
+  statusBadges.className = "ds-status-cell";
+  statusCell.appendChild(statusBadges);
+  statusBadges.appendChild(createStatusBadge(result));
   if (result.isOverride) {
-    const overrideBadge = document.createElement("span");
-    overrideBadge.className = "tc-override-badge";
-    overrideBadge.textContent = "Override";
-    overrideBadge.title = "Типографика переопределена относительно main component или linked Text Style";
-    statusCell.appendChild(overrideBadge);
+    statusBadges.appendChild(
+      createSecondaryBadge(
+        "Переопределён",
+        "neutral",
+        "Override — типографика слоя отличается от мастер-компонента или связанного с ним стиля текста."
+      )
+    );
   }
   if (result.decision && result.decision !== "value_fix_proposed") {
-    const check = document.createElement("span");
-    check.className = "ds-decision-check";
-    check.textContent = " ✓";
-    check.title = `Решение: ${result.decision}`;
-    statusCell.appendChild(check);
+    statusBadges.appendChild(createDecisionCheck(result.decision));
   }
   if (result.applyPartial) {
-    const partialBadge = document.createElement("span");
-    partialBadge.className = "tc-override-badge";
-    partialBadge.textContent = "Частично";
-    partialBadge.title = "Apply-to-layout применён не ко всем слоям группы";
-    statusCell.appendChild(partialBadge);
+    statusBadges.appendChild(
+      createSecondaryBadge("Применено частично", "warning", "Стиль применён не ко всем слоям группы.")
+    );
   }
   row.appendChild(statusCell);
 
   const layerCell = document.createElement("td");
   const layerLink = document.createElement("button");
   layerLink.type = "button";
-  layerLink.className = "ds-accent-link";
+  layerLink.className = "ds-accent-link ds-layer-name";
   layerLink.title = "Перейти к слою в макете";
   layerLink.textContent = result.representativeNodeName || "(без имени)";
   layerLink.addEventListener("click", (event) => {
@@ -2160,8 +2291,9 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   });
   layerCell.appendChild(layerLink);
   const path = document.createElement("div");
-  path.className = "ds-value-meta__caption";
+  path.className = "ds-value-meta__caption ds-value-meta__caption--path";
   path.textContent = result.representativeNodePath;
+  path.title = result.representativeNodePath;
   layerCell.appendChild(path);
   row.appendChild(layerCell);
 
@@ -2204,10 +2336,10 @@ function renderTypographyResultsTable(preferredSelectedId?: string): void {
     const row = document.createElement("tr");
     const libraryHint =
       currentLibraryTextStyles.length === 0
-        ? " Загрузите библиотеку с Text Styles (scopes file_content:read + library_content:read)."
+        ? " Загрузите библиотеку со стилями текста."
         : "";
     row.innerHTML =
-      `<td colspan="6" class="ds-empty-state">Расхождений типографики нет — все текстовые стили совпадают с библиотекой или не требуют замены.${libraryHint} Запустите сканирование заново после изменений в макете.</td>`;
+      `<td colspan="6" class="ds-empty-state">Расхождений нет: стили текста совпадают с библиотекой.${libraryHint} Запустите сканирование заново после изменений в макете.</td>`;
     tbody.appendChild(row);
     updateApplyButtonState();
     return;
@@ -2236,7 +2368,7 @@ function renderColorResultsTable(preferredSelectedId?: string): void {
 
   if (currentResults.length === 0) {
     const row = document.createElement("tr");
-    row.innerHTML = `<td colspan="6" class="ds-empty-state">Расхождений нет — все цвета уже на токенах библиотеки или не требуют замены. Запустите сканирование заново после изменений в макете.</td>`;
+    row.innerHTML = `<td colspan="6" class="ds-empty-state">Расхождений нет: цвета уже привязаны к токенам библиотеки. Запустите сканирование заново после изменений в макете.</td>`;
     tbody.appendChild(row);
     updateApplyButtonState();
     return;
@@ -2275,41 +2407,19 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   row.dataset.recordId = result.id;
 
   const statusCell = document.createElement("td");
-  const badge = document.createElement("span");
-  if (result.decision === "value_fix_proposed") {
-    badge.className = "ds-badge value-fix-proposed";
-    badge.textContent = `Правка предложена (${result.decisionProposedModeName ?? "mode"})`;
-    badge.title = `Исходный статус: ${statusLabel(result)}`;
-  } else {
-    const badgeClass =
-      result.bindingType === "style"
-        ? "style-binding"
-        : result.bindingType === "ghost"
-          ? "ghost-binding"
-          : result.status === "layout-only" && result.bindingType === "hardcoded"
-            ? "hardcoded-no-analog"
-            : result.status;
-    badge.className = `ds-badge ${badgeClass}`;
-    badge.textContent = statusLabel(result);
-    if (result.status === "name-match-unresolved") {
-      badge.title =
-        "В библиотеке есть переменная с этим именем, но её значение не удалось получить (алиас на другой файл). Сравните вручную и выберите решение.";
-    }
-  }
-  statusCell.appendChild(badge);
+  const statusBadges = document.createElement("div");
+  statusBadges.className = "ds-status-cell";
+  statusCell.appendChild(statusBadges);
+  statusBadges.appendChild(createStatusBadge(result));
   if (result.decision && result.decision !== "value_fix_proposed") {
-    const check = document.createElement("span");
-    check.className = "ds-decision-check";
-    check.textContent = " ✓";
-    check.title = `Решение: ${result.decision}`;
-    statusCell.appendChild(check);
+    statusBadges.appendChild(createDecisionCheck(result.decision));
   }
   row.appendChild(statusCell);
 
   const layerCell = document.createElement("td");
   const layerLink = document.createElement("button");
   layerLink.type = "button";
-  layerLink.className = "ds-accent-link";
+  layerLink.className = "ds-accent-link ds-layer-name";
   layerLink.title = "Перейти к слою в макете";
   layerLink.textContent = result.representativeNodeName || "(без имени)";
   layerLink.addEventListener("click", (event) => {
@@ -2319,8 +2429,9 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   });
   layerCell.appendChild(layerLink);
   const path = document.createElement("div");
-  path.className = "ds-value-meta__caption";
+  path.className = "ds-value-meta__caption ds-value-meta__caption--path";
   path.textContent = result.representativeNodePath;
+  path.title = result.representativeNodePath;
   layerCell.appendChild(path);
   row.appendChild(layerCell);
 
@@ -2474,7 +2585,7 @@ function applyTypographyDecision(
 
   if (decision === "mapped_suggested") {
     if (!result.target?.styleId && !result.target?.styleKey) {
-      showError("Для этой строки нет предложенного Text Style — выберите «Выбрать Text Style из AID».");
+      showError("Для этой строки нет предложенного стиля — выберите «Выбрать стиль из AID».");
       return;
     }
     const suggestedStyle = currentLibraryTextStyles.find(
@@ -2506,7 +2617,7 @@ function applyTypographyDecision(
       styleId = matchedStyle?.styleId;
     }
     if (!styleId) {
-      showError("Выберите Text Style из списка AID — точное совпадение по имени не найдено.");
+      showError("Выберите стиль из списка AID — точного совпадения по имени не нашлось.");
       return;
     }
     const selectedStyle = currentLibraryTextStyles.find((style) => style.styleId === styleId);
@@ -2546,7 +2657,7 @@ function applyTypographyDecision(
       ? currentLibraryTextStyles.find((style) => style.styleId === styleId)
       : undefined;
     if (!selectedStyle) {
-      showError("Выберите Text Style библиотеки, значение которого нужно исправить.");
+      showError("Выберите стиль библиотеки, значение которого нужно исправить.");
       return;
     }
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
@@ -2614,7 +2725,7 @@ function applyDecision(
       variableId = matchedToken?.variableId;
     }
     if (!variableId) {
-      showError("Выберите токен из списка AID — точное совпадение по имени не найдено.");
+      showError("Выберите токен из списка AID — точного совпадения по имени не нашлось.");
       return;
     }
     // Ручной выбор токена не привязан к конкретному режиму библиотеки —
@@ -2656,14 +2767,14 @@ function applyDecision(
     }
     const selectedToken = currentLibraryTokens.find((t) => t.variableId === selectedVariableId);
     if (!selectedToken) {
-      showError("Выбранный токен не найден в загруженной библиотеке.");
+      showError("Выбранного токена нет в загруженной библиотеке.");
       return;
     }
     const modeSelect = valueFixExtra.querySelector<HTMLSelectElement>(".tc-value-fix-mode");
     const proposedInput = valueFixExtra.querySelector<HTMLInputElement>(".tc-value-fix-proposed");
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
     if (!modeSelect || !proposedInput) {
-      showError("Не удалось прочитать поля решения «Предложить правку значения».");
+      showError("Не удалось прочитать поля правки значения. Заполните их заново.");
       return;
     }
     if (!modeSelect.value) {
@@ -2672,7 +2783,7 @@ function applyDecision(
     }
     const proposedRaw = proposedInput.value.trim();
     if (!isValidHex(proposedRaw)) {
-      showError("Укажите валидный hex в поле «Предлагаемое значение» (#RRGGBB).");
+      showError("Укажите цвет в формате #RRGGBB в поле «Предлагаемое значение».");
       return;
     }
     const selectedOption = modeSelect.selectedOptions[0];
@@ -2732,7 +2843,6 @@ function initApplyFooterButton(): void {
     applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
   };
   $<HTMLButtonElement>("tc-apply-decision-btn").addEventListener("click", runApplyDecision);
-  $<HTMLButtonElement>("tc-apply-decision-btn-typography").addEventListener("click", runApplyDecision);
 }
 
 function initRescanTypographyButton(): void {
@@ -2892,7 +3002,7 @@ function initExportMenus(): void {
       closeAllExportMenus();
       const results = getFilteredResults();
       if (results.length === 0) {
-        showError("Нет строк для печати — таблица результатов пуста или всё скрыто фильтром.");
+        showError("Печатать нечего: таблица пуста или все строки скрыты фильтром.");
         return;
       }
       setExportButtonsDisabled(true);
@@ -2944,17 +3054,17 @@ window.onmessage = (event: MessageEvent) => {
       typographyLibraryAvailable = initialTextStylesAvailable;
       typographyLibraryError = initialTextStylesAvailable
         ? null
-        : "загрузите библиотеку с PAT scopes file_content:read и library_content:read.";
+        : null;
       updateTypographyCategoryAvailability();
       renderLibraryStatus(
         libraryCache
           ? [
               `Библиотека загружена: ${libraryCache.count} цветовых переменных`,
               initialTextStylesAvailable && libraryTextStylesCache
-                ? `, ${libraryTextStylesCache.count} Text Styles`
+                ? `, стилей текста: ${libraryTextStylesCache.count}`
                 : initialTextStylesAvailable
                   ? ""
-                  : " (Text Styles недоступны)",
+                  : " (стили текста недоступны)",
               `, обновлена ${new Date(libraryCache.fetchedAt).toLocaleString("ru-RU")}.`,
             ].join("")
           : "Библиотека ещё не загружена."
@@ -2969,7 +3079,7 @@ window.onmessage = (event: MessageEvent) => {
         renderRegistryStatus(
           registryCache
             ? registryCache.localOnly
-              ? `Локальный пустой реестр: версия ${registryCache.registryVersion}, ${registryCache.entryCount} записей, инициализирован ${new Date(
+              ? `Пустой реестр создан на этом компьютере: записей ${registryCache.entryCount}, ${new Date(
                   registryCache.fetchedAt
                 ).toLocaleString("ru-RU")}.`
               : `Реестр загружен: версия ${registryCache.registryVersion}, ${registryCache.entryCount} записей, обновлён ${new Date(
@@ -3032,7 +3142,7 @@ window.onmessage = (event: MessageEvent) => {
       if (adminModeEnabled) {
         renderRegistryStatus(
           message.payload.localOnly
-            ? `Локальный пустой реестр: версия ${message.payload.registryVersion}, ${message.payload.entryCount} записей.`
+            ? `Пустой реестр создан на этом компьютере: записей ${message.payload.entryCount}.`
             : `Реестр загружен: версия ${message.payload.registryVersion}, ${message.payload.entryCount} записей, обновлён ${new Date(
                 message.payload.updatedAt
               ).toLocaleString("ru-RU")}.`
@@ -3054,7 +3164,7 @@ window.onmessage = (event: MessageEvent) => {
       renderProdRegistryStatus(PROD_REGISTRY_EMPTY);
       if (adminModeEnabled) {
         renderRegistryStatus(
-          `Локальный пустой реестр инициализирован: версия ${message.payload.registryVersion}, ${message.payload.entryCount} записей.`
+          `Пустой реестр создан: записей ${message.payload.entryCount}.`
         );
       }
       hideRegistryNotFoundPrompt();
@@ -3071,8 +3181,8 @@ window.onmessage = (event: MessageEvent) => {
       updateTypographyCategoryAvailability();
       $<HTMLInputElement>("tc-filekey-input").value = message.payload.fileName;
       const textStylesPart = message.payload.textStylesAvailable
-        ? `, ${message.payload.textStyles.length} Text Styles`
-        : " (Text Styles недоступны)";
+        ? `, стилей текста: ${message.payload.textStyles.length}`
+        : " (стили текста недоступны)";
       renderLibraryStatus(
         `Библиотека загружена: ${message.payload.tokens.length} цветовых переменных${textStylesPart}, обновлена ${new Date(
           message.payload.fetchedAt
@@ -3086,7 +3196,7 @@ window.onmessage = (event: MessageEvent) => {
     case "scan-results": {
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
       const { category, results, libraryTokens, libraryTextStyles } = message.payload;
-      $("tc-scan-status").textContent = `Готово: найдено ${results.length} групп значений.`;
+      $("tc-scan-status").textContent = `Готово: найдено ${results.length} ${pluralizeIssues(results.length)}.`;
       activeCategory = category;
       setCategorySegmentPressed(category);
       resultsByCategory[category] = results;

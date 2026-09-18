@@ -1,6 +1,6 @@
 ---
 title: Color Tokens Registry
-updated: 2026-07-01
+updated: 2026-09-17
 ---
 
 # Color Tokens Registry
@@ -126,3 +126,56 @@ Update this file every time a new token is created.
 | --core-amethyst-60 | core | #8F3FF1 | — | text-anatomy-nested |
 | --bg-anatomy-bullet | semantic | core-neutral-x-93 | core-neutral-x-90 | docs/storybook/spec-inspector.js |
 | --text-anatomy-nested | semantic | core-amethyst-60 | core-amethyst-60 | docs/storybook/spec-inspector.js |
+
+---
+
+## Surface: Figma-плагин Token Comparator
+
+Отдельная поверхность со **своей палитрой** — портальный chrome Presentbook
+(`pages/driver-color-tokens/*`), а не палитра docs/guides. Имена ступеней
+совпадают с таблицей выше, **значения — нет**: это разные UI Kit'а на одной
+архитектуре токенов, что допускается правилом «Design System vs UI Kit» в
+`CLAUDE.md`. При переносе значений между поверхностями сверяйтесь с этой
+таблицей, а не с именем токена.
+
+Файл: `tools/figma-token-comparator/src/ui.html`. Dark mode на этой
+поверхности не поддерживается — плагин рендерится в светлом chrome Figma.
+
+| Token | Level | Value | Used in |
+|-------|-------|-------|---------|
+| --core-neutral-x-0 | core | #ffffff | ds-surface, ds-text-on-accent |
+| --core-neutral-x-5 | core | #fafafa | ds-surface-zebra |
+| --core-neutral-x-10 | core | #f5f5f5 | ds-surface-muted, ds-badge-neutral-bg |
+| --core-neutral-x-15 | core | #eeeeee | ds-surface-checker |
+| --core-neutral-x-20 | core | #ebedf0 | ds-border, ds-badge-neutral-border |
+| --core-neutral-x-90 | core | #2d2c2e | ds-text |
+| --core-neutral-x-100-a10 | core | rgba(0,0,0,0.1) | ds-line-handle |
+| --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | ds-line-subtle |
+| --core-neutral-x-100-a16 | core | rgba(0,0,0,0.16) | ds-shadow-elevated, ds-shadow-dropdown |
+| --core-neutral-x-100-a22 | core | rgba(0,0,0,0.22) | ds-line-handle-hover |
+| --core-neutral-x-100-a26 | core | rgba(0,0,0,0.26) | ds-text-placeholder, ds-line-control |
+| --core-neutral-x-100-a30 | core | rgba(0,0,0,0.3) | ds-line-dashed |
+| --core-neutral-x-100-a38 | core | rgba(0,0,0,0.38) | ds-text-muted, ds-overlay-backdrop |
+| --core-neutral-x-100-a40 | core | rgba(0,0,0,0.4) | ds-line-control-hover |
+| --core-neutral-x-100-a54 | core | rgba(0,0,0,0.54) | ds-text-secondary, ds-badge-neutral-text |
+| --core-neutral-x-90-a32 | core | rgba(45,44,46,0.32) | ds-focus |
+| --core-azure-10 | core | #ebf0ff | ds-accent-bg, ds-badge-info-bg |
+| --core-azure-25 | core | #bccdfe | ds-badge-info-border |
+| --core-azure-45 | core | #2f58e0 | ds-accent-hover, ds-badge-info-text |
+| --core-azure-55 | core | #3d6afe | ds-accent |
+| --core-moss-10 | core | #eef8f1 | ds-badge-success-bg |
+| --core-moss-25 | core | #b9e6c9 | ds-badge-success-border |
+| --core-moss-60 | core | #1f7a3f | ds-badge-success-text |
+| --core-amber-10 | core | #fff8e6 | ds-badge-warning-bg |
+| --core-amber-30 | core | #f0d48a | ds-badge-warning-border |
+| --core-amber-60 | core | #8a6a00 | ds-badge-warning-text |
+| --core-carmine-10 | core | #fdecea | ds-badge-danger-bg |
+| --core-carmine-25 | core | #f4c2c2 | ds-badge-danger-border |
+| --core-carmine-50 | core | #d62347 | ds-badge-danger-text |
+
+Semantic-слой поверхности: `--ds-text*`, `--ds-surface*`, `--ds-border`,
+`--ds-line-*`, `--ds-accent*`, `--ds-focus`, `--ds-overlay-backdrop`,
+`--ds-shadow-*` и пять тональностей бейджа `--ds-badge-{neutral|success|info|
+warning|danger}-{bg|text|border}`. Тональность — единственный источник цвета
+статуса; соответствие «статус → тональность» задано в `STATUS_META`
+(`tools/figma-token-comparator/src/ui.ts`).

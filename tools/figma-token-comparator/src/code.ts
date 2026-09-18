@@ -426,7 +426,7 @@ async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Pr
   if (!token) {
     send({
       type: "error",
-      payload: { message: "Укажите Personal Access Token или сохраните его ранее через «Сохранить настройки»." },
+      payload: { message: "Укажите токен доступа Figma или сохраните его кнопкой «Сохранить настройки»." },
     });
     return;
   }
@@ -437,7 +437,7 @@ async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Pr
       type: "error",
       payload: {
         message:
-          "Не удалось определить библиотеку. Вставьте полный URL Figma или file key — или оставьте имя уже загруженной библиотеки.",
+          "Не удалось определить библиотеку. Вставьте ссылку на файл Figma, его ключ — или оставьте имя уже загруженной библиотеки.",
       },
     });
     return;
@@ -463,7 +463,7 @@ async function handleSaveGitHubSettings(
     send({
       type: "error",
       payload: {
-        message: "Укажите GitHub Personal Access Token или сохраните его ранее через «Сохранить настройки GitHub».",
+        message: "Укажите токен доступа GitHub или сохраните его кнопкой «Сохранить настройки».",
       },
     });
     return;
@@ -501,7 +501,7 @@ async function handleLoadRegistry(
       type: "error",
       payload: {
         message:
-          "Укажите GitHub Personal Access Token в поле выше (или сохраните его ранее) перед загрузкой реестра.",
+          "Перед загрузкой реестра укажите токен доступа GitHub в поле выше или сохраните его.",
       },
     });
     return;
@@ -558,7 +558,7 @@ async function handleLoadRegistry(
     const message =
       error instanceof GitHubRestApiError
         ? error.message
-        : "Неизвестная ошибка при загрузке реестра. Попробуйте ещё раз.";
+        : "Не удалось загрузить реестр. Попробуйте ещё раз.";
     send({ type: "error", payload: { message } });
   }
 }
@@ -602,7 +602,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       type: "error",
       payload: {
         message:
-          "Укажите Personal Access Token в поле выше (или сохраните его ранее) перед загрузкой библиотеки.",
+          "Перед загрузкой библиотеки укажите токен доступа Figma в поле выше или сохраните его.",
       },
     });
     return;
@@ -614,7 +614,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       type: "error",
       payload: {
         message:
-          "Не удалось определить библиотеку. Вставьте полный URL (https://www.figma.com/design/…/…) или file key.",
+          "Не удалось определить библиотеку. Вставьте ссылку вида https://www.figma.com/design/… или ключ файла.",
       },
     });
     return;
@@ -642,12 +642,12 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
 
     const colorsError = colorsOk
       ? null
-      : formatLibraryFetchError(colorsResult.reason, "Неизвестная ошибка при загрузке цветовых Variables.");
+      : formatLibraryFetchError(colorsResult.reason, "Не удалось загрузить переменные цвета.");
     const textStylesError = textStylesOk
       ? null
       : formatLibraryFetchError(
           textStylesResult.reason,
-          "Неизвестная ошибка при загрузке Text Styles библиотеки."
+          "Не удалось загрузить стили текста библиотеки."
         );
 
     if (!colorsOk && !textStylesOk) {
@@ -726,7 +726,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
         payload: {
           message:
             colorsError ??
-            "Неизвестная ошибка при загрузке цветовых Variables. Попробуйте ещё раз.",
+            "Не удалось загрузить переменные цвета. Попробуйте ещё раз.",
         },
       });
       return;
@@ -735,7 +735,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
     const message =
       error instanceof FigmaRestApiError
         ? error.message
-        : "Неизвестная ошибка при загрузке библиотеки. Попробуйте ещё раз.";
+        : "Не удалось загрузить библиотеку. Попробуйте ещё раз.";
     send({ type: "error", payload: { message } });
   }
 }
@@ -766,7 +766,7 @@ async function handleScan(
           type: "error",
           payload: {
             message:
-              "Text styles library unavailable: библиотека Text Styles не загружена. Загрузите библиотеку с PAT, у которого есть scopes file_content:read и library_content:read.",
+              "Стили текста не загружены. Перезагрузите библиотеку токеном, у которого есть доступ к содержимому файла и библиотек.",
           },
         });
         return;
@@ -813,7 +813,7 @@ async function handleScan(
       },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Ошибка сканирования макета.";
+    const message = error instanceof Error ? error.message : "Не удалось просканировать макет.";
     send({ type: "error", payload: { message } });
   }
 }
@@ -840,7 +840,7 @@ async function resolveSceneNodeById(id: string): Promise<SceneNode | null> {
 
 async function handleSelectNodes(nodeIds: string[]): Promise<void> {
   if (nodeIds.length === 0) {
-    send({ type: "error", payload: { message: "Нет привязки к слою для этой строки." } });
+    send({ type: "error", payload: { message: "К этой строке не привязан слой." } });
     return;
   }
 
@@ -857,7 +857,7 @@ async function handleSelectNodes(nodeIds: string[]): Promise<void> {
       type: "error",
       payload: {
         message:
-          "Слой не найден — возможно, он удалён или переименован. Пересканируйте макет и попробуйте снова.",
+          "Слой не найден — возможно, его удалили или переименовали. Пересканируйте макет и попробуйте снова.",
       },
     });
     return;
@@ -1067,7 +1067,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       type: "error",
       payload: {
         message:
-          "«Применить в макет» доступно только для строк со статусом Mapped или решением «Предложить правку значения» с известным Text Style.",
+          "«Применить в макет» доступно только для строк с выбранным стилем библиотеки или с предложенной правкой значения.",
       },
     });
     return;
@@ -1094,7 +1094,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
         type: "error",
         payload: {
           message:
-            "Не удалось прочитать типографику группы для применения property-fix — пересканируйте макет.",
+            "Не удалось прочитать типографику группы. Пересканируйте макет и повторите.",
         },
       });
       return;
@@ -1105,7 +1105,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       send({
         type: "error",
         payload: {
-          message: "Целевой Text Style не найден в загруженной библиотеке. Загрузите библиотеку заново.",
+          message: "Выбранного стиля нет в загруженной библиотеке. Загрузите её заново.",
         },
       });
       return;
@@ -1224,7 +1224,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     send({
       type: "error",
       payload: {
-        message: "«Применить в макет» доступно только для строк со статусом Mapped с известной переменной библиотеки.",
+        message: "«Применить в макет» доступно только для строк с выбранной переменной библиотеки.",
       },
     });
     return;
@@ -1234,7 +1234,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
   if (!libraryToken) {
     send({
       type: "error",
-      payload: { message: "Целевая переменная не найдена в загруженной библиотеке. Загрузите библиотеку заново." },
+      payload: { message: "Выбранной переменной нет в загруженной библиотеке. Загрузите её заново." },
     });
     return;
   }
@@ -1249,7 +1249,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     const reason =
       importError instanceof Error
         ? `Не удалось импортировать переменную библиотеки: ${importError.message}`
-        : "Не удалось импортировать переменную библиотеки.";
+        : "Не удалось подключить переменную библиотеки к файлу.";
     for (const nodeId of record.nodeIds) {
       skipped.push({ nodeId, reason });
     }
@@ -1265,13 +1265,13 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
         node = await figma.getNodeByIdAsync(nodeId);
       }
       if (!node || !isSceneNode(node)) {
-        skipped.push({ nodeId, reason: "Слой не найден — возможно, удалён или переименован с момента скана." });
+        skipped.push({ nodeId, reason: "Слой не найден — возможно, его удалили или переименовали после сканирования." });
         continue;
       }
 
       if (record.property === "stroke") {
         if (!("strokes" in node)) {
-          skipped.push({ nodeId, reason: "У этого слоя нет обводки (strokes)." });
+          skipped.push({ nodeId, reason: "У этого слоя нет обводки." });
           continue;
         }
         const strokesNode = node as unknown as MinimalStrokesMixin & { strokeStyleId?: string };
@@ -1294,7 +1294,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
       } else {
         // "fill" и "text-fill" — оба свойства пишут в fills (для TEXT-нод заливка текста — тоже fills).
         if (!("fills" in node)) {
-          skipped.push({ nodeId, reason: "У этого слоя нет заливки (fills)." });
+          skipped.push({ nodeId, reason: "У этого слоя нет заливки." });
           continue;
         }
         const fillsNode = node as unknown as MinimalFillsMixin & { fillStyleId?: string };
@@ -1302,7 +1302,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
         if (fills === figma.mixed) {
           skipped.push({
             nodeId,
-            reason: "Смешанные заливки текста (mixed) — нельзя применить переменную автоматически.",
+            reason: "В тексте несколько разных заливок — автоматически применить переменную нельзя.",
           });
           continue;
         }
@@ -1324,7 +1324,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
 
       applied += 1;
     } catch (nodeError) {
-      const reason = nodeError instanceof Error ? nodeError.message : "Неизвестная ошибка при применении переменной.";
+      const reason = nodeError instanceof Error ? nodeError.message : "Не удалось применить переменную.";
       skipped.push({ nodeId, reason });
     }
   }
@@ -1525,7 +1525,7 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
 
   if (property === "stroke") {
     if (!("strokes" in node)) {
-      throw new Error("У этого слоя нет обводки (strokes) — превью недоступно.");
+      throw new Error("У этого слоя нет обводки — превью не построить.");
     }
     (node as unknown as MinimalStrokesMixin).strokes = [paint];
     return;
@@ -1533,7 +1533,7 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
 
   // "fill" и "text-fill" оба пишут в fills (для TEXT-нод заливка текста — тоже fills).
   if (!("fills" in node)) {
-    throw new Error("У этого слоя нет заливки (fills) — превью недоступно.");
+    throw new Error("У этого слоя нет заливки — превью не построить.");
   }
   (node as unknown as MinimalFillsMixin).fills = [paint];
 }
@@ -1554,7 +1554,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
     send({
       type: "preview-error",
       recordId,
-      message: "Дождитесь завершения текущего построения превью и попробуйте снова.",
+      message: "Дождитесь, пока построится текущее превью, и попробуйте снова.",
     });
     return;
   }
@@ -1571,25 +1571,25 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
     if (variableId) {
       const token = lastLibraryColors.find((item) => item.variableId === variableId);
       if (!token) {
-        throw new Error("Переменная не найдена в загруженной библиотеке. Обновите библиотеку и повторите выбор.");
+        throw new Error("Переменной нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
       }
       const hasResolvedMode = token.modes.some((mode) => !mode.unresolved);
       if (!hasResolvedMode) {
-        throw new Error("Для выбранного токена нет доступного значения библиотеки для превью.");
+        throw new Error("У выбранного токена нет значения, по которому можно построить превью.");
       }
       target = toTarget(token, 0);
     } else {
       const history = await storage.getMappingHistory();
       const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
       if (!result?.target || result.target.valueUnresolved) {
-        throw new Error("Для этой строки нет доступного значения библиотеки для превью.");
+        throw new Error("Для этой строки нет значения библиотеки, по которому можно построить превью.");
       }
       target = result.target;
     }
 
     const representativeId = record.nodeIds[0];
     if (!representativeId) {
-      throw new Error("Нет привязанного слоя для построения превью.");
+      throw new Error("К этой строке не привязан слой — превью не построить.");
     }
 
     let anchor = await resolveSceneNodeById(representativeId);
@@ -1598,7 +1598,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
       anchor = await resolveSceneNodeById(representativeId);
     }
     if (!anchor) {
-      throw new Error("Слой не найден — возможно, он удалён. Пересканируйте макет.");
+      throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
     }
 
     const container = resolvePreviewContainer(anchor);
@@ -1612,11 +1612,11 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     const relativePath = getRelativeChildPath(container, anchor);
     if (relativePath === null) {
-      throw new Error("Не удалось определить положение слоя внутри контейнера превью.");
+      throw new Error("Не удалось определить положение слоя для превью.");
     }
 
     if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
-      throw new Error("Этот тип слоя не поддерживает построение превью.");
+      throw new Error("Для слоёв этого типа превью не строится.");
     }
 
     // Не переключаем figma.currentPage — клон переносится сразу на текущую страницу.
@@ -1631,12 +1631,12 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     const targetInClone = resolveNodeAtPath(clone, relativePath);
     if (!targetInClone) {
-      throw new Error("Не удалось найти слой внутри клона для применения цвета.");
+      throw new Error("Не удалось найти слой в копии для превью.");
     }
 
     const modePairs = getPreviewModePairs(record, target);
     if (modePairs.length === 0) {
-      throw new Error("Нет общих режимов между макетом и библиотекой для этой строки.");
+      throw new Error("У макета и библиотеки нет общих режимов для этой строки.");
     }
 
     // Один клон на всю запись — по каждому общему режиму последовательно
@@ -1661,7 +1661,7 @@ async function handleBuildPreview(recordId: string, variableId?: string): Promis
 
     send({ type: "preview-ready", recordId, modes });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Не удалось построить превью (неизвестная ошибка).";
+    const message = error instanceof Error ? error.message : "Не удалось построить превью.";
     send({ type: "preview-error", recordId, message });
   } finally {
     if (clone) {
@@ -1727,7 +1727,7 @@ async function handlePrintToFigma(
     if (results.length === 0) {
       send({
         type: "print-error",
-        payload: { message: "Нет строк для печати — таблица результатов пуста или всё скрыто фильтром." },
+        payload: { message: "Печатать нечего: таблица пуста или все строки скрыты фильтром." },
       });
       return;
     }
@@ -1790,7 +1790,7 @@ async function handlePrintToFigma(
     const message =
       error instanceof Error
         ? `Не удалось построить таблицу в Figma: ${error.message}`
-        : "Не удалось построить таблицу в Figma (неизвестная ошибка).";
+        : "Не удалось построить таблицу в Figma.";
     send({ type: "print-error", payload: { message } });
   }
 }
@@ -1886,7 +1886,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
     }
   } catch (error) {
-    const messageText = error instanceof Error ? error.message : "Неизвестная ошибка плагина.";
+    const messageText = error instanceof Error ? error.message : "Что-то пошло не так. Попробуйте ещё раз.";
     send({ type: "error", payload: { message: messageText } });
   }
 };
