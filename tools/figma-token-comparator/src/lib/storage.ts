@@ -10,6 +10,7 @@
 import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
 import { isLibraryBoundDecision } from "./libraryScope";
+import type { ProposalStatusInfo } from "./proposalLifecycle";
 import { clampWindowSize, type WindowSize } from "./windowSize";
 
 export type { WindowSize } from "./windowSize";
@@ -32,6 +33,7 @@ const KEYS = {
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
   LIBRARIES: "tc_libraries",
   ACTIVE_LIBRARY: "tc_active_library",
+  PROPOSAL_STATUSES: "tc_proposal_statuses",
 } as const;
 
 /** Данные каждой библиотеки — под своим ключом: в одну запись все кэши не влезут в лимит clientStorage. */
@@ -284,6 +286,7 @@ export async function setMappingHistoryEntry(
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
   if (!options.keepSubmitted) {
     await clearSubmittedSignature(recordId);
+    await clearProposalStatus(recordId);
   }
   return history;
 }
@@ -295,6 +298,7 @@ export async function clearMappingHistoryEntry(
   delete history[recordId];
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
   await clearSubmittedSignature(recordId);
+  await clearProposalStatus(recordId);
   return history;
 }
 
@@ -382,6 +386,38 @@ export async function markSignaturesSubmitted(signatures: string[]): Promise<voi
     submitted.add(signature);
   }
   await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
+
+  // Отправлено заново — прежний статус («Отклонено») больше не про это решение.
+  const statuses = await getProposalStatuses();
+  let changed = false;
+  for (const signature of signatures) {
+    if (signature in statuses) {
+      delete statuses[signature];
+      changed = true;
+    }
+  }
+  if (changed) await setProposalStatuses(statuses);
+}
+
+/**
+ * Статусы отправленных решений от бэкенда: на согласовании или отклонено
+ * (lib/proposalLifecycle.ts). Статус относится к конкретному решению —
+ * меняется решение, статус снимается.
+ */
+export async function getProposalStatuses(): Promise<Record<string, ProposalStatusInfo>> {
+  const value = await figma.clientStorage.getAsync(KEYS.PROPOSAL_STATUSES);
+  return value && typeof value === "object" ? (value as Record<string, ProposalStatusInfo>) : {};
+}
+
+export async function setProposalStatuses(statuses: Record<string, ProposalStatusInfo>): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.PROPOSAL_STATUSES, statuses);
+}
+
+async function clearProposalStatus(recordId: string): Promise<void> {
+  const statuses = await getProposalStatuses();
+  if (!(recordId in statuses)) return;
+  delete statuses[recordId];
+  await setProposalStatuses(statuses);
 }
 
 /**

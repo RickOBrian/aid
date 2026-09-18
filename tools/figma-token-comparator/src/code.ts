@@ -42,6 +42,7 @@ import {
   DEFAULT_REGISTRY_REPO,
 } from "./lib/registryApiConfig";
 import {
+  fetchProposalStatuses,
   proposeDecisionsOnBackend,
   RegistryBackendError,
   type ProposeDecisionEntryPayload,
@@ -61,6 +62,7 @@ import {
 } from "./lib/decisionPersistence";
 import { countResolvedByTeam, mergeRegistryDecisions } from "./lib/registryDecisions";
 import { isLibraryBoundDecision, scopeHistoryToLibrary } from "./lib/libraryScope";
+import { reconcileProposalStatuses, signaturesToCheck } from "./lib/proposalLifecycle";
 import type { CodeToUiMessage, PreviewModeResult, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
@@ -270,7 +272,8 @@ async function handleUiReady(): Promise<void> {
     },
   });
 
-  void loadRegistry();
+  await sendProposalStatuses();
+  void loadRegistry().finally(() => refreshProposalStatuses(true));
 }
 
 /**
@@ -287,6 +290,58 @@ async function withRegistryDecisions(
 
 async function getComparisonHistory(): Promise<Record<string, StoredDecision>> {
   return withRegistryDecisions(await storage.getMappingHistory());
+}
+
+/** Статусы проверяются при запуске и после отправки всегда, при сканировании — не чаще раза в 5 минут. */
+const PROPOSAL_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+let lastProposalCheckAt = 0;
+
+async function sendProposalStatuses(): Promise<void> {
+  send({ type: "proposal-statuses", payload: { statuses: await storage.getProposalStatuses() } });
+}
+
+/**
+ * Жизненный цикл отправленных решений (lib/proposalLifecycle.ts): спрашивает
+ * у бэкенда, что стало с отправленным и ещё не согласованным. Отклонённое
+ * возвращается в очередь на отправку и получает пометку «Отклонено».
+ * Без ключа и при сбое — молча: статусы вспомогательные.
+ */
+async function refreshProposalStatuses(force = false): Promise<void> {
+  if (!force && Date.now() - lastProposalCheckAt < PROPOSAL_CHECK_INTERVAL_MS) return;
+  const secret = await storage.getRegistrySecret();
+  if (!secret) return;
+  lastProposalCheckAt = Date.now();
+
+  const [history, submitted, cache, previous] = await Promise.all([
+    storage.getMappingHistory(),
+    storage.getSubmittedSignatures(),
+    storage.getRegistryCache(),
+    storage.getProposalStatuses(),
+  ]);
+  const checked = signaturesToCheck(history, submitted, cache?.registry.entries ?? []);
+
+  let response = {};
+  if (checked.length > 0) {
+    try {
+      response = await fetchProposalStatuses(secret, checked);
+    } catch {
+      return;
+    }
+  }
+  const { statuses, rejected } = reconcileProposalStatuses(checked, response);
+
+  // «Отклонено» у решений, уже вернувшихся в очередь, держится до нового
+  // решения или повторной отправки — их больше не проверяют.
+  const keptRejected = Object.fromEntries(
+    Object.entries(previous).filter(
+      ([signature, status]) => status.state === "rejected" && !submitted.has(signature) && history[signature]
+    )
+  );
+  await storage.setProposalStatuses({ ...keptRejected, ...statuses });
+  for (const signature of rejected) await storage.clearSubmittedSignature(signature);
+
+  if (rejected.length > 0) await sendPendingProposeCount();
+  await sendProposalStatuses();
 }
 
 async function sendPendingProposeCount(): Promise<void> {
@@ -510,6 +565,7 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
     await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
     send({ type: "decisions-submitted", payload: { count: entries.length, unchanged, reason } });
     await sendPendingProposeCount();
+    void refreshProposalStatuses(true);
   } catch (error) {
     if (!(error instanceof RegistryBackendError)) {
       console.error("[registry-backend] Unexpected propose error");
@@ -806,6 +862,7 @@ async function handleScan(
 ): Promise<void> {
   try {
     lastScanScopeByCategory[category] = scope;
+    void refreshProposalStatuses();
     const scanLabel = category === "typography" ? "типографики" : "цветов";
     send({ type: "scan-progress", payload: { message: `Сканирование ${scanLabel}...` } });
 
@@ -2035,6 +2092,12 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
       case "apply-to-layout":
         await handleApplyToLayout(message.recordId);
+        break;
+      case "open-external":
+        // Только запросы на согласование: адрес приходит из UI, открывать что угодно нельзя.
+        if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(message.payload.url)) {
+          figma.openExternal(message.payload.url);
+        }
         break;
       case "toggle-admin-mode":
         await handleToggleAdminMode();

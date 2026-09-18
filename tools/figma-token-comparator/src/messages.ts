@@ -13,6 +13,7 @@ import type {
   TokenCategory,
 } from "./comparators/types";
 import type { LibraryMeta } from "./lib/storage";
+import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
 
 export interface UiReadyMessage {
   type: "ui-ready";
@@ -42,6 +43,12 @@ export interface InitEmptyRegistryMessage {
 export interface RemoveLibraryMessage {
   type: "remove-library";
   payload: { fileKey: string };
+}
+
+/** Открыть ссылку во внешнем браузере — только запросы на согласование на GitHub. */
+export interface OpenExternalMessage {
+  type: "open-external";
+  payload: { url: string };
 }
 
 /** Выбрать библиотеку для сканирования (вкладка «Сканирование»). */
@@ -211,6 +218,7 @@ export type UiToCodeMessage =
   | LoadLibraryMessage
   | RemoveLibraryMessage
   | SetActiveLibraryMessage
+  | OpenExternalMessage
   | ScanMessage
   | SelectNodesMessage
   | ApplyDecisionMessage
@@ -283,6 +291,12 @@ export interface SettingsSavedMessage {
 
 export interface LibraryLoadingMessage {
   type: "library-loading";
+}
+
+/** Статусы отправленных решений: на согласовании или отклонено. Ключ — подпись строки. */
+export interface ProposalStatusesMessage {
+  type: "proposal-statuses";
+  payload: { statuses: Record<string, ProposalStatusInfo> };
 }
 
 /**
@@ -481,6 +495,7 @@ export type CodeToUiMessage =
   | RegistryInitializedMessage
   | LibraryLoadingMessage
   | LibrariesChangedMessage
+  | ProposalStatusesMessage
   | ScanProgressMessage
   | ScanResultsMessage
   | DecisionAppliedMessage

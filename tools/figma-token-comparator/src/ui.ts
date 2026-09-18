@@ -33,6 +33,7 @@ import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./me
 import { clampWindowSize } from "./lib/windowSize";
 import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
 import type { LibraryMeta } from "./lib/storage";
+import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
 import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
@@ -50,6 +51,9 @@ function $<T extends HTMLElement>(id: string): T {
 // ---------------------------------------------------------------------------
 
 let activeCategory: TokenCategory = "colors";
+/** Статусы отправленных решений по подписи строки: на согласовании или отклонено. */
+let proposalStatuses: Record<string, ProposalStatusInfo> = {};
+
 /** Загруженные библиотеки (вкладка «Настройки») и выбранная для сканирования. */
 let loadedLibraries: LibraryMeta[] = [];
 let activeLibraryKey: string | null = null;
@@ -340,6 +344,29 @@ function createDecisionCheck(decision: Decision): HTMLSpanElement {
   check.textContent = " ✓";
   check.title = `Решение принято: ${DECISION_LABELS[decision]}`;
   return check;
+}
+
+/**
+ * Пометка жизненного цикла отправленного решения. Это кнопка: по клику
+ * открывается запрос на согласование на GitHub.
+ */
+function createProposalStatusBadge(status: ProposalStatusInfo): HTMLButtonElement {
+  const isOpen = status.state === "open";
+  const badge = document.createElement("button");
+  badge.type = "button";
+  badge.className = `${badgeClassName(isOpen ? "info" : "warning", true)} ds-badge--action`;
+  badge.textContent = `${isOpen ? "На согласовании" : "Отклонено"} · #${status.number}`;
+  badge.title = isOpen
+    ? `Решение ждёт согласования в запросе #${status.number}. Нажмите, чтобы открыть запрос.`
+    : `Запрос #${status.number} закрыт без согласования${
+        status.comment ? `: «${status.comment}»` : ""
+      }. Пересмотрите решение и отправьте снова. Нажмите, чтобы открыть запрос.`;
+  badge.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    post({ type: "open-external", payload: { url: status.url } });
+  });
+  return badge;
 }
 
 /** Пометка строки, решение по которой взято из реестра согласованных решений (lib/registryDecisions.ts). */
@@ -2646,6 +2673,10 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   if (result.decisionSource === "registry") {
     statusBadges.appendChild(createRegistryDecisionBadge());
   }
+  const proposalStatus = result.decisionSource === "registry" ? undefined : proposalStatuses[result.id];
+  if (proposalStatus) {
+    statusBadges.appendChild(createProposalStatusBadge(proposalStatus));
+  }
   if (result.applyPartial) {
     statusBadges.appendChild(
       createSecondaryBadge("Применено частично", "warning", "Стиль применён не ко всем слоям группы.")
@@ -2827,6 +2858,10 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   }
   if (result.decisionSource === "registry") {
     statusBadges.appendChild(createRegistryDecisionBadge());
+  }
+  const proposalStatus = result.decisionSource === "registry" ? undefined : proposalStatuses[result.id];
+  if (proposalStatus) {
+    statusBadges.appendChild(createProposalStatusBadge(proposalStatus));
   }
   if (result.applyPartial) {
     statusBadges.appendChild(
@@ -3584,6 +3619,10 @@ window.onmessage = (event: MessageEvent) => {
       break;
     case "library-loading":
       renderLibraryStatus("Загрузка библиотеки...");
+      break;
+    case "proposal-statuses":
+      proposalStatuses = message.payload.statuses;
+      applyActiveCategoryView();
       break;
     case "libraries-changed": {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;

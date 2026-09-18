@@ -11,6 +11,10 @@
 export const REGISTRY_PROPOSE_URL =
   "https://aid-registry-api.vercel.app/api/registry/propose-decision";
 
+/** Статусы отправленных решений: на согласовании или отклонено. */
+export const REGISTRY_PROPOSAL_STATUS_URL =
+  "https://aid-registry-api.vercel.app/api/registry/proposal-status";
+
 export const DEFAULT_REGISTRY_OWNER = "RickOBrian";
 export const DEFAULT_REGISTRY_REPO = "aid";
 export const DEFAULT_REGISTRY_PATH = "decisions-registry.json";
