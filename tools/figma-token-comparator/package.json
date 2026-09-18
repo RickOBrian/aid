@@ -1,8 +1,8 @@
 {
   "name": "figma-token-comparator",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
-  "description": "Figma plugin (MVP): детерминированное сравнение цветовых токенов макета с эталонной библиотекой Figma Variables. Без LLM/AI.",
+  "description": "Figma plugin: детерминированное сравнение цветов и типографики макета с эталонной библиотекой Figma. Без LLM/AI.",
   "scripts": {
     "build": "node build.js",
     "watch": "node build.js --watch",
