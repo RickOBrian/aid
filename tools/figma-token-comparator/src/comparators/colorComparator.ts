@@ -45,11 +45,15 @@ export function isUsingLibraryVariable(record: LayoutRecord, library: LibraryTok
 }
 
 /**
- * Строка попадает в таблицу только если требует решения пользователя:
- * - hardcoded (нет токена);
- * - style / ghost (цвет через paint style, не variable);
- * - variable не из эталонной библиотеки.
- * Скрываем: variable из библиoteki; строки с решением ignored/mapped/mapped_suggested.
+ * Строка попадает в таблицу только если требует решения пользователя.
+ *
+ * Показываем: ручной цвет, цвет через paint style, битую ссылку на стиль и
+ * переменную не из эталонной библиотеки.
+ *
+ * Скрываем: переменную из библиотеки (решать нечего), строку с решением
+ * «игнорировать» и строку с маппингом, цель которого действительно есть в
+ * загруженной библиотеке. Решения «кандидат» и «правка значения» строку не
+ * закрывают — работа по ним ещё не сделана.
  */
 export function requiresUserAction(result: ComparisonResult, library: LibraryToken[]): boolean {
   if (result.decision === "ignored") {
@@ -250,6 +254,7 @@ function applyHistory(
     decision: stored.decision,
     decisionComment: stored.comment,
     decisionTargetVariableId: stored.targetVariableId,
+    decisionTargetStyleId: stored.targetStyleId,
     decisionTimestamp: stored.timestamp,
     decisionProposedModeId: stored.proposedModeId,
     decisionProposedModeName: stored.proposedModeName,
@@ -269,8 +274,12 @@ function applyHistory(
   if ((stored.decision === "mapped" || stored.decision === "mapped_suggested") && stored.targetVariableId) {
     const targetToken = library.find((token) => token.variableId === stored.targetVariableId);
     if (targetToken) {
+      // Показываем тот режим токена, значение которого реально совпало со
+      // значением макета: нулевой режим «по умолчанию» вводил в заблуждение,
+      // когда совпадение было по Night, а в таблице стоял Day.
+      const matchedModeIndex = findExactModeIndex(targetToken, readColorValue(record.comparisonValue));
       withDecision.status = "mapped";
-      withDecision.target = toTarget(targetToken, 0);
+      withDecision.target = toTarget(targetToken, Math.max(matchedModeIndex, 0));
       withDecision.deltaE = undefined;
     }
   }

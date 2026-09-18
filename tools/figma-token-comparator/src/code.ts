@@ -1113,7 +1113,14 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
           nodeId,
           reason: `Импортированный стиль «${targetStyle.name}» не является Text Style.`,
         }));
-        send({ type: "apply-to-layout-result", recordId, applied: 0, skipped });
+        send({
+          type: "apply-to-layout-result",
+          recordId,
+          attempted: record.nodeIds.length,
+          occurrences: record.count,
+          applied: 0,
+          skipped,
+        });
         return;
       }
       importedStyle = imported;
@@ -1123,7 +1130,14 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
           ? `Не удалось импортировать Text Style «${targetStyle.name}»: ${importError.message}`
           : `Не удалось импортировать Text Style «${targetStyle.name}».`;
       const skipped = record.nodeIds.map((nodeId) => ({ nodeId, reason }));
-      send({ type: "apply-to-layout-result", recordId, applied: 0, skipped });
+      send({
+        type: "apply-to-layout-result",
+        recordId,
+        attempted: record.nodeIds.length,
+        occurrences: record.count,
+        applied: 0,
+        skipped,
+      });
       return;
     }
   }
@@ -1191,6 +1205,8 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   send({
     type: "apply-to-layout-result",
     recordId,
+    attempted: record.nodeIds.length,
+    occurrences: record.count,
     applied: batchResult.applied,
     skipped: batchResult.skipped,
     partial: !fullSuccess && newAppliedIds.length > 0,
@@ -1248,7 +1264,14 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     for (const nodeId of record.nodeIds) {
       skipped.push({ nodeId, reason });
     }
-    send({ type: "apply-to-layout-result", recordId, applied: 0, skipped });
+    send({
+      type: "apply-to-layout-result",
+      recordId,
+      attempted: record.nodeIds.length,
+      occurrences: record.count,
+      applied: 0,
+      skipped,
+    });
     return;
   }
 
@@ -1338,6 +1361,8 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
   send({
     type: "apply-to-layout-result",
     recordId,
+    attempted: record.nodeIds.length,
+    occurrences: record.count,
     applied,
     skipped,
     partial: skipped.length > 0 && applied > 0,

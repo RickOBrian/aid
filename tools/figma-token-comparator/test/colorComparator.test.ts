@@ -410,9 +410,65 @@ describe("применение истории решений", () => {
     expect(result.applySkips).toHaveLength(1);
   });
 
-  // Находка №19 аудита: цветовая ветка не переносит decisionTargetStyleId,
-  // в отличие от типографики.
-  it.todo("№19: decisionTargetStyleId переносится в результат");
+  // Находка №19 аудита: цветовая ветка не переносила decisionTargetStyleId,
+  // в отличие от типографики — поля решения расходились между категориями.
+  it("№19: decisionTargetStyleId переносится в результат", () => {
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "candidate",
+        targetStyleId: "S:42",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    const [result] = computeColorComparisonResults([record], [], history);
+
+    expect(result.decisionTargetStyleId).toBe("S:42");
+  });
+
+  // Находка №19 аудита: подтверждённый маппинг всегда показывал нулевой режим
+  // токена, даже когда значение макета совпадало с другим режимом.
+  it("№19: подтверждённый маппинг показывает режим, который реально совпал", () => {
+    const token = libraryToken({
+      name: "bg/base",
+      variableId: "var-1",
+      modes: [mode("Day", "#FFFFFF"), mode("Night", "#1E1E1E")],
+    });
+    const record = colorRecord({ hex: "#1E1E1E", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "mapped",
+        targetVariableId: "var-1",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    const [result] = computeColorComparisonResults([record], [token], history);
+
+    expect(statusOf(result)).toBe("mapped");
+    expect(result.target?.modeName).toBe("Night");
+  });
+
+  it("№19: без совпадения по значению режим остаётся первым", () => {
+    const token = libraryToken({
+      name: "bg/base",
+      variableId: "var-1",
+      modes: [mode("Day", "#FFFFFF"), mode("Night", "#1E1E1E")],
+    });
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "mapped",
+        targetVariableId: "var-1",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    const [result] = computeColorComparisonResults([record], [token], history);
+
+    expect(result.target?.modeName).toBe("Day");
+  });
 });
 
 describe("несколько режимов в макете", () => {

@@ -41,6 +41,12 @@ interface RawColorHit {
   nodePath: string;
 }
 
+/**
+ * Сколько id слоёв храним на группу. Счётчик вхождений (`count`) при этом
+ * растёт дальше, поэтому у больших групп он больше длины `nodeIds` — такие
+ * группы помечаются `nodeIdsTruncated`, чтобы интерфейс не выдавал частичное
+ * применение за полное.
+ */
 const MAX_NODE_IDS_PER_GROUP = 500;
 
 function isSolidPaint(paint: Paint): paint is SolidPaint {
@@ -323,6 +329,8 @@ function groupHits(hits: RawColorHit[]): LayoutRecord[] {
       existing.count += 1;
       if (existing.nodeIds.length < MAX_NODE_IDS_PER_GROUP) {
         existing.nodeIds.push(hit.node.id);
+      } else {
+        existing.nodeIdsTruncated = true;
       }
       continue;
     }
@@ -633,6 +641,8 @@ function groupTypographyHits(hits: RawTypographyHit[]): LayoutRecord[] {
       existing.count += 1;
       if (existing.nodeIds.length < MAX_NODE_IDS_PER_GROUP) {
         existing.nodeIds.push(hit.node.id);
+      } else {
+        existing.nodeIdsTruncated = true;
       }
       if (hit.structuralDriftDetected) {
         existing.structuralDriftDetected = true;

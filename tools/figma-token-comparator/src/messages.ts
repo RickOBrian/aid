@@ -366,6 +366,10 @@ export interface ApplyToLayoutResultMessage {
   type: "apply-to-layout-result";
   recordId: string;
   applied: number;
+  /** Сколько слоёв вообще пытались изменить — размер списка id группы. */
+  attempted: number;
+  /** Сколько вхождений в группе всего: больше attempted, если список обрезан лимитом. */
+  occurrences: number;
   skipped: Array<{ nodeId: string; reason: string }>;
   /** true — часть occurrences применена, часть осталась pending (typography batch). */
   partial?: boolean;

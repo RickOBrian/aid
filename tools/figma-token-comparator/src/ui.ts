@@ -19,6 +19,12 @@ import { formatTypographyDisplayValue, readTypographyComparisonValue } from "./l
 import { isValidHex, normalizeHex } from "./lib/colorUtils";
 import { findLayoutValueForTargetMode, sortModesStable } from "./lib/modePairing";
 import { filterSemanticColorTokens } from "./lib/semanticColorLibrary";
+import {
+  findLibraryTextStyleByLabel,
+  findLibraryTokenByLabel,
+  formatLibraryTextStyleLabel,
+  formatLibraryTokenLabel,
+} from "./lib/libraryLabels";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
@@ -523,6 +529,15 @@ function updateProposeButton(count: number, byCategory?: Record<TokenCategory, n
   const btn = $<HTMLButtonElement>("tc-propose-decisions-btn");
   btn.textContent = `Отправить ${categoryPending} ${pluralizeDecisions(categoryPending)} на согласование`;
   btn.disabled = categoryPending === 0;
+}
+
+/** «1 слой», «2 слоя», «5 слоёв». */
+function pluralizeLayers(count: number): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "слой";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "слоя";
+  return "слоёв";
 }
 
 /** «1 расхождение», «2 расхождения», «5 расхождений». */
@@ -1376,7 +1391,9 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
         result.representativeNodeName || "(без имени)"
       )}</strong></div>
       <div class="tc-apply-summary__row"><span>Свойство</span><strong>text-style</strong></div>
-      <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${result.count}</strong></div>
+      <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${formatAffectedLayers(
+        result
+      )}</strong></div>
       <div class="tc-apply-summary__row"><span>Стиль текста</span><strong>${escapeHtml(
         result.target?.name ?? ""
       )}</strong></div>
@@ -1402,7 +1419,9 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
     <div class="tc-apply-summary__row"><span>Свойство</span><strong>${escapeHtml(
       propertyLabel(result.property)
     )}</strong></div>
-    <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${result.count}</strong></div>
+    <div class="tc-apply-summary__row"><span>Затронуто слоёв</span><strong>${formatAffectedLayers(
+      result
+    )}</strong></div>
     <div class="tc-apply-summary__row"><span>Переменная</span><strong>${escapeHtml(result.target?.name ?? "")}${
     result.target?.collectionName ? ` (${escapeHtml(result.target.collectionName)})` : ""
   }</strong></div>
@@ -1438,16 +1457,29 @@ function confirmApplyToLayout(): void {
   post({ type: "apply-to-layout", recordId: activeApplyRecordId });
 }
 
+/**
+ * «Затронуто слоёв» в подтверждающей модалке. У группы, чей список слоёв
+ * обрезан лимитом сканера, показываем обе величины — сколько будет изменено
+ * и сколько вхождений всего.
+ */
+function formatAffectedLayers(result: ComparisonResult): string {
+  if (!result.nodeIdsTruncated) return String(result.count);
+  return `${result.nodeIds.length} из ${result.count}`;
+}
+
 function showApplyToLayoutResult(
   applied: number,
   skipped: Array<{ nodeId: string; reason: string }>,
-  partial?: boolean
+  options: { attempted: number; occurrences: number; partial?: boolean }
 ): void {
+  const { attempted, occurrences, partial } = options;
   $("tc-apply-loading").hidden = true;
   const resultView = $("tc-apply-result-view");
   resultView.hidden = false;
 
-  const total = applied + skipped.length;
+  // Раньше знаменатель считался как applied + skipped, то есть всегда
+  // совпадал с числителем при отсутствии пропусков: сообщение «Применено к 7
+  // из 7 слоёв» появлялось и тогда, когда в группе было 40 слоёв.
   const skippedHtml =
     skipped.length > 0
       ? `<ul class="tc-apply-skipped-list">${skipped
@@ -1459,11 +1491,21 @@ function showApplyToLayoutResult(
     ? `<p class="ds-status-line ds-status-line--warning">Применено частично: обновились не все слои — остальные остались как были, причина указана выше.</p>`
     : "";
 
+  // Список слоёв группы обрезается лимитом сканера, поэтому вхождений может
+  // быть больше, чем слоёв, которые вообще можно затронуть за один заход.
+  const truncatedNote =
+    occurrences > attempted
+      ? `<p class="ds-status-line ds-status-line--warning">В группе ${occurrences} ${pluralizeLayers(
+          occurrences
+        )}, но за один раз плагин изменяет не больше ${attempted}. Пересканируйте макет и повторите, чтобы обработать остальные.</p>`
+      : "";
+
   resultView.innerHTML = `
-    <p class="tc-apply-result__summary">Применено к ${applied} из ${total} слоёв${
-    skipped.length > 0 ? `, пропущено: ${skipped.length}` : ""
-  }.</p>
+    <p class="tc-apply-result__summary">Применено к ${applied} из ${attempted} ${pluralizeLayers(
+    attempted
+  )}${skipped.length > 0 ? `, пропущено: ${skipped.length}` : ""}.</p>
     ${partialNote}
+    ${truncatedNote}
     ${skippedHtml}
     <p class="ds-status-line">Пересканируйте макет, чтобы обновить таблицу результатов (необязательно, но рекомендуется).</p>
   `;
@@ -1635,9 +1677,6 @@ function setupValueFixExtra(result: ComparisonResult, valueFixExtra: HTMLElement
 
 const DROPDOWN_CHEVRON_SVG = `<svg class="ds-dropdown-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-function formatLibraryTokenLabel(token: LibraryToken): string {
-  return `${token.name} (${token.collectionName})`;
-}
 
 function filterLibraryTokens(query: string): LibraryToken[] {
   const normalized = query.trim().toLowerCase();
@@ -2050,9 +2089,6 @@ function renderTypographyTargetStyleCell(result: ComparisonResult): string {
   return `<div>${styleName}</div>${summaryHtml}`;
 }
 
-function formatLibraryTextStyleLabel(style: LibraryTextStyle): string {
-  return style.name;
-}
 
 function filterLibraryTextStyles(query: string): LibraryTextStyle[] {
   const normalized = query.trim().toLowerCase();
@@ -2618,8 +2654,7 @@ function applyTypographyDecision(
     const label = input?.value.trim() ?? "";
     let styleId = mappedExtra.dataset.selectedStyleId;
     if (!styleId && label) {
-      const matchedStyle = currentLibraryTextStyles.find((style) => formatLibraryTextStyleLabel(style) === label);
-      styleId = matchedStyle?.styleId;
+      styleId = findLibraryTextStyleByLabel(label, currentLibraryTextStyles)?.styleId;
     }
     if (!styleId) {
       showError("Выберите стиль из списка AID — точного совпадения по имени не нашлось.");
@@ -2633,8 +2668,9 @@ function applyTypographyDecision(
         decision,
         category: "typography",
         targetStyleId: styleId,
-        targetStyleName: label,
-        targetName: label,
+        // В реестр уходит имя стиля, а не подпись из выпадающего списка.
+        targetStyleName: selectedStyle?.name ?? label,
+        targetName: selectedStyle?.name ?? label,
         mismatchedProperties: result.mismatchedProperties,
         targetDisplayValue: selectedStyle?.displayValue,
         ...review,
@@ -2726,8 +2762,7 @@ function applyDecision(
     const label = input?.value.trim() ?? "";
     let variableId = mappedExtra.dataset.selectedVariableId;
     if (!variableId && label) {
-      const matchedToken = currentLibraryTokens.find((token) => formatLibraryTokenLabel(token) === label);
-      variableId = matchedToken?.variableId;
+      variableId = findLibraryTokenByLabel(label, currentLibraryTokens)?.variableId;
     }
     if (!variableId) {
       showError("Выберите токен из списка AID — точного совпадения по имени не нашлось.");
@@ -2743,7 +2778,11 @@ function applyDecision(
         recordId: result.id,
         decision,
         targetVariableId: variableId,
-        targetName: label,
+        // В реестр уходит имя токена, а не подпись из выпадающего списка
+        // («bg/accent», а не «bg/accent (color-sem)») — иначе одно и то же
+        // поле реестра заполнялось бы в двух форматах, в зависимости от
+        // того, выбран токен вручную или предложен плагином.
+        targetName: manuallySelectedToken?.name ?? label,
         targetCollectionName: manuallySelectedToken?.collectionName,
         ...buildSourceReviewContext(result),
       },
@@ -3278,7 +3317,11 @@ window.onmessage = (event: MessageEvent) => {
       applyToLayoutInFlight = false;
       setApplyToLayoutButtonsDisabled(false);
       if (activeApplyRecordId === message.recordId) {
-        showApplyToLayoutResult(message.applied, message.skipped, message.partial);
+        showApplyToLayoutResult(message.applied, message.skipped, {
+          attempted: message.attempted,
+          occurrences: message.occurrences,
+          partial: message.partial,
+        });
       }
       break;
     }
