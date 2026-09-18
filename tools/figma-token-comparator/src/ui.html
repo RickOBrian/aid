@@ -1991,6 +1991,27 @@
         margin-top: 0;
       }
 
+      /* Чейнджлог в гайде: версия, дата и пометка в строке аккордеона */
+      .ds-guide-changelog {
+        margin-top: 32px;
+      }
+
+      .ds-guide-changelog__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 8px;
+      }
+
+      .ds-guide-changelog__date {
+        font-weight: 400;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-guide-changelog__summary {
+        margin-top: 0;
+      }
+
       .ds-guide-status-list {
         list-style: none;
         margin: 0;
@@ -3055,6 +3076,12 @@
               </div>
             </div>
           </div>
+
+          <section class="ds-guide-changelog" aria-labelledby="tc-changelog-title">
+            <h2 id="tc-changelog-title">Что нового</h2>
+            <p id="tc-changelog-current"></p>
+            <div class="ds-guide-accordion" id="tc-changelog-accordion"></div>
+          </section>
         </article>
       </section>
     </div>

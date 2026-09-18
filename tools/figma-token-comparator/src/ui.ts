@@ -31,6 +31,8 @@ import { parseCssColor, pickPreviewBackdrop, type CheckerColors } from "./lib/pr
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
+import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
+import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
   parent.postMessage({ pluginMessage: message }, "*");
@@ -457,11 +459,76 @@ function initHints(): void {
 // Гайд — аккордеон
 // ---------------------------------------------------------------------------
 
-function initGuideAccordion(): void {
-  const root = document.getElementById("tc-guide-accordion");
-  if (!root) return;
+/** Шеврон строки аккордеона гайда — тот же, что в разметке разделов ui.html. */
+const GUIDE_CHEVRON_SVG = `<svg class="ds-guide-accordion__chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-  root.querySelectorAll<HTMLButtonElement>(".ds-guide-accordion__trigger").forEach((trigger) => {
+function formatChangelogDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function renderChangelogEntry(entry: ChangelogEntry, isOpen: boolean): string {
+  const state = getChangelogEntryState(entry, PLUGIN_VERSION);
+  const slug = entry.version.replace(/\./g, "-");
+  const badge =
+    state === "current"
+      ? `<span class="${badgeClassName("info")}">Ваша версия</span>`
+      : state === "upcoming"
+        ? `<span class="${badgeClassName("neutral")}">Готовится</span>`
+        : "";
+  const date = entry.date
+    ? `<span class="ds-guide-changelog__date">${escapeHtml(formatChangelogDate(entry.date))}</span>`
+    : "";
+  const actions = entry.actions?.length
+    ? `<div class="ds-guide-note"><strong>После обновления:</strong> ${entry.actions
+        .map((action) => escapeHtml(action))
+        .join(" ")}</div>`
+    : "";
+  const groups = entry.groups
+    .map(
+      (group) => `
+        <h3>${escapeHtml(group.title)}</h3>
+        <ul>${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+    )
+    .join("");
+
+  return `
+    <div class="ds-guide-accordion__item${isOpen ? " is-open" : ""}">
+      <button
+        type="button"
+        class="ds-guide-accordion__trigger"
+        aria-expanded="${isOpen}"
+        aria-controls="tc-changelog-panel-${slug}"
+      >
+        <span class="ds-guide-changelog__head">
+          <span>Версия ${escapeHtml(entry.version)}</span>
+          ${date}
+          ${badge}
+        </span>
+        ${GUIDE_CHEVRON_SVG}
+      </button>
+      <div class="ds-guide-accordion__panel" id="tc-changelog-panel-${slug}" role="region"${isOpen ? "" : " hidden"}>
+        <p class="ds-guide-changelog__summary">${escapeHtml(entry.summary)}</p>
+        ${actions}
+        ${groups}
+      </div>
+    </div>`;
+}
+
+/** Блок «Что нового» в гайде: по версии на строку, своя версия раскрыта. */
+function renderChangelog(): void {
+  $("tc-changelog-current").textContent = `У вас установлена версия ${PLUGIN_VERSION}.`;
+  $("tc-changelog-accordion").innerHTML = CHANGELOG.map((entry) =>
+    renderChangelogEntry(entry, entry.version === PLUGIN_VERSION)
+  ).join("");
+}
+
+function initGuideAccordion(): void {
+  document.querySelectorAll<HTMLButtonElement>(".ds-guide-accordion .ds-guide-accordion__trigger").forEach((trigger) => {
     trigger.addEventListener("click", () => {
       const item = trigger.closest(".ds-guide-accordion__item");
       const panelId = trigger.getAttribute("aria-controls");
@@ -3583,6 +3650,7 @@ function initWindowResize(): void {
 
 initTabs();
 initHints();
+renderChangelog();
 initGuideAccordion();
 initScopeSegment();
 initCategorySegment();
