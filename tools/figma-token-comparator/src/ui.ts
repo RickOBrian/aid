@@ -465,6 +465,88 @@ function switchToTab(tabName: string): void {
 }
 
 // ---------------------------------------------------------------------------
+// Подсказки — кружок с вопросом рядом с заголовком поля
+// ---------------------------------------------------------------------------
+
+/** Отступ всплывашки от края окна и от самой кнопки. */
+const HINT_GAP = 6;
+const HINT_VIEWPORT_MARGIN = 8;
+
+let openHintTrigger: HTMLButtonElement | null = null;
+
+function closeHint(): void {
+  if (!openHintTrigger) return;
+  openHintTrigger.setAttribute("aria-expanded", "false");
+  openHintTrigger.removeAttribute("aria-describedby");
+  openHintTrigger = null;
+  $("tc-hint-popover").hidden = true;
+}
+
+/**
+ * Ставит всплывашку под кнопкой, а если снизу не помещается — над ней.
+ * Позиция считается в координатах окна (position: fixed): панель настроек
+ * скроллится и обрезала бы абсолютно позиционированный элемент по overflow.
+ */
+function positionHintPopover(trigger: HTMLElement, popover: HTMLElement): void {
+  const anchor = trigger.getBoundingClientRect();
+  popover.style.left = "0px";
+  popover.style.top = "0px";
+  const box = popover.getBoundingClientRect();
+
+  const maxLeft = window.innerWidth - box.width - HINT_VIEWPORT_MARGIN;
+  const left = Math.max(HINT_VIEWPORT_MARGIN, Math.min(anchor.left, maxLeft));
+
+  const below = anchor.bottom + HINT_GAP;
+  const fitsBelow = below + box.height <= window.innerHeight - HINT_VIEWPORT_MARGIN;
+  const top = fitsBelow
+    ? below
+    : Math.max(HINT_VIEWPORT_MARGIN, anchor.top - box.height - HINT_GAP);
+
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+}
+
+function openHint(trigger: HTMLButtonElement): void {
+  const text = trigger.parentElement?.querySelector<HTMLElement>(".ds-hint-text");
+  if (!text) return;
+
+  const popover = $("tc-hint-popover");
+  popover.textContent = text.textContent?.trim() ?? "";
+  popover.hidden = false;
+  positionHintPopover(trigger, popover);
+
+  trigger.setAttribute("aria-expanded", "true");
+  trigger.setAttribute("aria-describedby", "tc-hint-popover");
+  openHintTrigger = trigger;
+}
+
+function initHints(): void {
+  document.querySelectorAll<HTMLButtonElement>(".ds-hint-trigger").forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const wasOpen = openHintTrigger === trigger;
+      closeHint();
+      if (!wasOpen) openHint(trigger);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!openHintTrigger) return;
+    if (!$("tc-hint-popover").contains(event.target as Node)) closeHint();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeHint();
+  });
+
+  // Панель прокручивается вместе с кнопкой, а всплывашка позиционирована
+  // относительно окна — вместо пересчёта на каждый кадр просто закрываем.
+  document.addEventListener("scroll", closeHint, true);
+  window.addEventListener("resize", closeHint);
+}
+
+// ---------------------------------------------------------------------------
 // Гайд — аккордеон
 // ---------------------------------------------------------------------------
 
@@ -3512,6 +3594,7 @@ function initWindowResize(): void {
 // ---------------------------------------------------------------------------
 
 initTabs();
+initHints();
 initGuideAccordion();
 initScopeSegment();
 initCategorySegment();
