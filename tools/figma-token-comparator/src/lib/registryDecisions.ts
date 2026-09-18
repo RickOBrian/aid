@@ -17,6 +17,7 @@
 
 import type { Decision, StoredDecision } from "../comparators/types";
 import type { RegistryDecision, RegistryEntry } from "./githubTypes";
+import { isApprovedInRegistry } from "./proposalLifecycle";
 
 const DECISION_BY_REGISTRY: Partial<Record<RegistryDecision, Decision>> = {
   mapped: "mapped",
@@ -39,6 +40,7 @@ export function registryEntryToStoredDecision(entry: RegistryEntry): StoredDecis
     ...(entry.targetStyleName ? { targetStyleName: entry.targetStyleName } : {}),
     ...(entry.mismatchedProperties ? { mismatchedProperties: entry.mismatchedProperties } : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
+    ...(entry.targetLibraryFileKey ? { libraryFileKey: entry.targetLibraryFileKey } : {}),
     timestamp: entry.approvedAt ?? entry.proposedAt ?? "",
     source: "registry",
   };
@@ -54,7 +56,14 @@ export function mergeRegistryDecisions(
     const stored = registryEntryToStoredDecision(entry);
     if (stored) merged[entry.signature] = stored;
   }
-  return { ...merged, ...local };
+  const registryBySignature = new Map(entries.map((entry) => [entry.signature, entry]));
+  for (const [signature, entry] of Object.entries(local)) {
+    // Своё решение, которое уже согласовали, — тоже «Согласовано».
+    merged[signature] = isApprovedInRegistry(entry, registryBySignature.get(signature))
+      ? { ...entry, source: "registry" }
+      : entry;
+  }
+  return merged;
 }
 
 /**

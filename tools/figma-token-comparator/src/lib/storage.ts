@@ -9,6 +9,8 @@
 
 import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
+import { isLibraryBoundDecision } from "./libraryScope";
+import type { ProposalStatusInfo } from "./proposalLifecycle";
 import { clampWindowSize, type WindowSize } from "./windowSize";
 
 export type { WindowSize } from "./windowSize";
@@ -29,7 +31,13 @@ const KEYS = {
   ADMIN_MODE: "tc_admin_mode",
   REGISTRY_SECRET: "tc_registry_secret",
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
+  LIBRARIES: "tc_libraries",
+  ACTIVE_LIBRARY: "tc_active_library",
+  PROPOSAL_STATUSES: "tc_proposal_statuses",
 } as const;
+
+/** Данные каждой библиотеки — под своим ключом: в одну запись все кэши не влезут в лимит clientStorage. */
+const LIBRARY_DATA_PREFIX = "tc_library_data:";
 
 export async function getWindowSize(): Promise<WindowSize | null> {
   const value = await figma.clientStorage.getAsync(KEYS.WINDOW_SIZE);
@@ -128,6 +136,123 @@ export async function setLibraryTextStylesCache(cache: LibraryTextStylesCache): 
   await figma.clientStorage.setAsync(KEYS.LIBRARY_TEXT_STYLES_CACHE, cache);
 }
 
+// ---------------------------------------------------------------------------
+// Несколько библиотек. В настройках загружается список, в сканировании
+// выбирается одна — «текущая». Прежние ключи одной библиотеки
+// (LIBRARY_FILE_KEY, LIBRARY_CACHE, LIBRARY_TEXT_STYLES_CACHE) читаются только
+// миграцией и не удаляются: откат на прошлую версию плагина их найдёт.
+// ---------------------------------------------------------------------------
+
+/** Запись в списке библиотек — без самих токенов и стилей. */
+export interface LibraryMeta {
+  fileKey: string;
+  fileName: string;
+  /** null — цвета не загрузились. */
+  colorCount: number | null;
+  /** null — стили текста не загрузились (например, токену не хватает доступа). */
+  textStyleCount: number | null;
+  fetchedAt: string;
+  textStylesError?: string;
+}
+
+export interface LibraryData {
+  tokens: LibraryToken[];
+  styles: LibraryTextStyle[];
+}
+
+export async function getLibraries(): Promise<LibraryMeta[]> {
+  const value = await figma.clientStorage.getAsync(KEYS.LIBRARIES);
+  return Array.isArray(value) ? (value as LibraryMeta[]) : [];
+}
+
+/** Добавляет библиотеку в конец списка или обновляет существующую на её месте. */
+export async function upsertLibrary(meta: LibraryMeta, data: LibraryData): Promise<LibraryMeta[]> {
+  const libraries = await getLibraries();
+  const index = libraries.findIndex((item) => item.fileKey === meta.fileKey);
+  if (index === -1) libraries.push(meta);
+  else libraries[index] = meta;
+  await figma.clientStorage.setAsync(LIBRARY_DATA_PREFIX + meta.fileKey, data);
+  await figma.clientStorage.setAsync(KEYS.LIBRARIES, libraries);
+  return libraries;
+}
+
+/** Удаляет библиотеку и её данные. Решения, принятые с ней, остаются в истории. */
+export async function removeLibrary(fileKey: string): Promise<LibraryMeta[]> {
+  const libraries = (await getLibraries()).filter((item) => item.fileKey !== fileKey);
+  await figma.clientStorage.setAsync(KEYS.LIBRARIES, libraries);
+  await figma.clientStorage.deleteAsync(LIBRARY_DATA_PREFIX + fileKey);
+  if ((await getActiveLibraryKey()) === fileKey) await setActiveLibraryKey(null);
+  return libraries;
+}
+
+export async function getLibraryData(fileKey: string): Promise<LibraryData | null> {
+  const value = await figma.clientStorage.getAsync(LIBRARY_DATA_PREFIX + fileKey);
+  if (!value || typeof value !== "object") return null;
+  const data = value as LibraryData;
+  // Стили из кэша прошлых версий могли быть записаны с `styleId` вместо `nodeId`.
+  const styles = normalizeTextStylesCache({ styles: data.styles ?? [], fetchedAt: "", fileKey }).styles;
+  return { tokens: data.tokens ?? [], styles };
+}
+
+export async function getActiveLibraryKey(): Promise<string | null> {
+  const value = await figma.clientStorage.getAsync(KEYS.ACTIVE_LIBRARY);
+  return typeof value === "string" && value ? value : null;
+}
+
+export async function setActiveLibraryKey(fileKey: string | null): Promise<void> {
+  if (fileKey) await figma.clientStorage.setAsync(KEYS.ACTIVE_LIBRARY, fileKey);
+  else await figma.clientStorage.deleteAsync(KEYS.ACTIVE_LIBRARY);
+}
+
+/**
+ * Одна библиотека из прошлых версий → первый элемент списка.
+ *
+ * Выполняется один раз: признак — наличие списка в хранилище. Решения с
+ * конкретным токеном (использовать токен, правка значения) привязываются к
+ * этой библиотеке: они принимались именно в ней, а идентификаторы токенов
+ * в другой библиотеке могут совпасть случайно (lib/libraryScope.ts).
+ *
+ * Возвращает true, если было что переносить.
+ */
+export async function migrateLegacyLibrary(): Promise<boolean> {
+  if ((await figma.clientStorage.getAsync(KEYS.LIBRARIES)) !== undefined) return false;
+
+  const [colors, textStyles, storedKey, storedName] = await Promise.all([
+    getLibraryCache(),
+    getLibraryTextStylesCache(),
+    getLibraryFileKey(),
+    getLibraryFileName(),
+  ]);
+  const fileKey = colors?.fileKey ?? textStyles?.fileKey ?? storedKey;
+  if (!fileKey || (!colors && !textStyles)) {
+    await figma.clientStorage.setAsync(KEYS.LIBRARIES, []);
+    return false;
+  }
+
+  await upsertLibrary(
+    {
+      fileKey,
+      fileName: storedName ?? colors?.fileName ?? textStyles?.fileName ?? fileKey,
+      colorCount: colors ? colors.tokens.length : null,
+      textStyleCount: textStyles ? textStyles.styles.length : null,
+      fetchedAt: colors?.fetchedAt ?? textStyles?.fetchedAt ?? new Date().toISOString(),
+    },
+    { tokens: colors?.tokens ?? [], styles: textStyles?.styles ?? [] }
+  );
+  await setActiveLibraryKey(fileKey);
+
+  const history = await getMappingHistory();
+  let changed = false;
+  for (const entry of Object.values(history)) {
+    if (isLibraryBoundDecision(entry) && !entry.libraryFileKey) {
+      entry.libraryFileKey = fileKey;
+      changed = true;
+    }
+  }
+  if (changed) await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  return true;
+}
+
 /**
  * История подтверждённых решений по группам записей макета.
  * Ключ записи — LayoutRecord.id (hash property+value+binding+sourceName),
@@ -161,6 +286,7 @@ export async function setMappingHistoryEntry(
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
   if (!options.keepSubmitted) {
     await clearSubmittedSignature(recordId);
+    await clearProposalStatus(recordId);
   }
   return history;
 }
@@ -172,6 +298,7 @@ export async function clearMappingHistoryEntry(
   delete history[recordId];
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
   await clearSubmittedSignature(recordId);
+  await clearProposalStatus(recordId);
   return history;
 }
 
@@ -259,6 +386,38 @@ export async function markSignaturesSubmitted(signatures: string[]): Promise<voi
     submitted.add(signature);
   }
   await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
+
+  // Отправлено заново — прежний статус («Отклонено») больше не про это решение.
+  const statuses = await getProposalStatuses();
+  let changed = false;
+  for (const signature of signatures) {
+    if (signature in statuses) {
+      delete statuses[signature];
+      changed = true;
+    }
+  }
+  if (changed) await setProposalStatuses(statuses);
+}
+
+/**
+ * Статусы отправленных решений от бэкенда: на согласовании или отклонено
+ * (lib/proposalLifecycle.ts). Статус относится к конкретному решению —
+ * меняется решение, статус снимается.
+ */
+export async function getProposalStatuses(): Promise<Record<string, ProposalStatusInfo>> {
+  const value = await figma.clientStorage.getAsync(KEYS.PROPOSAL_STATUSES);
+  return value && typeof value === "object" ? (value as Record<string, ProposalStatusInfo>) : {};
+}
+
+export async function setProposalStatuses(statuses: Record<string, ProposalStatusInfo>): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.PROPOSAL_STATUSES, statuses);
+}
+
+async function clearProposalStatus(recordId: string): Promise<void> {
+  const statuses = await getProposalStatuses();
+  if (!(recordId in statuses)) return;
+  delete statuses[recordId];
+  await setProposalStatuses(statuses);
 }
 
 /**

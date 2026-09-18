@@ -1,5 +1,5 @@
 /**
- * Клиент aid-registry-api — только отправка решений на согласование.
+ * Клиент aid-registry-api — отправка решений на согласование и их статусы.
  *
  * Чтение реестра сюда больше не ходит: файл лежит в публичном репозитории и
  * читается напрямую, без ключа (см. githubApi.fetchPublicRegistry). Ключ
@@ -10,7 +10,8 @@
  */
 
 import type { RegistryDecision, TokenCategory } from "./githubTypes";
-import { REGISTRY_PROPOSE_URL } from "./registryApiConfig";
+import { REGISTRY_PROPOSAL_STATUS_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
+import type { ProposalStatusInfo } from "./proposalLifecycle";
 
 export interface ProposeDecisionEntryPayload {
   signature: string;
@@ -22,6 +23,8 @@ export interface ProposeDecisionEntryPayload {
   targetStyleName?: string;
   mismatchedProperties?: string[];
   comment?: string;
+  /** fileKey библиотеки, в которой выбран токен. Пишется в реестр. */
+  targetLibraryFileKey?: string;
   // Transient review-projection metadata — used ONLY by backend to render the
   // human-readable GitHub PR body. MUST NOT be persisted into
   // decisions-registry.json (backend whitelists machine fields when writing
@@ -39,6 +42,8 @@ export interface ProposeDecisionEntryPayload {
   proposedModeName?: string;
   currentLibraryValue?: string;
   proposedValue?: string;
+  /** Название библиотеки — только для описания запроса на согласование. */
+  targetLibraryName?: string;
 }
 
 export interface ProposeDecisionsPayload {
@@ -110,4 +115,50 @@ export async function proposeDecisionsOnBackend(
       ? body.reason
       : undefined;
   return { unchanged: body.unchanged === true, reason };
+}
+
+function isProposalStatus(value: unknown): value is ProposalStatusInfo {
+  if (!value || typeof value !== "object") return false;
+  const status = value as Record<string, unknown>;
+  return (
+    (status.state === "open" || status.state === "rejected") &&
+    typeof status.number === "number" &&
+    typeof status.url === "string" &&
+    status.url.startsWith("https://github.com/")
+  );
+}
+
+/**
+ * Статусы отправленных решений (жизненный цикл, lib/proposalLifecycle.ts).
+ * Ключ — тот же, что для отправки. Любой сбой — RegistryBackendError: статусы
+ * вспомогательные, плагин работает и без них.
+ */
+export async function fetchProposalStatuses(
+  sharedSecret: string,
+  signatures: string[]
+): Promise<Record<string, ProposalStatusInfo>> {
+  let response: Response;
+  try {
+    response = await fetch(REGISTRY_PROPOSAL_STATUS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sharedSecret, signatures }),
+    });
+  } catch {
+    throw new RegistryBackendError("registry_unavailable");
+  }
+  if (!response.ok) throw new RegistryBackendError("registry_unavailable");
+
+  let body: { statuses?: Record<string, unknown> } | null = null;
+  try {
+    body = (await response.json()) as { statuses?: Record<string, unknown> };
+  } catch {
+    throw new RegistryBackendError("registry_unavailable");
+  }
+
+  const statuses: Record<string, ProposalStatusInfo> = {};
+  for (const [signature, status] of Object.entries(body?.statuses ?? {})) {
+    if (isProposalStatus(status)) statuses[signature] = status;
+  }
+  return statuses;
 }

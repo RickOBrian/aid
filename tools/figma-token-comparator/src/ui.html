@@ -420,45 +420,108 @@
         gap: 6px;
       }
 
+      /*
+       * Кнопка-значок — единый примитив для всех кнопок без текста: подсказки
+       * «?», добавить / обновить / удалить, закрыть модалку. Компактная замена
+       * текстовой кнопке там, где действие понятно по значку.
+       *
+       * Правила системы:
+       * - значок — SVG 16×16, линия 1.5 px, stroke="currentColor"; текстовые
+       *   символы (?, ×, +) вместо значков не используются;
+       * - размер, цвет, наведение, фокус и раскрытое состояние задаются только
+       *   здесь — у конкретной кнопки свои только отступы расположения;
+       * - название действия — в aria-label и title.
+       */
+      .ds-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        padding: 0;
+        flex-shrink: 0;
+        border: none;
+        border-radius: var(--ds-radius);
+        background: transparent;
+        color: var(--ds-text-secondary);
+        cursor: pointer;
+      }
+
+      .ds-icon-btn:hover:not(:disabled),
+      .ds-icon-btn[aria-expanded="true"] {
+        background: var(--ds-surface-muted);
+        color: var(--ds-text);
+      }
+
+      .ds-icon-btn:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 1px;
+      }
+
+      .ds-icon-btn:disabled {
+        cursor: default;
+        color: var(--ds-text-muted);
+      }
+
+      /* Список загруженных библиотек на вкладке «Настройки» */
+      .tc-library-add-btn {
+        margin-left: auto;
+      }
+
+      .tc-library-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .tc-library-list:empty {
+        display: none;
+      }
+
+      /*
+       * Строка библиотеки и строка добавления — одна сетка: одинаковый
+       * отступ между элементами, иначе колонки иконок расходятся.
+       */
+      .tc-library-item,
+      .tc-library-add {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .tc-library-item {
+        padding: 2px 0;
+      }
+
+      .tc-library-item__info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .tc-library-item__name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .tc-library-add input {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .tc-library-add[hidden] {
+        display: none;
+      }
+
       /* ------------------------------------------------------------------ */
       /* Подсказка: кружок с вопросом рядом с заголовком или полем.          */
       /* Текст подсказки лежит в разметке рядом с кнопкой (скрытый), а       */
       /* показывается в единственной всплывашке на уровне body — панель      */
       /* настроек скроллится и обрезает содержимое по overflow.              */
       /* ------------------------------------------------------------------ */
-      .ds-hint-trigger {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        width: 16px;
-        height: 16px;
-        padding: 0;
-        border: 1px solid var(--ds-line-control);
-        border-radius: 50%;
-        background: none;
-        color: var(--ds-text-secondary);
-        font-family: var(--ds-font);
-        font-size: 11px;
-        font-weight: 600;
-        line-height: 1;
-        cursor: pointer;
-        /* Заголовки полей в верхнем регистре — у кружка это лишнее. */
-        text-transform: none;
-        letter-spacing: normal;
-      }
-
-      .ds-hint-trigger:hover,
-      .ds-hint-trigger[aria-expanded="true"] {
-        border-color: var(--ds-accent);
-        color: var(--ds-accent);
-      }
-
-      .ds-hint-trigger:focus-visible {
-        outline: 2px solid var(--ds-accent);
-        outline-offset: 2px;
-      }
-
       .ds-hint-text {
         display: none;
       }
@@ -504,10 +567,15 @@
         font-size: 13px;
         line-height: 16px;
         color: var(--ds-text);
-        background: var(--ds-surface);
+        background-color: var(--ds-surface);
         border: 1px solid var(--ds-border);
         border-radius: var(--ds-radius);
         padding: 8px 12px;
+      }
+
+      /* Выпадающий список в поле: стрелка — фон .ds-select, под неё нужен отступ справа. */
+      .ds-field select.ds-select {
+        padding-right: 32px;
       }
 
       .ds-field input::placeholder,
@@ -1180,6 +1248,21 @@
         border-color: var(--ds-badge-danger-border);
       }
 
+      /* Бейдж-кнопка: пометка, по клику открывающая связанный объект (запрос на согласование). */
+      .ds-badge--action {
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      .ds-badge--action:hover {
+        text-decoration: underline;
+      }
+
+      .ds-badge--action:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 1px;
+      }
+
       /* Второй бейдж в той же ячейке (например «Переопределён»): та же
          форма и тональности, уменьшенный масштаб. */
       .ds-badge--secondary {
@@ -1694,20 +1777,6 @@
         color: var(--ds-text);
       }
 
-      .tc-preview-modal__close {
-        margin: 0;
-        padding: 0;
-        border: none;
-        background: none;
-        font-size: 20px;
-        line-height: 1;
-        color: var(--ds-text-secondary);
-        cursor: pointer;
-      }
-
-      .tc-preview-modal__close:hover {
-        color: var(--ds-text);
-      }
 
       .tc-preview-modal__body {
         padding: 20px;
@@ -2110,7 +2179,7 @@
         <div class="ds-field">
           <div class="ds-field__head">
             <label for="tc-token-input">Токен доступа Figma</label>
-            <button type="button" class="ds-hint-trigger" aria-label="Подсказка" aria-expanded="false">?</button>
+            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
             <span class="ds-hint-text">
               Токен и ссылка на библиотеку хранятся только на этом компьютере и никуда не
               отправляются. При создании токена на figma.com включите доступ «только чтение» для
@@ -2121,17 +2190,50 @@
           <input id="tc-token-input" type="password" placeholder="figd_..." autocomplete="off" />
         </div>
         <div class="ds-field">
-          <label for="tc-filekey-input">Файл библиотеки</label>
-          <input
-            id="tc-filekey-input"
-            type="text"
-            placeholder="Ссылка на файл библиотеки или его ключ"
-          />
+          <div class="ds-field__head">
+            <span class="ds-field__label">Библиотеки</span>
+            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
+            <span class="ds-hint-text">
+              Загрузите одну или несколько библиотек. С какой сравнивать макет, выбирается на вкладке
+              «Сканирование». Если стили текста не загрузились, токену не хватает доступа к содержимому
+              файла и библиотек.
+            </span>
+            <button
+              type="button"
+              class="ds-icon-btn tc-library-add-btn"
+              id="tc-add-library-btn"
+              aria-label="Добавить библиотеку"
+              title="Добавить библиотеку"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <ul class="tc-library-list" id="tc-library-list"></ul>
+          <div class="tc-library-add" id="tc-library-add" hidden>
+            <input
+              id="tc-filekey-input"
+              type="text"
+              placeholder="Ссылка на файл библиотеки"
+              aria-label="Ссылка на файл библиотеки или его ключ"
+            />
+            <button
+              type="button"
+              class="ds-icon-btn"
+              id="tc-load-library-btn"
+              aria-label="Загрузить библиотеку"
+              title="Загрузить"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button
+              type="button"
+              class="ds-icon-btn"
+              id="tc-cancel-library-btn"
+              aria-label="Отменить добавление"
+              title="Отмена"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
         </div>
         <div class="ds-field">
           <div class="ds-field__head">
             <label for="tc-registry-secret-input">Ключ для отправки решений</label>
-            <button type="button" class="ds-hint-trigger" aria-label="Подсказка" aria-expanded="false">?</button>
+            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
             <span class="ds-hint-text">
               Нужен только чтобы отправлять решения на согласование — ключ выдаёт владелец
               дизайн-системы. Всё остальное работает без него: сканирование, сравнение, экспорт
@@ -2142,9 +2244,8 @@
         </div>
         <div class="ds-row">
           <button class="ds-btn" id="tc-save-settings-btn">Сохранить настройки</button>
-          <button class="ds-btn ds-btn-primary" id="tc-load-library-btn">Загрузить библиотеку</button>
         </div>
-        <div class="ds-status-line" id="tc-library-status">Библиотека ещё не загружена.</div>
+        <div class="ds-status-line" id="tc-library-status"></div>
 
         <div class="ds-status-line" id="tc-prod-registry-status">Загрузка реестра решений...</div>
 
@@ -2152,7 +2253,7 @@
           <hr class="ds-settings-divider" />
           <div class="ds-field__head">
             <h3 class="ds-settings-subtitle">Реестр решений на GitHub</h3>
-            <button type="button" class="ds-hint-trigger" aria-label="Подсказка" aria-expanded="false">?</button>
+            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
             <span class="ds-hint-text">
               Плагин читает реестр решений из ветки main. Нужен токен GitHub с доступом на чтение
               содержимого репозитория. Если файла реестра ещё нет — можно начать с пустого.
@@ -2191,8 +2292,12 @@
       <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">
         <h2 class="ds-section-title" id="tc-scan-title">Сканирование цветов</h2>
         <p class="ds-section-caption" id="tc-scan-caption">
-          Выберите область макета для сравнения с загруженной библиотекой.
+          Выберите библиотеку и область макета для сравнения.
         </p>
+        <div class="ds-field">
+          <label for="tc-library-select">Библиотека</label>
+          <select id="tc-library-select" class="ds-select"></select>
+        </div>
         <div class="ds-field">
           <span class="ds-field__label">Категория</span>
           <div class="ds-segment" role="group" aria-label="Категория сканирования" id="tc-category-segment">
@@ -2516,13 +2621,14 @@
 
                 <ol>
                   <li>
-                    <strong>Настройки.</strong> Вставьте токен доступа Figma и ссылку на файл библиотеки, нажмите
-                    «Загрузить библиотеку». Чтобы сравнивать типографику, токену нужен доступ не только к Variables,
-                    но и к содержимому файла и библиотек — подробности в подсказке «?» у поля токена.
+                    <strong>Настройки.</strong> Вставьте токен доступа Figma и добавьте библиотеки — кнопкой
+                    «+» у заголовка «Библиотеки», по ссылке на файл. Их может быть несколько. Чтобы сравнивать
+                    типографику, токену нужен доступ не только к Variables, но и к содержимому файла и
+                    библиотек — подробности в подсказке «?» у поля токена.
                   </li>
                   <li>
-                    <strong>Сканирование.</strong> Выберите, что проверять — цвета или типографику, — и где: весь
-                    файл, текущую страницу или только выделенные слои.
+                    <strong>Сканирование.</strong> Выберите библиотеку, с которой сравнивать, что проверять — цвета
+                    или типографику, — и где: весь файл, текущую страницу или только выделенные слои.
                   </li>
                   <li>
                     <strong>Результаты.</strong> По каждой строке видно, что сейчас в макете, что предлагает
@@ -2541,6 +2647,13 @@
                 <div class="ds-guide-note">
                   Одинаковые значения собираются в одну строку, колонка «Слоёв» показывает, сколько их. Решение
                   принимается сразу для всей группы.
+                </div>
+
+                <div class="ds-guide-note">
+                  Решения «использовать токен» и «правка значения» относятся к библиотеке, в которой их приняли:
+                  при сканировании с другой библиотекой строка снова попросит решения. «Игнорировать» и
+                  «кандидат на новый токен» действуют с любой библиотекой. После смены библиотеки результаты
+                  сбрасываются — отсканируйте макет заново.
                 </div>
               </div>
             </div>
@@ -2646,6 +2759,14 @@
                   <li>
                     <span class="ds-badge ds-badge--success">Согласовано</span>
                     <p>Решение по строке уже согласовано командой и взято из общего реестра — принимать его заново не нужно.</p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--info">На согласовании · #7</span>
+                    <p>Вы отправили решение, запрос на согласование открыт. Нажмите на пометку, чтобы открыть запрос.</p>
+                  </li>
+                  <li>
+                    <span class="ds-badge ds-badge--warning">Отклонено · #6</span>
+                    <p>Запрос закрыли без согласования. Причина — в подсказке, если её оставили. Решение снова в очереди на отправку: пересмотрите его и отправьте ещё раз.</p>
                   </li>
                 </ul>
 
@@ -2954,6 +3075,17 @@
                   <li>Подтвердите. Решения уходят на согласование владельцу дизайн-системы.</li>
                 </ol>
 
+                <h3>Что происходит после отправки</h3>
+                <ul>
+                  <li>Пока запрос открыт, у строки пометка «На согласовании» с его номером — по клику он откроется.</li>
+                  <li>Согласовали — пометка «Согласовано», решение видно всей команде.</li>
+                  <li>
+                    Отклонили — пометка «Отклонено», решение возвращается в счётчик «Отправить N решений». Пересмотрите
+                    его и отправьте снова.
+                  </li>
+                </ul>
+                <p>Плагин проверяет статусы при запуске, после отправки и при сканировании. Для этого нужен тот же ключ.</p>
+
                 <div class="ds-guide-note">
                   Если отправленное решение изменить, оно снова появится в счётчике — отправьте его ещё раз. Повторная
                   отправка того же самого ничего не создаёт: плагин сообщит, что решения уже записаны в реестр или
@@ -3080,7 +3212,7 @@
                       <tr><th>Что видите</th><th>Что сделать</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и загрузите библиотеку заново</td></tr>
+                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и обновите библиотеку кнопкой ↻ в списке. Какая библиотека выбрана — видно на вкладке «Сканирование»</td></tr>
                       <tr><td>Ошибка при загрузке библиотеки</td><td>Проверьте ссылку на файл и что у вашего аккаунта есть к нему доступ. Если токен просрочен — создайте новый</td></tr>
                       <tr><td>Таблица пустая после фильтра</td><td>Откройте «Статус ▾» и включите нужные статусы</td></tr>
                       <tr><td>«Слой не найден»</td><td>Слой удалили или переместили после сканирования — пересканируйте макет</td></tr>
@@ -3118,9 +3250,7 @@
       <div class="tc-preview-modal" id="tc-preview-modal" role="dialog" aria-modal="true" aria-label="Превью изменения цвета">
         <div class="tc-preview-modal__header">
           <span id="tc-preview-title">Превью изменения цвета</span>
-          <button type="button" class="tc-preview-modal__close" id="tc-preview-close-btn" aria-label="Закрыть">
-            &times;
-          </button>
+          <button type="button" class="ds-icon-btn tc-preview-modal__close" id="tc-preview-close-btn" aria-label="Закрыть" title="Закрыть"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="tc-preview-modal__body">
           <div class="tc-preview-modal__loading" id="tc-preview-loading">
@@ -3150,9 +3280,7 @@
       <div class="tc-preview-modal tc-preview-modal--apply" role="dialog" aria-modal="true" aria-label="Применить переменную в макет">
         <div class="tc-preview-modal__header">
           <span>Применить в макет</span>
-          <button type="button" class="tc-preview-modal__close" id="tc-apply-close-btn" aria-label="Закрыть">
-            &times;
-          </button>
+          <button type="button" class="ds-icon-btn tc-preview-modal__close" id="tc-apply-close-btn" aria-label="Закрыть" title="Закрыть"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="tc-preview-modal__body">
           <div id="tc-apply-confirm-view">
@@ -3225,9 +3353,7 @@
       >
         <div class="tc-preview-modal__header">
           <span>Отправить решения на согласование</span>
-          <button type="button" class="tc-preview-modal__close" id="tc-propose-close-btn" aria-label="Закрыть">
-            &times;
-          </button>
+          <button type="button" class="ds-icon-btn tc-preview-modal__close" id="tc-propose-close-btn" aria-label="Закрыть" title="Закрыть"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="tc-preview-modal__body">
           <div class="tc-propose-modal__toolbar">

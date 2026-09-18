@@ -291,6 +291,12 @@ export interface StoredDecision {
    * а не принято на этом компьютере. Такие решения не отправляются повторно.
    */
   source?: "registry";
+  /**
+   * fileKey библиотеки, в которой выбран токен. Только для решений с
+   * конкретным токеном: в другой библиотеке тот же id может быть другим
+   * токеном (lib/libraryScope.ts). Нет — решение до v1.4.0.
+   */
+  libraryFileKey?: string;
   /** Категория comparator-модуля — для фильтрации pending при переключении UI. */
   category?: TokenCategory;
   targetVariableId?: string;

@@ -140,6 +140,7 @@ function renderMappedCard(entry: ProposedEntryInput, proposedBy: string, propose
     bullet('Затронуто слоёв', entry.occurrenceCount),
     bullet('Текущее значение', entry.sourceDisplayValue),
     bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
+    bullet('Библиотека', entry.targetLibraryName),
     bullet(isTypographyEntry(entry) ? 'Целевая типографика' : 'Значение токена', entry.targetDisplayValue),
     renderTypographyDiff(entry),
     renderCollectionMode(entry.targetCollectionName, entry.targetModeName),
@@ -184,6 +185,7 @@ function renderValueFixCard(entry: ProposedEntryInput, proposedBy: string, propo
   lines.push(
     bullet('Путь', entry.nodePath),
     bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
+    bullet('Библиотека', entry.targetLibraryName),
     renderCollectionMode(entry.targetCollectionName, entry.proposedModeName),
     bullet(
       isTypographyEntry(entry) ? 'Текущая типографика' : 'Текущее значение библиотеки',
