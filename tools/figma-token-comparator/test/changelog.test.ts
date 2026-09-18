@@ -56,8 +56,8 @@ describe("compareVersions", () => {
 
 describe("getChangelogEntryState", () => {
   it("своя версия — current, новее без даты — upcoming, остальные — released", () => {
-    expect(getChangelogEntryState({ version: "0.1.2", date: "2026-09-18" }, "0.1.2")).toBe("current");
-    expect(getChangelogEntryState({ version: "0.1.3" }, "0.1.2")).toBe("upcoming");
-    expect(getChangelogEntryState({ version: "0.1.1", date: "2026-09-18" }, "0.1.2")).toBe("released");
+    expect(getChangelogEntryState({ version: "1.1.0", date: "2026-09-18" }, "1.1.0")).toBe("current");
+    expect(getChangelogEntryState({ version: "1.2.0" }, "1.1.0")).toBe("upcoming");
+    expect(getChangelogEntryState({ version: "1.0.1", date: "2026-09-18" }, "1.1.0")).toBe("released");
   });
 });
