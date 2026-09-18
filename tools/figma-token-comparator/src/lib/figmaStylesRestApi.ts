@@ -236,7 +236,7 @@ export async function fetchLibraryTextStyles(
     if (!comparisonValue) continue;
 
     result.push({
-      styleId: style.node_id,
+      nodeId: style.node_id,
       key: style.key,
       name: style.name,
       displayValue: formatTypographyDisplayValue(comparisonValue),

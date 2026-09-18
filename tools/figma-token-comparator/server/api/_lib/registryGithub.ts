@@ -2,6 +2,9 @@ import type { RegistryConfig, RegistryFileContent, RegistryFileOnGitHub } from '
 
 const API_BASE = 'https://api.github.com';
 
+/** Префикс веток, которые создаёт флоу предложений. */
+export const PROPOSAL_BRANCH_PREFIX = 'registry/propose-';
+
 export class RegistryGitHubError extends Error {
   constructor(
     message: string,
@@ -197,6 +200,66 @@ export async function fetchRegistryFileOnMain(
       sha: body.sha,
     },
   };
+}
+
+/** Ветки открытых pull request'ов, созданных этим флоу. */
+export async function listOpenProposalBranches(
+  fetchImpl: FetchLike,
+  token: string,
+  config: RegistryConfig,
+): Promise<string[]> {
+  const response = await githubRequest(
+    fetchImpl,
+    token,
+    `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/pulls?state=open&per_page=100`,
+    { method: 'GET' },
+  );
+
+  if (!response.ok) {
+    const body = await parseJsonBody<GitHubApiBody>(response);
+    throw new RegistryGitHubError(body.message || 'Failed to list pull requests.', response.status);
+  }
+
+  // parseJsonBody типизирован под объект ответа GitHub; список PR — массив,
+  // поэтому читаем его напрямую.
+  let pulls: unknown;
+  try {
+    pulls = await response.json();
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(pulls)) return [];
+
+  return (pulls as Array<{ head?: { ref?: unknown } }>)
+    .map((pull) => pull.head?.ref)
+    .filter((ref): ref is string => typeof ref === 'string' && ref.startsWith(PROPOSAL_BRANCH_PREFIX));
+}
+
+/** Содержимое реестра на произвольной ветке; null — файла на ней нет. */
+export async function fetchRegistryFileOnBranch(
+  fetchImpl: FetchLike,
+  token: string,
+  config: RegistryConfig,
+  branch: string,
+): Promise<RegistryFileContent | null> {
+  const encodedPath = encodeRepoPath(config.path);
+  const response = await githubRequest(
+    fetchImpl,
+    token,
+    `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}`,
+    { method: 'GET' },
+  );
+
+  if (!response.ok) return null;
+
+  const body = await parseJsonBody<GitHubContentsResponse>(response);
+  if (!body.content || body.encoding !== 'base64') return null;
+
+  try {
+    return parseRegistryFileContent(decodeBase64Content(body.content));
+  } catch {
+    return null;
+  }
 }
 
 export async function getMainHeadSha(

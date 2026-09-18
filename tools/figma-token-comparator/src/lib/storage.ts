@@ -96,10 +96,32 @@ export interface LibraryTextStylesCache {
   fileName?: string;
 }
 
+/**
+ * Кэш, записанный до переименования поля, содержит `styleId` вместо `nodeId`.
+ *
+ * Без этого стили из старого кэша загрузились бы с `nodeId: undefined`, и
+ * плагин молча перестал бы находить целевой стиль сохранённого решения — до
+ * тех пор, пока пользователь не перезагрузит библиотеку вручную.
+ */
+function normalizeTextStylesCache(cache: LibraryTextStylesCache): LibraryTextStylesCache {
+  if (!Array.isArray(cache.styles)) return cache;
+  const needsMigration = cache.styles.some(
+    (style) => !style.nodeId && typeof (style as { styleId?: unknown }).styleId === "string"
+  );
+  if (!needsMigration) return cache;
+
+  return {
+    ...cache,
+    styles: cache.styles.map((style) =>
+      style.nodeId ? style : { ...style, nodeId: (style as { styleId?: string }).styleId ?? "" }
+    ),
+  };
+}
+
 export async function getLibraryTextStylesCache(): Promise<LibraryTextStylesCache | null> {
   const value = await figma.clientStorage.getAsync(KEYS.LIBRARY_TEXT_STYLES_CACHE);
   if (!value || typeof value !== "object") return null;
-  return value as LibraryTextStylesCache;
+  return normalizeTextStylesCache(value as LibraryTextStylesCache);
 }
 
 export async function setLibraryTextStylesCache(cache: LibraryTextStylesCache): Promise<void> {

@@ -31,15 +31,17 @@ import type {
 } from "./types";
 import { scanTypography } from "../lib/scanner";
 
+/**
+ * Сопоставление идёт только по `key`: `record.styleId` — это идентификатор
+ * Plugin API (`S:<key>,<версия>`), а `LibraryTextStyle.nodeId` — `node_id` из
+ * REST, и совпасть они не могут. Сравнение по идентификаторам здесь раньше
+ * было, но никогда не срабатывало.
+ */
 export function isUsingLibraryTextStyle(record: LayoutRecord, library: LibraryTextStyle[]): boolean {
   if (record.bindingType !== "style") return false;
+  if (!record.styleKey) return false;
 
-  const libraryIds = new Set(library.map((style) => style.styleId));
-  const libraryKeys = new Set(library.map((style) => style.key));
-
-  if (record.styleId && libraryIds.has(record.styleId)) return true;
-  if (record.styleKey && libraryKeys.has(record.styleKey)) return true;
-  return false;
+  return library.some((style) => style.key === record.styleKey);
 }
 
 export function requiresTypographyUserAction(
@@ -79,7 +81,7 @@ function toTypographyTarget(style: LibraryTextStyle): ComparisonTarget {
     collectionName: "",
     modeId: "",
     modeName: "",
-    styleId: style.styleId,
+    styleId: style.nodeId,
     styleKey: style.key,
     name: style.name,
     displayValue: style.displayValue,
@@ -90,19 +92,13 @@ function readLayoutTypography(record: LayoutRecord): TypographyComparisonValue |
   return readTypographyComparisonValue(record.comparisonValue);
 }
 
+/** См. isUsingLibraryTextStyle: единственный общий идентификатор — `key`. */
 function findExactLibraryStyle(
   record: LayoutRecord,
   library: LibraryTextStyle[]
 ): LibraryTextStyle | undefined {
-  if (record.styleId) {
-    const byId = library.find((style) => style.styleId === record.styleId);
-    if (byId) return byId;
-  }
-  if (record.styleKey) {
-    const byKey = library.find((style) => style.key === record.styleKey);
-    if (byKey) return byKey;
-  }
-  return undefined;
+  if (!record.styleKey) return undefined;
+  return library.find((style) => style.key === record.styleKey);
 }
 
 function findByNormalizedName(
@@ -255,7 +251,7 @@ function applyHistory(
 
   const mappedStyleId = stored.targetStyleId ?? stored.targetVariableId;
   if ((stored.decision === "mapped" || stored.decision === "mapped_suggested") && mappedStyleId) {
-    const targetStyle = library.find((style) => style.styleId === mappedStyleId);
+    const targetStyle = library.find((style) => style.nodeId === mappedStyleId);
     if (targetStyle) {
       withDecision.status = "mapped";
       withDecision.target = toTypographyTarget(targetStyle);

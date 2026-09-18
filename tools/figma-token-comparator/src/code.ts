@@ -424,9 +424,12 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
       send({ type: "decisions-submit-failed" });
       return;
     }
-    const { unchanged } = await proposeDecisionsOnBackend({ proposedBy, entries }, sharedSecret);
+    const { unchanged, reason } = await proposeDecisionsOnBackend(
+      { proposedBy, entries },
+      sharedSecret
+    );
     await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
-    send({ type: "decisions-submitted", payload: { count: entries.length, unchanged } });
+    send({ type: "decisions-submitted", payload: { count: entries.length, unchanged, reason } });
     await sendPendingProposeCount();
   } catch (error) {
     if (!(error instanceof RegistryBackendError)) {
@@ -1091,7 +1094,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   const targetStyleId =
     stored?.targetStyleId ?? result.decisionTargetStyleId ?? result.target?.styleId;
   const targetStyle =
-    (targetStyleId ? lastLibraryTypography.find((style) => style.styleId === targetStyleId) : undefined) ??
+    (targetStyleId ? lastLibraryTypography.find((style) => style.nodeId === targetStyleId) : undefined) ??
     (result.target?.styleKey
       ? lastLibraryTypography.find((style) => style.key === result.target!.styleKey)
       : undefined);
@@ -1170,7 +1173,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     const base: StoredDecision = stored ?? {
       decision: result.decision ?? "mapped_suggested",
       category: "typography",
-      targetStyleId: targetStyle?.styleId,
+      targetStyleId: targetStyle?.nodeId,
       targetStyleName: targetStyle?.name,
       timestamp: new Date().toISOString(),
       sourceProperty: "text-style",

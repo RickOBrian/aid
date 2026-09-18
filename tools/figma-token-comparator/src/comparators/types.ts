@@ -63,9 +63,20 @@ export interface TypographyComparisonValue {
 
 /** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */
 export interface LibraryTextStyle {
-  /** node_id стиля в файле библиотеки — совпадает с textStyleId в макете после импорта. */
-  styleId: string;
-  /** Стабильный key опубликованного стиля. */
+  /**
+   * `node_id` узла стиля в файле библиотеки — то, что отдаёт REST
+   * `/v1/files/:key/styles`.
+   *
+   * Это НЕ идентификатор стиля из Plugin API: `TextNode.textStyleId` в макете
+   * имеет вид `S:<key>,<версия>` и с `node_id` никогда не совпадает. Сопоставление
+   * стиля макета с библиотечным идёт по `key` — единственному стабильному
+   * идентификатору, общему для обоих API.
+   *
+   * Служит идентификатором стиля внутри библиотеки: по нему UI выбирает стиль в
+   * списке, и он же сохраняется в решении как `targetStyleId`.
+   */
+  nodeId: string;
+  /** Стабильный key опубликованного стиля — общий для REST и Plugin API. */
   key: string;
   name: string;
   displayValue: string;

@@ -429,8 +429,10 @@ export interface DecisionsSubmittedMessage {
   type: "decisions-submitted";
   payload: {
     count: number;
-    /** true — эти решения уже были в реестре, новый pull request не создавался. */
+    /** true — новый pull request не создавался: предлагать было нечего. */
     unchanged: boolean;
+    /** Почему именно: уже в реестре или уже ждут согласования. */
+    reason?: "already_in_registry" | "already_proposed";
   };
 }
 

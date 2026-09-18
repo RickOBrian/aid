@@ -114,7 +114,7 @@ export function libraryTextStyle(
   overrides: Partial<LibraryTextStyle> & { name: string }
 ): LibraryTextStyle {
   return {
-    styleId: overrides.styleId ?? `style-${overrides.name}`,
+    nodeId: overrides.nodeId ?? `node-${overrides.name}`,
     key: overrides.key ?? `key-${overrides.name}`,
     displayValue: overrides.displayValue ?? "Inter 14/20 w400",
     comparisonValue: overrides.comparisonValue ?? typographyValue(),

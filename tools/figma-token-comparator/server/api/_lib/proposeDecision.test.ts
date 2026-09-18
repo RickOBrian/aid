@@ -275,11 +275,26 @@ describe('handleProposeDecision', () => {
       };
     }
 
+    /** Что лежит в реестре на ветках открытых PR: имя ветки → записи. */
+    let openProposals: Record<string, unknown[]> = {};
+
     function mockGitHub(existing: unknown[]) {
       fetchMock.mockImplementation(async (input, init) => {
         const url = String(input);
         const method = init?.method ?? 'GET';
 
+        if (url.includes('/pulls?state=open') && method === 'GET') {
+          return jsonResponse(
+            200,
+            Object.keys(openProposals).map((ref) => ({ head: { ref } })),
+          );
+        }
+        const onBranch = Object.keys(openProposals).find((ref) =>
+          url.includes(`/contents/decisions-registry.json?ref=${encodeURIComponent(ref)}`),
+        );
+        if (onBranch && method === 'GET') {
+          return encodeRegistry(registryWith(openProposals[onBranch]));
+        }
         if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
           return encodeRegistry(registryWith(existing));
         }
@@ -324,6 +339,10 @@ describe('handleProposeDecision', () => {
       return JSON.parse(Buffer.from(putBody.content, 'base64').toString('utf8'));
     }
 
+    beforeEach(() => {
+      openProposals = {};
+    });
+
     it('заменяет существующую запись, а не дописывает вторую', async () => {
       mockGitHub([{ signature: 'sig-1', decision: 'mapped', targetVariableName: 'bg/accent' }]);
 
@@ -350,6 +369,54 @@ describe('handleProposeDecision', () => {
       ]);
     });
 
+    it('те же решения в уже открытом PR — второй не заводится', async () => {
+      mockGitHub([]);
+      openProposals = {
+        'registry/propose-1-abc': [
+          { signature: 'sig-1', decision: 'mapped', targetVariableName: 'bg/accent' },
+        ],
+      };
+
+      const response = await propose([
+        { signature: 'sig-1', decision: 'mapped', targetVariableName: 'bg/accent' },
+      ]);
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({
+        success: true,
+        unchanged: true,
+        reason: 'already_proposed',
+      });
+      expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT')).toBe(false);
+    });
+
+    it('изменённое решение по той же подписи заводит новый PR', async () => {
+      mockGitHub([]);
+      openProposals = {
+        'registry/propose-1-abc': [{ signature: 'sig-1', decision: 'mapped' }],
+      };
+
+      const response = await propose([
+        { signature: 'sig-1', decision: 'ignored', comment: 'передумали' },
+      ]);
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ success: true });
+      expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT')).toBe(true);
+    });
+
+    it('чужие ветки не считаются предложениями', async () => {
+      mockGitHub([]);
+      openProposals = {
+        'feature/some-branch': [{ signature: 'sig-1', decision: 'mapped' }],
+      };
+
+      const response = await propose([{ signature: 'sig-1', decision: 'mapped' }]);
+
+      expect(await response.json()).toEqual({ success: true });
+      expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT')).toBe(true);
+    });
+
     it('повторная отправка того же решения не заводит pull request', async () => {
       mockGitHub([
         {
@@ -366,7 +433,11 @@ describe('handleProposeDecision', () => {
       ]);
 
       expect(response.status).toBe(200);
-      expect(await response.json()).toEqual({ success: true, unchanged: true });
+      expect(await response.json()).toEqual({
+        success: true,
+        unchanged: true,
+        reason: 'already_in_registry',
+      });
       expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT')).toBe(false);
       expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith('/pulls'))).toBe(false);
     });

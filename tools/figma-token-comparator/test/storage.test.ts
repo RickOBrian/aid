@@ -10,6 +10,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import {
   clearMappingHistoryEntry,
+  getLibraryTextStylesCache,
+  setLibraryTextStylesCache,
   countPendingProposals,
   countPendingProposalsByCategory,
   getMappingHistory,
@@ -19,6 +21,7 @@ import {
 } from "../src/lib/storage";
 import type { StoredDecision } from "../src/comparators/types";
 import { resetFigmaStub } from "./figmaStub";
+import { typographyValue } from "./fixtures";
 
 function decision(overrides: Partial<StoredDecision> = {}): StoredDecision {
   return {
@@ -127,5 +130,49 @@ describe("очередь на согласование", () => {
     );
 
     expect(await countPendingProposals(await getMappingHistory())).toBe(0);
+  });
+});
+
+describe("кэш стилей текста", () => {
+  /** Как выглядел кэш до переименования поля styleId → nodeId. */
+  const legacyCache = {
+    fetchedAt: "2026-09-01T00:00:00.000Z",
+    fileKey: "abc",
+    styles: [
+      { styleId: "123:456", key: "stable", name: "body/m", displayValue: "Inter 14/20 w400", comparisonValue: {} },
+    ],
+  } as unknown as Parameters<typeof setLibraryTextStylesCache>[0];
+
+  it("старый кэш читается: styleId переносится в nodeId", async () => {
+    await setLibraryTextStylesCache(legacyCache);
+
+    const cache = await getLibraryTextStylesCache();
+
+    expect(cache?.styles[0].nodeId).toBe("123:456");
+    expect(cache?.styles[0].key).toBe("stable");
+  });
+
+  it("новый кэш не трогается", async () => {
+    await setLibraryTextStylesCache({
+      fetchedAt: "2026-09-18T00:00:00.000Z",
+      fileKey: "abc",
+      styles: [
+        {
+          nodeId: "789:1",
+          key: "stable",
+          name: "body/m",
+          displayValue: "Inter 14/20 w400",
+          comparisonValue: typographyValue(),
+        },
+      ],
+    });
+
+    const cache = await getLibraryTextStylesCache();
+
+    expect(cache?.styles[0].nodeId).toBe("789:1");
+  });
+
+  it("пустого кэша не бывает ошибкой", async () => {
+    expect(await getLibraryTextStylesCache()).toBeNull();
   });
 });

@@ -70,8 +70,8 @@ describe("поиск токена по подписи", () => {
 
 describe("подпись стиля текста", () => {
   const styles = [
-    libraryTextStyle({ name: "body/m", styleId: "S:1" }),
-    libraryTextStyle({ name: "heading/s", styleId: "S:2" }),
+    libraryTextStyle({ name: "body/m", nodeId: "S:1" }),
+    libraryTextStyle({ name: "heading/s", nodeId: "S:2" }),
   ];
 
   it("совпадает с именем стиля", () => {

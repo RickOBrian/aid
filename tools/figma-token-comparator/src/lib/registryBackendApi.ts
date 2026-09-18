@@ -83,13 +83,17 @@ export async function fetchRegistryFromBackend(
   }
 }
 
+/** Почему pull request не создавался, хотя отправка прошла успешно. */
+export type ProposeUnchangedReason = "already_in_registry" | "already_proposed";
+
 export interface ProposeDecisionsResult {
-  /**
-   * true — реестр уже содержит ровно эти решения, pull request не создавался.
-   * Типичный случай: повторная отправка после обрыва сети, когда клиент не
-   * увидел ответа на первую попытку.
-   */
+  /** true — pull request не создавался: предлагать было нечего. */
   unchanged: boolean;
+  /**
+   * `already_in_registry` — решения уже лежат в реестре на main.
+   * `already_proposed` — уже ждут согласования в открытом pull request'е.
+   */
+  reason?: ProposeUnchangedReason;
 }
 
 export async function proposeDecisionsOnBackend(
@@ -119,9 +123,9 @@ export async function proposeDecisionsOnBackend(
     throw new RegistryBackendError("submit_failed");
   }
 
-  let body: { success?: boolean; unchanged?: boolean } | null = null;
+  let body: { success?: boolean; unchanged?: boolean; reason?: string } | null = null;
   try {
-    body = (await response.json()) as { success?: boolean; unchanged?: boolean };
+    body = (await response.json()) as { success?: boolean; unchanged?: boolean; reason?: string };
   } catch {
     body = null;
   }
@@ -130,5 +134,9 @@ export async function proposeDecisionsOnBackend(
     throw new RegistryBackendError("submit_failed");
   }
 
-  return { unchanged: body.unchanged === true };
+  const reason =
+    body.reason === "already_in_registry" || body.reason === "already_proposed"
+      ? body.reason
+      : undefined;
+  return { unchanged: body.unchanged === true, reason };
 }
