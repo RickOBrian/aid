@@ -18,6 +18,7 @@ import type {
 } from "./githubTypes";
 
 const API_BASE = "https://api.github.com";
+const RAW_BASE = "https://raw.githubusercontent.com";
 
 /** Ошибка запроса к GitHub REST API с понятным для пользователя сообщением. */
 export class GitHubRestApiError extends Error {
@@ -260,42 +261,50 @@ async function assertRepoAccessible(token: string, owner: string, repo: string):
  * Ключ остался только на отправке, где бэкенд создаёт pull request серверным
  * токеном GitHub.
  *
- * Неавторизованный лимит api.github.com — 60 запросов в час на IP. Плагин
- * читает реестр один раз при запуске, так что для команды этого с запасом.
+ * Берём raw.githubusercontent.com, а НЕ api.github.com: у неавторизованных
+ * запросов к API лимит 60 в час на IP, общий для всех за одним NAT. Команда
+ * в офисе выжигает его незаметно, и плагин начинает показывать «реестр
+ * недоступен» без объяснения причины. raw раздаётся через CDN и такого
+ * лимита не имеет; цена — кэш до 5 минут, что для реестра решений неважно.
  */
 export async function fetchPublicRegistry(
   owner: string,
   repo: string,
   path: string
 ): Promise<FetchRegistryResult> {
-  const encodedPath = encodeContentPath(path.trim());
-  const url = `${API_BASE}/repos/${encodeURIComponent(owner.trim())}/${encodeURIComponent(repo.trim())}/contents/${encodedPath}`;
+  const url = `${RAW_BASE}/${encodeURIComponent(owner.trim())}/${encodeURIComponent(repo.trim())}/main/${encodeContentPath(path.trim())}`;
 
   let response: Response;
   try {
     response = await fetch(url, { method: "GET" });
   } catch {
-    throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
+    throw new GitHubRestApiError(
+      "Не удалось связаться с raw.githubusercontent.com. Проверьте подключение к сети."
+    );
   }
 
   if (response.status === 404) {
     return { notFound: true };
   }
 
-  const body = await parseGitHubJsonResponse<GitHubContentsResponse>(response);
-
   if (!response.ok) {
     throw new GitHubRestApiError(
-      buildContentsErrorMessage(response.status, body, getRateLimitRemaining(response)),
+      `Не удалось прочитать реестр решений (${response.status}).`,
       response.status
     );
   }
 
-  if (!body.content || body.encoding !== "base64" || !body.sha) {
-    throw new GitHubRestApiError("GitHub вернул файл реестра без base64-содержимого или sha.");
+  let text: string;
+  try {
+    text = await response.text();
+  } catch {
+    throw new GitHubRestApiError("Не удалось прочитать ответ с реестром решений.");
   }
 
-  return parseRegistryJson(decodeBase64Content(body.content), body.sha);
+  // У raw нет sha файла; ETag играет ту же роль — непрозрачная метка версии,
+  // по наличию которой отличают настоящий реестр от локального пустого.
+  const version = response.headers?.get("etag") ?? `fetched-${Date.now()}`;
+  return parseRegistryJson(text, version);
 }
 
 export async function fetchRegistry(
