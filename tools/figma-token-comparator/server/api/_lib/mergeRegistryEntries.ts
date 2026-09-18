@@ -86,6 +86,25 @@ export function mergeRegistryEntries(
 }
 
 /**
+ * Все ли предложенные решения уже лежат — в том же виде — в переданном
+ * состоянии реестра.
+ *
+ * Используется, чтобы не заводить второй pull request, когда первый ещё
+ * открыт: слияние идёт от `main`, где решений ещё нет, поэтому повторная
+ * отправка выглядит как новое изменение, хотя по смыслу это тот же самый
+ * запрос. Решение с ДРУГИМ содержанием таким «дубликатом» не считается — его
+ * нужно предложить заново.
+ */
+export function allEntriesAlreadyPresent(
+  existing: RegistryFileEntry[],
+  incoming: RegistryFileEntry[],
+): boolean {
+  if (incoming.length === 0) return false;
+  const known = new Map(existing.map((entry) => [entry.signature, entryContentKey(entry)]));
+  return incoming.every((entry) => known.get(entry.signature) === entryContentKey(entry));
+}
+
+/**
  * true — слияние действительно что-то меняет в реестре.
  *
  * Повторная отправка уже записанного решения (например, после обрыва сети,

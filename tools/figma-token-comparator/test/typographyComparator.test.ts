@@ -23,9 +23,9 @@ function statusOf(result: ComparisonResult | undefined): string {
 }
 
 describe("статусы типографики", () => {
-  it("exact — стиль макета найден в библиотеке по styleId", () => {
-    const style = libraryTextStyle({ name: "body/m", styleId: "S:1" });
-    const record = typographyRecord({ styleId: "S:1", sourceName: "body/m" });
+  it("exact — стиль макета найден в библиотеке по стабильному key", () => {
+    const style = libraryTextStyle({ name: "body/m", key: "stable" });
+    const record = typographyRecord({ styleKey: "stable", sourceName: "body/m" });
 
     const [result] = computeTypographyComparisonResults([record], [style], NO_HISTORY);
 
@@ -33,13 +33,30 @@ describe("статусы типографики", () => {
     expect(result.target?.name).toBe("body/m");
   });
 
-  it("exact — стиль найден по стабильному key, когда id разошлись", () => {
-    const style = libraryTextStyle({ name: "body/m", styleId: "lib-node-id", key: "stable" });
-    const record = typographyRecord({ styleId: "S:local", styleKey: "stable", sourceName: "body/m" });
+  // `nodeId` библиотеки — это node_id из REST, а `record.styleId` —
+  // идентификатор Plugin API вида `S:<key>,<версия>`. Совпасть они не могут, и
+  // полагаться на такое сравнение нельзя: раньше оно в коде было и молча
+  // никогда не срабатывало.
+  it("идентификатор стиля из REST не сравнивается с идентификатором из макета", () => {
+    // Имя и свойства намеренно разные, чтобы «exact» не мог прийти по ним:
+    // проверяется только то, что совпадение идентификаторов ничего не даёт.
+    const style = libraryTextStyle({
+      name: "body/m",
+      nodeId: "123:456",
+      key: "stable",
+      comparisonValue: typographyValue({ fontSize: 14 }),
+    });
+    const record = typographyRecord({
+      styleId: "123:456",
+      styleKey: undefined,
+      sourceName: "Legacy/Body",
+      value: typographyValue({ fontSize: 37, lineHeight: 41 }),
+    });
 
     const [result] = computeTypographyComparisonResults([record], [style], NO_HISTORY);
 
-    expect(statusOf(result)).toBe("exact");
+    expect(statusOf(result)).not.toBe("exact");
+    expect(isUsingLibraryTextStyle(record, [style])).toBe(false);
   });
 
   it("exact — имя совпало и все свойства тоже", () => {
@@ -233,13 +250,13 @@ describe("какие строки попадают в таблицу", () => {
 
 describe("применение истории решений", () => {
   it("подтверждённый маппинг переписывает статус на mapped", () => {
-    const style = libraryTextStyle({ name: "body/m", styleId: "S:1" });
+    const style = libraryTextStyle({ name: "body/m", nodeId: "node-1" });
     const record = typographyRecord({ id: "rec-1", value: typographyValue({ fontSize: 18 }) });
     const history: Record<string, StoredDecision> = {
       "rec-1": {
         decision: "mapped",
         category: "typography",
-        targetStyleId: "S:1",
+        targetStyleId: "node-1",
         timestamp: "2026-09-18T00:00:00.000Z",
       },
     };

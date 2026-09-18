@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { mergeRegistryEntries, registryEntriesChanged } from './mergeRegistryEntries.js';
+import {
+  allEntriesAlreadyPresent,
+  mergeRegistryEntries,
+  registryEntriesChanged,
+} from './mergeRegistryEntries.js';
 import type { RegistryFileEntry } from './registryTypes.js';
 
 function entry(overrides: Partial<RegistryFileEntry> & { signature: string }): RegistryFileEntry {
@@ -131,5 +135,44 @@ describe('registryEntriesChanged', () => {
     const merged = mergeRegistryEntries(current, []);
 
     expect(registryEntriesChanged(current, merged)).toBe(true);
+  });
+});
+
+describe('allEntriesAlreadyPresent', () => {
+  it('то же решение по той же подписи — уже есть', () => {
+    const existing = [entry({ signature: 'a', decision: 'mapped', targetVariableName: 'bg/accent' })];
+    const incoming = [
+      entry({
+        signature: 'a',
+        decision: 'mapped',
+        targetVariableName: 'bg/accent',
+        proposedAt: '2026-09-19T00:00:00.000Z',
+        proposedBy: 'другой дизайнер',
+      }),
+    ];
+
+    expect(allEntriesAlreadyPresent(existing, incoming)).toBe(true);
+  });
+
+  it('другое решение по той же подписи — это не дубликат', () => {
+    const existing = [entry({ signature: 'a', decision: 'mapped' })];
+    const incoming = [entry({ signature: 'a', decision: 'ignored', comment: 'передумали' })];
+
+    expect(allEntriesAlreadyPresent(existing, incoming)).toBe(false);
+  });
+
+  it('хотя бы одна новая подпись — не дубликат', () => {
+    const existing = [entry({ signature: 'a' })];
+    const incoming = [entry({ signature: 'a' }), entry({ signature: 'b' })];
+
+    expect(allEntriesAlreadyPresent(existing, incoming)).toBe(false);
+  });
+
+  it('пустой список предложений дубликатом не считается', () => {
+    expect(allEntriesAlreadyPresent([entry({ signature: 'a' })], [])).toBe(false);
+  });
+
+  it('пустое состояние реестра — ничего не совпадает', () => {
+    expect(allEntriesAlreadyPresent([], [entry({ signature: 'a' })])).toBe(false);
   });
 });

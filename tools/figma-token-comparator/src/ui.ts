@@ -67,7 +67,8 @@ const PROD_REGISTRY_READY = "Реестр решений готов.";
 const PROD_REGISTRY_EMPTY = "Реестр решений пуст — можно начинать работу.";
 const PROD_REGISTRY_UNAVAILABLE = "Не удалось загрузить реестр решений. Попробуйте позже.";
 const PROPOSE_SUCCESS = "Отправлено — ждёт согласования Principal Designer.";
-const PROPOSE_ALREADY_RECORDED = "Эти решения уже записаны в реестре — отправлять было нечего.";
+const PROPOSE_ALREADY_IN_REGISTRY = "Эти решения уже записаны в реестре — отправлять было нечего.";
+const PROPOSE_ALREADY_PROPOSED = "Эти решения уже отправлены и ждут согласования.";
 const PROPOSE_FAILURE = "Не удалось отправить. Попробуйте ещё раз.";
 
 /**
@@ -464,6 +465,88 @@ function switchToTab(tabName: string): void {
 }
 
 // ---------------------------------------------------------------------------
+// Подсказки — кружок с вопросом рядом с заголовком поля
+// ---------------------------------------------------------------------------
+
+/** Отступ всплывашки от края окна и от самой кнопки. */
+const HINT_GAP = 6;
+const HINT_VIEWPORT_MARGIN = 8;
+
+let openHintTrigger: HTMLButtonElement | null = null;
+
+function closeHint(): void {
+  if (!openHintTrigger) return;
+  openHintTrigger.setAttribute("aria-expanded", "false");
+  openHintTrigger.removeAttribute("aria-describedby");
+  openHintTrigger = null;
+  $("tc-hint-popover").hidden = true;
+}
+
+/**
+ * Ставит всплывашку под кнопкой, а если снизу не помещается — над ней.
+ * Позиция считается в координатах окна (position: fixed): панель настроек
+ * скроллится и обрезала бы абсолютно позиционированный элемент по overflow.
+ */
+function positionHintPopover(trigger: HTMLElement, popover: HTMLElement): void {
+  const anchor = trigger.getBoundingClientRect();
+  popover.style.left = "0px";
+  popover.style.top = "0px";
+  const box = popover.getBoundingClientRect();
+
+  const maxLeft = window.innerWidth - box.width - HINT_VIEWPORT_MARGIN;
+  const left = Math.max(HINT_VIEWPORT_MARGIN, Math.min(anchor.left, maxLeft));
+
+  const below = anchor.bottom + HINT_GAP;
+  const fitsBelow = below + box.height <= window.innerHeight - HINT_VIEWPORT_MARGIN;
+  const top = fitsBelow
+    ? below
+    : Math.max(HINT_VIEWPORT_MARGIN, anchor.top - box.height - HINT_GAP);
+
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+}
+
+function openHint(trigger: HTMLButtonElement): void {
+  const text = trigger.parentElement?.querySelector<HTMLElement>(".ds-hint-text");
+  if (!text) return;
+
+  const popover = $("tc-hint-popover");
+  popover.textContent = text.textContent?.trim() ?? "";
+  popover.hidden = false;
+  positionHintPopover(trigger, popover);
+
+  trigger.setAttribute("aria-expanded", "true");
+  trigger.setAttribute("aria-describedby", "tc-hint-popover");
+  openHintTrigger = trigger;
+}
+
+function initHints(): void {
+  document.querySelectorAll<HTMLButtonElement>(".ds-hint-trigger").forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const wasOpen = openHintTrigger === trigger;
+      closeHint();
+      if (!wasOpen) openHint(trigger);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!openHintTrigger) return;
+    if (!$("tc-hint-popover").contains(event.target as Node)) closeHint();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeHint();
+  });
+
+  // Панель прокручивается вместе с кнопкой, а всплывашка позиционирована
+  // относительно окна — вместо пересчёта на каждый кадр просто закрываем.
+  document.addEventListener("scroll", closeHint, true);
+  window.addEventListener("resize", closeHint);
+}
+
+// ---------------------------------------------------------------------------
 // Гайд — аккордеон
 // ---------------------------------------------------------------------------
 
@@ -590,6 +673,14 @@ function pluralizeDecisions(count: number): string {
   if (mod10 === 1 && mod100 !== 11) return "решение";
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "решения";
   return "решений";
+}
+
+/** Сообщение после отправки: успех или одна из двух причин «отправлять нечего». */
+function proposeStatusText(payload: { unchanged: boolean; reason?: string }): string {
+  if (!payload.unchanged) return PROPOSE_SUCCESS;
+  return payload.reason === "already_proposed"
+    ? PROPOSE_ALREADY_PROPOSED
+    : PROPOSE_ALREADY_IN_REGISTRY;
 }
 
 function renderProposeStatus(text: string): void {
@@ -2155,7 +2246,7 @@ function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void
           type="button"
           class="ds-filter-menu__option"
           role="option"
-          data-style-id="${escapeHtml(style.styleId)}"
+          data-style-id="${escapeHtml(style.nodeId)}"
           data-label="${escapeHtml(formatLibraryTextStyleLabel(style))}"
         >
           <span class="ds-value-meta__primary">${escapeHtml(style.name)}</span>
@@ -2221,9 +2312,9 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
   });
 
   if (initialStyleId) {
-    const initialStyle = currentLibraryTextStyles.find((style) => style.styleId === initialStyleId);
+    const initialStyle = currentLibraryTextStyles.find((style) => style.nodeId === initialStyleId);
     if (initialStyle) {
-      selectTextStyleComboboxOption(combobox, initialStyle.styleId, formatLibraryTextStyleLabel(initialStyle));
+      selectTextStyleComboboxOption(combobox, initialStyle.nodeId, formatLibraryTextStyleLabel(initialStyle));
     }
   }
 }
@@ -2232,7 +2323,7 @@ function setupTypographyValueFixExtra(result: ComparisonResult, valueFixExtra: H
   const layoutValue = readTypographyComparisonValue(result.comparisonValue);
   const targetStyle = result.target
     ? currentLibraryTextStyles.find(
-        (style) => style.styleId === result.target!.styleId || style.key === result.target!.styleKey
+        (style) => style.nodeId === result.target!.styleId || style.key === result.target!.styleKey
       )
     : undefined;
   valueFixExtra.innerHTML = `
@@ -2245,7 +2336,7 @@ function setupTypographyValueFixExtra(result: ComparisonResult, valueFixExtra: H
     <textarea rows="2" placeholder="Комментарий (необязательно)" class="tc-value-fix-comment ds-textarea"></textarea>
   `;
   if (targetStyle) {
-    valueFixExtra.dataset.selectedStyleId = targetStyle.styleId;
+    valueFixExtra.dataset.selectedStyleId = targetStyle.nodeId;
   }
 }
 
@@ -2699,7 +2790,7 @@ function applyTypographyDecision(
       return;
     }
     const suggestedStyle = currentLibraryTextStyles.find(
-      (style) => style.styleId === result.target!.styleId || style.key === result.target!.styleKey
+      (style) => style.nodeId === result.target!.styleId || style.key === result.target!.styleKey
     );
     post({
       type: "apply-decision",
@@ -2707,7 +2798,7 @@ function applyTypographyDecision(
         recordId: result.id,
         decision,
         category: "typography",
-        targetStyleId: suggestedStyle?.styleId ?? result.target?.styleId,
+        targetStyleId: suggestedStyle?.nodeId ?? result.target?.styleId,
         targetStyleName: suggestedStyle?.name ?? result.target?.name,
         targetName: suggestedStyle?.name ?? result.target?.name,
         mismatchedProperties: result.mismatchedProperties,
@@ -2723,13 +2814,13 @@ function applyTypographyDecision(
     const label = input?.value.trim() ?? "";
     let styleId = mappedExtra.dataset.selectedStyleId;
     if (!styleId && label) {
-      styleId = findLibraryTextStyleByLabel(label, currentLibraryTextStyles)?.styleId;
+      styleId = findLibraryTextStyleByLabel(label, currentLibraryTextStyles)?.nodeId;
     }
     if (!styleId) {
       showError("Выберите стиль из списка AID — точного совпадения по имени не нашлось.");
       return;
     }
-    const selectedStyle = currentLibraryTextStyles.find((style) => style.styleId === styleId);
+    const selectedStyle = currentLibraryTextStyles.find((style) => style.nodeId === styleId);
     post({
       type: "apply-decision",
       payload: {
@@ -2764,7 +2855,7 @@ function applyTypographyDecision(
   if (decision === "value_fix_proposed") {
     const styleId = valueFixExtra.dataset.selectedStyleId ?? result.target?.styleId;
     const selectedStyle = styleId
-      ? currentLibraryTextStyles.find((style) => style.styleId === styleId)
+      ? currentLibraryTextStyles.find((style) => style.nodeId === styleId)
       : undefined;
     if (!selectedStyle) {
       showError("Выберите стиль библиотеки, значение которого нужно исправить.");
@@ -2777,7 +2868,7 @@ function applyTypographyDecision(
         recordId: result.id,
         decision,
         category: "typography",
-        targetStyleId: selectedStyle.styleId,
+        targetStyleId: selectedStyle.nodeId,
         targetStyleName: selectedStyle.name,
         targetName: selectedStyle.name,
         mismatchedProperties: result.mismatchedProperties,
@@ -3225,7 +3316,7 @@ window.onmessage = (event: MessageEvent) => {
       openProposeConfirmModal(message.payload.entries);
       break;
     case "decisions-submitted":
-      renderProposeStatus(message.payload.unchanged ? PROPOSE_ALREADY_RECORDED : PROPOSE_SUCCESS);
+      renderProposeStatus(proposeStatusText(message.payload));
       break;
     case "decisions-submit-failed":
       renderProposeStatus(PROPOSE_FAILURE);
@@ -3503,6 +3594,7 @@ function initWindowResize(): void {
 // ---------------------------------------------------------------------------
 
 initTabs();
+initHints();
 initGuideAccordion();
 initScopeSegment();
 initCategorySegment();

@@ -5,15 +5,22 @@ import { getRegistryConfig } from './registryConfig.js';
 import {
   commitRegistryFile,
   createBranch,
+  fetchRegistryFileOnBranch,
   fetchRegistryFileOnMain,
   getMainHeadSha,
+  listOpenProposalBranches,
   openPullRequest,
+  PROPOSAL_BRANCH_PREFIX,
   RegistryGitHubError,
   requestPullRequestReviewer,
   type FetchLike,
 } from './registryGithub.js';
 import { buildPullRequestBody } from './pullRequestBody.js';
-import { mergeRegistryEntries, registryEntriesChanged } from './mergeRegistryEntries.js';
+import {
+  allEntriesAlreadyPresent,
+  mergeRegistryEntries,
+  registryEntriesChanged,
+} from './mergeRegistryEntries.js';
 import {
   REGISTRY_DECISIONS,
   type ProposeDecisionRequestBody,
@@ -182,9 +189,41 @@ function buildProposedEntries(
   }));
 }
 
+/**
+ * Лежат ли ровно эти решения в каком-нибудь ещё открытом pull request'е.
+ *
+ * Слияние всегда идёт от `main`, где решений из открытых PR ещё нет, поэтому
+ * повторная отправка выглядит как новое изменение и заводила второй PR с тем
+ * же содержимым. Типичный сценарий — обрыв сети: клиент не увидел ответа и
+ * пользователь нажал «Отправить» ещё раз.
+ *
+ * Сбой самой проверки не должен мешать работе: если GitHub не ответил,
+ * считаем, что дубликата нет, и заводим PR. Лишний pull request — меньшее
+ * зло, чем потерянное решение.
+ */
+async function isAlreadyProposedInOpenPullRequest(
+  deps: ProposeDecisionDeps,
+  githubToken: string,
+  config: ReturnType<typeof getRegistryConfig>,
+  newEntries: RegistryFileEntry[],
+): Promise<boolean> {
+  try {
+    const branches = await listOpenProposalBranches(deps.fetchImpl, githubToken, config);
+    for (const branch of branches) {
+      const file = await fetchRegistryFileOnBranch(deps.fetchImpl, githubToken, config, branch);
+      if (file && allEntriesAlreadyPresent(file.entries, newEntries)) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('[propose-decision] Failed to check open pull requests', error);
+  }
+  return false;
+}
+
 function createBranchName(now: Date): string {
   const shortId = randomBytes(4).toString('hex');
-  return `registry/propose-${now.getTime()}-${shortId}`;
+  return `${PROPOSAL_BRANCH_PREFIX}${now.getTime()}-${shortId}`;
 }
 
 function failureResponse(status: number): Response {
@@ -245,7 +284,12 @@ export async function handleProposeDecision(
     // Отправили то, что уже записано (типичный случай — повтор после обрыва
     // сети): заводить pull request с пустым по смыслу диффом незачем.
     if (!registryEntriesChanged(current.file.entries, mergedEntries)) {
-      return jsonResponse({ success: true, unchanged: true }, 200);
+      return jsonResponse({ success: true, unchanged: true, reason: 'already_in_registry' }, 200);
+    }
+
+    // Те же решения уже ждут согласования в открытом pull request'е.
+    if (await isAlreadyProposedInOpenPullRequest(deps, githubToken, config, newEntries)) {
+      return jsonResponse({ success: true, unchanged: true, reason: 'already_proposed' }, 200);
     }
 
     const merged: RegistryFileContent = {
