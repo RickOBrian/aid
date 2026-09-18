@@ -426,7 +426,11 @@ export interface ProposePreviewMessage {
 
 export interface DecisionsSubmittedMessage {
   type: "decisions-submitted";
-  payload: { count: number };
+  payload: {
+    count: number;
+    /** true — эти решения уже были в реестре, новый pull request не создавался. */
+    unchanged: boolean;
+  };
 }
 
 export interface DecisionsSubmitFailedMessage {

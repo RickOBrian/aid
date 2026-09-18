@@ -13,6 +13,7 @@ import {
   type FetchLike,
 } from './registryGithub.js';
 import { buildPullRequestBody } from './pullRequestBody.js';
+import { mergeRegistryEntries, registryEntriesChanged } from './mergeRegistryEntries.js';
 import {
   REGISTRY_DECISIONS,
   type ProposeDecisionRequestBody,
@@ -234,11 +235,27 @@ export async function handleProposeDecision(
 
   try {
     const current = await fetchRegistryFileOnMain(deps.fetchImpl, githubToken, config);
+
+    // Подпись выводится из свойств группы детерминированно, поэтому одна и та
+    // же подпись приходит и от разных людей, и при повторной отправке.
+    // Новое решение заменяет старое; реестр хранит текущее решение по каждой
+    // подписи, а история правок остаётся в git.
+    const mergedEntries = mergeRegistryEntries(current.file.entries, newEntries);
+
+    // Отправили то, что уже записано (типичный случай — повтор после обрыва
+    // сети): заводить pull request с пустым по смыслу диффом незачем.
+    if (!registryEntriesChanged(current.file.entries, mergedEntries)) {
+      return jsonResponse({ success: true, unchanged: true }, 200);
+    }
+
     const merged: RegistryFileContent = {
       schemaVersion: current.file.schemaVersion || '1.0',
+      // Счётчик информационный: два предложения, созданные от одного
+      // состояния main, получат одинаковый номер, и при слиянии обоих он
+      // окажется занижен. Ни одна ветка логики на нём не завязана.
       registryVersion: current.file.registryVersion + 1,
       updatedAt: proposedAt,
-      entries: [...current.file.entries, ...newEntries],
+      entries: mergedEntries,
     };
 
     const mainSha = await getMainHeadSha(deps.fetchImpl, githubToken, config);

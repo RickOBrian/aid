@@ -85,7 +85,18 @@ export async function fetchRegistryFromBackend(): Promise<BackendRegistryRespons
   }
 }
 
-export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload): Promise<void> {
+export interface ProposeDecisionsResult {
+  /**
+   * true — реестр уже содержит ровно эти решения, pull request не создавался.
+   * Типичный случай: повторная отправка после обрыва сети, когда клиент не
+   * увидел ответа на первую попытку.
+   */
+  unchanged: boolean;
+}
+
+export async function proposeDecisionsOnBackend(
+  payload: ProposeDecisionsPayload
+): Promise<ProposeDecisionsResult> {
   const sharedSecret = getPluginSharedSecret();
   if (!sharedSecret) {
     throw new RegistryBackendError("submit_failed");
@@ -110,9 +121,9 @@ export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload
     throw new RegistryBackendError("submit_failed");
   }
 
-  let body: { success?: boolean } | null = null;
+  let body: { success?: boolean; unchanged?: boolean } | null = null;
   try {
-    body = (await response.json()) as { success?: boolean };
+    body = (await response.json()) as { success?: boolean; unchanged?: boolean };
   } catch {
     body = null;
   }
@@ -120,4 +131,6 @@ export async function proposeDecisionsOnBackend(payload: ProposeDecisionsPayload
   if (!response.ok || body?.success !== true) {
     throw new RegistryBackendError("submit_failed");
   }
+
+  return { unchanged: body.unchanged === true };
 }

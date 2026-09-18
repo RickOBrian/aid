@@ -412,9 +412,9 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   const entries = pendingEntries.map(([recordId, stored]) => buildProposeEntry(recordId, stored));
 
   try {
-    await proposeDecisionsOnBackend({ proposedBy, entries });
+    const { unchanged } = await proposeDecisionsOnBackend({ proposedBy, entries });
     await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
-    send({ type: "decisions-submitted", payload: { count: entries.length } });
+    send({ type: "decisions-submitted", payload: { count: entries.length, unchanged } });
     await sendPendingProposeCount();
   } catch (error) {
     if (!(error instanceof RegistryBackendError)) {

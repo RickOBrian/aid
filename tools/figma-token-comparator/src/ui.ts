@@ -66,6 +66,7 @@ const PROD_REGISTRY_READY = "Реестр решений готов.";
 const PROD_REGISTRY_EMPTY = "Реестр решений пуст — можно начинать работу.";
 const PROD_REGISTRY_UNAVAILABLE = "Не удалось загрузить реестр решений. Попробуйте позже.";
 const PROPOSE_SUCCESS = "Отправлено — ждёт согласования Principal Designer.";
+const PROPOSE_ALREADY_RECORDED = "Эти решения уже записаны в реестре — отправлять было нечего.";
 const PROPOSE_FAILURE = "Не удалось отправить. Попробуйте ещё раз.";
 
 /**
@@ -3152,7 +3153,7 @@ window.onmessage = (event: MessageEvent) => {
       openProposeConfirmModal(message.payload.entries);
       break;
     case "decisions-submitted":
-      renderProposeStatus(PROPOSE_SUCCESS);
+      renderProposeStatus(message.payload.unchanged ? PROPOSE_ALREADY_RECORDED : PROPOSE_SUCCESS);
       break;
     case "decisions-submit-failed":
       renderProposeStatus(PROPOSE_FAILURE);
