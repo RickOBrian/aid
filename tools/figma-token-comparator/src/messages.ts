@@ -134,11 +134,15 @@ export interface PrintToFigmaMessage {
  * токене ничего не знает. Без `variableId` превью строится по
  * автоматически найденному `result.target` (или сохранённому mapped-
  * решению), как раньше.
+ *
+ * `styleId` — то же для типографики: стиль текста библиотеки (`nodeId`),
+ * выбранный через «Выбрать стиль из AID» до сохранения решения.
  */
 export interface BuildPreviewMessage {
   type: "build-preview";
   recordId: string;
   variableId?: string;
+  styleId?: string;
 }
 
 /**

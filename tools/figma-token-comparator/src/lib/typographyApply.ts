@@ -29,13 +29,18 @@ export function isTextNodeMixedUnresolved(node: TextNode): boolean {
   return isMixedSymbol(node.fontSize) || isMixedSymbol(node.fontName);
 }
 
-/** Привязывает опубликованный Text Style к TEXT-ноде. */
+/**
+ * Привязывает опубликованный Text Style к TEXT-ноде.
+ *
+ * Только через `setTextStyleIdAsync`: при `documentAccess: "dynamic-page"`
+ * присваивание `textStyleId` бросает исключение (находка №23).
+ */
 export async function applyImportedTextStyleToNode(
   node: TextNode,
   importedStyle: TextStyle
 ): Promise<void> {
   await figma.loadFontAsync(importedStyle.fontName);
-  node.textStyleId = importedStyle.id;
+  await node.setTextStyleIdAsync(importedStyle.id);
 }
 
 export async function applyTypographyToNodeIds(options: {

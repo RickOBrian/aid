@@ -9,7 +9,6 @@ import type {
   Decision,
   LibraryTextStyle,
   LibraryToken,
-  MatchStatus,
   ScanScope,
   TokenCategory,
   TypographyComparisonValue,
@@ -26,6 +25,7 @@ import {
   formatLibraryTokenLabel,
 } from "./lib/libraryLabels";
 import { getResultStatusFilterKey, type StatusFilterKey } from "./lib/statusKeys";
+import { canShowPreview } from "./lib/previewEligibility";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
@@ -1231,24 +1231,13 @@ function canUseSuggestedToken(result: ComparisonResult): boolean {
 // Показать превью — "Было / Будет" для строк с library target
 // ---------------------------------------------------------------------------
 
-/** Превью доступно только для статусов с реальным library target и резолвленным значением — не для Hardcoded (no analog) / layout-only. */
-const PREVIEW_ELIGIBLE_STATUSES: ReadonlySet<MatchStatus> = new Set(["value", "name-match", "conflict", "approximate"]);
-
-function canShowPreview(result: ComparisonResult): boolean {
-  return (
-    PREVIEW_ELIGIBLE_STATUSES.has(result.status) &&
-    Boolean(result.target) &&
-    result.target?.valueUnresolved !== true
-  );
-}
-
 let previewInFlight = false;
 let activePreviewRecordId: string | null = null;
 
 /**
- * `.tc-mapped-preview-btn` (комбобокс «Выбрать токен из AID») зависит ещё
- * и от того, выбран ли токен — при снятии общей блокировки (disabled =
- * false) её нельзя просто разблокировать, если токен ещё не выбран.
+ * `.tc-mapped-preview-btn` (комбобокс «Выбрать токен/стиль из AID») зависит
+ * ещё и от того, выбран ли токен или стиль — при снятии общей блокировки
+ * (disabled = false) её нельзя просто разблокировать, если выбора ещё нет.
  */
 function setPreviewButtonsDisabled(disabled: boolean): void {
   document.querySelectorAll<HTMLButtonElement>(".tc-preview-btn").forEach((btn) => {
@@ -1258,7 +1247,7 @@ function setPreviewButtonsDisabled(disabled: boolean): void {
     }
     if (btn.classList.contains("tc-mapped-preview-btn")) {
       const host = btn.closest<HTMLElement>(".ds-action-extra");
-      btn.disabled = !host?.dataset.selectedVariableId;
+      btn.disabled = !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId;
       return;
     }
     btn.disabled = false;
@@ -1307,6 +1296,9 @@ function showPreviewErrorInModal(message: string): void {
 }
 
 function openPreviewModal(): void {
+  const title = activeCategory === "typography" ? "Превью изменения типографики" : "Превью изменения цвета";
+  $("tc-preview-title").textContent = title;
+  $("tc-preview-modal").setAttribute("aria-label", title);
   $("tc-preview-overlay").hidden = false;
   showPreviewLoading();
 }
@@ -1317,11 +1309,12 @@ function closePreviewModal(): void {
 }
 
 /**
- * `variableId` — токен, выбранный вручную через combobox «Выбрать токен
- * из AID», ещё до сохранения решения («Применить решение»). Без него
- * превью строится по автоматически найденному target строки, как раньше.
+ * `selection` — токен (`variableId`) или стиль текста (`styleId`), выбранный
+ * вручную через combobox «Выбрать токен/стиль из AID», ещё до сохранения
+ * решения («Применить решение»). Без него превью строится по автоматически
+ * найденному target строки, как раньше.
  */
-function requestPreview(recordId: string, variableId?: string): void {
+function requestPreview(recordId: string, selection: { variableId?: string; styleId?: string } = {}): void {
   if (previewInFlight) {
     showError("Дождитесь, пока построится текущее превью.");
     return;
@@ -1330,7 +1323,7 @@ function requestPreview(recordId: string, variableId?: string): void {
   activePreviewRecordId = recordId;
   setPreviewButtonsDisabled(true);
   openPreviewModal();
-  post({ type: "build-preview", recordId, variableId });
+  post({ type: "build-preview", recordId, variableId: selection.variableId, styleId: selection.styleId });
 }
 
 function initPreviewModal(): void {
@@ -1536,10 +1529,8 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
     const resultView = $("tc-apply-result-view");
     resultView.hidden = true;
     resultView.innerHTML = "";
-    $("tc-apply-preview-loading").hidden = true;
-    $("tc-apply-preview-images").hidden = true;
-    $("tc-apply-preview-error").hidden = true;
     $("tc-apply-overlay").hidden = false;
+    requestApplyModalPreview(result.id);
     return;
   }
 
@@ -1961,7 +1952,7 @@ function setupVariableCombobox(mappedExtra: HTMLElement, recordId: string, initi
     event.stopPropagation();
     const variableId = mappedExtra.dataset.selectedVariableId;
     if (!variableId) return;
-    requestPreview(recordId, variableId);
+    requestPreview(recordId, { variableId });
   });
 
   input.addEventListener("input", () => {
@@ -2229,7 +2220,11 @@ function filterLibraryTextStyles(query: string): LibraryTextStyle[] {
   return filtered.slice(0, 80);
 }
 
-function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void {
+function renderTextStyleComboboxMenu(
+  combobox: HTMLElement,
+  query: string,
+  onSelect?: (styleId: string, label: string) => void
+): void {
   const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
   if (!menu) return;
   const styles = filterLibraryTextStyles(query);
@@ -2263,6 +2258,7 @@ function renderTextStyleComboboxMenu(combobox: HTMLElement, query: string): void
       const styleId = option.dataset.styleId ?? "";
       const label = option.dataset.label ?? "";
       selectTextStyleComboboxOption(combobox, styleId, label);
+      onSelect?.(styleId, label);
     });
   });
 }
@@ -2276,7 +2272,12 @@ function selectTextStyleComboboxOption(combobox: HTMLElement, styleId: string, l
   setComboboxOpen(combobox, false);
 }
 
-function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: string): void {
+/**
+ * Combobox для решения «Выбрать стиль из AID». Как и у цветов, кнопка
+ * «Показать превью» доступна сразу после выбора стиля, ещё ДО «Применить
+ * решение» — превью строится по явному `styleId` выбранного стиля.
+ */
+function setupTextStyleCombobox(mappedExtra: HTMLElement, recordId: string, initialStyleId?: string): void {
   mappedExtra.innerHTML = `
     <div class="ds-combobox">
       <input
@@ -2291,23 +2292,38 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
       </button>
       <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
     </div>
+    <button type="button" class="ds-btn tc-preview-btn tc-mapped-preview-btn" disabled>Показать превью</button>
   `;
 
   const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
   const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
   const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
-  if (!combobox || !input || !toggle) return;
+  const previewBtn = mappedExtra.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+  if (!combobox || !input || !toggle || !previewBtn) return;
+
+  function syncPreviewButtonState(): void {
+    previewBtn!.disabled = !mappedExtra.dataset.selectedStyleId || previewInFlight;
+  }
+
+  previewBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const styleId = mappedExtra.dataset.selectedStyleId;
+    if (!styleId) return;
+    requestPreview(recordId, { styleId });
+  });
 
   input.addEventListener("input", () => {
     delete mappedExtra.dataset.selectedStyleId;
-    renderTextStyleComboboxMenu(combobox, input.value);
+    syncPreviewButtonState();
+    renderTextStyleComboboxMenu(combobox, input.value, syncPreviewButtonState);
     setComboboxOpen(combobox, true);
   });
   toggle.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     const open = toggle.getAttribute("aria-expanded") !== "true";
-    if (open) renderTextStyleComboboxMenu(combobox, input.value);
+    if (open) renderTextStyleComboboxMenu(combobox, input.value, syncPreviewButtonState);
     setComboboxOpen(combobox, open);
   });
 
@@ -2315,6 +2331,7 @@ function setupTextStyleCombobox(mappedExtra: HTMLElement, initialStyleId?: strin
     const initialStyle = currentLibraryTextStyles.find((style) => style.nodeId === initialStyleId);
     if (initialStyle) {
       selectTextStyleComboboxOption(combobox, initialStyle.nodeId, formatLibraryTextStyleLabel(initialStyle));
+      syncPreviewButtonState();
     }
   }
 }
@@ -2361,6 +2378,20 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
   if (result.decision) select.value = result.decision;
   wrap.appendChild(select);
 
+  if (canShowPreview(result, "typography")) {
+    const previewBtn = document.createElement("button");
+    previewBtn.type = "button";
+    previewBtn.className = "ds-btn tc-preview-btn";
+    previewBtn.textContent = "Показать превью";
+    previewBtn.disabled = previewInFlight;
+    previewBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      requestPreview(result.id);
+    });
+    wrap.appendChild(previewBtn);
+  }
+
   if (canApplyToLayout(result)) {
     const applyLayoutBtn = document.createElement("button");
     applyLayoutBtn.type = "button";
@@ -2377,7 +2408,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
 
   const mappedExtra = document.createElement("div");
   mappedExtra.className = "ds-action-extra";
-  setupTextStyleCombobox(mappedExtra, result.decisionTargetStyleId);
+  setupTextStyleCombobox(mappedExtra, result.id, result.decisionTargetStyleId);
   wrap.appendChild(mappedExtra);
 
   const commentExtra = document.createElement("div");
@@ -2677,7 +2708,7 @@ function buildActionCell(result: ComparisonResult): HTMLTableCellElement {
   if (result.decision) select.value = result.decision;
   wrap.appendChild(select);
 
-  if (canShowPreview(result)) {
+  if (canShowPreview(result, "colors")) {
     const previewBtn = document.createElement("button");
     previewBtn.type = "button";
     previewBtn.className = "ds-btn tc-preview-btn";
