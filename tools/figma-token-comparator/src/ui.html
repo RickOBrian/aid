@@ -420,13 +420,50 @@
         gap: 6px;
       }
 
+      /*
+       * Кнопка-иконка — компактная замена текстовой кнопке там, где действие
+       * понятно по значку. Название действия — в aria-label и title.
+       */
+      .ds-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        padding: 0;
+        flex-shrink: 0;
+        border: none;
+        border-radius: var(--ds-radius);
+        background: transparent;
+        color: var(--ds-text-secondary);
+        cursor: pointer;
+      }
+
+      .ds-icon-btn:hover:not(:disabled) {
+        background: var(--ds-surface-muted);
+        color: var(--ds-text);
+      }
+
+      .ds-icon-btn:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 1px;
+      }
+
+      .ds-icon-btn:disabled {
+        cursor: default;
+        color: var(--ds-text-muted);
+      }
+
       /* Список загруженных библиотек на вкладке «Настройки» */
+      .tc-library-add-btn {
+        margin-left: auto;
+      }
+
       .tc-library-list {
         list-style: none;
         margin: 0;
         padding: 0;
-        border: 1px solid var(--ds-border);
-        border-radius: var(--ds-radius);
       }
 
       .tc-library-list:empty {
@@ -436,37 +473,32 @@
       .tc-library-item {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 8px 12px;
-      }
-
-      .tc-library-item + .tc-library-item {
-        border-top: 1px solid var(--ds-border);
+        gap: 8px;
+        padding: 2px 0;
       }
 
       .tc-library-item__info {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        flex: 1;
         min-width: 0;
       }
 
       .tc-library-item__name {
-        font-weight: 500;
-        overflow-wrap: anywhere;
-      }
-
-      .tc-library-item__actions {
-        display: flex;
-        gap: 8px;
-        flex-shrink: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .tc-library-add {
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .tc-library-add input {
+        flex: 1;
+        min-width: 0;
       }
 
       .tc-library-add[hidden] {
@@ -2187,22 +2219,36 @@
               «Сканирование». Если стили текста не загрузились, токену не хватает доступа к содержимому
               файла и библиотек.
             </span>
+            <button
+              type="button"
+              class="ds-icon-btn tc-library-add-btn"
+              id="tc-add-library-btn"
+              aria-label="Добавить библиотеку"
+              title="Добавить библиотеку"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
           <ul class="tc-library-list" id="tc-library-list"></ul>
           <div class="tc-library-add" id="tc-library-add" hidden>
             <input
               id="tc-filekey-input"
               type="text"
-              placeholder="Ссылка на файл библиотеки или его ключ"
+              placeholder="Ссылка на файл библиотеки"
               aria-label="Ссылка на файл библиотеки или его ключ"
             />
-            <div class="ds-row">
-              <button type="button" class="ds-btn" id="tc-cancel-library-btn">Отмена</button>
-              <button type="button" class="ds-btn ds-btn-primary" id="tc-load-library-btn">Загрузить</button>
-            </div>
-          </div>
-          <div class="ds-row">
-            <button type="button" class="ds-btn" id="tc-add-library-btn">+ Добавить библиотеку</button>
+            <button
+              type="button"
+              class="ds-icon-btn"
+              id="tc-load-library-btn"
+              aria-label="Загрузить библиотеку"
+              title="Загрузить"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button
+              type="button"
+              class="ds-icon-btn"
+              id="tc-cancel-library-btn"
+              aria-label="Отменить добавление"
+              title="Отмена"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </div>
         <div class="ds-field">
@@ -2597,7 +2643,7 @@
                 <ol>
                   <li>
                     <strong>Настройки.</strong> Вставьте токен доступа Figma и добавьте библиотеки — кнопкой
-                    «+ Добавить библиотеку», по ссылке на файл. Их может быть несколько. Чтобы сравнивать
+                    «+» у заголовка «Библиотеки», по ссылке на файл. Их может быть несколько. Чтобы сравнивать
                     типографику, токену нужен доступ не только к Variables, но и к содержимому файла и
                     библиотек — подробности в подсказке «?» у поля токена.
                   </li>
@@ -3168,7 +3214,7 @@
                       <tr><th>Что видите</th><th>Что сделать</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и нажмите «Обновить» у библиотеки. Какая библиотека выбрана — видно на вкладке «Сканирование»</td></tr>
+                      <tr><td>Переключатель «Типографика» недоступен или стили текста не загрузились</td><td>Токену Figma не хватает доступа к содержимому файла и библиотек. Создайте токен с нужным доступом (подсказка «?» у поля) и обновите библиотеку кнопкой ↻ в списке. Какая библиотека выбрана — видно на вкладке «Сканирование»</td></tr>
                       <tr><td>Ошибка при загрузке библиотеки</td><td>Проверьте ссылку на файл и что у вашего аккаунта есть к нему доступ. Если токен просрочен — создайте новый</td></tr>
                       <tr><td>Таблица пустая после фильтра</td><td>Откройте «Статус ▾» и включите нужные статусы</td></tr>
                       <tr><td>«Слой не найден»</td><td>Слой удалили или переместили после сканирования — пересканируйте макет</td></tr>

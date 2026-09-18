@@ -584,7 +584,7 @@ function initSettingsPanel(): void {
   });
 
   $<HTMLButtonElement>("tc-add-library-btn").addEventListener("click", () => {
-    setLibraryAddFormOpen(true);
+    setLibraryAddFormOpen($("tc-library-add").hidden === true);
   });
 
   $<HTMLButtonElement>("tc-cancel-library-btn").addEventListener("click", () => {
@@ -636,41 +636,42 @@ function requestLibraryLoad(libraryInput: string): void {
 function setLibraryAddFormOpen(open: boolean): void {
   const shouldOpen = open || loadedLibraries.length === 0;
   $("tc-library-add").hidden = !shouldOpen;
-  $("tc-add-library-btn").hidden = shouldOpen;
+  // Пока библиотек нет, форма открыта всегда — отменять нечего.
   $("tc-cancel-library-btn").hidden = loadedLibraries.length === 0;
   if (open) $<HTMLInputElement>("tc-filekey-input").focus();
 }
 
-function formatLibraryCounts(library: LibraryMeta): string {
-  const parts = [
-    library.colorCount === null ? "цвета не загрузились" : `цветов: ${library.colorCount}`,
-    library.textStyleCount === null ? "стили текста не загрузились" : `стилей текста: ${library.textStyleCount}`,
-    `обновлена ${new Date(library.fetchedAt).toLocaleDateString("ru-RU")}`,
-  ];
-  return parts.join(" · ");
+const REFRESH_ICON_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12.5 8a4.5 4.5 0 1 1-1.32-3.18M12.5 3.5v2.5H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const REMOVE_ICON_SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/**
+ * Подпись у библиотеки — только если что-то не загрузилось: иначе непонятно,
+ * почему, например, недоступна типографика. Счётчики и дата не показываются.
+ */
+function libraryWarning(library: LibraryMeta): string | null {
+  const failed = [
+    library.colorCount === null ? "цвета" : null,
+    library.textStyleCount === null ? "стили текста" : null,
+  ].filter(Boolean);
+  return failed.length > 0 ? `Не загрузились: ${failed.join(", ")}` : null;
 }
 
 function renderLibraryList(): void {
   $("tc-library-list").innerHTML = loadedLibraries
-    .map(
-      (library) => `
+    .map((library) => {
+      const name = escapeHtml(library.fileName);
+      const fileKey = escapeHtml(library.fileKey);
+      const warning = libraryWarning(library);
+      return `
       <li class="tc-library-item">
         <div class="tc-library-item__info">
-          <span class="tc-library-item__name">${escapeHtml(library.fileName)}</span>
-          <span class="ds-value-meta__caption">${escapeHtml(formatLibraryCounts(library))}</span>
+          <span class="tc-library-item__name" title="${name}">${name}</span>
+          ${warning ? `<span class="ds-value-meta__caption ds-value-meta__caption--warning">${escapeHtml(warning)}</span>` : ""}
         </div>
-        <div class="tc-library-item__actions">
-          <button type="button" class="ds-btn" data-action="refresh" data-file-key="${escapeHtml(library.fileKey)}">Обновить</button>
-          <button
-            type="button"
-            class="ds-btn"
-            data-action="remove"
-            data-file-key="${escapeHtml(library.fileKey)}"
-            aria-label="Удалить библиотеку ${escapeHtml(library.fileName)}"
-          >Удалить</button>
-        </div>
-      </li>`
-    )
+        <button type="button" class="ds-icon-btn" data-action="refresh" data-file-key="${fileKey}" aria-label="Обновить библиотеку ${name}" title="Обновить">${REFRESH_ICON_SVG}</button>
+        <button type="button" class="ds-icon-btn" data-action="remove" data-file-key="${fileKey}" aria-label="Удалить библиотеку ${name}" title="Удалить">${REMOVE_ICON_SVG}</button>
+      </li>`;
+    })
     .join("");
 }
 
