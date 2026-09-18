@@ -2097,11 +2097,12 @@
         </div>
         <div class="ds-field">
           <div class="ds-field__head">
-            <label for="tc-registry-secret-input">Ключ доступа к реестру решений</label>
+            <label for="tc-registry-secret-input">Ключ для отправки решений</label>
             <button type="button" class="ds-hint-trigger" aria-label="Подсказка" aria-expanded="false">?</button>
             <span class="ds-hint-text">
-              Ключ выдаёт владелец дизайн-системы. Без него плагин работает, но реестр решений
-              недоступен: не видно уже принятых решений и нельзя отправить свои на согласование.
+              Нужен только чтобы отправлять решения на согласование — ключ выдаёт владелец
+              дизайн-системы. Всё остальное работает без него: сканирование, сравнение, экспорт
+              и просмотр уже принятых решений.
             </span>
           </div>
           <input id="tc-registry-secret-input" type="password" autocomplete="off" />

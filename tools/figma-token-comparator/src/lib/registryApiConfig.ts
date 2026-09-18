@@ -8,8 +8,6 @@
  * конкретного пользователя (см. storage.getRegistrySecret).
  */
 
-export const REGISTRY_GET_URL = "https://aid-registry-api.vercel.app/api/registry";
-
 export const REGISTRY_PROPOSE_URL =
   "https://aid-registry-api.vercel.app/api/registry/propose-decision";
 

@@ -251,6 +251,53 @@ async function assertRepoAccessible(token: string, owner: string, repo: string):
  * 404 на Contents API при доступном репозитории — не исключение: возвращает
  * `{ notFound: true }`, чтобы UI мог предложить локальную инициализацию пустого реестра.
  */
+/**
+ * Чтение реестра решений из ПУБЛИЧНОГО репозитория, без авторизации.
+ *
+ * Реестр лежит в открытом репозитории и читается кем угодно — держать его за
+ * общим ключом плагина смысла не было: ключ не защищал ничего, но требовал
+ * от каждого дизайнера получить его прежде, чем увидеть уже принятые решения.
+ * Ключ остался только на отправке, где бэкенд создаёт pull request серверным
+ * токеном GitHub.
+ *
+ * Неавторизованный лимит api.github.com — 60 запросов в час на IP. Плагин
+ * читает реестр один раз при запуске, так что для команды этого с запасом.
+ */
+export async function fetchPublicRegistry(
+  owner: string,
+  repo: string,
+  path: string
+): Promise<FetchRegistryResult> {
+  const encodedPath = encodeContentPath(path.trim());
+  const url = `${API_BASE}/repos/${encodeURIComponent(owner.trim())}/${encodeURIComponent(repo.trim())}/contents/${encodedPath}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, { method: "GET" });
+  } catch {
+    throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
+  }
+
+  if (response.status === 404) {
+    return { notFound: true };
+  }
+
+  const body = await parseGitHubJsonResponse<GitHubContentsResponse>(response);
+
+  if (!response.ok) {
+    throw new GitHubRestApiError(
+      buildContentsErrorMessage(response.status, body, getRateLimitRemaining(response)),
+      response.status
+    );
+  }
+
+  if (!body.content || body.encoding !== "base64" || !body.sha) {
+    throw new GitHubRestApiError("GitHub вернул файл реестра без base64-содержимого или sha.");
+  }
+
+  return parseRegistryJson(decodeBase64Content(body.content), body.sha);
+}
+
 export async function fetchRegistry(
   token: string,
   owner: string,
