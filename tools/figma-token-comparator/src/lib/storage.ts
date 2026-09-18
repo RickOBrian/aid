@@ -117,13 +117,28 @@ export async function getMappingHistory(): Promise<Record<string, StoredDecision
   return value as Record<string, StoredDecision>;
 }
 
+export interface SetMappingHistoryOptions {
+  /**
+   * true — не возвращать запись в очередь на согласование.
+   *
+   * Нужно для служебных перезаписей, которые решением пользователя не
+   * являются: учёт применённых слоёв после «Применить в макет». Без этого
+   * уже отправленное решение уехало бы в реестр повторно.
+   */
+  keepSubmitted?: boolean;
+}
+
 export async function setMappingHistoryEntry(
   recordId: string,
-  entry: StoredDecision
+  entry: StoredDecision,
+  options: SetMappingHistoryOptions = {}
 ): Promise<Record<string, StoredDecision>> {
   const history = await getMappingHistory();
   history[recordId] = entry;
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  if (!options.keepSubmitted) {
+    await clearSubmittedSignature(recordId);
+  }
   return history;
 }
 
@@ -133,6 +148,7 @@ export async function clearMappingHistoryEntry(
   const history = await getMappingHistory();
   delete history[recordId];
   await figma.clientStorage.setAsync(KEYS.MAPPING_HISTORY, history);
+  await clearSubmittedSignature(recordId);
   return history;
 }
 
@@ -203,6 +219,20 @@ export async function markSignaturesSubmitted(signatures: string[]): Promise<voi
   for (const signature of signatures) {
     submitted.add(signature);
   }
+  await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
+}
+
+/**
+ * Снимает отметку «отправлено» — решение по этой группе снова считается
+ * ожидающим отправки.
+ *
+ * Вызывается, когда пользователь изменил или отменил решение: иначе
+ * изменённое решение навсегда оставалось бы вне очереди и отправить его
+ * повторно было бы нельзя (например, после отклонённого ревью).
+ */
+export async function clearSubmittedSignature(recordId: string): Promise<void> {
+  const submitted = await getSubmittedSignatures();
+  if (!submitted.delete(recordId)) return;
   await figma.clientStorage.setAsync(KEYS.SUBMITTED_SIGNATURES, Array.from(submitted));
 }
 

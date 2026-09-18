@@ -2414,6 +2414,11 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   if (result.decision && result.decision !== "value_fix_proposed") {
     statusBadges.appendChild(createDecisionCheck(result.decision));
   }
+  if (result.applyPartial) {
+    statusBadges.appendChild(
+      createSecondaryBadge("Применено частично", "warning", "Переменная применена не ко всем слоям группы.")
+    );
+  }
   row.appendChild(statusCell);
 
   const layerCell = document.createElement("td");

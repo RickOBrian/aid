@@ -284,14 +284,25 @@ describe("какие строки попадают в таблицу", () => {
     expect(compareColorsWithLibrary(records, [token], NO_HISTORY)).toHaveLength(3);
   });
 
-  it("решения mapped и ignored скрывают строку, candidate и правка — нет", () => {
+  it("маппинг скрывает строку — но только когда цель решения найдена", () => {
     const base = colorRecord({ hex: "#12FF00" });
-    const hidden: Array<ComparisonResult["decision"]> = ["mapped", "mapped_suggested", "ignored"];
+    const mappings: Array<ComparisonResult["decision"]> = ["mapped", "mapped_suggested"];
+
+    for (const decision of mappings) {
+      // статус "mapped" ставит applyHistory, когда токен решения найден
+      expect(requiresUserAction({ ...base, status: "mapped", decision }, [token])).toBe(false);
+      // токен не найден — статус остался исходным, расхождение никуда не делось
+      expect(requiresUserAction({ ...base, status: "layout-only", decision }, [token])).toBe(true);
+    }
+  });
+
+  it("«игнорировать» скрывает строку, «кандидат» и правка значения — нет", () => {
+    const base = colorRecord({ hex: "#12FF00" });
     const kept: Array<ComparisonResult["decision"]> = ["candidate", "value_fix_proposed"];
 
-    for (const decision of hidden) {
-      expect(requiresUserAction({ ...base, status: "layout-only", decision }, [token])).toBe(false);
-    }
+    expect(requiresUserAction({ ...base, status: "layout-only", decision: "ignored" }, [token])).toBe(
+      false
+    );
     for (const decision of kept) {
       expect(requiresUserAction({ ...base, status: "layout-only", decision }, [token])).toBe(true);
     }
@@ -334,10 +345,70 @@ describe("применение истории решений", () => {
   });
 
   // Находка №18 аудита: решение указывает на токен, которого в загруженной
-  // библиотеке больше нет. Статус остаётся исходным, но строка всё равно
-  // скрывается по факту наличия decision — расхождение исчезает из таблицы,
-  // хотя цель решения не существует.
-  it.todo("№18: решение с исчезнувшим токеном не должно скрывать строку");
+  // библиотеке больше нет. Скрывать такую строку нельзя — расхождение
+  // осталось, а цель решения не существует.
+  it("№18: решение с исчезнувшим токеном не скрывает строку", () => {
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "mapped",
+        targetVariableId: "удалённый-токен",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    const [result] = computeColorComparisonResults([record], [], history);
+
+    expect(statusOf(result)).toBe("layout-only");
+    expect(requiresUserAction(result, [])).toBe(true);
+    expect(compareColorsWithLibrary([record], [], history)).toHaveLength(1);
+  });
+
+  it("решение с существующим токеном по-прежнему скрывает строку", () => {
+    const token = libraryToken({ name: "bg/accent", variableId: "var-1" });
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "mapped",
+        targetVariableId: "var-1",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    expect(compareColorsWithLibrary([record], [token], history)).toHaveLength(0);
+  });
+
+  it("решение «игнорировать» скрывает строку независимо от токенов", () => {
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "ignored",
+        comment: "осознанное исключение",
+        timestamp: "2026-09-18T00:00:00.000Z",
+      },
+    };
+
+    expect(compareColorsWithLibrary([record], [], history)).toHaveLength(0);
+  });
+
+  // Частичное применение в макет (батч 2, находка №3): решение сохраняется
+  // вместе со списком пропущенных слоёв, и это должно доезжать до интерфейса.
+  it("частичное применение переносится в результат", () => {
+    const record = colorRecord({ hex: "#12FF00", id: "rec-1" });
+    const history: Record<string, StoredDecision> = {
+      "rec-1": {
+        decision: "mapped",
+        timestamp: "2026-09-18T00:00:00.000Z",
+        applyPartial: true,
+        applySkips: [{ nodeId: "3:3", reason: "слой удалён" }],
+      },
+    };
+
+    const [result] = computeColorComparisonResults([record], [], history);
+
+    expect(result.applyPartial).toBe(true);
+    expect(result.applySkips).toHaveLength(1);
+  });
 
   // Находка №19 аудита: цветовая ветка не переносит decisionTargetStyleId,
   // в отличие от типографики.

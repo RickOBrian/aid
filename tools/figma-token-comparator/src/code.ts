@@ -55,6 +55,10 @@ import {
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
 import * as storage from "./lib/storage";
+import {
+  persistDecisionAfterApply,
+  type ApplyToLayoutSkip,
+} from "./lib/decisionPersistence";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
@@ -921,6 +925,20 @@ async function handleApplyDecision(
   const category =
     fields.category ??
     (getLastRecords("typography").some((item) => item.id === recordId) ? "typography" : "colors");
+
+  // Сначала убеждаемся, что строка вообще есть в текущих результатах, и только
+  // потом пишем в историю. Иначе после ошибки «строка не найдена» в истории
+  // оставалось бы решение-сирота: пользователю сказали, что не получилось, а
+  // запись уже считается ожидающей отправки и уедет в реестр.
+  const record = getLastRecords(category).find((item) => item.id === recordId);
+  if (!record) {
+    send({
+      type: "error",
+      payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." },
+    });
+    return;
+  }
+
   const timestamp = new Date().toISOString();
   const history = await storage.setMappingHistoryEntry(recordId, {
     decision,
@@ -951,23 +969,9 @@ async function handleApplyDecision(
   });
 
   if (category === "typography") {
-    const record = getLastRecords("typography").find((item) => item.id === recordId);
-    if (!record) {
-      send({
-        type: "error",
-        payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." },
-      });
-      return;
-    }
     const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
     send({ type: "decision-applied", payload: { recordId, result } });
     await sendPendingProposeCount();
-    return;
-  }
-
-  const record = getLastRecords("colors").find((item) => item.id === recordId);
-  if (!record) {
-    send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
     return;
   }
 
@@ -1016,11 +1020,6 @@ function paintMatchesRecordValue(paint: Paint, record: LayoutRecord): boolean {
 /** Индекс paint в массиве, чьё текущее значение совпадает с тем, что нашёл сканер для этой группы, либо -1. */
 function findMatchingPaintIndex(paints: readonly Paint[], record: LayoutRecord): number {
   return paints.findIndex((paint) => paintMatchesRecordValue(paint, record));
-}
-
-interface ApplyToLayoutSkip {
-  nodeId: string;
-  reason: string;
 }
 
 function updateTypographyRecordOptimistic(
@@ -1158,9 +1157,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     updateTypographyRecordOptimistic(recordId, importedStyle, targetStyle);
   }
 
-  if (fullSuccess) {
-    await storage.clearMappingHistoryEntry(recordId);
-  } else if (stored || batchResult.applied > 0 || batchResult.skipped.length > 0) {
+  if (stored || batchResult.applied > 0 || batchResult.skipped.length > 0) {
     const base: StoredDecision = stored ?? {
       decision: result.decision ?? "mapped_suggested",
       category: "typography",
@@ -1174,11 +1171,13 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       nodeIds: record.nodeIds,
       occurrenceCount: record.count,
     };
-    await storage.setMappingHistoryEntry(recordId, {
-      ...base,
-      appliedNodeIds: newAppliedIds,
+    await persistDecisionAfterApply({
+      recordId,
+      base,
+      appliedCount: newAppliedIds.length,
+      totalCount: totalNodes,
       applySkips: mergedSkips,
-      applyPartial: !fullSuccess && newAppliedIds.length > 0,
+      appliedNodeIds: newAppliedIds,
     });
   }
 
@@ -1329,15 +1328,24 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     }
   }
 
-  if (applied > 0) {
-    // Группа теперь реально привязана к переменной библиотеки — старое
-    // решение из истории больше не нужно (и не должно "залипать" на статусе
-    // Mapped): при следующем скане группа пересчитается заново по реальному
-    // состоянию макета, обычно как Exact match.
-    await storage.clearMappingHistoryEntry(recordId);
+  const storedDecision = history[recordId];
+  if (storedDecision) {
+    await persistDecisionAfterApply({
+      recordId,
+      base: storedDecision,
+      appliedCount: applied,
+      totalCount: record.nodeIds.length,
+      applySkips: skipped,
+    });
   }
 
-  send({ type: "apply-to-layout-result", recordId, applied, skipped });
+  send({
+    type: "apply-to-layout-result",
+    recordId,
+    applied,
+    skipped,
+    partial: skipped.length > 0 && applied > 0,
+  });
 }
 
 // ---------------------------------------------------------------------------

@@ -46,8 +46,14 @@ export function requiresTypographyUserAction(
   result: ComparisonResult,
   library: LibraryTextStyle[]
 ): boolean {
-  if (result.decision === "ignored" || result.decision === "mapped" || result.decision === "mapped_suggested") {
+  if (result.decision === "ignored") {
     return false;
+  }
+
+  // Та же логика, что в colorComparator.requiresUserAction: строку закрывает
+  // не сам факт решения, а существование его цели в загруженной библиотеке.
+  if (result.decision === "mapped" || result.decision === "mapped_suggested") {
+    return result.status !== "mapped";
   }
 
   switch (result.bindingType) {

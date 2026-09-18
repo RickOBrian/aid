@@ -136,12 +136,23 @@ describe("какие строки попадают в таблицу", () => {
     expect(compareTypographyWithLibrary([record], [], NO_HISTORY)).toHaveLength(1);
   });
 
-  it("решения mapped и ignored скрывают строку", () => {
+  it("«игнорировать» скрывает строку", () => {
     const base = typographyRecord({});
-    const hidden: Array<ComparisonResult["decision"]> = ["mapped", "mapped_suggested", "ignored"];
 
-    for (const decision of hidden) {
-      expect(requiresTypographyUserAction({ ...base, status: "layout-only", decision }, [])).toBe(false);
+    expect(
+      requiresTypographyUserAction({ ...base, status: "layout-only", decision: "ignored" }, [])
+    ).toBe(false);
+  });
+
+  // Та же находка №18, что и в компараторе цветов: строку закрывает не сам
+  // факт решения, а существование его цели в загруженной библиотеке.
+  it("№18: маппинг скрывает строку только когда стиль решения найден", () => {
+    const base = typographyRecord({});
+    const mappings: Array<ComparisonResult["decision"]> = ["mapped", "mapped_suggested"];
+
+    for (const decision of mappings) {
+      expect(requiresTypographyUserAction({ ...base, status: "mapped", decision }, [])).toBe(false);
+      expect(requiresTypographyUserAction({ ...base, status: "layout-only", decision }, [])).toBe(true);
     }
   });
 
