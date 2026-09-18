@@ -2289,7 +2289,36 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th scope="col">Статус</th>
+                  <th class="ds-th-filter" scope="col">
+                    <button
+                      type="button"
+                      class="ds-th-filter-btn"
+                      id="tc-status-filter-btn-typography"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      aria-controls="tc-status-filter-menu-typography"
+                    >
+                      <span>Статус</span>
+                      <span class="ds-th-filter-indicator" id="tc-status-filter-indicator-typography" hidden></span>
+                      <svg
+                        class="ds-th-filter-btn__chevron"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4 6l4 4 4-4"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <div class="ds-filter-menu" id="tc-status-filter-menu-typography" role="menu" hidden></div>
+                  </th>
                   <th scope="col">Слой</th>
                   <th scope="col">Сейчас</th>
                   <th scope="col">Предлагаем</th>

@@ -25,6 +25,7 @@ import {
   formatLibraryTextStyleLabel,
   formatLibraryTokenLabel,
 } from "./lib/libraryLabels";
+import { getResultStatusFilterKey, type StatusFilterKey } from "./lib/statusKeys";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
@@ -88,9 +89,6 @@ interface RowControls {
 }
 
 const rowControls = new Map<string, RowControls>();
-
-/** Ключ фильтра в шапке «Статус» — может отличаться от MatchStatus (style/ghost/hardcoded). */
-type StatusFilterKey = MatchStatus | "style-binding" | "ghost-binding" | "hardcoded-no-analog";
 
 /** Тональность бейджа. Цвета тональностей заданы в ui.html, здесь — только выбор. */
 type BadgeTone = "neutral" | "success" | "info" | "warning" | "danger";
@@ -197,13 +195,6 @@ function statusTooltip(meta: StatusMeta): string {
   return `${meta.term} — ${meta.hint}`;
 }
 
-function getResultStatusFilterKey(result: ComparisonResult): StatusFilterKey {
-  if (result.bindingType === "style") return "style-binding";
-  if (result.bindingType === "ghost") return "ghost-binding";
-  if (result.status === "layout-only" && result.bindingType === "hardcoded") return "hardcoded-no-analog";
-  return result.status;
-}
-
 function statusFilterKeyLabel(key: StatusFilterKey): string {
   return STATUS_META[key].label;
 }
@@ -242,28 +233,53 @@ function isStatusFilterPartial(): boolean {
   return keysInData.length > 0 && activeStatusFilters.size < keysInData.length;
 }
 
+/**
+ * У каждой таблицы свой набор элементов фильтра, но одновременно видна только
+ * одна — поэтому функции работают с контролами активной категории.
+ */
+const STATUS_FILTER_IDS: Record<TokenCategory, { btn: string; menu: string; indicator: string }> = {
+  colors: {
+    btn: "tc-status-filter-btn",
+    menu: "tc-status-filter-menu",
+    indicator: "tc-status-filter-indicator",
+  },
+  typography: {
+    btn: "tc-status-filter-btn-typography",
+    menu: "tc-status-filter-menu-typography",
+    indicator: "tc-status-filter-indicator-typography",
+  },
+};
+
+function statusFilterEls(category: TokenCategory = activeCategory) {
+  const ids = STATUS_FILTER_IDS[category];
+  return {
+    btn: $<HTMLButtonElement>(ids.btn),
+    menu: $<HTMLElement>(ids.menu),
+    indicator: $<HTMLElement>(ids.indicator),
+  };
+}
+
 function updateStatusFilterIndicator(): void {
-  const indicator = $<HTMLElement>("tc-status-filter-indicator");
-  indicator.hidden = !isStatusFilterPartial();
+  statusFilterEls().indicator.hidden = !isStatusFilterPartial();
 }
 
 function closeStatusFilterMenu(): void {
-  const btn = $<HTMLButtonElement>("tc-status-filter-btn");
-  const menu = $<HTMLElement>("tc-status-filter-menu");
-  btn.setAttribute("aria-expanded", "false");
-  menu.hidden = true;
+  for (const category of ["colors", "typography"] as const) {
+    const { btn, menu } = statusFilterEls(category);
+    btn.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+  }
 }
 
 function openStatusFilterMenu(): void {
   renderStatusFilterMenu();
-  const btn = $<HTMLButtonElement>("tc-status-filter-btn");
-  const menu = $<HTMLElement>("tc-status-filter-menu");
+  const { btn, menu } = statusFilterEls();
   btn.setAttribute("aria-expanded", "true");
   menu.hidden = false;
 }
 
 function toggleStatusFilterMenu(): void {
-  const menu = $<HTMLElement>("tc-status-filter-menu");
+  const { menu } = statusFilterEls();
   if (menu.hidden) openStatusFilterMenu();
   else closeStatusFilterMenu();
 }
@@ -274,7 +290,7 @@ function applyStatusFilterChange(): void {
 }
 
 function renderStatusFilterMenu(): void {
-  const menu = $<HTMLElement>("tc-status-filter-menu");
+  const { menu } = statusFilterEls();
   const keysInData = getStatusKeysInResults(currentResults);
 
   if (keysInData.length === 0) {
@@ -327,23 +343,24 @@ function renderStatusFilterMenu(): void {
 }
 
 function initStatusFilterMenu(): void {
-  const btn = $<HTMLButtonElement>("tc-status-filter-btn");
-  const menu = $<HTMLElement>("tc-status-filter-menu");
+  for (const category of ["colors", "typography"] as const) {
+    const { btn, menu } = statusFilterEls(category);
 
-  btn.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleStatusFilterMenu();
-  });
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleStatusFilterMenu();
+    });
 
-  document.addEventListener("click", (event) => {
-    if (menu.hidden) return;
-    const target = event.target as Node;
-    if (!menu.contains(target) && !btn.contains(target)) closeStatusFilterMenu();
-  });
+    document.addEventListener("click", (event) => {
+      if (menu.hidden) return;
+      const target = event.target as Node;
+      if (!menu.contains(target) && !btn.contains(target)) closeStatusFilterMenu();
+    });
+  }
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !menu.hidden) closeStatusFilterMenu();
+    if (event.key === "Escape") closeStatusFilterMenu();
   });
 }
 
@@ -521,15 +538,28 @@ function applyAdminMode(adminMode: boolean): void {
   $<HTMLElement>("tc-admin-badge").hidden = !adminMode;
 }
 
+/**
+ * Подпись и доступность кнопки «Отправить решения» — всегда по счётчику
+ * активной категории.
+ *
+ * Единственный источник этого состояния: раньше открытие и закрытие модалки
+ * включали кнопку обратно по ОБЩЕМУ счётчику, и при нулевом счётчике активной
+ * категории кнопка оказывалась активной с подписью «Отправить 0 решений»,
+ * а клик по ней не делал ничего.
+ */
+function syncProposeButton(): void {
+  const categoryPending = pendingProposeCountByCategory[activeCategory];
+  const btn = $<HTMLButtonElement>("tc-propose-decisions-btn");
+  btn.textContent = `Отправить ${categoryPending} ${pluralizeDecisions(categoryPending)} на согласование`;
+  btn.disabled = categoryPending === 0;
+}
+
 function updateProposeButton(count: number, byCategory?: Record<TokenCategory, number>): void {
   if (byCategory) {
     pendingProposeCountByCategory = byCategory;
   }
   pendingProposeCount = count;
-  const categoryPending = pendingProposeCountByCategory[activeCategory];
-  const btn = $<HTMLButtonElement>("tc-propose-decisions-btn");
-  btn.textContent = `Отправить ${categoryPending} ${pluralizeDecisions(categoryPending)} на согласование`;
-  btn.disabled = categoryPending === 0;
+  syncProposeButton();
 }
 
 /** «1 слой», «2 слоя», «5 слоёв». */
@@ -784,14 +814,14 @@ function openProposeConfirmModal(entries: ProposePreviewEntry[]): void {
   entries.forEach((entry) => proposeSelectedIds.add(entry.recordId));
   renderProposeList();
   $("tc-propose-overlay").hidden = false;
-  $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = pendingProposeCount === 0;
+  syncProposeButton();
 }
 
 function closeProposeConfirmModal(): void {
   $("tc-propose-overlay").hidden = true;
   proposePreviewEntries = [];
   proposeSelectedIds.clear();
-  $<HTMLButtonElement>("tc-propose-decisions-btn").disabled = pendingProposeCount === 0;
+  syncProposeButton();
 }
 
 function confirmProposeSubmit(): void {
@@ -996,7 +1026,7 @@ function updateResultsBlocksVisibility(): void {
   $<HTMLElement>("tc-results-block-colors").hidden = isTypography;
   $<HTMLElement>("tc-results-block-typography").hidden = !isTypography;
   $<HTMLElement>("tc-rescan-typography-btn").hidden = !isTypography;
-  setExportButtonsDisabled(isTypography || currentResults.length === 0);
+  setExportButtonsDisabled(currentResults.length === 0);
   updateProposeButton(pendingProposeCount);
 }
 
@@ -1008,12 +1038,10 @@ function applyActiveCategoryView(resetStatusFilters = false): void {
   syncCurrentResultsFromCategory();
   updateScanPanelCopy();
   updateResultsBlocksVisibility();
-  if (activeCategory === "colors") {
-    if (resetStatusFilters) {
-      syncStatusFiltersFromResults(currentResults, true);
-    }
-    closeStatusFilterMenu();
+  if (resetStatusFilters) {
+    syncStatusFiltersFromResults(currentResults, true);
   }
+  closeStatusFilterMenu();
   renderResultsTable();
 }
 
@@ -1978,26 +2006,25 @@ function updateApplyButtonState(): void {
   $<HTMLButtonElement>("tc-apply-decision-btn").disabled = !hasControls;
 }
 
+/**
+ * Сводка над таблицей — одна для обеих категорий.
+ *
+ * Раньше типографика выходила раньше и показывала только общее число: без
+ * счётчика «обработано» и без учёта фильтра, которого у неё и не было.
+ */
 function renderResultsSummary(): void {
   const total = currentResults.length;
-
-  if (activeCategory === "typography") {
-    if (total === 0) {
-      $("tc-results-summary").textContent =
-        "Расхождений в типографике нет. Запустите сканирование после изменений в макете.";
-      return;
-    }
-    $("tc-results-summary").textContent = `${total} ${pluralizeIssues(total)} в типографике.`;
-    return;
-  }
+  const emptyText =
+    activeCategory === "typography"
+      ? "Расхождений в типографике нет. Запустите сканирование после изменений в макете."
+      : "Расхождений нет. Запустите сканирование после изменений в макете.";
 
   const visible = getFilteredResults();
   const visibleCount = visible.length;
   const decided = visible.filter((r) => r.decision).length;
 
   if (total === 0) {
-    $("tc-results-summary").textContent =
-      "Расхождений нет. Запустите сканирование после изменений в макете.";
+    $("tc-results-summary").textContent = emptyText;
     return;
   }
 
@@ -2365,32 +2392,66 @@ function renderTypographyResultsTable(preferredSelectedId?: string): void {
   tbody.innerHTML = "";
   rowControls.clear();
   selectedRecordId = null;
+  updateStatusFilterIndicator();
   renderResultsSummary();
 
-  const sortedResults = [...currentResults].sort(compareTypographyResults);
-
-  if (sortedResults.length === 0) {
-    const row = document.createElement("tr");
+  if (currentResults.length === 0) {
     const libraryHint =
-      currentLibraryTextStyles.length === 0
-        ? " Загрузите библиотеку со стилями текста."
-        : "";
-    row.innerHTML =
-      `<td colspan="6" class="ds-empty-state">Расхождений нет: стили текста совпадают с библиотекой.${libraryHint} Запустите сканирование заново после изменений в макете.</td>`;
-    tbody.appendChild(row);
+      currentLibraryTextStyles.length === 0 ? " Загрузите библиотеку со стилями текста." : "";
+    appendEmptyStateRow(
+      tbody,
+      `Расхождений нет: стили текста совпадают с библиотекой.${libraryHint} Запустите сканирование заново после изменений в макете.`
+    );
     updateApplyButtonState();
     return;
   }
 
-  for (const result of sortedResults) {
+  const visibleResults = [...getFilteredResults()].sort(compareTypographyResults);
+
+  if (visibleResults.length === 0) {
+    appendEmptyStateRow(
+      tbody,
+      "Нет строк для выбранных статусов. Откройте фильтр в колонке «Статус» и выберите нужные."
+    );
+    updateApplyButtonState();
+    return;
+  }
+
+  for (const result of visibleResults) {
     tbody.appendChild(buildTypographyResultRow(result));
   }
 
-  const nextSelectedId =
-    preferredSelectedId && sortedResults.some((item) => item.id === preferredSelectedId)
-      ? preferredSelectedId
-      : sortedResults[0].id;
-  setSelectedRow(nextSelectedId);
+  restorePreferredSelection(preferredSelectedId, visibleResults);
+}
+
+/** Пустая строка-заглушка на всю ширину таблицы. */
+function appendEmptyStateRow(tbody: HTMLElement, text: string): void {
+  const row = document.createElement("tr");
+  const cell = document.createElement("td");
+  cell.colSpan = 6;
+  cell.className = "ds-empty-state";
+  cell.textContent = text;
+  row.appendChild(cell);
+  tbody.appendChild(row);
+}
+
+/**
+ * Восстанавливает выделение строки после перерисовки — и только его.
+ *
+ * Раньше при отсутствии предпочтения выделялась первая строка, и «Применить
+ * решение» оказывалась активной для строки, которую пользователь не выбирал:
+ * один клик по кнопке записывал решение по случайной строке в постоянную
+ * историю и в очередь на согласование.
+ */
+function restorePreferredSelection(
+  preferredSelectedId: string | undefined,
+  visibleResults: ComparisonResult[]
+): void {
+  if (preferredSelectedId && visibleResults.some((item) => item.id === preferredSelectedId)) {
+    setSelectedRow(preferredSelectedId);
+    return;
+  }
+  updateApplyButtonState();
 }
 
 function renderColorResultsTable(preferredSelectedId?: string): void {
@@ -2423,17 +2484,13 @@ function renderColorResultsTable(preferredSelectedId?: string): void {
     tbody.appendChild(buildResultRow(result));
   }
 
-  const nextSelectedId =
-    preferredSelectedId && visibleResults.some((item) => item.id === preferredSelectedId)
-      ? preferredSelectedId
-      : visibleResults[0].id;
-  setSelectedRow(nextSelectedId);
+  restorePreferredSelection(preferredSelectedId, visibleResults);
 }
 
 function renderResultsTable(preferredSelectedId?: string): void {
   updateResultsBlocksVisibility();
   if (activeCategory === "typography") {
-    renderTypographyResultsTable();
+    renderTypographyResultsTable(preferredSelectedId);
     return;
   }
   renderColorResultsTable(preferredSelectedId);
@@ -2907,7 +2964,7 @@ type ExportFormat = "csv" | "json" | "md";
 
 const EXPORT_FILE_CONFIG: Record<
   ExportFormat,
-  { filename: string; mime: string; serialize: (rows: ExportRow[]) => string }
+  { filename: string; mime: string; serialize: (rows: ExportRow[], category: TokenCategory) => string }
 > = {
   csv: {
     filename: "token-comparator-mapping.csv",
@@ -3038,7 +3095,7 @@ function initExportMenus(): void {
         closeAllExportMenus();
         const config = EXPORT_FILE_CONFIG[format];
         const rows = buildExportRows(getFilteredResults());
-        downloadTextFile(config.filename, config.mime, config.serialize(rows));
+        downloadTextFile(config.filename, config.mime, config.serialize(rows, activeCategory));
       });
 
     dropdown.querySelector<HTMLButtonElement>('[data-action="print"]')?.addEventListener("click", (event) => {
@@ -3157,7 +3214,7 @@ window.onmessage = (event: MessageEvent) => {
       break;
     case "decisions-submit-failed":
       renderProposeStatus(PROPOSE_FAILURE);
-      updateProposeButton(pendingProposeCount);
+      syncProposeButton();
       break;
     case "registry-unavailable":
       renderProdRegistryStatus(PROD_REGISTRY_UNAVAILABLE);

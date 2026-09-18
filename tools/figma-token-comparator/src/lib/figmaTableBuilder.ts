@@ -15,7 +15,10 @@
  * Container/Table Header Row/Data Row); импровизаций сверх этого набора нет.
  */
 
-import { EXPORT_COLUMNS, type ExportRow } from "./exporter";
+import { exportColumns, type ExportRow } from "./exporter";
+import type { TokenCategory } from "../comparators/types";
+
+type ExportColumns = ReturnType<typeof exportColumns>;
 
 /** Одна строка Figma-таблицы — те же поля, что в CSV/JSON/MD экспорте. */
 export type MappingRow = ExportRow;
@@ -27,6 +30,8 @@ export interface MappingTableOptions {
   scope: string;
   /** Человекочитаемая дата/время печати; по умолчанию — текущий момент. */
   printedAt?: string;
+  /** Категория определяет набор колонок: у типографики нет режимов библиотеки. */
+  category: TokenCategory;
 }
 
 /**
@@ -95,11 +100,12 @@ const COLUMN_WIDTHS: Record<keyof ExportRow, number> = {
   proposedValueForMode: 150,
   comment: 220,
   timestamp: 160,
+  mismatched: 180,
 };
 
-function computeRowContentWidth(): number {
-  const columnsWidth = EXPORT_COLUMNS.reduce((sum, [key]) => sum + COLUMN_WIDTHS[key], 0);
-  const gaps = ROW_GAP * (EXPORT_COLUMNS.length - 1);
+function computeRowContentWidth(columns: ExportColumns): number {
+  const columnsWidth = columns.reduce((sum, [key]) => sum + COLUMN_WIDTHS[key], 0);
+  const gaps = ROW_GAP * (columns.length - 1);
   return columnsWidth + gaps + DATA_ROW_PADDING_H * 2;
 }
 
@@ -294,7 +300,7 @@ async function buildHeaderBlock(
   return block;
 }
 
-async function buildTableHeaderRow(font: FontName): Promise<FrameNode> {
+async function buildTableHeaderRow(font: FontName, columns: ExportColumns): Promise<FrameNode> {
   const row = figma.createFrame();
   row.name = "Table Header Row";
   row.layoutMode = "HORIZONTAL";
@@ -312,7 +318,7 @@ async function buildTableHeaderRow(font: FontName): Promise<FrameNode> {
   row.strokeRightWeight = 0;
   row.strokeBottomWeight = 1;
 
-  for (const [key, label] of EXPORT_COLUMNS) {
+  for (const [key, label] of columns) {
     const cell = await createCellText(label, font, 14, COLOR_HEADER_CELL_TEXT, COLUMN_WIDTHS[key]);
     row.appendChild(cell);
     cell.layoutSizingHorizontal = "FIXED";
@@ -321,11 +327,15 @@ async function buildTableHeaderRow(font: FontName): Promise<FrameNode> {
 
   row.primaryAxisSizingMode = "FIXED";
   row.counterAxisSizingMode = "FIXED";
-  row.resize(computeRowContentWidth(), HEADER_ROW_HEIGHT);
+  row.resize(computeRowContentWidth(columns), HEADER_ROW_HEIGHT);
   return row;
 }
 
-async function buildDataRow(row: MappingRow, font: FontName): Promise<FrameNode> {
+async function buildDataRow(
+  row: MappingRow,
+  font: FontName,
+  columns: ExportColumns
+): Promise<FrameNode> {
   const rowFrame = figma.createFrame();
   rowFrame.name = "Data Row";
   rowFrame.layoutMode = "HORIZONTAL";
@@ -344,7 +354,7 @@ async function buildDataRow(row: MappingRow, font: FontName): Promise<FrameNode>
   rowFrame.strokeBottomWeight = 1;
   rowFrame.minHeight = DATA_ROW_MIN_HEIGHT;
 
-  for (const [key] of EXPORT_COLUMNS) {
+  for (const [key] of columns) {
     const cell = await createCellText(formatCellText(row[key]), font, 14, COLOR_BODY_TEXT, COLUMN_WIDTHS[key]);
     rowFrame.appendChild(cell);
     cell.layoutSizingHorizontal = "FIXED";
@@ -353,7 +363,7 @@ async function buildDataRow(row: MappingRow, font: FontName): Promise<FrameNode>
 
   rowFrame.primaryAxisSizingMode = "FIXED";
   rowFrame.counterAxisSizingMode = "AUTO";
-  rowFrame.resize(computeRowContentWidth(), Math.max(rowFrame.height, DATA_ROW_MIN_HEIGHT));
+  rowFrame.resize(computeRowContentWidth(columns), Math.max(rowFrame.height, DATA_ROW_MIN_HEIGHT));
   return rowFrame;
 }
 
@@ -362,6 +372,7 @@ async function buildDataContainer(
   regularFont: FontName,
   mediumFont: FontName,
   innerWidth: number,
+  columns: ExportColumns,
   onProgress?: (completed: number, total: number) => void
 ): Promise<FrameNode> {
   const container = figma.createFrame();
@@ -382,13 +393,13 @@ async function buildDataContainer(
   container.strokeLeftWeight = 1;
   container.clipsContent = true;
 
-  const headerRow = await buildTableHeaderRow(mediumFont);
+  const headerRow = await buildTableHeaderRow(mediumFont, columns);
   container.appendChild(headerRow);
   headerRow.layoutSizingHorizontal = "FILL";
   headerRow.layoutSizingVertical = "FIXED";
 
   for (let i = 0; i < rows.length; i++) {
-    const dataRow = await buildDataRow(rows[i], regularFont);
+    const dataRow = await buildDataRow(rows[i], regularFont, columns);
     container.appendChild(dataRow);
     dataRow.layoutSizingHorizontal = "FILL";
     dataRow.layoutSizingVertical = "HUG";
@@ -422,7 +433,8 @@ export async function buildMappingTable(
     resolveFont("regular"),
   ]);
 
-  const rowContentWidth = computeRowContentWidth();
+  const columns = exportColumns(options.category);
+  const rowContentWidth = computeRowContentWidth(columns);
   const rootWidth = Math.max(ROOT_MIN_WIDTH, rowContentWidth + ROOT_PADDING * 2);
   const innerWidth = rootWidth - ROOT_PADDING * 2;
 
@@ -439,7 +451,14 @@ export async function buildMappingTable(
   root.clipsContent = true;
 
   const headerBlock = await buildHeaderBlock(options, rows.length, boldFont, mediumFont, innerWidth);
-  const dataContainer = await buildDataContainer(rows, regularFont, mediumFont, innerWidth, onProgress);
+  const dataContainer = await buildDataContainer(
+    rows,
+    regularFont,
+    mediumFont,
+    innerWidth,
+    columns,
+    onProgress
+  );
 
   root.appendChild(headerBlock);
   applyChildFillHug(headerBlock);

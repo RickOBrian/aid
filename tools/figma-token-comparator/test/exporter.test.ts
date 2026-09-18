@@ -8,13 +8,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import {
-  buildExportRows,
-  EXPORT_COLUMNS,
-  toCSV,
-  toJSON,
-  toMarkdown,
-} from "../src/lib/exporter";
+import { buildExportRows, exportColumns, toCSV, toJSON, toMarkdown } from "../src/lib/exporter";
 import type { ComparisonResult } from "../src/comparators/types";
 import { colorRecord, layoutMode } from "./fixtures";
 
@@ -143,30 +137,33 @@ describe("сериализация", () => {
   const rows = buildExportRows([result({ target: TARGET, decision: "ignored" })]);
 
   it("CSV: заголовок совпадает с описанием колонок и разделяет строки CRLF", () => {
-    const csv = toCSV(rows);
+    const csv = toCSV(rows, "colors");
     const [header] = csv.split("\r\n");
 
-    expect(header).toBe(EXPORT_COLUMNS.map(([, label]) => label).join(","));
+    expect(header).toBe(exportColumns("colors").map(([, label]) => label).join(","));
     expect(csv.split("\r\n")).toHaveLength(2);
   });
 
   it("CSV: запятые и кавычки внутри значения экранируются", () => {
-    const csv = toCSV(buildExportRows([result({ decision: "ignored", decisionComment: 'а, "б"' })]));
+    const csv = toCSV(
+      buildExportRows([result({ decision: "ignored", decisionComment: 'а, "б"' })]),
+      "colors"
+    );
 
     expect(csv).toContain('"а, ""б"""');
   });
 
   it("JSON: массив объектов с теми же полями", () => {
-    const parsed = JSON.parse(toJSON(rows)) as Array<Record<string, string>>;
+    const parsed = JSON.parse(toJSON(rows, "colors")) as Array<Record<string, string>>;
 
     expect(parsed).toHaveLength(1);
-    for (const [key] of EXPORT_COLUMNS) {
+    for (const [key] of exportColumns("colors")) {
       expect(parsed[0]).toHaveProperty(key);
     }
   });
 
   it("MD: таблица с заголовком и разделителем", () => {
-    const md = toMarkdown(rows);
+    const md = toMarkdown(rows, "colors");
     const lines = md.split("\n");
 
     expect(lines[0]).toBe("# Token Comparator — mapping");
@@ -175,20 +172,84 @@ describe("сериализация", () => {
   });
 
   it("MD: вертикальная черта внутри значения не ломает таблицу", () => {
-    const md = toMarkdown(buildExportRows([result({ decisionComment: "а | б" })]));
+    const md = toMarkdown(buildExportRows([result({ decisionComment: "а | б" })]), "colors");
 
     expect(md).toContain("а \\| б");
   });
 
   it("все три формата описывают одни и те же колонки", () => {
-    const csvHeader = toCSV(rows).split("\r\n")[0].split(",");
-    const mdHeader = toMarkdown(rows)
+    const csvHeader = toCSV(rows, "colors").split("\r\n")[0].split(",");
+    const mdHeader = toMarkdown(rows, "colors")
       .split("\n")[2]
       .split("|")
       .map((cell) => cell.trim())
       .filter(Boolean);
 
     expect(csvHeader).toEqual(mdHeader);
-    expect(csvHeader).toHaveLength(EXPORT_COLUMNS.length);
+    expect(csvHeader).toHaveLength(exportColumns("colors").length);
+  });
+});
+
+describe("колонки типографики (находка №15)", () => {
+  const typographyResult = {
+    ...result({
+      bindingType: "style",
+      sourceName: "body/m",
+      displayValue: "Inter 18/20 w400",
+      status: "conflict",
+      mismatchedProperties: ["fontSize", "lineHeight"],
+      target: {
+        variableId: "",
+        name: "body/m",
+        collectionName: "",
+        modeId: "",
+        modeName: "",
+        displayValue: "Inter 14/20 w400",
+        styleId: "S:1",
+      },
+    }),
+    category: "typography" as const,
+  };
+
+  it("в наборе нет колонок режимов, зато есть «Что расходится»", () => {
+    const labels = exportColumns("typography").map(([, label]) => label);
+
+    expect(labels).not.toContain("Сейчас Day");
+    expect(labels).not.toContain("Предлагаем Night");
+    expect(labels).toContain("Что расходится");
+  });
+
+  it("разошедшиеся свойства перечисляются через запятую", () => {
+    const [row] = buildExportRows([typographyResult]);
+
+    expect(row.mismatched).toBe("fontSize, lineHeight");
+  });
+
+  it("у стиля без коллекции имя не обрастает пустыми скобками", () => {
+    const [row] = buildExportRows([typographyResult]);
+
+    expect(row.target).toBe("body/m");
+  });
+
+  it("JSON типографики не тащит пустые колонки режимов", () => {
+    const rows = buildExportRows([typographyResult]);
+    const [parsed] = JSON.parse(toJSON(rows, "typography")) as Array<Record<string, string>>;
+
+    expect(parsed).not.toHaveProperty("beforeDay");
+    expect(parsed).not.toHaveProperty("targetNight");
+    expect(parsed).toHaveProperty("mismatched");
+  });
+
+  it("CSV и MD типографики описывают одни и те же колонки", () => {
+    const rows = buildExportRows([typographyResult]);
+    const csvHeader = toCSV(rows, "typography").split("\r\n")[0].split(",");
+    const mdHeader = toMarkdown(rows, "typography")
+      .split("\n")[2]
+      .split("|")
+      .map((cell) => cell.trim())
+      .filter(Boolean);
+
+    expect(csvHeader).toEqual(mdHeader);
+    expect(csvHeader).toHaveLength(exportColumns("typography").length);
   });
 });

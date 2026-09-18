@@ -1761,6 +1761,9 @@ async function handlePrintToFigma(
       return;
     }
 
+    // Все строки печати приходят из одной таблицы, поэтому категория у них общая.
+    const category = results[0].category;
+
     send({ type: "print-progress", payload: { message: `Строим таблицу на странице «${MAPPING_PAGE_NAME}»...` } });
 
     const truncated = results.length > MAX_PRINTABLE_ROWS;
@@ -1783,9 +1786,10 @@ async function handlePrintToFigma(
       page,
       rows,
       {
+        category,
         libraryName: libraryFileName || "библиотека не указана",
-        scope: lastScanScopeByCategory.colors
-          ? SCAN_SCOPE_LABELS[lastScanScopeByCategory.colors]
+        scope: lastScanScopeByCategory[category]
+          ? SCAN_SCOPE_LABELS[lastScanScopeByCategory[category]!]
           : "не указан",
         printedAt: new Date().toLocaleString("ru-RU"),
       },
