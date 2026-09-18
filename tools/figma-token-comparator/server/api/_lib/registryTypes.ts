@@ -30,6 +30,8 @@ export interface ProposedEntryInput {
   targetStyleName?: string;
   mismatchedProperties?: string[];
   comment?: string;
+  /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). */
+  targetLibraryFileKey?: string;
 
   // --- Transient review-projection metadata (PR body only) ---
   sourceProperty?: string;
@@ -45,6 +47,8 @@ export interface ProposedEntryInput {
   proposedModeName?: string;
   currentLibraryValue?: string;
   proposedValue?: string;
+  /** Название библиотеки — только для PR body. */
+  targetLibraryName?: string;
 }
 
 export interface ProposeDecisionRequestBody {
@@ -63,6 +67,8 @@ export interface RegistryFileEntry {
   targetStyleName?: string;
   mismatchedProperties?: string[];
   comment?: string;
+  /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). Нет — запись до 1.4.0. */
+  targetLibraryFileKey?: string;
   proposedBy?: string;
   proposedAt?: string;
   status?: 'approved' | 'stale';

@@ -58,6 +58,7 @@ const TRANSIENT_STRING_FIELDS = [
   'proposedModeName',
   'currentLibraryValue',
   'proposedValue',
+  'targetLibraryName',
 ] as const;
 
 function isPositiveInteger(value: unknown): value is number {
@@ -121,6 +122,9 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     if (record.comment !== undefined && typeof record.comment !== 'string') {
       return null;
     }
+    if (record.targetLibraryFileKey !== undefined && typeof record.targetLibraryFileKey !== 'string') {
+      return null;
+    }
 
     // Transient review-projection metadata — whitelist-validated, but kept
     // out of RegistryFileEntry (see buildProposedEntries below).
@@ -144,6 +148,7 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
       targetStyleName: record.targetStyleName,
       mismatchedProperties: record.mismatchedProperties,
       comment: record.comment,
+      targetLibraryFileKey: record.targetLibraryFileKey,
       sourceProperty: record.sourceProperty,
       sourceBindingType: record.sourceBindingType,
       sourceName: record.sourceName,
@@ -157,6 +162,7 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
       proposedModeName: record.proposedModeName,
       currentLibraryValue: record.currentLibraryValue,
       proposedValue: record.proposedValue,
+      targetLibraryName: record.targetLibraryName,
     });
   }
 
@@ -184,6 +190,7 @@ function buildProposedEntries(
       ? { mismatchedProperties: entry.mismatchedProperties }
       : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
+    ...(entry.targetLibraryFileKey ? { targetLibraryFileKey: entry.targetLibraryFileKey } : {}),
     proposedBy,
     proposedAt,
   }));

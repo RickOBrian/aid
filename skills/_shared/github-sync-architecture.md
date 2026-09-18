@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: github-sync-architecture
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
   owner: design-system-team
   status: active
   updated: "2026-09-18"
@@ -318,6 +318,7 @@ proposal branch. Исключение — явно обозначенный те
       "decision": "mapped | ignored | hardcoded | candidate | value_fix_proposed",
       "targetVariableId": "VariableID:...",
       "targetVariableName": "...",
+      "targetLibraryFileKey": "fileKey библиотеки (плагин 1.4.0+)",
       "comment": "...",
       "proposedBy": "designer name or id",
       "proposedAt": "ISO timestamp",
@@ -340,6 +341,7 @@ presentation context только ради GitHub review.
 | `decision` | Тип решения |
 | `targetVariableId` | Точный Figma Variable ID target, если применимо |
 | `targetVariableName` | Имя target token для audit/readability |
+| `targetLibraryFileKey` | Библиотека, в которой выбран target (плагин 1.4.0+, бэкенд 1.1.0+). ID переменных и стилей уникальны только внутри файла, поэтому без него решение с токеном нельзя однозначно отнести к библиотеке. Нет поля — запись до 1.4.0, действует с любой библиотекой |
 | `comment` | Обоснование решения, если применимо |
 | `proposedBy`, `proposedAt` | Audit информации proposal |
 | `status`, `approvedBy`, `approvedAt` | Lifecycle/audit поля canonical entry |
@@ -987,6 +989,8 @@ terminal/report/PR.
 
 ## Changelog
 
+- **1.2.2 — 2026-09-18.** Canonical поле `targetLibraryFileKey` (плагин 1.4.0,
+  бэкенд 1.1.0): несколько библиотек, ID токенов уникальны только внутри файла.
 - **1.2.1 — 2026-09-18.** Бэклог P0, пункт 1: отмечено частичное закрытие — merged
   записи реестра подмешиваются к сравнению в плагине v1.3.0; `open` и
   `closed/rejected` остаются открытыми.

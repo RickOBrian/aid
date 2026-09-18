@@ -32,6 +32,7 @@ function entryContentKey(entry: RegistryFileEntry): string {
     targetStyleName: entry.targetStyleName ?? null,
     mismatchedProperties: entry.mismatchedProperties ?? null,
     comment: entry.comment ?? null,
+    targetLibraryFileKey: entry.targetLibraryFileKey ?? null,
     status: entry.status ?? null,
   });
 }

@@ -656,4 +656,61 @@ describe('handleProposeDecision', () => {
     expect(registryEntry).not.toHaveProperty('targetModeName');
     expect(registryEntry).not.toHaveProperty('targetDisplayValue');
   });
+  it('persists the library of the decision, shows its name only in the PR body', async () => {
+    fetchMock.mockImplementation(async (input, init) => {
+      const url = String(input);
+      const method = init?.method ?? 'GET';
+      if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
+        return jsonResponse(404, { message: 'Not Found' });
+      }
+      if (url.endsWith('/git/ref/heads/main') && method === 'GET') {
+        return jsonResponse(200, { object: { sha: 'main-sha' } });
+      }
+      if (url.endsWith('/git/refs') && method === 'POST') return jsonResponse(201, {});
+      if (url.includes('/contents/decisions-registry.json') && method === 'PUT') {
+        return jsonResponse(200, { content: { sha: 'new-file-sha' } });
+      }
+      if (url.endsWith('/pulls') && method === 'POST') return jsonResponse(201, { number: 56 });
+      if (url.endsWith('/pulls/56') && method === 'GET') {
+        return jsonResponse(200, { user: { login: 'RickOBrian' } });
+      }
+      throw new Error(`Unexpected fetch call: ${method} ${url}`);
+    });
+
+    const response = await handleProposeDecision(
+      new Request('https://example.com/api/registry/propose-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sharedSecret: VALID_SECRET,
+          proposedBy: 'Sergey AI',
+          entries: [
+            {
+              signature: 'lib1',
+              decision: 'mapped',
+              targetVariableId: 'VariableID:23:37',
+              targetVariableName: 'bg-accent-main',
+              targetLibraryFileKey: 'LIBKEY123',
+              targetLibraryName: 'AID Rider',
+              nodePath: 'Page 1 / Button',
+            },
+          ],
+        }),
+      }),
+      { fetchImpl: fetchMock, now: () => fixedNow },
+    );
+    expect(response.status).toBe(200);
+
+    const pullsCall = fetchMock.mock.calls.find(
+      ([input, init]) => String(input).endsWith('/pulls') && init?.method === 'POST',
+    );
+    expect(JSON.parse(String(pullsCall?.[1]?.body)).body).toContain('AID Rider');
+
+    const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PUT');
+    const decoded = JSON.parse(
+      Buffer.from(JSON.parse(String(putCall?.[1]?.body)).content, 'base64').toString('utf8'),
+    );
+    expect(decoded.entries[0].targetLibraryFileKey).toBe('LIBKEY123');
+    expect(decoded.entries[0]).not.toHaveProperty('targetLibraryName');
+  });
 });
