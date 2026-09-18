@@ -21,7 +21,7 @@ import type { RegistryFileEntry } from './registryTypes.js';
  * решения отличается только временем и автором, и заводить ради этого pull
  * request бессмысленно.
  */
-function entryContentKey(entry: RegistryFileEntry): string {
+export function entryContentKey(entry: RegistryFileEntry): string {
   return JSON.stringify({
     signature: entry.signature,
     decision: entry.decision,

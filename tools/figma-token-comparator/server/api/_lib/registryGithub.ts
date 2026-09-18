@@ -235,6 +235,87 @@ export async function listOpenProposalBranches(
     .filter((ref): ref is string => typeof ref === 'string' && ref.startsWith(PROPOSAL_BRANCH_PREFIX));
 }
 
+export interface ProposalPullRequest {
+  number: number;
+  url: string;
+  state: 'open' | 'closed';
+  mergedAt: string | null;
+  closedAt: string | null;
+  /** sha вершины — читается и после удаления ветки. */
+  headSha: string;
+}
+
+/**
+ * Последние 100 pull request'ов этого флоу — открытые и закрытые, от новых к
+ * старым. Чужие ветки отфильтрованы.
+ */
+export async function listProposalPullRequests(
+  fetchImpl: FetchLike,
+  token: string,
+  config: RegistryConfig,
+): Promise<ProposalPullRequest[]> {
+  const response = await githubRequest(
+    fetchImpl,
+    token,
+    `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/pulls?state=all&sort=created&direction=desc&per_page=100`,
+    { method: 'GET' },
+  );
+  if (!response.ok) {
+    const body = await parseJsonBody<GitHubApiBody>(response);
+    throw new RegistryGitHubError(body.message || 'Failed to list pull requests.', response.status);
+  }
+
+  let pulls: unknown;
+  try {
+    pulls = await response.json();
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(pulls)) return [];
+
+  const result: ProposalPullRequest[] = [];
+  for (const raw of pulls) {
+    if (!isRecord(raw) || !isRecord(raw.head)) continue;
+    const { ref, sha } = raw.head;
+    if (typeof ref !== 'string' || !ref.startsWith(PROPOSAL_BRANCH_PREFIX) || typeof sha !== 'string') continue;
+    if (typeof raw.number !== 'number' || typeof raw.html_url !== 'string') continue;
+    result.push({
+      number: raw.number,
+      url: raw.html_url,
+      state: raw.state === 'open' ? 'open' : 'closed',
+      mergedAt: typeof raw.merged_at === 'string' ? raw.merged_at : null,
+      closedAt: typeof raw.closed_at === 'string' ? raw.closed_at : null,
+      headSha: sha,
+    });
+  }
+  return result;
+}
+
+/** Текст последнего комментария в обсуждении pull request'а; null — комментариев нет. */
+export async function fetchLatestIssueComment(
+  fetchImpl: FetchLike,
+  token: string,
+  config: RegistryConfig,
+  number: number,
+): Promise<string | null> {
+  const response = await githubRequest(
+    fetchImpl,
+    token,
+    `/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/issues/${number}/comments?per_page=100`,
+    { method: 'GET' },
+  );
+  if (!response.ok) return null;
+  let comments: unknown;
+  try {
+    comments = await response.json();
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(comments) || comments.length === 0) return null;
+  const last = comments[comments.length - 1];
+  return isRecord(last) && typeof last.body === 'string' ? last.body : null;
+}
+
 /** Содержимое реестра на произвольной ветке; null — файла на ней нет. */
 export async function fetchRegistryFileOnBranch(
   fetchImpl: FetchLike,

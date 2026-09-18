@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: github-sync-architecture
 metadata:
-  version: "1.2.2"
+  version: "1.3.0"
   owner: design-system-team
   status: active
   updated: "2026-09-18"
@@ -825,11 +825,13 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
    предложения можно было корректно пересмотреть, а merged записи узнавались
    как canonical.
 
-   **Частично закрыто 2026-09-18 (плагин v1.3.0):** merged записи узнаются —
-   решения из реестра `main` подмешиваются к сравнению у всех
-   (`tools/figma-token-comparator/src/lib/registryDecisions.ts`), локальное
-   решение важнее. Открыто: `open` и `closed/rejected` — плагин по-прежнему
-   не знает, что стало с отправленным предложением.
+   **Закрыто 2026-09-18.** v1.3.0: merged записи узнаются — решения из
+   реестра `main` подмешиваются к сравнению у всех
+   (`tools/figma-token-comparator/src/lib/registryDecisions.ts`). v1.4.0 +
+   бэкенд 1.2.0: `open` и `closed/rejected` — эндпоинт
+   `POST /api/registry/proposal-status`, пометки «На согласовании · #N» /
+   «Отклонено · #N» в плагине; отклонённое возвращается в очередь на
+   отправку (`src/lib/proposalLifecycle.ts`).
 
 2. **Success UI с PR number и URL.**
    Response API должен возвращать PR number и URL; UI плагина должен показывать
@@ -989,6 +991,8 @@ terminal/report/PR.
 
 ## Changelog
 
+- **1.3.0 — 2026-09-18.** Бэкенд 1.2.0: эндпоинт `proposal-status` —
+  жизненный цикл отправленных решений; P0.1 бэклога закрыт.
 - **1.2.2 — 2026-09-18.** Canonical поле `targetLibraryFileKey` (плагин 1.4.0,
   бэкенд 1.1.0): несколько библиотек, ID токенов уникальны только внутри файла.
 - **1.2.1 — 2026-09-18.** Бэклог P0, пункт 1: отмечено частичное закрытие — merged
