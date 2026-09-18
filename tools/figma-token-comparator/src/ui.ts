@@ -3258,7 +3258,7 @@ window.onmessage = (event: MessageEvent) => {
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
       $<HTMLInputElement>("tc-registry-secret-input").placeholder = hasRegistrySecret
         ? "•••••••• (сохранён)"
-        : "Ключ от владельца дизайн-системы";
+        : "Нужен только для отправки решений";
       typographyLibraryAvailable = initialTextStylesAvailable;
       typographyLibraryError = initialTextStylesAvailable
         ? null

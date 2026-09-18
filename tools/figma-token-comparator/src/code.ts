@@ -28,20 +28,20 @@ import { hexToRgb, rgbToHex } from "./lib/colorUtils";
 import { pairModesByIndex } from "./lib/modePairing";
 import { FigmaRestApiError, fetchFigmaFileName, fetchLibraryColorVariables } from "./lib/figmaRestApi";
 import { fetchLibraryTextStyles } from "./lib/figmaStylesRestApi";
-import { GitHubRestApiError, fetchRegistry } from "./lib/githubApi";
+import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
   createEmptyRegistryContent,
   isRegistryNotFound,
   parseGitHubRepo,
   type RegistryDecision,
+  type RegistryFileContent,
 } from "./lib/githubTypes";
 import {
   DEFAULT_REGISTRY_OWNER,
   DEFAULT_REGISTRY_REPO,
 } from "./lib/registryApiConfig";
 import {
-  fetchRegistryFromBackend,
   proposeDecisionsOnBackend,
   RegistryBackendError,
   type ProposeDecisionEntryPayload,
@@ -232,7 +232,7 @@ async function handleUiReady(): Promise<void> {
     },
   });
 
-  void loadRegistryFromBackend();
+  void loadRegistry();
 }
 
 async function sendPendingProposeCount(): Promise<void> {
@@ -252,21 +252,37 @@ async function handleClearPendingProposals(category: TokenCategory): Promise<voi
   await sendPendingProposeCount();
 }
 
-async function loadRegistryFromBackend(): Promise<void> {
-  const sharedSecret = await storage.getRegistrySecret();
-  if (!sharedSecret) {
-    // Ключ не введён — реестр просто недоступен, это не ошибка.
-    send({ type: "registry-unavailable" });
-    return;
-  }
-
+/**
+ * Читает реестр решений напрямую из публичного репозитория, без ключа.
+ *
+ * Ключ нужен только чтобы ОТПРАВЛЯТЬ решения: там бэкенд создаёт pull request
+ * серверным токеном GitHub. На чтении он не защищал ничего — файл открыт
+ * всем, — зато требовал получить его прежде, чем увидеть принятые решения.
+ */
+async function loadRegistry(): Promise<void> {
   send({ type: "registry-loading" });
   try {
-    const result = await fetchRegistryFromBackend(sharedSecret);
+    const result = await fetchPublicRegistry(
+      DEFAULT_REGISTRY_OWNER,
+      DEFAULT_REGISTRY_REPO,
+      DEFAULT_REGISTRY_PATH
+    );
     const fetchedAt = new Date().toISOString();
+    const exists = !isRegistryNotFound(result);
+    // RegistryFile расширяет содержимое реестра и добавляет sha — поля лежат
+    // на том же объекте, отдельного content у него нет.
+    const registry: RegistryFileContent = isRegistryNotFound(result)
+      ? createEmptyRegistryContent()
+      : {
+          schemaVersion: result.schemaVersion,
+          registryVersion: result.registryVersion,
+          updatedAt: result.updatedAt,
+          entries: result.entries,
+        };
+
     await storage.setRegistryCache({
-      registry: result.registry,
-      sha: result.sha,
+      registry,
+      sha: isRegistryNotFound(result) ? undefined : result.sha,
       fetchedAt,
       owner: DEFAULT_REGISTRY_OWNER,
       repo: DEFAULT_REGISTRY_REPO,
@@ -276,17 +292,15 @@ async function loadRegistryFromBackend(): Promise<void> {
     send({
       type: "registry-loaded",
       payload: {
-        registryVersion: result.registry.registryVersion,
-        entryCount: result.registry.entries.length,
-        updatedAt: result.registry.updatedAt,
+        registryVersion: registry.registryVersion,
+        entryCount: registry.entries.length,
+        updatedAt: registry.updatedAt,
         fetchedAt,
-        localOnly: !result.exists,
+        localOnly: !exists,
       },
     });
   } catch (error) {
-    if (!(error instanceof RegistryBackendError)) {
-      console.error("[registry-backend] Unexpected load error");
-    }
+    console.error("[registry] Не удалось прочитать реестр", error);
     send({ type: "registry-unavailable" });
   }
 }
@@ -421,6 +435,13 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   try {
     const sharedSecret = await storage.getRegistrySecret();
     if (!sharedSecret) {
+      send({
+        type: "error",
+        payload: {
+          message:
+            "Чтобы отправлять решения на согласование, нужен ключ доступа к реестру — укажите его в «Настройках». Ключ выдаёт владелец дизайн-системы.",
+        },
+      });
       send({ type: "decisions-submit-failed" });
       return;
     }

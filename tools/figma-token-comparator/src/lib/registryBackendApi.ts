@@ -1,17 +1,16 @@
 /**
- * Client for aid-registry-api — GET registry and POST propose-decision.
- * Used from code.ts only (main thread). Never log or expose the shared secret.
+ * Клиент aid-registry-api — только отправка решений на согласование.
+ *
+ * Чтение реестра сюда больше не ходит: файл лежит в публичном репозитории и
+ * читается напрямую, без ключа (см. githubApi.fetchPublicRegistry). Ключ
+ * защищает то, что действительно требует защиты, — создание pull request
+ * серверным токеном GitHub.
+ *
+ * Используется только из code.ts (главный поток). Ключ не логировать.
  */
 
 import type { RegistryDecision, TokenCategory } from "./githubTypes";
-import type { RegistryFileContent } from "./githubTypes";
-import { REGISTRY_GET_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
-
-export interface BackendRegistryResponse {
-  exists: boolean;
-  registry: RegistryFileContent;
-  sha?: string;
-}
+import { REGISTRY_PROPOSE_URL } from "./registryApiConfig";
 
 export interface ProposeDecisionEntryPayload {
   signature: string;
@@ -52,34 +51,6 @@ export class RegistryBackendError extends Error {
   constructor(readonly code: "registry_unavailable" | "submit_failed") {
     super(code);
     this.name = "RegistryBackendError";
-  }
-}
-
-export async function fetchRegistryFromBackend(
-  sharedSecret: string
-): Promise<BackendRegistryResponse> {
-  if (!sharedSecret) {
-    throw new RegistryBackendError("registry_unavailable");
-  }
-
-  let response: Response;
-  try {
-    response = await fetch(REGISTRY_GET_URL, {
-      method: "GET",
-      headers: { "X-Plugin-Secret": sharedSecret },
-    });
-  } catch {
-    throw new RegistryBackendError("registry_unavailable");
-  }
-
-  if (response.status === 401 || !response.ok) {
-    throw new RegistryBackendError("registry_unavailable");
-  }
-
-  try {
-    return (await response.json()) as BackendRegistryResponse;
-  } catch {
-    throw new RegistryBackendError("registry_unavailable");
   }
 }
 
