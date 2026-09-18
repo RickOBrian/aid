@@ -1,6 +1,6 @@
 ---
 title: Color Tokens Registry
-updated: 2026-09-17
+updated: 2026-09-18
 ---
 
 # Color Tokens Registry
@@ -143,12 +143,13 @@ Update this file every time a new token is created.
 
 | Token | Level | Value | Used in |
 |-------|-------|-------|---------|
-| --core-neutral-x-0 | core | #ffffff | ds-surface, ds-text-on-accent |
+| --core-neutral-x-0 | core | #ffffff | ds-surface, ds-text-on-accent, ds-surface-checker-base |
 | --core-neutral-x-5 | core | #fafafa | ds-surface-zebra |
 | --core-neutral-x-10 | core | #f5f5f5 | ds-surface-muted, ds-badge-neutral-bg |
 | --core-neutral-x-15 | core | #eeeeee | ds-surface-checker |
 | --core-neutral-x-20 | core | #ebedf0 | ds-border, ds-badge-neutral-border |
-| --core-neutral-x-90 | core | #2d2c2e | ds-text |
+| --core-neutral-x-85 | core | #3a393c | ds-surface-checker-inverse |
+| --core-neutral-x-90 | core | #2d2c2e | ds-text, ds-surface-checker-inverse-base |
 | --core-neutral-x-100-a10 | core | rgba(0,0,0,0.1) | ds-line-handle |
 | --core-neutral-x-100-a12 | core | rgba(0,0,0,0.12) | ds-line-subtle |
 | --core-neutral-x-100-a16 | core | rgba(0,0,0,0.16) | ds-shadow-elevated, ds-shadow-dropdown |
@@ -172,6 +173,12 @@ Update this file every time a new token is created.
 | --core-carmine-10 | core | #fdecea | ds-badge-danger-bg |
 | --core-carmine-25 | core | #f4c2c2 | ds-badge-danger-border |
 | --core-carmine-50 | core | #d62347 | ds-badge-danger-text |
+
+Шахматка под PNG превью — две пары клеток: светлая `--ds-surface-checker-base`
++ `--ds-surface-checker` и тёмная `--ds-surface-checker-inverse-base` +
+`--ds-surface-checker-inverse`. Тёмная включается автоматически, если снимок
+на светлой не читается (`tools/figma-token-comparator/src/lib/previewBackdrop.ts`);
+цвета клеток код читает из этих токенов, а не дублирует.
 
 Semantic-слой поверхности: `--ds-text*`, `--ds-surface*`, `--ds-border`,
 `--ds-line-*`, `--ds-accent*`, `--ds-focus`, `--ds-overlay-backdrop`,

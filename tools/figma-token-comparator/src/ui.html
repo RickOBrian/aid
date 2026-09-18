@@ -19,6 +19,7 @@
         --core-neutral-x-10: #f5f5f5;
         --core-neutral-x-15: #eeeeee;
         --core-neutral-x-20: #ebedf0;
+        --core-neutral-x-85: #3a393c;
         --core-neutral-x-90: #2d2c2e;
 
         /* neutral — alpha-ступени на чёрном */
@@ -73,6 +74,10 @@
         --ds-surface-muted: var(--core-neutral-x-10);
         --ds-surface-zebra: var(--core-neutral-x-5);
         --ds-surface-checker: var(--core-neutral-x-15);
+        --ds-surface-checker-base: var(--core-neutral-x-0);
+        /* Тёмная шахматка под превью, где светлый снимок на светлой не читается (lib/previewBackdrop.ts). */
+        --ds-surface-checker-inverse: var(--core-neutral-x-85);
+        --ds-surface-checker-inverse-base: var(--core-neutral-x-90);
 
         /* Линии и границы */
         --ds-border: var(--core-neutral-x-20);
@@ -1783,15 +1788,22 @@
       }
 
       .tc-preview-figure img {
+        --tc-checker: var(--ds-surface-checker);
         max-width: 100%;
         max-height: 260px;
         border: 1px solid var(--ds-border);
         border-radius: var(--ds-radius);
-        background-image: linear-gradient(45deg, var(--ds-surface-checker) 25%, transparent 25%),
-          linear-gradient(-45deg, var(--ds-surface-checker) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--ds-surface-checker) 75%),
-          linear-gradient(-45deg, transparent 75%, var(--ds-surface-checker) 75%);
+        background-color: var(--ds-surface-checker-base);
+        background-image: linear-gradient(45deg, var(--tc-checker) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--tc-checker) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--tc-checker) 75%),
+          linear-gradient(-45deg, transparent 75%, var(--tc-checker) 75%);
         background-size: 12px 12px;
         background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+      }
+
+      .tc-preview-figure img.tc-preview-img--inverse {
+        --tc-checker: var(--ds-surface-checker-inverse);
+        background-color: var(--ds-surface-checker-inverse-base);
       }
 
       .tc-preview-figure figcaption {

@@ -26,6 +26,7 @@ import {
 } from "./lib/libraryLabels";
 import { getResultStatusFilterKey, type StatusFilterKey } from "./lib/statusKeys";
 import { canShowPreview } from "./lib/previewEligibility";
+import { parseCssColor, pickPreviewBackdrop, type CheckerColors } from "./lib/previewBackdrop";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
 import type { CodeToUiMessage, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 import { clampWindowSize } from "./lib/windowSize";
@@ -1262,6 +1263,54 @@ function showPreviewLoading(): void {
   $("tc-preview-images").hidden = true;
 }
 
+/** Длинная сторона снимка для анализа фона — точности хватает, а крупный PNG не гоняется целиком. */
+const PREVIEW_BACKDROP_SAMPLE_SIZE = 256;
+
+function readCheckerColors(baseVar: string, squareVar: string): CheckerColors | null {
+  const style = getComputedStyle(document.documentElement);
+  const base = parseCssColor(style.getPropertyValue(baseVar));
+  const square = parseCssColor(style.getPropertyValue(squareVar));
+  return base && square ? [base, square] : null;
+}
+
+/**
+ * Переключает снимок на тёмную шахматку, если на светлой он не читается —
+ * например, белый текст без подложки (см. lib/previewBackdrop.ts).
+ */
+function applyPreviewBackdrop(img: HTMLImageElement): void {
+  const light = readCheckerColors("--ds-surface-checker-base", "--ds-surface-checker");
+  const dark = readCheckerColors("--ds-surface-checker-inverse-base", "--ds-surface-checker-inverse");
+  if (!light || !dark || !img.naturalWidth || !img.naturalHeight) return;
+
+  const scale = Math.min(1, PREVIEW_BACKDROP_SAMPLE_SIZE / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  if (!context) return;
+  // Без сглаживания: иначе тонкие глифы при уменьшении становятся
+  // полупрозрачными и выпадают из подсчёта.
+  context.imageSmoothingEnabled = false;
+  context.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+
+  img.classList.toggle("tc-preview-img--inverse", pickPreviewBackdrop(data, { light, dark }) === "dark");
+}
+
+function applyPreviewBackdrops(container: HTMLElement): void {
+  container.querySelectorAll<HTMLImageElement>(".tc-preview-figure img").forEach((img) => {
+    const run = (): void => {
+      try {
+        applyPreviewBackdrop(img);
+      } catch {
+        // анализ не удался — снимок остаётся на светлой шахматке, как раньше
+      }
+    };
+    if (img.complete && img.naturalWidth) run();
+    else img.addEventListener("load", run, { once: true });
+  });
+}
+
 function showPreviewImages(modes: Array<{ modeName: string; before: string; after: string }>): void {
   $("tc-preview-loading").hidden = true;
   $("tc-preview-error").hidden = true;
@@ -1285,6 +1334,7 @@ function showPreviewImages(modes: Array<{ modeName: string; before: string; afte
     </div>`
     )
     .join("");
+  applyPreviewBackdrops(container);
 }
 
 function showPreviewErrorInModal(message: string): void {
@@ -1461,6 +1511,7 @@ function showApplyModalPreviewImages(modes: Array<{ modeName: string; before: st
     </div>`
     )
     .join("");
+  applyPreviewBackdrops(container);
 }
 
 function showApplyModalPreviewError(message: string): void {
