@@ -49,7 +49,6 @@ import {
 import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
 import {
   applyTypographyToNodeIds,
-  readRecordTypographyValue,
 } from "./lib/typographyApply";
 import { buildExportRows } from "./lib/exporter";
 import { buildMappingTable, MAX_PRINTABLE_ROWS } from "./lib/figmaTableBuilder";
@@ -207,6 +206,7 @@ async function handleUiReady(): Promise<void> {
     type: "init-state",
     payload: {
       hasToken: Boolean(token),
+      hasRegistrySecret: Boolean(await storage.getRegistrySecret()),
       libraryFileName: effectiveLibraryFileName,
       libraryCache: libraryCache
         ? { count: libraryCache.tokens.length, fetchedAt: libraryCache.fetchedAt }
@@ -253,9 +253,16 @@ async function handleClearPendingProposals(category: TokenCategory): Promise<voi
 }
 
 async function loadRegistryFromBackend(): Promise<void> {
+  const sharedSecret = await storage.getRegistrySecret();
+  if (!sharedSecret) {
+    // Ключ не введён — реестр просто недоступен, это не ошибка.
+    send({ type: "registry-unavailable" });
+    return;
+  }
+
   send({ type: "registry-loading" });
   try {
-    const result = await fetchRegistryFromBackend();
+    const result = await fetchRegistryFromBackend(sharedSecret);
     const fetchedAt = new Date().toISOString();
     await storage.setRegistryCache({
       registry: result.registry,
@@ -412,7 +419,12 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   const entries = pendingEntries.map(([recordId, stored]) => buildProposeEntry(recordId, stored));
 
   try {
-    const { unchanged } = await proposeDecisionsOnBackend({ proposedBy, entries });
+    const sharedSecret = await storage.getRegistrySecret();
+    if (!sharedSecret) {
+      send({ type: "decisions-submit-failed" });
+      return;
+    }
+    const { unchanged } = await proposeDecisionsOnBackend({ proposedBy, entries }, sharedSecret);
     await storage.markSignaturesSubmitted(entries.map((entry) => entry.signature));
     send({ type: "decisions-submitted", payload: { count: entries.length, unchanged } });
     await sendPendingProposeCount();
@@ -424,7 +436,11 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   }
 }
 
-async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Promise<void> {
+async function handleSaveSettings(
+  tokenFromUi: string,
+  libraryInput: string,
+  registrySecret: string
+): Promise<void> {
   const token = await resolvePersonalAccessToken(tokenFromUi);
   if (!token) {
     send({
@@ -451,6 +467,9 @@ async function handleSaveSettings(tokenFromUi: string, libraryInput: string): Pr
     storage.setPersonalAccessToken(token),
     storage.setLibraryFileKey(libraryFileKey),
     storage.setLibraryFileName(libraryFileName),
+    // Пустое поле означает «оставить как есть»: в UI сохранённый ключ
+    // показывается маской, а не значением.
+    registrySecret.trim() ? storage.setRegistrySecret(registrySecret.trim()) : Promise.resolve(),
   ]);
 
   send({ type: "settings-saved", payload: { libraryFileName } });
@@ -1054,18 +1073,16 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   const stored = history[recordId];
   const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
 
-  const isValueFix = stored?.decision === "value_fix_proposed";
   const hasMappedDecision =
     stored?.decision === "mapped" ||
     stored?.decision === "mapped_suggested" ||
     (result.status === "mapped" && Boolean(result.target?.styleKey || result.target?.styleId));
 
-  if (!isValueFix && !hasMappedDecision) {
+  if (!hasMappedDecision) {
     send({
       type: "error",
       payload: {
-        message:
-          "«Применить в макет» доступно только для строк с выбранным стилем библиотеки или с предложенной правкой значения.",
+        message: "«Применить в макет» доступно только для строк с выбранным стилем библиотеки.",
       },
     });
     return;
@@ -1080,56 +1097,24 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       : undefined);
 
   let importedStyle: TextStyle | undefined;
-  let mode: "style" | "properties" = "style";
-  let propertyValue: ReturnType<typeof readRecordTypographyValue> = null;
 
-  if (isValueFix) {
-    mode = "properties";
-    propertyValue = readRecordTypographyValue(record);
-    if (!propertyValue) {
-      send({
-        type: "error",
-        payload: {
-          message:
-            "Не удалось прочитать типографику группы. Пересканируйте макет и повторите.",
-        },
-      });
-      return;
-    }
-  } else {
-    if (!targetStyle?.key) {
-      send({
-        type: "error",
-        payload: {
-          message: "Выбранного стиля нет в загруженной библиотеке. Загрузите её заново.",
-        },
-      });
-      return;
-    }
-    try {
-      const imported = await figma.importStyleByKeyAsync(targetStyle.key);
-      if (imported.type !== "TEXT") {
-        const skipped = record.nodeIds.map((nodeId) => ({
-          nodeId,
-          reason: `Импортированный стиль «${targetStyle.name}» не является Text Style.`,
-        }));
-        send({
-          type: "apply-to-layout-result",
-          recordId,
-          attempted: record.nodeIds.length,
-          occurrences: record.count,
-          applied: 0,
-          skipped,
-        });
-        return;
-      }
-      importedStyle = imported;
-    } catch (importError) {
-      const reason =
-        importError instanceof Error
-          ? `Не удалось импортировать Text Style «${targetStyle.name}»: ${importError.message}`
-          : `Не удалось импортировать Text Style «${targetStyle.name}».`;
-      const skipped = record.nodeIds.map((nodeId) => ({ nodeId, reason }));
+  if (!targetStyle?.key) {
+    send({
+      type: "error",
+      payload: {
+        message: "Выбранного стиля нет в загруженной библиотеке. Загрузите её заново.",
+      },
+    });
+    return;
+  }
+
+  try {
+    const imported = await figma.importStyleByKeyAsync(targetStyle.key);
+    if (imported.type !== "TEXT") {
+      const skipped = record.nodeIds.map((nodeId) => ({
+        nodeId,
+        reason: `Импортированный стиль «${targetStyle.name}» не является Text Style.`,
+      }));
       send({
         type: "apply-to-layout-result",
         recordId,
@@ -1140,6 +1125,22 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       });
       return;
     }
+    importedStyle = imported;
+  } catch (importError) {
+    const reason =
+      importError instanceof Error
+        ? `Не удалось импортировать Text Style «${targetStyle.name}»: ${importError.message}`
+        : `Не удалось импортировать Text Style «${targetStyle.name}».`;
+    const skipped = record.nodeIds.map((nodeId) => ({ nodeId, reason }));
+    send({
+      type: "apply-to-layout-result",
+      recordId,
+      attempted: record.nodeIds.length,
+      occurrences: record.count,
+      applied: 0,
+      skipped,
+    });
+    return;
   }
 
   const alreadyApplied = new Set(stored?.appliedNodeIds ?? []);
@@ -1149,9 +1150,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     record,
     nodeIds: nodeIdsToApply,
     skipNodeIds: alreadyApplied,
-    mode,
     importedStyle,
-    propertyValue: propertyValue ?? undefined,
     resolveNode: resolveSceneNodeById,
   });
 
@@ -1163,7 +1162,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   const totalNodes = record.nodeIds.length;
   const fullSuccess = newAppliedIds.length >= totalNodes && batchResult.skipped.length === 0;
 
-  if (batchResult.applied > 0 && importedStyle && targetStyle && mode === "style") {
+  if (batchResult.applied > 0 && importedStyle && targetStyle) {
     updateTypographyRecordOptimistic(recordId, importedStyle, targetStyle);
   }
 
@@ -1835,7 +1834,11 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleUiReady();
         break;
       case "save-settings":
-        await handleSaveSettings(message.payload.token, message.payload.libraryInput);
+        await handleSaveSettings(
+          message.payload.token,
+          message.payload.libraryInput,
+          message.payload.registrySecret
+        );
         break;
       case "save-github-settings":
         await handleSaveGitHubSettings(

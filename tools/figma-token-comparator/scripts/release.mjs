@@ -23,26 +23,6 @@ function readPackageVersion() {
   return pkg.version.trim();
 }
 
-function loadPluginSharedSecret() {
-  const envPath = path.join(pluginRoot, '.env.local');
-  if (!fs.existsSync(envPath)) {
-    return '';
-  }
-
-  const text = fs.readFileSync(envPath, 'utf8');
-  for (const line of text.split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const match = trimmed.match(/^PLUGIN_SHARED_SECRET=(.*)$/);
-    if (match) {
-      const raw = match[1].trim();
-      return raw.replace(/^["']|["']$/g, '');
-    }
-  }
-
-  return process.env.PLUGIN_SHARED_SECRET ?? '';
-}
-
 function run(command, label) {
   console.log(`[release] ${label}…`);
   execSync(command, { cwd: pluginRoot, stdio: 'inherit', env: process.env });
@@ -146,14 +126,6 @@ function verifyZip(zipPath) {
 
 function main() {
   const version = readPackageVersion();
-  const secret = loadPluginSharedSecret();
-
-  if (!secret) {
-    console.error(
-      '[release] ERROR: PLUGIN_SHARED_SECRET is empty. Set tools/figma-token-comparator/.env.local before production packaging.',
-    );
-    process.exit(1);
-  }
 
   console.log(`[release] Token Comparator v${version} — local pack (no tag, no GitHub Release)`);
 

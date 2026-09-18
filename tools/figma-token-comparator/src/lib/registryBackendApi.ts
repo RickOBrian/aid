@@ -5,7 +5,7 @@
 
 import type { RegistryDecision, TokenCategory } from "./githubTypes";
 import type { RegistryFileContent } from "./githubTypes";
-import { getPluginSharedSecret, REGISTRY_GET_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
+import { REGISTRY_GET_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
 
 export interface BackendRegistryResponse {
   exists: boolean;
@@ -55,12 +55,10 @@ export class RegistryBackendError extends Error {
   }
 }
 
-function pluginSecretHeader(): Record<string, string> {
-  return { "X-Plugin-Secret": getPluginSharedSecret() };
-}
-
-export async function fetchRegistryFromBackend(): Promise<BackendRegistryResponse> {
-  if (!getPluginSharedSecret()) {
+export async function fetchRegistryFromBackend(
+  sharedSecret: string
+): Promise<BackendRegistryResponse> {
+  if (!sharedSecret) {
     throw new RegistryBackendError("registry_unavailable");
   }
 
@@ -68,7 +66,7 @@ export async function fetchRegistryFromBackend(): Promise<BackendRegistryRespons
   try {
     response = await fetch(REGISTRY_GET_URL, {
       method: "GET",
-      headers: pluginSecretHeader(),
+      headers: { "X-Plugin-Secret": sharedSecret },
     });
   } catch {
     throw new RegistryBackendError("registry_unavailable");
@@ -95,9 +93,9 @@ export interface ProposeDecisionsResult {
 }
 
 export async function proposeDecisionsOnBackend(
-  payload: ProposeDecisionsPayload
+  payload: ProposeDecisionsPayload,
+  sharedSecret: string
 ): Promise<ProposeDecisionsResult> {
-  const sharedSecret = getPluginSharedSecret();
   if (!sharedSecret) {
     throw new RegistryBackendError("submit_failed");
   }

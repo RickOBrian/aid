@@ -19,7 +19,7 @@ export interface UiReadyMessage {
 
 export interface SaveSettingsMessage {
   type: "save-settings";
-  payload: { token: string; libraryInput: string };
+  payload: { token: string; libraryInput: string; registrySecret: string };
 }
 
 export interface SaveGitHubSettingsMessage {
@@ -209,6 +209,7 @@ export interface InitStateMessage {
   type: "init-state";
   payload: {
     hasToken: boolean;
+    hasRegistrySecret: boolean;
     /** Имя Figma-файла библиотеки для отображения в поле настроек. */
     libraryFileName: string | null;
     libraryCache: { count: number; fetchedAt: string } | null;

@@ -504,7 +504,11 @@ function initSettingsPanel(): void {
     }
     post({
       type: "save-settings",
-      payload: { token: tokenInput.value.trim(), libraryInput },
+      payload: {
+        token: tokenInput.value.trim(),
+        libraryInput,
+        registrySecret: $<HTMLInputElement>("tc-registry-secret-input").value,
+      },
     });
   });
 
@@ -1257,14 +1261,21 @@ function initPreviewModal(): void {
 // ---------------------------------------------------------------------------
 
 /** Доступно только для строк со статусом "Mapped" с известной переменной или Text Style библиотеки. */
+/**
+ * «Применить в макет» доступно только там, где есть что применить: выбранный
+ * токен или стиль библиотеки.
+ *
+ * Решение «предложить правку значения» сюда не входит. Менять по нему должна
+ * библиотека, а не макет, и плагин в библиотеку писать не умеет — раньше
+ * кнопка для таких строк применяла слоям их же собственные текущие значения:
+ * рендер не менялся, но слой получал override поверх стиля.
+ */
 function canApplyToLayout(result: ComparisonResult): boolean {
+  if (result.status !== "mapped") return false;
   if (result.category === "typography" || activeCategory === "typography") {
-    if (result.decision === "value_fix_proposed") {
-      return readTypographyComparisonValue(result.comparisonValue) !== null;
-    }
-    return result.status === "mapped" && Boolean(result.target?.styleKey || result.target?.styleId);
+    return Boolean(result.target?.styleKey || result.target?.styleId);
   }
-  return result.status === "mapped" && Boolean(result.target?.variableId);
+  return Boolean(result.target?.variableId);
 }
 
 const PROPERTY_LABELS: Record<string, string> = {
@@ -3139,6 +3150,7 @@ window.onmessage = (event: MessageEvent) => {
     case "init-state": {
       const {
         hasToken,
+        hasRegistrySecret,
         libraryFileName,
         libraryCache,
         hasGitHubToken,
@@ -3153,6 +3165,9 @@ window.onmessage = (event: MessageEvent) => {
       } = message.payload;
       if (libraryFileName) $<HTMLInputElement>("tc-filekey-input").value = libraryFileName;
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
+      $<HTMLInputElement>("tc-registry-secret-input").placeholder = hasRegistrySecret
+        ? "•••••••• (сохранён)"
+        : "Ключ от владельца дизайн-системы";
       typographyLibraryAvailable = initialTextStylesAvailable;
       typographyLibraryError = initialTextStylesAvailable
         ? null

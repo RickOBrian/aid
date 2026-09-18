@@ -27,6 +27,7 @@ const KEYS = {
   GITHUB_REGISTRY_PATH: "tc_github_registry_path",
   REGISTRY_CACHE: "tc_registry_cache",
   ADMIN_MODE: "tc_admin_mode",
+  REGISTRY_SECRET: "tc_registry_secret",
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
 } as const;
 
@@ -197,6 +198,22 @@ export async function getRegistryCache(): Promise<RegistryCache | null> {
 
 export async function setRegistryCache(cache: RegistryCache): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.REGISTRY_CACHE, cache);
+}
+
+/**
+ * Ключ доступа к бэкенду реестра.
+ *
+ * Хранится у конкретного пользователя, а не в сборке плагина: собранный
+ * dist/code.js раздаётся публичным релизом, и вшитый в него ключ читается
+ * любым, кто скачал архив.
+ */
+export async function getRegistrySecret(): Promise<string | null> {
+  const value = await figma.clientStorage.getAsync(KEYS.REGISTRY_SECRET);
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+export async function setRegistrySecret(secret: string): Promise<void> {
+  await figma.clientStorage.setAsync(KEYS.REGISTRY_SECRET, secret);
 }
 
 export async function getAdminMode(): Promise<boolean> {
