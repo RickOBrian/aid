@@ -470,10 +470,18 @@
         display: none;
       }
 
-      .tc-library-item {
+      /*
+       * Строка библиотеки и строка добавления — одна сетка: одинаковый
+       * отступ между элементами, иначе колонки иконок расходятся.
+       */
+      .tc-library-item,
+      .tc-library-add {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
+      }
+
+      .tc-library-item {
         padding: 2px 0;
       }
 
@@ -488,12 +496,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      .tc-library-add {
-        display: flex;
-        align-items: center;
-        gap: 4px;
       }
 
       .tc-library-add input {
