@@ -331,6 +331,15 @@ function createDecisionCheck(decision: Decision): HTMLSpanElement {
   return check;
 }
 
+/** Пометка строки, решение по которой взято из реестра согласованных решений (lib/registryDecisions.ts). */
+function createRegistryDecisionBadge(): HTMLSpanElement {
+  return createSecondaryBadge(
+    "Согласовано",
+    "success",
+    "Решение согласовано командой и взято из реестра дизайн-системы. Чтобы предложить другое — примите своё решение и отправьте его на согласование."
+  );
+}
+
 const BINDING_LABELS: Record<string, string> = {
   variable: "Переменная",
   style: "Стиль",
@@ -2492,6 +2501,9 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   if (result.decision && result.decision !== "value_fix_proposed") {
     statusBadges.appendChild(createDecisionCheck(result.decision));
   }
+  if (result.decisionSource === "registry") {
+    statusBadges.appendChild(createRegistryDecisionBadge());
+  }
   if (result.applyPartial) {
     statusBadges.appendChild(
       createSecondaryBadge("Применено частично", "warning", "Стиль применён не ко всем слоям группы.")
@@ -2664,6 +2676,9 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   statusBadges.appendChild(createStatusBadge(result));
   if (result.decision && result.decision !== "value_fix_proposed") {
     statusBadges.appendChild(createDecisionCheck(result.decision));
+  }
+  if (result.decisionSource === "registry") {
+    statusBadges.appendChild(createRegistryDecisionBadge());
   }
   if (result.applyPartial) {
     statusBadges.appendChild(
@@ -3458,8 +3473,10 @@ window.onmessage = (event: MessageEvent) => {
       break;
     case "scan-results": {
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
-      const { category, results, libraryTokens, libraryTextStyles } = message.payload;
-      $("tc-scan-status").textContent = `Готово: найдено ${results.length} ${pluralizeIssues(results.length)}.`;
+      const { category, results, libraryTokens, libraryTextStyles, resolvedByTeam } = message.payload;
+      $("tc-scan-status").textContent =
+        `Готово: найдено ${results.length} ${pluralizeIssues(results.length)}.` +
+        (resolvedByTeam ? ` Скрыто по согласованным решениям команды: ${resolvedByTeam}.` : "");
       activeCategory = category;
       setCategorySegmentPressed(category);
       resultsByCategory[category] = results;

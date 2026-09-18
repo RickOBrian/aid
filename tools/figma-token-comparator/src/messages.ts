@@ -295,6 +295,8 @@ export interface ScanResultsMessage {
     results: ComparisonResult[];
     libraryTokens: LibraryToken[];
     libraryTextStyles: LibraryTextStyle[];
+    /** Сколько групп скрыто, потому что их закрыло согласованное решение из реестра. */
+    resolvedByTeam?: number;
   };
 }
 

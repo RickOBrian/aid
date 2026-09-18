@@ -59,6 +59,7 @@ import {
   persistDecisionAfterApply,
   type ApplyToLayoutSkip,
 } from "./lib/decisionPersistence";
+import { countResolvedByTeam, mergeRegistryDecisions } from "./lib/registryDecisions";
 import type { CodeToUiMessage, PreviewModeResult, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
@@ -237,6 +238,22 @@ async function handleUiReady(): Promise<void> {
   void loadRegistry();
 }
 
+/**
+ * История для сравнения: локальные решения поверх согласованных решений из
+ * реестра (lib/registryDecisions.ts). Только для сравнения — очередь на
+ * согласование и запись решений работают с локальной историей.
+ */
+async function withRegistryDecisions(
+  local: Record<string, StoredDecision>
+): Promise<Record<string, StoredDecision>> {
+  const cache = await storage.getRegistryCache();
+  return mergeRegistryDecisions(local, cache?.registry.entries ?? []);
+}
+
+async function getComparisonHistory(): Promise<Record<string, StoredDecision>> {
+  return withRegistryDecisions(await storage.getMappingHistory());
+}
+
 async function sendPendingProposeCount(): Promise<void> {
   const history = await storage.getMappingHistory();
   const byCategory = await storage.countPendingProposalsByCategory(history);
@@ -373,7 +390,7 @@ async function getPendingProposeEntries(
   const history = await storage.getMappingHistory();
   const submitted = await storage.getSubmittedSignatures();
   return Object.entries(history).filter(([recordId, stored]) => {
-    if (submitted.has(recordId)) return false;
+    if (!storage.isPendingProposalRecord(recordId, submitted, stored)) return false;
     if (!category) return true;
     const entryCategory = stored.category ?? "colors";
     return entryCategory === category;
@@ -827,13 +844,14 @@ async function handleScan(
         lastLibraryTypography = textStylesCache.styles;
       }
 
-      const history = await storage.getMappingHistory();
+      const history = await getComparisonHistory();
       const results = typographyComparator.compareWithLibrary(records, lastLibraryTypography, history);
       send({
         type: "scan-results",
         payload: {
           category: "typography",
           results,
+          resolvedByTeam: countResolvedByTeam(records, results, history),
           libraryTokens: lastLibraryColors,
           libraryTextStyles: lastLibraryTypography,
         },
@@ -849,13 +867,14 @@ async function handleScan(
       lastLibraryColors = cache?.tokens ?? [];
     }
 
-    const history = await storage.getMappingHistory();
+    const history = await getComparisonHistory();
     const results = colorComparator.compareWithLibrary(records, lastLibraryColors, history);
     send({
       type: "scan-results",
       payload: {
         category: "colors",
         results,
+        resolvedByTeam: countResolvedByTeam(records, results, history),
         libraryTokens: lastLibraryColors,
         libraryTextStyles: lastLibraryTypography,
       },
@@ -1013,13 +1032,13 @@ async function handleApplyDecision(
   });
 
   if (category === "typography") {
-    const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
+    const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, await withRegistryDecisions(history));
     send({ type: "decision-applied", payload: { recordId, result } });
     await sendPendingProposeCount();
     return;
   }
 
-  const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
+  const [result] = computeColorComparisonResults([record], lastLibraryColors, await withRegistryDecisions(history));
   send({ type: "decision-applied", payload: { recordId, result } });
   await sendPendingProposeCount();
 }
@@ -1031,7 +1050,7 @@ async function handleClearDecision(recordId: string): Promise<void> {
     const [result] = computeTypographyComparisonResults(
       [typographyRecord],
       lastLibraryTypography,
-      history
+      await withRegistryDecisions(history)
     );
     send({ type: "decision-applied", payload: { recordId, result } });
     await sendPendingProposeCount();
@@ -1039,7 +1058,7 @@ async function handleClearDecision(recordId: string): Promise<void> {
   }
   const record = getLastRecords("colors").find((item) => item.id === recordId);
   if (!record) return;
-  const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
+  const [result] = computeColorComparisonResults([record], lastLibraryColors, await withRegistryDecisions(history));
   send({ type: "decision-applied", payload: { recordId, result } });
   await sendPendingProposeCount();
 }
@@ -1095,7 +1114,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     return;
   }
 
-  const history = await storage.getMappingHistory();
+  const history = await getComparisonHistory();
   const stored = history[recordId];
   const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
 
@@ -1216,7 +1235,7 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     });
   }
 
-  const updatedHistory = await storage.getMappingHistory();
+  const updatedHistory = await getComparisonHistory();
   const updatedRecord = getLastRecords("typography").find((item) => item.id === recordId) ?? record;
   const [updatedResult] = computeTypographyComparisonResults(
     [updatedRecord],
@@ -1251,7 +1270,7 @@ async function handleApplyToLayout(recordId: string): Promise<void> {
     return;
   }
 
-  const history = await storage.getMappingHistory();
+  const history = await getComparisonHistory();
   const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
 
   // Доступно только для строк со статусом "Mapped" (решение mapped/mapped_suggested
@@ -1689,7 +1708,7 @@ async function buildColorPreview(recordId: string, variableId?: string): Promise
     }
     target = toTarget(token, 0);
   } else {
-    const history = await storage.getMappingHistory();
+    const history = await getComparisonHistory();
     const [result] = computeColorComparisonResults([record], lastLibraryColors, history);
     if (!result?.target || result.target.valueUnresolved) {
       throw new Error("Для этой строки нет значения библиотеки, по которому можно построить превью.");
@@ -1753,7 +1772,7 @@ async function buildTypographyPreview(recordId: string, styleId?: string): Promi
       throw new Error("Стиля нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
     }
   } else {
-    const history = await storage.getMappingHistory();
+    const history = await getComparisonHistory();
     const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, history);
     const styleKey = result?.target?.styleKey;
     targetStyle = styleKey ? lastLibraryTypography.find((style) => style.key === styleKey) : undefined;

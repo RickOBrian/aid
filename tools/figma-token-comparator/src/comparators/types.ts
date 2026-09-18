@@ -253,6 +253,8 @@ export interface ComparisonResult extends LayoutRecord {
   decisionTargetVariableId?: string;
   decisionTargetStyleId?: string;
   decisionTimestamp?: string;
+  /** "registry" — решение взято из реестра согласованных решений команды. */
+  decisionSource?: "registry";
   /** value_fix_proposed — режим библиотеки, который предлагается поправить. */
   decisionProposedModeId?: string;
   decisionProposedModeName?: string;
@@ -284,6 +286,11 @@ export interface ITokenComparator<TScope = unknown, TLibrary = LibraryToken> {
 /** Хранимое в clientStorage подтверждённое решение по группе записей. */
 export interface StoredDecision {
   decision: Decision;
+  /**
+   * "registry" — решение согласовано и взято из реестра (lib/registryDecisions.ts),
+   * а не принято на этом компьютере. Такие решения не отправляются повторно.
+   */
+  source?: "registry";
   /** Категория comparator-модуля — для фильтрации pending при переключении UI. */
   category?: TokenCategory;
   targetVariableId?: string;

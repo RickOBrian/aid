@@ -48,8 +48,9 @@ export async function persistDecisionAfterApply(
   const fullSuccess = applySkips.length === 0 && appliedCount >= totalCount;
 
   if (fullSuccess) {
+    // Решение из реестра уже согласовано — держать его локально незачем.
     const submitted = await getSubmittedSignatures();
-    if (submitted.has(recordId)) {
+    if (submitted.has(recordId) || base.source === "registry") {
       await clearMappingHistoryEntry(recordId);
       return;
     }
