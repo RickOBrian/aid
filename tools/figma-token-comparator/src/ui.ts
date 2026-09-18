@@ -25,6 +25,7 @@ import {
   formatLibraryTokenLabel,
 } from "./lib/libraryLabels";
 import { getResultStatusFilterKey, type StatusFilterKey } from "./lib/statusKeys";
+import { getStatusMeta, type BadgeTone, type StatusMeta } from "./lib/statusMeta";
 import { canShowPreview } from "./lib/previewEligibility";
 import { parseCssColor, pickPreviewBackdrop, type CheckerColors } from "./lib/previewBackdrop";
 import { buildExportRows, toCSV, toJSON, toMarkdown, type ExportRow } from "./lib/exporter";
@@ -92,113 +93,18 @@ interface RowControls {
 
 const rowControls = new Map<string, RowControls>();
 
-/** Тональность бейджа. Цвета тональностей заданы в ui.html, здесь — только выбор. */
-type BadgeTone = "neutral" | "success" | "info" | "warning" | "danger";
-
-interface StatusMeta {
-  /** Название статуса в интерфейсе. */
-  label: string;
-  /** Английский термин, которым статус называют в команде и в документации. */
-  term: string;
-  /** Тональность бейджа — единственный источник его цвета. */
-  tone: BadgeTone;
-  /** Что это значит и что с этим делать. Показывается подсказкой при наведении. */
-  hint: string;
-}
-
-/**
- * Единственный источник правды по статусам: название, термин, цвет и подсказка.
- * Любое место интерфейса (таблица цветов, таблица типографики, фильтр в шапке)
- * берёт бейдж отсюда — расхождения между ними невозможны по построению.
- */
-const STATUS_META: Record<StatusFilterKey, StatusMeta> = {
-  exact: {
-    label: "Совпадает с библиотекой",
-    term: "Exact match",
-    tone: "success",
-    hint: "Слой уже привязан к этой переменной библиотеки — делать ничего не нужно.",
-  },
-  mapped: {
-    label: "Решение принято",
-    term: "Mapped",
-    tone: "success",
-    hint: "По этой группе решение уже зафиксировано и подтянулось из истории.",
-  },
-  value: {
-    label: "Совпало значение",
-    term: "Value match",
-    tone: "info",
-    hint: "Цвет в точности совпадает со значением токена библиотеки, но слой к токену не привязан.",
-  },
-  "name-match": {
-    label: "Совпало имя",
-    term: "Name match",
-    tone: "warning",
-    hint: "Имя переменной или стиля совпало с токеном библиотеки, но значения умеренно расходятся.",
-  },
-  "name-match-unresolved": {
-    label: "Значение не прочитано",
-    term: "Name match (value unknown)",
-    tone: "warning",
-    hint: "Имя совпало, но значение токена получить не удалось — обычно это ссылка на переменную из другого файла. Сравните вручную.",
-  },
-  conflict: {
-    label: "Конфликт значений",
-    term: "Conflict",
-    tone: "danger",
-    hint: "Имя совпало с токеном библиотеки, но цвет отличается заметно. Обычно в макете осталось устаревшее значение.",
-  },
-  approximate: {
-    label: "Близкое значение",
-    term: "Approximate match",
-    tone: "warning",
-    hint: "Точного совпадения нет, но в библиотеке есть близкий цвет. Чем меньше ΔE, тем ближе оттенок.",
-  },
-  "name-mismatch": {
-    label: "Имя не по системе",
-    term: "Name mismatch",
-    tone: "warning",
-    hint: "Стиль текста применён, но его имя не совпадает с ожидаемым токеном системы.",
-  },
-  "mixed-unresolved": {
-    label: "Смешанные значения",
-    term: "Mixed (needs review)",
-    tone: "neutral",
-    hint: "В группе слоёв разные шрифты или размеры — сравнить автоматически нельзя, нужен ручной разбор.",
-  },
-  "layout-only": {
-    label: "Нет в библиотеке",
-    term: "Layout only",
-    tone: "neutral",
-    hint: "Совпадений в библиотеке не нашлось ни по имени, ни по значению.",
-  },
-  "style-binding": {
-    label: "Стиль вместо токена",
-    term: "Style binding",
-    tone: "warning",
-    hint: "Цвет задан стилем Figma, а не переменной. Автоматически заменить нельзя — нужно ваше решение.",
-  },
-  "ghost-binding": {
-    label: "Потерянный стиль",
-    term: "Ghost style",
-    tone: "danger",
-    hint: "Слой ссылается на стиль, которого больше нет в файле. Цвет виден, но привязка потеряна.",
-  },
-  "hardcoded-no-analog": {
-    label: "Цвет вручную",
-    term: "Hardcoded (no analog)",
-    tone: "neutral",
-    hint: "Цвет задан вручную, подходящего токена в библиотеке нет. Кандидат на новый токен или осознанное исключение.",
-  },
-};
-
 /** Подсказка бейджа: английский термин плюс объяснение. */
 function statusTooltip(meta: StatusMeta): string {
   return `${meta.term} — ${meta.hint}`;
 }
 
+/** Тексты статуса для активной категории — у типографики свои (lib/statusMeta.ts). */
+function statusMetaForKey(key: StatusFilterKey): StatusMeta {
+  return getStatusMeta(key, activeCategory);
+}
+
 function statusFilterKeyLabel(key: StatusFilterKey): string {
-  return STATUS_META[key].label;
+  return statusMetaForKey(key).label;
 }
 
 /** Классы бейджа для тональности. Форма и цвет не задаются больше нигде. */
@@ -311,7 +217,7 @@ function renderStatusFilterMenu(): void {
           (key) => `
         <label class="ds-filter-menu__item">
           <input type="checkbox" value="${escapeHtml(key)}" ${activeStatusFilters.has(key) ? "checked" : ""} />
-          <span class="${badgeClassName(STATUS_META[key].tone)}" title="${escapeHtml(statusTooltip(STATUS_META[key]))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
+          <span class="${badgeClassName(statusMetaForKey(key).tone)}" title="${escapeHtml(statusTooltip(statusMetaForKey(key)))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
         </label>`
         )
         .join("")}
@@ -367,7 +273,7 @@ function initStatusFilterMenu(): void {
 }
 
 function statusMetaOf(result: ComparisonResult): StatusMeta {
-  return STATUS_META[getResultStatusFilterKey(result)];
+  return getStatusMeta(getResultStatusFilterKey(result), result.category ?? activeCategory);
 }
 
 function statusLabel(result: ComparisonResult): string {
