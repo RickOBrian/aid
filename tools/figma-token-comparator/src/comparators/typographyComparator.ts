@@ -61,7 +61,13 @@ export function requiresTypographyUserAction(
       return true;
     case "style":
     case "ghost":
-      return !isUsingLibraryTextStyle(result, library);
+      // Библиотечный стиль сам по себе строку не закрывает. Если типографика
+      // слоя разошлась со стилем — это локальное переопределение: слой
+      // выглядит правильно затокенизированным, а рендерится иначе, и решать
+      // тут есть что. Закрывает строку только фактическое совпадение
+      // значений, то есть статус "exact".
+      if (!isUsingLibraryTextStyle(result, library)) return true;
+      return result.status !== "exact";
     default:
       return true;
   }
@@ -153,10 +159,23 @@ function findRecordStatus(
     return { status: "mixed-unresolved" };
   }
 
-  // 3. Exact — textStyleId/styleKey из библиотеки.
+  // 3. Стиль из библиотеки применён напрямую (textStyleId/styleKey).
+  //
+  // Сама привязка ещё не значит совпадения: типографику слоя могли
+  // переопределить локально. Поэтому сверяем значения и, если они разошлись,
+  // классифицируем расхождение по той же шкале, что и совпадение по имени —
+  // в колонке «Что расходится» пользователь увидит ровно переопределённые
+  // свойства.
   const exactStyle = findExactLibraryStyle(record, library);
   if (exactStyle && record.bindingType === "style") {
-    return { status: "exact", target: toTypographyTarget(exactStyle) };
+    const mismatched = diffTypographyProperties(layoutValue, exactStyle.comparisonValue);
+    if (mismatched.length === 0) {
+      return { status: "exact", target: toTypographyTarget(exactStyle) };
+    }
+    const status = criticalTypographyMatches(layoutValue, exactStyle.comparisonValue)
+      ? "name-match"
+      : "conflict";
+    return { status, target: toTypographyTarget(exactStyle), mismatchedProperties: mismatched };
   }
 
   // 4. Name match / conflict / name-mismatch — по имени применённого стиля.

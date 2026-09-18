@@ -49,7 +49,6 @@ import {
 import { parseFigmaFileKey, parseFigmaFileTitleFromUrl } from "./lib/figmaUrl";
 import {
   applyTypographyToNodeIds,
-  fontNameFromTypographyValue,
   readRecordTypographyValue,
 } from "./lib/typographyApply";
 import { buildExportRows } from "./lib/exporter";
@@ -1083,7 +1082,6 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   let importedStyle: TextStyle | undefined;
   let mode: "style" | "properties" = "style";
   let propertyValue: ReturnType<typeof readRecordTypographyValue> = null;
-  let propertyFontName: FontName | undefined;
 
   if (isValueFix) {
     mode = "properties";
@@ -1098,7 +1096,6 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
       });
       return;
     }
-    propertyFontName = fontNameFromTypographyValue(propertyValue);
   } else {
     if (!targetStyle?.key) {
       send({
@@ -1141,7 +1138,6 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
     mode,
     importedStyle,
     propertyValue: propertyValue ?? undefined,
-    propertyFontName,
     resolveNode: resolveSceneNodeById,
   });
 

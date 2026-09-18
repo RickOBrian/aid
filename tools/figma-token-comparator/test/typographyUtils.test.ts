@@ -25,6 +25,18 @@ import {
 } from "../src/lib/typographyUtils";
 import { typographyValue } from "./fixtures";
 
+/** TextStyle из Plugin API: у него нет числового веса, только имя начертания. */
+function textStyle(styleName: string): TextStyle {
+  return {
+    fontName: { family: "Inter", style: styleName },
+    fontSize: 14,
+    lineHeight: { unit: "PIXELS", value: 20 },
+    letterSpacing: { unit: "PIXELS", value: 0 },
+    textCase: "ORIGINAL",
+    textDecoration: "NONE",
+  } as unknown as TextStyle;
+}
+
 describe("line height из REST", () => {
   it("PIXELS берётся как есть", () => {
     expect(normalizeLineHeightFromRest({ lineHeightUnit: "PIXELS", lineHeightPx: 24 }, 16)).toEqual({
@@ -176,18 +188,6 @@ describe("чтение стиля из REST", () => {
 });
 
 describe("чтение стиля через Plugin API", () => {
-  /** TextStyle из Plugin API: у него нет числового веса, только имя начертания. */
-  function textStyle(styleName: string): TextStyle {
-    return {
-      fontName: { family: "Inter", style: styleName },
-      fontSize: 14,
-      lineHeight: { unit: "PIXELS", value: 20 },
-      letterSpacing: { unit: "PIXELS", value: 0 },
-      textCase: "ORIGINAL",
-      textDecoration: "NONE",
-    } as unknown as TextStyle;
-  }
-
   it("вес помечается приблизительным — он выведен из имени начертания", () => {
     expect(readTypographyFromTextStyle(textStyle("Regular")).fontWeightApproximate).toBe(true);
   });
@@ -199,14 +199,51 @@ describe("чтение стиля через Plugin API", () => {
     expect(readTypographyFromTextStyle(textStyle("Bold")).fontWeight).toBe(700);
   });
 
-  // Находка №5 аудита: нестандартные имена начертаний распознаются неверно
-  // («Demi Bold» → 700 вместо 600, «Heavy» → 400 вместо 800), а флаг
-  // fontWeightApproximate при сравнении не учитывается — отсюда ложные
-  // «переопределения».
-  it.todo("№5: нестандартные имена начертаний не дают ложных расхождений веса");
+  // Находка №5 аудита, первая половина: нестандартные имена начертаний
+  // распознавались неверно — «Demi Bold» попадал под проверку на «bold».
+  it("№5: нестандартные имена начертаний распознаются верно", () => {
+    const weight = (styleName: string) => readTypographyFromTextStyle(textStyle(styleName)).fontWeight;
 
-  // Находка №6 аудита: обратное преобразование веса в имя начертания
-  // (typographyApply.weightToFigmaStyle) теряет курсив и нестандартные
-  // начертания при «Применить в макет».
-  it.todo("№6: применение свойств сохраняет курсив и нестандартное начертание");
+    expect(weight("Demi Bold")).toBe(600);
+    expect(weight("DemiBold")).toBe(600);
+    expect(weight("Heavy")).toBe(900);
+    expect(weight("Black")).toBe(900);
+    expect(weight("Ultra Light")).toBe(200);
+    expect(weight("ExtraBold")).toBe(800);
+    expect(weight("Thin")).toBe(100);
+    expect(weight("Book")).toBe(400);
+  });
+
+  it("№5: курсив не меняет распознанный вес", () => {
+    const weight = (styleName: string) => readTypographyFromTextStyle(textStyle(styleName)).fontWeight;
+
+    expect(weight("Italic")).toBe(400);
+    expect(weight("Bold Italic")).toBe(700);
+    expect(weight("SemiBold Italic")).toBe(600);
+  });
+});
+
+describe("сравнение с приблизительным весом", () => {
+  // Находка №5 аудита, вторая половина: флаг fontWeightApproximate ставился,
+  // но при сравнении не учитывался — выведенный из имени вес сравнивался
+  // строго, и любое несовпадение давало ложное «переопределение».
+  it("№5: приблизительный вес не создаёт расхождения", () => {
+    const fromNode = typographyValue({ fontWeight: 600 });
+    const fromStyle = typographyValue({ fontWeight: 700, fontWeightApproximate: true });
+
+    expect(typographyValuesEqual(fromNode, fromStyle)).toBe(true);
+  });
+
+  it("точные веса по-прежнему сравниваются строго", () => {
+    expect(
+      typographyValuesEqual(typographyValue({ fontWeight: 600 }), typographyValue({ fontWeight: 700 }))
+    ).toBe(false);
+  });
+
+  it("приблизительный вес не маскирует расхождение в других свойствах", () => {
+    const fromNode = typographyValue({ fontWeight: 600, fontSize: 18 });
+    const fromStyle = typographyValue({ fontWeight: 700, fontWeightApproximate: true });
+
+    expect(typographyValuesEqual(fromNode, fromStyle)).toBe(false);
+  });
 });

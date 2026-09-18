@@ -546,7 +546,7 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
   }
 
   if (hasMixedStyleId) {
-    const { comparisonValue, typographyUnresolved } = readTypographyFromTextNode(node);
+    const { comparisonValue } = readTypographyFromTextNode(node);
     const overrideDetection = await detectTypographyOverride(node, null);
     return {
       property: "text-style",
@@ -554,7 +554,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
       sourceName: "",
       displayValue: "(mixed typography)",
       comparisonValue: comparisonValue ? { ...comparisonValue } : {},
-      typographyUnresolved: typographyUnresolved || true,
+      // Смешанные textStyleId по сегментам: сравнивать группу с одним стилем нельзя.
+      typographyUnresolved: true,
       isOverride: overrideDetection.isOverride,
       structuralDriftDetected: overrideDetection.structuralDriftDetected,
       node,

@@ -245,17 +245,33 @@ export function readTypographyFromTextNode(node: TextNode): ReadTypographyFromNo
   return { comparisonValue, typographyUnresolved };
 }
 
-/** Best-effort fontWeight для TextStyle (у TextStyle нет fontWeight — только fontName). */
+/**
+ * Best-effort fontWeight для TextStyle: у TextStyle нет числового веса, есть
+ * только имя начертания.
+ *
+ * Порядок проверок — от более специфичного к менее специфичному, иначе
+ * составные имена попадают не в свою строку: «Demi Bold» и «Ultra Bold»
+ * содержат «bold», «Ultra Light» содержит «light». Результат всегда
+ * помечается как приблизительный (см. readTypographyFromTextStyle) — точным
+ * этот вывод быть не может, шрифты называют начертания как хотят.
+ */
+const FONT_WEIGHT_BY_STYLE_NAME: Array<[readonly string[], number]> = [
+  [["hairline", "thin"], 100],
+  [["extralight", "extra light", "ultralight", "ultra light"], 200],
+  [["semilight", "semi light", "demilight", "demi light", "light"], 300],
+  [["semibold", "semi bold", "demibold", "demi bold"], 600],
+  [["extrabold", "extra bold", "ultrabold", "ultra bold"], 800],
+  [["black", "heavy", "fat", "poster"], 900],
+  [["medium"], 500],
+  [["bold"], 700],
+  [["book", "roman", "normal", "regular"], 400],
+];
+
 function inferFontWeightFromFontName(fontName: FontName): number {
   const styleName = fontName.style.toLowerCase();
-  if (styleName.includes("thin")) return 100;
-  if (styleName.includes("extralight") || styleName.includes("extra light")) return 200;
-  if (styleName.includes("light")) return 300;
-  if (styleName.includes("medium")) return 500;
-  if (styleName.includes("semibold") || styleName.includes("semi bold")) return 600;
-  if (styleName.includes("extrabold") || styleName.includes("extra bold")) return 800;
-  if (styleName.includes("black")) return 900;
-  if (styleName.includes("bold")) return 700;
+  for (const [needles, weight] of FONT_WEIGHT_BY_STYLE_NAME) {
+    if (needles.some((needle) => styleName.includes(needle))) return weight;
+  }
   return 400;
 }
 
@@ -279,11 +295,30 @@ export function readTypographyFromTextStyle(style: TextStyle): TypographyCompari
   return { ...value, fontWeightApproximate: true };
 }
 
+/**
+ * Эквивалентность двух значений типографики.
+ *
+ * Если хотя бы одна сторона несёт вес, выведенный из имени начертания
+ * (`fontWeightApproximate`), вес из сравнения исключается: строгое сравнение
+ * угаданного числа с настоящим давало ложные расхождения на любом шрифте с
+ * нестандартным именем начертания. Расхождение веса при этом не теряется —
+ * его ловит основное сравнение с библиотекой, где вес приходит из REST API
+ * настоящим числом.
+ *
+ * ВАЖНО: `typographyValueKey` при этом не меняется — он определяет ключ
+ * группировки записей макета, то есть идентификаторы, к которым привязаны
+ * сохранённые решения.
+ */
 export function typographyValuesEqual(
   a: TypographyComparisonValue,
   b: TypographyComparisonValue
 ): boolean {
-  return typographyValueKey(a) === typographyValueKey(b);
+  if (typographyValueKey(a) === typographyValueKey(b)) return true;
+  if (!a.fontWeightApproximate && !b.fontWeightApproximate) return false;
+
+  const withoutWeight = (value: TypographyComparisonValue) =>
+    typographyValueKey({ ...value, fontWeight: 0 });
+  return withoutWeight(a) === withoutWeight(b);
 }
 
 const PROPERTY_LABELS = {

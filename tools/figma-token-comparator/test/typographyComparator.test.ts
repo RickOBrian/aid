@@ -164,10 +164,71 @@ describe("какие строки попадают в таблицу", () => {
   });
 
   // Находка №4 аудита — самая дорогая. Слой с библиотечным стилем и локально
-  // переопределённой типографикой отфильтровывается по факту наличия
-  // библиотечного ключа, поэтому бейдж «Переопределён» до таблицы не доходит,
-  // хотя сканер честно выставляет isOverride.
-  it.todo("№4: переопределение библиотечного стиля остаётся в таблице");
+  // переопределённой типографикой отфильтровывался по факту наличия
+  // библиотечного ключа, поэтому до таблицы не доходил вовсе — хотя это
+  // ровно тот случай, ради которого написана детекция переопределений:
+  // слой выглядит правильно затокенизированным, а рендерится иначе.
+  it("№4: переопределение библиотечного стиля остаётся в таблице", () => {
+    const style = libraryTextStyle({
+      name: "body/m",
+      key: "stable",
+      comparisonValue: typographyValue({ fontSize: 14 }),
+    });
+    const record = typographyRecord({
+      styleKey: "stable",
+      sourceName: "body/m",
+      isOverride: true,
+      value: typographyValue({ fontSize: 18 }),
+    });
+
+    const rows = compareTypographyWithLibrary([record], [style], NO_HISTORY);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0].isOverride).toBe(true);
+  });
+
+  it("№4: переопределение получает статус по тяжести расхождения", () => {
+    const style = libraryTextStyle({
+      name: "body/m",
+      key: "stable",
+      comparisonValue: typographyValue(),
+    });
+    const critical = typographyRecord({
+      id: "critical",
+      styleKey: "stable",
+      sourceName: "body/m",
+      value: typographyValue({ fontSize: 18 }),
+    });
+    const cosmetic = typographyRecord({
+      id: "cosmetic",
+      styleKey: "stable",
+      sourceName: "body/m",
+      value: typographyValue({ textCase: "UPPER" }),
+    });
+
+    const [criticalResult] = computeTypographyComparisonResults([critical], [style], NO_HISTORY);
+    const [cosmeticResult] = computeTypographyComparisonResults([cosmetic], [style], NO_HISTORY);
+
+    expect(statusOf(criticalResult)).toBe("conflict");
+    expect(criticalResult.mismatchedProperties).toContain("fontSize");
+    expect(statusOf(cosmeticResult)).toBe("name-match");
+    expect(cosmeticResult.mismatchedProperties).toContain("textCase");
+  });
+
+  it("№4: слой без расхождений со своим библиотечным стилем по-прежнему скрыт", () => {
+    const style = libraryTextStyle({
+      name: "body/m",
+      key: "stable",
+      comparisonValue: typographyValue(),
+    });
+    const record = typographyRecord({
+      styleKey: "stable",
+      sourceName: "body/m",
+      value: typographyValue(),
+    });
+
+    expect(compareTypographyWithLibrary([record], [style], NO_HISTORY)).toHaveLength(0);
+  });
 });
 
 describe("применение истории решений", () => {

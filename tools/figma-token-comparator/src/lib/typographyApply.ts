@@ -13,8 +13,42 @@ function weightToFigmaStyle(fontWeight: number): string {
   return "Regular";
 }
 
-export function fontNameFromTypographyValue(value: TypographyComparisonValue): FontName {
-  return { family: value.fontFamily, style: weightToFigmaStyle(value.fontWeight) };
+/** Курсив в имени начертания — единственный след наклона, который у нас есть. */
+function isItalicStyleName(styleName: string): boolean {
+  return /italic|oblique/i.test(styleName);
+}
+
+function sameFamily(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+/**
+ * Начертание, которым применять типографику к конкретному слою.
+ *
+ * Значение для сравнения (`TypographyComparisonValue`) хранит только числовой
+ * вес и не хранит наклон, поэтому собрать из него `FontName` без потерь
+ * нельзя: курсив исчезает, а нестандартные имена начертаний («Demi Bold»,
+ * «Book») схлопываются в ближайшее стандартное.
+ *
+ * Поэтому начертание слоя берётся как есть, когда семейство не меняется —
+ * а это основной сценарий: применяются размер, интерлиньяж и трекинг, шрифт
+ * при этом остаётся прежним. Имя начертания собирается из веса только когда
+ * семейство действительно другое, и наклон при этом переносится.
+ */
+export function resolveFontNameForApply(
+  current: FontName,
+  value: TypographyComparisonValue
+): FontName {
+  if (sameFamily(current.family, value.fontFamily)) {
+    return current;
+  }
+
+  const base = weightToFigmaStyle(value.fontWeight);
+  if (!isItalicStyleName(current.style)) {
+    return { family: value.fontFamily, style: base };
+  }
+  // У обычного веса курсив в Figma называется просто «Italic», без «Regular».
+  return { family: value.fontFamily, style: base === "Regular" ? "Italic" : `${base} Italic` };
 }
 
 export interface TypographyApplySkip {
@@ -75,12 +109,19 @@ function mapTextDecoration(value: TypographyComparisonValue): TextDecoration {
   }
 }
 
-/** Применяет свойства типографики без привязки к Text Style (value_fix_proposed). */
+/**
+ * Применяет свойства типографики без привязки к Text Style
+ * (решение value_fix_proposed).
+ *
+ * Начертание выбирается от начертания самого слоя, а не собирается из веса:
+ * иначе курсив и нестандартные имена начертаний теряются (см.
+ * resolveFontNameForApply).
+ */
 export async function applyTypographyPropertiesToNode(
   node: TextNode,
-  value: TypographyComparisonValue,
-  fontName: FontName
+  value: TypographyComparisonValue
 ): Promise<void> {
+  const fontName = resolveFontNameForApply(node.fontName as FontName, value);
   await figma.loadFontAsync(fontName);
   node.fontName = fontName;
   node.fontSize = value.fontSize;
@@ -106,7 +147,6 @@ export async function applyTypographyToNodeIds(options: {
   mode: "style" | "properties";
   importedStyle?: TextStyle;
   propertyValue?: TypographyComparisonValue;
-  propertyFontName?: FontName;
   resolveNode: (nodeId: string) => Promise<SceneNode | null>;
 }): Promise<TypographyApplyBatchResult> {
   const skipped: TypographyApplySkip[] = [];
@@ -159,15 +199,11 @@ export async function applyTypographyToNodeIds(options: {
         }
         await applyImportedTextStyleToNode(textNode, options.importedStyle);
       } else {
-        if (!options.propertyValue || !options.propertyFontName) {
+        if (!options.propertyValue) {
           skipped.push({ nodeId, reason: "Нет целевых свойств типографики для применения." });
           continue;
         }
-        await applyTypographyPropertiesToNode(
-          textNode,
-          options.propertyValue,
-          options.propertyFontName
-        );
+        await applyTypographyPropertiesToNode(textNode, options.propertyValue);
       }
 
       applied += 1;
