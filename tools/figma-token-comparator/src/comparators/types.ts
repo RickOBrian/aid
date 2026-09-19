@@ -332,6 +332,10 @@ export interface StoredDecision {
   targetStyleId?: string;
   /** Typography — human-readable имя целевого Text Style. */
   targetStyleName?: string;
+  /** Icons — key целевого компонента-иконки библиотеки (v1.5.0). */
+  targetComponentKey?: string;
+  /** Icons — имя целевой иконки для людей. */
+  targetComponentName?: string;
   targetName?: string;
   /** Typography — несовпадающие свойства на момент Apply (для propose payload). */
   mismatchedProperties?: string[];
