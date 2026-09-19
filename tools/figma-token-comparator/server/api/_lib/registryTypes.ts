@@ -8,7 +8,8 @@ export const REGISTRY_DECISIONS = [
 
 export type RegistryDecision = (typeof REGISTRY_DECISIONS)[number];
 
-export type RegistryTokenCategory = 'colors' | 'typography';
+/** `icons` — с версии 1.3.0 (плагин 1.5.0). */
+export type RegistryTokenCategory = 'colors' | 'typography' | 'icons';
 
 /**
  * Входная запись от плагина. Помимо machine-полей (см. RegistryFileEntry)
@@ -29,6 +30,9 @@ export interface ProposedEntryInput {
   targetStyleId?: string;
   targetStyleName?: string;
   mismatchedProperties?: string[];
+  /** Иконки (плагин 1.5.0+): key компонента библиотеки и его имя. */
+  targetComponentKey?: string;
+  targetComponentName?: string;
   comment?: string;
   /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). */
   targetLibraryFileKey?: string;
@@ -66,6 +70,9 @@ export interface RegistryFileEntry {
   targetStyleId?: string;
   targetStyleName?: string;
   mismatchedProperties?: string[];
+  /** Иконки (плагин 1.5.0+): key компонента библиотеки и его имя. */
+  targetComponentKey?: string;
+  targetComponentName?: string;
   comment?: string;
   /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). Нет — запись до 1.4.0. */
   targetLibraryFileKey?: string;

@@ -84,6 +84,13 @@ const DATA_ROW_PADDING_H = 16;
  */
 const ROW_GAP = 12;
 
+/** Заголовок таблицы по категории: раньше всегда был «Colors», и у типографики тоже. */
+const TITLES: Record<TokenCategory, string> = {
+  colors: "🎨 Colors comparison",
+  typography: "🔤 Typography comparison",
+  icons: "✳️ Icons comparison",
+};
+
 /** Ширина колонок (px) — читаемая раскладка полей ExportRow. Таблица шире 1184px допустима по спеке. */
 const COLUMN_WIDTHS: Record<keyof ExportRow, number> = {
   layer: 160,
@@ -101,6 +108,10 @@ const COLUMN_WIDTHS: Record<keyof ExportRow, number> = {
   comment: 220,
   timestamp: 160,
   mismatched: 180,
+  status: 170,
+  size: 80,
+  similarity: 80,
+  flags: 220,
 };
 
 function computeRowContentWidth(columns: ExportColumns): number {
@@ -275,7 +286,7 @@ async function buildHeaderBlock(
 
   const title = await createHeaderText(
     "Title",
-    `🎨 Colors comparison — ${options.scope}`,
+    `${TITLES[options.category]} — ${options.scope}`,
     boldFont,
     40,
     COLOR_TITLE_TEXT,
@@ -439,7 +450,7 @@ export async function buildMappingTable(
   const innerWidth = rootWidth - ROOT_PADDING * 2;
 
   const root = figma.createFrame();
-  root.name = `Colors comparison — ${options.scope}`;
+  root.name = `${TITLES[options.category].replace(/^\S+\s/, "")} — ${options.scope}`;
   root.layoutMode = "VERTICAL";
   root.itemSpacing = ROOT_ITEM_SPACING;
   root.paddingTop = ROOT_PADDING;

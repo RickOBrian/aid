@@ -7,6 +7,7 @@
 import type {
   ComparisonResult,
   Decision,
+  LibraryIconSummary,
   LibraryTextStyle,
   LibraryToken,
   ScanScope,
@@ -34,6 +35,7 @@ import { clampWindowSize } from "./lib/windowSize";
 import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
 import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
+import type { IconOutline } from "./lib/iconShape";
 import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
@@ -54,6 +56,10 @@ let activeCategory: TokenCategory = "colors";
 /** Статусы отправленных решений по подписи строки: на согласовании или отклонено. */
 let proposalStatuses: Record<string, ProposalStatusInfo> = {};
 
+/** Иконки текущей библиотеки (v1.5.0) — для списка выбора и превью. */
+let currentLibraryIcons: LibraryIconSummary[] = [];
+let iconsLibraryAvailable = false;
+
 /** Загруженные библиотеки (вкладка «Настройки») и выбранная для сканирования. */
 let loadedLibraries: LibraryMeta[] = [];
 let activeLibraryKey: string | null = null;
@@ -61,6 +67,7 @@ let activeLibraryKey: string | null = null;
 const resultsByCategory: Record<TokenCategory, ComparisonResult[]> = {
   colors: [],
   typography: [],
+  icons: [],
 };
 let currentResults: ComparisonResult[] = [];
 /**
@@ -71,12 +78,20 @@ const scannedCategories = new Set<TokenCategory>();
 const NOT_SCANNED_TEXT = "Сканирования ещё не было — запустите его на вкладке «Сканирование».";
 let currentLibraryTokens: LibraryToken[] = [];
 let currentLibraryTextStyles: LibraryTextStyle[] = [];
+/** Строка, от которой считается Shift+клик, — последняя выбранная кликом. */
 let selectedRecordId: string | null = null;
+/**
+ * Выбранные строки. Как в панели слоёв Figma: клик — одна строка,
+ * ⌘/Ctrl+клик — добавить или убрать, Shift+клик — диапазон от последней.
+ * «Применить решение» применяет к каждой её собственное действие.
+ */
+let selectedRecordIds = new Set<string>();
 let adminModeEnabled = false;
 let pendingProposeCount = 0;
 let pendingProposeCountByCategory: Record<TokenCategory, number> = {
   colors: 0,
   typography: 0,
+  icons: 0,
 };
 let typographyLibraryAvailable = false;
 let typographyLibraryError: string | null = null;
@@ -173,6 +188,11 @@ const STATUS_FILTER_IDS: Record<TokenCategory, { btn: string; menu: string; indi
     menu: "tc-status-filter-menu-typography",
     indicator: "tc-status-filter-indicator-typography",
   },
+  icons: {
+    btn: "tc-status-filter-btn-icons",
+    menu: "tc-status-filter-menu-icons",
+    indicator: "tc-status-filter-indicator-icons",
+  },
 };
 
 function statusFilterEls(category: TokenCategory = activeCategory) {
@@ -189,7 +209,7 @@ function updateStatusFilterIndicator(): void {
 }
 
 function closeStatusFilterMenu(): void {
-  for (const category of ["colors", "typography"] as const) {
+  for (const category of ["colors", "typography", "icons"] as const) {
     const { btn, menu } = statusFilterEls(category);
     btn.setAttribute("aria-expanded", "false");
     menu.hidden = true;
@@ -268,7 +288,7 @@ function renderStatusFilterMenu(): void {
 }
 
 function initStatusFilterMenu(): void {
-  for (const category of ["colors", "typography"] as const) {
+  for (const category of ["colors", "typography", "icons"] as const) {
     const { btn, menu } = statusFilterEls(category);
 
     btn.addEventListener("click", (event) => {
@@ -337,12 +357,30 @@ const DECISION_LABELS: Record<Decision, string> = {
   value_fix_proposed: "предложена правка значения в библиотеке",
 };
 
+/** Подписи там, где базовые говорят о токене, — у типографики стиль, у иконок иконка. */
+const DECISION_LABEL_OVERRIDES: Partial<Record<TokenCategory, Partial<Record<Decision, string>>>> = {
+  typography: {
+    mapped_suggested: "выбран предложенный стиль",
+    mapped: "выбран стиль из библиотеки",
+    candidate: "кандидат на новый стиль",
+  },
+  icons: {
+    mapped_suggested: "выбрана предложенная иконка",
+    mapped: "выбрана иконка из библиотеки",
+    candidate: "кандидат на новую иконку",
+  },
+};
+
+function decisionLabel(decision: Decision, category: TokenCategory = activeCategory): string {
+  return DECISION_LABEL_OVERRIDES[category]?.[decision] ?? DECISION_LABELS[decision];
+}
+
 /** Отметка «решение принято» справа от бейджа статуса. */
 function createDecisionCheck(decision: Decision): HTMLSpanElement {
   const check = document.createElement("span");
   check.className = "ds-decision-check";
   check.textContent = " ✓";
-  check.title = `Решение принято: ${DECISION_LABELS[decision]}`;
+  check.title = `Решение принято: ${decisionLabel(decision)}`;
   return check;
 }
 
@@ -679,6 +717,7 @@ function libraryWarning(library: LibraryMeta): string | null {
   const failed = [
     library.colorCount === null ? "цвета" : null,
     library.textStyleCount === null ? "стили текста" : null,
+    library.iconCount === null ? "иконки" : null,
   ].filter(Boolean);
   return failed.length > 0 ? `Не загрузились: ${failed.join(", ")}` : null;
 }
@@ -743,8 +782,12 @@ function applyLibrariesState(state: {
   textStyles: LibraryTextStyle[];
   textStylesAvailable: boolean;
   textStylesError?: string;
+  icons?: LibraryIconSummary[];
+  iconsAvailable?: boolean;
 }): void {
   const activeChanged = state.activeLibraryKey !== activeLibraryKey;
+  currentLibraryIcons = state.icons ?? [];
+  iconsLibraryAvailable = state.iconsAvailable === true;
   loadedLibraries = state.libraries;
   activeLibraryKey = state.activeLibraryKey;
   currentLibraryTokens = state.tokens;
@@ -752,6 +795,7 @@ function applyLibrariesState(state: {
   typographyLibraryAvailable = state.textStylesAvailable;
   typographyLibraryError = state.textStylesError ?? null;
   updateTypographyCategoryAvailability();
+  updateIconsCategoryAvailability();
   renderLibraryList();
   renderLibrarySelect();
   setLibraryAddFormOpen(false);
@@ -892,6 +936,20 @@ const PROPOSE_DECISION_META: Record<Decision, { icon: string; label: string }> =
   value_fix_proposed: { icon: "🟡", label: "Предложить правку значения токена" },
 };
 
+const PROPOSE_DECISION_OVERRIDES: Partial<Record<TokenCategory, Partial<Record<Decision, string>>>> = {
+  typography: {
+    mapped: "Использовать стиль",
+    mapped_suggested: "Использовать стиль",
+    candidate: "Кандидат на новый стиль",
+    value_fix_proposed: "Предложить правку стиля",
+  },
+  icons: {
+    mapped: "Использовать иконку",
+    mapped_suggested: "Использовать иконку",
+    candidate: "Кандидат на новую иконку",
+  },
+};
+
 let proposePreviewEntries: ProposePreviewEntry[] = [];
 const proposeSelectedIds = new Set<string>();
 
@@ -914,16 +972,39 @@ function isTypographyProposeEntry(entry: ProposePreviewEntry): boolean {
   return entry.category === "typography" || entry.sourceProperty === "text-style";
 }
 
+function isIconProposeEntry(entry: ProposePreviewEntry): boolean {
+  return entry.category === "icons" || entry.sourceProperty === "icon";
+}
+
 function renderProposeItemDetails(entry: ProposePreviewEntry): string {
   const lines: Array<string | null> = [];
   const typography = isTypographyProposeEntry(entry);
+  const icon = isIconProposeEntry(entry);
+  if (icon) {
+    // У иконки нет режимов, коллекций и правки значения: сейчас → иконка библиотеки.
+    lines.push(
+      bulletHtml("Затронуто иконок", entry.occurrenceCount),
+      bulletHtml("Сейчас", entry.sourceDisplayValue),
+      entry.decision === "mapped" || entry.decision === "mapped_suggested"
+        ? bulletHtml("Иконка библиотеки", entry.targetComponentName)
+        : null,
+      entry.decision === "mapped" || entry.decision === "mapped_suggested"
+        ? bulletHtml("Совпадение", entry.targetDisplayValue)
+        : null,
+      entry.decision === "ignored"
+        ? bulletHtml("Причина", entry.comment?.trim() || "не указана")
+        : bulletHtml("Комментарий", entry.comment)
+    );
+    return lines.filter((line): line is string => line !== null).join("");
+  }
   switch (entry.decision) {
     case "mapped":
     case "mapped_suggested":
       lines.push(
         bulletHtml("Свойство", entry.sourceProperty),
         bulletHtml("Затронуто слоёв", entry.occurrenceCount),
-        bulletHtml("Текущая типографика", entry.sourceDisplayValue),
+        // Раньше подпись была «Текущая типографика» и у цветов.
+        bulletHtml(typography ? "Текущая типографика" : "Текущее значение", entry.sourceDisplayValue),
         typography
           ? bulletHtml("Стиль текста", entry.targetStyleName ?? entry.targetVariableName)
           : bulletHtml("Токен", entry.targetVariableName),
@@ -983,7 +1064,9 @@ function resolveProposeEntryNodeIds(entry: ProposePreviewEntry): string[] {
 }
 
 function renderProposeItemHtml(entry: ProposePreviewEntry): string {
-  const meta = PROPOSE_DECISION_META[entry.decision] ?? { icon: "⚪", label: entry.decision };
+  const base = PROPOSE_DECISION_META[entry.decision] ?? { icon: "⚪", label: entry.decision };
+  const override = PROPOSE_DECISION_OVERRIDES[entry.category ?? "colors"]?.[entry.decision];
+  const meta = override ? { ...base, label: override } : base;
   const checked = proposeSelectedIds.has(entry.recordId);
   const title = entry.nodeName?.trim() || entry.recordId;
   const nodeIds = resolveProposeEntryNodeIds(entry);
@@ -1247,17 +1330,55 @@ function updateTypographyCategoryAvailability(): void {
   }
 }
 
+/**
+ * Почему иконки сканировать нельзя — по данным выбранной библиотеки.
+ *
+ * Кнопка «Иконки» не блокируется: подсказка неактивной кнопки в Figma не
+ * видна, и было непонятно, что делать. Причину пишем в панели сканирования.
+ */
+function iconsUnavailableMessage(): string {
+  const library = loadedLibraries.find((item) => item.fileKey === activeLibraryKey);
+  if (!library) return "Сначала загрузите библиотеку иконок на вкладке «Настройки».";
+  const name = `«${library.fileName}»`;
+  if (library.iconCount === undefined) {
+    return `Библиотека ${name} загружена до версии 1.5.0 — иконок в ней пока нет. Обновите её кнопкой ↻ на вкладке «Настройки».`;
+  }
+  if (library.iconCount === null) {
+    return `Иконки из ${name} не загрузились: ${library.iconsError ?? "ошибка запроса"}. Обновите библиотеку кнопкой ↻ на вкладке «Настройки».`;
+  }
+  return `В ${name} нет опубликованных компонентов. Иконки берутся только из опубликованной библиотеки (Publish library в Figma). Если иконки лежат в другом файле — добавьте его на вкладке «Настройки» и выберите здесь.`;
+}
+
+function updateIconsCategoryAvailability(): void {
+  const notice = $<HTMLElement>("tc-icons-library-notice");
+  const show = activeCategory === "icons" && !iconsLibraryAvailable;
+  notice.hidden = !show;
+  notice.textContent = show ? iconsUnavailableMessage() : "";
+}
+
+const SCAN_PANEL_COPY: Record<TokenCategory, { title: string; caption: string; button: string }> = {
+  colors: {
+    title: "Сканирование цветов",
+    caption: "Выберите библиотеку и область макета для сравнения цветов.",
+    button: "Сканировать цвета",
+  },
+  typography: {
+    title: "Сканирование типографики",
+    caption: "Выберите библиотеку и область макета для сравнения стилей текста.",
+    button: "Сканировать типографику",
+  },
+  icons: {
+    title: "Сканирование иконок",
+    caption: "Выберите иконочную библиотеку и область макета для сравнения иконок.",
+    button: "Сканировать иконки",
+  },
+};
+
 function updateScanPanelCopy(): void {
-  const isTypography = activeCategory === "typography";
-  $<HTMLElement>("tc-scan-title").textContent = isTypography
-    ? "Сканирование типографики"
-    : "Сканирование цветов";
-  $<HTMLElement>("tc-scan-caption").textContent = isTypography
-    ? "Выберите библиотеку и область макета для сравнения стилей текста."
-    : "Выберите библиотеку и область макета для сравнения цветов.";
-  $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
-    ? "Сканировать типографику"
-    : "Сканировать цвета";
+  const copy = SCAN_PANEL_COPY[activeCategory];
+  $<HTMLElement>("tc-scan-title").textContent = copy.title;
+  $<HTMLElement>("tc-scan-caption").textContent = copy.caption;
+  $<HTMLButtonElement>("tc-scan-btn").textContent = copy.button;
 }
 
 function setCategorySegmentPressed(category: TokenCategory): void {
@@ -1268,10 +1389,10 @@ function setCategorySegmentPressed(category: TokenCategory): void {
 }
 
 function updateResultsBlocksVisibility(): void {
-  const isTypography = activeCategory === "typography";
-  $<HTMLElement>("tc-results-block-colors").hidden = isTypography;
-  $<HTMLElement>("tc-results-block-typography").hidden = !isTypography;
-  $<HTMLElement>("tc-rescan-typography-btn").hidden = !isTypography;
+  $<HTMLElement>("tc-results-block-colors").hidden = activeCategory !== "colors";
+  $<HTMLElement>("tc-results-block-typography").hidden = activeCategory !== "typography";
+  $<HTMLElement>("tc-results-block-icons").hidden = activeCategory !== "icons";
+  $<HTMLElement>("tc-rescan-typography-btn").hidden = activeCategory === "colors";
   setExportButtonsDisabled(currentResults.length === 0);
   updateProposeButton(pendingProposeCount);
 }
@@ -1283,6 +1404,7 @@ function syncCurrentResultsFromCategory(): void {
 function applyActiveCategoryView(resetStatusFilters = false): void {
   syncCurrentResultsFromCategory();
   updateScanPanelCopy();
+  updateIconsCategoryAvailability();
   updateResultsBlocksVisibility();
   if (resetStatusFilters) {
     syncStatusFiltersFromResults(currentResults, true);
@@ -1311,7 +1433,7 @@ function switchActiveCategory(nextCategory: TokenCategory): void {
     pendingProposeCountByCategory[activeCategory] = 0;
     resultsByCategory[activeCategory] = [];
     updateProposeButton(
-      pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography,
+      pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography + pendingProposeCountByCategory.icons,
       pendingProposeCountByCategory
     );
   }
@@ -1398,7 +1520,8 @@ function setPreviewButtonsDisabled(disabled: boolean): void {
     }
     if (btn.classList.contains("tc-mapped-preview-btn")) {
       const host = btn.closest<HTMLElement>(".ds-action-extra");
-      btn.disabled = !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId;
+      btn.disabled =
+        !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId && !host?.dataset.selectedComponentKey;
       return;
     }
     btn.disabled = false;
@@ -1496,7 +1619,12 @@ function showPreviewErrorInModal(message: string): void {
 }
 
 function openPreviewModal(): void {
-  const title = activeCategory === "typography" ? "Превью изменения типографики" : "Превью изменения цвета";
+  const title =
+    activeCategory === "typography"
+      ? "Превью изменения типографики"
+      : activeCategory === "icons"
+        ? "Примерка иконки"
+        : "Превью изменения цвета";
   $("tc-preview-title").textContent = title;
   $("tc-preview-modal").setAttribute("aria-label", title);
   $("tc-preview-overlay").hidden = false;
@@ -1514,7 +1642,10 @@ function closePreviewModal(): void {
  * решения («Применить решение»). Без него превью строится по автоматически
  * найденному target строки, как раньше.
  */
-function requestPreview(recordId: string, selection: { variableId?: string; styleId?: string } = {}): void {
+function requestPreview(
+  recordId: string,
+  selection: { variableId?: string; styleId?: string; componentKey?: string } = {}
+): void {
   if (previewInFlight) {
     showError("Дождитесь, пока построится текущее превью.");
     return;
@@ -1523,7 +1654,13 @@ function requestPreview(recordId: string, selection: { variableId?: string; styl
   activePreviewRecordId = recordId;
   setPreviewButtonsDisabled(true);
   openPreviewModal();
-  post({ type: "build-preview", recordId, variableId: selection.variableId, styleId: selection.styleId });
+  post({
+    type: "build-preview",
+    recordId,
+    variableId: selection.variableId,
+    styleId: selection.styleId,
+    componentKey: selection.componentKey,
+  });
 }
 
 function initPreviewModal(): void {
@@ -1556,6 +1693,7 @@ function initPreviewModal(): void {
  */
 function canApplyToLayout(result: ComparisonResult): boolean {
   if (result.status !== "mapped") return false;
+  if (result.category === "icons") return Boolean(result.target?.componentKey);
   if (result.category === "typography" || activeCategory === "typography") {
     return Boolean(result.target?.styleKey || result.target?.styleId);
   }
@@ -1704,11 +1842,64 @@ function renderTypographyApplyBeforeAfterHtml(result: ComparisonResult): string 
   `;
 }
 
+const APPLY_NOTE_UNDO = "Отменить можно только сразу после применения — через Cmd/Ctrl+Z в Figma.";
+
+const APPLY_NOTES: Record<TokenCategory, string> = {
+  colors: `Это единственное действие плагина, которое меняет макет: заливка, обводка или цвет текста выбранных слоёв будут привязаны к переменной библиотеки. ${APPLY_NOTE_UNDO}`,
+  typography: `Это единственное действие плагина, которое меняет макет: к выбранным текстовым слоям будет привязан стиль текста библиотеки. ${APPLY_NOTE_UNDO}`,
+  icons: `Это единственное действие плагина, которое меняет макет: иконки этой строки заменятся экземпляром иконки библиотеки в цвете макета. Слои иконки без компонента удаляются, на их месте встаёт экземпляр. Многоцветные иконки (логотипы) остаются в цветах библиотеки. ${APPLY_NOTE_UNDO}`,
+};
+
+const APPLY_LOADING_TEXT: Record<TokenCategory, string> = {
+  colors: "Применяем переменную к слоям...",
+  typography: "Применяем стиль текста к слоям...",
+  icons: "Заменяем иконки...",
+};
+
 function openApplyToLayoutModal(result: ComparisonResult): void {
   activeApplyRecordId = result.id;
   applyModalPreviewPending = false;
+  $("tc-apply-note").textContent = APPLY_NOTES[result.category ?? activeCategory];
 
   const isTypography = result.category === "typography" || activeCategory === "typography";
+
+  if (result.category === "icons") {
+    const current = result.icon?.kind === "instance" && result.sourceName ? result.sourceName : "Без компонента";
+    $("tc-apply-summary").innerHTML = `
+      <div class="tc-apply-summary__row"><span>Иконка в макете</span><strong>${escapeHtml(current)}</strong></div>
+      <div class="tc-apply-summary__row"><span>Затронуто иконок</span><strong>${result.count}</strong></div>
+      <div class="tc-apply-summary__row"><span>Иконка библиотеки</span><strong>${escapeHtml(
+        result.target?.name ?? ""
+      )}</strong></div>
+    `;
+    $("tc-apply-before-after").innerHTML = `
+      <div class="tc-apply-before-after__col">
+        <div class="tc-apply-before-after__title">Было</div>
+        <div class="tc-icon-cell">${iconPreviewHtml(result.icon?.outline, current)}<div class="tc-icon-cell__text">
+          <div class="ds-value-meta__primary">${escapeHtml(current)}</div>
+          <div class="ds-value-meta__caption">${escapeHtml(result.displayValue)}</div></div></div>
+      </div>
+      <div class="tc-apply-before-after__col">
+        <div class="tc-apply-before-after__title">Стало</div>
+        <div class="tc-icon-cell">${iconPreviewHtml(result.icon?.targetOutline, result.target?.name ?? "")}<div class="tc-icon-cell__text">
+          <div class="ds-value-meta__primary">${escapeHtml(result.target?.name ?? "")}</div>
+          <div class="ds-value-meta__caption">${
+            result.icon?.targetWidth !== undefined && result.icon.targetHeight !== undefined
+              ? `${formatIconSize(result.icon.targetWidth, result.icon.targetHeight)} · `
+              : ""
+          }экземпляр библиотеки, цвет — из макета</div></div></div>
+      </div>
+    `;
+    $("tc-apply-confirm-view").hidden = false;
+    $("tc-apply-footer").hidden = false;
+    $("tc-apply-loading").hidden = true;
+    const resultView = $("tc-apply-result-view");
+    resultView.hidden = true;
+    resultView.innerHTML = "";
+    $("tc-apply-overlay").hidden = false;
+    requestApplyModalPreview(result.id);
+    return;
+  }
 
   if (isTypography) {
     $("tc-apply-summary").innerHTML = `
@@ -1777,6 +1968,7 @@ function confirmApplyToLayout(): void {
   $("tc-apply-footer").hidden = true;
   $("tc-apply-result-view").hidden = true;
   $("tc-apply-loading").hidden = false;
+  $("tc-apply-loading-text").textContent = APPLY_LOADING_TEXT[activeCategory];
   post({ type: "apply-to-layout", recordId: activeApplyRecordId });
 }
 
@@ -2285,23 +2477,68 @@ function renderTargetCellHtml(result: ComparisonResult): string {
   )}</div>`;
 }
 
-function setSelectedRow(recordId: string): void {
-  selectedRecordId = recordId;
-  const tbodySelector =
-    activeCategory === "typography" ? "#tc-results-tbody-typography" : "#tc-results-tbody-colors";
-  document.querySelectorAll<HTMLTableRowElement>(`${tbodySelector} tr[data-record-id]`).forEach((row) => {
-    row.classList.toggle("ds-row-selected", row.dataset.recordId === recordId);
+type RowSelectionMode = "single" | "toggle" | "range";
+
+function rowSelectionMode(event: MouseEvent): RowSelectionMode {
+  if (event.shiftKey) return "range";
+  if (event.metaKey || event.ctrlKey) return "toggle";
+  return "single";
+}
+
+function visibleRowIds(): string[] {
+  return Array.from(
+    document.querySelectorAll<HTMLTableRowElement>(`#tc-results-tbody-${activeCategory} tr[data-record-id]`)
+  ).map((row) => row.dataset.recordId ?? "");
+}
+
+function syncRowSelectionHighlight(): void {
+  document.querySelectorAll<HTMLTableRowElement>(`#tc-results-tbody-${activeCategory} tr[data-record-id]`).forEach((row) => {
+    row.classList.toggle("ds-row-selected", selectedRecordIds.has(row.dataset.recordId ?? ""));
   });
+}
+
+function setSelectedRow(recordId: string, mode: RowSelectionMode = "single"): void {
+  if (mode === "toggle") {
+    if (selectedRecordIds.has(recordId)) {
+      selectedRecordIds.delete(recordId);
+      if (selectedRecordId === recordId) selectedRecordId = [...selectedRecordIds].pop() ?? null;
+    } else {
+      selectedRecordIds.add(recordId);
+      selectedRecordId = recordId;
+    }
+  } else if (mode === "range" && selectedRecordId) {
+    const ids = visibleRowIds();
+    const from = ids.indexOf(selectedRecordId);
+    const to = ids.indexOf(recordId);
+    if (from === -1 || to === -1) {
+      selectedRecordIds = new Set([recordId]);
+      selectedRecordId = recordId;
+    } else {
+      selectedRecordIds = new Set(ids.slice(Math.min(from, to), Math.max(from, to) + 1));
+    }
+  } else {
+    selectedRecordIds = new Set([recordId]);
+    selectedRecordId = recordId;
+  }
+  syncRowSelectionHighlight();
   updateApplyButtonState();
 }
 
+/** Выбранные строки, у которых есть поля действия, — в порядке таблицы. */
+function selectedActionableIds(): string[] {
+  return visibleRowIds().filter((id) => selectedRecordIds.has(id) && rowControls.has(id));
+}
+
 function updateApplyButtonState(): void {
-  const hasControls = Boolean(selectedRecordId && rowControls.has(selectedRecordId));
-  $<HTMLButtonElement>("tc-apply-decision-btn").disabled = !hasControls;
+  const count = selectedActionableIds().length;
+  const button = $<HTMLButtonElement>("tc-apply-decision-btn");
+  button.disabled = count === 0;
+  button.textContent = count > 1 ? `Применить решения (${count})` : "Применить решение";
+  button.title = "Несколько строк: ⌘/Ctrl+клик — добавить строку, Shift+клик — диапазон";
 }
 
 /**
- * Сводка над таблицей — одна для обеих категорий.
+ * Сводка над таблицей — одна для всех категорий.
  *
  * Раньше типографика выходила раньше и показывала только общее число: без
  * счётчика «обработано» и без учёта фильтра, которого у неё и не было.
@@ -2312,7 +2549,9 @@ function renderResultsSummary(): void {
     ? NOT_SCANNED_TEXT
     : activeCategory === "typography"
       ? "Расхождений в типографике нет. Запустите сканирование после изменений в макете."
-      : "Расхождений нет. Запустите сканирование после изменений в макете.";
+      : activeCategory === "icons"
+        ? "Расхождений в иконках нет. Запустите сканирование после изменений в макете."
+        : "Расхождений нет. Запустите сканирование после изменений в макете.";
 
   const visible = getFilteredResults();
   const visibleCount = visible.length;
@@ -2350,6 +2589,7 @@ const TYPOGRAPHY_STATUS_SORT_ORDER: Record<StatusFilterKey, number> = {
   "name-match-unresolved": 9,
   approximate: 10,
   "layout-only": 11,
+  detached: 12,
 };
 
 function typographyResultsHaveFontSizeMismatch(result: ComparisonResult): boolean {
@@ -2388,7 +2628,20 @@ function formatTypographyPropertySummary(value: TypographyComparisonValue | null
   return `${value.fontFamily} · ${value.fontSize}px · ${weightLabel}${formatPartiallyMixedHint(value)}`;
 }
 
+/** «Смешанные значения»: что именно смешано — варианты типографики внутри текста. */
+function renderMixedTypographyCell(result: ComparisonResult): string {
+  const title =
+    result.bindingType === "hardcoded" ? "— (без стиля)" : escapeHtml(result.sourceName || "—");
+  const segments = result.typographySegments ?? [];
+  const details =
+    segments.length > 0
+      ? segments.map((line) => `<div class="ds-value-meta__caption">${escapeHtml(line)}</div>`).join("")
+      : `<div class="ds-value-meta__caption">${escapeHtml(result.displayValue)}</div>`;
+  return `<div>${title}</div>${details}`;
+}
+
 function renderTypographyUsedStyleCell(result: ComparisonResult): string {
+  if (result.typographyUnresolved) return renderMixedTypographyCell(result);
   const value = readTypographyComparisonValue(result.comparisonValue);
   const summary = formatTypographyPropertySummary(value);
   if (result.bindingType === "hardcoded") {
@@ -2559,6 +2812,13 @@ function setupTypographyValueFixExtra(result: ComparisonResult, valueFixExtra: H
   }
 }
 
+/** У типографики цель — стиль текста, а не токен. */
+const TYPOGRAPHY_ACTION_LABELS: Partial<Record<Decision, string>> = {
+  mapped: "Выбрать стиль из AID",
+  candidate: "Кандидат на новый стиль",
+  value_fix_proposed: "Предложить правку стиля",
+};
+
 function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellElement {
   const cell = document.createElement("td");
   const wrap = document.createElement("div");
@@ -2571,10 +2831,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
     if (option.value === "mapped_suggested" && !canUseSuggestedToken(result)) return;
     const opt = document.createElement("option");
     opt.value = option.value;
-    opt.textContent =
-      option.value === "mapped" && (result.category === "typography" || activeCategory === "typography")
-        ? "Выбрать стиль из AID"
-        : option.label;
+    opt.textContent = TYPOGRAPHY_ACTION_LABELS[option.value] ?? option.label;
     select.appendChild(opt);
   });
   if (result.decision) select.value = result.decision;
@@ -2706,7 +2963,8 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   row.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
     if (target.closest("button, select, input, textarea, option, datalist")) return;
-    setSelectedRow(result.id);
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
   });
 
   const usedStyleCell = document.createElement("td");
@@ -2791,11 +3049,491 @@ function restorePreferredSelection(
   preferredSelectedId: string | undefined,
   visibleResults: ComparisonResult[]
 ): void {
-  if (preferredSelectedId && visibleResults.some((item) => item.id === preferredSelectedId)) {
+  // Несколько выбранных строк переживают перерисовку — она идёт после
+  // каждого применённого решения, в том числе посреди пакета.
+  const visible = new Set(visibleResults.map((item) => item.id));
+  selectedRecordIds = new Set([...selectedRecordIds].filter((id) => visible.has(id)));
+  if (selectedRecordIds.size > 1) {
+    if (!selectedRecordId || !visible.has(selectedRecordId)) selectedRecordId = [...selectedRecordIds][0];
+    syncRowSelectionHighlight();
+    updateApplyButtonState();
+    return;
+  }
+  if (preferredSelectedId && visible.has(preferredSelectedId)) {
     setSelectedRow(preferredSelectedId);
     return;
   }
+  selectedRecordIds.clear();
   updateApplyButtonState();
+}
+
+// ---------------------------------------------------------------------------
+// Иконки (v1.5.0): таблица, превью, выбор иконки, решение
+// ---------------------------------------------------------------------------
+
+/** Превью иконки: SVG по контуру из геометрии. Нет контура — пустая рамка. */
+function iconPreviewHtml(outline: IconOutline | undefined, label: string): string {
+  if (!outline || outline.paths.length === 0) {
+    return `<span class="tc-icon-preview tc-icon-preview--empty" role="img" aria-label="${escapeHtml(label)}"></span>`;
+  }
+  const paths = outline.paths
+    .map(
+      (path) =>
+        `<path d="${escapeHtml(path.d)}" fill="currentColor"${path.evenOdd ? ' fill-rule="evenodd"' : ""}/>`
+    )
+    .join("");
+  return `<svg class="tc-icon-preview" viewBox="${outline.viewBox.join(" ")}" role="img" aria-label="${escapeHtml(
+    label
+  )}">${paths}</svg>`;
+}
+
+const ICON_STATUS_SORT_ORDER: Partial<Record<StatusFilterKey, number>> = {
+  detached: 0,
+  value: 1,
+  conflict: 2,
+  approximate: 3,
+  "layout-only": 4,
+  "hardcoded-no-analog": 5,
+  exact: 6,
+};
+
+function compareIconResults(a: ComparisonResult, b: ComparisonResult): number {
+  const order = (result: ComparisonResult) => ICON_STATUS_SORT_ORDER[getResultStatusFilterKey(result)] ?? 9;
+  return order(a) - order(b) || b.count - a.count;
+}
+
+function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
+  const row = document.createElement("tr");
+  row.dataset.recordId = result.id;
+  const icon = result.icon;
+
+  const statusCell = document.createElement("td");
+  const statusBadges = document.createElement("div");
+  statusBadges.className = "ds-status-cell";
+  statusCell.appendChild(statusBadges);
+  statusBadges.appendChild(createStatusBadge(result));
+  if (icon?.nonstandardSize) {
+    statusBadges.appendChild(
+      createSecondaryBadge(
+        "Нестандартный размер",
+        "neutral",
+        "Иконка растянута, а в библиотеке есть эта же иконка нужного размера — возможно, стоит взять её. Растянуть иконку, у которой отдельного размера нет, — нормально."
+      )
+    );
+  }
+  if (icon?.multiLayer) {
+    statusBadges.appendChild(
+      createSecondaryBadge(
+        "Из нескольких слоёв",
+        "warning",
+        `Иконка собрана из ${icon.layers} ${pluralizeLayers(icon.layers)}, а в библиотеке она цельная. Скорее всего это ошибка сборки, но бывает и намеренно.`
+      )
+    );
+  }
+  if (icon?.disputed) {
+    const names = icon.alternatives.map((alt) => `${alt.name} (${Math.round(alt.similarity * 100)}%)`).join(", ");
+    statusBadges.appendChild(
+      createSecondaryBadge("Спорный вариант", "warning", `По форме подходят несколько иконок библиотеки: ${names}. Выберите нужную.`)
+    );
+  }
+  if (result.decision) statusBadges.appendChild(createDecisionCheck(result.decision));
+  if (result.decisionSource === "registry") statusBadges.appendChild(createRegistryDecisionBadge());
+  row.appendChild(statusCell);
+
+  const iconCell = document.createElement("td");
+  const cellWrap = document.createElement("div");
+  cellWrap.className = "tc-icon-cell";
+  cellWrap.innerHTML = iconPreviewHtml(icon?.outline, `Иконка в макете: ${result.representativeNodeName}`);
+  const textWrap = document.createElement("div");
+  textWrap.className = "tc-icon-cell__text";
+  // Один столбец вместо «Иконка» + «Сейчас»: у экземпляра главное — имя
+  // компонента, у иконки без компонента — имя слоя и пометка об этом.
+  const isInstance = icon?.kind === "instance";
+  const size = icon ? `${Math.round(icon.width)}×${Math.round(icon.height)}` : "";
+  const layerLink = document.createElement("button");
+  layerLink.type = "button";
+  layerLink.className = "ds-accent-link ds-layer-name";
+  layerLink.title = "Перейти к слою в макете";
+  layerLink.textContent = (isInstance && result.sourceName) || result.representativeNodeName || "(без имени)";
+  layerLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    post({ type: "select-nodes", payload: { nodeIds: result.nodeIds } });
+  });
+  textWrap.appendChild(layerLink);
+  const meta = document.createElement("div");
+  meta.className = "ds-value-meta__caption";
+  meta.textContent = isInstance ? size : `Без компонента · ${size}`;
+  textWrap.appendChild(meta);
+  const path = document.createElement("div");
+  path.className = "ds-value-meta__caption ds-value-meta__caption--path";
+  path.textContent = result.representativeNodePath;
+  path.title = result.representativeNodePath;
+  textWrap.appendChild(path);
+  cellWrap.appendChild(textWrap);
+  iconCell.appendChild(cellWrap);
+  row.appendChild(iconCell);
+
+  row.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("button, select, input, textarea, option, datalist")) return;
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
+  });
+
+  const targetCell = document.createElement("td");
+  if (result.target) {
+    const targetSize =
+      icon?.targetWidth !== undefined && icon.targetHeight !== undefined
+        ? formatIconSize(icon.targetWidth, icon.targetHeight)
+        : "";
+    const similarity = icon?.similarity !== undefined ? `форма совпадает на ${Math.round(icon.similarity * 100)}%` : "";
+    targetCell.innerHTML = `<div class="tc-icon-cell">${iconPreviewHtml(
+      icon?.targetOutline,
+      `Иконка библиотеки: ${result.target.name}`
+    )}<div class="tc-icon-cell__text"><div class="ds-value-meta__primary">${escapeHtml(
+      result.target.name
+    )}</div>${targetSize ? `<div class="ds-value-meta__caption">${escapeHtml(targetSize)}</div>` : ""}<div class="ds-value-meta__caption">${escapeHtml(similarity)}</div></div></div>`;
+  } else {
+    targetCell.innerHTML = `<div class="ds-value-meta__caption">нет совпадения</div>`;
+  }
+  row.appendChild(targetCell);
+
+  const usesCell = document.createElement("td");
+  usesCell.textContent = String(result.count);
+  row.appendChild(usesCell);
+
+  row.appendChild(buildIconActionCell(result));
+  return row;
+}
+
+const ICON_ACTION_OPTIONS: Array<{ value: Decision; label: string }> = [
+  { value: "mapped_suggested", label: "Использовать предложенную" },
+  { value: "mapped", label: "Выбрать иконку из AID" },
+  { value: "ignored", label: "Игнорировать" },
+  { value: "candidate", label: "Кандидат на новую иконку" },
+];
+
+function formatIconSize(width: number, height: number): string {
+  return `${Math.round(width)}×${Math.round(height)}`;
+}
+
+function iconSummaryName(icon: LibraryIconSummary): string {
+  return icon.setName ? `${icon.setName} / ${icon.name}` : icon.name;
+}
+
+/** Сколько иконок показывать в списке: остальные — через поиск. */
+const ICON_PICKER_LIMIT = 80;
+
+function filterLibraryIcons(query: string): LibraryIconSummary[] {
+  const normalized = query.trim().toLowerCase();
+  return normalized
+    ? currentLibraryIcons.filter((icon) => iconSummaryName(icon).toLowerCase().includes(normalized))
+    : currentLibraryIcons;
+}
+
+function iconPickerOptionHtml(icon: LibraryIconSummary, similarity?: number): string {
+  const name = iconSummaryName(icon);
+  const caption = [
+    icon.width !== undefined && icon.height !== undefined ? formatIconSize(icon.width, icon.height) : "",
+    similarity !== undefined ? `форма ${Math.round(similarity * 100)}%` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  return `
+        <button type="button" class="ds-filter-menu__option tc-icon-cell" role="option" data-component-key="${escapeHtml(
+          icon.key
+        )}" data-label="${escapeHtml(name)}">
+          ${iconPreviewHtml(icon.outline, name)}
+          <span class="tc-icon-cell__text">
+            <span class="ds-value-meta__primary">${escapeHtml(name)}</span>
+            ${caption ? `<span class="ds-value-meta__caption">${escapeHtml(caption)}</span>` : ""}
+          </span>
+        </button>`;
+}
+
+/**
+ * Подсказки по форме для строки — первым разделом списка, пока поиск пуст:
+ * у «Спорного варианта» — кандидаты, у остальных — ближайшие по форме.
+ */
+function iconPickerSuggestions(
+  recordId: string | undefined
+): { title: string; items: Array<{ icon: LibraryIconSummary; similarity: number }> } | null {
+  const details = recordId ? currentResults.find((item) => item.id === recordId)?.icon : undefined;
+  if (!details) return null;
+  const disputed = Boolean(details.disputed && details.alternatives.length > 0);
+  const source = disputed ? details.alternatives : details.nearest ?? [];
+  const items = source
+    .map((item) => ({ icon: currentLibraryIcons.find((icon) => icon.key === item.key), similarity: item.similarity }))
+    .filter((item): item is { icon: LibraryIconSummary; similarity: number } => Boolean(item.icon));
+  if (items.length === 0) return null;
+  return { title: disputed ? "Подходят по форме" : "Похожие по форме", items };
+}
+
+function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
+  const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
+  if (!menu) return;
+  const matched = filterLibraryIcons(query);
+  if (matched.length === 0) {
+    menu.innerHTML = `<div class="ds-filter-menu__empty">Иконки не найдены</div>`;
+    return;
+  }
+  const suggestions = query.trim() ? null : iconPickerSuggestions(combobox.dataset.recordId);
+  const shown = matched.slice(0, ICON_PICKER_LIMIT);
+  menu.innerHTML = `
+    ${
+      suggestions
+        ? `<div class="tc-picker-section">${escapeHtml(suggestions.title)}</div>
+    <div class="ds-filter-menu__options">
+      ${suggestions.items.map((item) => iconPickerOptionHtml(item.icon, item.similarity)).join("")}
+    </div>
+    <div class="tc-picker-section">Все иконки</div>`
+        : ""
+    }
+    <div class="ds-filter-menu__options">
+      ${shown.map((icon) => iconPickerOptionHtml(icon)).join("")}
+    </div>
+    ${
+      matched.length > shown.length
+        ? `<div class="ds-filter-menu__empty">Показаны ${shown.length} из ${matched.length} — уточните поиск по имени.</div>`
+        : ""
+    }
+  `;
+  menu.querySelectorAll<HTMLButtonElement>(".ds-filter-menu__option").forEach((option) => {
+    option.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const input = combobox.querySelector<HTMLInputElement>(".ds-combobox__input");
+      const host = combobox.closest<HTMLElement>(".ds-action-extra");
+      const key = option.dataset.componentKey;
+      if (!input || !host || !key) return;
+      input.value = option.dataset.label ?? "";
+      host.dataset.selectedComponentKey = key;
+      setComboboxOpen(combobox, false);
+      const previewBtn = host.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+      if (previewBtn) previewBtn.disabled = previewInFlight;
+    });
+  });
+}
+
+function setupIconCombobox(mappedExtra: HTMLElement, recordId: string, initialKey?: string): void {
+  mappedExtra.innerHTML = `
+    <div class="ds-combobox">
+      <input type="text" class="ds-combobox__input ds-input" placeholder="Начните вводить имя иконки..." autocomplete="off" spellcheck="false" />
+      <button type="button" class="ds-combobox__toggle" aria-label="Показать иконки" aria-expanded="false">
+        ${DROPDOWN_CHEVRON_SVG}
+      </button>
+      <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
+    </div>
+    <button type="button" class="ds-btn tc-preview-btn tc-mapped-preview-btn" disabled>Примерить</button>
+  `;
+  const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
+  const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
+  const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
+  const previewBtn = mappedExtra.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+  if (!combobox || !input || !toggle || !previewBtn) return;
+
+  previewBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const componentKey = mappedExtra.dataset.selectedComponentKey;
+    if (componentKey) requestPreview(recordId, { componentKey });
+  });
+  combobox.dataset.recordId = recordId;
+
+  input.addEventListener("input", () => {
+    delete mappedExtra.dataset.selectedComponentKey;
+    previewBtn.disabled = true;
+    renderIconComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, true);
+  });
+  toggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    if (open) renderIconComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, open);
+  });
+
+  const initial = initialKey ? currentLibraryIcons.find((icon) => icon.key === initialKey) : undefined;
+  if (initial) {
+    input.value = iconSummaryName(initial);
+    mappedExtra.dataset.selectedComponentKey = initial.key;
+    previewBtn.disabled = previewInFlight;
+  }
+}
+
+function buildIconActionCell(result: ComparisonResult): HTMLTableCellElement {
+  const cell = document.createElement("td");
+  const wrap = document.createElement("div");
+  wrap.className = "ds-action-cell";
+
+  const select = document.createElement("select");
+  select.className = "ds-select";
+  for (const option of ICON_ACTION_OPTIONS) {
+    if (option.value === "mapped_suggested" && !result.target?.componentKey) continue;
+    const opt = document.createElement("option");
+    opt.value = option.value;
+    opt.textContent = option.label;
+    select.appendChild(opt);
+  }
+  if (result.decision && [...select.options].some((opt) => opt.value === result.decision)) {
+    select.value = result.decision;
+  }
+  wrap.appendChild(select);
+
+  const mappedExtra = document.createElement("div");
+  mappedExtra.className = "ds-action-extra";
+  setupIconCombobox(mappedExtra, result.id, result.decisionTargetComponentKey);
+  wrap.appendChild(mappedExtra);
+
+  const commentExtra = document.createElement("div");
+  commentExtra.className = "ds-action-extra";
+  commentExtra.innerHTML = `<textarea rows="2" placeholder="Комментарий (обязателен)" class="tc-comment-input ds-textarea"></textarea>`;
+  wrap.appendChild(commentExtra);
+
+  // Примерка — как «Показать превью» у цветов и типографики.
+  if (canShowPreview(result, "icons")) {
+    const previewBtn = document.createElement("button");
+    previewBtn.type = "button";
+    previewBtn.className = "ds-btn tc-preview-btn";
+    previewBtn.textContent = "Примерить";
+    previewBtn.title = "Показать, как будет выглядеть иконка из библиотеки на месте этой — в цвете макета";
+    previewBtn.disabled = previewInFlight;
+    previewBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      requestPreview(result.id);
+    });
+    wrap.insertBefore(previewBtn, mappedExtra);
+  }
+
+  if (canApplyToLayout(result)) {
+    const applyLayoutBtn = document.createElement("button");
+    applyLayoutBtn.type = "button";
+    applyLayoutBtn.className = "ds-btn tc-apply-layout-btn";
+    applyLayoutBtn.textContent = "Применить в макет";
+    applyLayoutBtn.title = "Заменить иконку во всех слоях этой строки на иконку из решения, в цвете макета";
+    applyLayoutBtn.disabled = applyToLayoutInFlight;
+    applyLayoutBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openApplyToLayoutModal(result);
+    });
+    wrap.insertBefore(applyLayoutBtn, mappedExtra);
+  }
+
+  // Правки значения у иконок нет — пустой блок держит общий формат RowControls.
+  const valueFixExtra = document.createElement("div");
+  valueFixExtra.className = "ds-action-extra";
+
+  const syncExtraVisibility = (): void => {
+    mappedExtra.classList.toggle("visible", select.value === "mapped");
+    commentExtra.classList.toggle("visible", select.value === "ignored");
+  };
+  select.addEventListener("change", syncExtraVisibility);
+  syncExtraVisibility();
+
+  if (result.decisionComment && result.decision === "ignored") {
+    (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value = result.decisionComment;
+  }
+
+  rowControls.set(result.id, { select, mappedExtra, commentExtra, valueFixExtra });
+  cell.appendChild(wrap);
+  return cell;
+}
+
+function applyIconDecision(
+  result: ComparisonResult,
+  select: HTMLSelectElement,
+  mappedExtra: HTMLElement,
+  commentExtra: HTMLElement
+): string | null {
+  const decision = select.value as Decision;
+  const review = buildSourceReviewContext(result);
+
+  if (decision === "mapped_suggested") {
+    if (!result.target?.componentKey) {
+      return "Для этой иконки нет предложенной — выберите «Выбрать иконку из AID».";
+    }
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "icons",
+        targetComponentKey: result.target.componentKey,
+        targetComponentName: result.target.name,
+        targetName: result.target.name,
+        targetDisplayValue: result.target.displayValue,
+        ...review,
+      },
+    });
+    return null;
+  }
+
+  if (decision === "mapped") {
+    const key = mappedExtra.dataset.selectedComponentKey;
+    const icon = key ? currentLibraryIcons.find((item) => item.key === key) : undefined;
+    if (!icon) {
+      return "Выберите иконку из списка AID.";
+    }
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "icons",
+        targetComponentKey: icon.key,
+        targetComponentName: iconSummaryName(icon),
+        targetName: iconSummaryName(icon),
+        ...review,
+      },
+    });
+    return null;
+  }
+
+  if (decision === "ignored") {
+    const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
+    if (!comment) {
+      return "Для решения «Игнорировать» комментарий обязателен.";
+    }
+    post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", comment, ...review } });
+    return null;
+  }
+
+  post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", ...review } });
+  return null;
+}
+
+function renderIconResultsTable(preferredSelectedId?: string): void {
+  const tbody = $("tc-results-tbody-icons");
+  tbody.innerHTML = "";
+  rowControls.clear();
+  selectedRecordId = null;
+  updateStatusFilterIndicator();
+  renderResultsSummary();
+
+  if (currentResults.length === 0) {
+    appendEmptyStateRow(
+      tbody,
+      scannedCategories.has("icons")
+        ? "Расхождений нет: иконки в макете — из выбранной библиотеки. Запустите сканирование заново после изменений в макете."
+        : NOT_SCANNED_TEXT
+    );
+    updateApplyButtonState();
+    return;
+  }
+
+  const visibleResults = [...getFilteredResults()].sort(compareIconResults);
+  if (visibleResults.length === 0) {
+    appendEmptyStateRow(tbody, "Нет строк для выбранных статусов. Откройте фильтр в колонке «Статус» и выберите нужные.");
+    updateApplyButtonState();
+    return;
+  }
+
+  for (const result of visibleResults) tbody.appendChild(buildIconResultRow(result));
+  restorePreferredSelection(preferredSelectedId, visibleResults);
 }
 
 function renderColorResultsTable(preferredSelectedId?: string): void {
@@ -2837,6 +3575,10 @@ function renderColorResultsTable(preferredSelectedId?: string): void {
 
 function renderResultsTable(preferredSelectedId?: string): void {
   updateResultsBlocksVisibility();
+  if (activeCategory === "icons") {
+    renderIconResultsTable(preferredSelectedId);
+    return;
+  }
   if (activeCategory === "typography") {
     renderTypographyResultsTable(preferredSelectedId);
     return;
@@ -2892,7 +3634,8 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   row.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
     if (target.closest("button, select, input, textarea, option, datalist")) return;
-    setSelectedRow(result.id);
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
   });
 
   const beforeCell = document.createElement("td");
@@ -3031,7 +3774,7 @@ function applyTypographyDecision(
   mappedExtra: HTMLElement,
   commentExtra: HTMLElement,
   valueFixExtra: HTMLElement
-): void {
+): string | null {
   const decision = select.value as Decision;
   const review = buildSourceReviewContext(result);
   const layoutValue = readTypographyComparisonValue(result.comparisonValue);
@@ -3039,8 +3782,7 @@ function applyTypographyDecision(
 
   if (decision === "mapped_suggested") {
     if (!result.target?.styleId && !result.target?.styleKey) {
-      showError("Для этой строки нет предложенного стиля — выберите «Выбрать стиль из AID».");
-      return;
+      return "Для этой строки нет предложенного стиля — выберите «Выбрать стиль из AID».";
     }
     const suggestedStyle = currentLibraryTextStyles.find(
       (style) => style.nodeId === result.target!.styleId || style.key === result.target!.styleKey
@@ -3059,7 +3801,7 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "mapped") {
@@ -3070,8 +3812,7 @@ function applyTypographyDecision(
       styleId = findLibraryTextStyleByLabel(label, currentLibraryTextStyles)?.nodeId;
     }
     if (!styleId) {
-      showError("Выберите стиль из списка AID — точного совпадения по имени не нашлось.");
-      return;
+      return "Выберите стиль из списка AID — точного совпадения по имени не нашлось.";
     }
     const selectedStyle = currentLibraryTextStyles.find((style) => style.nodeId === styleId);
     post({
@@ -3089,20 +3830,19 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "ignored") {
     const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
     if (!comment) {
-      showError("Для решения «Игнорировать» комментарий обязателен.");
-      return;
+      return "Для решения «Игнорировать» комментарий обязателен.";
     }
     post({
       type: "apply-decision",
       payload: { recordId: result.id, decision, category: "typography", comment, ...review },
     });
-    return;
+    return null;
   }
 
   if (decision === "value_fix_proposed") {
@@ -3111,8 +3851,7 @@ function applyTypographyDecision(
       ? currentLibraryTextStyles.find((style) => style.nodeId === styleId)
       : undefined;
     if (!selectedStyle) {
-      showError("Выберите стиль библиотеки, значение которого нужно исправить.");
-      return;
+      return "Выберите стиль библиотеки, значение которого нужно исправить.";
     }
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
     post({
@@ -3131,13 +3870,14 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   post({
     type: "apply-decision",
     payload: { recordId: result.id, decision, category: "typography", ...review },
   });
+  return null;
 }
 
 function applyDecision(
@@ -3146,13 +3886,12 @@ function applyDecision(
   mappedExtra: HTMLElement,
   commentExtra: HTMLElement,
   valueFixExtra: HTMLElement
-): void {
+): string | null {
   const decision = select.value as Decision;
 
   if (decision === "mapped_suggested") {
     if (!result.target) {
-      showError("Для этой строки нет предложенного токена библиотеки — выберите «Выбрать токен из AID».");
-      return;
+      return "Для этой строки нет предложенного токена библиотеки — выберите «Выбрать токен из AID».";
     }
     post({
       type: "apply-decision",
@@ -3167,7 +3906,7 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "mapped") {
@@ -3178,8 +3917,7 @@ function applyDecision(
       variableId = findLibraryTokenByLabel(label, currentLibraryTokens)?.variableId;
     }
     if (!variableId) {
-      showError("Выберите токен из списка AID — точного совпадения по имени не нашлось.");
-      return;
+      return "Выберите токен из списка AID — точного совпадения по имени не нашлось.";
     }
     // Ручной выбор токена не привязан к конкретному режиму библиотеки —
     // targetModeName/targetDisplayValue здесь намеренно не заполняются
@@ -3200,48 +3938,42 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "ignored") {
     const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
     if (!comment) {
-      showError("Для решения «Игнорировать» комментарий обязателен.");
-      return;
+      return "Для решения «Игнорировать» комментарий обязателен.";
     }
     post({
       type: "apply-decision",
       payload: { recordId: result.id, decision, comment, ...buildSourceReviewContext(result) },
     });
-    return;
+    return null;
   }
 
   if (decision === "value_fix_proposed") {
     const selectedVariableId = valueFixExtra.dataset.selectedVariableId;
     if (!selectedVariableId) {
-      showError("Выберите токен из библиотеки, значение которого нужно исправить.");
-      return;
+      return "Выберите токен из библиотеки, значение которого нужно исправить.";
     }
     const selectedToken = currentLibraryTokens.find((t) => t.variableId === selectedVariableId);
     if (!selectedToken) {
-      showError("Выбранного токена нет в загруженной библиотеке.");
-      return;
+      return "Выбранного токена нет в загруженной библиотеке.";
     }
     const modeSelect = valueFixExtra.querySelector<HTMLSelectElement>(".tc-value-fix-mode");
     const proposedInput = valueFixExtra.querySelector<HTMLInputElement>(".tc-value-fix-proposed");
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
     if (!modeSelect || !proposedInput) {
-      showError("Не удалось прочитать поля правки значения. Заполните их заново.");
-      return;
+      return "Не удалось прочитать поля правки значения. Заполните их заново.";
     }
     if (!modeSelect.value) {
-      showError("Выберите режим библиотеки, для которого предлагается правка.");
-      return;
+      return "Выберите режим библиотеки, для которого предлагается правка.";
     }
     const proposedRaw = proposedInput.value.trim();
     if (!isValidHex(proposedRaw)) {
-      showError("Укажите цвет в формате #RRGGBB в поле «Предлагаемое значение».");
-      return;
+      return "Укажите цвет в формате #RRGGBB в поле «Предлагаемое значение».";
     }
     const selectedOption = modeSelect.selectedOptions[0];
     const proposedModeName = selectedOption?.dataset.modeName ?? "";
@@ -3263,10 +3995,11 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   post({ type: "apply-decision", payload: { recordId: result.id, decision, ...buildSourceReviewContext(result) } });
+  return null;
 }
 
 function downloadTextFile(filename: string, mimeType: string, content: string): void {
@@ -3281,23 +4014,43 @@ function downloadTextFile(filename: string, mimeType: string, content: string): 
   URL.revokeObjectURL(url);
 }
 
+/** Решение одной строки: null — отправлено, строка — почему нет. */
+function applyRowDecision(result: ComparisonResult, controls: RowControls): string | null {
+  if (activeCategory === "icons") {
+    return applyIconDecision(result, controls.select, controls.mappedExtra, controls.commentExtra);
+  }
+  if (activeCategory === "typography") {
+    return applyTypographyDecision(
+      result,
+      controls.select,
+      controls.mappedExtra,
+      controls.commentExtra,
+      controls.valueFixExtra
+    );
+  }
+  return applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
+}
+
 function initApplyFooterButton(): void {
+  // Каждой выбранной строке — её собственное действие. Строки, где действие
+  // не заполнено (нет комментария, не выбран токен), пропускаются с причиной;
+  // остальные применяются.
   const runApplyDecision = () => {
-    if (!selectedRecordId) return;
-    const controls = rowControls.get(selectedRecordId);
-    const result = currentResults.find((item) => item.id === selectedRecordId);
-    if (!controls || !result) return;
-    if (activeCategory === "typography") {
-      applyTypographyDecision(
-        result,
-        controls.select,
-        controls.mappedExtra,
-        controls.commentExtra,
-        controls.valueFixExtra
-      );
-      return;
+    const ids = selectedActionableIds();
+    const failures: string[] = [];
+    for (const id of ids) {
+      const controls = rowControls.get(id);
+      const result = currentResults.find((item) => item.id === id);
+      if (!controls || !result) continue;
+      const error = applyRowDecision(result, controls);
+      if (error) failures.push(ids.length > 1 ? `${result.representativeNodeName || "(без имени)"}: ${error}` : error);
     }
-    applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
+    if (failures.length === 0) return;
+    showError(
+      ids.length > 1
+        ? [`Не применено к ${failures.length} из ${ids.length}:`, ...failures.map((line) => `• ${line}`)].join("\n")
+        : failures[0]
+    );
   };
   $<HTMLButtonElement>("tc-apply-decision-btn").addEventListener("click", runApplyDecision);
 }
@@ -3307,7 +4060,7 @@ function initRescanTypographyButton(): void {
     const scope = getSelectedScope();
     $<HTMLButtonElement>("tc-scan-btn").disabled = true;
     $("tc-scan-status").textContent = "Сканирование...";
-    post({ type: "scan", payload: { scope, category: "typography" } });
+    post({ type: "scan", payload: { scope, category: activeCategory } });
   });
 }
 
@@ -3514,6 +4267,8 @@ window.onmessage = (event: MessageEvent) => {
         tokens,
         textStyles,
         textStylesAvailable: initialTextStylesAvailable,
+        icons: message.payload.icons,
+        iconsAvailable: message.payload.iconsAvailable,
       });
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
       $<HTMLInputElement>("tc-registry-secret-input").placeholder = hasRegistrySecret
@@ -3662,7 +4417,9 @@ window.onmessage = (event: MessageEvent) => {
       if (index !== -1) {
         currentResults[index] = message.payload.result;
         resultsByCategory[activeCategory] = currentResults;
-        if (activeCategory === "colors" && message.payload.result.status === "mapped") {
+        // Иначе строка с принятым решением скрывается фильтром статусов —
+        // и до «Применить в макет» не добраться.
+        if (activeCategory !== "typography" && message.payload.result.status === "mapped") {
           activeStatusFilters.add("mapped");
           updateStatusFilterIndicator();
         }
@@ -3736,7 +4493,7 @@ window.onmessage = (event: MessageEvent) => {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
-      setExportButtonsDisabled(false);
+      setExportButtonsDisabled(currentResults.length === 0);
       hidePrintLoader();
       renderPrintStatus("");
       if (applyToLayoutInFlight) {

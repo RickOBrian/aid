@@ -9,7 +9,9 @@
  */
 
 /** Категория comparator-модуля. */
-export type TokenCategory = "colors" | "typography";
+import type { IconOutline } from "../lib/iconShape";
+
+export type TokenCategory = "colors" | "typography" | "icons";
 
 /** Способ привязки значения в макете к источнику правды. */
 export type BindingType =
@@ -17,6 +19,8 @@ export type BindingType =
   | "style"
   | "hardcoded"
   | "ghost"
+  /** Icons — экземпляр компонента (не из этой библиотеки или из неё). */
+  | "component"
   /** Зарезервировано для будущих typography variables (Phase 2+); не используется в Phase 1. */
   | "typography-variable";
 
@@ -61,6 +65,72 @@ export interface TypographyComparisonValue {
   partiallyMixedFields?: Array<"letterSpacing" | "textCase" | "textDecoration">;
 }
 
+/**
+ * Иконка библиотеки — опубликованный компонент иконочного файла (v1.5.0).
+ * Форма хранится отпечатком (lib/iconShape.ts), а не геометрией: так данные
+ * библиотеки укладываются в лимит clientStorage.
+ */
+export interface LibraryIcon {
+  /** Стабильный key компонента — общий для REST и Plugin API. */
+  key: string;
+  /** node_id компонента в файле библиотеки. */
+  nodeId: string;
+  /** Имя компонента; у варианта — свойства варианта («Size=24, State=On»). */
+  name: string;
+  /** Имя набора вариантов, если компонент — вариант. */
+  setName?: string;
+  description?: string;
+  /** Размер компонента (холст иконки) в px. */
+  width: number;
+  height: number;
+  /** Плотная рамка рисунка внутри компонента, px. */
+  glyph: { x: number; y: number; width: number; height: number } | null;
+  /** Прозрачности видимых слоёв — отличают состояния одной формы. */
+  opacities: number[];
+  /** Сколько слоёв дают геометрию. Нет — загружено до этого поля, считать 1. */
+  layers?: number;
+  /** Отпечаток формы 32×32, упакованный в base64. */
+  fingerprint: string;
+  /** Контур для превью (lib/iconShape.ts → iconOutline). Нет — загружено до этого поля. */
+  outline?: IconOutline;
+}
+
+/** Иконка библиотеки для интерфейса — без отпечатка, только то, что показывается. */
+export interface LibraryIconSummary {
+  key: string;
+  name: string;
+  setName?: string;
+  outline?: IconOutline;
+  /** Размер компонента, px. */
+  width?: number;
+  height?: number;
+}
+
+/** Детали строки иконки: превью и пометки (lib/iconResults.ts). */
+export interface IconResultDetails {
+  kind: "instance" | "detached";
+  /** Контур иконки из макета. */
+  outline?: IconOutline;
+  /** Контур предложенной иконки библиотеки. */
+  targetOutline?: IconOutline;
+  /** Похожесть формы с предложенной, 0–1. */
+  similarity?: number;
+  /** Размер предложенной иконки библиотеки, px. */
+  targetWidth?: number;
+  targetHeight?: number;
+  /** Неразличимые кандидаты — «Спорный вариант». */
+  alternatives: Array<{ key: string; name: string; similarity: number; outline?: IconOutline }>;
+  /** Ближайшие по форме иконки библиотеки (контуры — в списке иконок библиотеки). */
+  nearest?: Array<{ key: string; similarity: number }>;
+  nonstandardSize?: boolean;
+  multiLayer?: boolean;
+  disputed?: boolean;
+  /** Размер иконки в макете, px. */
+  width: number;
+  height: number;
+  layers: number;
+}
+
 /** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */
 export interface LibraryTextStyle {
   /**
@@ -94,6 +164,7 @@ export type MatchStatus =
   | "approximate" // перцептивное совпадение ниже порога (Delta E)
   | "name-mismatch" // typography: стиль применён, имя не соответствует ожидаемому semantic-токену
   | "mixed-unresolved" // typography: figma.mixed для fontSize/fontName
+  | "detached" // icons: точная копия библиотечной иконки, но не экземпляр компонента
   | "layout-only"; // нет совпадений в библиотеке вообще
 
 /**
@@ -115,7 +186,7 @@ export interface LayoutRecord {
   /** Подтип свойства внутри категории, например "fill" / "stroke" / "text-fill". */
   property: string;
   bindingType: BindingType;
-  /** Отображаемое значение, например "#RRGGBB" или "#RRGGBB @ 80%". */
+  /** Отображаемое значение, например "#RRGGBB" или "#RRGGBB · 80%". */
   displayValue: string;
   /**
    * Значение, пригодное для программного сравнения (не для отображения).
@@ -163,6 +234,11 @@ export interface LayoutRecord {
    * Детальная статус-модель — Phase 2; Phase 1 только сохраняет флаг и не падает.
    */
   typographyUnresolved?: boolean;
+  /**
+   * «Смешанные значения»: какие типографики внутри текста (первого слоя
+   * группы) — lib/typographyUtils.ts → summarizeTextSegments.
+   */
+  typographySegments?: string[];
   /**
    * Typography-only: текст внутри instance и/или override свойств поверх linked Text Style.
    */
@@ -232,6 +308,8 @@ export interface ComparisonTarget {
   styleId?: string;
   /** Typography — стабильный key опубликованного Text Style. */
   styleKey?: string;
+  /** Icons — key компонента-иконки библиотеки. */
+  componentKey?: string;
   /** true, если это значение библиотеки не резолвится (внешний алиас) — displayValue содержит пояснение, не hex. */
   valueUnresolved?: boolean;
   /**
@@ -245,6 +323,10 @@ export interface ComparisonTarget {
 /** Результат сравнения одной группы записей макета с библиотекой. */
 export interface ComparisonResult extends LayoutRecord {
   status: MatchStatus;
+  /** Icons — превью, похожесть и пометки. */
+  icon?: IconResultDetails;
+  /** Icons — key иконки из сохранённого решения. */
+  decisionTargetComponentKey?: string;
   target?: ComparisonTarget;
   /** Delta E между макетом и целевым значением — только для approximate. */
   deltaE?: number;
@@ -304,6 +386,10 @@ export interface StoredDecision {
   targetStyleId?: string;
   /** Typography — human-readable имя целевого Text Style. */
   targetStyleName?: string;
+  /** Icons — key целевого компонента-иконки библиотеки (v1.5.0). */
+  targetComponentKey?: string;
+  /** Icons — имя целевой иконки для людей. */
+  targetComponentName?: string;
   targetName?: string;
   /** Typography — несовпадающие свойства на момент Apply (для propose payload). */
   mismatchedProperties?: string[];

@@ -79,10 +79,12 @@ describe("очередь на согласование", () => {
     await setMappingHistoryEntry("color-1", decision({ category: "colors" }));
     await setMappingHistoryEntry("typo-1", decision({ category: "typography" }));
     await setMappingHistoryEntry("typo-2", decision({ category: "typography" }));
+    // Иконки уходят на согласование с v1.5.0 (бэкенд 1.3.0).
+    await setMappingHistoryEntry("icon-1", decision({ category: "icons" }));
 
     const counts = await countPendingProposalsByCategory(await getMappingHistory());
 
-    expect(counts).toEqual({ colors: 1, typography: 2 });
+    expect(counts).toEqual({ colors: 1, typography: 2, icons: 1 });
   });
 
   it("запись без категории считается цветовой — совместимость со старой историей", async () => {

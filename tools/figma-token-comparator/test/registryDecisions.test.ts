@@ -71,6 +71,29 @@ describe("registryEntryToStoredDecision", () => {
     });
   });
 
+  it("иконки: компонент-цель, имя и категория; из файла реестра поля не теряются", () => {
+    const entry = parseRegistryEntry(
+      {
+        signature: "i-1",
+        decision: "mapped",
+        category: "icons",
+        targetComponentKey: "k-close",
+        targetComponentName: "close / Size=24",
+        targetLibraryFileKey: "ICONS",
+        status: "approved",
+      },
+      0
+    );
+    expect(registryEntryToStoredDecision(entry)).toMatchObject({
+      category: "icons",
+      targetComponentKey: "k-close",
+      targetComponentName: "close / Size=24",
+      targetName: "close / Size=24",
+      libraryFileKey: "ICONS",
+      source: "registry",
+    });
+  });
+
   it("устаревший тип решения hardcoded, которому нет пары в плагине, пропускается", () => {
     expect(registryEntryToStoredDecision({ ...MAPPED, decision: "hardcoded" })).toBeNull();
   });

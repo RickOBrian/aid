@@ -9,7 +9,11 @@
 import { describe, expect, it } from "vitest";
 
 import { buildExportRows, exportColumns, toCSV, toJSON, toMarkdown } from "../src/lib/exporter";
-import type { ComparisonResult } from "../src/comparators/types";
+import type { ComparisonResult, LibraryIcon } from "../src/comparators/types";
+import { compareIcons } from "../src/lib/iconComparator";
+import { iconResultToComparisonResult } from "../src/lib/iconResults";
+import type { IconRecord } from "../src/lib/iconScanner";
+import { fingerprint, packFingerprint } from "../src/lib/iconShape";
 import { colorRecord, layoutMode } from "./fixtures";
 
 function result(overrides: Partial<ComparisonResult> = {}): ComparisonResult {
@@ -251,5 +255,61 @@ describe("колонки типографики (находка №15)", () => {
 
     expect(csvHeader).toEqual(mdHeader);
     expect(csvHeader).toHaveLength(exportColumns("typography").length);
+  });
+});
+
+describe("колонки иконок (v1.5.0, этап 5)", () => {
+  const CROSS = "M5 4L12 11L19 4L20 5L13 12L20 19L19 20L12 13L5 20L4 19L11 12L4 5Z";
+  const LIBRARY: LibraryIcon[] = [
+    {
+      key: "k-close",
+      nodeId: "1:1",
+      name: "Size=24",
+      setName: "close",
+      width: 24,
+      height: 24,
+      glyph: { x: 4, y: 4, width: 16, height: 16 },
+      opacities: [1],
+      layers: 1,
+      fingerprint: packFingerprint(fingerprint([{ d: CROSS }])),
+    },
+  ];
+  const record: IconRecord = {
+    id: "icon-1",
+    kind: "detached",
+    representativeName: "Vector",
+    representativePath: "Page / Card / Vector",
+    width: 24,
+    height: 24,
+    scaled: false,
+    fingerprint: packFingerprint(fingerprint([{ d: CROSS }])),
+    glyph: { width: 16, height: 16 },
+    opacities: [1],
+    layers: 2,
+    outline: { viewBox: [0, 0, 24, 24], paths: [{ d: CROSS }] },
+    count: 3,
+    occurrences: [["2:1", "2:2"]],
+  };
+
+  it("свои колонки: статус, размер, форма, пометки — без режимов и правки значения", () => {
+    const labels = exportColumns("icons").map(([, label]) => label);
+    expect(labels).toEqual(expect.arrayContaining(["Статус", "Размер", "Форма", "Пометки", "Предлагаем"]));
+    expect(labels).not.toContain("Сейчас Day");
+    expect(labels).not.toContain("Для режима");
+  });
+
+  it("строка иконки без компонента", () => {
+    const [compared] = compareIcons([record], LIBRARY, {});
+    const [row] = buildExportRows([iconResultToComparisonResult(compared)]);
+    expect(row).toMatchObject({
+      status: "Отвязанная иконка",
+      before: "Без компонента",
+      size: "24×24",
+      binding: "Hardcoded",
+      target: "close / Size=24",
+      similarity: "100%",
+      flags: "Из нескольких слоёв",
+    });
+    expect(toCSV([row], "icons").split("\r\n")[1]).toContain("Отвязанная иконка");
   });
 });

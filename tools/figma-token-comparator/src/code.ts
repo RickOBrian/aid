@@ -17,6 +17,7 @@ import type {
   ComparisonTarget,
   Decision,
   LayoutRecord,
+  LibraryIcon,
   LibraryTextStyle,
   LibraryToken,
   LibraryTokenModeValue,
@@ -28,6 +29,13 @@ import { hexToRgb, rgbToHex } from "./lib/colorUtils";
 import { pairModesByIndex } from "./lib/modePairing";
 import { FigmaRestApiError, fetchFigmaFileName, fetchLibraryColorVariables } from "./lib/figmaRestApi";
 import { fetchLibraryTextStyles } from "./lib/figmaStylesRestApi";
+import { fetchLibraryIcons } from "./lib/figmaComponentsRestApi";
+import { compareIcons, requiresIconUserAction } from "./lib/iconComparator";
+import { iconRecordToLayoutRecord, iconResultToComparisonResult, toLibraryIconSummary } from "./lib/iconResults";
+import type { IconRecord } from "./lib/iconScanner";
+import { scanIcons } from "./lib/scanner";
+import { iconPlacement, isMonochromeIcon, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
+import { formatLibraryIconName } from "./lib/figmaComponentsRestApi";
 import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
@@ -74,10 +82,12 @@ function send(message: CodeToUiMessage): void {
 const lastRecordsByCategory: Record<TokenCategory, LayoutRecord[]> = {
   colors: [],
   typography: [],
+  icons: [],
 };
 const lastScanScopeByCategory: Record<TokenCategory, ScanScope | null> = {
   colors: null,
   typography: null,
+  icons: null,
 };
 let lastLibraryColors: LibraryToken[] = [];
 let lastLibraryTypography: LibraryTextStyle[] = [];
@@ -90,6 +100,16 @@ let typographyLibraryLoadError: string | null = null;
  * lastLibraryTypography; список загруженных — в storage.getLibraries().
  */
 let activeLibraryKey: string | null = null;
+/** Иконки текущей библиотеки (v1.5.0). */
+let lastLibraryIcons: LibraryIcon[] = [];
+/**
+ * Найденные при последнем сканировании иконки — в своём формате: сравнение
+ * иконок работает с ними, а не с LayoutRecord (lib/iconResults.ts).
+ */
+const lastIconRecords = new Map<string, IconRecord>();
+
+const ICONS_NOT_LOADED =
+  "В выбранной библиотеке нет иконок. Выберите иконочную библиотеку на вкладке «Сканирование» или обновите её кнопкой ↻ в «Настройках» — иконки загружаются начиная с версии 1.5.0.";
 /** fileKey → имя библиотеки: для описания решений в запросе на согласование. */
 const libraryNames = new Map<string, string>();
 
@@ -109,6 +129,7 @@ async function activateLibrary(fileKey: string | null): Promise<void> {
 
   lastLibraryColors = data?.tokens ?? [];
   lastLibraryTypography = data?.styles ?? [];
+  lastLibraryIcons = data?.icons ?? [];
   typographyLibraryLoadError =
     meta && meta.textStyleCount === null ? meta.textStylesError ?? TEXT_STYLES_NOT_LOADED : null;
 }
@@ -125,6 +146,8 @@ async function sendLibrariesChanged(loadedFileName?: string): Promise<void> {
       textStyles: lastLibraryTypography,
       textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
       textStylesError: typographyLibraryLoadError ?? undefined,
+      icons: lastLibraryIcons.map(toLibraryIconSummary),
+      iconsAvailable: Boolean(activeLibraryKey) && lastLibraryIcons.length > 0,
       ...(loadedFileName ? { loadedFileName } : {}),
     },
   });
@@ -255,6 +278,8 @@ async function handleUiReady(): Promise<void> {
       tokens: lastLibraryColors,
       textStyles: lastLibraryTypography,
       textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
+      icons: lastLibraryIcons.map(toLibraryIconSummary),
+      iconsAvailable: Boolean(activeLibraryKey) && lastLibraryIcons.length > 0,
       hasGitHubToken: Boolean(githubToken),
       githubRepo,
       githubRegistryPath: githubRegistryPath ?? DEFAULT_REGISTRY_PATH,
@@ -431,22 +456,36 @@ function buildProposeComment(stored: StoredDecision): string | undefined {
   return undefined;
 }
 
+/** Поля цели решения — свои у каждой категории. */
+function proposeTargetFields(stored: StoredDecision): Partial<ProposeDecisionEntryPayload> {
+  if (stored.category === "icons") {
+    return {
+      targetComponentKey: stored.targetComponentKey,
+      targetComponentName: stored.targetComponentName ?? stored.targetName,
+    };
+  }
+  if (stored.category === "typography") {
+    return {
+      targetStyleId: stored.targetStyleId,
+      targetStyleName: stored.targetStyleName ?? stored.targetName,
+      mismatchedProperties: stored.mismatchedProperties,
+    };
+  }
+  return { targetVariableId: stored.targetVariableId, targetVariableName: stored.targetName };
+}
+
+function defaultSourceProperty(stored: StoredDecision): string | undefined {
+  if (stored.category === "typography") return stored.sourceProperty ?? "text-style";
+  if (stored.category === "icons") return stored.sourceProperty ?? "icon";
+  return stored.sourceProperty;
+}
+
 function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDecisionEntryPayload {
-  const isTypography = stored.category === "typography";
   return {
     signature: recordId,
     decision: mapDecisionToRegistry(stored.decision),
     category: stored.category,
-    ...(isTypography
-      ? {
-          targetStyleId: stored.targetStyleId,
-          targetStyleName: stored.targetStyleName ?? stored.targetName,
-          mismatchedProperties: stored.mismatchedProperties,
-        }
-      : {
-          targetVariableId: stored.targetVariableId,
-          targetVariableName: stored.targetName,
-        }),
+    ...proposeTargetFields(stored),
     comment: buildProposeComment(stored),
     ...(stored.libraryFileKey ? { targetLibraryFileKey: stored.libraryFileKey } : {}),
     // Transient review-projection metadata — используется backend только для
@@ -455,7 +494,7 @@ function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDec
     ...(stored.libraryFileKey && libraryNames.has(stored.libraryFileKey)
       ? { targetLibraryName: libraryNames.get(stored.libraryFileKey) }
       : {}),
-    sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
+    sourceProperty: defaultSourceProperty(stored),
     sourceBindingType: stored.sourceBindingType,
     sourceName: stored.sourceName,
     sourceDisplayValue: stored.sourceDisplayValue,
@@ -500,6 +539,7 @@ async function handleRequestProposePreview(category: TokenCategory = "colors"): 
   const pendingEntries = await getPendingProposeEntries(category);
   const entries: ProposePreviewEntry[] = pendingEntries.map(([recordId, stored]) => {
     const isTypography = stored.category === "typography";
+    const isIcon = stored.category === "icons";
     return {
       recordId,
       decision: stored.decision,
@@ -508,10 +548,11 @@ async function handleRequestProposePreview(category: TokenCategory = "colors"): 
       nodeName: stored.nodeName,
       nodePath: stored.nodePath,
       nodeIds: stored.nodeIds,
-      sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
+      sourceProperty: defaultSourceProperty(stored),
       sourceDisplayValue: stored.sourceDisplayValue,
       occurrenceCount: stored.occurrenceCount,
-      targetVariableName: isTypography ? undefined : stored.targetName,
+      targetVariableName: isTypography || isIcon ? undefined : stored.targetName,
+      targetComponentName: isIcon ? stored.targetComponentName ?? stored.targetName : undefined,
       targetStyleId: stored.targetStyleId,
       targetStyleName: stored.targetStyleName ?? (isTypography ? stored.targetName : undefined),
       mismatchedProperties: stored.mismatchedProperties,
@@ -773,13 +814,18 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       }
     };
 
-    const [colorsResult, textStylesResult] = await Promise.all([
+    const [colorsResult, textStylesResult, iconsResult] = await Promise.all([
       toFetchOutcome(fetchLibraryColorVariables(fileKey, token)),
       toFetchOutcome(fetchLibraryTextStyles(fileKey, token)),
+      toFetchOutcome(fetchLibraryIcons(fileKey, token)),
     ]);
 
     const colorsOk = colorsResult.ok;
     const textStylesOk = textStylesResult.ok;
+    const iconsOk = iconsResult.ok;
+    const iconsError = iconsOk
+      ? null
+      : formatLibraryFetchError(iconsResult.reason, "Не удалось загрузить иконки библиотеки.");
 
     const colorsError = colorsOk
       ? null
@@ -791,7 +837,8 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
           "Не удалось загрузить стили текста библиотеки."
         );
 
-    if (!colorsOk && !textStylesOk) {
+    // Иконочная библиотека может не иметь ни цветов, ни стилей — это не ошибка.
+    if (!colorsOk && !textStylesOk && !iconsOk) {
       send({
         type: "error",
         payload: {
@@ -801,6 +848,8 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
             `Цвета: ${colorsError}`,
             "",
             `Text Styles: ${textStylesError}`,
+            "",
+            `Иконки: ${iconsError}`,
           ].join("\n"),
         },
       });
@@ -810,6 +859,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
     const fileName = await resolveLibraryDisplayName(fileKey, token, libraryInput);
     const tokens = colorsOk ? colorsResult.value : [];
     const textStyles = textStylesOk ? textStylesResult.value : [];
+    const icons = iconsOk ? iconsResult.value : [];
 
     await storage.upsertLibrary(
       {
@@ -819,8 +869,10 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
         textStyleCount: textStylesOk ? textStyles.length : null,
         fetchedAt: new Date().toISOString(),
         ...(textStylesError ? { textStylesError } : {}),
+        iconCount: iconsOk ? icons.length : null,
+        ...(iconsError ? { iconsError } : {}),
       },
-      { tokens, styles: textStyles }
+      { tokens, styles: textStyles, icons }
     );
 
     // Первая загруженная библиотека сразу становится текущей; повторная
@@ -863,7 +915,7 @@ async function handleScan(
   try {
     lastScanScopeByCategory[category] = scope;
     void refreshProposalStatuses();
-    const scanLabel = category === "typography" ? "типографики" : "цветов";
+    const scanLabel = category === "typography" ? "типографики" : category === "icons" ? "иконок" : "цветов";
     send({ type: "scan-progress", payload: { message: `Сканирование ${scanLabel}...` } });
 
     if (category === "typography") {
@@ -896,6 +948,38 @@ async function handleScan(
           resolvedByTeam: countResolvedByTeam(records, results, history),
           libraryTokens: lastLibraryColors,
           libraryTextStyles: lastLibraryTypography,
+        },
+      });
+      return;
+    }
+
+    if (category === "icons") {
+      if (!activeLibraryKey) {
+        send({ type: "error", payload: { message: NO_ACTIVE_LIBRARY } });
+        return;
+      }
+      if (lastLibraryIcons.length === 0) {
+        send({ type: "error", payload: { message: ICONS_NOT_LOADED } });
+        return;
+      }
+      const iconRecords = await scanIcons(scope);
+      lastIconRecords.clear();
+      for (const record of iconRecords) lastIconRecords.set(record.id, record);
+      const records = iconRecords.map(iconRecordToLayoutRecord);
+      setLastRecords("icons", records);
+
+      const history = await getComparisonHistory();
+      const results = compareIcons(iconRecords, lastLibraryIcons, history)
+        .filter(requiresIconUserAction)
+        .map(iconResultToComparisonResult);
+      send({
+        type: "scan-results",
+        payload: {
+          category: "icons",
+          results,
+          libraryTokens: lastLibraryColors,
+          libraryTextStyles: lastLibraryTypography,
+          resolvedByTeam: countResolvedByTeam(records, results, history),
         },
       });
       return;
@@ -1007,6 +1091,8 @@ async function handleApplyDecision(
     targetVariableId?: string;
     targetStyleId?: string;
     targetStyleName?: string;
+    targetComponentKey?: string;
+    targetComponentName?: string;
     mismatchedProperties?: string[];
     targetName?: string;
     targetCollectionName?: string;
@@ -1053,6 +1139,8 @@ async function handleApplyDecision(
     targetVariableId: fields.targetVariableId,
     targetStyleId: fields.targetStyleId,
     targetStyleName: fields.targetStyleName,
+    targetComponentKey: fields.targetComponentKey,
+    targetComponentName: fields.targetComponentName,
     mismatchedProperties: fields.mismatchedProperties,
     targetName: fields.targetName,
     targetCollectionName: fields.targetCollectionName,
@@ -1075,6 +1163,13 @@ async function handleApplyDecision(
     targetDisplayValue: fields.targetDisplayValue,
   });
 
+  if (category === "icons") {
+    const [result] = computeIconResults([record], await withRegistryDecisions(history));
+    if (result) send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
+    return;
+  }
+
   if (category === "typography") {
     const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, await withRegistryDecisions(history));
     send({ type: "decision-applied", payload: { recordId, result } });
@@ -1087,8 +1182,23 @@ async function handleApplyDecision(
   await sendPendingProposeCount();
 }
 
+/** Результат сравнения для строк иконок — по сохранённым при сканировании записям. */
+function computeIconResults(records: LayoutRecord[], history: Record<string, StoredDecision>): ComparisonResult[] {
+  const iconRecords = records
+    .map((record) => lastIconRecords.get(record.id))
+    .filter((record): record is IconRecord => Boolean(record));
+  return compareIcons(iconRecords, lastLibraryIcons, history).map(iconResultToComparisonResult);
+}
+
 async function handleClearDecision(recordId: string): Promise<void> {
   const history = await storage.clearMappingHistoryEntry(recordId);
+  const iconRecord = getLastRecords("icons").find((item) => item.id === recordId);
+  if (iconRecord) {
+    const [result] = computeIconResults([iconRecord], await withRegistryDecisions(history));
+    if (result) send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
+    return;
+  }
   const typographyRecord = getLastRecords("typography").find((item) => item.id === recordId);
   if (typographyRecord) {
     const [result] = computeTypographyComparisonResults(
@@ -1303,7 +1413,82 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   });
 }
 
+/**
+ * «Применить в макет» для иконок: каждое вхождение группы заменяется иконкой
+ * из решения, в цвете макета — та же замена, что в примерке
+ * (placeLibraryIcon), только на самом макете. Вхождение, которое не
+ * удалось заменить, пропускается с причиной, остальные применяются.
+ */
+async function handleApplyIconsToLayout(recordId: string): Promise<void> {
+  const record = getLastRecords("icons").find((item) => item.id === recordId);
+  const iconRecord = lastIconRecords.get(recordId);
+  if (!record || !iconRecord) {
+    send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
+    return;
+  }
+
+  const [result] = compareIcons([iconRecord], lastLibraryIcons, await getComparisonHistory());
+  const icon = result?.status === "mapped" ? result.target?.icon : undefined;
+  if (!icon) {
+    send({
+      type: "error",
+      payload: { message: "«Применить в макет» доступно после решения «Использовать предложенную» или «Выбрать иконку из AID»." },
+    });
+    return;
+  }
+
+  const occurrences = iconRecord.occurrences;
+  const skipped: ApplyToLayoutSkip[] = [];
+  const appliedNodeIds: string[] = [];
+
+  let component: ComponentNode;
+  try {
+    component = await figma.importComponentByKeyAsync(icon.key);
+  } catch (importError) {
+    const reason =
+      importError instanceof Error
+        ? `Не удалось импортировать иконку библиотеки: ${importError.message}`
+        : "Не удалось подключить иконку библиотеки к файлу.";
+    for (const nodeIds of occurrences) skipped.push({ nodeId: nodeIds[0] ?? "", reason });
+    send({ type: "apply-to-layout-result", recordId, attempted: occurrences.length, occurrences: record.count, applied: 0, skipped });
+    return;
+  }
+
+  for (const nodeIds of occurrences) {
+    try {
+      const nodes: SceneNode[] = [];
+      for (const id of nodeIds) {
+        const node = await resolveSceneNodeById(id);
+        if (!node) throw new Error("слой не найден — возможно, его удалили. Пересканируйте макет.");
+        nodes.push(node);
+      }
+      const instance = placeLibraryIcon(nodes, component, icon);
+      appliedNodeIds.push(instance.id);
+    } catch (applyError) {
+      skipped.push({
+        nodeId: nodeIds[0] ?? "",
+        reason: applyError instanceof Error ? applyError.message : "не удалось заменить иконку",
+      });
+    }
+  }
+
+  send({
+    type: "apply-to-layout-result",
+    recordId,
+    attempted: occurrences.length,
+    occurrences: record.count,
+    applied: appliedNodeIds.length,
+    skipped,
+    appliedNodeIds,
+    ...(appliedNodeIds.length > 0 && skipped.length > 0 ? { partial: true } : {}),
+  });
+}
+
 async function handleApplyToLayout(recordId: string): Promise<void> {
+  if (getLastRecords("icons").some((item) => item.id === recordId)) {
+    await handleApplyIconsToLayout(recordId);
+    return;
+  }
   if (getLastRecords("typography").some((item) => item.id === recordId)) {
     await handleApplyTypographyToLayout(recordId);
     return;
@@ -1514,7 +1699,7 @@ function readComparisonColor(value: Record<string, unknown>): { hex: string; alp
   return { hex: String(value.hex), alpha: Number(value.alpha) };
 }
 
-/** "#RRGGBB" или "#RRGGBB @ NN%" (ComparisonTarget.displayValue) -> {hex, alpha}. */
+/** "#RRGGBB" или "#RRGGBB · NN%" (ComparisonTarget.displayValue; до 1.5.0 — с «@») -> {hex, alpha}. */
 function parseDisplayValueToColor(displayValue: string): { hex: string; alpha: number } {
   const [hexPart, ...rest] = displayValue.trim().split(" ");
   const percentMatch = rest.join(" ").match(/(\d+)\s*%/);
@@ -1664,7 +1849,12 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
  */
 async function withPreviewClone<T>(
   record: LayoutRecord,
-  build: (clone: SceneNode, targetInClone: SceneNode) => Promise<T>
+  build: (clone: SceneNode, targetInClone: SceneNode, targetsInClone: SceneNode[]) => Promise<T>,
+  options: {
+    /** Все слои цели (иконка из нескольких векторов). По умолчанию — один, первый. */
+    nodeIds?: string[];
+    resolveContainer?: (anchor: SceneNode) => SceneNode;
+  } = {}
 ): Promise<T> {
   const representativeId = record.nodeIds[0];
   if (!representativeId) {
@@ -1680,7 +1870,7 @@ async function withPreviewClone<T>(
     throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
   }
 
-  const container = resolvePreviewContainer(anchor);
+  const container = (options.resolveContainer ?? resolvePreviewContainer)(anchor);
 
   if (
     hasNumericDimensions(container) &&
@@ -1692,6 +1882,14 @@ async function withPreviewClone<T>(
   const relativePath = getRelativeChildPath(container, anchor);
   if (relativePath === null) {
     throw new Error("Не удалось определить положение слоя для превью.");
+  }
+  const extraPaths: number[][] = [];
+  for (const id of options.nodeIds ?? []) {
+    if (id === representativeId) continue;
+    const node = await resolveSceneNodeById(id);
+    const path = node ? getRelativeChildPath(container, node) : null;
+    if (path === null) throw new Error("Не удалось определить положение слоя для превью.");
+    extraPaths.push(path);
   }
 
   if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
@@ -1713,8 +1911,14 @@ async function withPreviewClone<T>(
     if (!targetInClone) {
       throw new Error("Не удалось найти слой в копии для превью.");
     }
+    const targetsInClone = [targetInClone];
+    for (const path of extraPaths) {
+      const node = resolveNodeAtPath(clone, path);
+      if (!node) throw new Error("Не удалось найти слой в копии для превью.");
+      targetsInClone.push(node);
+    }
 
-    return await build(clone, targetInClone);
+    return await build(clone, targetInClone, targetsInClone);
   } finally {
     try {
       clone.remove();
@@ -1864,7 +2068,164 @@ async function buildTypographyPreview(recordId: string, styleId?: string): Promi
   });
 }
 
-async function handleBuildPreview(recordId: string, variableId?: string, styleId?: string): Promise<void> {
+/** Иконка мелкая: для примерки берём контейнер покрупнее, чтобы было видно окружение. */
+const ICON_PREVIEW_MIN_CONTEXT = 96;
+
+function resolveIconPreviewContainer(anchor: SceneNode): SceneNode {
+  let fallback: SceneNode = anchor;
+  let current: BaseNode | null = anchor.parent;
+  while (current && isSceneNode(current)) {
+    if (PREVIEW_CONTAINER_TYPES.has(current.type)) {
+      fallback = current;
+      if (
+        hasNumericDimensions(current) &&
+        (current.width >= ICON_PREVIEW_MIN_CONTEXT || current.height >= ICON_PREVIEW_MIN_CONTEXT)
+      ) {
+        return current;
+      }
+    }
+    current = current.parent;
+  }
+  return fallback;
+}
+
+function nodeBox(node: SceneNode): { x: number; y: number; width: number; height: number } {
+  return { x: node.x, y: node.y, width: node.width, height: node.height };
+}
+
+/**
+ * Перекрашивает иконку цветом из макета (lib/iconSwap.ts → recolorPlan).
+ * Многоцветная иконка библиотеки остаётся в своих цветах (isMonochromeIcon).
+ */
+function recolorIconInstance(instance: InstanceNode, paint: Paint): void {
+  if (!isMonochromeIcon(instance as unknown as Parameters<typeof isMonochromeIcon>[0])) return;
+  for (const step of recolorPlan(instance as unknown as SceneNode, paint)) {
+    const node = step.node as SceneNode;
+    if (step.fills && "fills" in node) (node as MinimalFillsMixin).fills = step.fills;
+    if (step.strokes && "strokes" in node) (node as MinimalStrokesMixin).strokes = step.strokes;
+  }
+}
+
+/**
+ * Ставит иконку библиотеки на место иконки макета и красит её цветом макета.
+ * Экземпляр — меняет компонент (swapComponent), размер сохраняется. Фрейм,
+ * группа или векторы без компонента — новый экземпляр на их месте, они сами
+ * удаляются. Возвращает экземпляр.
+ */
+function placeLibraryIcon(targets: SceneNode[], component: ComponentNode, icon: LibraryIcon): InstanceNode {
+  const paint = pickIconPaint<Paint>(targets as unknown as Parameters<typeof pickIconPaint>[0]);
+  const [first] = targets;
+
+  if (targets.length === 1 && first.type === "INSTANCE") {
+    const { width, height } = first;
+    first.swapComponent(component);
+    if (Math.abs(first.width - width) > 0.5 || Math.abs(first.height - height) > 0.5) {
+      first.rescale(Math.min(width / first.width, height / first.height));
+    }
+    if (paint) recolorIconInstance(first, paint);
+    return first;
+  }
+
+  const parent = first.parent;
+  if (!parent || !("insertChild" in parent)) {
+    throw new Error("Не удалось поставить иконку на место: у слоя нет подходящего родителя.");
+  }
+  const siblings = (parent as ChildrenMixin).children;
+  const index = Math.min(...targets.map((node) => siblings.indexOf(node)).filter((i) => i >= 0));
+  const mode = targets.length === 1 && (first.type === "FRAME" || first.type === "GROUP") ? "frame" : "glyph";
+  const box = unionBox(targets.map(nodeBox));
+  if (!box) throw new Error("Не удалось определить положение иконки.");
+
+  const instance = component.createInstance();
+  (parent as ChildrenMixin).insertChild(Number.isFinite(index) ? index : siblings.length, instance);
+  // Поведение в макете — как у заменяемого слоя: абсолютное положение в auto
+  // layout и привязки к краям родителя.
+  if ("layoutPositioning" in first && first.layoutPositioning === "ABSOLUTE" && "layoutMode" in parent) {
+    instance.layoutPositioning = "ABSOLUTE";
+  }
+  if ("constraints" in first) instance.constraints = first.constraints;
+  const place = iconPlacement(mode, box, component, icon.glyph);
+  if (place.scale !== 1) instance.rescale(place.scale);
+  instance.x = place.x;
+  instance.y = place.y;
+  if (paint) recolorIconInstance(instance, paint);
+  for (const node of targets) node.remove();
+  return instance;
+}
+
+/**
+ * Примерка иконки: «Было» — копия макета как есть, «Будет» — та же копия с
+ * иконкой библиотеки на месте иконки макета, в цвете макета. Та же замена
+ * пойдёт в «Применить в макет» (этап 6).
+ *
+ * `componentKey` — иконка, выбранная вручную в «Выбрать иконку из AID»;
+ * без него — предложенная сравнением.
+ */
+async function buildIconPreview(recordId: string, componentKey?: string): Promise<PreviewModeResult[]> {
+  const record = getLastRecords("icons").find((item) => item.id === recordId);
+  const iconRecord = lastIconRecords.get(recordId);
+  if (!record || !iconRecord) {
+    throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
+  }
+
+  let icon: LibraryIcon | undefined;
+  if (componentKey) {
+    icon = lastLibraryIcons.find((item) => item.key === componentKey);
+    if (!icon) throw new Error("Иконки нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
+  } else {
+    const [result] = compareIcons([iconRecord], lastLibraryIcons, await getComparisonHistory());
+    icon = result?.target?.icon;
+    if (!icon) throw new Error("Для этой иконки нет предложенной из библиотеки — выберите её в «Выбрать иконку из AID».");
+  }
+  const iconName = formatLibraryIconName(icon);
+
+  let component: ComponentNode;
+  try {
+    component = await figma.importComponentByKeyAsync(icon.key);
+  } catch (importError) {
+    const reason = importError instanceof Error ? `: ${importError.message}` : ".";
+    throw new Error(`Не удалось импортировать иконку «${iconName}»${reason}`);
+  }
+
+  const nodeIds = iconRecord.occurrences[0] ?? record.nodeIds.slice(0, 1);
+  return withPreviewClone(
+    record,
+    async (clone, _target, targets) => {
+      await waitFrame();
+      const before = await exportNodeAsPngDataUrl(clone);
+
+      // Иконка сама по себе, без окружения: заменять копию целиком нельзя —
+      // её удалит withPreviewClone, поэтому «Будет» — отдельный экземпляр.
+      if (targets.some((node) => node.id === clone.id) && clone.type !== "INSTANCE") {
+        const paint = pickIconPaint<Paint>(targets as unknown as Parameters<typeof pickIconPaint>[0]);
+        const instance = component.createInstance();
+        try {
+          figma.currentPage.appendChild(instance);
+          instance.x = clone.x;
+          instance.y = clone.y + clone.height + 100;
+          if (paint) recolorIconInstance(instance, paint);
+          await waitFrame();
+          return [{ modeName: iconName, before, after: await exportNodeAsPngDataUrl(instance) }];
+        } finally {
+          instance.remove();
+        }
+      }
+
+      placeLibraryIcon(targets, component, icon!);
+      await waitFrame();
+      const after = await exportNodeAsPngDataUrl(clone);
+      return [{ modeName: iconName, before, after }];
+    },
+    { nodeIds, resolveContainer: resolveIconPreviewContainer }
+  );
+}
+
+async function handleBuildPreview(
+  recordId: string,
+  variableId?: string,
+  styleId?: string,
+  componentKey?: string
+): Promise<void> {
   if (previewInFlight) {
     send({
       type: "preview-error",
@@ -1876,6 +2237,10 @@ async function handleBuildPreview(recordId: string, variableId?: string, styleId
   previewInFlight = true;
 
   try {
+    if (getLastRecords("icons").some((item) => item.id === recordId)) {
+      send({ type: "preview-ready", recordId, modes: await buildIconPreview(recordId, componentKey) });
+      return;
+    }
     const isTypography = getLastRecords("typography").some((item) => item.id === recordId);
     const modes = isTypography
       ? await buildTypographyPreview(recordId, styleId)
@@ -2009,6 +2374,19 @@ async function handlePrintToFigma(
   }
 }
 
+/**
+ * Запись решений — по очереди. История читается и пишется целиком, и два
+ * решения, пришедшие подряд (несколько строк за одно «Применить решение»),
+ * иначе затирали бы друг друга.
+ */
+let decisionQueue: Promise<void> = Promise.resolve();
+
+function enqueueDecisionWrite(task: () => Promise<void>): Promise<void> {
+  const run = decisionQueue.then(task);
+  decisionQueue = run.catch(() => undefined);
+  return run;
+}
+
 figma.ui.onmessage = async (message: UiToCodeMessage) => {
   try {
     switch (message.type) {
@@ -2049,35 +2427,41 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
       case "select-nodes":
         await handleSelectNodes(message.payload.nodeIds);
         break;
-      case "apply-decision":
-        await handleApplyDecision(message.payload.recordId, message.payload.decision, {
-          category: message.payload.category,
-          comment: message.payload.comment,
-          targetVariableId: message.payload.targetVariableId,
-          targetStyleId: message.payload.targetStyleId,
-          targetStyleName: message.payload.targetStyleName,
-          mismatchedProperties: message.payload.mismatchedProperties,
-          targetName: message.payload.targetName,
-          targetCollectionName: message.payload.targetCollectionName,
-          proposedModeId: message.payload.proposedModeId,
-          proposedModeName: message.payload.proposedModeName,
-          currentLibraryValue: message.payload.currentLibraryValue,
-          proposedValue: message.payload.proposedValue,
-          sourceProperty: message.payload.sourceProperty,
-          sourceBindingType: message.payload.sourceBindingType,
-          sourceName: message.payload.sourceName,
-          sourceDisplayValue: message.payload.sourceDisplayValue,
-          nodePath: message.payload.nodePath,
-          nodeName: message.payload.nodeName,
-          nodeIds: message.payload.nodeIds,
-          occurrenceCount: message.payload.occurrenceCount,
-          targetModeName: message.payload.targetModeName,
-          targetDisplayValue: message.payload.targetDisplayValue,
-        });
+      case "apply-decision": {
+        const payload = message.payload;
+        await enqueueDecisionWrite(() => handleApplyDecision(payload.recordId, payload.decision, {
+          category: payload.category,
+          comment: payload.comment,
+          targetVariableId: payload.targetVariableId,
+          targetStyleId: payload.targetStyleId,
+          targetStyleName: payload.targetStyleName,
+          targetComponentKey: payload.targetComponentKey,
+          targetComponentName: payload.targetComponentName,
+          mismatchedProperties: payload.mismatchedProperties,
+          targetName: payload.targetName,
+          targetCollectionName: payload.targetCollectionName,
+          proposedModeId: payload.proposedModeId,
+          proposedModeName: payload.proposedModeName,
+          currentLibraryValue: payload.currentLibraryValue,
+          proposedValue: payload.proposedValue,
+          sourceProperty: payload.sourceProperty,
+          sourceBindingType: payload.sourceBindingType,
+          sourceName: payload.sourceName,
+          sourceDisplayValue: payload.sourceDisplayValue,
+          nodePath: payload.nodePath,
+          nodeName: payload.nodeName,
+          nodeIds: payload.nodeIds,
+          occurrenceCount: payload.occurrenceCount,
+          targetModeName: payload.targetModeName,
+          targetDisplayValue: payload.targetDisplayValue,
+        }));
         break;
-      case "clear-decision":
-        await handleClearDecision(message.payload.recordId);
+      }
+      case "clear-decision": {
+        const { recordId } = message.payload;
+        await enqueueDecisionWrite(() => handleClearDecision(recordId));
         break;
+      }
       case "resize-window":
         handleResizeWindow(message.payload.width, message.payload.height);
         break;
@@ -2088,7 +2472,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handlePrintToFigma(message.payload.sourceFormat, message.payload.results);
         break;
       case "build-preview":
-        await handleBuildPreview(message.recordId, message.variableId, message.styleId);
+        await handleBuildPreview(message.recordId, message.variableId, message.styleId, message.componentKey);
         break;
       case "apply-to-layout":
         await handleApplyToLayout(message.recordId);

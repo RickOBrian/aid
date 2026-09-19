@@ -44,6 +44,20 @@ function isTypographyEntry(entry: ProposedEntryInput): boolean {
   return entry.category === 'typography' || entry.sourceProperty === 'text-style';
 }
 
+function isIconEntry(entry: ProposedEntryInput): boolean {
+  return entry.category === 'icons' || entry.sourceProperty === 'icon';
+}
+
+/** Подпись и имя цели: стиль текста, иконка библиотеки или токен. */
+function targetLabel(entry: ProposedEntryInput): string {
+  if (isIconEntry(entry)) return 'Иконка';
+  return isTypographyEntry(entry) ? 'Text Style' : 'Токен';
+}
+
+function targetName(entry: ProposedEntryInput): string | undefined {
+  return entry.targetComponentName ?? entry.targetStyleName ?? entry.targetVariableName;
+}
+
 function hasReviewContext(entry: ProposedEntryInput): boolean {
   return Boolean(
     entry.sourceProperty ||
@@ -85,7 +99,7 @@ function renderCollectionMode(collectionName?: string, modeName?: string): strin
 /** Однострочное сопоставление source -> token -> target — только когда хватает данных для всех трёх. */
 function renderSourceTargetChain(entry: ProposedEntryInput): string | null {
   const source = entry.sourceDisplayValue?.trim();
-  const tokenName = (entry.targetStyleName ?? entry.targetVariableName)?.trim();
+  const tokenName = targetName(entry)?.trim();
   const target = entry.targetDisplayValue?.trim();
   if (!source || !tokenName || !target) return null;
   return `- \`${source}\` → **${tokenName}** → \`${target}\``;
@@ -115,6 +129,7 @@ function renderDetails(entry: ProposedEntryInput, proposedBy: string, proposedAt
     entry.category ? `- category: \`${entry.category}\`` : null,
     entry.targetVariableId ? `- targetVariableId: \`${entry.targetVariableId}\`` : null,
     entry.targetStyleId ? `- targetStyleId: \`${entry.targetStyleId}\`` : null,
+    entry.targetComponentKey ? `- targetComponentKey: \`${entry.targetComponentKey}\`` : null,
     `- proposedBy: ${proposedBy}`,
     `- proposedAt: ${proposedAt}`,
   ].filter((row): row is string => row !== null);
@@ -138,10 +153,13 @@ function renderMappedCard(entry: ProposedEntryInput, proposedBy: string, propose
     bullet('Путь', entry.nodePath),
     bullet('Свойство', entry.sourceProperty),
     bullet('Затронуто слоёв', entry.occurrenceCount),
-    bullet('Текущее значение', entry.sourceDisplayValue),
-    bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
+    bullet(isIconEntry(entry) ? 'Сейчас' : 'Текущее значение', entry.sourceDisplayValue),
+    bullet(targetLabel(entry), targetName(entry)),
     bullet('Библиотека', entry.targetLibraryName),
-    bullet(isTypographyEntry(entry) ? 'Целевая типографика' : 'Значение токена', entry.targetDisplayValue),
+    bullet(
+      isIconEntry(entry) ? 'Совпадение' : isTypographyEntry(entry) ? 'Целевая типографика' : 'Значение токена',
+      entry.targetDisplayValue,
+    ),
     renderTypographyDiff(entry),
     renderCollectionMode(entry.targetCollectionName, entry.targetModeName),
     renderSourceTargetChain(entry),
@@ -184,7 +202,7 @@ function renderValueFixCard(entry: ProposedEntryInput, proposedBy: string, propo
   // current/proposed/mode — отдельные структурные поля, НЕ склеиваются с comment.
   lines.push(
     bullet('Путь', entry.nodePath),
-    bullet(isTypographyEntry(entry) ? 'Text Style' : 'Токен', entry.targetStyleName ?? entry.targetVariableName),
+    bullet(targetLabel(entry), targetName(entry)),
     bullet('Библиотека', entry.targetLibraryName),
     renderCollectionMode(entry.targetCollectionName, entry.proposedModeName),
     bullet(

@@ -16,7 +16,7 @@ export type RegistryDecision =
 export type RegistryEntryStatus = "approved" | "stale";
 
 /** Категория comparator-модуля (schema extension v1.1+). */
-export type TokenCategory = "colors" | "typography";
+export type TokenCategory = "colors" | "typography" | "icons";
 
 /** Одна запись реестра — решение по сигнатуре группы макета. */
 export interface RegistryEntry {
@@ -28,6 +28,9 @@ export interface RegistryEntry {
   targetStyleId?: string;
   targetStyleName?: string;
   mismatchedProperties?: string[];
+  /** Иконки (плагин 1.5.0+): key компонента библиотеки и его имя. */
+  targetComponentKey?: string;
+  targetComponentName?: string;
   comment?: string;
   /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). */
   targetLibraryFileKey?: string;

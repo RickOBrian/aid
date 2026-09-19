@@ -39,6 +39,8 @@ export function registryEntryToStoredDecision(entry: RegistryEntry): StoredDecis
     ...(entry.targetStyleId ? { targetStyleId: entry.targetStyleId } : {}),
     ...(entry.targetStyleName ? { targetStyleName: entry.targetStyleName } : {}),
     ...(entry.mismatchedProperties ? { mismatchedProperties: entry.mismatchedProperties } : {}),
+    ...(entry.targetComponentKey ? { targetComponentKey: entry.targetComponentKey } : {}),
+    ...(entry.targetComponentName ? { targetComponentName: entry.targetComponentName, targetName: entry.targetComponentName } : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
     ...(entry.targetLibraryFileKey ? { libraryFileKey: entry.targetLibraryFileKey } : {}),
     timestamp: entry.approvedAt ?? entry.proposedAt ?? "",

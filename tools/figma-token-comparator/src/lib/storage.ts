@@ -7,8 +7,9 @@
  * решений, которые должны переживать разные файлы макетов).
  */
 
-import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
+import type { LibraryIcon, LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
+import { normalizeColorDisplayValue } from "./colorUtils";
 import { isLibraryBoundDecision } from "./libraryScope";
 import type { ProposalStatusInfo } from "./proposalLifecycle";
 import { clampWindowSize, type WindowSize } from "./windowSize";
@@ -153,11 +154,19 @@ export interface LibraryMeta {
   textStyleCount: number | null;
   fetchedAt: string;
   textStylesError?: string;
+  /**
+   * Иконки — опубликованные компоненты (v1.5.0). null — не загрузились;
+   * нет поля — библиотека загружена до v1.5.0, иконки не запрашивались.
+   */
+  iconCount?: number | null;
+  iconsError?: string;
 }
 
 export interface LibraryData {
   tokens: LibraryToken[];
   styles: LibraryTextStyle[];
+  /** Нет у данных, загруженных до v1.5.0. */
+  icons?: LibraryIcon[];
 }
 
 export async function getLibraries(): Promise<LibraryMeta[]> {
@@ -191,7 +200,11 @@ export async function getLibraryData(fileKey: string): Promise<LibraryData | nul
   const data = value as LibraryData;
   // Стили из кэша прошлых версий могли быть записаны с `styleId` вместо `nodeId`.
   const styles = normalizeTextStylesCache({ styles: data.styles ?? [], fetchedAt: "", fileKey }).styles;
-  return { tokens: data.tokens ?? [], styles };
+  const tokens = (data.tokens ?? []).map((token) => ({
+    ...token,
+    modes: (token.modes ?? []).map((mode) => ({ ...mode, displayValue: normalizeColorDisplayValue(mode.displayValue) })),
+  }));
+  return { tokens, styles, icons: data.icons ?? [] };
 }
 
 export async function getActiveLibraryKey(): Promise<string | null> {
@@ -448,6 +461,8 @@ export function isPendingProposalRecord(
   entry?: StoredDecision
 ): boolean {
   if (entry?.source === "registry") return false;
+  // Реестр и бэкенд примут иконки на этапе 5 плана v1.5.0; до того решения
+  // по иконкам хранятся локально и на согласование не уходят.
   return !submitted.has(recordId);
 }
 
@@ -467,7 +482,7 @@ export async function countPendingProposalsByCategory(
   history: Record<string, StoredDecision>
 ): Promise<Record<TokenCategory, number>> {
   const submitted = await getSubmittedSignatures();
-  const counts: Record<TokenCategory, number> = { colors: 0, typography: 0 };
+  const counts: Record<TokenCategory, number> = { colors: 0, typography: 0, icons: 0 };
   for (const [recordId, entry] of Object.entries(history)) {
     if (!isPendingProposalRecord(recordId, submitted, entry)) continue;
     counts[storedDecisionCategory(entry)] += 1;

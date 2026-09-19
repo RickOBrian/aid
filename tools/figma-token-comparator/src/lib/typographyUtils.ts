@@ -179,6 +179,51 @@ function mapPluginTextDecoration(value: TextDecoration): TypographyTextDecoratio
   return normalizeTextDecoration(value);
 }
 
+/** Кусок текста с одинаковой типографикой — поля `getStyledTextSegments`. */
+export interface TextSegmentTypography {
+  fontName: FontName;
+  fontSize: number;
+  fontWeight: number;
+  lineHeight: LineHeight;
+}
+
+/** Сколько вариантов показывать; остальные — «ещё N». */
+const MAX_SEGMENT_VARIANTS = 4;
+
+/**
+ * Разные типографики внутри одного текстового слоя — для строки «Смешанные
+ * значения»: без них непонятно, что именно смешано. По одному на вариант,
+ * в порядке появления в тексте; сколько символов у каждого — в скобках.
+ */
+export function summarizeTextSegments(
+  segments: ReadonlyArray<TextSegmentTypography & { characters?: string; start?: number; end?: number }>
+): string[] {
+  const variants = new Map<string, number>();
+  for (const segment of segments) {
+    const { lineHeight, approximate } = normalizeLineHeightFromPlugin(segment.lineHeight, segment.fontSize);
+    const label = formatTypographyDisplayValue(
+      buildTypographyComparisonValue({
+        fontFamily: segment.fontName.family,
+        fontWeight: segment.fontWeight,
+        fontSize: segment.fontSize,
+        lineHeight: Math.round(lineHeight * 100) / 100,
+        letterSpacing: 0,
+        textCase: "ORIGINAL",
+        textDecoration: "NONE",
+        lineHeightApproximate: approximate,
+      })
+    );
+    const length =
+      segment.start !== undefined && segment.end !== undefined
+        ? segment.end - segment.start
+        : segment.characters?.length ?? 0;
+    variants.set(label, (variants.get(label) ?? 0) + length);
+  }
+  const lines = [...variants].map(([label, length]) => `${label} (${length} симв.)`);
+  if (lines.length <= MAX_SEGMENT_VARIANTS) return lines;
+  return [...lines.slice(0, MAX_SEGMENT_VARIANTS), `ещё ${lines.length - MAX_SEGMENT_VARIANTS}`];
+}
+
 export interface ReadTypographyFromNodeResult {
   comparisonValue: TypographyComparisonValue | null;
   typographyUnresolved: boolean;

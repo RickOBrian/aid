@@ -147,6 +147,40 @@ describe('validateProposeDecisionBody', () => {
   });
 });
 
+describe('validateProposeDecisionBody — icons (1.3.0)', () => {
+  it('accepts icons category with component key and name', () => {
+    const result = validateProposeDecisionBody({
+      sharedSecret: 'secret',
+      proposedBy: 'designer@example.com',
+      entries: [
+        {
+          signature: 'icon-1',
+          decision: 'mapped',
+          category: 'icons',
+          targetComponentKey: 'k-close',
+          targetComponentName: 'close / Size=24',
+          sourceProperty: 'icon',
+          sourceDisplayValue: 'Без компонента · 24×24',
+        },
+      ],
+    });
+    expect(result?.entries[0]).toMatchObject({
+      category: 'icons',
+      targetComponentKey: 'k-close',
+      targetComponentName: 'close / Size=24',
+    });
+  });
+
+  it('rejects a non-string component key', () => {
+    const result = validateProposeDecisionBody({
+      sharedSecret: 'secret',
+      proposedBy: 'designer@example.com',
+      entries: [{ signature: 'icon-1', decision: 'mapped', category: 'icons', targetComponentKey: 42 }],
+    });
+    expect(result).toBeNull();
+  });
+});
+
 describe('handleProposeDecision', () => {
   const fetchMock = vi.fn<typeof fetch>();
   const fixedNow = new Date('2026-09-04T12:00:00.000Z');
@@ -712,5 +746,63 @@ describe('handleProposeDecision', () => {
     );
     expect(decoded.entries[0].targetLibraryFileKey).toBe('LIBKEY123');
     expect(decoded.entries[0]).not.toHaveProperty('targetLibraryName');
+  });
+
+  it('persists icon decisions with the component key and name', async () => {
+    fetchMock.mockImplementation(async (input, init) => {
+      const url = String(input);
+      const method = init?.method ?? 'GET';
+      if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
+        return jsonResponse(404, { message: 'Not Found' });
+      }
+      if (url.endsWith('/git/ref/heads/main') && method === 'GET') {
+        return jsonResponse(200, { object: { sha: 'main-sha' } });
+      }
+      if (url.endsWith('/git/refs') && method === 'POST') return jsonResponse(201, {});
+      if (url.includes('/contents/decisions-registry.json') && method === 'PUT') {
+        return jsonResponse(200, { content: { sha: 'new-file-sha' } });
+      }
+      if (url.endsWith('/pulls') && method === 'POST') return jsonResponse(201, { number: 57 });
+      if (url.endsWith('/pulls/57') && method === 'GET') {
+        return jsonResponse(200, { user: { login: 'RickOBrian' } });
+      }
+      throw new Error(`Unexpected fetch call: ${method} ${url}`);
+    });
+
+    const response = await handleProposeDecision(
+      new Request('https://example.com/api/registry/propose-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sharedSecret: VALID_SECRET,
+          proposedBy: 'Sergey AI',
+          entries: [
+            {
+              signature: 'icon1',
+              decision: 'mapped',
+              category: 'icons',
+              targetComponentKey: 'k-close',
+              targetComponentName: 'close / Size=24',
+              targetLibraryFileKey: 'ICONS123',
+              sourceProperty: 'icon',
+            },
+          ],
+        }),
+      }),
+      { fetchImpl: fetchMock, now: () => fixedNow },
+    );
+    expect(response.status).toBe(200);
+
+    const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === 'PUT');
+    const decoded = JSON.parse(
+      Buffer.from(JSON.parse(String(putCall?.[1]?.body)).content, 'base64').toString('utf8'),
+    );
+    expect(decoded.entries[0]).toMatchObject({
+      category: 'icons',
+      targetComponentKey: 'k-close',
+      targetComponentName: 'close / Size=24',
+      targetLibraryFileKey: 'ICONS123',
+    });
+    expect(decoded.entries[0]).not.toHaveProperty('sourceProperty');
   });
 });

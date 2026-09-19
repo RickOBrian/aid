@@ -2,7 +2,7 @@
 destination: skills/_shared/
 name: github-sync-architecture
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   owner: design-system-team
   status: active
   updated: "2026-09-18"
@@ -342,6 +342,8 @@ presentation context только ради GitHub review.
 | `targetVariableId` | Точный Figma Variable ID target, если применимо |
 | `targetVariableName` | Имя target token для audit/readability |
 | `targetLibraryFileKey` | Библиотека, в которой выбран target (плагин 1.4.0+, бэкенд 1.1.0+). ID переменных и стилей уникальны только внутри файла, поэтому без него решение с токеном нельзя однозначно отнести к библиотеке. Нет поля — запись до 1.4.0, действует с любой библиотекой |
+| `category` | `colors`, `typography` или `icons` (иконки — плагин 1.5.0+, бэкенд 1.3.0+). Нет поля — `colors` |
+| `targetComponentKey`, `targetComponentName` | Иконки: key компонента библиотеки и его имя для audit/readability (плагин 1.5.0+, бэкенд 1.3.0+) |
 | `comment` | Обоснование решения, если применимо |
 | `proposedBy`, `proposedAt` | Audit информации proposal |
 | `status`, `approvedBy`, `approvedAt` | Lifecycle/audit поля canonical entry |
@@ -991,6 +993,9 @@ terminal/report/PR.
 
 ## Changelog
 
+- **1.4.0 — 2026-09-19.** Бэкенд 1.3.0: категория `icons`, canonical поля
+  `targetComponentKey` / `targetComponentName` (плагин 1.5.0). Бэкенд 1.2.0
+  такие записи отклоняет — деплой бэкенда раньше выпуска плагина.
 - **1.3.0 — 2026-09-18.** Бэкенд 1.2.0: эндпоинт `proposal-status` —
   жизненный цикл отправленных решений; P0.1 бэклога закрыт.
 - **1.2.2 — 2026-09-18.** Canonical поле `targetLibraryFileKey` (плагин 1.4.0,

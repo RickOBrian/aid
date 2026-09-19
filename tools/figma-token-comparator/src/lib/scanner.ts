@@ -17,7 +17,15 @@ import type {
 } from "../comparators/types";
 import { colorValueKey, formatColorValue, rgbToHex, stableHash } from "./colorUtils";
 import {
+  collectIconCandidates,
+  groupIconCandidates,
+  type IconComponentInfo,
+  type IconRecord,
+  type IconScanNode,
+} from "./iconScanner";
+import {
   formatTypographyDisplayValue,
+  summarizeTextSegments,
   readTypographyFromTextNode,
   readTypographyFromTextStyle,
   typographyValueKey,
@@ -382,10 +390,25 @@ interface RawTypographyHit {
   displayValue: string;
   comparisonValue: TypographyComparisonValue | Record<string, never>;
   typographyUnresolved: boolean;
+  /** Только у смешанной типографики: варианты внутри текста. */
+  typographySegments?: string[];
   isOverride: boolean;
   structuralDriftDetected: boolean;
   node: TextNode;
   nodePath: string;
+}
+
+/** Текст, который пишем вместо значения, когда внутри слоя разная типографика. */
+const MIXED_TYPOGRAPHY_LABEL = "Разная типографика внутри слоя";
+
+function readTextSegments(node: TextNode): string[] | undefined {
+  try {
+    const segments = node.getStyledTextSegments(["fontName", "fontSize", "fontWeight", "lineHeight"]);
+    const summary = summarizeTextSegments(segments);
+    return summary.length > 0 ? summary : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function findInstanceAncestor(node: BaseNode): InstanceNode | null {
@@ -527,7 +550,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
         sourceName,
         styleId: textStyleId,
         styleKey,
-        displayValue: typographyUnresolved ? "(mixed typography)" : sourceName,
+        displayValue: typographyUnresolved ? MIXED_TYPOGRAPHY_LABEL : sourceName,
+        typographySegments: readTextSegments(node),
         comparisonValue: comparisonValue ? { ...comparisonValue } : ({} as Record<string, never>),
         typographyUnresolved: true,
         isOverride: overrideDetection.isOverride,
@@ -560,7 +584,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
       property: "text-style",
       bindingType: "hardcoded",
       sourceName: "",
-      displayValue: "(mixed typography)",
+      displayValue: MIXED_TYPOGRAPHY_LABEL,
+      typographySegments: readTextSegments(node),
       comparisonValue: comparisonValue ? { ...comparisonValue } : {},
       // Смешанные textStyleId по сегментам: сравнивать группу с одним стилем нельзя.
       typographyUnresolved: true,
@@ -578,7 +603,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
       property: "text-style",
       bindingType: "hardcoded",
       sourceName: "",
-      displayValue: "(mixed typography)",
+      displayValue: MIXED_TYPOGRAPHY_LABEL,
+      typographySegments: readTextSegments(node),
       comparisonValue: {},
       typographyUnresolved: true,
       isOverride: overrideDetection.isOverride,
@@ -665,6 +691,7 @@ function groupTypographyHits(hits: RawTypographyHit[]): LayoutRecord[] {
       styleId: hit.styleId,
       styleKey: hit.styleKey,
       typographyUnresolved: hit.typographyUnresolved ? true : undefined,
+      ...(hit.typographySegments ? { typographySegments: hit.typographySegments } : {}),
       isOverride: hit.isOverride ? true : undefined,
       structuralDriftDetected: hit.structuralDriftDetected ? true : undefined,
     });
@@ -680,4 +707,36 @@ export async function scanTypography(scope: ScanScope): Promise<LayoutRecord[]> 
     await walkTypography(root, hits);
   }
   return groupTypographyHits(hits);
+}
+
+// ---------------------------------------------------------------------------
+// Иконки (v1.5.0) — логика поиска в lib/iconScanner.ts, здесь — связь с Figma.
+// ---------------------------------------------------------------------------
+
+async function iconComponentInfo(node: IconScanNode): Promise<IconComponentInfo | null> {
+  const component = await (node as unknown as InstanceNode).getMainComponentAsync();
+  if (!component) return null;
+  const set = component.parent?.type === "COMPONENT_SET" ? component.parent : null;
+  return {
+    key: component.key,
+    name: component.name,
+    ...(set ? { setName: set.name } : {}),
+    remote: component.remote,
+    width: component.width,
+    height: component.height,
+  };
+}
+
+/**
+ * Иконки в области сканирования, сгруппированные. Узлы Plugin API подходят
+ * к IconScanNode по форме (fillGeometry, relativeTransform, children…);
+ * приведение — только чтобы не перечислять все поля SceneNode.
+ */
+export async function scanIcons(scope: ScanScope): Promise<IconRecord[]> {
+  const roots = await collectRootsForScope(scope);
+  const candidates = await collectIconCandidates(roots as unknown as IconScanNode[], {
+    mainComponent: iconComponentInfo,
+    nodePath: (node) => buildNodePath(node as unknown as SceneNode),
+  });
+  return groupIconCandidates(candidates);
 }

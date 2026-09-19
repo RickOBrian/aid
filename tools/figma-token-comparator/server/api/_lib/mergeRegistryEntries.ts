@@ -31,6 +31,8 @@ export function entryContentKey(entry: RegistryFileEntry): string {
     targetStyleId: entry.targetStyleId ?? null,
     targetStyleName: entry.targetStyleName ?? null,
     mismatchedProperties: entry.mismatchedProperties ?? null,
+    targetComponentKey: entry.targetComponentKey ?? null,
+    targetComponentName: entry.targetComponentName ?? null,
     comment: entry.comment ?? null,
     targetLibraryFileKey: entry.targetLibraryFileKey ?? null,
     status: entry.status ?? null,
