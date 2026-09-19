@@ -33,6 +33,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     version: "1.4.0",
+    date: "2026-09-19",
     summary: "Несколько библиотек: загружайте сразу несколько и выбирайте нужную для сканирования.",
     groups: [
       {
