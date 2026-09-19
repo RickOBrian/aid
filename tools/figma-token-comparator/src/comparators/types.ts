@@ -83,6 +83,8 @@ export interface LibraryIcon {
   glyph: { x: number; y: number; width: number; height: number } | null;
   /** Прозрачности видимых слоёв — отличают состояния одной формы. */
   opacities: number[];
+  /** Сколько слоёв дают геометрию. Нет — загружено до этого поля, считать 1. */
+  layers?: number;
   /** Отпечаток формы 32×32, упакованный в base64. */
   fingerprint: string;
 }

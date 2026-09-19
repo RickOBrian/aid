@@ -17,6 +17,13 @@ import type {
 } from "../comparators/types";
 import { colorValueKey, formatColorValue, rgbToHex, stableHash } from "./colorUtils";
 import {
+  collectIconCandidates,
+  groupIconCandidates,
+  type IconComponentInfo,
+  type IconRecord,
+  type IconScanNode,
+} from "./iconScanner";
+import {
   formatTypographyDisplayValue,
   readTypographyFromTextNode,
   readTypographyFromTextStyle,
@@ -680,4 +687,36 @@ export async function scanTypography(scope: ScanScope): Promise<LayoutRecord[]> 
     await walkTypography(root, hits);
   }
   return groupTypographyHits(hits);
+}
+
+// ---------------------------------------------------------------------------
+// Иконки (v1.5.0) — логика поиска в lib/iconScanner.ts, здесь — связь с Figma.
+// ---------------------------------------------------------------------------
+
+async function iconComponentInfo(node: IconScanNode): Promise<IconComponentInfo | null> {
+  const component = await (node as unknown as InstanceNode).getMainComponentAsync();
+  if (!component) return null;
+  const set = component.parent?.type === "COMPONENT_SET" ? component.parent : null;
+  return {
+    key: component.key,
+    name: component.name,
+    ...(set ? { setName: set.name } : {}),
+    remote: component.remote,
+    width: component.width,
+    height: component.height,
+  };
+}
+
+/**
+ * Иконки в области сканирования, сгруппированные. Узлы Plugin API подходят
+ * к IconScanNode по форме (fillGeometry, relativeTransform, children…);
+ * приведение — только чтобы не перечислять все поля SceneNode.
+ */
+export async function scanIcons(scope: ScanScope): Promise<IconRecord[]> {
+  const roots = await collectRootsForScope(scope);
+  const candidates = await collectIconCandidates(roots as unknown as IconScanNode[], {
+    mainComponent: iconComponentInfo,
+    nodePath: (node) => buildNodePath(node as unknown as SceneNode),
+  });
+  return groupIconCandidates(candidates);
 }

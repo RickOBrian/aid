@@ -104,6 +104,7 @@ function toLibraryIcon(component: PublishedComponent, document: IconNodeDocument
     height,
     glyph: geometry.glyph,
     opacities: geometry.opacities,
+    layers: geometry.layers,
     fingerprint: packFingerprint(fingerprint(geometry.paths, { size: ICON_FINGERPRINT_SIZE })),
   };
 }
