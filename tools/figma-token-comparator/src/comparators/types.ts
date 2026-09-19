@@ -9,7 +9,9 @@
  */
 
 /** Категория comparator-модуля. */
-export type TokenCategory = "colors" | "typography";
+import type { IconOutline } from "../lib/iconShape";
+
+export type TokenCategory = "colors" | "typography" | "icons";
 
 /** Способ привязки значения в макете к источнику правды. */
 export type BindingType =
@@ -17,6 +19,8 @@ export type BindingType =
   | "style"
   | "hardcoded"
   | "ghost"
+  /** Icons — экземпляр компонента (не из этой библиотеки или из неё). */
+  | "component"
   /** Зарезервировано для будущих typography variables (Phase 2+); не используется в Phase 1. */
   | "typography-variable";
 
@@ -87,6 +91,36 @@ export interface LibraryIcon {
   layers?: number;
   /** Отпечаток формы 32×32, упакованный в base64. */
   fingerprint: string;
+  /** Контур для превью (lib/iconShape.ts → iconOutline). Нет — загружено до этого поля. */
+  outline?: IconOutline;
+}
+
+/** Иконка библиотеки для интерфейса — без отпечатка, только то, что показывается. */
+export interface LibraryIconSummary {
+  key: string;
+  name: string;
+  setName?: string;
+  outline?: IconOutline;
+}
+
+/** Детали строки иконки: превью и пометки (lib/iconResults.ts). */
+export interface IconResultDetails {
+  kind: "instance" | "detached";
+  /** Контур иконки из макета. */
+  outline?: IconOutline;
+  /** Контур предложенной иконки библиотеки. */
+  targetOutline?: IconOutline;
+  /** Похожесть формы с предложенной, 0–1. */
+  similarity?: number;
+  /** Неразличимые кандидаты — «Спорный вариант». */
+  alternatives: Array<{ key: string; name: string; similarity: number; outline?: IconOutline }>;
+  nonstandardSize?: boolean;
+  multiLayer?: boolean;
+  disputed?: boolean;
+  /** Размер иконки в макете, px. */
+  width: number;
+  height: number;
+  layers: number;
 }
 
 /** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */
@@ -122,6 +156,7 @@ export type MatchStatus =
   | "approximate" // перцептивное совпадение ниже порога (Delta E)
   | "name-mismatch" // typography: стиль применён, имя не соответствует ожидаемому semantic-токену
   | "mixed-unresolved" // typography: figma.mixed для fontSize/fontName
+  | "detached" // icons: точная копия библиотечной иконки, но не экземпляр компонента
   | "layout-only"; // нет совпадений в библиотеке вообще
 
 /**
@@ -260,6 +295,8 @@ export interface ComparisonTarget {
   styleId?: string;
   /** Typography — стабильный key опубликованного Text Style. */
   styleKey?: string;
+  /** Icons — key компонента-иконки библиотеки. */
+  componentKey?: string;
   /** true, если это значение библиотеки не резолвится (внешний алиас) — displayValue содержит пояснение, не hex. */
   valueUnresolved?: boolean;
   /**
@@ -273,6 +310,10 @@ export interface ComparisonTarget {
 /** Результат сравнения одной группы записей макета с библиотекой. */
 export interface ComparisonResult extends LayoutRecord {
   status: MatchStatus;
+  /** Icons — превью, похожесть и пометки. */
+  icon?: IconResultDetails;
+  /** Icons — key иконки из сохранённого решения. */
+  decisionTargetComponentKey?: string;
   target?: ComparisonTarget;
   /** Delta E между макетом и целевым значением — только для approximate. */
   deltaE?: number;

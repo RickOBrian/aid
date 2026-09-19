@@ -380,3 +380,116 @@ export function unpackFingerprint(packed: string, size: number): Fingerprint {
   }
   return { size, bits, count };
 }
+
+// ---------------------------------------------------------------------------
+// Контур для превью
+// ---------------------------------------------------------------------------
+
+/**
+ * Контур иконки для показа в таблице: пути с применёнными трансформациями,
+ * в абсолютных командах, с округлением. Отпечаток 32×32 для глаза грубый,
+ * а контур рисуется SVG в любом масштабе и не требует сети.
+ */
+export interface IconOutline {
+  /** Холст иконки: x, y, ширина, высота. */
+  viewBox: [number, number, number, number];
+  paths: Array<{ d: string; evenOdd?: boolean }>;
+}
+
+const fmt = (value: number, precision: number) => {
+  const factor = 10 ** precision;
+  const rounded = Math.round(value * factor) / factor;
+  return Object.is(rounded, -0) ? "0" : String(rounded);
+};
+
+/** Путь SVG с применённой матрицей: все команды — абсолютные, H/V — в L. */
+export function transformPathData(d: string, matrix: Matrix = IDENTITY, precision = 1): string {
+  const tokens = d.match(TOKEN_RE) ?? [];
+  const out: string[] = [];
+  let pos: Point = [0, 0];
+  let start: Point = [0, 0];
+  let command = "";
+  let i = 0;
+  const num = (): number => Number(tokens[i++]);
+  const point = (p: Point): string => {
+    const [x, y] = applyMatrix(matrix, p);
+    return `${fmt(x, precision)} ${fmt(y, precision)}`;
+  };
+
+  while (i < tokens.length) {
+    if (/^[A-Za-z]$/.test(tokens[i])) command = tokens[i++];
+    const rel = command === command.toLowerCase();
+    const off = (p: Point): Point => (rel ? [pos[0] + p[0], pos[1] + p[1]] : p);
+    switch (command.toUpperCase()) {
+      case "M":
+        pos = off([num(), num()]);
+        start = pos;
+        out.push(`M${point(pos)}`);
+        command = rel ? "l" : "L";
+        break;
+      case "L":
+        pos = off([num(), num()]);
+        out.push(`L${point(pos)}`);
+        break;
+      case "H": {
+        const x = num();
+        pos = [rel ? pos[0] + x : x, pos[1]];
+        out.push(`L${point(pos)}`);
+        break;
+      }
+      case "V": {
+        const y = num();
+        pos = [pos[0], rel ? pos[1] + y : y];
+        out.push(`L${point(pos)}`);
+        break;
+      }
+      case "C": {
+        const c1 = off([num(), num()]);
+        const c2 = off([num(), num()]);
+        pos = off([num(), num()]);
+        out.push(`C${point(c1)} ${point(c2)} ${point(pos)}`);
+        break;
+      }
+      case "S": {
+        const c2 = off([num(), num()]);
+        pos = off([num(), num()]);
+        out.push(`S${point(c2)} ${point(pos)}`);
+        break;
+      }
+      case "Q": {
+        const c = off([num(), num()]);
+        pos = off([num(), num()]);
+        out.push(`Q${point(c)} ${point(pos)}`);
+        break;
+      }
+      case "T":
+        pos = off([num(), num()]);
+        out.push(`T${point(pos)}`);
+        break;
+      case "Z":
+        pos = start;
+        out.push("Z");
+        break;
+      default:
+        i += 1;
+    }
+  }
+  return out.join("");
+}
+
+/** Контур иконки на холсте `frame`: пути одного правила заливки склеены. */
+export function iconOutline(paths: ShapePath[], frame: Box, precision = 1): IconOutline {
+  const nonZero: string[] = [];
+  const evenOdd: string[] = [];
+  for (const path of paths) {
+    const d = transformPathData(path.d, path.transform ?? IDENTITY, precision);
+    if (d) (path.fillRule === "evenodd" ? evenOdd : nonZero).push(d);
+  }
+  return {
+    viewBox: [frame.x, frame.y, frame.width, frame.height],
+    paths: [
+      ...(nonZero.length ? [{ d: nonZero.join("") }] : []),
+      ...evenOdd.map((d) => ({ d, evenOdd: true })),
+    ],
+  };
+}

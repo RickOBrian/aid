@@ -49,6 +49,7 @@ function rec(overrides: Partial<IconRecord> & { d: string }): IconRecord {
     glyph: { width: 20, height: 20 },
     opacities: [1],
     layers: 1,
+    outline: { viewBox: [0, 0, 24, 24], paths: [{ d }] },
     count: 1,
     occurrences: [["1:1"]],
     ...rest,

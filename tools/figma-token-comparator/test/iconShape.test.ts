@@ -67,3 +67,24 @@ describe("fingerprint", () => {
     expect(fingerprint([{ d: "" }]).count).toBe(0);
   });
 });
+
+describe("контур для превью", () => {
+  it("применяет матрицу, переводит H/V и относительные команды в абсолютные", async () => {
+    const { transformPathData } = await import("../src/lib/iconShape");
+    expect(transformPathData("M0 0h10v10H0Z", [2, 0, 0, 2, 5, 5])).toBe("M5 5L25 5L25 25L5 25Z");
+    expect(transformPathData("M0 0C1.234 0 2 1 3 3")).toBe("M0 0C1.2 0 2 1 3 3");
+  });
+
+  it("контур рисует ту же форму, что исходные пути", async () => {
+    const { iconOutline } = await import("../src/lib/iconShape");
+    const paths: ShapePath[] = [
+      { d: "M2 11H16V9L22 12L16 15V13H2Z", transform: [1, 0, 0, 1, 3, -1] },
+      { d: "M0 0H10V10H0Z M3 3H7V7H3Z", fillRule: "evenodd" },
+    ];
+    const outline = iconOutline(paths, { x: 0, y: 0, width: 24, height: 24 });
+    expect(outline.viewBox).toEqual([0, 0, 24, 24]);
+    expect(outline.paths).toHaveLength(2);
+    const redrawn = outline.paths.map((p) => ({ d: p.d, fillRule: p.evenOdd ? ("evenodd" as const) : ("nonzero" as const) }));
+    expect(shapeSimilarity(fingerprint(paths), fingerprint(redrawn))).toBe(1);
+  });
+});

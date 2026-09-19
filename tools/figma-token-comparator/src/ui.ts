@@ -7,6 +7,7 @@
 import type {
   ComparisonResult,
   Decision,
+  LibraryIconSummary,
   LibraryTextStyle,
   LibraryToken,
   ScanScope,
@@ -34,6 +35,7 @@ import { clampWindowSize } from "./lib/windowSize";
 import { CHANGELOG, getChangelogEntryState, type ChangelogEntry } from "./lib/changelog";
 import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
+import type { IconOutline } from "./lib/iconShape";
 import { version as PLUGIN_VERSION } from "../package.json";
 
 function post(message: UiToCodeMessage): void {
@@ -54,6 +56,10 @@ let activeCategory: TokenCategory = "colors";
 /** Статусы отправленных решений по подписи строки: на согласовании или отклонено. */
 let proposalStatuses: Record<string, ProposalStatusInfo> = {};
 
+/** Иконки текущей библиотеки (v1.5.0) — для списка выбора и превью. */
+let currentLibraryIcons: LibraryIconSummary[] = [];
+let iconsLibraryAvailable = false;
+
 /** Загруженные библиотеки (вкладка «Настройки») и выбранная для сканирования. */
 let loadedLibraries: LibraryMeta[] = [];
 let activeLibraryKey: string | null = null;
@@ -61,6 +67,7 @@ let activeLibraryKey: string | null = null;
 const resultsByCategory: Record<TokenCategory, ComparisonResult[]> = {
   colors: [],
   typography: [],
+  icons: [],
 };
 let currentResults: ComparisonResult[] = [];
 /**
@@ -77,6 +84,7 @@ let pendingProposeCount = 0;
 let pendingProposeCountByCategory: Record<TokenCategory, number> = {
   colors: 0,
   typography: 0,
+  icons: 0,
 };
 let typographyLibraryAvailable = false;
 let typographyLibraryError: string | null = null;
@@ -173,6 +181,11 @@ const STATUS_FILTER_IDS: Record<TokenCategory, { btn: string; menu: string; indi
     menu: "tc-status-filter-menu-typography",
     indicator: "tc-status-filter-indicator-typography",
   },
+  icons: {
+    btn: "tc-status-filter-btn-icons",
+    menu: "tc-status-filter-menu-icons",
+    indicator: "tc-status-filter-indicator-icons",
+  },
 };
 
 function statusFilterEls(category: TokenCategory = activeCategory) {
@@ -189,7 +202,7 @@ function updateStatusFilterIndicator(): void {
 }
 
 function closeStatusFilterMenu(): void {
-  for (const category of ["colors", "typography"] as const) {
+  for (const category of ["colors", "typography", "icons"] as const) {
     const { btn, menu } = statusFilterEls(category);
     btn.setAttribute("aria-expanded", "false");
     menu.hidden = true;
@@ -268,7 +281,7 @@ function renderStatusFilterMenu(): void {
 }
 
 function initStatusFilterMenu(): void {
-  for (const category of ["colors", "typography"] as const) {
+  for (const category of ["colors", "typography", "icons"] as const) {
     const { btn, menu } = statusFilterEls(category);
 
     btn.addEventListener("click", (event) => {
@@ -744,8 +757,12 @@ function applyLibrariesState(state: {
   textStyles: LibraryTextStyle[];
   textStylesAvailable: boolean;
   textStylesError?: string;
+  icons?: LibraryIconSummary[];
+  iconsAvailable?: boolean;
 }): void {
   const activeChanged = state.activeLibraryKey !== activeLibraryKey;
+  currentLibraryIcons = state.icons ?? [];
+  iconsLibraryAvailable = state.iconsAvailable === true;
   loadedLibraries = state.libraries;
   activeLibraryKey = state.activeLibraryKey;
   currentLibraryTokens = state.tokens;
@@ -753,6 +770,7 @@ function applyLibrariesState(state: {
   typographyLibraryAvailable = state.textStylesAvailable;
   typographyLibraryError = state.textStylesError ?? null;
   updateTypographyCategoryAvailability();
+  updateIconsCategoryAvailability();
   renderLibraryList();
   renderLibrarySelect();
   setLibraryAddFormOpen(false);
@@ -1248,17 +1266,45 @@ function updateTypographyCategoryAvailability(): void {
   }
 }
 
+const ICONS_UNAVAILABLE =
+  "В выбранной библиотеке нет иконок. Выберите иконочную библиотеку или обновите её в «Настройках».";
+
+function updateIconsCategoryAvailability(): void {
+  const iconsBtn = document.querySelector<HTMLButtonElement>('#tc-category-segment button[data-category="icons"]');
+  if (iconsBtn) {
+    iconsBtn.disabled = !iconsLibraryAvailable;
+    iconsBtn.title = iconsLibraryAvailable ? "" : ICONS_UNAVAILABLE;
+  }
+  if (!iconsLibraryAvailable && activeCategory === "icons") {
+    activeCategory = "colors";
+    setCategorySegmentPressed("colors");
+    applyActiveCategoryView();
+  }
+}
+
+const SCAN_PANEL_COPY: Record<TokenCategory, { title: string; caption: string; button: string }> = {
+  colors: {
+    title: "Сканирование цветов",
+    caption: "Выберите библиотеку и область макета для сравнения цветов.",
+    button: "Сканировать цвета",
+  },
+  typography: {
+    title: "Сканирование типографики",
+    caption: "Выберите библиотеку и область макета для сравнения стилей текста.",
+    button: "Сканировать типографику",
+  },
+  icons: {
+    title: "Сканирование иконок",
+    caption: "Выберите иконочную библиотеку и область макета для сравнения иконок.",
+    button: "Сканировать иконки",
+  },
+};
+
 function updateScanPanelCopy(): void {
-  const isTypography = activeCategory === "typography";
-  $<HTMLElement>("tc-scan-title").textContent = isTypography
-    ? "Сканирование типографики"
-    : "Сканирование цветов";
-  $<HTMLElement>("tc-scan-caption").textContent = isTypography
-    ? "Выберите библиотеку и область макета для сравнения стилей текста."
-    : "Выберите библиотеку и область макета для сравнения цветов.";
-  $<HTMLButtonElement>("tc-scan-btn").textContent = isTypography
-    ? "Сканировать типографику"
-    : "Сканировать цвета";
+  const copy = SCAN_PANEL_COPY[activeCategory];
+  $<HTMLElement>("tc-scan-title").textContent = copy.title;
+  $<HTMLElement>("tc-scan-caption").textContent = copy.caption;
+  $<HTMLButtonElement>("tc-scan-btn").textContent = copy.button;
 }
 
 function setCategorySegmentPressed(category: TokenCategory): void {
@@ -1269,11 +1315,12 @@ function setCategorySegmentPressed(category: TokenCategory): void {
 }
 
 function updateResultsBlocksVisibility(): void {
-  const isTypography = activeCategory === "typography";
-  $<HTMLElement>("tc-results-block-colors").hidden = isTypography;
-  $<HTMLElement>("tc-results-block-typography").hidden = !isTypography;
-  $<HTMLElement>("tc-rescan-typography-btn").hidden = !isTypography;
-  setExportButtonsDisabled(currentResults.length === 0);
+  $<HTMLElement>("tc-results-block-colors").hidden = activeCategory !== "colors";
+  $<HTMLElement>("tc-results-block-typography").hidden = activeCategory !== "typography";
+  $<HTMLElement>("tc-results-block-icons").hidden = activeCategory !== "icons";
+  $<HTMLElement>("tc-rescan-typography-btn").hidden = activeCategory === "colors";
+  // Экспорт и печать иконок — этап 5 плана v1.5.0.
+  setExportButtonsDisabled(currentResults.length === 0 || activeCategory === "icons");
   updateProposeButton(pendingProposeCount);
 }
 
@@ -1294,7 +1341,10 @@ function applyActiveCategoryView(resetStatusFilters = false): void {
 
 function switchActiveCategory(nextCategory: TokenCategory): void {
   if (nextCategory === activeCategory) return;
-  if (nextCategory === "typography" && !typographyLibraryAvailable) {
+  if (
+    (nextCategory === "typography" && !typographyLibraryAvailable) ||
+    (nextCategory === "icons" && !iconsLibraryAvailable)
+  ) {
     setCategorySegmentPressed(activeCategory);
     return;
   }
@@ -1312,7 +1362,7 @@ function switchActiveCategory(nextCategory: TokenCategory): void {
     pendingProposeCountByCategory[activeCategory] = 0;
     resultsByCategory[activeCategory] = [];
     updateProposeButton(
-      pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography,
+      pendingProposeCountByCategory.colors + pendingProposeCountByCategory.typography + pendingProposeCountByCategory.icons,
       pendingProposeCountByCategory
     );
   }
@@ -2288,8 +2338,7 @@ function renderTargetCellHtml(result: ComparisonResult): string {
 
 function setSelectedRow(recordId: string): void {
   selectedRecordId = recordId;
-  const tbodySelector =
-    activeCategory === "typography" ? "#tc-results-tbody-typography" : "#tc-results-tbody-colors";
+  const tbodySelector = `#tc-results-tbody-${activeCategory}`;
   document.querySelectorAll<HTMLTableRowElement>(`${tbodySelector} tr[data-record-id]`).forEach((row) => {
     row.classList.toggle("ds-row-selected", row.dataset.recordId === recordId);
   });
@@ -2302,7 +2351,7 @@ function updateApplyButtonState(): void {
 }
 
 /**
- * Сводка над таблицей — одна для обеих категорий.
+ * Сводка над таблицей — одна для всех категорий.
  *
  * Раньше типографика выходила раньше и показывала только общее число: без
  * счётчика «обработано» и без учёта фильтра, которого у неё и не было.
@@ -2313,7 +2362,9 @@ function renderResultsSummary(): void {
     ? NOT_SCANNED_TEXT
     : activeCategory === "typography"
       ? "Расхождений в типографике нет. Запустите сканирование после изменений в макете."
-      : "Расхождений нет. Запустите сканирование после изменений в макете.";
+      : activeCategory === "icons"
+        ? "Расхождений в иконках нет. Запустите сканирование после изменений в макете."
+        : "Расхождений нет. Запустите сканирование после изменений в макете.";
 
   const visible = getFilteredResults();
   const visibleCount = visible.length;
@@ -2351,6 +2402,7 @@ const TYPOGRAPHY_STATUS_SORT_ORDER: Record<StatusFilterKey, number> = {
   "name-match-unresolved": 9,
   approximate: 10,
   "layout-only": 11,
+  detached: 12,
 };
 
 function typographyResultsHaveFontSizeMismatch(result: ComparisonResult): boolean {
@@ -2799,6 +2851,373 @@ function restorePreferredSelection(
   updateApplyButtonState();
 }
 
+// ---------------------------------------------------------------------------
+// Иконки (v1.5.0): таблица, превью, выбор иконки, решение
+// ---------------------------------------------------------------------------
+
+/** Превью иконки: SVG по контуру из геометрии. Нет контура — пустая рамка. */
+function iconPreviewHtml(outline: IconOutline | undefined, label: string): string {
+  if (!outline || outline.paths.length === 0) {
+    return `<span class="tc-icon-preview tc-icon-preview--empty" role="img" aria-label="${escapeHtml(label)}"></span>`;
+  }
+  const paths = outline.paths
+    .map(
+      (path) =>
+        `<path d="${escapeHtml(path.d)}" fill="currentColor"${path.evenOdd ? ' fill-rule="evenodd"' : ""}/>`
+    )
+    .join("");
+  return `<svg class="tc-icon-preview" viewBox="${outline.viewBox.join(" ")}" role="img" aria-label="${escapeHtml(
+    label
+  )}">${paths}</svg>`;
+}
+
+const ICON_STATUS_SORT_ORDER: Partial<Record<StatusFilterKey, number>> = {
+  detached: 0,
+  value: 1,
+  conflict: 2,
+  approximate: 3,
+  "layout-only": 4,
+  "hardcoded-no-analog": 5,
+  exact: 6,
+};
+
+function compareIconResults(a: ComparisonResult, b: ComparisonResult): number {
+  const order = (result: ComparisonResult) => ICON_STATUS_SORT_ORDER[getResultStatusFilterKey(result)] ?? 9;
+  return order(a) - order(b) || b.count - a.count;
+}
+
+function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
+  const row = document.createElement("tr");
+  row.dataset.recordId = result.id;
+  const icon = result.icon;
+
+  const statusCell = document.createElement("td");
+  const statusBadges = document.createElement("div");
+  statusBadges.className = "ds-status-cell";
+  statusCell.appendChild(statusBadges);
+  statusBadges.appendChild(createStatusBadge(result));
+  if (icon?.nonstandardSize) {
+    statusBadges.appendChild(
+      createSecondaryBadge(
+        "Нестандартный размер",
+        "neutral",
+        "Иконка растянута не по размеру компонента библиотеки. Это может быть и ошибкой, и осознанным решением."
+      )
+    );
+  }
+  if (icon?.multiLayer) {
+    statusBadges.appendChild(
+      createSecondaryBadge(
+        "Из нескольких слоёв",
+        "warning",
+        `Иконка собрана из ${icon.layers} ${pluralizeLayers(icon.layers)}, а в библиотеке она цельная. Скорее всего это ошибка сборки, но бывает и намеренно.`
+      )
+    );
+  }
+  if (icon?.disputed) {
+    const names = icon.alternatives.map((alt) => `${alt.name} (${Math.round(alt.similarity * 100)}%)`).join(", ");
+    statusBadges.appendChild(
+      createSecondaryBadge("Спорный вариант", "warning", `По форме подходят несколько иконок библиотеки: ${names}. Выберите нужную.`)
+    );
+  }
+  if (result.decision) statusBadges.appendChild(createDecisionCheck(result.decision));
+  if (result.decisionSource === "registry") statusBadges.appendChild(createRegistryDecisionBadge());
+  row.appendChild(statusCell);
+
+  const iconCell = document.createElement("td");
+  const cellWrap = document.createElement("div");
+  cellWrap.className = "tc-icon-cell";
+  cellWrap.innerHTML = iconPreviewHtml(icon?.outline, `Иконка в макете: ${result.representativeNodeName}`);
+  const textWrap = document.createElement("div");
+  textWrap.className = "tc-icon-cell__text";
+  const layerLink = document.createElement("button");
+  layerLink.type = "button";
+  layerLink.className = "ds-accent-link ds-layer-name";
+  layerLink.title = "Перейти к слою в макете";
+  layerLink.textContent = result.representativeNodeName || "(без имени)";
+  layerLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    post({ type: "select-nodes", payload: { nodeIds: result.nodeIds } });
+  });
+  textWrap.appendChild(layerLink);
+  const path = document.createElement("div");
+  path.className = "ds-value-meta__caption ds-value-meta__caption--path";
+  path.textContent = result.representativeNodePath;
+  path.title = result.representativeNodePath;
+  textWrap.appendChild(path);
+  cellWrap.appendChild(textWrap);
+  iconCell.appendChild(cellWrap);
+  row.appendChild(iconCell);
+
+  row.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("button, select, input, textarea, option, datalist")) return;
+    setSelectedRow(result.id);
+  });
+
+  const currentCell = document.createElement("td");
+  currentCell.innerHTML = `<div class="ds-value-meta__primary">${escapeHtml(result.displayValue)}</div>`;
+  row.appendChild(currentCell);
+
+  const targetCell = document.createElement("td");
+  if (result.target) {
+    const similarity = icon?.similarity !== undefined ? `форма совпадает на ${Math.round(icon.similarity * 100)}%` : "";
+    targetCell.innerHTML = `<div class="tc-icon-cell">${iconPreviewHtml(
+      icon?.targetOutline,
+      `Иконка библиотеки: ${result.target.name}`
+    )}<div class="tc-icon-cell__text"><div class="ds-value-meta__primary">${escapeHtml(
+      result.target.name
+    )}</div><div class="ds-value-meta__caption">${escapeHtml(similarity)}</div></div></div>`;
+  } else {
+    targetCell.innerHTML = `<div class="ds-value-meta__caption">нет совпадения</div>`;
+  }
+  row.appendChild(targetCell);
+
+  const usesCell = document.createElement("td");
+  usesCell.textContent = String(result.count);
+  row.appendChild(usesCell);
+
+  row.appendChild(buildIconActionCell(result));
+  return row;
+}
+
+const ICON_ACTION_OPTIONS: Array<{ value: Decision; label: string }> = [
+  { value: "mapped_suggested", label: "Использовать предложенную" },
+  { value: "mapped", label: "Выбрать иконку из AID" },
+  { value: "ignored", label: "Игнорировать" },
+  { value: "candidate", label: "Кандидат на новую иконку" },
+];
+
+function iconSummaryName(icon: LibraryIconSummary): string {
+  return icon.setName ? `${icon.setName} / ${icon.name}` : icon.name;
+}
+
+function filterLibraryIcons(query: string): LibraryIconSummary[] {
+  const normalized = query.trim().toLowerCase();
+  const icons = normalized
+    ? currentLibraryIcons.filter((icon) => iconSummaryName(icon).toLowerCase().includes(normalized))
+    : currentLibraryIcons;
+  return icons.slice(0, 80);
+}
+
+function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
+  const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
+  if (!menu) return;
+  const icons = filterLibraryIcons(query);
+  if (icons.length === 0) {
+    menu.innerHTML = `<div class="ds-filter-menu__empty">Иконки не найдены</div>`;
+    return;
+  }
+  menu.innerHTML = `
+    <div class="ds-filter-menu__options">
+      ${icons
+        .map((icon) => {
+          const name = iconSummaryName(icon);
+          return `
+        <button type="button" class="ds-filter-menu__option tc-icon-cell" role="option" data-component-key="${escapeHtml(
+          icon.key
+        )}" data-label="${escapeHtml(name)}">
+          ${iconPreviewHtml(icon.outline, name)}
+          <span class="ds-value-meta__primary">${escapeHtml(name)}</span>
+        </button>`;
+        })
+        .join("")}
+    </div>
+  `;
+  menu.querySelectorAll<HTMLButtonElement>(".ds-filter-menu__option").forEach((option) => {
+    option.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const input = combobox.querySelector<HTMLInputElement>(".ds-combobox__input");
+      const host = combobox.closest<HTMLElement>(".ds-action-extra");
+      const key = option.dataset.componentKey;
+      if (!input || !host || !key) return;
+      input.value = option.dataset.label ?? "";
+      host.dataset.selectedComponentKey = key;
+      setComboboxOpen(combobox, false);
+    });
+  });
+}
+
+function setupIconCombobox(mappedExtra: HTMLElement, initialKey?: string): void {
+  mappedExtra.innerHTML = `
+    <div class="ds-combobox">
+      <input type="text" class="ds-combobox__input ds-input" placeholder="Начните вводить имя иконки..." autocomplete="off" spellcheck="false" />
+      <button type="button" class="ds-combobox__toggle" aria-label="Показать иконки" aria-expanded="false">
+        ${DROPDOWN_CHEVRON_SVG}
+      </button>
+      <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
+    </div>
+  `;
+  const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
+  const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
+  const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
+  if (!combobox || !input || !toggle) return;
+
+  input.addEventListener("input", () => {
+    delete mappedExtra.dataset.selectedComponentKey;
+    renderIconComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, true);
+  });
+  toggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    if (open) renderIconComboboxMenu(combobox, input.value);
+    setComboboxOpen(combobox, open);
+  });
+
+  const initial = initialKey ? currentLibraryIcons.find((icon) => icon.key === initialKey) : undefined;
+  if (initial) {
+    input.value = iconSummaryName(initial);
+    mappedExtra.dataset.selectedComponentKey = initial.key;
+  }
+}
+
+function buildIconActionCell(result: ComparisonResult): HTMLTableCellElement {
+  const cell = document.createElement("td");
+  const wrap = document.createElement("div");
+  wrap.className = "ds-action-cell";
+
+  const select = document.createElement("select");
+  select.className = "ds-select";
+  for (const option of ICON_ACTION_OPTIONS) {
+    if (option.value === "mapped_suggested" && !result.target?.componentKey) continue;
+    const opt = document.createElement("option");
+    opt.value = option.value;
+    opt.textContent = option.label;
+    select.appendChild(opt);
+  }
+  if (result.decision && [...select.options].some((opt) => opt.value === result.decision)) {
+    select.value = result.decision;
+  }
+  wrap.appendChild(select);
+
+  const mappedExtra = document.createElement("div");
+  mappedExtra.className = "ds-action-extra";
+  setupIconCombobox(mappedExtra, result.decisionTargetComponentKey);
+  wrap.appendChild(mappedExtra);
+
+  const commentExtra = document.createElement("div");
+  commentExtra.className = "ds-action-extra";
+  commentExtra.innerHTML = `<textarea rows="2" placeholder="Комментарий (обязателен)" class="tc-comment-input ds-textarea"></textarea>`;
+  wrap.appendChild(commentExtra);
+
+  // Правки значения у иконок нет — пустой блок держит общий формат RowControls.
+  const valueFixExtra = document.createElement("div");
+  valueFixExtra.className = "ds-action-extra";
+
+  const syncExtraVisibility = (): void => {
+    mappedExtra.classList.toggle("visible", select.value === "mapped");
+    commentExtra.classList.toggle("visible", select.value === "ignored");
+  };
+  select.addEventListener("change", syncExtraVisibility);
+  syncExtraVisibility();
+
+  if (result.decisionComment && result.decision === "ignored") {
+    (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value = result.decisionComment;
+  }
+
+  rowControls.set(result.id, { select, mappedExtra, commentExtra, valueFixExtra });
+  cell.appendChild(wrap);
+  return cell;
+}
+
+function applyIconDecision(
+  result: ComparisonResult,
+  select: HTMLSelectElement,
+  mappedExtra: HTMLElement,
+  commentExtra: HTMLElement
+): void {
+  const decision = select.value as Decision;
+  const review = buildSourceReviewContext(result);
+
+  if (decision === "mapped_suggested") {
+    if (!result.target?.componentKey) {
+      showError("Для этой иконки нет предложенной — выберите «Выбрать иконку из AID».");
+      return;
+    }
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "icons",
+        targetComponentKey: result.target.componentKey,
+        targetComponentName: result.target.name,
+        targetName: result.target.name,
+        ...review,
+      },
+    });
+    return;
+  }
+
+  if (decision === "mapped") {
+    const key = mappedExtra.dataset.selectedComponentKey;
+    const icon = key ? currentLibraryIcons.find((item) => item.key === key) : undefined;
+    if (!icon) {
+      showError("Выберите иконку из списка AID.");
+      return;
+    }
+    post({
+      type: "apply-decision",
+      payload: {
+        recordId: result.id,
+        decision,
+        category: "icons",
+        targetComponentKey: icon.key,
+        targetComponentName: iconSummaryName(icon),
+        targetName: iconSummaryName(icon),
+        ...review,
+      },
+    });
+    return;
+  }
+
+  if (decision === "ignored") {
+    const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
+    if (!comment) {
+      showError("Для решения «Игнорировать» комментарий обязателен.");
+      return;
+    }
+    post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", comment, ...review } });
+    return;
+  }
+
+  post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", ...review } });
+}
+
+function renderIconResultsTable(preferredSelectedId?: string): void {
+  const tbody = $("tc-results-tbody-icons");
+  tbody.innerHTML = "";
+  rowControls.clear();
+  selectedRecordId = null;
+  updateStatusFilterIndicator();
+  renderResultsSummary();
+
+  if (currentResults.length === 0) {
+    appendEmptyStateRow(
+      tbody,
+      scannedCategories.has("icons")
+        ? "Расхождений нет: иконки в макете — из выбранной библиотеки. Запустите сканирование заново после изменений в макете."
+        : NOT_SCANNED_TEXT
+    );
+    updateApplyButtonState();
+    return;
+  }
+
+  const visibleResults = [...getFilteredResults()].sort(compareIconResults);
+  if (visibleResults.length === 0) {
+    appendEmptyStateRow(tbody, "Нет строк для выбранных статусов. Откройте фильтр в колонке «Статус» и выберите нужные.");
+    updateApplyButtonState();
+    return;
+  }
+
+  for (const result of visibleResults) tbody.appendChild(buildIconResultRow(result));
+  restorePreferredSelection(preferredSelectedId, visibleResults);
+}
+
 function renderColorResultsTable(preferredSelectedId?: string): void {
   const tbody = $("tc-results-tbody-colors");
   tbody.innerHTML = "";
@@ -2838,6 +3257,10 @@ function renderColorResultsTable(preferredSelectedId?: string): void {
 
 function renderResultsTable(preferredSelectedId?: string): void {
   updateResultsBlocksVisibility();
+  if (activeCategory === "icons") {
+    renderIconResultsTable(preferredSelectedId);
+    return;
+  }
   if (activeCategory === "typography") {
     renderTypographyResultsTable(preferredSelectedId);
     return;
@@ -3288,6 +3711,10 @@ function initApplyFooterButton(): void {
     const controls = rowControls.get(selectedRecordId);
     const result = currentResults.find((item) => item.id === selectedRecordId);
     if (!controls || !result) return;
+    if (activeCategory === "icons") {
+      applyIconDecision(result, controls.select, controls.mappedExtra, controls.commentExtra);
+      return;
+    }
     if (activeCategory === "typography") {
       applyTypographyDecision(
         result,
@@ -3308,7 +3735,7 @@ function initRescanTypographyButton(): void {
     const scope = getSelectedScope();
     $<HTMLButtonElement>("tc-scan-btn").disabled = true;
     $("tc-scan-status").textContent = "Сканирование...";
-    post({ type: "scan", payload: { scope, category: "typography" } });
+    post({ type: "scan", payload: { scope, category: activeCategory } });
   });
 }
 
@@ -3515,6 +3942,8 @@ window.onmessage = (event: MessageEvent) => {
         tokens,
         textStyles,
         textStylesAvailable: initialTextStylesAvailable,
+        icons: message.payload.icons,
+        iconsAvailable: message.payload.iconsAvailable,
       });
       $<HTMLInputElement>("tc-token-input").placeholder = hasToken ? "•••••••• (сохранён)" : "figd_...";
       $<HTMLInputElement>("tc-registry-secret-input").placeholder = hasRegistrySecret
@@ -3737,7 +4166,7 @@ window.onmessage = (event: MessageEvent) => {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
-      setExportButtonsDisabled(false);
+      setExportButtonsDisabled(currentResults.length === 0 || activeCategory === "icons");
       hidePrintLoader();
       renderPrintStatus("");
       if (applyToLayoutInFlight) {

@@ -17,6 +17,7 @@ import type {
   ComparisonTarget,
   Decision,
   LayoutRecord,
+  LibraryIcon,
   LibraryTextStyle,
   LibraryToken,
   LibraryTokenModeValue,
@@ -29,6 +30,10 @@ import { pairModesByIndex } from "./lib/modePairing";
 import { FigmaRestApiError, fetchFigmaFileName, fetchLibraryColorVariables } from "./lib/figmaRestApi";
 import { fetchLibraryTextStyles } from "./lib/figmaStylesRestApi";
 import { fetchLibraryIcons } from "./lib/figmaComponentsRestApi";
+import { compareIcons, requiresIconUserAction } from "./lib/iconComparator";
+import { iconRecordToLayoutRecord, iconResultToComparisonResult, toLibraryIconSummary } from "./lib/iconResults";
+import type { IconRecord } from "./lib/iconScanner";
+import { scanIcons } from "./lib/scanner";
 import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
@@ -75,10 +80,12 @@ function send(message: CodeToUiMessage): void {
 const lastRecordsByCategory: Record<TokenCategory, LayoutRecord[]> = {
   colors: [],
   typography: [],
+  icons: [],
 };
 const lastScanScopeByCategory: Record<TokenCategory, ScanScope | null> = {
   colors: null,
   typography: null,
+  icons: null,
 };
 let lastLibraryColors: LibraryToken[] = [];
 let lastLibraryTypography: LibraryTextStyle[] = [];
@@ -91,6 +98,16 @@ let typographyLibraryLoadError: string | null = null;
  * lastLibraryTypography; список загруженных — в storage.getLibraries().
  */
 let activeLibraryKey: string | null = null;
+/** Иконки текущей библиотеки (v1.5.0). */
+let lastLibraryIcons: LibraryIcon[] = [];
+/**
+ * Найденные при последнем сканировании иконки — в своём формате: сравнение
+ * иконок работает с ними, а не с LayoutRecord (lib/iconResults.ts).
+ */
+const lastIconRecords = new Map<string, IconRecord>();
+
+const ICONS_NOT_LOADED =
+  "В выбранной библиотеке нет иконок. Выберите иконочную библиотеку на вкладке «Сканирование» или обновите её кнопкой ↻ в «Настройках» — иконки загружаются начиная с версии 1.5.0.";
 /** fileKey → имя библиотеки: для описания решений в запросе на согласование. */
 const libraryNames = new Map<string, string>();
 
@@ -110,6 +127,7 @@ async function activateLibrary(fileKey: string | null): Promise<void> {
 
   lastLibraryColors = data?.tokens ?? [];
   lastLibraryTypography = data?.styles ?? [];
+  lastLibraryIcons = data?.icons ?? [];
   typographyLibraryLoadError =
     meta && meta.textStyleCount === null ? meta.textStylesError ?? TEXT_STYLES_NOT_LOADED : null;
 }
@@ -126,6 +144,8 @@ async function sendLibrariesChanged(loadedFileName?: string): Promise<void> {
       textStyles: lastLibraryTypography,
       textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
       textStylesError: typographyLibraryLoadError ?? undefined,
+      icons: lastLibraryIcons.map(toLibraryIconSummary),
+      iconsAvailable: Boolean(activeLibraryKey) && lastLibraryIcons.length > 0,
       ...(loadedFileName ? { loadedFileName } : {}),
     },
   });
@@ -256,6 +276,8 @@ async function handleUiReady(): Promise<void> {
       tokens: lastLibraryColors,
       textStyles: lastLibraryTypography,
       textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
+      icons: lastLibraryIcons.map(toLibraryIconSummary),
+      iconsAvailable: Boolean(activeLibraryKey) && lastLibraryIcons.length > 0,
       hasGitHubToken: Boolean(githubToken),
       githubRepo,
       githubRegistryPath: githubRegistryPath ?? DEFAULT_REGISTRY_PATH,
@@ -875,7 +897,7 @@ async function handleScan(
   try {
     lastScanScopeByCategory[category] = scope;
     void refreshProposalStatuses();
-    const scanLabel = category === "typography" ? "типографики" : "цветов";
+    const scanLabel = category === "typography" ? "типографики" : category === "icons" ? "иконок" : "цветов";
     send({ type: "scan-progress", payload: { message: `Сканирование ${scanLabel}...` } });
 
     if (category === "typography") {
@@ -908,6 +930,38 @@ async function handleScan(
           resolvedByTeam: countResolvedByTeam(records, results, history),
           libraryTokens: lastLibraryColors,
           libraryTextStyles: lastLibraryTypography,
+        },
+      });
+      return;
+    }
+
+    if (category === "icons") {
+      if (!activeLibraryKey) {
+        send({ type: "error", payload: { message: NO_ACTIVE_LIBRARY } });
+        return;
+      }
+      if (lastLibraryIcons.length === 0) {
+        send({ type: "error", payload: { message: ICONS_NOT_LOADED } });
+        return;
+      }
+      const iconRecords = await scanIcons(scope);
+      lastIconRecords.clear();
+      for (const record of iconRecords) lastIconRecords.set(record.id, record);
+      const records = iconRecords.map(iconRecordToLayoutRecord);
+      setLastRecords("icons", records);
+
+      const history = await getComparisonHistory();
+      const results = compareIcons(iconRecords, lastLibraryIcons, history)
+        .filter(requiresIconUserAction)
+        .map(iconResultToComparisonResult);
+      send({
+        type: "scan-results",
+        payload: {
+          category: "icons",
+          results,
+          libraryTokens: lastLibraryColors,
+          libraryTextStyles: lastLibraryTypography,
+          resolvedByTeam: countResolvedByTeam(records, results, history),
         },
       });
       return;
@@ -1019,6 +1073,8 @@ async function handleApplyDecision(
     targetVariableId?: string;
     targetStyleId?: string;
     targetStyleName?: string;
+    targetComponentKey?: string;
+    targetComponentName?: string;
     mismatchedProperties?: string[];
     targetName?: string;
     targetCollectionName?: string;
@@ -1065,6 +1121,8 @@ async function handleApplyDecision(
     targetVariableId: fields.targetVariableId,
     targetStyleId: fields.targetStyleId,
     targetStyleName: fields.targetStyleName,
+    targetComponentKey: fields.targetComponentKey,
+    targetComponentName: fields.targetComponentName,
     mismatchedProperties: fields.mismatchedProperties,
     targetName: fields.targetName,
     targetCollectionName: fields.targetCollectionName,
@@ -1087,6 +1145,13 @@ async function handleApplyDecision(
     targetDisplayValue: fields.targetDisplayValue,
   });
 
+  if (category === "icons") {
+    const [result] = computeIconResults([record], await withRegistryDecisions(history));
+    if (result) send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
+    return;
+  }
+
   if (category === "typography") {
     const [result] = computeTypographyComparisonResults([record], lastLibraryTypography, await withRegistryDecisions(history));
     send({ type: "decision-applied", payload: { recordId, result } });
@@ -1099,8 +1164,23 @@ async function handleApplyDecision(
   await sendPendingProposeCount();
 }
 
+/** Результат сравнения для строк иконок — по сохранённым при сканировании записям. */
+function computeIconResults(records: LayoutRecord[], history: Record<string, StoredDecision>): ComparisonResult[] {
+  const iconRecords = records
+    .map((record) => lastIconRecords.get(record.id))
+    .filter((record): record is IconRecord => Boolean(record));
+  return compareIcons(iconRecords, lastLibraryIcons, history).map(iconResultToComparisonResult);
+}
+
 async function handleClearDecision(recordId: string): Promise<void> {
   const history = await storage.clearMappingHistoryEntry(recordId);
+  const iconRecord = getLastRecords("icons").find((item) => item.id === recordId);
+  if (iconRecord) {
+    const [result] = computeIconResults([iconRecord], await withRegistryDecisions(history));
+    if (result) send({ type: "decision-applied", payload: { recordId, result } });
+    await sendPendingProposeCount();
+    return;
+  }
   const typographyRecord = getLastRecords("typography").find((item) => item.id === recordId);
   if (typographyRecord) {
     const [result] = computeTypographyComparisonResults(
@@ -1315,7 +1395,14 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   });
 }
 
+/** Превью и «Применить в макет» для иконок — этап 6 плана v1.5.0; до того кнопок в интерфейсе нет. */
+const ICONS_APPLY_NOT_READY = "Превью и «Применить в макет» для иконок ещё не готовы.";
+
 async function handleApplyToLayout(recordId: string): Promise<void> {
+  if (getLastRecords("icons").some((item) => item.id === recordId)) {
+    send({ type: "error", payload: { message: ICONS_APPLY_NOT_READY } });
+    return;
+  }
   if (getLastRecords("typography").some((item) => item.id === recordId)) {
     await handleApplyTypographyToLayout(recordId);
     return;
@@ -1888,6 +1975,9 @@ async function handleBuildPreview(recordId: string, variableId?: string, styleId
   previewInFlight = true;
 
   try {
+    if (getLastRecords("icons").some((item) => item.id === recordId)) {
+      throw new Error(ICONS_APPLY_NOT_READY);
+    }
     const isTypography = getLastRecords("typography").some((item) => item.id === recordId);
     const modes = isTypography
       ? await buildTypographyPreview(recordId, styleId)
@@ -2068,6 +2158,8 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
           targetVariableId: message.payload.targetVariableId,
           targetStyleId: message.payload.targetStyleId,
           targetStyleName: message.payload.targetStyleName,
+          targetComponentKey: message.payload.targetComponentKey,
+          targetComponentName: message.payload.targetComponentName,
           mismatchedProperties: message.payload.mismatchedProperties,
           targetName: message.payload.targetName,
           targetCollectionName: message.payload.targetCollectionName,

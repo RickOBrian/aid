@@ -456,6 +456,9 @@ export function isPendingProposalRecord(
   entry?: StoredDecision
 ): boolean {
   if (entry?.source === "registry") return false;
+  // Реестр и бэкенд примут иконки на этапе 5 плана v1.5.0; до того решения
+  // по иконкам хранятся локально и на согласование не уходят.
+  if (entry?.category === "icons") return false;
   return !submitted.has(recordId);
 }
 
@@ -475,7 +478,7 @@ export async function countPendingProposalsByCategory(
   history: Record<string, StoredDecision>
 ): Promise<Record<TokenCategory, number>> {
   const submitted = await getSubmittedSignatures();
-  const counts: Record<TokenCategory, number> = { colors: 0, typography: 0 };
+  const counts: Record<TokenCategory, number> = { colors: 0, typography: 0, icons: 0 };
   for (const [recordId, entry] of Object.entries(history)) {
     if (!isPendingProposalRecord(recordId, submitted, entry)) continue;
     counts[storedDecisionCategory(entry)] += 1;

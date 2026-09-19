@@ -464,6 +464,44 @@
         color: var(--ds-text-muted);
       }
 
+      /*
+       * Превью иконки в таблице — контур из геометрии (lib/iconShape.ts),
+       * без сети. Цвет — текстом: сравнивается форма, цвет — в категории «Цвета».
+       */
+      .tc-icon-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .tc-icon-cell__text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .tc-icon-preview {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        padding: 3px;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        background: var(--ds-surface);
+        color: var(--ds-text);
+      }
+
+      .tc-icon-preview--empty {
+        border-style: dashed;
+      }
+
+      .ds-combobox__menu .tc-icon-preview {
+        width: 24px;
+        height: 24px;
+        padding: 2px;
+      }
+
       /* Список загруженных библиотек на вкладке «Настройки» */
       .tc-library-add-btn {
         margin-left: auto;
@@ -2303,6 +2341,7 @@
           <div class="ds-segment" role="group" aria-label="Категория сканирования" id="tc-category-segment">
             <button type="button" data-category="colors" aria-pressed="true">Цвета</button>
             <button type="button" data-category="typography" aria-pressed="false">Типографика</button>
+            <button type="button" data-category="icons" aria-pressed="false">Иконки</button>
           </div>
         </div>
         <div class="ds-field">
@@ -2560,6 +2599,61 @@
                 </tr>
               </thead>
               <tbody id="tc-results-tbody-typography"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ds-results-block" id="tc-results-block-icons" hidden>
+          <div class="ds-token-table-wrap ds-token-table-wrap--results">
+            <table class="ds-token-table" id="tc-results-table-icons">
+              <colgroup>
+                <col class="ds-col-status" />
+                <col class="ds-col-layer" />
+                <col class="ds-col-value" />
+                <col class="ds-col-value" />
+                <col class="ds-col-count" />
+                <col class="ds-col-action" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="ds-th-filter" scope="col">
+                    <button
+                      type="button"
+                      class="ds-th-filter-btn"
+                      id="tc-status-filter-btn-icons"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      aria-controls="tc-status-filter-menu-icons"
+                    >
+                      <span>Статус</span>
+                      <span class="ds-th-filter-indicator" id="tc-status-filter-indicator-icons" hidden></span>
+                      <svg
+                        class="ds-th-filter-btn__chevron"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4 6l4 4 4-4"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <div class="ds-filter-menu" id="tc-status-filter-menu-icons" role="menu" hidden></div>
+                  </th>
+                  <th scope="col">Иконка</th>
+                  <th scope="col">Сейчас</th>
+                  <th scope="col">Предлагаем</th>
+                  <th scope="col">Слоёв</th>
+                  <th scope="col">Действие</th>
+                </tr>
+              </thead>
+              <tbody id="tc-results-tbody-icons"></tbody>
             </table>
           </div>
         </div>

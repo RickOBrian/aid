@@ -19,7 +19,7 @@
 
 import { stableHash } from "./colorUtils";
 import { extractIconGeometry, type FigmaGeometryNode } from "./iconGeometry";
-import { fingerprint, packFingerprint } from "./iconShape";
+import { fingerprint, iconOutline, packFingerprint, type IconOutline } from "./iconShape";
 
 /** Иконка не больше этого по большей стороне, px. */
 export const ICON_MAX_SIZE = 64;
@@ -75,6 +75,8 @@ export interface IconCandidate {
   glyph: { width: number; height: number } | null;
   opacities: number[];
   layers: number;
+  /** Контур для превью в таблице. */
+  outline: IconOutline;
 }
 
 export interface IconRecord {
@@ -91,6 +93,7 @@ export interface IconRecord {
   glyph: IconCandidate["glyph"];
   opacities: number[];
   layers: number;
+  outline: IconOutline;
   count: number;
   /** Слои каждого вхождения — для выделения и «Применить в макет». */
   occurrences: string[][];
@@ -147,6 +150,7 @@ function candidateFrom(
     glyph: geometry.glyph ? { width: geometry.glyph.width, height: geometry.glyph.height } : null,
     opacities: geometry.opacities,
     layers: geometry.layers,
+    outline: iconOutline(geometry.paths, { x: 0, y: 0, width: size.width, height: size.height }),
   };
 }
 
@@ -323,6 +327,7 @@ export function groupIconCandidates(candidates: readonly IconCandidate[]): IconR
       glyph: candidate.glyph,
       opacities: candidate.opacities,
       layers: candidate.layers,
+      outline: candidate.outline,
       count: 1,
       occurrences: [candidate.nodeIds],
     });

@@ -16,7 +16,7 @@ export type RegistryDecision =
 export type RegistryEntryStatus = "approved" | "stale";
 
 /** Категория comparator-модуля (schema extension v1.1+). */
-export type TokenCategory = "colors" | "typography";
+export type TokenCategory = "colors" | "typography" | "icons";
 
 /** Одна запись реестра — решение по сигнатуре группы макета. */
 export interface RegistryEntry {

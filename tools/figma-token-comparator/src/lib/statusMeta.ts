@@ -79,6 +79,12 @@ const STATUS_META: Record<StatusFilterKey, StatusMeta> = {
     tone: "warning",
     hint: "Стиль текста применён, но его имя не совпадает с ожидаемым токеном системы.",
   },
+  detached: {
+    label: "Отвязанная иконка",
+    term: "Detached icon",
+    tone: "warning",
+    hint: "Точная копия иконки библиотеки, но не экземпляр компонента.",
+  },
   "mixed-unresolved": {
     label: "Смешанные значения",
     term: "Mixed (needs review)",
@@ -117,6 +123,45 @@ const STATUS_META: Record<StatusFilterKey, StatusMeta> = {
  * (typographyUtils.criticalTypographyMatches): от них зависит, «Совпало имя»
  * это или «Конфликт значений».
  */
+/**
+ * Тексты для таблицы иконок (v1.5.0, lib/iconComparator.ts). Форма важнее
+ * имени; «похожесть» — доля совпадения силуэтов.
+ */
+const ICON_OVERRIDES: Partial<Record<StatusFilterKey, Pick<StatusMeta, "label" | "hint">>> = {
+  exact: {
+    label: "Совпадает с библиотекой",
+    hint: "Это экземпляр иконки из библиотеки. Строка видна, только если с ним что-то не так — например, он растянут.",
+  },
+  value: {
+    label: "Совпала форма",
+    hint: "Это экземпляр другого компонента, но по форме он совпадает с иконкой библиотеки — её и стоит поставить.",
+  },
+  detached: {
+    label: "Отвязанная иконка",
+    hint: "Точная копия иконки библиотеки, но не экземпляр компонента: связь с библиотекой потеряна. Верните привязку.",
+  },
+  approximate: {
+    label: "Похожая форма",
+    hint: "Точного совпадения нет, но в библиотеке есть похожая иконка. Рядом — насколько похожа форма.",
+  },
+  conflict: {
+    label: "Конфликт",
+    hint: "Имя совпало с иконкой библиотеки, а форма заметно другая. Проверьте, та ли это иконка.",
+  },
+  "layout-only": {
+    label: "Нет в библиотеке",
+    hint: "Это экземпляр компонента, но похожей иконки в библиотеке нет ни по форме, ни по имени.",
+  },
+  "hardcoded-no-analog": {
+    label: "Иконка без компонента",
+    hint: "Иконка нарисована векторами, а не взята из библиотеки, и похожей в библиотеке нет. Кандидат на новую иконку или осознанное исключение.",
+  },
+  mapped: {
+    label: "Решение принято",
+    hint: "По этой иконке выбрана иконка из библиотеки.",
+  },
+};
+
 const TYPOGRAPHY_OVERRIDES: Partial<Record<StatusFilterKey, Pick<StatusMeta, "label" | "hint">>> = {
   exact: {
     label: "Совпадает с библиотекой",
@@ -150,6 +195,7 @@ const TYPOGRAPHY_OVERRIDES: Partial<Record<StatusFilterKey, Pick<StatusMeta, "la
 
 export function getStatusMeta(key: StatusFilterKey, category: TokenCategory): StatusMeta {
   const base = STATUS_META[key];
-  const override = category === "typography" ? TYPOGRAPHY_OVERRIDES[key] : undefined;
+  const override =
+    category === "typography" ? TYPOGRAPHY_OVERRIDES[key] : category === "icons" ? ICON_OVERRIDES[key] : undefined;
   return override ? { ...base, ...override } : base;
 }

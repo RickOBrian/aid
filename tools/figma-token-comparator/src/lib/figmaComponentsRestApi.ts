@@ -17,7 +17,7 @@
 
 import { FigmaRestApiError } from "./figmaRestApi";
 import { extractIconGeometry, type FigmaGeometryNode } from "./iconGeometry";
-import { fingerprint, packFingerprint } from "./iconShape";
+import { fingerprint, iconOutline, packFingerprint } from "./iconShape";
 import type { LibraryIcon } from "../comparators/types";
 
 const API_BASE = "https://api.figma.com/v1";
@@ -106,6 +106,7 @@ function toLibraryIcon(component: PublishedComponent, document: IconNodeDocument
     opacities: geometry.opacities,
     layers: geometry.layers,
     fingerprint: packFingerprint(fingerprint(geometry.paths, { size: ICON_FINGERPRINT_SIZE })),
+    outline: iconOutline(geometry.paths, { x: 0, y: 0, width, height }),
   };
 }
 

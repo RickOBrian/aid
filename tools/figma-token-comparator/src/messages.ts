@@ -7,6 +7,7 @@
 import type {
   ComparisonResult,
   Decision,
+  LibraryIconSummary,
   LibraryTextStyle,
   LibraryToken,
   ScanScope,
@@ -90,6 +91,9 @@ export interface ApplyDecisionMessage {
     targetVariableId?: string;
     targetStyleId?: string;
     targetStyleName?: string;
+    /** Icons — key и имя выбранной иконки библиотеки. */
+    targetComponentKey?: string;
+    targetComponentName?: string;
     mismatchedProperties?: string[];
     targetName?: string;
     targetCollectionName?: string;
@@ -244,6 +248,8 @@ export interface InitStateMessage {
     textStyles: LibraryTextStyle[];
     /** Стили текста текущей библиотеки загружены. */
     textStylesAvailable: boolean;
+    icons: LibraryIconSummary[];
+    iconsAvailable: boolean;
     hasGitHubToken: boolean;
     githubRepo: string | null;
     githubRegistryPath: string | null;
@@ -312,6 +318,10 @@ export interface LibrariesChangedMessage {
     textStyles: LibraryTextStyle[];
     /** Стили текста текущей библиотеки загружены — можно сканировать типографику. */
     textStylesAvailable: boolean;
+    /** Иконки текущей библиотеки — для списка выбора и превью. */
+    icons: LibraryIconSummary[];
+    /** В текущей библиотеке есть иконки — можно сканировать иконки. */
+    iconsAvailable: boolean;
     textStylesError?: string;
     /** Имя только что загруженной библиотеки — для строки статуса. */
     loadedFileName?: string;
