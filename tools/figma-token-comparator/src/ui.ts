@@ -1630,6 +1630,7 @@ function initPreviewModal(): void {
  */
 function canApplyToLayout(result: ComparisonResult): boolean {
   if (result.status !== "mapped") return false;
+  if (result.category === "icons") return Boolean(result.target?.componentKey);
   if (result.category === "typography" || activeCategory === "typography") {
     return Boolean(result.target?.styleKey || result.target?.styleId);
   }
@@ -1778,11 +1779,54 @@ function renderTypographyApplyBeforeAfterHtml(result: ComparisonResult): string 
   `;
 }
 
+const APPLY_NOTE_UNDO = "Отменить можно только сразу после применения — через Cmd/Ctrl+Z в Figma.";
+
+const APPLY_NOTES: Record<TokenCategory, string> = {
+  colors: `Это единственное действие плагина, которое меняет макет: заливка, обводка или цвет текста выбранных слоёв будут привязаны к переменной библиотеки. ${APPLY_NOTE_UNDO}`,
+  typography: `Это единственное действие плагина, которое меняет макет: к выбранным текстовым слоям будет привязан стиль текста библиотеки. ${APPLY_NOTE_UNDO}`,
+  icons: `Это единственное действие плагина, которое меняет макет: иконки этой строки заменятся экземпляром иконки библиотеки в цвете макета. Слои иконки без компонента удаляются, на их месте встаёт экземпляр. ${APPLY_NOTE_UNDO}`,
+};
+
 function openApplyToLayoutModal(result: ComparisonResult): void {
   activeApplyRecordId = result.id;
   applyModalPreviewPending = false;
+  $("tc-apply-note").textContent = APPLY_NOTES[result.category ?? activeCategory];
 
   const isTypography = result.category === "typography" || activeCategory === "typography";
+
+  if (result.category === "icons") {
+    const current = result.icon?.kind === "instance" && result.sourceName ? result.sourceName : "Без компонента";
+    $("tc-apply-summary").innerHTML = `
+      <div class="tc-apply-summary__row"><span>Иконка в макете</span><strong>${escapeHtml(current)}</strong></div>
+      <div class="tc-apply-summary__row"><span>Затронуто иконок</span><strong>${result.count}</strong></div>
+      <div class="tc-apply-summary__row"><span>Иконка библиотеки</span><strong>${escapeHtml(
+        result.target?.name ?? ""
+      )}</strong></div>
+    `;
+    $("tc-apply-before-after").innerHTML = `
+      <div class="tc-apply-before-after__col">
+        <div class="tc-apply-before-after__title">Было</div>
+        <div class="tc-icon-cell">${iconPreviewHtml(result.icon?.outline, current)}<div class="tc-icon-cell__text">
+          <div class="ds-value-meta__primary">${escapeHtml(current)}</div>
+          <div class="ds-value-meta__caption">${escapeHtml(result.displayValue)}</div></div></div>
+      </div>
+      <div class="tc-apply-before-after__col">
+        <div class="tc-apply-before-after__title">Стало</div>
+        <div class="tc-icon-cell">${iconPreviewHtml(result.icon?.targetOutline, result.target?.name ?? "")}<div class="tc-icon-cell__text">
+          <div class="ds-value-meta__primary">${escapeHtml(result.target?.name ?? "")}</div>
+          <div class="ds-value-meta__caption">Экземпляр библиотеки, цвет — из макета</div></div></div>
+      </div>
+    `;
+    $("tc-apply-confirm-view").hidden = false;
+    $("tc-apply-footer").hidden = false;
+    $("tc-apply-loading").hidden = true;
+    const resultView = $("tc-apply-result-view");
+    resultView.hidden = true;
+    resultView.innerHTML = "";
+    $("tc-apply-overlay").hidden = false;
+    requestApplyModalPreview(result.id);
+    return;
+  }
 
   if (isTypography) {
     $("tc-apply-summary").innerHTML = `
@@ -3160,6 +3204,21 @@ function buildIconActionCell(result: ComparisonResult): HTMLTableCellElement {
     wrap.insertBefore(previewBtn, mappedExtra);
   }
 
+  if (canApplyToLayout(result)) {
+    const applyLayoutBtn = document.createElement("button");
+    applyLayoutBtn.type = "button";
+    applyLayoutBtn.className = "ds-btn tc-apply-layout-btn";
+    applyLayoutBtn.textContent = "Применить в макет";
+    applyLayoutBtn.title = "Заменить иконку во всех слоях этой строки на иконку из решения, в цвете макета";
+    applyLayoutBtn.disabled = applyToLayoutInFlight;
+    applyLayoutBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openApplyToLayoutModal(result);
+    });
+    wrap.insertBefore(applyLayoutBtn, mappedExtra);
+  }
+
   // Правки значения у иконок нет — пустой блок держит общий формат RowControls.
   const valueFixExtra = document.createElement("div");
   valueFixExtra.className = "ds-action-extra";
@@ -4148,7 +4207,9 @@ window.onmessage = (event: MessageEvent) => {
       if (index !== -1) {
         currentResults[index] = message.payload.result;
         resultsByCategory[activeCategory] = currentResults;
-        if (activeCategory === "colors" && message.payload.result.status === "mapped") {
+        // Иначе строка с принятым решением скрывается фильтром статусов —
+        // и до «Применить в макет» не добраться.
+        if (activeCategory !== "typography" && message.payload.result.status === "mapped") {
           activeStatusFilters.add("mapped");
           updateStatusFilterIndicator();
         }

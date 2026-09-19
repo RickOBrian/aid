@@ -1397,12 +1397,80 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   });
 }
 
-/** «Применить в макет» для иконок — этап 6 плана v1.5.0; до того кнопки в интерфейсе нет. */
-const ICONS_APPLY_NOT_READY = "«Применить в макет» для иконок ещё не готово.";
+/**
+ * «Применить в макет» для иконок: каждое вхождение группы заменяется иконкой
+ * из решения, в цвете макета — та же замена, что в примерке
+ * (placeLibraryIcon), только на самом макете. Вхождение, которое не
+ * удалось заменить, пропускается с причиной, остальные применяются.
+ */
+async function handleApplyIconsToLayout(recordId: string): Promise<void> {
+  const record = getLastRecords("icons").find((item) => item.id === recordId);
+  const iconRecord = lastIconRecords.get(recordId);
+  if (!record || !iconRecord) {
+    send({ type: "error", payload: { message: "Строка не найдена в текущих результатах. Пересканируйте макет." } });
+    return;
+  }
+
+  const [result] = compareIcons([iconRecord], lastLibraryIcons, await getComparisonHistory());
+  const icon = result?.status === "mapped" ? result.target?.icon : undefined;
+  if (!icon) {
+    send({
+      type: "error",
+      payload: { message: "«Применить в макет» доступно после решения «Использовать предложенную» или «Выбрать иконку из AID»." },
+    });
+    return;
+  }
+
+  const occurrences = iconRecord.occurrences;
+  const skipped: ApplyToLayoutSkip[] = [];
+  const appliedNodeIds: string[] = [];
+
+  let component: ComponentNode;
+  try {
+    component = await figma.importComponentByKeyAsync(icon.key);
+  } catch (importError) {
+    const reason =
+      importError instanceof Error
+        ? `Не удалось импортировать иконку библиотеки: ${importError.message}`
+        : "Не удалось подключить иконку библиотеки к файлу.";
+    for (const nodeIds of occurrences) skipped.push({ nodeId: nodeIds[0] ?? "", reason });
+    send({ type: "apply-to-layout-result", recordId, attempted: occurrences.length, occurrences: record.count, applied: 0, skipped });
+    return;
+  }
+
+  for (const nodeIds of occurrences) {
+    try {
+      const nodes: SceneNode[] = [];
+      for (const id of nodeIds) {
+        const node = await resolveSceneNodeById(id);
+        if (!node) throw new Error("слой не найден — возможно, его удалили. Пересканируйте макет.");
+        nodes.push(node);
+      }
+      const instance = placeLibraryIcon(nodes, component, icon);
+      appliedNodeIds.push(instance.id);
+    } catch (applyError) {
+      skipped.push({
+        nodeId: nodeIds[0] ?? "",
+        reason: applyError instanceof Error ? applyError.message : "не удалось заменить иконку",
+      });
+    }
+  }
+
+  send({
+    type: "apply-to-layout-result",
+    recordId,
+    attempted: occurrences.length,
+    occurrences: record.count,
+    applied: appliedNodeIds.length,
+    skipped,
+    appliedNodeIds,
+    ...(appliedNodeIds.length > 0 && skipped.length > 0 ? { partial: true } : {}),
+  });
+}
 
 async function handleApplyToLayout(recordId: string): Promise<void> {
   if (getLastRecords("icons").some((item) => item.id === recordId)) {
-    send({ type: "error", payload: { message: ICONS_APPLY_NOT_READY } });
+    await handleApplyIconsToLayout(recordId);
     return;
   }
   if (getLastRecords("typography").some((item) => item.id === recordId)) {
@@ -2050,6 +2118,12 @@ function placeLibraryIcon(targets: SceneNode[], component: ComponentNode, icon: 
 
   const instance = component.createInstance();
   (parent as ChildrenMixin).insertChild(Number.isFinite(index) ? index : siblings.length, instance);
+  // Поведение в макете — как у заменяемого слоя: абсолютное положение в auto
+  // layout и привязки к краям родителя.
+  if ("layoutPositioning" in first && first.layoutPositioning === "ABSOLUTE" && "layoutMode" in parent) {
+    instance.layoutPositioning = "ABSOLUTE";
+  }
+  if ("constraints" in first) instance.constraints = first.constraints;
   const place = iconPlacement(mode, box, component, icon.glyph);
   if (place.scale !== 1) instance.rescale(place.scale);
   instance.x = place.x;
