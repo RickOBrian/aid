@@ -2953,17 +2953,25 @@ function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
   cellWrap.innerHTML = iconPreviewHtml(icon?.outline, `Иконка в макете: ${result.representativeNodeName}`);
   const textWrap = document.createElement("div");
   textWrap.className = "tc-icon-cell__text";
+  // Один столбец вместо «Иконка» + «Сейчас»: у экземпляра главное — имя
+  // компонента, у иконки без компонента — имя слоя и пометка об этом.
+  const isInstance = icon?.kind === "instance";
+  const size = icon ? `${Math.round(icon.width)}×${Math.round(icon.height)}` : "";
   const layerLink = document.createElement("button");
   layerLink.type = "button";
   layerLink.className = "ds-accent-link ds-layer-name";
   layerLink.title = "Перейти к слою в макете";
-  layerLink.textContent = result.representativeNodeName || "(без имени)";
+  layerLink.textContent = (isInstance && result.sourceName) || result.representativeNodeName || "(без имени)";
   layerLink.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     post({ type: "select-nodes", payload: { nodeIds: result.nodeIds } });
   });
   textWrap.appendChild(layerLink);
+  const meta = document.createElement("div");
+  meta.className = "ds-value-meta__caption";
+  meta.textContent = isInstance ? size : `Без компонента · ${size}`;
+  textWrap.appendChild(meta);
   const path = document.createElement("div");
   path.className = "ds-value-meta__caption ds-value-meta__caption--path";
   path.textContent = result.representativeNodePath;
@@ -2978,10 +2986,6 @@ function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
     if (target.closest("button, select, input, textarea, option, datalist")) return;
     setSelectedRow(result.id);
   });
-
-  const currentCell = document.createElement("td");
-  currentCell.innerHTML = `<div class="ds-value-meta__primary">${escapeHtml(result.displayValue)}</div>`;
-  row.appendChild(currentCell);
 
   const targetCell = document.createElement("td");
   if (result.target) {
