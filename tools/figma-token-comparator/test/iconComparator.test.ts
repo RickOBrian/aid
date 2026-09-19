@@ -173,9 +173,38 @@ describe("compareIcons — пометки", () => {
     expect(requiresIconUserAction(result)).toBe(true);
   });
 
+  it("растянутый экземпляр без иконки нужного размера в библиотеке — увеличение допустимо, строка скрыта", () => {
+    const [result] = compareIcons(
+      [rec({ d: CROSS, kind: "instance", component: instanceOf("close"), width: 36, height: 36, scaled: true })],
+      LIBRARY,
+      {}
+    );
+    expect(result.status).toBe("exact");
+    expect(result.flags.nonstandardSize).toBeUndefined();
+    expect(requiresIconUserAction(result)).toBe(false);
+  });
+
+  it("ближайшие по форме — до 5, от самой похожей, и у строки «Нет в библиотеке»", () => {
+    const [result] = compareIcons([rec({ d: "M2 2L22 2L12 22Z" })], LIBRARY, {});
+    expect(result.status).toBe("layout-only");
+    const similarities = result.nearest!.map((item) => item.similarity);
+    expect(similarities.length).toBe(LIBRARY.length);
+    expect([...similarities].sort((a, b) => b - a)).toEqual(similarities);
+  });
+
   it("иконка из нескольких слоёв при однослойной библиотечной — пометка", () => {
     const [result] = compareIcons([rec({ d: ARROW, layers: 2 })], LIBRARY, {});
     expect(result.flags.multiLayer).toBe(true);
+  });
+
+  it("экземпляр чужого компонента из нескольких слоёв — без пометки: слои задаёт компонент", () => {
+    const [result] = compareIcons(
+      [rec({ d: ARROW, layers: 2, kind: "instance", component: instanceOf("old-arrow") })],
+      LIBRARY,
+      {}
+    );
+    expect(result.status).toBe("value");
+    expect(result.flags.multiLayer).toBeUndefined();
   });
 });
 

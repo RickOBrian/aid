@@ -1791,7 +1791,7 @@ const APPLY_NOTE_UNDO = "Отменить можно только сразу п�
 const APPLY_NOTES: Record<TokenCategory, string> = {
   colors: `Это единственное действие плагина, которое меняет макет: заливка, обводка или цвет текста выбранных слоёв будут привязаны к переменной библиотеки. ${APPLY_NOTE_UNDO}`,
   typography: `Это единственное действие плагина, которое меняет макет: к выбранным текстовым слоям будет привязан стиль текста библиотеки. ${APPLY_NOTE_UNDO}`,
-  icons: `Это единственное действие плагина, которое меняет макет: иконки этой строки заменятся экземпляром иконки библиотеки в цвете макета. Слои иконки без компонента удаляются, на их месте встаёт экземпляр. ${APPLY_NOTE_UNDO}`,
+  icons: `Это единственное действие плагина, которое меняет макет: иконки этой строки заменятся экземпляром иконки библиотеки в цвете макета. Слои иконки без компонента удаляются, на их месте встаёт экземпляр. Многоцветные иконки (логотипы) остаются в цветах библиотеки. ${APPLY_NOTE_UNDO}`,
 };
 
 function openApplyToLayoutModal(result: ComparisonResult): void {
@@ -3037,7 +3037,7 @@ function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
       createSecondaryBadge(
         "Нестандартный размер",
         "neutral",
-        "Иконка растянута не по размеру компонента библиотеки. Это может быть и ошибкой, и осознанным решением."
+        "Иконка растянута, а в библиотеке есть эта же иконка нужного размера — возможно, стоит взять её. Растянуть иконку, у которой отдельного размера нет, — нормально."
       )
     );
   }
@@ -3142,44 +3142,82 @@ function iconSummaryName(icon: LibraryIconSummary): string {
   return icon.setName ? `${icon.setName} / ${icon.name}` : icon.name;
 }
 
+/** Сколько иконок показывать в списке: остальные — через поиск. */
+const ICON_PICKER_LIMIT = 80;
+
 function filterLibraryIcons(query: string): LibraryIconSummary[] {
   const normalized = query.trim().toLowerCase();
-  const icons = normalized
+  return normalized
     ? currentLibraryIcons.filter((icon) => iconSummaryName(icon).toLowerCase().includes(normalized))
     : currentLibraryIcons;
-  return icons.slice(0, 80);
 }
 
-function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
-  const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
-  if (!menu) return;
-  const icons = filterLibraryIcons(query);
-  if (icons.length === 0) {
-    menu.innerHTML = `<div class="ds-filter-menu__empty">Иконки не найдены</div>`;
-    return;
-  }
-  menu.innerHTML = `
-    <div class="ds-filter-menu__options">
-      ${icons
-        .map((icon) => {
-          const name = iconSummaryName(icon);
-          return `
+function iconPickerOptionHtml(icon: LibraryIconSummary, similarity?: number): string {
+  const name = iconSummaryName(icon);
+  const caption = [
+    icon.width !== undefined && icon.height !== undefined ? formatIconSize(icon.width, icon.height) : "",
+    similarity !== undefined ? `форма ${Math.round(similarity * 100)}%` : "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  return `
         <button type="button" class="ds-filter-menu__option tc-icon-cell" role="option" data-component-key="${escapeHtml(
           icon.key
         )}" data-label="${escapeHtml(name)}">
           ${iconPreviewHtml(icon.outline, name)}
           <span class="tc-icon-cell__text">
             <span class="ds-value-meta__primary">${escapeHtml(name)}</span>
-            ${
-              icon.width !== undefined && icon.height !== undefined
-                ? `<span class="ds-value-meta__caption">${formatIconSize(icon.width, icon.height)}</span>`
-                : ""
-            }
+            ${caption ? `<span class="ds-value-meta__caption">${escapeHtml(caption)}</span>` : ""}
           </span>
         </button>`;
-        })
-        .join("")}
+}
+
+/**
+ * Подсказки по форме для строки — первым разделом списка, пока поиск пуст:
+ * у «Спорного варианта» — кандидаты, у остальных — ближайшие по форме.
+ */
+function iconPickerSuggestions(
+  recordId: string | undefined
+): { title: string; items: Array<{ icon: LibraryIconSummary; similarity: number }> } | null {
+  const details = recordId ? currentResults.find((item) => item.id === recordId)?.icon : undefined;
+  if (!details) return null;
+  const disputed = Boolean(details.disputed && details.alternatives.length > 0);
+  const source = disputed ? details.alternatives : details.nearest ?? [];
+  const items = source
+    .map((item) => ({ icon: currentLibraryIcons.find((icon) => icon.key === item.key), similarity: item.similarity }))
+    .filter((item): item is { icon: LibraryIconSummary; similarity: number } => Boolean(item.icon));
+  if (items.length === 0) return null;
+  return { title: disputed ? "Подходят по форме" : "Похожие по форме", items };
+}
+
+function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
+  const menu = combobox.querySelector<HTMLElement>(".ds-combobox__menu");
+  if (!menu) return;
+  const matched = filterLibraryIcons(query);
+  if (matched.length === 0) {
+    menu.innerHTML = `<div class="ds-filter-menu__empty">Иконки не найдены</div>`;
+    return;
+  }
+  const suggestions = query.trim() ? null : iconPickerSuggestions(combobox.dataset.recordId);
+  const shown = matched.slice(0, ICON_PICKER_LIMIT);
+  menu.innerHTML = `
+    ${
+      suggestions
+        ? `<div class="tc-picker-section">${escapeHtml(suggestions.title)}</div>
+    <div class="ds-filter-menu__options">
+      ${suggestions.items.map((item) => iconPickerOptionHtml(item.icon, item.similarity)).join("")}
     </div>
+    <div class="tc-picker-section">Все иконки</div>`
+        : ""
+    }
+    <div class="ds-filter-menu__options">
+      ${shown.map((icon) => iconPickerOptionHtml(icon)).join("")}
+    </div>
+    ${
+      matched.length > shown.length
+        ? `<div class="ds-filter-menu__empty">Показаны ${shown.length} из ${matched.length} — уточните поиск по имени.</div>`
+        : ""
+    }
   `;
   menu.querySelectorAll<HTMLButtonElement>(".ds-filter-menu__option").forEach((option) => {
     option.addEventListener("click", (event) => {
@@ -3221,6 +3259,7 @@ function setupIconCombobox(mappedExtra: HTMLElement, recordId: string, initialKe
     const componentKey = mappedExtra.dataset.selectedComponentKey;
     if (componentKey) requestPreview(recordId, { componentKey });
   });
+  combobox.dataset.recordId = recordId;
 
   input.addEventListener("input", () => {
     delete mappedExtra.dataset.selectedComponentKey;

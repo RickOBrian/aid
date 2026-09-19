@@ -16,7 +16,7 @@
  */
 
 import { FigmaRestApiError } from "./figmaRestApi";
-import { extractIconGeometry, type FigmaGeometryNode } from "./iconGeometry";
+import { detectGroupChildTransforms, extractIconGeometry, type FigmaGeometryNode } from "./iconGeometry";
 import { fingerprint, iconOutline, packFingerprint } from "./iconShape";
 import type { LibraryIcon } from "../comparators/types";
 
@@ -43,7 +43,6 @@ interface ComponentsResponse {
 
 interface IconNodeDocument extends FigmaGeometryNode {
   size?: { x: number; y: number };
-  absoluteBoundingBox?: { width: number; height: number } | null;
 }
 
 interface NodesResponse {
@@ -89,7 +88,11 @@ function nodesError(status: number, message?: string): string {
 }
 
 function toLibraryIcon(component: PublishedComponent, document: IconNodeDocument): LibraryIcon | null {
-  const geometry = extractIconGeometry(document);
+  // От чего REST отсчитывает детей групп — по рамкам самого дерева; не
+  // определилось (групп нет или они в начале координат) — как в Plugin API.
+  const geometry = extractIconGeometry(document, {
+    groupChildTransforms: detectGroupChildTransforms(document) ?? "container",
+  });
   if (geometry.paths.length === 0) return null;
   const width = document.size?.x ?? document.absoluteBoundingBox?.width ?? geometry.glyph?.width ?? 0;
   const height = document.size?.y ?? document.absoluteBoundingBox?.height ?? geometry.glyph?.height ?? 0;

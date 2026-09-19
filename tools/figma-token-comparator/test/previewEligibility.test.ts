@@ -107,8 +107,8 @@ describe("canShowPreview — иконки («Примерить»)", () => {
     ...(target ? { target } : {}),
   });
 
-  it("совпавшая и похожая форма, иконка без компонента — есть", () => {
-    for (const status of ["value", "detached", "approximate"] as const) {
+  it("совпавшая и похожая форма, иконка без компонента, конфликт имени — есть", () => {
+    for (const status of ["value", "detached", "approximate", "conflict"] as const) {
       expect(canShowPreview(iconResult(status, iconTarget), "icons")).toBe(true);
     }
   });
@@ -118,8 +118,8 @@ describe("canShowPreview — иконки («Примерить»)", () => {
     expect(canShowPreview(iconResult("detached", { ...iconTarget, componentKey: undefined }), "icons")).toBe(false);
   });
 
-  it("совпадает с библиотекой, конфликт имени, нет в библиотеке — нет", () => {
-    for (const status of ["exact", "conflict", "layout-only", "mapped"] as const) {
+  it("совпадает с библиотекой, нет в библиотеке, решение принято — нет", () => {
+    for (const status of ["exact", "layout-only", "mapped"] as const) {
       expect(canShowPreview(iconResult(status, iconTarget), "icons")).toBe(false);
     }
   });

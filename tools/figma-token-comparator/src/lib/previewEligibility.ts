@@ -30,10 +30,11 @@ const TYPOGRAPHY_PREVIEW_STATUSES: ReadonlySet<MatchStatus> = new Set([
 
 /**
  * Иконки — примерка, когда форма совпала или похожа: `value` (чужой
- * компонент), `detached` (без компонента), `approximate`. Нужен ключ
+ * компонент), `detached` (без компонента), `approximate`; и `conflict` —
+ * имя совпало, форма нет: до решения важно увидеть, что встанет. Нужен ключ
  * компонента — без него иконку не импортировать в файл.
  */
-const ICON_PREVIEW_STATUSES: ReadonlySet<MatchStatus> = new Set(["value", "detached", "approximate"]);
+const ICON_PREVIEW_STATUSES: ReadonlySet<MatchStatus> = new Set(["value", "detached", "approximate", "conflict"]);
 
 export function canShowPreview(result: ComparisonResult, category: TokenCategory): boolean {
   if (category === "icons") {

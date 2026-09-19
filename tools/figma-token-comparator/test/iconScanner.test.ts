@@ -95,6 +95,29 @@ describe("collectIconCandidates", () => {
     expect(candidates.map((c) => c.nodeIds[0])).toEqual([nested.id]);
   });
 
+  it("главный компонент запрашивается только у экземпляров размером с иконку", async () => {
+    const asked: string[] = [];
+    const icon = container("INSTANCE", 12, 12, 24, 24, [vector(16, 16, 16, 16)]);
+    const button = container("INSTANCE", 0, 0, 200, 48, [icon]);
+    await collectIconCandidates([button], {
+      mainComponent: async (node) => {
+        asked.push(node.id);
+        return node.id === icon.id ? LIB_CLOSE : null;
+      },
+      nodePath: (node) => node.name,
+    });
+    expect(asked).toEqual([icon.id]);
+  });
+
+  it("иконка-группа далеко от начала холста: контур — в её рамке, а не за ней", async () => {
+    const group = container("GROUP", 500, 300, 24, 24, [vector(504, 304, 16, 16)]);
+    const [candidate] = await collectIconCandidates([group], deps());
+    const d = candidate.outline.paths[0].d;
+    const numbers = d.match(/-?\d+(\.\d+)?/g)!.map(Number);
+    expect(Math.max(...numbers)).toBeLessThanOrEqual(24);
+    expect(Math.min(...numbers)).toBeGreaterThanOrEqual(0);
+  });
+
   it("экземпляр с текстом внутри — не иконка (бейдж, счётчик)", async () => {
     const badge = container("INSTANCE", 0, 0, 20, 20, [
       vector(0, 0, 20, 20),

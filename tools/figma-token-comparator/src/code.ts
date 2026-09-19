@@ -34,7 +34,7 @@ import { compareIcons, requiresIconUserAction } from "./lib/iconComparator";
 import { iconRecordToLayoutRecord, iconResultToComparisonResult, toLibraryIconSummary } from "./lib/iconResults";
 import type { IconRecord } from "./lib/iconScanner";
 import { scanIcons } from "./lib/scanner";
-import { iconPlacement, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
+import { iconPlacement, isMonochromeIcon, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
 import { formatLibraryIconName } from "./lib/figmaComponentsRestApi";
 import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
@@ -2077,8 +2077,12 @@ function nodeBox(node: SceneNode): { x: number; y: number; width: number; height
   return { x: node.x, y: node.y, width: node.width, height: node.height };
 }
 
-/** Перекрашивает иконку цветом из макета (lib/iconSwap.ts → recolorPlan). */
+/**
+ * Перекрашивает иконку цветом из макета (lib/iconSwap.ts → recolorPlan).
+ * Многоцветная иконка библиотеки остаётся в своих цветах (isMonochromeIcon).
+ */
 function recolorIconInstance(instance: InstanceNode, paint: Paint): void {
+  if (!isMonochromeIcon(instance as unknown as Parameters<typeof isMonochromeIcon>[0])) return;
   for (const step of recolorPlan(instance as unknown as SceneNode, paint)) {
     const node = step.node as SceneNode;
     if (step.fills && "fills" in node) (node as MinimalFillsMixin).fills = step.fills;

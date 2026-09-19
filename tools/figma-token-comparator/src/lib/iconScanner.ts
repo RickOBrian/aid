@@ -161,7 +161,10 @@ interface Rect {
   height: number;
 }
 
+/** Рамка на холсте. `absoluteBoundingBox` учитывает поворот; без него — сдвиг и размер. */
 function rectOf(node: IconScanNode): Rect {
+  const box = node.absoluteBoundingBox;
+  if (box) return { x: box.x, y: box.y, width: box.width, height: box.height };
   const t = node.absoluteTransform;
   return { x: t ? t[0][2] : 0, y: t ? t[1][2] : 0, width: node.width, height: node.height };
 }
@@ -202,12 +205,18 @@ function clusterLooseGeometry(nodes: IconScanNode[]): IconScanNode[][] {
 }
 
 /**
- * Геометрия склеенной иконки: слои переносятся в координаты общей рамки —
- * их `absoluteTransform` со сдвигом к её левому верхнему углу.
+ * Геометрия склеенной иконки: слои переносятся в координаты общей рамки.
+ * Корень — условный фрейм в левом верхнем углу рамки: по `absoluteTransform`
+ * слоёв (Plugin API) положение считается точно, с поворотом; `relativeTransform`
+ * от рамки — запасной путь для узлов без него.
  */
 function clusterRoot(nodes: IconScanNode[], frame: Rect): FigmaGeometryNode {
   return {
-    type: "GROUP",
+    type: "FRAME",
+    absoluteTransform: [
+      [1, 0, frame.x],
+      [0, 1, frame.y],
+    ],
     children: nodes.map((node) => {
       const t = node.absoluteTransform ?? [
         [1, 0, 0],
@@ -223,6 +232,7 @@ function clusterRoot(nodes: IconScanNode[], frame: Rect): FigmaGeometryNode {
         fillGeometry: node.fillGeometry,
         strokeGeometry: node.strokeGeometry,
         children: node.children,
+        ...(node.absoluteTransform ? { absoluteTransform: node.absoluteTransform } : {}),
         relativeTransform: [
           [t[0][0], t[0][1], t[0][2] - frame.x],
           [t[1][0], t[1][1], t[1][2] - frame.y],
@@ -240,7 +250,11 @@ export async function collectIconCandidates(
 
   const collectLoose = (children: readonly IconScanNode[]): void => {
     const loose = children.filter(
-      (child) => child.visible !== false && !child.isMask && GEOMETRY_TYPES.has(child.type) && isIconSized(child.width, child.height)
+      (child) => {
+        if (child.visible === false || child.isMask || !GEOMETRY_TYPES.has(child.type)) return false;
+        const rect = rectOf(child);
+        return isIconSized(rect.width, rect.height);
+      }
     );
     for (const cluster of clusterLooseGeometry(loose)) {
       if (!cluster.some((node) => DRAWN_TYPES.has(node.type))) continue;
@@ -261,8 +275,10 @@ export async function collectIconCandidates(
     const iconShaped = isIconSized(node.width, node.height) && hasIconContent(node);
 
     if (node.type === "INSTANCE") {
-      const component = await deps.mainComponent(node);
-      if (component && iconShaped) {
+      // Главный компонент — только у экземпляров размером с иконку: запрос
+      // асинхронный, а экземпляров-экранов и кнопок в файле тысячи.
+      const component = iconShaped ? await deps.mainComponent(node) : null;
+      if (component) {
         const candidate = candidateFrom("instance", node, [node], node, deps, component);
         if (candidate) candidates.push(candidate);
         return;

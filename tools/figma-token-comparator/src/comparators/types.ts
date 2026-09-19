@@ -120,6 +120,8 @@ export interface IconResultDetails {
   targetHeight?: number;
   /** Неразличимые кандидаты — «Спорный вариант». */
   alternatives: Array<{ key: string; name: string; similarity: number; outline?: IconOutline }>;
+  /** Ближайшие по форме иконки библиотеки (контуры — в списке иконок библиотеки). */
+  nearest?: Array<{ key: string; similarity: number }>;
   nonstandardSize?: boolean;
   multiLayer?: boolean;
   disputed?: boolean;

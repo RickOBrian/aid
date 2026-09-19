@@ -24,6 +24,8 @@ export const SHAPE_MARGIN = 0.05;
 /** Похожесть, с которой две формы считаются одной (двойники). */
 export const TWIN_SHAPE = 0.99;
 const FINGERPRINT_SIZE = 32;
+/** Сколько ближайших по форме показывать первыми в списке выбора. */
+const NEAREST_COUNT = 5;
 /** Разница размеров рисунка, которой можно пренебречь, px. */
 const SIZE_TOLERANCE = 0.5;
 
@@ -40,10 +42,20 @@ export interface IconComparisonResult {
   target?: IconMatch;
   /** Неразличимые кандидаты — когда выбор за дизайнером («Спорный вариант»). */
   alternatives: IconMatch[];
+  /** Ближайшие по форме, даже ниже порога, — первыми в списке выбора. */
+  nearest?: IconMatch[];
   flags: {
-    /** Экземпляр растянут не по размеру компонента. */
+    /**
+     * Экземпляр растянут, а в библиотеке есть та же иконка нужного размера.
+     * Растянутый экземпляр без такой — норма: разные размеры не хранятся,
+     * увеличение допускается (решение Principal Designer).
+     */
     nonstandardSize?: boolean;
-    /** Слоёв больше, чем у библиотечной иконки, — скорее всего ошибка сборки. */
+    /**
+     * Иконка без компонента собрана из нескольких слоёв, а библиотечная —
+     * из меньшего числа: скорее всего ошибка сборки. У экземпляра слои задаёт
+     * компонент, а не автор макета, — ему пометка не ставится.
+     */
     multiLayer?: boolean;
     disputed?: boolean;
   };
@@ -110,8 +122,8 @@ function rankByShape(
   record: IconRecord,
   library: readonly LibraryIcon[],
   prints: Fingerprint[]
-): { best?: Ranked; alternatives: Ranked[]; disputed: boolean } {
-  if (library.length === 0) return { alternatives: [], disputed: false };
+): { best?: Ranked; alternatives: Ranked[]; disputed: boolean; nearest: Ranked[] } {
+  if (library.length === 0) return { alternatives: [], disputed: false, nearest: [] };
   const layoutPrint = unpackFingerprint(record.fingerprint, FINGERPRINT_SIZE);
   const layoutName = layoutIconName(record);
   const layoutSide = glyphSide(record.glyph);
@@ -140,7 +152,8 @@ function rankByShape(
 
   const disputed = tied.length > 1 || (top < SAME_SHAPE && closeOthers.length > 0);
   const alternatives = disputed ? [...tied, ...closeOthers].sort((a, b) => b.similarity - a.similarity) : [];
-  return { best, alternatives, disputed };
+  const nearest = [...ranked].sort((a, b) => b.similarity - a.similarity).slice(0, NEAREST_COUNT);
+  return { best, alternatives, disputed, nearest };
 }
 
 function match(icon: LibraryIcon, record: IconRecord, prints: Fingerprint[], library: readonly LibraryIcon[]): IconMatch {
@@ -154,7 +167,7 @@ function match(icon: LibraryIcon, record: IconRecord, prints: Fingerprint[], lib
 const strip = ({ icon, similarity }: IconMatch): IconMatch => ({ icon, similarity });
 
 function withMultiLayer(result: IconComparisonResult): IconComparisonResult {
-  if (result.target && result.record.layers > (result.target.icon.layers ?? 1)) {
+  if (result.record.kind === "detached" && result.target && result.record.layers > (result.target.icon.layers ?? 1)) {
     result.flags.multiLayer = true;
   }
   return result;
@@ -179,8 +192,8 @@ function compareOne(
   if (own) {
     const result: IconComparisonResult = { ...base, status: "exact", target: { icon: own, similarity: 1 } };
     if (record.scaled) {
-      result.flags.nonstandardSize = true;
-      // Та же форма нужного размера — если она есть в библиотеке.
+      // Та же форма нужного размера — если она есть в библиотеке. Нет — увеличение
+      // допустимо, строка не нужна.
       const ownPrint = prints[library.indexOf(own)];
       const sameShape = library.filter(
         (icon, index) => shapeSimilarity(ownPrint, prints[index]) >= TWIN_SHAPE && icon.key !== own.key
@@ -188,12 +201,16 @@ function compareOne(
       const fitting = sameShape.find(
         (icon) => Math.abs(icon.width - record.width) <= SIZE_TOLERANCE && Math.abs(icon.height - record.height) <= SIZE_TOLERANCE
       );
-      if (fitting) result.target = match(fitting, record, prints, library);
+      if (fitting) {
+        result.flags.nonstandardSize = true;
+        result.target = match(fitting, record, prints, library);
+      }
     }
     return result;
   }
 
-  const { best, alternatives, disputed } = rankByShape(record, library, prints);
+  const { best, alternatives, disputed, nearest: ranked } = rankByShape(record, library, prints);
+  const nearest = ranked.map(strip);
   if (best && best.similarity >= SIMILAR_SHAPE) {
     const status: IconStatus =
       best.similarity >= SAME_SHAPE ? (record.kind === "instance" ? "value" : "detached") : "approximate";
@@ -202,6 +219,7 @@ function compareOne(
       status,
       target: strip(best),
       alternatives: alternatives.map(strip),
+      nearest,
       flags: disputed ? { disputed: true } : {},
     });
   }
@@ -210,9 +228,9 @@ function compareOne(
   const layoutName = layoutIconName(record);
   const named = library.find((icon) => namesMatch(layoutName, icon));
   if (named) {
-    return withMultiLayer({ ...base, status: "conflict", target: match(named, record, prints, library) });
+    return withMultiLayer({ ...base, status: "conflict", target: match(named, record, prints, library), nearest });
   }
-  return { ...base, status: "layout-only" };
+  return { ...base, status: "layout-only", nearest };
 }
 
 export function compareIcons(

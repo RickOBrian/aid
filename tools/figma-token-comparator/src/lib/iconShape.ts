@@ -323,6 +323,13 @@ export function geometryBounds(paths: ShapePath[], tolerance = 0.25): Box | null
 }
 
 /** Произведение матриц: сначала `inner`, потом `outer`. */
+export function invertMatrix(matrix: Matrix): Matrix {
+  const [a, b, c, d, e, f] = matrix;
+  const det = a * d - b * c;
+  if (Math.abs(det) < 1e-12) return [1, 0, 0, 1, -e, -f];
+  return [d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det];
+}
+
 export function multiplyMatrix(outer: Matrix, inner: Matrix): Matrix {
   const [a, b, c, d, e, f] = outer;
   const [a2, b2, c2, d2, e2, f2] = inner;

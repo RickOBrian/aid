@@ -14,6 +14,8 @@ export interface PaintLike {
   type?: string;
   visible?: boolean;
   opacity?: number;
+  /** SOLID: 0–1 по каналу. */
+  color?: { r: number; g: number; b: number };
 }
 
 export interface PaintNodeLike {
@@ -81,6 +83,36 @@ export function pickIconPaint<P extends PaintLike>(nodes: readonly PaintNodeLike
  */
 export function recolorPaint<P extends PaintLike>(libraryPaint: PaintLike, layoutPaint: P): P {
   return { ...layoutPaint, opacity: (layoutPaint.opacity ?? 1) * (libraryPaint.opacity ?? 1) };
+}
+
+/**
+ * Иконка одного цвета: все видимые заливки и обводки фигур — сплошные одного
+ * цвета (прозрачность не в счёт — это части одной иконки). Только такие
+ * красятся в цвет макета. Многоцветная (логотип в фирменных цветах, знак на
+ * цветном круге) и с градиентом — остаётся в цветах библиотеки: эти цвета —
+ * часть рисунка, а не токен (решение Principal Designer).
+ */
+export function isMonochromeIcon(root: PaintNodeLike): boolean {
+  const colors = new Set<string>();
+  let monochrome = true;
+  const channel = (value: number) => Math.round(value * 255);
+  const visit = (node: PaintNodeLike, isRoot: boolean): void => {
+    if (!monochrome || node.visible === false || node.isMask) return;
+    if (!isRoot && isShape(node)) {
+      for (const paint of [...paintsOf(node.fills), ...paintsOf(node.strokes)]) {
+        if (!isVisiblePaint(paint)) continue;
+        if (paint.type !== "SOLID" || !paint.color) {
+          monochrome = false;
+          return;
+        }
+        colors.add(`${channel(paint.color.r)},${channel(paint.color.g)},${channel(paint.color.b)}`);
+      }
+      if (node.type === "BOOLEAN_OPERATION") return;
+    }
+    for (const child of node.children ?? []) visit(child, false);
+  };
+  visit(root, true);
+  return monochrome && colors.size <= 1;
 }
 
 /**

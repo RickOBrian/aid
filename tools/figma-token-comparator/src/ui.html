@@ -496,6 +496,22 @@
         border-style: dashed;
       }
 
+      /* Разделы списка иконок: «Похожие по форме» / «Все иконки». */
+      .tc-picker-section {
+        padding: 8px 12px 4px;
+        font-size: 11px;
+        line-height: 16px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ds-text-muted);
+      }
+
+      .tc-picker-section + .ds-filter-menu__options,
+      .ds-filter-menu__options + .tc-picker-section {
+        border-top: 1px solid var(--ds-border);
+      }
+
       .ds-combobox__menu .ds-filter-menu__option.tc-icon-cell {
         display: flex;
         align-items: center;

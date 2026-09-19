@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { extractIconGeometry, type FigmaGeometryNode } from "../src/lib/iconGeometry";
+import { detectGroupChildTransforms, extractIconGeometry, type FigmaGeometryNode } from "../src/lib/iconGeometry";
 import {
   fingerprint,
   packFingerprint,
@@ -30,7 +30,7 @@ function icon(children: FigmaGeometryNode[]): FigmaGeometryNode {
 }
 
 describe("extractIconGeometry", () => {
-  it("складывает трансформации по дереву, а свою у корня не применяет", () => {
+  it("дети группы от самой группы (parent) — трансформации складываются, свою у корня не применяет", () => {
     const geometry = extractIconGeometry(
       icon([
         {
@@ -51,10 +51,97 @@ describe("extractIconGeometry", () => {
             },
           ],
         },
-      ])
+      ]),
+      { groupChildTransforms: "parent" }
     );
     expect(geometry.paths).toHaveLength(1);
     expect(geometry.glyph).toEqual({ x: 5, y: 7, width: 4, height: 4 });
+  });
+
+  it("дети группы от контейнера (container, как в Plugin API) — сдвиг группы не удваивается", () => {
+    const group = (x: number, y: number, children: FigmaGeometryNode[]): FigmaGeometryNode => ({
+      type: "GROUP",
+      relativeTransform: [
+        [1, 0, x],
+        [0, 1, y],
+      ],
+      children,
+    });
+    const vector = (x: number, y: number): FigmaGeometryNode => ({
+      type: "VECTOR",
+      fills: VISIBLE,
+      fillGeometry: SQUARE_2,
+      relativeTransform: [
+        [1, 0, x],
+        [0, 1, y],
+      ],
+    });
+    // Вектор на (10, 10) внутри группы на (10, 10): в Plugin API его сдвиг — от
+    // компонента, то есть тоже 10, а не 20.
+    const nested = extractIconGeometry(icon([group(10, 10, [vector(10, 10)]), vector(2, 2)]));
+    expect(nested.glyph).toEqual({ x: 2, y: 2, width: 10, height: 10 });
+  });
+
+  it("корень-группа (иконка без компонента): координаты от её левого верхнего угла", () => {
+    const root: FigmaGeometryNode = {
+      type: "GROUP",
+      relativeTransform: [
+        [1, 0, 100],
+        [0, 1, 40],
+      ],
+      children: [
+        {
+          type: "VECTOR",
+          fills: VISIBLE,
+          fillGeometry: SQUARE_2,
+          relativeTransform: [
+            [1, 0, 104],
+            [0, 1, 44],
+          ],
+        },
+      ],
+    };
+    expect(extractIconGeometry(root).glyph).toEqual({ x: 4, y: 4, width: 2, height: 2 });
+  });
+
+  it("узлы макета — по absoluteTransform, с поворотом и группами", () => {
+    const root: FigmaGeometryNode = {
+      type: "FRAME",
+      absoluteTransform: [
+        [1, 0, 300],
+        [0, 1, 200],
+      ],
+      children: [
+        {
+          type: "GROUP",
+          absoluteTransform: [
+            [1, 0, 304],
+            [0, 1, 204],
+          ],
+          relativeTransform: [
+            [1, 0, 999],
+            [0, 1, 999],
+          ],
+          children: [
+            {
+              type: "VECTOR",
+              fills: VISIBLE,
+              fillGeometry: SQUARE_2,
+              // Повёрнут на 90°: квадрат 2×2 уходит влево от своей точки.
+              absoluteTransform: [
+                [0, -1, 310],
+                [1, 0, 204],
+              ],
+              relativeTransform: [
+                [1, 0, 999],
+                [0, 1, 999],
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(extractIconGeometry(root).glyph).toEqual({ x: 8, y: 4, width: 2, height: 2 });
   });
 
   it("контейнер без заливки свой прямоугольник не добавляет", () => {
@@ -125,5 +212,41 @@ describe("упаковка отпечатка", () => {
     const restored = unpackFingerprint(packed, 32);
     expect(restored.count).toBe(print.count);
     expect(shapeSimilarity(print, restored)).toBe(1);
+  });
+});
+
+describe("detectGroupChildTransforms — правило REST по рамкам", () => {
+  const box = (x: number, y: number, width = 2, height = 2) => ({ x, y, width, height });
+  const tree = (childX: number): FigmaGeometryNode => ({
+    type: "COMPONENT",
+    absoluteBoundingBox: box(100, 100, 24, 24),
+    children: [
+      {
+        type: "GROUP",
+        absoluteBoundingBox: box(110, 110, 4, 4),
+        children: [
+          {
+            type: "VECTOR",
+            absoluteBoundingBox: box(112, 112),
+            relativeTransform: [
+              [1, 0, childX],
+              [0, 1, childX],
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  it("сдвиг ребёнка от контейнера — container", () => {
+    expect(detectGroupChildTransforms(tree(12))).toBe("container");
+  });
+
+  it("сдвиг ребёнка от группы — parent", () => {
+    expect(detectGroupChildTransforms(tree(2))).toBe("parent");
+  });
+
+  it("групп нет — не определено", () => {
+    expect(detectGroupChildTransforms({ type: "COMPONENT", children: [{ type: "VECTOR" }] })).toBeUndefined();
   });
 });

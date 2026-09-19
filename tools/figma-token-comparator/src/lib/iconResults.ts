@@ -81,6 +81,9 @@ export function iconResultToComparisonResult(result: IconComparisonResult): Comp
       similarity: alt.similarity,
       ...(alt.icon.outline ? { outline: alt.icon.outline } : {}),
     })),
+    ...(result.nearest?.length
+      ? { nearest: result.nearest.map((item) => ({ key: item.icon.key, similarity: item.similarity })) }
+      : {}),
     ...(result.flags.nonstandardSize ? { nonstandardSize: true } : {}),
     ...(result.flags.multiLayer ? { multiLayer: true } : {}),
     ...(result.flags.disputed ? { disputed: true } : {}),
