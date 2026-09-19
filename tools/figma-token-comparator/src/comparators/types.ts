@@ -101,6 +101,9 @@ export interface LibraryIconSummary {
   name: string;
   setName?: string;
   outline?: IconOutline;
+  /** Размер компонента, px. */
+  width?: number;
+  height?: number;
 }
 
 /** Детали строки иконки: превью и пометки (lib/iconResults.ts). */
@@ -112,6 +115,9 @@ export interface IconResultDetails {
   targetOutline?: IconOutline;
   /** Похожесть формы с предложенной, 0–1. */
   similarity?: number;
+  /** Размер предложенной иконки библиотеки, px. */
+  targetWidth?: number;
+  targetHeight?: number;
   /** Неразличимые кандидаты — «Спорный вариант». */
   alternatives: Array<{ key: string; name: string; similarity: number; outline?: IconOutline }>;
   nonstandardSize?: boolean;

@@ -1814,7 +1814,11 @@ function openApplyToLayoutModal(result: ComparisonResult): void {
         <div class="tc-apply-before-after__title">Стало</div>
         <div class="tc-icon-cell">${iconPreviewHtml(result.icon?.targetOutline, result.target?.name ?? "")}<div class="tc-icon-cell__text">
           <div class="ds-value-meta__primary">${escapeHtml(result.target?.name ?? "")}</div>
-          <div class="ds-value-meta__caption">Экземпляр библиотеки, цвет — из макета</div></div></div>
+          <div class="ds-value-meta__caption">${
+            result.icon?.targetWidth !== undefined && result.icon.targetHeight !== undefined
+              ? `${formatIconSize(result.icon.targetWidth, result.icon.targetHeight)} · `
+              : ""
+          }экземпляр библиотеки, цвет — из макета</div></div></div>
       </div>
     `;
     $("tc-apply-confirm-view").hidden = false;
@@ -3033,13 +3037,17 @@ function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
 
   const targetCell = document.createElement("td");
   if (result.target) {
+    const targetSize =
+      icon?.targetWidth !== undefined && icon.targetHeight !== undefined
+        ? formatIconSize(icon.targetWidth, icon.targetHeight)
+        : "";
     const similarity = icon?.similarity !== undefined ? `форма совпадает на ${Math.round(icon.similarity * 100)}%` : "";
     targetCell.innerHTML = `<div class="tc-icon-cell">${iconPreviewHtml(
       icon?.targetOutline,
       `Иконка библиотеки: ${result.target.name}`
     )}<div class="tc-icon-cell__text"><div class="ds-value-meta__primary">${escapeHtml(
       result.target.name
-    )}</div><div class="ds-value-meta__caption">${escapeHtml(similarity)}</div></div></div>`;
+    )}</div>${targetSize ? `<div class="ds-value-meta__caption">${escapeHtml(targetSize)}</div>` : ""}<div class="ds-value-meta__caption">${escapeHtml(similarity)}</div></div></div>`;
   } else {
     targetCell.innerHTML = `<div class="ds-value-meta__caption">нет совпадения</div>`;
   }
@@ -3059,6 +3067,10 @@ const ICON_ACTION_OPTIONS: Array<{ value: Decision; label: string }> = [
   { value: "ignored", label: "Игнорировать" },
   { value: "candidate", label: "Кандидат на новую иконку" },
 ];
+
+function formatIconSize(width: number, height: number): string {
+  return `${Math.round(width)}×${Math.round(height)}`;
+}
 
 function iconSummaryName(icon: LibraryIconSummary): string {
   return icon.setName ? `${icon.setName} / ${icon.name}` : icon.name;
@@ -3090,7 +3102,14 @@ function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
           icon.key
         )}" data-label="${escapeHtml(name)}">
           ${iconPreviewHtml(icon.outline, name)}
-          <span class="ds-value-meta__primary">${escapeHtml(name)}</span>
+          <span class="tc-icon-cell__text">
+            <span class="ds-value-meta__primary">${escapeHtml(name)}</span>
+            ${
+              icon.width !== undefined && icon.height !== undefined
+                ? `<span class="ds-value-meta__caption">${formatIconSize(icon.width, icon.height)}</span>`
+                : ""
+            }
+          </span>
         </button>`;
         })
         .join("")}

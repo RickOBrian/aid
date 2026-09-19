@@ -60,6 +60,8 @@ export function toLibraryIconSummary(icon: LibraryIcon): LibraryIconSummary {
     name: icon.name,
     ...(icon.setName ? { setName: icon.setName } : {}),
     ...(icon.outline ? { outline: icon.outline } : {}),
+    width: icon.width,
+    height: icon.height,
   };
 }
 
@@ -70,7 +72,9 @@ export function iconResultToComparisonResult(result: IconComparisonResult): Comp
     kind: result.record.kind,
     outline: result.record.outline,
     ...(target?.icon.outline ? { targetOutline: target.icon.outline } : {}),
-    ...(target ? { similarity: target.similarity } : {}),
+    ...(target
+      ? { similarity: target.similarity, targetWidth: target.icon.width, targetHeight: target.icon.height }
+      : {}),
     alternatives: result.alternatives.map((alt) => ({
       key: alt.icon.key,
       name: formatLibraryIconName(alt.icon),

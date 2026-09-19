@@ -82,6 +82,7 @@ describe("iconResultToComparisonResult", () => {
     expect(result.status).toBe("detached");
     expect(result.target).toMatchObject({ name: "close / Size=24", componentKey: "close" });
     expect(result.icon?.similarity).toBe(1);
+    expect(result.icon).toMatchObject({ targetWidth: 24, targetHeight: 24 });
     expect(result.icon?.outline?.paths[0].d).toBe(CROSS);
     expect(result.icon?.targetOutline?.paths[0].d).toBe(CROSS);
   });
