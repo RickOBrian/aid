@@ -184,7 +184,7 @@ export interface LayoutRecord {
   /** Подтип свойства внутри категории, например "fill" / "stroke" / "text-fill". */
   property: string;
   bindingType: BindingType;
-  /** Отображаемое значение, например "#RRGGBB" или "#RRGGBB @ 80%". */
+  /** Отображаемое значение, например "#RRGGBB" или "#RRGGBB · 80%". */
   displayValue: string;
   /**
    * Значение, пригодное для программного сравнения (не для отображения).

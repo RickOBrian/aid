@@ -9,6 +9,7 @@
 
 import type { LibraryIcon, LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
+import { normalizeColorDisplayValue } from "./colorUtils";
 import { isLibraryBoundDecision } from "./libraryScope";
 import type { ProposalStatusInfo } from "./proposalLifecycle";
 import { clampWindowSize, type WindowSize } from "./windowSize";
@@ -199,7 +200,11 @@ export async function getLibraryData(fileKey: string): Promise<LibraryData | nul
   const data = value as LibraryData;
   // Стили из кэша прошлых версий могли быть записаны с `styleId` вместо `nodeId`.
   const styles = normalizeTextStylesCache({ styles: data.styles ?? [], fetchedAt: "", fileKey }).styles;
-  return { tokens: data.tokens ?? [], styles, icons: data.icons ?? [] };
+  const tokens = (data.tokens ?? []).map((token) => ({
+    ...token,
+    modes: (token.modes ?? []).map((mode) => ({ ...mode, displayValue: normalizeColorDisplayValue(mode.displayValue) })),
+  }));
+  return { tokens, styles, icons: data.icons ?? [] };
 }
 
 export async function getActiveLibraryKey(): Promise<string | null> {

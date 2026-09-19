@@ -8,7 +8,7 @@
  * с api.figma.com: без этого fetch из плагина будет заблокирован.
  */
 
-import { rgbToHex } from "./colorUtils";
+import { formatColorValue, rgbToHex } from "./colorUtils";
 import { parseFigmaFileKey } from "./figmaUrl";
 import type { LibraryToken, LibraryTokenModeValue } from "../comparators/types";
 
@@ -271,8 +271,7 @@ export async function fetchLibraryColorVariables(
         continue;
       }
       const hex = rgbToHex(resolved.r, resolved.g, resolved.b);
-      const alphaPercent = Math.round(resolved.a * 100);
-      const displayValue = alphaPercent >= 100 ? hex : `${hex} @ ${alphaPercent}%`;
+      const displayValue = formatColorValue(hex, resolved.a);
       modes.push({
         modeId: mode.modeId,
         modeName: mode.name,

@@ -1683,7 +1683,7 @@ function readComparisonColor(value: Record<string, unknown>): { hex: string; alp
   return { hex: String(value.hex), alpha: Number(value.alpha) };
 }
 
-/** "#RRGGBB" или "#RRGGBB @ NN%" (ComparisonTarget.displayValue) -> {hex, alpha}. */
+/** "#RRGGBB" или "#RRGGBB · NN%" (ComparisonTarget.displayValue; до 1.5.0 — с «@») -> {hex, alpha}. */
 function parseDisplayValueToColor(displayValue: string): { hex: string; alpha: number } {
   const [hexPart, ...rest] = displayValue.trim().split(" ");
   const percentMatch = rest.join(" ").match(/(\d+)\s*%/);

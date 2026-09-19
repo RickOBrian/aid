@@ -48,16 +48,28 @@ export function normalizeHex(value: string): string {
   return withHash.toUpperCase();
 }
 
+/** Между HEX и прозрачностью — тонкая точка, как в остальных подписях плагина. */
+export const ALPHA_SEPARATOR = " · ";
+
 /**
  * Форматирует значение цвета для отображения в таблице:
- * "#RRGGBB", либо "#RRGGBB @ 80%" если alpha < 100%.
+ * "#RRGGBB", либо "#RRGGBB · 80%" если alpha < 100%.
  */
 export function formatColorValue(hex: string, alpha: number): string {
   const roundedAlphaPercent = Math.round(alpha * 100);
   if (roundedAlphaPercent >= 100) {
     return hex;
   }
-  return `${hex} @ ${roundedAlphaPercent}%`;
+  return `${hex}${ALPHA_SEPARATOR}${roundedAlphaPercent}%`;
+}
+
+/**
+ * Значение, сохранённое до 1.5.0, — с «@» между HEX и прозрачностью
+ * ("#RRGGBB @ 80%"). Приводится к текущему виду при чтении кэша библиотеки,
+ * чтобы не ждать её обновления.
+ */
+export function normalizeColorDisplayValue(value: string): string {
+  return value.replace(/^(#[0-9A-Fa-f]{3,8}) @ (\d+%)$/, `$1${ALPHA_SEPARATOR}$2`);
 }
 
 /** Ключ для дедупликации/сравнения значения с учётом альфы. */
