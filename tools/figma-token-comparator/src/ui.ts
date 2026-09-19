@@ -1850,6 +1850,12 @@ const APPLY_NOTES: Record<TokenCategory, string> = {
   icons: `Это единственное действие плагина, которое меняет макет: иконки этой строки заменятся экземпляром иконки библиотеки в цвете макета. Слои иконки без компонента удаляются, на их месте встаёт экземпляр. Многоцветные иконки (логотипы) остаются в цветах библиотеки. ${APPLY_NOTE_UNDO}`,
 };
 
+const APPLY_LOADING_TEXT: Record<TokenCategory, string> = {
+  colors: "Применяем переменную к слоям...",
+  typography: "Применяем стиль текста к слоям...",
+  icons: "Заменяем иконки...",
+};
+
 function openApplyToLayoutModal(result: ComparisonResult): void {
   activeApplyRecordId = result.id;
   applyModalPreviewPending = false;
@@ -1962,6 +1968,7 @@ function confirmApplyToLayout(): void {
   $("tc-apply-footer").hidden = true;
   $("tc-apply-result-view").hidden = true;
   $("tc-apply-loading").hidden = false;
+  $("tc-apply-loading-text").textContent = APPLY_LOADING_TEXT[activeCategory];
   post({ type: "apply-to-layout", recordId: activeApplyRecordId });
 }
 
