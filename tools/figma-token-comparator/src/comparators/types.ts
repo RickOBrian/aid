@@ -235,6 +235,11 @@ export interface LayoutRecord {
    */
   typographyUnresolved?: boolean;
   /**
+   * «Смешанные значения»: какие типографики внутри текста (первого слоя
+   * группы) — lib/typographyUtils.ts → summarizeTextSegments.
+   */
+  typographySegments?: string[];
+  /**
    * Typography-only: текст внутри instance и/или override свойств поверх linked Text Style.
    */
   isOverride?: boolean;

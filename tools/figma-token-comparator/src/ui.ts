@@ -2628,7 +2628,22 @@ function formatTypographyPropertySummary(value: TypographyComparisonValue | null
   return `${value.fontFamily} · ${value.fontSize}px · ${weightLabel}${formatPartiallyMixedHint(value)}`;
 }
 
+/** «Смешанные значения»: что именно смешано — варианты типографики внутри текста. */
+function renderMixedTypographyCell(result: ComparisonResult): string {
+  const title =
+    result.bindingType === "hardcoded" ? "— (без стиля)" : escapeHtml(result.sourceName || "—");
+  const segments = result.typographySegments ?? [];
+  const details =
+    segments.length > 0
+      ? `<div class="ds-value-meta__caption">Внутри текста:</div>${segments
+          .map((line) => `<div class="ds-value-meta__caption">${escapeHtml(line)}</div>`)
+          .join("")}`
+      : `<div class="ds-value-meta__caption">${escapeHtml(result.displayValue)}</div>`;
+  return `<div>${title}</div>${details}`;
+}
+
 function renderTypographyUsedStyleCell(result: ComparisonResult): string {
+  if (result.typographyUnresolved) return renderMixedTypographyCell(result);
   const value = readTypographyComparisonValue(result.comparisonValue);
   const summary = formatTypographyPropertySummary(value);
   if (result.bindingType === "hardcoded") {
@@ -2799,6 +2814,13 @@ function setupTypographyValueFixExtra(result: ComparisonResult, valueFixExtra: H
   }
 }
 
+/** У типографики цель — стиль текста, а не токен. */
+const TYPOGRAPHY_ACTION_LABELS: Partial<Record<Decision, string>> = {
+  mapped: "Выбрать стиль из AID",
+  candidate: "Кандидат на новый стиль",
+  value_fix_proposed: "Предложить правку стиля",
+};
+
 function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellElement {
   const cell = document.createElement("td");
   const wrap = document.createElement("div");
@@ -2811,10 +2833,7 @@ function buildTypographyActionCell(result: ComparisonResult): HTMLTableCellEleme
     if (option.value === "mapped_suggested" && !canUseSuggestedToken(result)) return;
     const opt = document.createElement("option");
     opt.value = option.value;
-    opt.textContent =
-      option.value === "mapped" && (result.category === "typography" || activeCategory === "typography")
-        ? "Выбрать стиль из AID"
-        : option.label;
+    opt.textContent = TYPOGRAPHY_ACTION_LABELS[option.value] ?? option.label;
     select.appendChild(opt);
   });
   if (result.decision) select.value = result.decision;

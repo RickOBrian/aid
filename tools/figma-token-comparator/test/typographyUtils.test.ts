@@ -20,6 +20,7 @@ import {
   readTypographyComparisonValue,
   readTypographyFromRestTypeStyle,
   readTypographyFromTextStyle,
+  summarizeTextSegments,
   typographyValueKey,
   typographyValuesEqual,
 } from "../src/lib/typographyUtils";
@@ -245,5 +246,33 @@ describe("сравнение с приблизительным весом", () =
     const fromStyle = typographyValue({ fontWeight: 700, fontWeightApproximate: true });
 
     expect(typographyValuesEqual(fromNode, fromStyle)).toBe(false);
+  });
+});
+
+describe("варианты типографики внутри слоя («Смешанные значения»)", () => {
+  const segment = (style: string, size: number, weight: number, start: number, end: number) => ({
+    fontName: { family: "Inter", style },
+    fontSize: size,
+    fontWeight: weight,
+    lineHeight: { unit: "PIXELS" as const, value: size + 8 },
+    start,
+    end,
+  });
+
+  it("одинаковые куски складываются, у каждого варианта — число символов", () => {
+    expect(
+      summarizeTextSegments([
+        segment("Medium", 16, 500, 0, 10),
+        segment("Regular", 14, 400, 10, 15),
+        segment("Medium", 16, 500, 15, 20),
+      ])
+    ).toEqual(["Inter 16/24 w500 (15 симв.)", "Inter 14/22 w400 (5 симв.)"]);
+  });
+
+  it("больше четырёх вариантов — остальные «ещё N»", () => {
+    const many = [10, 11, 12, 13, 14, 15].map((size, i) => segment("Regular", size, 400, i, i + 1));
+    const summary = summarizeTextSegments(many);
+    expect(summary).toHaveLength(5);
+    expect(summary[4]).toBe("ещё 2");
   });
 });

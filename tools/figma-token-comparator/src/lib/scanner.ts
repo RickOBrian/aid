@@ -25,6 +25,7 @@ import {
 } from "./iconScanner";
 import {
   formatTypographyDisplayValue,
+  summarizeTextSegments,
   readTypographyFromTextNode,
   readTypographyFromTextStyle,
   typographyValueKey,
@@ -389,10 +390,25 @@ interface RawTypographyHit {
   displayValue: string;
   comparisonValue: TypographyComparisonValue | Record<string, never>;
   typographyUnresolved: boolean;
+  /** Только у смешанной типографики: варианты внутри текста. */
+  typographySegments?: string[];
   isOverride: boolean;
   structuralDriftDetected: boolean;
   node: TextNode;
   nodePath: string;
+}
+
+/** Текст, который пишем вместо значения, когда внутри слоя разная типографика. */
+const MIXED_TYPOGRAPHY_LABEL = "Разная типографика внутри слоя";
+
+function readTextSegments(node: TextNode): string[] | undefined {
+  try {
+    const segments = node.getStyledTextSegments(["fontName", "fontSize", "fontWeight", "lineHeight"]);
+    const summary = summarizeTextSegments(segments);
+    return summary.length > 0 ? summary : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function findInstanceAncestor(node: BaseNode): InstanceNode | null {
@@ -534,7 +550,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
         sourceName,
         styleId: textStyleId,
         styleKey,
-        displayValue: typographyUnresolved ? "(mixed typography)" : sourceName,
+        displayValue: typographyUnresolved ? MIXED_TYPOGRAPHY_LABEL : sourceName,
+        typographySegments: readTextSegments(node),
         comparisonValue: comparisonValue ? { ...comparisonValue } : ({} as Record<string, never>),
         typographyUnresolved: true,
         isOverride: overrideDetection.isOverride,
@@ -567,7 +584,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
       property: "text-style",
       bindingType: "hardcoded",
       sourceName: "",
-      displayValue: "(mixed typography)",
+      displayValue: MIXED_TYPOGRAPHY_LABEL,
+      typographySegments: readTextSegments(node),
       comparisonValue: comparisonValue ? { ...comparisonValue } : {},
       // Смешанные textStyleId по сегментам: сравнивать группу с одним стилем нельзя.
       typographyUnresolved: true,
@@ -585,7 +603,8 @@ async function collectTextNodeTypographyHit(node: TextNode, nodePath: string): P
       property: "text-style",
       bindingType: "hardcoded",
       sourceName: "",
-      displayValue: "(mixed typography)",
+      displayValue: MIXED_TYPOGRAPHY_LABEL,
+      typographySegments: readTextSegments(node),
       comparisonValue: {},
       typographyUnresolved: true,
       isOverride: overrideDetection.isOverride,
@@ -672,6 +691,7 @@ function groupTypographyHits(hits: RawTypographyHit[]): LayoutRecord[] {
       styleId: hit.styleId,
       styleKey: hit.styleKey,
       typographyUnresolved: hit.typographyUnresolved ? true : undefined,
+      ...(hit.typographySegments ? { typographySegments: hit.typographySegments } : {}),
       isOverride: hit.isOverride ? true : undefined,
       structuralDriftDetected: hit.structuralDriftDetected ? true : undefined,
     });
