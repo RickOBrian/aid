@@ -1266,20 +1266,30 @@ function updateTypographyCategoryAvailability(): void {
   }
 }
 
-const ICONS_UNAVAILABLE =
-  "В выбранной библиотеке нет иконок. Выберите иконочную библиотеку или обновите её в «Настройках».";
+/**
+ * Почему иконки сканировать нельзя — по данным выбранной библиотеки.
+ *
+ * Кнопка «Иконки» не блокируется: подсказка неактивной кнопки в Figma не
+ * видна, и было непонятно, что делать. Причину пишем в панели сканирования.
+ */
+function iconsUnavailableMessage(): string {
+  const library = loadedLibraries.find((item) => item.fileKey === activeLibraryKey);
+  if (!library) return "Сначала загрузите библиотеку иконок на вкладке «Настройки».";
+  const name = `«${library.fileName}»`;
+  if (library.iconCount === undefined) {
+    return `Библиотека ${name} загружена до версии 1.5.0 — иконок в ней пока нет. Обновите её кнопкой ↻ на вкладке «Настройки».`;
+  }
+  if (library.iconCount === null) {
+    return `Иконки из ${name} не загрузились: ${library.iconsError ?? "ошибка запроса"}. Обновите библиотеку кнопкой ↻ на вкладке «Настройки».`;
+  }
+  return `В ${name} нет опубликованных компонентов. Иконки берутся только из опубликованной библиотеки (Publish library в Figma). Если иконки лежат в другом файле — добавьте его на вкладке «Настройки» и выберите здесь.`;
+}
 
 function updateIconsCategoryAvailability(): void {
-  const iconsBtn = document.querySelector<HTMLButtonElement>('#tc-category-segment button[data-category="icons"]');
-  if (iconsBtn) {
-    iconsBtn.disabled = !iconsLibraryAvailable;
-    iconsBtn.title = iconsLibraryAvailable ? "" : ICONS_UNAVAILABLE;
-  }
-  if (!iconsLibraryAvailable && activeCategory === "icons") {
-    activeCategory = "colors";
-    setCategorySegmentPressed("colors");
-    applyActiveCategoryView();
-  }
+  const notice = $<HTMLElement>("tc-icons-library-notice");
+  const show = activeCategory === "icons" && !iconsLibraryAvailable;
+  notice.hidden = !show;
+  notice.textContent = show ? iconsUnavailableMessage() : "";
 }
 
 const SCAN_PANEL_COPY: Record<TokenCategory, { title: string; caption: string; button: string }> = {
@@ -1331,6 +1341,7 @@ function syncCurrentResultsFromCategory(): void {
 function applyActiveCategoryView(resetStatusFilters = false): void {
   syncCurrentResultsFromCategory();
   updateScanPanelCopy();
+  updateIconsCategoryAvailability();
   updateResultsBlocksVisibility();
   if (resetStatusFilters) {
     syncStatusFiltersFromResults(currentResults, true);
@@ -1341,10 +1352,7 @@ function applyActiveCategoryView(resetStatusFilters = false): void {
 
 function switchActiveCategory(nextCategory: TokenCategory): void {
   if (nextCategory === activeCategory) return;
-  if (
-    (nextCategory === "typography" && !typographyLibraryAvailable) ||
-    (nextCategory === "icons" && !iconsLibraryAvailable)
-  ) {
+  if (nextCategory === "typography" && !typographyLibraryAvailable) {
     setCategorySegmentPressed(activeCategory);
     return;
   }
