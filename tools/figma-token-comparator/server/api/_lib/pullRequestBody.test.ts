@@ -191,3 +191,28 @@ describe('buildPullRequestBody — no secret leakage', () => {
     expect(body).not.toContain(FAKE_GITHUB_TOKEN);
   });
 });
+
+describe('buildPullRequestBody — icons', () => {
+  it('shows the library icon, current icon and component key', () => {
+    const body = build([
+      {
+        signature: 'icon-1',
+        decision: 'mapped',
+        category: 'icons',
+        targetComponentKey: 'k-close',
+        targetComponentName: 'close / Size=24',
+        sourceProperty: 'icon',
+        sourceDisplayValue: 'Без компонента · 24×24',
+        targetDisplayValue: 'форма совпадает на 100%',
+        nodeName: 'Vector',
+      },
+    ]);
+
+    expect(body).toContain('**Иконка:** close / Size=24');
+    expect(body).toContain('**Сейчас:** Без компонента · 24×24');
+    expect(body).toContain('**Совпадение:** форма совпадает на 100%');
+    expect(body).toContain('category: `icons`');
+    expect(body).toContain('targetComponentKey: `k-close`');
+    expect(body).not.toContain('**Токен:**');
+  });
+});

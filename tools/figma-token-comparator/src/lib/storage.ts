@@ -463,7 +463,6 @@ export function isPendingProposalRecord(
   if (entry?.source === "registry") return false;
   // Реестр и бэкенд примут иконки на этапе 5 плана v1.5.0; до того решения
   // по иконкам хранятся локально и на согласование не уходят.
-  if (entry?.category === "icons") return false;
   return !submitted.has(recordId);
 }
 

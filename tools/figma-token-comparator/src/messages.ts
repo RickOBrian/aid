@@ -465,6 +465,8 @@ export interface ProposePreviewEntry {
   targetStyleId?: string;
   targetStyleName?: string;
   mismatchedProperties?: string[];
+  /** Иконки: имя иконки библиотеки. */
+  targetComponentName?: string;
   targetCollectionName?: string;
   targetModeName?: string;
   targetDisplayValue?: string;

@@ -66,7 +66,7 @@ function isPositiveInteger(value: unknown): value is number {
 }
 
 function isRegistryCategory(value: unknown): value is ProposedEntryInput['category'] {
-  return value === 'colors' || value === 'typography';
+  return value === 'colors' || value === 'typography' || value === 'icons';
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -119,6 +119,12 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
     if (record.mismatchedProperties !== undefined && !isStringArray(record.mismatchedProperties)) {
       return null;
     }
+    if (record.targetComponentKey !== undefined && typeof record.targetComponentKey !== 'string') {
+      return null;
+    }
+    if (record.targetComponentName !== undefined && typeof record.targetComponentName !== 'string') {
+      return null;
+    }
     if (record.comment !== undefined && typeof record.comment !== 'string') {
       return null;
     }
@@ -147,6 +153,8 @@ export function validateProposeDecisionBody(body: unknown): ProposeDecisionReque
       targetStyleId: record.targetStyleId,
       targetStyleName: record.targetStyleName,
       mismatchedProperties: record.mismatchedProperties,
+      targetComponentKey: record.targetComponentKey,
+      targetComponentName: record.targetComponentName,
       comment: record.comment,
       targetLibraryFileKey: record.targetLibraryFileKey,
       sourceProperty: record.sourceProperty,
@@ -189,6 +197,8 @@ function buildProposedEntries(
     ...(entry.mismatchedProperties && entry.mismatchedProperties.length > 0
       ? { mismatchedProperties: entry.mismatchedProperties }
       : {}),
+    ...(entry.targetComponentKey ? { targetComponentKey: entry.targetComponentKey } : {}),
+    ...(entry.targetComponentName ? { targetComponentName: entry.targetComponentName } : {}),
     ...(entry.comment ? { comment: entry.comment } : {}),
     ...(entry.targetLibraryFileKey ? { targetLibraryFileKey: entry.targetLibraryFileKey } : {}),
     proposedBy,

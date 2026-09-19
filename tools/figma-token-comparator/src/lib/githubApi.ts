@@ -122,12 +122,16 @@ export function parseRegistryEntry(raw: unknown, index: number): RegistryEntry {
   if (typeof raw.targetVariableName === "string") entry.targetVariableName = raw.targetVariableName;
   // Находка №25: до v1.4.0 эти поля при чтении терялись, и согласованные
   // решения по типографике подтягивались без стиля-цели.
-  if (raw.category === "colors" || raw.category === "typography") entry.category = raw.category;
+  if (raw.category === "colors" || raw.category === "typography" || raw.category === "icons") {
+    entry.category = raw.category;
+  }
   if (typeof raw.targetStyleId === "string") entry.targetStyleId = raw.targetStyleId;
   if (typeof raw.targetStyleName === "string") entry.targetStyleName = raw.targetStyleName;
   if (Array.isArray(raw.mismatchedProperties) && raw.mismatchedProperties.every((item) => typeof item === "string")) {
     entry.mismatchedProperties = raw.mismatchedProperties as string[];
   }
+  if (typeof raw.targetComponentKey === "string") entry.targetComponentKey = raw.targetComponentKey;
+  if (typeof raw.targetComponentName === "string") entry.targetComponentName = raw.targetComponentName;
   if (typeof raw.targetLibraryFileKey === "string") entry.targetLibraryFileKey = raw.targetLibraryFileKey;
   if (typeof raw.comment === "string") entry.comment = raw.comment;
   if (typeof raw.proposedBy === "string") entry.proposedBy = raw.proposedBy;

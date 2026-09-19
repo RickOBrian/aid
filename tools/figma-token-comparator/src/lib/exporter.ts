@@ -25,6 +25,11 @@ export interface ExportRow {
   proposedMode: string;
   /** Типографика: какие свойства разошлись с предложенным стилем. */
   mismatched: string;
+  /** Иконки: статус строки, размер в макете, похожесть формы, пометки. */
+  status: string;
+  size: string;
+  similarity: string;
+  flags: string;
 }
 
 const BINDING_LABELS: Record<string, string> = {
@@ -32,7 +37,35 @@ const BINDING_LABELS: Record<string, string> = {
   style: "Style",
   hardcoded: "Hardcoded",
   ghost: "Ghost",
+  component: "Component",
 };
+
+/** Статусы иконок — те же слова, что в таблице плагина (lib/statusMeta.ts). */
+const ICON_STATUS_LABELS: Record<string, string> = {
+  exact: "Совпадает с библиотекой",
+  mapped: "Решение принято",
+  value: "Совпала форма",
+  detached: "Отвязанная иконка",
+  approximate: "Похожая форма",
+  conflict: "Конфликт",
+  "layout-only": "Нет в библиотеке",
+};
+
+function iconFields(result: ComparisonResult): Pick<ExportRow, "status" | "size" | "similarity" | "flags"> {
+  const icon = result.icon;
+  if (result.category !== "icons" || !icon) return { status: "", size: "", similarity: "", flags: "" };
+  const flags = [
+    icon.nonstandardSize ? "Нестандартный размер" : "",
+    icon.multiLayer ? "Из нескольких слоёв" : "",
+    icon.disputed ? `Спорный вариант: ${icon.alternatives.map((alt) => alt.name).join(", ")}` : "",
+  ].filter(Boolean);
+  return {
+    status: ICON_STATUS_LABELS[result.status] ?? result.status,
+    size: `${Math.round(icon.width)}×${Math.round(icon.height)}`,
+    similarity: icon.similarity !== undefined && result.target ? `${Math.round(icon.similarity * 100)}%` : "",
+    flags: flags.join("; "),
+  };
+}
 
 const DECISION_LABELS: Record<Decision, string> = {
   mapped_suggested: "Mapped (suggested)",
@@ -103,7 +136,8 @@ export function buildExportRows(results: ComparisonResult[]): ExportRow[] {
     return {
       layer: result.representativeNodeName,
       nodePath: result.representativeNodePath,
-      before: result.sourceName || result.displayValue,
+      // Иконка без компонента: имени источника нет — «Без компонента».
+      before: result.sourceName || (result.category === "icons" ? "Без компонента" : result.displayValue),
       beforeDay: before.day,
       beforeNight: before.night,
       binding: BINDING_LABELS[result.bindingType] ?? result.bindingType,
@@ -118,6 +152,7 @@ export function buildExportRows(results: ComparisonResult[]): ExportRow[] {
       proposedMode:
         result.decision === "value_fix_proposed" ? (result.decisionProposedModeName ?? "") : "",
       mismatched: result.mismatchedProperties?.join(", ") ?? "",
+      ...iconFields(result),
     };
   });
 }
@@ -157,12 +192,29 @@ const TYPOGRAPHY_COLUMNS: Array<[keyof ExportRow, string]> = [
   ["timestamp", "Дата решения"],
 ];
 
+/** Иконки: без режимов и правки значения; вместо них — размер, форма, пометки. */
+const ICON_COLUMNS: Array<[keyof ExportRow, string]> = [
+  ["layer", "Layer"],
+  ["nodePath", "Node Path"],
+  ["status", "Статус"],
+  ["before", "Сейчас"],
+  ["size", "Размер"],
+  ["binding", "Binding"],
+  ["target", "Предлагаем"],
+  ["similarity", "Форма"],
+  ["flags", "Пометки"],
+  ["decision", "Решение"],
+  ["comment", "Комментарий"],
+  ["timestamp", "Дата решения"],
+];
+
 /**
  * Единый источник состава и порядка колонок — используется CSV/JSON/MD
  * экспортом ниже, а также визуальной Figma-таблицей (см. figmaTableBuilder.ts),
  * чтобы не дублировать список полей в нескольких местах.
  */
 export function exportColumns(category: TokenCategory): Array<[keyof ExportRow, string]> {
+  if (category === "icons") return ICON_COLUMNS;
   return category === "typography" ? TYPOGRAPHY_COLUMNS : COLOR_COLUMNS;
 }
 

@@ -357,12 +357,30 @@ const DECISION_LABELS: Record<Decision, string> = {
   value_fix_proposed: "предложена правка значения в библиотеке",
 };
 
+/** Подписи там, где базовые говорят о токене, — у типографики стиль, у иконок иконка. */
+const DECISION_LABEL_OVERRIDES: Partial<Record<TokenCategory, Partial<Record<Decision, string>>>> = {
+  typography: {
+    mapped_suggested: "выбран предложенный стиль",
+    mapped: "выбран стиль из библиотеки",
+    candidate: "кандидат на новый стиль",
+  },
+  icons: {
+    mapped_suggested: "выбрана предложенная иконка",
+    mapped: "выбрана иконка из библиотеки",
+    candidate: "кандидат на новую иконку",
+  },
+};
+
+function decisionLabel(decision: Decision, category: TokenCategory = activeCategory): string {
+  return DECISION_LABEL_OVERRIDES[category]?.[decision] ?? DECISION_LABELS[decision];
+}
+
 /** Отметка «решение принято» справа от бейджа статуса. */
 function createDecisionCheck(decision: Decision): HTMLSpanElement {
   const check = document.createElement("span");
   check.className = "ds-decision-check";
   check.textContent = " ✓";
-  check.title = `Решение принято: ${DECISION_LABELS[decision]}`;
+  check.title = `Решение принято: ${decisionLabel(decision)}`;
   return check;
 }
 
@@ -918,6 +936,20 @@ const PROPOSE_DECISION_META: Record<Decision, { icon: string; label: string }> =
   value_fix_proposed: { icon: "🟡", label: "Предложить правку значения токена" },
 };
 
+const PROPOSE_DECISION_OVERRIDES: Partial<Record<TokenCategory, Partial<Record<Decision, string>>>> = {
+  typography: {
+    mapped: "Использовать стиль",
+    mapped_suggested: "Использовать стиль",
+    candidate: "Кандидат на новый стиль",
+    value_fix_proposed: "Предложить правку стиля",
+  },
+  icons: {
+    mapped: "Использовать иконку",
+    mapped_suggested: "Использовать иконку",
+    candidate: "Кандидат на новую иконку",
+  },
+};
+
 let proposePreviewEntries: ProposePreviewEntry[] = [];
 const proposeSelectedIds = new Set<string>();
 
@@ -940,16 +972,39 @@ function isTypographyProposeEntry(entry: ProposePreviewEntry): boolean {
   return entry.category === "typography" || entry.sourceProperty === "text-style";
 }
 
+function isIconProposeEntry(entry: ProposePreviewEntry): boolean {
+  return entry.category === "icons" || entry.sourceProperty === "icon";
+}
+
 function renderProposeItemDetails(entry: ProposePreviewEntry): string {
   const lines: Array<string | null> = [];
   const typography = isTypographyProposeEntry(entry);
+  const icon = isIconProposeEntry(entry);
+  if (icon) {
+    // У иконки нет режимов, коллекций и правки значения: сейчас → иконка библиотеки.
+    lines.push(
+      bulletHtml("Затронуто иконок", entry.occurrenceCount),
+      bulletHtml("Сейчас", entry.sourceDisplayValue),
+      entry.decision === "mapped" || entry.decision === "mapped_suggested"
+        ? bulletHtml("Иконка библиотеки", entry.targetComponentName)
+        : null,
+      entry.decision === "mapped" || entry.decision === "mapped_suggested"
+        ? bulletHtml("Совпадение", entry.targetDisplayValue)
+        : null,
+      entry.decision === "ignored"
+        ? bulletHtml("Причина", entry.comment?.trim() || "не указана")
+        : bulletHtml("Комментарий", entry.comment)
+    );
+    return lines.filter((line): line is string => line !== null).join("");
+  }
   switch (entry.decision) {
     case "mapped":
     case "mapped_suggested":
       lines.push(
         bulletHtml("Свойство", entry.sourceProperty),
         bulletHtml("Затронуто слоёв", entry.occurrenceCount),
-        bulletHtml("Текущая типографика", entry.sourceDisplayValue),
+        // Раньше подпись была «Текущая типографика» и у цветов.
+        bulletHtml(typography ? "Текущая типографика" : "Текущее значение", entry.sourceDisplayValue),
         typography
           ? bulletHtml("Стиль текста", entry.targetStyleName ?? entry.targetVariableName)
           : bulletHtml("Токен", entry.targetVariableName),
@@ -1009,7 +1064,9 @@ function resolveProposeEntryNodeIds(entry: ProposePreviewEntry): string[] {
 }
 
 function renderProposeItemHtml(entry: ProposePreviewEntry): string {
-  const meta = PROPOSE_DECISION_META[entry.decision] ?? { icon: "⚪", label: entry.decision };
+  const base = PROPOSE_DECISION_META[entry.decision] ?? { icon: "⚪", label: entry.decision };
+  const override = PROPOSE_DECISION_OVERRIDES[entry.category ?? "colors"]?.[entry.decision];
+  const meta = override ? { ...base, label: override } : base;
   const checked = proposeSelectedIds.has(entry.recordId);
   const title = entry.nodeName?.trim() || entry.recordId;
   const nodeIds = resolveProposeEntryNodeIds(entry);
@@ -1336,8 +1393,7 @@ function updateResultsBlocksVisibility(): void {
   $<HTMLElement>("tc-results-block-typography").hidden = activeCategory !== "typography";
   $<HTMLElement>("tc-results-block-icons").hidden = activeCategory !== "icons";
   $<HTMLElement>("tc-rescan-typography-btn").hidden = activeCategory === "colors";
-  // Экспорт и печать иконок — этап 5 плана v1.5.0.
-  setExportButtonsDisabled(currentResults.length === 0 || activeCategory === "icons");
+  setExportButtonsDisabled(currentResults.length === 0);
   updateProposeButton(pendingProposeCount);
 }
 
@@ -3385,6 +3441,7 @@ function applyIconDecision(
         targetComponentKey: result.target.componentKey,
         targetComponentName: result.target.name,
         targetName: result.target.name,
+        targetDisplayValue: result.target.displayValue,
         ...review,
       },
     });
@@ -4412,7 +4469,7 @@ window.onmessage = (event: MessageEvent) => {
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
-      setExportButtonsDisabled(currentResults.length === 0 || activeCategory === "icons");
+      setExportButtonsDisabled(currentResults.length === 0);
       hidePrintLoader();
       renderPrintStatus("");
       if (applyToLayoutInFlight) {

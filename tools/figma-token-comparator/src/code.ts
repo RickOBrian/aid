@@ -456,22 +456,36 @@ function buildProposeComment(stored: StoredDecision): string | undefined {
   return undefined;
 }
 
+/** Поля цели решения — свои у каждой категории. */
+function proposeTargetFields(stored: StoredDecision): Partial<ProposeDecisionEntryPayload> {
+  if (stored.category === "icons") {
+    return {
+      targetComponentKey: stored.targetComponentKey,
+      targetComponentName: stored.targetComponentName ?? stored.targetName,
+    };
+  }
+  if (stored.category === "typography") {
+    return {
+      targetStyleId: stored.targetStyleId,
+      targetStyleName: stored.targetStyleName ?? stored.targetName,
+      mismatchedProperties: stored.mismatchedProperties,
+    };
+  }
+  return { targetVariableId: stored.targetVariableId, targetVariableName: stored.targetName };
+}
+
+function defaultSourceProperty(stored: StoredDecision): string | undefined {
+  if (stored.category === "typography") return stored.sourceProperty ?? "text-style";
+  if (stored.category === "icons") return stored.sourceProperty ?? "icon";
+  return stored.sourceProperty;
+}
+
 function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDecisionEntryPayload {
-  const isTypography = stored.category === "typography";
   return {
     signature: recordId,
     decision: mapDecisionToRegistry(stored.decision),
     category: stored.category,
-    ...(isTypography
-      ? {
-          targetStyleId: stored.targetStyleId,
-          targetStyleName: stored.targetStyleName ?? stored.targetName,
-          mismatchedProperties: stored.mismatchedProperties,
-        }
-      : {
-          targetVariableId: stored.targetVariableId,
-          targetVariableName: stored.targetName,
-        }),
+    ...proposeTargetFields(stored),
     comment: buildProposeComment(stored),
     ...(stored.libraryFileKey ? { targetLibraryFileKey: stored.libraryFileKey } : {}),
     // Transient review-projection metadata — используется backend только для
@@ -480,7 +494,7 @@ function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDec
     ...(stored.libraryFileKey && libraryNames.has(stored.libraryFileKey)
       ? { targetLibraryName: libraryNames.get(stored.libraryFileKey) }
       : {}),
-    sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
+    sourceProperty: defaultSourceProperty(stored),
     sourceBindingType: stored.sourceBindingType,
     sourceName: stored.sourceName,
     sourceDisplayValue: stored.sourceDisplayValue,
@@ -525,6 +539,7 @@ async function handleRequestProposePreview(category: TokenCategory = "colors"): 
   const pendingEntries = await getPendingProposeEntries(category);
   const entries: ProposePreviewEntry[] = pendingEntries.map(([recordId, stored]) => {
     const isTypography = stored.category === "typography";
+    const isIcon = stored.category === "icons";
     return {
       recordId,
       decision: stored.decision,
@@ -533,10 +548,11 @@ async function handleRequestProposePreview(category: TokenCategory = "colors"): 
       nodeName: stored.nodeName,
       nodePath: stored.nodePath,
       nodeIds: stored.nodeIds,
-      sourceProperty: isTypography ? stored.sourceProperty ?? "text-style" : stored.sourceProperty,
+      sourceProperty: defaultSourceProperty(stored),
       sourceDisplayValue: stored.sourceDisplayValue,
       occurrenceCount: stored.occurrenceCount,
-      targetVariableName: isTypography ? undefined : stored.targetName,
+      targetVariableName: isTypography || isIcon ? undefined : stored.targetName,
+      targetComponentName: isIcon ? stored.targetComponentName ?? stored.targetName : undefined,
       targetStyleId: stored.targetStyleId,
       targetStyleName: stored.targetStyleName ?? (isTypography ? stored.targetName : undefined),
       mismatchedProperties: stored.mismatchedProperties,

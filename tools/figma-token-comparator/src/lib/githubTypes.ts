@@ -28,6 +28,9 @@ export interface RegistryEntry {
   targetStyleId?: string;
   targetStyleName?: string;
   mismatchedProperties?: string[];
+  /** Иконки (плагин 1.5.0+): key компонента библиотеки и его имя. */
+  targetComponentKey?: string;
+  targetComponentName?: string;
   comment?: string;
   /** fileKey библиотеки, в которой выбран токен (плагин 1.4.0+). */
   targetLibraryFileKey?: string;
