@@ -136,3 +136,10 @@ describe("scopeHistoryToLibrary", () => {
     expect(scopeHistoryToLibrary(history, null)).toBe(history);
   });
 });
+
+describe("данные библиотеки, загруженные до v1.5.0", () => {
+  it("иконок в них нет — пустой список, а не undefined", async () => {
+    await upsertLibrary(meta("OLD"), { tokens: DATA.tokens, styles: DATA.styles });
+    expect((await getLibraryData("OLD"))?.icons).toEqual([]);
+  });
+});

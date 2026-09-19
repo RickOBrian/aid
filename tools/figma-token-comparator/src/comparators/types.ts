@@ -61,6 +61,32 @@ export interface TypographyComparisonValue {
   partiallyMixedFields?: Array<"letterSpacing" | "textCase" | "textDecoration">;
 }
 
+/**
+ * Иконка библиотеки — опубликованный компонент иконочного файла (v1.5.0).
+ * Форма хранится отпечатком (lib/iconShape.ts), а не геометрией: так данные
+ * библиотеки укладываются в лимит clientStorage.
+ */
+export interface LibraryIcon {
+  /** Стабильный key компонента — общий для REST и Plugin API. */
+  key: string;
+  /** node_id компонента в файле библиотеки. */
+  nodeId: string;
+  /** Имя компонента; у варианта — свойства варианта («Size=24, State=On»). */
+  name: string;
+  /** Имя набора вариантов, если компонент — вариант. */
+  setName?: string;
+  description?: string;
+  /** Размер компонента (холст иконки) в px. */
+  width: number;
+  height: number;
+  /** Плотная рамка рисунка внутри компонента, px. */
+  glyph: { x: number; y: number; width: number; height: number } | null;
+  /** Прозрачности видимых слоёв — отличают состояния одной формы. */
+  opacities: number[];
+  /** Отпечаток формы 32×32, упакованный в base64. */
+  fingerprint: string;
+}
+
 /** Text Style эталонной библиотеки (после резолва REST-ответа Figma Styles). */
 export interface LibraryTextStyle {
   /**

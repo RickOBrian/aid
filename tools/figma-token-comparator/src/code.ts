@@ -28,6 +28,7 @@ import { hexToRgb, rgbToHex } from "./lib/colorUtils";
 import { pairModesByIndex } from "./lib/modePairing";
 import { FigmaRestApiError, fetchFigmaFileName, fetchLibraryColorVariables } from "./lib/figmaRestApi";
 import { fetchLibraryTextStyles } from "./lib/figmaStylesRestApi";
+import { fetchLibraryIcons } from "./lib/figmaComponentsRestApi";
 import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
@@ -773,13 +774,18 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
       }
     };
 
-    const [colorsResult, textStylesResult] = await Promise.all([
+    const [colorsResult, textStylesResult, iconsResult] = await Promise.all([
       toFetchOutcome(fetchLibraryColorVariables(fileKey, token)),
       toFetchOutcome(fetchLibraryTextStyles(fileKey, token)),
+      toFetchOutcome(fetchLibraryIcons(fileKey, token)),
     ]);
 
     const colorsOk = colorsResult.ok;
     const textStylesOk = textStylesResult.ok;
+    const iconsOk = iconsResult.ok;
+    const iconsError = iconsOk
+      ? null
+      : formatLibraryFetchError(iconsResult.reason, "Не удалось загрузить иконки библиотеки.");
 
     const colorsError = colorsOk
       ? null
@@ -791,7 +797,8 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
           "Не удалось загрузить стили текста библиотеки."
         );
 
-    if (!colorsOk && !textStylesOk) {
+    // Иконочная библиотека может не иметь ни цветов, ни стилей — это не ошибка.
+    if (!colorsOk && !textStylesOk && !iconsOk) {
       send({
         type: "error",
         payload: {
@@ -801,6 +808,8 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
             `Цвета: ${colorsError}`,
             "",
             `Text Styles: ${textStylesError}`,
+            "",
+            `Иконки: ${iconsError}`,
           ].join("\n"),
         },
       });
@@ -810,6 +819,7 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
     const fileName = await resolveLibraryDisplayName(fileKey, token, libraryInput);
     const tokens = colorsOk ? colorsResult.value : [];
     const textStyles = textStylesOk ? textStylesResult.value : [];
+    const icons = iconsOk ? iconsResult.value : [];
 
     await storage.upsertLibrary(
       {
@@ -819,8 +829,10 @@ async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Pro
         textStyleCount: textStylesOk ? textStyles.length : null,
         fetchedAt: new Date().toISOString(),
         ...(textStylesError ? { textStylesError } : {}),
+        iconCount: iconsOk ? icons.length : null,
+        ...(iconsError ? { iconsError } : {}),
       },
-      { tokens, styles: textStyles }
+      { tokens, styles: textStyles, icons }
     );
 
     // Первая загруженная библиотека сразу становится текущей; повторная

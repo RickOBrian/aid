@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "release:pack": "node scripts/release.mjs"
+    "release:pack": "node scripts/release.mjs",
+    "icons:report": "esbuild scripts/iconLibraryReport.ts --bundle --platform=node --outfile=dist/icon-library-report.cjs --log-level=warning && node dist/icon-library-report.cjs"
   },
   "license": "UNLICENSED",
   "devDependencies": {

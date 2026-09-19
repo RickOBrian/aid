@@ -7,7 +7,7 @@
  * решений, которые должны переживать разные файлы макетов).
  */
 
-import type { LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
+import type { LibraryIcon, LibraryTextStyle, LibraryToken, StoredDecision, TokenCategory } from "../comparators/types";
 import type { RegistryFileContent } from "./githubTypes";
 import { isLibraryBoundDecision } from "./libraryScope";
 import type { ProposalStatusInfo } from "./proposalLifecycle";
@@ -153,11 +153,19 @@ export interface LibraryMeta {
   textStyleCount: number | null;
   fetchedAt: string;
   textStylesError?: string;
+  /**
+   * Иконки — опубликованные компоненты (v1.5.0). null — не загрузились;
+   * нет поля — библиотека загружена до v1.5.0, иконки не запрашивались.
+   */
+  iconCount?: number | null;
+  iconsError?: string;
 }
 
 export interface LibraryData {
   tokens: LibraryToken[];
   styles: LibraryTextStyle[];
+  /** Нет у данных, загруженных до v1.5.0. */
+  icons?: LibraryIcon[];
 }
 
 export async function getLibraries(): Promise<LibraryMeta[]> {
@@ -191,7 +199,7 @@ export async function getLibraryData(fileKey: string): Promise<LibraryData | nul
   const data = value as LibraryData;
   // Стили из кэша прошлых версий могли быть записаны с `styleId` вместо `nodeId`.
   const styles = normalizeTextStylesCache({ styles: data.styles ?? [], fetchedAt: "", fileKey }).styles;
-  return { tokens: data.tokens ?? [], styles };
+  return { tokens: data.tokens ?? [], styles, icons: data.icons ?? [] };
 }
 
 export async function getActiveLibraryKey(): Promise<string | null> {

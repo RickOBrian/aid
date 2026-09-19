@@ -679,6 +679,7 @@ function libraryWarning(library: LibraryMeta): string | null {
   const failed = [
     library.colorCount === null ? "цвета" : null,
     library.textStyleCount === null ? "стили текста" : null,
+    library.iconCount === null ? "иконки" : null,
   ].filter(Boolean);
   return failed.length > 0 ? `Не загрузились: ${failed.join(", ")}` : null;
 }

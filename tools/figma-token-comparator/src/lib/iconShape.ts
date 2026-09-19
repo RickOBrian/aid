@@ -304,3 +304,79 @@ export function shapeSimilarity(a: Fingerprint, b: Fingerprint): number {
   }
   return union === 0 ? 1 : intersection / union;
 }
+
+// ---------------------------------------------------------------------------
+// Рамка геометрии и хранение отпечатка
+// ---------------------------------------------------------------------------
+
+/** Плотная рамка геометрии — размер рисунка иконки в единицах пути (px). */
+export function geometryBounds(paths: ShapePath[], tolerance = 0.25): Box | null {
+  return boundsOf(
+    paths.map((path) => {
+      const matrix = path.transform ?? IDENTITY;
+      return {
+        polylines: pathToPolylines(path.d, tolerance).map((polyline) => polyline.map((p) => applyMatrix(matrix, p))),
+        evenOdd: false,
+      };
+    })
+  );
+}
+
+/** Произведение матриц: сначала `inner`, потом `outer`. */
+export function multiplyMatrix(outer: Matrix, inner: Matrix): Matrix {
+  const [a, b, c, d, e, f] = outer;
+  const [a2, b2, c2, d2, e2, f2] = inner;
+  return [
+    a * a2 + c * b2,
+    b * a2 + d * b2,
+    a * c2 + c * d2,
+    b * c2 + d * d2,
+    a * e2 + c * f2 + e,
+    b * e2 + d * f2 + f,
+  ];
+}
+
+const BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+/**
+ * Отпечаток → строка base64 (биты упакованы по 8): 32×32 — 172 символа.
+ * Своя реализация: в песочнице плагина нет btoa.
+ */
+export function packFingerprint(print: Fingerprint): string {
+  const bytes = new Uint8Array(Math.ceil(print.bits.length / 8));
+  for (let k = 0; k < print.bits.length; k += 1) {
+    if (print.bits[k]) bytes[k >> 3] |= 1 << (k & 7);
+  }
+  let out = "";
+  for (let i = 0; i < bytes.length; i += 3) {
+    const triplet = (bytes[i] << 16) | ((bytes[i + 1] ?? 0) << 8) | (bytes[i + 2] ?? 0);
+    out += BASE64[(triplet >> 18) & 63] + BASE64[(triplet >> 12) & 63];
+    out += i + 1 < bytes.length ? BASE64[(triplet >> 6) & 63] : "=";
+    out += i + 2 < bytes.length ? BASE64[triplet & 63] : "=";
+  }
+  return out;
+}
+
+export function unpackFingerprint(packed: string, size: number): Fingerprint {
+  const clean = packed.replace(/=+$/, "");
+  const bytes: number[] = [];
+  let buffer = 0;
+  let bitsInBuffer = 0;
+  for (const char of clean) {
+    buffer = (buffer << 6) | BASE64.indexOf(char);
+    bitsInBuffer += 6;
+    if (bitsInBuffer >= 8) {
+      bitsInBuffer -= 8;
+      bytes.push((buffer >> bitsInBuffer) & 0xff);
+    }
+  }
+  const bits = new Uint8Array(size * size);
+  let count = 0;
+  for (let k = 0; k < bits.length; k += 1) {
+    if ((bytes[k >> 3] ?? 0) & (1 << (k & 7))) {
+      bits[k] = 1;
+      count += 1;
+    }
+  }
+  return { size, bits, count };
+}
