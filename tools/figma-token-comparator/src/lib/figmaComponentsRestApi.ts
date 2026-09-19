@@ -133,6 +133,13 @@ export async function fetchLibraryIcons(fileKey: string, token: string): Promise
       if (icon) icons.push(icon);
     }
   }
+  // Компоненты есть, а иконок ноль — иначе это выглядело бы как «в библиотеке
+  // нет иконок», и причину было бы не найти.
+  if (icons.length === 0) {
+    throw new FigmaRestApiError(
+      `опубликованных компонентов ${components.length}, но ни у одного не нашлось видимой формы (заливки или обводки). Сообщите разработчику плагина.`
+    );
+  }
   return icons;
 }
 

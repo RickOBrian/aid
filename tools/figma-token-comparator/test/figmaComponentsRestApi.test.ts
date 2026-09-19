@@ -98,6 +98,19 @@ describe("fetchLibraryIcons", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("компоненты есть, а формы ни у одного — ошибка с числом компонентов, а не пустая библиотека", async () => {
+    const empty = { type: "COMPONENT", fills: [], size: { x: 24, y: 24 }, children: [] };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) =>
+        url.includes("/components")
+          ? json(200, { meta: { components: [{ key: "k1", node_id: "1:1", name: "a" }, { key: "k2", node_id: "1:2", name: "b" }] } })
+          : json(200, { nodes: { "1:1": { document: empty }, "1:2": { document: empty } } })
+      )
+    );
+    await expect(fetchLibraryIcons("FILE", "token")).rejects.toThrow(/компонентов 2/);
+  });
+
   it("нет доступа — понятная ошибка про scope токена", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => json(403, { message: "Forbidden" })));
     await expect(fetchLibraryIcons("FILE", "token")).rejects.toThrow(FigmaRestApiError);
