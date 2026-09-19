@@ -78,7 +78,14 @@ const scannedCategories = new Set<TokenCategory>();
 const NOT_SCANNED_TEXT = "Сканирования ещё не было — запустите его на вкладке «Сканирование».";
 let currentLibraryTokens: LibraryToken[] = [];
 let currentLibraryTextStyles: LibraryTextStyle[] = [];
+/** Строка, от которой считается Shift+клик, — последняя выбранная кликом. */
 let selectedRecordId: string | null = null;
+/**
+ * Выбранные строки. Как в панели слоёв Figma: клик — одна строка,
+ * ⌘/Ctrl+клик — добавить или убрать, Shift+клик — диапазон от последней.
+ * «Применить решение» применяет к каждой её собственное действие.
+ */
+let selectedRecordIds = new Set<string>();
 let adminModeEnabled = false;
 let pendingProposeCount = 0;
 let pendingProposeCountByCategory: Record<TokenCategory, number> = {
@@ -2407,18 +2414,64 @@ function renderTargetCellHtml(result: ComparisonResult): string {
   )}</div>`;
 }
 
-function setSelectedRow(recordId: string): void {
-  selectedRecordId = recordId;
-  const tbodySelector = `#tc-results-tbody-${activeCategory}`;
-  document.querySelectorAll<HTMLTableRowElement>(`${tbodySelector} tr[data-record-id]`).forEach((row) => {
-    row.classList.toggle("ds-row-selected", row.dataset.recordId === recordId);
+type RowSelectionMode = "single" | "toggle" | "range";
+
+function rowSelectionMode(event: MouseEvent): RowSelectionMode {
+  if (event.shiftKey) return "range";
+  if (event.metaKey || event.ctrlKey) return "toggle";
+  return "single";
+}
+
+function visibleRowIds(): string[] {
+  return Array.from(
+    document.querySelectorAll<HTMLTableRowElement>(`#tc-results-tbody-${activeCategory} tr[data-record-id]`)
+  ).map((row) => row.dataset.recordId ?? "");
+}
+
+function syncRowSelectionHighlight(): void {
+  document.querySelectorAll<HTMLTableRowElement>(`#tc-results-tbody-${activeCategory} tr[data-record-id]`).forEach((row) => {
+    row.classList.toggle("ds-row-selected", selectedRecordIds.has(row.dataset.recordId ?? ""));
   });
+}
+
+function setSelectedRow(recordId: string, mode: RowSelectionMode = "single"): void {
+  if (mode === "toggle") {
+    if (selectedRecordIds.has(recordId)) {
+      selectedRecordIds.delete(recordId);
+      if (selectedRecordId === recordId) selectedRecordId = [...selectedRecordIds].pop() ?? null;
+    } else {
+      selectedRecordIds.add(recordId);
+      selectedRecordId = recordId;
+    }
+  } else if (mode === "range" && selectedRecordId) {
+    const ids = visibleRowIds();
+    const from = ids.indexOf(selectedRecordId);
+    const to = ids.indexOf(recordId);
+    if (from === -1 || to === -1) {
+      selectedRecordIds = new Set([recordId]);
+      selectedRecordId = recordId;
+    } else {
+      selectedRecordIds = new Set(ids.slice(Math.min(from, to), Math.max(from, to) + 1));
+    }
+  } else {
+    selectedRecordIds = new Set([recordId]);
+    selectedRecordId = recordId;
+  }
+  syncRowSelectionHighlight();
   updateApplyButtonState();
 }
 
+/** Выбранные строки, у которых есть поля действия, — в порядке таблицы. */
+function selectedActionableIds(): string[] {
+  return visibleRowIds().filter((id) => selectedRecordIds.has(id) && rowControls.has(id));
+}
+
 function updateApplyButtonState(): void {
-  const hasControls = Boolean(selectedRecordId && rowControls.has(selectedRecordId));
-  $<HTMLButtonElement>("tc-apply-decision-btn").disabled = !hasControls;
+  const count = selectedActionableIds().length;
+  const button = $<HTMLButtonElement>("tc-apply-decision-btn");
+  button.disabled = count === 0;
+  button.textContent = count > 1 ? `Применить решения (${count})` : "Применить решение";
+  button.title = "Несколько строк: ⌘/Ctrl+клик — добавить строку, Shift+клик — диапазон";
 }
 
 /**
@@ -2830,7 +2883,8 @@ function buildTypographyResultRow(result: ComparisonResult): HTMLTableRowElement
   row.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
     if (target.closest("button, select, input, textarea, option, datalist")) return;
-    setSelectedRow(result.id);
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
   });
 
   const usedStyleCell = document.createElement("td");
@@ -2915,10 +2969,21 @@ function restorePreferredSelection(
   preferredSelectedId: string | undefined,
   visibleResults: ComparisonResult[]
 ): void {
-  if (preferredSelectedId && visibleResults.some((item) => item.id === preferredSelectedId)) {
+  // Несколько выбранных строк переживают перерисовку — она идёт после
+  // каждого применённого решения, в том числе посреди пакета.
+  const visible = new Set(visibleResults.map((item) => item.id));
+  selectedRecordIds = new Set([...selectedRecordIds].filter((id) => visible.has(id)));
+  if (selectedRecordIds.size > 1) {
+    if (!selectedRecordId || !visible.has(selectedRecordId)) selectedRecordId = [...selectedRecordIds][0];
+    syncRowSelectionHighlight();
+    updateApplyButtonState();
+    return;
+  }
+  if (preferredSelectedId && visible.has(preferredSelectedId)) {
     setSelectedRow(preferredSelectedId);
     return;
   }
+  selectedRecordIds.clear();
   updateApplyButtonState();
 }
 
@@ -3032,7 +3097,8 @@ function buildIconResultRow(result: ComparisonResult): HTMLTableRowElement {
   row.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
     if (target.closest("button, select, input, textarea, option, datalist")) return;
-    setSelectedRow(result.id);
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
   });
 
   const targetCell = document.createElement("td");
@@ -3263,14 +3329,13 @@ function applyIconDecision(
   select: HTMLSelectElement,
   mappedExtra: HTMLElement,
   commentExtra: HTMLElement
-): void {
+): string | null {
   const decision = select.value as Decision;
   const review = buildSourceReviewContext(result);
 
   if (decision === "mapped_suggested") {
     if (!result.target?.componentKey) {
-      showError("Для этой иконки нет предложенной — выберите «Выбрать иконку из AID».");
-      return;
+      return "Для этой иконки нет предложенной — выберите «Выбрать иконку из AID».";
     }
     post({
       type: "apply-decision",
@@ -3284,15 +3349,14 @@ function applyIconDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "mapped") {
     const key = mappedExtra.dataset.selectedComponentKey;
     const icon = key ? currentLibraryIcons.find((item) => item.key === key) : undefined;
     if (!icon) {
-      showError("Выберите иконку из списка AID.");
-      return;
+      return "Выберите иконку из списка AID.";
     }
     post({
       type: "apply-decision",
@@ -3306,20 +3370,20 @@ function applyIconDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "ignored") {
     const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
     if (!comment) {
-      showError("Для решения «Игнорировать» комментарий обязателен.");
-      return;
+      return "Для решения «Игнорировать» комментарий обязателен.";
     }
     post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", comment, ...review } });
-    return;
+    return null;
   }
 
   post({ type: "apply-decision", payload: { recordId: result.id, decision, category: "icons", ...review } });
+  return null;
 }
 
 function renderIconResultsTable(preferredSelectedId?: string): void {
@@ -3450,7 +3514,8 @@ function buildResultRow(result: ComparisonResult): HTMLTableRowElement {
   row.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
     if (target.closest("button, select, input, textarea, option, datalist")) return;
-    setSelectedRow(result.id);
+    if (event.shiftKey) window.getSelection()?.removeAllRanges();
+    setSelectedRow(result.id, rowSelectionMode(event));
   });
 
   const beforeCell = document.createElement("td");
@@ -3589,7 +3654,7 @@ function applyTypographyDecision(
   mappedExtra: HTMLElement,
   commentExtra: HTMLElement,
   valueFixExtra: HTMLElement
-): void {
+): string | null {
   const decision = select.value as Decision;
   const review = buildSourceReviewContext(result);
   const layoutValue = readTypographyComparisonValue(result.comparisonValue);
@@ -3597,8 +3662,7 @@ function applyTypographyDecision(
 
   if (decision === "mapped_suggested") {
     if (!result.target?.styleId && !result.target?.styleKey) {
-      showError("Для этой строки нет предложенного стиля — выберите «Выбрать стиль из AID».");
-      return;
+      return "Для этой строки нет предложенного стиля — выберите «Выбрать стиль из AID».";
     }
     const suggestedStyle = currentLibraryTextStyles.find(
       (style) => style.nodeId === result.target!.styleId || style.key === result.target!.styleKey
@@ -3617,7 +3681,7 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "mapped") {
@@ -3628,8 +3692,7 @@ function applyTypographyDecision(
       styleId = findLibraryTextStyleByLabel(label, currentLibraryTextStyles)?.nodeId;
     }
     if (!styleId) {
-      showError("Выберите стиль из списка AID — точного совпадения по имени не нашлось.");
-      return;
+      return "Выберите стиль из списка AID — точного совпадения по имени не нашлось.";
     }
     const selectedStyle = currentLibraryTextStyles.find((style) => style.nodeId === styleId);
     post({
@@ -3647,20 +3710,19 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "ignored") {
     const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
     if (!comment) {
-      showError("Для решения «Игнорировать» комментарий обязателен.");
-      return;
+      return "Для решения «Игнорировать» комментарий обязателен.";
     }
     post({
       type: "apply-decision",
       payload: { recordId: result.id, decision, category: "typography", comment, ...review },
     });
-    return;
+    return null;
   }
 
   if (decision === "value_fix_proposed") {
@@ -3669,8 +3731,7 @@ function applyTypographyDecision(
       ? currentLibraryTextStyles.find((style) => style.nodeId === styleId)
       : undefined;
     if (!selectedStyle) {
-      showError("Выберите стиль библиотеки, значение которого нужно исправить.");
-      return;
+      return "Выберите стиль библиотеки, значение которого нужно исправить.";
     }
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
     post({
@@ -3689,13 +3750,14 @@ function applyTypographyDecision(
         ...review,
       },
     });
-    return;
+    return null;
   }
 
   post({
     type: "apply-decision",
     payload: { recordId: result.id, decision, category: "typography", ...review },
   });
+  return null;
 }
 
 function applyDecision(
@@ -3704,13 +3766,12 @@ function applyDecision(
   mappedExtra: HTMLElement,
   commentExtra: HTMLElement,
   valueFixExtra: HTMLElement
-): void {
+): string | null {
   const decision = select.value as Decision;
 
   if (decision === "mapped_suggested") {
     if (!result.target) {
-      showError("Для этой строки нет предложенного токена библиотеки — выберите «Выбрать токен из AID».");
-      return;
+      return "Для этой строки нет предложенного токена библиотеки — выберите «Выбрать токен из AID».";
     }
     post({
       type: "apply-decision",
@@ -3725,7 +3786,7 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "mapped") {
@@ -3736,8 +3797,7 @@ function applyDecision(
       variableId = findLibraryTokenByLabel(label, currentLibraryTokens)?.variableId;
     }
     if (!variableId) {
-      showError("Выберите токен из списка AID — точного совпадения по имени не нашлось.");
-      return;
+      return "Выберите токен из списка AID — точного совпадения по имени не нашлось.";
     }
     // Ручной выбор токена не привязан к конкретному режиму библиотеки —
     // targetModeName/targetDisplayValue здесь намеренно не заполняются
@@ -3758,48 +3818,42 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   if (decision === "ignored") {
     const comment = (commentExtra.querySelector(".tc-comment-input") as HTMLTextAreaElement).value.trim();
     if (!comment) {
-      showError("Для решения «Игнорировать» комментарий обязателен.");
-      return;
+      return "Для решения «Игнорировать» комментарий обязателен.";
     }
     post({
       type: "apply-decision",
       payload: { recordId: result.id, decision, comment, ...buildSourceReviewContext(result) },
     });
-    return;
+    return null;
   }
 
   if (decision === "value_fix_proposed") {
     const selectedVariableId = valueFixExtra.dataset.selectedVariableId;
     if (!selectedVariableId) {
-      showError("Выберите токен из библиотеки, значение которого нужно исправить.");
-      return;
+      return "Выберите токен из библиотеки, значение которого нужно исправить.";
     }
     const selectedToken = currentLibraryTokens.find((t) => t.variableId === selectedVariableId);
     if (!selectedToken) {
-      showError("Выбранного токена нет в загруженной библиотеке.");
-      return;
+      return "Выбранного токена нет в загруженной библиотеке.";
     }
     const modeSelect = valueFixExtra.querySelector<HTMLSelectElement>(".tc-value-fix-mode");
     const proposedInput = valueFixExtra.querySelector<HTMLInputElement>(".tc-value-fix-proposed");
     const commentInput = valueFixExtra.querySelector<HTMLTextAreaElement>(".tc-value-fix-comment");
     if (!modeSelect || !proposedInput) {
-      showError("Не удалось прочитать поля правки значения. Заполните их заново.");
-      return;
+      return "Не удалось прочитать поля правки значения. Заполните их заново.";
     }
     if (!modeSelect.value) {
-      showError("Выберите режим библиотеки, для которого предлагается правка.");
-      return;
+      return "Выберите режим библиотеки, для которого предлагается правка.";
     }
     const proposedRaw = proposedInput.value.trim();
     if (!isValidHex(proposedRaw)) {
-      showError("Укажите цвет в формате #RRGGBB в поле «Предлагаемое значение».");
-      return;
+      return "Укажите цвет в формате #RRGGBB в поле «Предлагаемое значение».";
     }
     const selectedOption = modeSelect.selectedOptions[0];
     const proposedModeName = selectedOption?.dataset.modeName ?? "";
@@ -3821,10 +3875,11 @@ function applyDecision(
         ...buildSourceReviewContext(result),
       },
     });
-    return;
+    return null;
   }
 
   post({ type: "apply-decision", payload: { recordId: result.id, decision, ...buildSourceReviewContext(result) } });
+  return null;
 }
 
 function downloadTextFile(filename: string, mimeType: string, content: string): void {
@@ -3839,27 +3894,43 @@ function downloadTextFile(filename: string, mimeType: string, content: string): 
   URL.revokeObjectURL(url);
 }
 
+/** Решение одной строки: null — отправлено, строка — почему нет. */
+function applyRowDecision(result: ComparisonResult, controls: RowControls): string | null {
+  if (activeCategory === "icons") {
+    return applyIconDecision(result, controls.select, controls.mappedExtra, controls.commentExtra);
+  }
+  if (activeCategory === "typography") {
+    return applyTypographyDecision(
+      result,
+      controls.select,
+      controls.mappedExtra,
+      controls.commentExtra,
+      controls.valueFixExtra
+    );
+  }
+  return applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
+}
+
 function initApplyFooterButton(): void {
+  // Каждой выбранной строке — её собственное действие. Строки, где действие
+  // не заполнено (нет комментария, не выбран токен), пропускаются с причиной;
+  // остальные применяются.
   const runApplyDecision = () => {
-    if (!selectedRecordId) return;
-    const controls = rowControls.get(selectedRecordId);
-    const result = currentResults.find((item) => item.id === selectedRecordId);
-    if (!controls || !result) return;
-    if (activeCategory === "icons") {
-      applyIconDecision(result, controls.select, controls.mappedExtra, controls.commentExtra);
-      return;
+    const ids = selectedActionableIds();
+    const failures: string[] = [];
+    for (const id of ids) {
+      const controls = rowControls.get(id);
+      const result = currentResults.find((item) => item.id === id);
+      if (!controls || !result) continue;
+      const error = applyRowDecision(result, controls);
+      if (error) failures.push(ids.length > 1 ? `${result.representativeNodeName || "(без имени)"}: ${error}` : error);
     }
-    if (activeCategory === "typography") {
-      applyTypographyDecision(
-        result,
-        controls.select,
-        controls.mappedExtra,
-        controls.commentExtra,
-        controls.valueFixExtra
-      );
-      return;
-    }
-    applyDecision(result, controls.select, controls.mappedExtra, controls.commentExtra, controls.valueFixExtra);
+    if (failures.length === 0) return;
+    showError(
+      ids.length > 1
+        ? [`Не применено к ${failures.length} из ${ids.length}:`, ...failures.map((line) => `• ${line}`)].join("\n")
+        : failures[0]
+    );
   };
   $<HTMLButtonElement>("tc-apply-decision-btn").addEventListener("click", runApplyDecision);
 }

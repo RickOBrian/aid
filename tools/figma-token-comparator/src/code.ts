@@ -2354,6 +2354,19 @@ async function handlePrintToFigma(
   }
 }
 
+/**
+ * Запись решений — по очереди. История читается и пишется целиком, и два
+ * решения, пришедшие подряд (несколько строк за одно «Применить решение»),
+ * иначе затирали бы друг друга.
+ */
+let decisionQueue: Promise<void> = Promise.resolve();
+
+function enqueueDecisionWrite(task: () => Promise<void>): Promise<void> {
+  const run = decisionQueue.then(task);
+  decisionQueue = run.catch(() => undefined);
+  return run;
+}
+
 figma.ui.onmessage = async (message: UiToCodeMessage) => {
   try {
     switch (message.type) {
@@ -2394,37 +2407,41 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
       case "select-nodes":
         await handleSelectNodes(message.payload.nodeIds);
         break;
-      case "apply-decision":
-        await handleApplyDecision(message.payload.recordId, message.payload.decision, {
-          category: message.payload.category,
-          comment: message.payload.comment,
-          targetVariableId: message.payload.targetVariableId,
-          targetStyleId: message.payload.targetStyleId,
-          targetStyleName: message.payload.targetStyleName,
-          targetComponentKey: message.payload.targetComponentKey,
-          targetComponentName: message.payload.targetComponentName,
-          mismatchedProperties: message.payload.mismatchedProperties,
-          targetName: message.payload.targetName,
-          targetCollectionName: message.payload.targetCollectionName,
-          proposedModeId: message.payload.proposedModeId,
-          proposedModeName: message.payload.proposedModeName,
-          currentLibraryValue: message.payload.currentLibraryValue,
-          proposedValue: message.payload.proposedValue,
-          sourceProperty: message.payload.sourceProperty,
-          sourceBindingType: message.payload.sourceBindingType,
-          sourceName: message.payload.sourceName,
-          sourceDisplayValue: message.payload.sourceDisplayValue,
-          nodePath: message.payload.nodePath,
-          nodeName: message.payload.nodeName,
-          nodeIds: message.payload.nodeIds,
-          occurrenceCount: message.payload.occurrenceCount,
-          targetModeName: message.payload.targetModeName,
-          targetDisplayValue: message.payload.targetDisplayValue,
-        });
+      case "apply-decision": {
+        const payload = message.payload;
+        await enqueueDecisionWrite(() => handleApplyDecision(payload.recordId, payload.decision, {
+          category: payload.category,
+          comment: payload.comment,
+          targetVariableId: payload.targetVariableId,
+          targetStyleId: payload.targetStyleId,
+          targetStyleName: payload.targetStyleName,
+          targetComponentKey: payload.targetComponentKey,
+          targetComponentName: payload.targetComponentName,
+          mismatchedProperties: payload.mismatchedProperties,
+          targetName: payload.targetName,
+          targetCollectionName: payload.targetCollectionName,
+          proposedModeId: payload.proposedModeId,
+          proposedModeName: payload.proposedModeName,
+          currentLibraryValue: payload.currentLibraryValue,
+          proposedValue: payload.proposedValue,
+          sourceProperty: payload.sourceProperty,
+          sourceBindingType: payload.sourceBindingType,
+          sourceName: payload.sourceName,
+          sourceDisplayValue: payload.sourceDisplayValue,
+          nodePath: payload.nodePath,
+          nodeName: payload.nodeName,
+          nodeIds: payload.nodeIds,
+          occurrenceCount: payload.occurrenceCount,
+          targetModeName: payload.targetModeName,
+          targetDisplayValue: payload.targetDisplayValue,
+        }));
         break;
-      case "clear-decision":
-        await handleClearDecision(message.payload.recordId);
+      }
+      case "clear-decision": {
+        const { recordId } = message.payload;
+        await enqueueDecisionWrite(() => handleClearDecision(recordId));
         break;
+      }
       case "resize-window":
         handleResizeWindow(message.payload.width, message.payload.height);
         break;
