@@ -89,3 +89,38 @@ describe("типографика", () => {
     ).toBe(false);
   });
 });
+
+describe("canShowPreview — иконки («Примерить»)", () => {
+  const iconTarget: ComparisonTarget = {
+    variableId: "",
+    collectionName: "",
+    modeId: "",
+    modeName: "",
+    name: "close / Size=24",
+    displayValue: "форма совпадает на 100%",
+    componentKey: "k-close",
+  };
+  const iconResult = (status: ComparisonResult["status"], target?: ComparisonTarget): ComparisonResult => ({
+    ...colorRecord({ hex: "#1A1A1A" }),
+    category: "icons",
+    status,
+    ...(target ? { target } : {}),
+  });
+
+  it("совпавшая и похожая форма, иконка без компонента — есть", () => {
+    for (const status of ["value", "detached", "approximate"] as const) {
+      expect(canShowPreview(iconResult(status, iconTarget), "icons")).toBe(true);
+    }
+  });
+
+  it("нет предложенной иконки или нет её ключа — нет", () => {
+    expect(canShowPreview(iconResult("detached"), "icons")).toBe(false);
+    expect(canShowPreview(iconResult("detached", { ...iconTarget, componentKey: undefined }), "icons")).toBe(false);
+  });
+
+  it("совпадает с библиотекой, конфликт имени, нет в библиотеке — нет", () => {
+    for (const status of ["exact", "conflict", "layout-only", "mapped"] as const) {
+      expect(canShowPreview(iconResult(status, iconTarget), "icons")).toBe(false);
+    }
+  });
+});

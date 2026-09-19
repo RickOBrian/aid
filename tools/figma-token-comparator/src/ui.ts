@@ -1457,7 +1457,8 @@ function setPreviewButtonsDisabled(disabled: boolean): void {
     }
     if (btn.classList.contains("tc-mapped-preview-btn")) {
       const host = btn.closest<HTMLElement>(".ds-action-extra");
-      btn.disabled = !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId;
+      btn.disabled =
+        !host?.dataset.selectedVariableId && !host?.dataset.selectedStyleId && !host?.dataset.selectedComponentKey;
       return;
     }
     btn.disabled = false;
@@ -1555,7 +1556,12 @@ function showPreviewErrorInModal(message: string): void {
 }
 
 function openPreviewModal(): void {
-  const title = activeCategory === "typography" ? "Превью изменения типографики" : "Превью изменения цвета";
+  const title =
+    activeCategory === "typography"
+      ? "Превью изменения типографики"
+      : activeCategory === "icons"
+        ? "Примерка иконки"
+        : "Превью изменения цвета";
   $("tc-preview-title").textContent = title;
   $("tc-preview-modal").setAttribute("aria-label", title);
   $("tc-preview-overlay").hidden = false;
@@ -1573,7 +1579,10 @@ function closePreviewModal(): void {
  * решения («Применить решение»). Без него превью строится по автоматически
  * найденному target строки, как раньше.
  */
-function requestPreview(recordId: string, selection: { variableId?: string; styleId?: string } = {}): void {
+function requestPreview(
+  recordId: string,
+  selection: { variableId?: string; styleId?: string; componentKey?: string } = {}
+): void {
   if (previewInFlight) {
     showError("Дождитесь, пока построится текущее превью.");
     return;
@@ -1582,7 +1591,13 @@ function requestPreview(recordId: string, selection: { variableId?: string; styl
   activePreviewRecordId = recordId;
   setPreviewButtonsDisabled(true);
   openPreviewModal();
-  post({ type: "build-preview", recordId, variableId: selection.variableId, styleId: selection.styleId });
+  post({
+    type: "build-preview",
+    recordId,
+    variableId: selection.variableId,
+    styleId: selection.styleId,
+    componentKey: selection.componentKey,
+  });
 }
 
 function initPreviewModal(): void {
@@ -3044,11 +3059,13 @@ function renderIconComboboxMenu(combobox: HTMLElement, query: string): void {
       input.value = option.dataset.label ?? "";
       host.dataset.selectedComponentKey = key;
       setComboboxOpen(combobox, false);
+      const previewBtn = host.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+      if (previewBtn) previewBtn.disabled = previewInFlight;
     });
   });
 }
 
-function setupIconCombobox(mappedExtra: HTMLElement, initialKey?: string): void {
+function setupIconCombobox(mappedExtra: HTMLElement, recordId: string, initialKey?: string): void {
   mappedExtra.innerHTML = `
     <div class="ds-combobox">
       <input type="text" class="ds-combobox__input ds-input" placeholder="Начните вводить имя иконки..." autocomplete="off" spellcheck="false" />
@@ -3057,14 +3074,24 @@ function setupIconCombobox(mappedExtra: HTMLElement, initialKey?: string): void 
       </button>
       <div class="ds-filter-menu ds-combobox__menu" role="listbox" hidden></div>
     </div>
+    <button type="button" class="ds-btn tc-preview-btn tc-mapped-preview-btn" disabled>Примерить</button>
   `;
   const combobox = mappedExtra.querySelector<HTMLElement>(".ds-combobox");
   const input = mappedExtra.querySelector<HTMLInputElement>(".ds-combobox__input");
   const toggle = mappedExtra.querySelector<HTMLButtonElement>(".ds-combobox__toggle");
-  if (!combobox || !input || !toggle) return;
+  const previewBtn = mappedExtra.querySelector<HTMLButtonElement>(".tc-mapped-preview-btn");
+  if (!combobox || !input || !toggle || !previewBtn) return;
+
+  previewBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const componentKey = mappedExtra.dataset.selectedComponentKey;
+    if (componentKey) requestPreview(recordId, { componentKey });
+  });
 
   input.addEventListener("input", () => {
     delete mappedExtra.dataset.selectedComponentKey;
+    previewBtn.disabled = true;
     renderIconComboboxMenu(combobox, input.value);
     setComboboxOpen(combobox, true);
   });
@@ -3080,6 +3107,7 @@ function setupIconCombobox(mappedExtra: HTMLElement, initialKey?: string): void 
   if (initial) {
     input.value = iconSummaryName(initial);
     mappedExtra.dataset.selectedComponentKey = initial.key;
+    previewBtn.disabled = previewInFlight;
   }
 }
 
@@ -3104,13 +3132,29 @@ function buildIconActionCell(result: ComparisonResult): HTMLTableCellElement {
 
   const mappedExtra = document.createElement("div");
   mappedExtra.className = "ds-action-extra";
-  setupIconCombobox(mappedExtra, result.decisionTargetComponentKey);
+  setupIconCombobox(mappedExtra, result.id, result.decisionTargetComponentKey);
   wrap.appendChild(mappedExtra);
 
   const commentExtra = document.createElement("div");
   commentExtra.className = "ds-action-extra";
   commentExtra.innerHTML = `<textarea rows="2" placeholder="Комментарий (обязателен)" class="tc-comment-input ds-textarea"></textarea>`;
   wrap.appendChild(commentExtra);
+
+  // Примерка — как «Показать превью» у цветов и типографики.
+  if (canShowPreview(result, "icons")) {
+    const previewBtn = document.createElement("button");
+    previewBtn.type = "button";
+    previewBtn.className = "ds-btn tc-preview-btn";
+    previewBtn.textContent = "Примерить";
+    previewBtn.title = "Показать, как будет выглядеть иконка из библиотеки на месте этой — в цвете макета";
+    previewBtn.disabled = previewInFlight;
+    previewBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      requestPreview(result.id);
+    });
+    wrap.insertBefore(previewBtn, mappedExtra);
+  }
 
   // Правки значения у иконок нет — пустой блок держит общий формат RowControls.
   const valueFixExtra = document.createElement("div");

@@ -34,6 +34,8 @@ import { compareIcons, requiresIconUserAction } from "./lib/iconComparator";
 import { iconRecordToLayoutRecord, iconResultToComparisonResult, toLibraryIconSummary } from "./lib/iconResults";
 import type { IconRecord } from "./lib/iconScanner";
 import { scanIcons } from "./lib/scanner";
+import { iconPlacement, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
+import { formatLibraryIconName } from "./lib/figmaComponentsRestApi";
 import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
 import {
   DEFAULT_REGISTRY_PATH,
@@ -1395,8 +1397,8 @@ async function handleApplyTypographyToLayout(recordId: string): Promise<void> {
   });
 }
 
-/** Превью и «Применить в макет» для иконок — этап 6 плана v1.5.0; до того кнопок в интерфейсе нет. */
-const ICONS_APPLY_NOT_READY = "Превью и «Применить в макет» для иконок ещё не готовы.";
+/** «Применить в макет» для иконок — этап 6 плана v1.5.0; до того кнопки в интерфейсе нет. */
+const ICONS_APPLY_NOT_READY = "«Применить в макет» для иконок ещё не готово.";
 
 async function handleApplyToLayout(recordId: string): Promise<void> {
   if (getLastRecords("icons").some((item) => item.id === recordId)) {
@@ -1763,7 +1765,12 @@ function applyColorToProperty(node: SceneNode, property: string, hex: string, al
  */
 async function withPreviewClone<T>(
   record: LayoutRecord,
-  build: (clone: SceneNode, targetInClone: SceneNode) => Promise<T>
+  build: (clone: SceneNode, targetInClone: SceneNode, targetsInClone: SceneNode[]) => Promise<T>,
+  options: {
+    /** Все слои цели (иконка из нескольких векторов). По умолчанию — один, первый. */
+    nodeIds?: string[];
+    resolveContainer?: (anchor: SceneNode) => SceneNode;
+  } = {}
 ): Promise<T> {
   const representativeId = record.nodeIds[0];
   if (!representativeId) {
@@ -1779,7 +1786,7 @@ async function withPreviewClone<T>(
     throw new Error("Слой не найден — возможно, его удалили. Пересканируйте макет.");
   }
 
-  const container = resolvePreviewContainer(anchor);
+  const container = (options.resolveContainer ?? resolvePreviewContainer)(anchor);
 
   if (
     hasNumericDimensions(container) &&
@@ -1791,6 +1798,14 @@ async function withPreviewClone<T>(
   const relativePath = getRelativeChildPath(container, anchor);
   if (relativePath === null) {
     throw new Error("Не удалось определить положение слоя для превью.");
+  }
+  const extraPaths: number[][] = [];
+  for (const id of options.nodeIds ?? []) {
+    if (id === representativeId) continue;
+    const node = await resolveSceneNodeById(id);
+    const path = node ? getRelativeChildPath(container, node) : null;
+    if (path === null) throw new Error("Не удалось определить положение слоя для превью.");
+    extraPaths.push(path);
   }
 
   if (!("clone" in container) || typeof (container as { clone?: unknown }).clone !== "function") {
@@ -1812,8 +1827,14 @@ async function withPreviewClone<T>(
     if (!targetInClone) {
       throw new Error("Не удалось найти слой в копии для превью.");
     }
+    const targetsInClone = [targetInClone];
+    for (const path of extraPaths) {
+      const node = resolveNodeAtPath(clone, path);
+      if (!node) throw new Error("Не удалось найти слой в копии для превью.");
+      targetsInClone.push(node);
+    }
 
-    return await build(clone, targetInClone);
+    return await build(clone, targetInClone, targetsInClone);
   } finally {
     try {
       clone.remove();
@@ -1963,7 +1984,154 @@ async function buildTypographyPreview(recordId: string, styleId?: string): Promi
   });
 }
 
-async function handleBuildPreview(recordId: string, variableId?: string, styleId?: string): Promise<void> {
+/** Иконка мелкая: для примерки берём контейнер покрупнее, чтобы было видно окружение. */
+const ICON_PREVIEW_MIN_CONTEXT = 96;
+
+function resolveIconPreviewContainer(anchor: SceneNode): SceneNode {
+  let fallback: SceneNode = anchor;
+  let current: BaseNode | null = anchor.parent;
+  while (current && isSceneNode(current)) {
+    if (PREVIEW_CONTAINER_TYPES.has(current.type)) {
+      fallback = current;
+      if (
+        hasNumericDimensions(current) &&
+        (current.width >= ICON_PREVIEW_MIN_CONTEXT || current.height >= ICON_PREVIEW_MIN_CONTEXT)
+      ) {
+        return current;
+      }
+    }
+    current = current.parent;
+  }
+  return fallback;
+}
+
+function nodeBox(node: SceneNode): { x: number; y: number; width: number; height: number } {
+  return { x: node.x, y: node.y, width: node.width, height: node.height };
+}
+
+/** Перекрашивает иконку цветом из макета (lib/iconSwap.ts → recolorPlan). */
+function recolorIconInstance(instance: InstanceNode, paint: Paint): void {
+  for (const step of recolorPlan(instance as unknown as SceneNode, paint)) {
+    const node = step.node as SceneNode;
+    if (step.fills && "fills" in node) (node as MinimalFillsMixin).fills = step.fills;
+    if (step.strokes && "strokes" in node) (node as MinimalStrokesMixin).strokes = step.strokes;
+  }
+}
+
+/**
+ * Ставит иконку библиотеки на место иконки макета и красит её цветом макета.
+ * Экземпляр — меняет компонент (swapComponent), размер сохраняется. Фрейм,
+ * группа или векторы без компонента — новый экземпляр на их месте, они сами
+ * удаляются. Возвращает экземпляр.
+ */
+function placeLibraryIcon(targets: SceneNode[], component: ComponentNode, icon: LibraryIcon): InstanceNode {
+  const paint = pickIconPaint<Paint>(targets as unknown as Parameters<typeof pickIconPaint>[0]);
+  const [first] = targets;
+
+  if (targets.length === 1 && first.type === "INSTANCE") {
+    const { width, height } = first;
+    first.swapComponent(component);
+    if (Math.abs(first.width - width) > 0.5 || Math.abs(first.height - height) > 0.5) {
+      first.rescale(Math.min(width / first.width, height / first.height));
+    }
+    if (paint) recolorIconInstance(first, paint);
+    return first;
+  }
+
+  const parent = first.parent;
+  if (!parent || !("insertChild" in parent)) {
+    throw new Error("Не удалось поставить иконку на место: у слоя нет подходящего родителя.");
+  }
+  const siblings = (parent as ChildrenMixin).children;
+  const index = Math.min(...targets.map((node) => siblings.indexOf(node)).filter((i) => i >= 0));
+  const mode = targets.length === 1 && (first.type === "FRAME" || first.type === "GROUP") ? "frame" : "glyph";
+  const box = unionBox(targets.map(nodeBox));
+  if (!box) throw new Error("Не удалось определить положение иконки.");
+
+  const instance = component.createInstance();
+  (parent as ChildrenMixin).insertChild(Number.isFinite(index) ? index : siblings.length, instance);
+  const place = iconPlacement(mode, box, component, icon.glyph);
+  if (place.scale !== 1) instance.rescale(place.scale);
+  instance.x = place.x;
+  instance.y = place.y;
+  if (paint) recolorIconInstance(instance, paint);
+  for (const node of targets) node.remove();
+  return instance;
+}
+
+/**
+ * Примерка иконки: «Было» — копия макета как есть, «Будет» — та же копия с
+ * иконкой библиотеки на месте иконки макета, в цвете макета. Та же замена
+ * пойдёт в «Применить в макет» (этап 6).
+ *
+ * `componentKey` — иконка, выбранная вручную в «Выбрать иконку из AID»;
+ * без него — предложенная сравнением.
+ */
+async function buildIconPreview(recordId: string, componentKey?: string): Promise<PreviewModeResult[]> {
+  const record = getLastRecords("icons").find((item) => item.id === recordId);
+  const iconRecord = lastIconRecords.get(recordId);
+  if (!record || !iconRecord) {
+    throw new Error("Строка не найдена в текущих результатах. Пересканируйте макет.");
+  }
+
+  let icon: LibraryIcon | undefined;
+  if (componentKey) {
+    icon = lastLibraryIcons.find((item) => item.key === componentKey);
+    if (!icon) throw new Error("Иконки нет в загруженной библиотеке. Обновите библиотеку и выберите заново.");
+  } else {
+    const [result] = compareIcons([iconRecord], lastLibraryIcons, await getComparisonHistory());
+    icon = result?.target?.icon;
+    if (!icon) throw new Error("Для этой иконки нет предложенной из библиотеки — выберите её в «Выбрать иконку из AID».");
+  }
+  const iconName = formatLibraryIconName(icon);
+
+  let component: ComponentNode;
+  try {
+    component = await figma.importComponentByKeyAsync(icon.key);
+  } catch (importError) {
+    const reason = importError instanceof Error ? `: ${importError.message}` : ".";
+    throw new Error(`Не удалось импортировать иконку «${iconName}»${reason}`);
+  }
+
+  const nodeIds = iconRecord.occurrences[0] ?? record.nodeIds.slice(0, 1);
+  return withPreviewClone(
+    record,
+    async (clone, _target, targets) => {
+      await waitFrame();
+      const before = await exportNodeAsPngDataUrl(clone);
+
+      // Иконка сама по себе, без окружения: заменять копию целиком нельзя —
+      // её удалит withPreviewClone, поэтому «Будет» — отдельный экземпляр.
+      if (targets.some((node) => node.id === clone.id) && clone.type !== "INSTANCE") {
+        const paint = pickIconPaint<Paint>(targets as unknown as Parameters<typeof pickIconPaint>[0]);
+        const instance = component.createInstance();
+        try {
+          figma.currentPage.appendChild(instance);
+          instance.x = clone.x;
+          instance.y = clone.y + clone.height + 100;
+          if (paint) recolorIconInstance(instance, paint);
+          await waitFrame();
+          return [{ modeName: iconName, before, after: await exportNodeAsPngDataUrl(instance) }];
+        } finally {
+          instance.remove();
+        }
+      }
+
+      placeLibraryIcon(targets, component, icon!);
+      await waitFrame();
+      const after = await exportNodeAsPngDataUrl(clone);
+      return [{ modeName: iconName, before, after }];
+    },
+    { nodeIds, resolveContainer: resolveIconPreviewContainer }
+  );
+}
+
+async function handleBuildPreview(
+  recordId: string,
+  variableId?: string,
+  styleId?: string,
+  componentKey?: string
+): Promise<void> {
   if (previewInFlight) {
     send({
       type: "preview-error",
@@ -1976,7 +2144,8 @@ async function handleBuildPreview(recordId: string, variableId?: string, styleId
 
   try {
     if (getLastRecords("icons").some((item) => item.id === recordId)) {
-      throw new Error(ICONS_APPLY_NOT_READY);
+      send({ type: "preview-ready", recordId, modes: await buildIconPreview(recordId, componentKey) });
+      return;
     }
     const isTypography = getLastRecords("typography").some((item) => item.id === recordId);
     const modes = isTypography
@@ -2192,7 +2361,7 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handlePrintToFigma(message.payload.sourceFormat, message.payload.results);
         break;
       case "build-preview":
-        await handleBuildPreview(message.recordId, message.variableId, message.styleId);
+        await handleBuildPreview(message.recordId, message.variableId, message.styleId, message.componentKey);
         break;
       case "apply-to-layout":
         await handleApplyToLayout(message.recordId);

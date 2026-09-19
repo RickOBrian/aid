@@ -168,6 +168,8 @@ export interface BuildPreviewMessage {
   recordId: string;
   variableId?: string;
   styleId?: string;
+  /** Иконки — компонент библиотеки, выбранный в «Выбрать иконку из AID». */
+  componentKey?: string;
 }
 
 /**
