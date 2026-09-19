@@ -23,7 +23,7 @@ Perplexity ведёт проект активно: замечает риски, 
 
 ## Платформы
 
-Web (React + TypeScript), iOS (SwiftUI / UIKit), Android (Jetpack Compose).
+iOS, Android, Web — единая кодовая база на Kotlin, Compose Multiplatform (CMP).
 
 ---
 
