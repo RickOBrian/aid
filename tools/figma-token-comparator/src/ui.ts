@@ -2635,9 +2635,7 @@ function renderMixedTypographyCell(result: ComparisonResult): string {
   const segments = result.typographySegments ?? [];
   const details =
     segments.length > 0
-      ? `<div class="ds-value-meta__caption">Внутри текста:</div>${segments
-          .map((line) => `<div class="ds-value-meta__caption">${escapeHtml(line)}</div>`)
-          .join("")}`
+      ? segments.map((line) => `<div class="ds-value-meta__caption">${escapeHtml(line)}</div>`).join("")
       : `<div class="ds-value-meta__caption">${escapeHtml(result.displayValue)}</div>`;
   return `<div>${title}</div>${details}`;
 }
