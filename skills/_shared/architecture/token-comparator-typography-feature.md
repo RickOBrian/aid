@@ -3,7 +3,7 @@ destination: skills/_shared/architecture/
 name: token-comparator-typography-feature
 scope: perplexity-internal
 metadata:
-  version: "0.9.0"
+  version: "0.9.1"
   kind: architecture
   owner: design-system-team
   status: beta
@@ -16,11 +16,15 @@ description: >
 
 # Token Comparator — Typography Feature Context (internal)
 
+> Статус: Beta · v0.9.1 · обновлено 2026-09-20
+
+---
+
 > **Статус: active · Phase 3 завершена · найден regression-риск, требует фикса перед Phase 4 · 2026-09-11**
 
 ---
 
-## 0. Назначение задачи
+## 1. Назначение задачи
 
 Продукт: **Driver**. Категория **Typography** добавляется к **Colors**
 без потери функционала. Переключение категорий — на вкладке сканирования,
@@ -28,11 +32,11 @@ description: >
 
 ---
 
-## 1. Принятые решения — без изменений с версии 0.8.0 (#1–17). См. предыдущие версии для полного списка.
+## 2. Принятые решения — без изменений с версии 0.8.0 (#1–17). См. предыдущие версии для полного списка.
 
 ---
 
-## 2. Implementation — статус фаз
+## 3. Implementation — статус фаз
 
 | Фаза | Статус |
 |---|---|
@@ -62,7 +66,7 @@ clearPendingProposalsForCategory), `src/messages.ts`, `src/code.ts` (wiring),
 
 ---
 
-## 3. КРИТИЧНЫЙ REGRESSION-РИСК — требует фикса перед Phase 4
+## 4. КРИТИЧНЫЙ REGRESSION-РИСК — требует фикса перед Phase 4
 
 **Обнаружено в Открытых вопросах Phase 3:** `handleLoadLibrary()` тянет
 Variables (цвет) и Text Styles (типографика) в одном `Promise.all()`. Если
@@ -78,7 +82,7 @@ Text Styles: Typography scanning корректно отключается с п
 
 ---
 
-## 4. Действующий операционный блокер
+## 5. Действующий операционный блокер
 
 PAT в окружении не обновлён. Нужны `file_content:read` +
 `library_content:read` в дополнение к `file_variables:read`. Три независимых scope.
@@ -88,7 +92,7 @@ PAT в окружении не обновлён. Нужны `file_content:read` 
 
 ---
 
-## 5. Решения по открытым вопросам Phase 3
+## 6. Решения по открытым вопросам Phase 3
 
 | # | Вопрос Cursor | Решение |
 |---|---|---|
@@ -100,15 +104,16 @@ PAT в окружении не обновлён. Нужны `file_content:read` 
 
 ---
 
-## 6. Ограничения и non-goals
+## 7. Ограничения и non-goals
 
 - Export/Print для типографики — вне scope этой фичи.
 - `handleLoadLibrary()` не должен иметь общей точки отказа между Colors и Typography.
 
 ---
 
-## Changelog
+## 8. Changelog
 
+- **0.9.1** — 2026-09-20. guide-lint: нормализация формы.
 - **0.9.0 — 2026-09-11.** Phase 3 отчёт. Регрессион-риск по `Promise.all()`. Phase 3.5 до Phase 4. Export/Print — за scope.
 - **0.8.0 — 2026-09-11.** Phase 2 отчёт.
 - **0.7.0 — 2026-09-11.** Phase 1 отчёт, PAT-блокер.

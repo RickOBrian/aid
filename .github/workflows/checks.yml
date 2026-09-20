@@ -1,0 +1,47 @@
+name: checks
+
+# Проверки, которые до 2026-09-20 запускались только когда о них вспоминали.
+# Ровно эту болезнь мы лечили у guide-lint: требованиям формы соответствовали
+# 7 файлов из 40, потому что проверка зависела от памяти человека.
+#
+# Здесь всё, что умеет падать само:
+#   check-docs  — форма документов, живость ссылок, сходимость версий,
+#                 дубли имён, легаси-пути, согласованность машинных слоёв
+#   typecheck   — приложение портала целиком, не только api/
+#   build       — сборка портала, включая генерацию гайдов из .md
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    name: Документы
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      # check-docs не требует зависимостей — только стандартная библиотека node
+      - run: node scripts/check-docs.mjs
+
+  portal:
+    name: Портал
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pages/aid-portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: pages/aid-portal/package-lock.json
+      - run: npm ci
+      # prebuild здесь важен: он же проверяет осиротевшие changelog-файлы
+      # и собирает гайды из канонических .md
+      - run: npm run typecheck
+      - run: npm run build

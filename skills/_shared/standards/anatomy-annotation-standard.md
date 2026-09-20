@@ -2,11 +2,15 @@
 destination: skills/_shared/standards/
 name: anatomy-annotation-standard
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
 ---
 
 # Стандарт аннотации anatomy (halo / anchor / callout)
+
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
 
 Этот файл — единственный источник правды для логики отрисовки 
 элементов аннотации (anchor-точка, halo, линии, номера) в 
@@ -14,7 +18,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
 в *.html файлах компонентов ОБЯЗАНО начинаться с чтения этого 
 файла и заканчиваться проверкой на соответствие ему.
 
-## 0. Порядок работы при любой правке этой зоны
+## 1. Порядок работы при любой правке этой зоны
 
 1. Прочитать этот файл полностью.
 2. Сформулировать диагноз (root cause), не чинить симптом.
@@ -27,7 +31,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
 6. Явно указать в отчёте: что было причиной, что изменено, 
    что проверено.
 
-## 1. Anchor dot (точка)
+## 2. Anchor dot (точка)
 - Фиксированный размер (6px diameter, radius 3, константа 
   CALLOUT_DOT_RADIUS), НЕ зависит от размера целевого элемента.
 - Фиксированный цвет из design token (--annotation-accent или 
@@ -40,7 +44,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
 цикла из п. 0: commit → правка CALLOUT_DOT_RADIUS в общей 
 функции → регрессия по всем файлам раздела 5.
 
-## 2. Halo (обводка)
+## 3. Halo (обводка)
 - Только border/outline, background ВСЕГДА transparent. 
   Никогда сплошной непрозрачный fill.
 - Геометрия = getBoundingClientRect() целевого DOM-узла, 
@@ -52,7 +56,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
 - Цвет обводки — фиксированный design token, НЕ связан с 
   цветом/фоном целевого Container.
 
-## 3. Item без собственного DOM-узла (text-node)
+## 4. Item без собственного DOM-узла (text-node)
 - В конфиге: targetType: 'text'.
 - Geometry через Range API (selectNodeContents + 
   getClientRects), НЕ через selector родителя.
@@ -60,7 +64,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
   "прямой текстовый контент" и синонимичные формулировки), не 
   по точному совпадению текста.
 
-## 4. Optional Item с собственным selector
+## 5. Optional Item с собственным selector
 - Если optional: true и есть свой selector — #spec-sample 
   ОБЯЗАН содержать минимум один вариант, где этот DOM-узел 
   физически присутствует.
@@ -87,7 +91,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
   (см. resolveAnatomySample() в guide-page.js) с минимальным 
   набором инстансов специально для anatomy-стейджа.
 
-## 4.2. Multi-size анатомия (per-size состав элементов)
+## 6. 2. Multi-size анатомия (per-size состав элементов)
 
 Применяется, когда состав обязательных/опциональных элементов 
 различается между размерами (ButtonText: large/medium/small — 
@@ -132,7 +136,7 @@ radius-preview-standard.md).** Состав элементов каждого р
 обоснованно или упущение. Прецедент: пропущенный chevron в 
 Tiny-сэмпле ButtonText возник именно из копирования по аналогии.
 
-## 5. Список файлов для регрессии
+## 7. Список файлов для регрессии
 
 Полный список presentbook-страниц, рендерящих anatomy-стейдж 
 (`DSGuidePage.render()` / `mountAnatomyCallouts()`) — прогонять 
@@ -157,9 +161,17 @@ Tiny-сэмпле ButtonText возник именно из копировани
 callout'ов (части без selector'ов); `card.html`, 
 `color-swatch.html` — 0 radius-арок.
 
-## 6. Запрещено
+## 8. Запрещено
 - Менять production-разметку компонентов ради аннотационного 
   слоя (никаких новых wrapper-span и т.п.).
 - Точечные фиксы под один файл без применения в общей функции.
 - Считать регрессию пройденной без буквальной проверки каждого 
   файла из раздела 5.
+
+---
+
+## 9. Changelog
+
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.0.0** — предыдущие версии до введения раздела; история — в git.

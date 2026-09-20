@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/protocols/
 name: presentbook-guide
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: protocol
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,11 @@ metadata:
 
 # Presentbook Guide
 
-## Purpose
+> Статус: Draft · v1.1.1 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд описывает, как создавать и поддерживать страницы Presentbook — product-scoped portal для документирования токенов, компонентов и review sandbox. Presentbook не является source of truth для значений токенов; он **отображает** canonical data из `*Data.ts` и changelog из `tokens/*-changelog.json`.
 
@@ -21,7 +25,7 @@ metadata:
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Гайд | Связь |
 |---|---|
@@ -38,7 +42,7 @@ metadata:
 
 ---
 
-## Token pages
+## 3. Token pages
 
 ### Структура token page
 
@@ -111,7 +115,7 @@ const changelog = loadTokenChangelog(collection.collectionName);
 
 ---
 
-## Component pages
+## 4. Component pages
 
 > Driver: `componentsRoot: null` — product components live in review sandbox
 > (`pages/aid-portal/components/`) with versioning via
@@ -175,7 +179,7 @@ const pendingItems = loadComponentPendingItems('switch');
 
 ---
 
-## Критерий содержания component page
+## 5. Критерий содержания component page
 
 Единственный вопрос для любого элемента на странице `/components/<name>` —
 **помогает ли он разработчику правильно понять или реализовать компонент
@@ -246,7 +250,7 @@ Pipeline/process статусы, debug/infrastructure поля, заметки �
 
 ---
 
-## Review sandbox
+## 6. Review sandbox
 
 Review sandbox — временная или permanent страница для **design/dev review** до release, не substitute для production docs.
 
@@ -294,7 +298,7 @@ bg-accent-main …             …              ✓
 
 ---
 
-## Portal structure
+## 7. Portal structure
 
 ### Организация разделов
 
@@ -348,7 +352,7 @@ Hub (/design-system)
 
 ---
 
-## Best practices
+## 8. Best practices
 
 ### Что включать
 
@@ -387,7 +391,7 @@ Hub (/design-system)
 
 ---
 
-## Anti-patterns
+## 9. Anti-patterns
 
 | Anti-pattern | Почему плохо | Как исправить |
 |---|---|---|
@@ -406,8 +410,9 @@ Hub (/design-system)
 
 ---
 
-## Changelog
+## 10. Changelog
 
+- **1.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.0** — 2026-08-18. Добавлена секция «Критерий содержания component
   page»: единственный критерий контента — помогает ли разработчику прямо
   сейчас; pipeline/debug/process-заметки никогда не в published UI ни в

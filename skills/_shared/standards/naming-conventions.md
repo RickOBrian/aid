@@ -179,7 +179,7 @@ Semantic — **назначение**, не значение. Формула: `<
 ❌ `PrimaryButton`, `ButtonPrimary` — variant не входит в имя компонента.  
 ❌ `TextButton` — Entity не должна стоять первой.
 
-**Исключения (устоявшиеся имена):** `Avatar`, `Badge`, `Dialog`, `Toast`, `Tooltip`, `Switch` — не следуют формуле, когда роль очевидна из одного слова. См. `docs/ds-component-architecture-guide.md`, раздел 9.
+**Исключения (устоявшиеся имена):** `Avatar`, `Badge`, `Dialog`, `Toast`, `Tooltip`, `Switch` — не следуют формуле, когда роль очевидна из одного слова. См. `skills/_shared/standards/ds-component-architecture-guide.md`, раздел 9.
 
 **Item-level:** `Icon`, `Text`, `Image` — **без суффикса `Item`**.  
 Суффикс `Item` — только внутри коллекций: `List.Item`, `Menu.Item`, `Accordion.Item`.

@@ -5,14 +5,18 @@ description: >
 destination: skills/_shared/standards/
 name: changelog-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
   owner: design-system-team
 ---
 
 # Changelog Guide
 
-## Purpose
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд описывает, как вести changelog для токенов, компонентов и skills в product-scoped pipeline: формат записей, когда обновлять changelog, и как pending changes превращаются в финальные SemVer entries на release boundary.
 
@@ -20,11 +24,11 @@ Changelog — контракт между дизайном, разработко
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Артефакт | Связь |
 |---|---|
-| `docs/semver-guide.md` | MAJOR / MINOR / PATCH для каждого артефакта |
+| `skills/_shared/standards/semver-guide.md` | MAJOR / MINOR / PATCH для каждого артефакта |
 | `skills/_shared/protocols/gates/release-gate.md` | Release boundary: group pending → SemVer + changelog |
 | `skills/_shared/protocols/gates/product-context.md` | Product-scoped pending items в `changes/<id>/pending/` |
 | `skills/_shared/protocols/gates/token-change-gate.md` | Анкета перед изменением токена (artifact, bump type) |
@@ -32,7 +36,7 @@ Changelog — контракт между дизайном, разработко
 
 ---
 
-## Changelog types
+## 3. Changelog types
 
 | Тип | Файл / location | Status |
 |---|---|---|
@@ -44,7 +48,7 @@ Mirror для Driver portal: `pages/aid-portal/tokens/` (sync prebuild).
 
 ---
 
-## Changelog structure
+## 4. Changelog structure
 
 ### Обязательные поля (token collection)
 
@@ -124,7 +128,7 @@ During implementation: `currentVersion` stays `null` for unreleased components
 (or at last released value after first release); pending work lives in
 `changes/<id>/pending/` only.
 
-## When to update changelog
+## 5. When to update changelog
 
 ### Требует changelog entry
 
@@ -132,7 +136,7 @@ During implementation: `currentVersion` stays `null` for unreleased components
 - Изменение token value (hex, spacing number, radius)
 - Новый component или variant
 - Breaking rename / removal
-- MAJOR / MINOR / PATCH bump по `docs/semver-guide.md`
+- MAJOR / MINOR / PATCH bump по `skills/_shared/standards/semver-guide.md`
 
 ### Не требует changelog entry
 
@@ -145,7 +149,7 @@ During implementation: `currentVersion` stays `null` for unreleased components
 
 ---
 
-## Changelog workflow
+## 6. Changelog workflow
 
 ```
 Implementation task
@@ -176,13 +180,13 @@ Commit release files only → push via git-push.mdc
 ### На release boundary
 
 - Группировать pending items по artifact (collection, component, skill).
-- Propose SemVer bump — см. `docs/semver-guide.md`.
+- Propose SemVer bump — см. `skills/_shared/standards/semver-guide.md`.
 - Показать proposed changelog entry — user confirms.
 - Update changelog file + move pending → released.
 
 ---
 
-## Product-scoped changelogs
+## 7. Product-scoped changelogs
 
 ### Driver
 
@@ -203,7 +207,7 @@ Commit release files only → push via git-push.mdc
 
 ---
 
-## Examples
+## 8. Examples
 
 ### Token — added (MINOR)
 
@@ -272,7 +276,7 @@ Sets `currentVersion: "1.0.0"` — unreleased components keep `currentVersion: n
 
 ---
 
-## Anti-patterns
+## 9. Anti-patterns
 
 | Anti-pattern | Почему плохо |
 |---|---|

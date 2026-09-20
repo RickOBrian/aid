@@ -2,11 +2,15 @@
 destination: skills/_shared/standards/
 name: radius-preview-standard
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
 ---
 
 # Стандарт radius-preview (Guide Page «Скругления»)
+
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
 
 Не относится к anatomy halo/anchor/callout (см.
 anatomy-annotation-standard.md — тот файл ограничен строго
@@ -241,3 +245,11 @@ anatomy-annotation-standard.md — тот файл ограничен строг
 - Вставлять `.ds-agent-radius__arc`/SVG внутрь клона
   (`.ds-agent-radius__clone`) — только как sibling внутри
   `.ds-agent-radius__preview`, см. §2.
+
+---
+
+## 5. Changelog
+
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.0.0** — предыдущие версии до введения раздела; история — в git.

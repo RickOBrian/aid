@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: testing-strategy
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,11 @@ metadata:
 
 # Testing Strategy
 
-## Purpose
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд описывает стратегию тестирования артефактов дизайн-системы aid: токены, компоненты и product portals. Тесты проверяют **уже согласованную** реализацию — после Product Gate, Token Integrity и Component Gate — и не заменяют token lookup, audit или release workflow.
 
@@ -21,7 +25,7 @@ metadata:
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Гайд | Связь |
 |---|---|
@@ -37,7 +41,7 @@ metadata:
 
 ---
 
-## Testing levels
+## 3. Testing levels
 
 | Level | Scope | Когда применять |
 |---|---|---|
@@ -91,7 +95,7 @@ metadata:
 
 ---
 
-## Token testing
+## 4. Token testing
 
 ### What to test
 
@@ -129,7 +133,7 @@ Snapshot changes → review as **token value or structure change** → pending i
 
 ---
 
-## Component testing
+## 5. Component testing
 
 ### Unit tests (props, variants, states, events)
 
@@ -183,7 +187,7 @@ test('ButtonText has no a11y violations', async () => {
 
 ---
 
-## Platform-specific testing
+## 6. Platform-specific testing
 
 ### Web (React)
 
@@ -221,7 +225,7 @@ Assert `contentDescription`, `semantics { role }`, `enabled` / `disabled()` stat
 
 ---
 
-## CI gate
+## 7. CI gate
 
 ### What blocks merge
 
@@ -258,7 +262,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ---
 
-## Manual testing checklist
+## 8. Manual testing checklist
 
 Перед release компонента или token collection (дополнение к `accessibility.md`):
 
@@ -291,7 +295,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ---
 
-## Tools matrix
+## 9. Tools matrix
 
 | Test type | Web | iOS | Android | Design / Tokens |
 |---|---|---|---|---|
@@ -306,7 +310,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ---
 
-## Anti-patterns
+## 10. Anti-patterns
 
 | Anti-pattern | Почему плохо | Как исправить |
 |---|---|---|
@@ -325,6 +329,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: testing levels, token/component strategy, platform tools, CI gate, manual checklist, tools matrix, anti-patterns.

@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: core-typography-tokens-guide
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -14,6 +14,10 @@ description: >
 
 
 # Core Typography Tokens — Архитектурный гайд
+
+> Статус: Draft · v1.1.2 · обновлено 2026-09-20
+
+---
 
 > Этот документ описывает **Core-уровень типографических токенов**:
 > числовые шкалы размеров, межстрочных интервалов, насыщенности и трекинга,
@@ -304,8 +308,9 @@ label-m →
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.1.2** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.1** — 2026-07-03. Уточнено в разделе 5: `type-weight-700` уже
   существует на Core-уровне, отдельный «core-токен под XS-лейбл» не
   заводится — присвоение веса конкретной роли (`label-xs-weight-strong`)

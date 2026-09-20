@@ -2,12 +2,16 @@
 destination: skills/_shared/protocols/
 name: docs-design-brief
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: protocol
   owner: design-system-team
 ---
 
 # Docs Design Brief — aid Portal
+
+> Статус: Draft · v1.1.1 · обновлено 2026-09-20
+
+---
 
 ---
 
@@ -124,3 +128,11 @@ Show the rule, then prove it on the same page —
 a rule without a visual example that would fail it is incomplete.
 
 Visual language reference: see `skills/_shared/protocols/docs-visual-language.md`
+
+---
+
+## 9. Changelog
+
+- **1.1.1** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.1.0** — предыдущие версии до введения раздела; история — в git.

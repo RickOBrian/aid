@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: accessibility
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,11 @@ metadata:
 
 # Accessibility
 
-## Purpose
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд фиксирует accessibility-стандарты дизайн-системы aid для Web, iOS и Android: контраст, фокус, клавиатура, screen reader и минимальные требования к тестированию. Стандарты обязательны для всех Surface View и Structural View компонентов до release.
 
@@ -21,7 +25,7 @@ Accessibility — часть контракта компонента нарав�
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Гайд | Связь |
 |---|---|
@@ -34,7 +38,7 @@ Accessibility — часть контракта компонента нарав�
 
 ---
 
-## Color contrast
+## 3. Color contrast
 
 ### Minimum contrast ratios (WCAG 2.1 AA)
 
@@ -79,7 +83,7 @@ WCAG AAA (7:1 / 4.5:1) — опционально для critical content; не 
 
 ---
 
-## Focus management
+## 4. Focus management
 
 ### Focus indicators
 
@@ -121,7 +125,7 @@ Dialog, Sheet, Select dropdown — обязаны реализовать trap + 
 
 ---
 
-## Keyboard navigation
+## 5. Keyboard navigation
 
 ### Keyboard-accessible interactions
 
@@ -159,7 +163,7 @@ Dialog, Sheet, Select dropdown — обязаны реализовать trap + 
 
 ---
 
-## Screen reader support
+## 6. Screen reader support
 
 ### ARIA labels, roles, states
 
@@ -196,7 +200,7 @@ Loading state: `aria-busy="true"` on container; button loading — `aria-disable
 
 ---
 
-## Platform-specific requirements
+## 7. Platform-specific requirements
 
 ### Web (React)
 
@@ -256,7 +260,7 @@ IconButton(onClick = onClose, modifier = Modifier.semantics {
 
 ---
 
-## Testing requirements
+## 8. Testing requirements
 
 ### Automated a11y tests
 
@@ -299,7 +303,7 @@ Automated tests **не заменяют** VoiceOver/TalkBack manual pass для 
 
 ---
 
-## Anti-patterns
+## 9. Anti-patterns
 
 | Anti-pattern | Почему плохо | Как исправить |
 |---|---|---|
@@ -320,6 +324,7 @@ Automated tests **не заменяют** VoiceOver/TalkBack manual pass для 
 
 ---
 
-## Changelog
+## 10. Changelog
 
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: WCAG AA contrast, focus/keyboard/screen reader standards, platform requirements, testing checklist, anti-patterns.

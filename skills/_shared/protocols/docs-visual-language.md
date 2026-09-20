@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: docs-visual-language
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: protocol
   owner: design-system-team
 description: >
@@ -14,9 +14,13 @@ description: >
 
 # Docs Visual Language — aid Portal
 
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
 ---
 
-## Surface & Depth
+---
+
+## 1. Surface & Depth
 
 - **Background** — light warm-neutral (`#EBEBEB` tone), never pure white. Warmth signals approachability; clinical white reads as unfinished.
 - **Cards** — white or `--bg-card-main` with `border-radius: 20–28px`. Large radius signals intentional, premium craft.
@@ -27,7 +31,7 @@ description: >
 
 ---
 
-## Typography
+## 2. Typography
 
 - **Display values** (KPIs, metrics, counts) — `font-weight: 700–800`, large scale, `font-variant-numeric: tabular-nums`. Numbers that shift width while animating destroy layout.
 - **Size contrast** — strong gap between display value and its label. A label at the same size as its value has no hierarchy.
@@ -37,7 +41,7 @@ description: >
 
 ---
 
-## Color
+## 3. Color
 
 - **Base** — neutral warm-gray surfaces. Cool gray reads as legacy enterprise; warm gray reads as considered product.
 - **Accent** — one color, vivid and saturated (lime green / chartreuse character works well with warm gray). Accent must be visible at small sizes; washed-out accents fail their purpose.
@@ -47,7 +51,7 @@ description: >
 
 ---
 
-## Components
+## 4. Components
 
 - **Shape language** — all interactive elements use pill shape (`border-radius: 9999px`) or large-radius cards (20–28px). Square-cornered interactive elements feel mismatched.
 - **Navigation** — pill-shaped active state, no underlines, no left-border indicators. Underlines and borders belong in text content, not nav.
@@ -57,7 +61,7 @@ description: >
 
 ---
 
-## Data Visualization
+## 5. Data Visualization
 
 - **Axes** — minimal: label only, no tick marks, no box frames. Clean data space reduces cognitive load.
 - **Gridlines** — none, or very faint (`--line-default` at 30% opacity). Data speaks; gridlines assist at most.
@@ -67,7 +71,7 @@ description: >
 
 ---
 
-## Illustration & Preview Rules
+## 6. Illustration & Preview Rules
 
 Apply when building illustrations for guide pages:
 
@@ -76,3 +80,11 @@ Apply when building illustrations for guide pages:
 - **Interactive demos** — pill buttons, spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`), token-driven colors. Static demos that don't respond to hover signal low fidelity.
 - **No sharp corners in illustrations** — a square-cornered element in a guide example teaches the wrong geometry. Every preview element follows the same radius rules as production components.
 - **No multiple accent colors simultaneously** — one accent per view. Two vivid colors in one illustration create a false signal that both are valid at once.
+
+---
+
+## 7. Changelog
+
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.0.0** — предыдущие версии до введения раздела; история — в git.
