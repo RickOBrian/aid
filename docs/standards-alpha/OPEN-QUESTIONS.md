@@ -7,7 +7,7 @@
 
 ---
 
-## Q-01 · open · блокирует W1-2
+## Q-01 · решён ADR-021 · значение, а не состояние
 **`indeterminate` — десятое состояние или частный случай?**
 
 В `switch.api.ts` состояние перечислено (со значением `supported: false`),
@@ -21,7 +21,7 @@
 
 ---
 
-## Q-02 · open · блокирует W2-2
+## Q-02 · решён ADR-022 · канон — destructive
 **`destructive` — это variant или часть имени компонента?**
 
 `component-standards` и `naming-conventions` говорят variant.
