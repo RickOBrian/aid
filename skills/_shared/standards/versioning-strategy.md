@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: versioning-strategy
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,19 +13,23 @@ metadata:
 
 # Versioning Strategy
 
-## Purpose
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
 
-Этот гайд описывает стратегию версионирования артефактов дизайн-системы aid: когда и как применять SemVer, как группировать изменения в release, и как согласовывать версии между платформами. Стратегия дополняет `docs/semver-guide.md` (правила bump) и `changelog-guide.md` (формат записей) — не заменяет их.
+---
+
+## 1. Purpose
+
+Этот гайд описывает стратегию версионирования артефактов дизайн-системы aid: когда и как применять SemVer, как группировать изменения в release, и как согласовывать версии между платформами. Стратегия дополняет `skills/_shared/standards/semver-guide.md` (правила bump) и `changelog-guide.md` (формат записей) — не заменяет их.
 
 Версия — контракт между дизайном, разработкой, QA и потребителями артефакта. SemVer и changelog фиксируются **только на release boundary** — после явного подтверждения через Release Gate, не во время implementation.
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Гайд | Связь |
 |---|---|
-| `docs/semver-guide.md` | Базовый SemVer: MAJOR / MINOR / PATCH, зависимости Core → Semantic, Component → Component |
+| `skills/_shared/standards/semver-guide.md` | Базовый SemVer: MAJOR / MINOR / PATCH, зависимости Core → Semantic, Component → Component |
 | `changelog-guide.md` | Структура changelog entries, pending → released workflow |
 | `skills/_shared/protocols/gates/release-gate.md` | Release plan, группировка pending, финализация версий |
 | `component-standards.md` | SemVer для компонентов (props, variants, states) |
@@ -35,7 +39,7 @@ metadata:
 
 ---
 
-## SemVer for tokens
+## 3. SemVer for tokens
 
 Каждая **token collection** — независимая единица версионирования. Driver collections:
 
@@ -94,11 +98,11 @@ Colors/Core:     v1.0.0 → v2.0.0   (MAJOR: удалён color-blue-400)
 Colors/Semantic: v1.3.0 → v2.0.0   (MAJOR: обязательно, синхронно)
 ```
 
-Правило распространяется на `Spacing`, `Radius`, `Typography` и другие типы токенов — см. `docs/semver-guide.md`.
+Правило распространяется на `Spacing`, `Radius`, `Typography` и другие типы токенов — см. `skills/_shared/standards/semver-guide.md`.
 
 ---
 
-## SemVer for components
+## 4. SemVer for components
 
 Каждый компонент (`Switch`, `ButtonText`, `BadgeStatus`) — **независимая**
 единица версионирования, отдельно от token collections.
@@ -148,7 +152,7 @@ Reference component: **Switch** (`componentId: switch`, route `/components/switc
 
 ---
 
-## SemVer for skills
+## 5. SemVer for skills
 
 Skills в `skills/_shared/` версионируются через **`metadata.version` во frontmatter** и optional changelog section в конце файла. Отдельный skills changelog file — TBD (см. `changelog-guide.md`).
 
@@ -173,7 +177,7 @@ Skills release проходит через Release Gate как **Skills release*
 
 ---
 
-## Deprecation policy
+## 6. Deprecation policy
 
 Deprecation — мост между backward-compatible coexistence и MAJOR removal. Не удалять токены/components/props без deprecation window, кроме явного emergency fix с user approval.
 
@@ -209,7 +213,7 @@ Emergency removal (security, legal) — MAJOR без полного window, с e
 
 ---
 
-## Release trains
+## 7. Release trains
 
 Release train — группа pending changes, финализируемых в одном release boundary. Не смешивать unrelated artifacts в одном commit без явного combined release request.
 
@@ -264,7 +268,7 @@ Release commit (release files only) → push via git-push.mdc
 
 ---
 
-## Cross-platform versioning
+## 8. Cross-platform versioning
 
 Semantic token names и component API contracts **единые** на Web, iOS и Android. Platform-specific детали — в реализации, не в отдельной версии semantic collection.
 
@@ -308,7 +312,7 @@ Semantic token names и component API contracts **единые** на Web, iOS �
 
 ---
 
-## Examples
+## 9. Examples
 
 ### Token version entry
 
@@ -421,7 +425,7 @@ Bump rule: `1.0.0` → `1.1.0` (MINOR: new token).
 
 ---
 
-## Anti-patterns
+## 10. Anti-patterns
 
 | Anti-pattern | Почему плохо |
 |---|---|
@@ -437,6 +441,7 @@ Bump rule: `1.0.0` → `1.1.0` (MINOR: new token).
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: SemVer для tokens/components/skills, deprecation policy, release trains, cross-platform versioning, examples.

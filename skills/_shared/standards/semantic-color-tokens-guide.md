@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.5.2"
+  version: "1.5.3"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -17,7 +17,7 @@ description: >
 
 # Semantic Color Tokens
 
-> Статус: Stable · v1.5.2
+> Статус: Draft · v1.5.3 · обновлено 2026-09-20
 
 <style>
 /* ================================================================
@@ -466,8 +466,9 @@ bg-accent-product-marketplace-main
 
 ---
 
-## Changelog
+## 14. Changelog
 
+- **1.5.3** — 2026-09-20. guide-lint: нормализация формы.
 - **1.5.2** — Illustrations: тени заменены на `line-default` / `line-accent` borders (arch-diagram, token-text-demo).
 - **1.5.1** — Visual Language applied to existing illustrations (arch-diagram §1, token-text-demo §5):
   warm neutral `#EBEBEB` outer bg, white card rows/pills, r-24 container, r-16 nested rows,

@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: component-pipeline-context
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   kind: architecture
   owner: design-system-team
   status: draft
@@ -14,7 +14,11 @@ description: >
 
 # Component Pipeline Context
 
-## Назначение
+> Статус: Draft · v0.1.1 · обновлено 2026-09-20
+
+---
+
+## 1. Назначение
 
 Этот файл — persistent-контекст для Perplexity в Space **Design System Pipeline**.
 Он фиксирует рабочий процесс, по которому агент реализует компоненты из Figma
@@ -31,7 +35,7 @@ description: >
 > `scripts/check-docs.mjs`.
 
 
-## Инструменты и роли
+## 2. Инструменты и роли
 
 - **Principal Designer** принимает архитектурные, token- и release-решения.
 - **Агент** — исполнитель работ в репозитории: читает Figma через MCP,
@@ -46,7 +50,7 @@ description: >
 
 ---
 
-## Репозиторий и source of truth
+## 3. Репозиторий и source of truth
 
 Репозиторий: `aid`.
 
@@ -69,7 +73,7 @@ description: >
 
 ---
 
-## Токены
+## 4. Токены
 
 ### Текущий контракт
 
@@ -103,7 +107,7 @@ docs/exceptions/raw-values.json (не создан).
 
 ---
 
-## Component workflow
+## 5. Component workflow
 
 ### Вход
 
@@ -218,7 +222,7 @@ Principal Designer выбирает: approve / нужны правки / отк�
 
 ---
 
-## Release workflow
+## 6. Release workflow
 
 ### Главное правило
 
@@ -283,7 +287,7 @@ changelog entry. Temporary raw exception не повышает версию то
 
 ---
 
-## Материалы пайплайна
+## 7. Материалы пайплайна
 
 Гейты переехали из правил Cursor в репозиторий (2026-09-20, разбор —
 `docs/standards-alpha/GATES-MIGRATION.md`). Триггеры срабатывания — в
@@ -306,7 +310,7 @@ changelog entry. Temporary raw exception не повышает версию то
 - release-bundle-guide — релизный бандл
 - raw-value-exceptions-guide — исключения для raw-value
 
-## Constraints and non-goals
+## 8. Constraints and non-goals
 
 - Do not use Storybook for component sandbox work; use Presentbook pages.
 - Do not restore Claude Code-specific folders or instructions.
@@ -320,7 +324,7 @@ changelog entry. Temporary raw exception не повышает версию то
 
 ---
 
-## Open decisions
+## 9. Open decisions
 
 These points are recommended but not yet implemented/confirmed in code:
 
@@ -335,7 +339,8 @@ These points are recommended but not yet implemented/confirmed in code:
 
 ---
 
-## Changelog
+## 10. Changelog
 
+- **0.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **0.1.0** — initial context: component workflow, composition/token gates,
   Presentbook sandbox, pending changes and release-based versioning.

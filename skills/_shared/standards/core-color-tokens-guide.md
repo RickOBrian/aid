@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: core-color-tokens-guide
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -12,6 +12,10 @@ description: >
 ---
 
 # Core Color Tokens — Архитектурный гайд
+
+> Статус: Draft · v1.2.1 · обновлено 2026-09-20
+
+---
 
 > Этот гайд описывает архитектуру Core Color Tokens: как формируются палитры,
 > как называются токены, какие правила определяют состав ступеней.
@@ -302,8 +306,9 @@ Core Color Tokens живут в отдельной Figma-коллекции `cor
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.2.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.2.0** — добавлен раздел о версионировании Core vs Semantic, пересобран пример
   структуры папок под нейтральные имена палитр (jasper, citrine и т.п.), уточнено
   правило отсутствия `brand`/`neutral` на уровне Core.

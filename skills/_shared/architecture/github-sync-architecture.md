@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: github-sync-architecture
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
   kind: architecture
   owner: design-system-team
   status: stable
@@ -16,6 +16,10 @@ description: >
 ---
 
 # Архитектура: синхронизация реестра решений через GitHub
+
+> Статус: Stable · v1.5.1 · обновлено 2026-09-20
+
+---
 
 > **Статус: active · production E2E validated · 2026-09-08**
 >
@@ -156,7 +160,7 @@ Proposal branches `registry/propose-*` намеренно содержат то�
 
 ---
 
-## 3a. Presentbook git/deploy workflow
+## 4. 3a. Presentbook git/deploy workflow
 
 > Добавлено 2026-09-08 после структурного инцидента (см. §9a). Обязательно к
 > прочтению перед любой работой над `pages/aid-portal/`.
@@ -251,7 +255,7 @@ Principal Designer, а не часть автоматизированного п
 
 ---
 
-## 4. Proposal flow
+## 5. Proposal flow
 
 ### Целевой lifecycle
 
@@ -312,7 +316,7 @@ proposal branch. Исключение — явно обозначенный те
 
 ---
 
-## 5. Canonical registry
+## 6. Canonical registry
 
 ### Формат `decisions-registry.json`
 
@@ -386,7 +390,7 @@ resolved display value token может измениться в library. Эти 
 
 ---
 
-## 6. Human-readable PR review projection
+## 7. Human-readable PR review projection
 
 ### Назначение
 
@@ -418,7 +422,7 @@ ComparisonResult / LayoutRecord / ComparisonTarget
 PR body начинает batch summary:
 
 ```markdown
-## Решения для ревью
+## 8. Решения для ревью
 
 Предложено: <proposedBy>
 Время: <timestamp>
@@ -501,7 +505,7 @@ technical details. Это подтверждает, что review projection ч�
 
 ---
 
-## 7. Backend contract и безопасность
+## 9. Backend contract и безопасность
 
 ### Endpoint
 
@@ -572,7 +576,7 @@ Access-Control-Allow-Methods: POST, OPTIONS
 
 ---
 
-## 8. GitHub review policy
+## 10. GitHub review policy
 
 ### Principal Designer decision
 
@@ -626,7 +630,7 @@ rule. Если branch protection будет включён позже, workflow 
 
 ---
 
-## 9. Validation history
+## 11. Validation history
 
 ### Этап 1 — registry read
 
@@ -714,7 +718,7 @@ Test artifacts не трактовать как approved registry decisions.
 
 ---
 
-## 9a. Инцидент 2026-09-08: main не содержал Presentbook
+## 12. 9a. Инцидент 2026-09-08: main не содержал Presentbook
 
 ### Симптом
 
@@ -797,7 +801,7 @@ deployment до отдельного явного решения Principal Desig
 
 ---
 
-## 10. Current state
+## 13. Current state
 
 ### Подтверждённое состояние на 2026-09-08
 
@@ -825,7 +829,7 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
 
 ---
 
-## 11. Known limitations и backlog
+## 14. Known limitations и backlog
 
 ### P0 — следующий функциональный slice
 
@@ -903,7 +907,7 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
 
 ---
 
-## 12. Operational checks и гейты
+## 15. Operational checks и гейты
 
 ### Перед изменением plugin/client слоя
 
@@ -964,7 +968,7 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
 
 ---
 
-## 13. Historical record
+## 16. Historical record
 
 ### Incident: reviewer equals author
 
@@ -1000,8 +1004,9 @@ terminal/report/PR.
 
 ---
 
-## Changelog
+## 17. Changelog
 
+- **1.5.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.4.0 — 2026-09-19.** Бэкенд 1.3.0: категория `icons`, canonical поля
   `targetComponentKey` / `targetComponentName` (плагин 1.5.0). Бэкенд 1.2.0
   такие записи отклоняет — деплой бэкенда раньше выпуска плагина.

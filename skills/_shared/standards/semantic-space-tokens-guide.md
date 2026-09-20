@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: semantic-space-tokens-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -11,6 +11,10 @@ description: >
 ---
 
 # Semantic Space Tokens Guide
+
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+
+---
 
 Гайд описывает Semantic-уровень пространственных токенов: именованные алиасы поверх Core-шкалы `spacing-N` и `shape-corner-N`. Semantic-токены — единственный уровень, который используют компоненты напрямую.
 
@@ -272,6 +276,7 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 
 ---
 
-## Changelog
+## 9. Changelog
 
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — Первая версия. `inset-*` с осями h/v и четырьмя категориями (control, row, container, screen). `gap-*` для Layout. `radius-*` как Semantic-алиасы над `shape-corner-N`.

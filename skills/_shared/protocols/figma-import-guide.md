@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/protocols/
 name: figma-import-guide
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   kind: protocol
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,11 @@ metadata:
 
 # Figma Import Guide
 
-## Purpose
+> Статус: Draft · v1.0.2 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд описывает, как импортировать токены и компоненты из Figma в scope продукта дизайн-системы: что считать source of truth, как мапить Figma variables/styles на token collections, и как пройти post-import validation через gates pipeline.
 
@@ -21,7 +25,7 @@ metadata:
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Артефакт | Связь |
 |---|---|
@@ -35,7 +39,7 @@ metadata:
 
 ---
 
-## Source of truth
+## 3. Source of truth
 
 | Источник | Роль |
 |---|---|
@@ -58,7 +62,7 @@ metadata:
 
 ---
 
-## Import workflow
+## 4. Import workflow
 
 Высокоуровневый процесс (детали ds-import — в `skills/ds-import/SKILL.md`):
 
@@ -77,7 +81,7 @@ metadata:
 
 ---
 
-## Token import
+## 5. Token import
 
 ### Mapping Figma → token collections (Driver)
 
@@ -126,7 +130,7 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 ---
 
-## Component import
+## 6. Component import
 
 ### Workflow
 
@@ -152,7 +156,7 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 ---
 
-## Post-import validation
+## 7. Post-import validation
 
 После import (или перед implementation):
 
@@ -165,7 +169,7 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 ---
 
-## Common pitfalls
+## 8. Common pitfalls
 
 | Ошибка | Как избежать |
 |---|---|
@@ -177,3 +181,11 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 | Immediate changelog bump | Pending → Release Gate |
 | Component folder без path confirmation | Component Gate при `componentsRoot: null` |
 | Figma Light/Dark vs Driver Day/Night treated as naming drift | Product terminology; map semantically | `colorModeMapping` in `product.json` |
+
+---
+
+## 9. Changelog
+
+- **1.0.2** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.0.1** — предыдущие версии до введения раздела; история — в git.

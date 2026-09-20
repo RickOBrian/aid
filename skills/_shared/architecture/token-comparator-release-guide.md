@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: token-comparator-release-guide
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
   kind: architecture
   owner: design-system-team
   status: stable
@@ -14,6 +14,10 @@ description: >
 ---
 
 # Token Comparator — Release & Distribution Guide
+
+> Статус: Stable · v1.4.1 · обновлено 2026-09-20
+
+---
 
 > **Статус: active · последняя опубликованная версия v1.1.0**
 >
@@ -27,7 +31,7 @@ description: >
 
 ---
 
-## 0. Контракт работы
+## 1. Контракт работы
 
 ### Роли
 
@@ -54,7 +58,7 @@ Standard. Frontier-модель нужна только при реальной 
 
 ---
 
-## 1. Принятая архитектура
+## 2. Принятая архитектура
 
 ```text
 RickOBrian/aid
@@ -85,7 +89,7 @@ Presentbook
 
 ---
 
-## 2. Token Comparator v0.1.0
+## 3. Token Comparator v0.1.0
 
 ### Release record
 
@@ -189,7 +193,7 @@ ZIP нельзя импортировать в Figma напрямую. Пере�
 
 ---
 
-## 3. Download URLs и asset policy
+## 4. Download URLs и asset policy
 
 ### Stable URL для Presentbook
 
@@ -264,7 +268,7 @@ Versioned URL применяется для аудита, rollback, конкре
 
 ---
 
-## 4. Release workflow
+## 5. Release workflow
 
 ### Trigger
 
@@ -343,7 +347,7 @@ build target.
 
 ---
 
-## 5. Presentbook Tools integration
+## 6. Presentbook Tools integration
 
 ### Целевой маршрут
 
@@ -510,7 +514,7 @@ Install block:
 
 ---
 
-## 6. Git safety и cleanup
+## 7. Git safety и cleanup
 
 ### Main worktree
 
@@ -549,7 +553,7 @@ branch: cursor/token-comparator-v0.1.0
 
 ---
 
-## 7. Security и access
+## 8. Security и access
 
 - `PLUGIN_SHARED_SECRET` не должен попадать в Git, ZIP, bundles, UI, URLs,
   README, logs или Presentbook.
@@ -562,7 +566,7 @@ branch: cursor/token-comparator-v0.1.0
 
 ---
 
-## 8. Не делать
+## 9. Не делать
 
 - Не коммитить ZIP в Git, `public/`, `dist/` history или Presentbook assets.
 - Не распространять ZIP вручную через чат как постоянный канал.
@@ -575,7 +579,7 @@ branch: cursor/token-comparator-v0.1.0
 
 ---
 
-## 9. Следующие задачи
+## 10. Следующие задачи
 
 1. **Alias gate v0.1.0:** фактически подтвердить/закончить `token-comparator.zip`
    в GitHub Release `v0.1.0`, проверить SHA и stable URL.
@@ -589,7 +593,7 @@ branch: cursor/token-comparator-v0.1.0
 
 ---
 
-## 10. Cleanup-сессия 2026-09-09
+## 11. Cleanup-сессия 2026-09-09
 
 ### Исходное состояние (до cleanup)
 
@@ -732,7 +736,7 @@ git pull --ff-only origin main
 
 ---
 
-## 11. Перенумерация версий 2026-09-18
+## 12. Перенумерация версий 2026-09-18
 
 Первые релизы выходили как `0.1.x`, и цифра поднималась в последнем разряде
 независимо от содержания: `v0.1.2` добавил типографику, но вышел как PATCH.
@@ -767,8 +771,9 @@ git pull --ff-only origin main
 
 ---
 
-## Changelog
+## 13. Changelog
 
+- **1.4.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.4.0 — 2026-09-18.** Раздел 11: перенумерация версий плагина по SemVer
   (`v0.1.0/0.1.1/0.1.2` → `v1.0.0/1.0.1/1.1.0`), удаление старых тегов.
   В «Preconditions» — выбор версии по `semver-guide.md` и обязательная запись

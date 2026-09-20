@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: editable-component-spec-layer-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: architecture
   owner: design-system-team
   platforms: [web]
@@ -17,7 +17,7 @@ description: >
 
 # Editable Component Spec Layer — Guide — v1.0.0
 
-> Статус: Stable · v1.0.0 · Web (System Storybook)
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
 
 Гайд фиксирует статус и границы editable-слоя для component spec pages:
 что уже гарантируется, что осознанно не гарантируется, и какие шаги
@@ -30,7 +30,7 @@ description: >
 
 ---
 
-## Editable component spec layer — статус и границы
+## 1. Editable component spec layer — статус и границы
 
 ### Scope
 
@@ -103,3 +103,11 @@ Web-специфика. Точечные улучшения реализации
 сырого значения) и поддержка мультиселекторных полей для значений,
 живущих в нескольких stylesheet'ах. Авто-определение override через CSSOM —
 это web-конкретизация принципа better override resolution.
+
+---
+
+## 2. Changelog
+
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
+  статуса, нумерация разделов, раздел Changelog.
+- **1.0.0** — предыдущие версии до введения раздела; история — в git.

@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: git-workflow
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   kind: protocol
   owner: design-system-team
 description: >
@@ -11,14 +11,18 @@ description: >
 ---
 
 
-# Git Workflow для памяти скиллов — v1.1.0
+# Git Workflow для памяти скиллов
+
+> Статус: Draft · v1.2.1 · обновлено 2026-09-20
+
+---
 
 Единые git-команды для синхронизации памяти скиллов.
 Все скиллы ссылаются на этот файл — не дублируй команды в SKILL.md.
 
 ---
 
-## Синхронизация памяти после каждой записи
+## 1. Синхронизация памяти после каждой записи
 
 ```bash
 git pull --rebase
@@ -33,7 +37,7 @@ git push
 
 ---
 
-## Типы коммитов
+## 2. Типы коммитов
 
 | Тип | Когда использовать | Пример |
 |---|---|---|
@@ -47,7 +51,7 @@ git push
 
 ---
 
-## Структура memory/
+## 3. Структура memory/
 
 ```
 memory/
@@ -68,7 +72,7 @@ memory/
 
 ---
 
-## .gitignore
+## 4. .gitignore
 
 Генерируемые сводные файлы и личный конфиг — не коммитить:
 
@@ -82,7 +86,7 @@ memory/**/*.master.json
 
 ---
 
-## Онбординг нового сотрудника
+## 5. Онбординг нового сотрудника
 
 ```bash
 # 1. Клонировать репо
@@ -101,7 +105,7 @@ echo "ivanov" > .claude/intake-user
 
 ---
 
-## Push и релизный флоу
+## 6. Push и релизный флоу
 
 Перенесено из .cursor/rules/git-push.mdc (2026-09-20). Решение о самом
 релизе — за `protocols/gates/release-gate.md`; здесь только механика.
@@ -186,8 +190,9 @@ Print:
 
 ---
 
-## Changelog
+## 7. Changelog
 
+- **1.2.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.2.0** — 2026-09-20. Добавлен раздел «Push и релизный флоу»,
   перенесённый из `skills/_shared/protocols/git-workflow.md`: Cursor легаси, механика
   push переехала к остальным git-правилам.

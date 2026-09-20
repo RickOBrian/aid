@@ -50,7 +50,11 @@ function buildIndex(dir, index = new Map(), depth = 0) {
   let entries;
   try { entries = readdirSync(join(repoRoot, dir)); } catch { return index; }
   for (const entry of entries) {
-    if (['node_modules', '.git', 'dist', 'storybook-static', 'storybook-legacy'].includes(entry)) continue;
+    // generated/ и public/guides/sources/ — производные от канона; если они
+    // попадут в индекс, ссылка на удалённый исходник «найдётся» в копии и
+    // проверка промолчит.
+    if (['node_modules', '.git', 'dist', 'storybook-static', 'storybook-legacy', 'generated'].includes(entry)) continue;
+    if (dir.endsWith('public/guides') && entry === 'sources') continue;
     const rel = dir === '.' ? entry : join(dir, entry);
     let st;
     try { st = statSync(join(repoRoot, rel)); } catch { continue; }
@@ -154,19 +158,26 @@ for (const file of files) {
 
   /* форма — пока предупреждения, ужесточается по мере нормализации гайдов */
   const statusLine = src.match(/^> Статус:\s*(\S+)\s*·\s*v(\d+\.\d+\.\d+)/m);
-  if (!statusLine) warn(file, 'status-line', 'нет строки статуса под заголовком');
-  else {
+  if (!statusLine) {
+    if (fm.kind !== 'notes') warn(file, 'status-line', 'нет строки статуса под заголовком');
+  } else {
+    // Строка статуса есть — значит, она обязана сходиться с frontmatter,
+    // независимо от жанра: расхождение версий это ошибка, а не оформление.
     if (fm.version && statusLine[2] !== fm.version)
       err(file, 'version-sync', `строка статуса v${statusLine[2]} ≠ frontmatter ${fm.version}`);
     if (fm.status && statusLine[1].toLowerCase() !== fm.status.toLowerCase())
       err(file, 'status-sync', `строка статуса "${statusLine[1]}" ≠ frontmatter "${fm.status}"`);
   }
 
+  /* Черновики (kind: notes) не обязаны нести форму: нумерацию, changelog и
+     строку статуса. Требовать её от заметки — плодить церемонию там, где
+     документ по определению не дописан. Frontmatter проверяется у всех. */
+  const ceremonial = fm.kind !== 'notes';
   const sections = [...src.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-  if (sections.length && !sections.some((s) => /Changelog/i.test(s)))
+  if (ceremonial && sections.length && !sections.some((s) => /Changelog/i.test(s)))
     warn(file, 'changelog', 'нет раздела Changelog');
   const numbered = sections.filter((s) => /^\d+\./.test(s)).length;
-  if (sections.length && numbered !== sections.length)
+  if (ceremonial && sections.length && numbered !== sections.length)
     warn(file, 'numbering', `разделы пронумерованы частично (${numbered}/${sections.length})`);
 
   /* машинный слой */

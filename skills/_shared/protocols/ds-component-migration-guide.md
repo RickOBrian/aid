@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: ds-component-migration-guide
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   kind: protocol
   owner: design-system-team
   platforms: [web, ios, android]
@@ -18,7 +18,7 @@ description: >
 
 # Component Migration — Guide — v1.1.1
 
-> Статус: Draft · v1.1.1
+> Статус: Draft · v1.1.2 · обновлено 2026-09-20
 
 ---
 
@@ -256,7 +256,7 @@ SKILL.md, раздел «Разделение ответственности»).
 
 ---
 
-## Источники
+## 9. Источники
 
 - `skills/ds-component-migration/SKILL.md` (v1.2.1) — нормативный
   источник по фазам, гейтам и формату памяти.
@@ -270,8 +270,9 @@ SKILL.md, раздел «Разделение ответственности»).
 
 ---
 
-## Changelog
+## 10. Changelog
 
+- **1.1.2** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.1** — синхронизировано с `ds-component-migration/SKILL.md` v1.2.1:
   добавлено терминальное значение `rollout.status: completed` (раздел 6);
   уточнено, что `rollout.status: completed` и `phase: closed`

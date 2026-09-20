@@ -6,6 +6,7 @@
   "scripts": {
     "build-storybook": "storybook build",
     "build:portal": "vite build --config pages/aid-portal/vite.config.ts",
+    "build:structure": "node scripts/build-structure.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "check:docs:full": "node scripts/check-docs.mjs --warnings",
     "dev:portal": "vite --config pages/aid-portal/vite.config.ts",

@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: token-rules
 metadata:
-  version: "1.5.2"
+  version: "1.5.3"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,11 @@ description: >
   требования к именованию и состояниям.
 ---
 
-# Правила токенов дизайн-системы — v1.5.2
+# Правила токенов дизайн-системы
+
+> Статус: Draft · v1.5.3 · обновлено 2026-09-20
+
+---
 
 Двухуровневая система токенов (Core → Semantic): единые правила для Web, iOS и Android.
 Токен — это контракт между дизайном и разработкой. Нарушение правил
@@ -21,7 +25,7 @@ description: >
 
 ---
 
-## Два уровня
+## 1. Два уровня
 
 ```
 Core → Semantic
@@ -34,7 +38,7 @@ Core → Semantic
 
 ---
 
-## Правила уровня Core
+## 2. Правила уровня Core
 
 - Только сырые значения: HEX, dp/pt, rem, целые числа
 - Без смысловой нагрузки в имени: `color-blue-500`, не `color-primary`
@@ -51,7 +55,7 @@ Core → Semantic
 
 ---
 
-## Правила уровня Semantic
+## 3. Правила уровня Semantic
 
 - Описывает **назначение**, не цвет: `color-surface-default`, не `color-white`
 - Не привязан к конкретному компоненту
@@ -83,7 +87,7 @@ Core → Semantic
 
 ---
 
-## Компоненты и токены
+## 4. Компоненты и токены
 
 - Отдельный уровень **component‑токенов не используется**.
 - Компоненты (кнопки, инпуты, бейджи и т.п.) **ссылаются только на semantic‑токены**.
@@ -92,7 +96,7 @@ Core → Semantic
 
 ---
 
-## Состав типографического стиля
+## 5. Состав типографического стиля
 
 Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и т.п.) — это не одно
 значение, а **фиксированный набор свойств**. Каждое свойство ссылается на Core-токен
@@ -126,7 +130,7 @@ Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и 
 
 ---
 
-## Блокеры (стоп-правила)
+## 6. Блокеры (стоп-правила)
 
 Следующее **запрещено** и является блокером в спеке и ревью:
 
@@ -141,7 +145,7 @@ Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и 
 
 ---
 
-## Границы категорий — стоп-правила
+## 7. Границы категорий — стоп-правила
 
 ### Типографика vs Цвет
 
@@ -173,7 +177,7 @@ Semantic-токен типографики (`heading-m`, `body-s`, `label-m` и 
 
 ---
 
-## Отсутствующий semantic-токен
+## 8. Отсутствующий semantic-токен
 
 Если нужный semantic-токен не существует — **не используй Core напрямую**.
 Отметь явно в спеке:
@@ -190,7 +194,7 @@ color-surface-accent-subtle → color-teal-50 (light) / color-teal-900 (dark)
 
 ---
 
-## Состояния и соответствие платформ
+## 9. Состояния и соответствие платформ
 
 Нейминг состояний в Figma, логика поглощения и правила комбинирования — в `component-states-guide.md`.
 
@@ -211,7 +215,7 @@ Web не использует `-ios` и `-android` токены.
 
 ---
 
-## Product-specific color modes (Driver)
+## 10. Product-specific color modes (Driver)
 
 Общие правила выше используют термины **light mode** / **dark mode**. Продукт
 `driver` хранит значения в `pages/aid-portal/data.ts` как `day` /
@@ -230,8 +234,9 @@ Source fields in `pages/aid-portal/data.ts`: `day` (light), `night`
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.5.3** — 2026-09-20. guide-lint: нормализация формы.
 - **1.5.2** — 2026-08-16. Добавлен раздел «Product-specific color modes
   (Driver)»: mapping `Day` → light, `Night` → dark; сохранение product labels;
   не считать naming violation.

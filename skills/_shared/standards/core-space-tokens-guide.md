@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: core-space-tokens-guide
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -11,6 +11,10 @@ description: >
 ---
 
 # Core Space Tokens Guide
+
+> Статус: Draft · v1.1.1 · обновлено 2026-09-20
+
+---
 
 Гайд описывает Core-уровень пространственных токенов: примитивную шкалу значений (`spacing-N`), набор фиксированных размеров (`size-N`) и Core-радиусы (`shape-corner-N`). Core-токены не несут семантики — они являются source of truth для Semantic-уровня.
 
@@ -223,7 +227,8 @@ Core-радиус задаёт только **значение**, не к как
 
 ---
 
-## Changelog
+## 9. Changelog
 
+- **1.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.0** — `space-N` → `spacing-N`. Micro-зона расширена до `spacing-10` (обоснование: покрывает вертикальный padding кнопок без хардкодов). Убран `size-56` (нет универсального применения). Убран `shape-corner-2` (нет реального потребителя). Добавлена политика раздельных неймспейсов `spacing` vs `size`. Проверка шкалы на кнопках (раздел 2.3). Уточнены связанные задачи.
 - **1.0.0** — Первая версия.

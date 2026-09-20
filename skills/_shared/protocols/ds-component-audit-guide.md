@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: ds-component-audit-guide
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: protocol
   owner: design-system-team
   platforms: [web, ios, android]
@@ -17,7 +17,7 @@ description: >
 
 # Component Audit — Guide — v1.0.0
 
-> Статус: Draft · v1.0.0
+> Статус: Draft · v1.0.1 · обновлено 2026-09-20
 
 ---
 
@@ -330,7 +330,7 @@ git push
 
 ---
 
-## Источники
+## 10. Источники
 
 - `skills/ds-component-audit/SKILL.md` (v1.3.0) — нормативный источник
   по шагам, вердиктам и формату памяти.
@@ -347,8 +347,9 @@ git push
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — первая версия. Собрана по `ds-component-audit/SKILL.md`
   v1.3.0: назначение, разграничение с spec/migration, входы, фазы
   внутри одного прохода (discovery → classification → mapping →

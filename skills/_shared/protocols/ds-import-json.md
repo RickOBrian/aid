@@ -2,18 +2,22 @@
 destination: skills/_shared/protocols/
 name: ds-import-json
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
   kind: protocol
 ---
 
 # Скилл: ds-import-json
+
+> Статус: Draft · v1.4.1 · обновлено 2026-09-20
+
+---
 
 Импорт JSON-файлов с токенами из папки `ds-import/json/` в структуру продукта.
 Один раунд уточняющих вопросов — на файл целиком, не на каждый токен внутри.
 
 ---
 
-## Запуск
+## 1. Запуск
 
 Триггер: пользователь вызывает скилл `ds-import-json`.
 
@@ -23,7 +27,7 @@ metadata:
 
 ---
 
-## Шаг 1 — превью файла
+## 2. Шаг 1 — превью файла
 
 Перед вопросами показать пользователю краткое превью:
 - имя файла
@@ -34,7 +38,7 @@ metadata:
 
 ---
 
-## Шаг 2 — вопросы по файлу (один раунд)
+## 3. Шаг 2 — вопросы по файлу (один раунд)
 
 Задать все вопросы сразу, не по одному:
 
@@ -46,7 +50,7 @@ metadata:
 
 ---
 
-## Шаг 3 — обработка конфликтов имён
+## 4. Шаг 3 — обработка конфликтов имён
 
 Перед записью проверить, существуют ли токены с такими же именами в целевой папке продукта (core/, semantic/ или legacy/).
 
@@ -57,7 +61,7 @@ metadata:
 
 ---
 
-## Шаг 4 — создание продукта (если новый)
+## 5. Шаг 4 — создание продукта (если новый)
 
 Если выбран "новый продукт":
 1. Запросить имя продукта.
@@ -74,7 +78,7 @@ components/
 
 ---
 
-## Шаг 5 — запись токенов
+## 6. Шаг 5 — запись токенов
 
 Записать токены в целевой файл (core/colors.json, semantic/colors.json, legacy/legacy-tokens.json — в зависимости от ответов шага 2) в формате:
 
@@ -98,7 +102,7 @@ components/
 
 ---
 
-## Шаг 6 — очистка исходного файла
+## 7. Шаг 6 — очистка исходного файла
 
 После успешной записи — удалить обработанный файл из ds-import/json/.
 
@@ -110,7 +114,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ---
 
-## Шаг 7 — обновление таблицы токенов в Storybook
+## 8. Шаг 7 — обновление таблицы токенов в Storybook
 
 **Канонический вывод — static System Storybook** (docs-server, порт **8000**):
 
@@ -133,7 +137,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ---
 
-## Шаг 8 — отчёт пользователю
+## 9. Шаг 8 — отчёт пользователю
 
 В конце обработки всех файлов вывести:
 - сколько файлов обработано
@@ -149,7 +153,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ---
 
-## Лог импорта
+## 10. Лог импорта
 
 Каждый импорт логировать в memory/ds-import-log.jsonl (append, одна строка — один файл):
 
@@ -157,8 +161,9 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ---
 
-## Changelog
+## 11. Changelog
 
+- **1.4.1** — 2026-09-20. guide-lint: нормализация формы.
 - 1.4.0 — dual-mode импорт: поле `valueDark` для Light/Dark Figma-экспорта; не писать Dark в `deviation`.
 - 1.3.0 — Typography: `typography-styles.json`, `product-typography.html`, пункт Tokens → Typography в nav.
 - 1.2.0 — продукт Storybook: `_products.json`, хаб `product.html`, Components `product-components.html`, секции продуктов в nav.
