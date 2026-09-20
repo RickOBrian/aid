@@ -106,16 +106,16 @@ Cursor — легаси (решение 2026-09-20). Двенадцать пра
 
 ---
 
-## Волна 2 — соседние гайды ядра
+## Волна 2 — соседние гайды ядра · ЗАВЕРШЕНА
 
 | ID | Задача | Статус |
 |---|---|---|
-| W2-1 | `component-states-guide`: `indeterminate`, сверка комбинаций с кодом | todo |
-| W2-2 | `ds-component-architecture-guide`: разнести `destructive` (variant) и `ButtonDestructive` (имя); привести глоссарий `danger` → `destructive` | todo |
-| W2-2a | Вернуть в таблицу Role-семей колонку «Когда использовать», потерянную при переходе v1.0.0 → v1.3.0 (Tag = статика, Chip = интерактив, Island = повторяемый, Widget = штучный) | todo |
-| W2-3 | `naming-conventions`: сверка с архитектурой, единые regex-правила | todo |
-| W2-4 | `platforms`: расхождение версии (frontmatter 1.1.0 / заголовок 1.0.0); `is*` vs Compose `enabled` оформить как таблицу паритета | todo |
-| W2-5 | Сквозная сверка терминов между пятью гайдами ядра | todo |
+| W2-1 | `component-states-guide`: `indeterminate`, сверка комбинаций с кодом | done |
+| W2-2 | `ds-component-architecture-guide`: разнести `destructive` (variant) и `ButtonDestructive` (имя); привести глоссарий `danger` → `destructive` | done |
+| W2-2a | Вернуть в таблицу Role-семей колонку «Когда использовать», потерянную при переходе v1.0.0 → v1.3.0 (Tag = статика, Chip = интерактив, Island = повторяемый, Widget = штучный) | done |
+| W2-3 | `naming-conventions`: сверка с архитектурой, единые regex-правила | done |
+| W2-4 | `platforms`: расхождение версии (frontmatter 1.1.0 / заголовок 1.0.0); `is*` vs Compose `enabled` оформить как таблицу паритета | done |
+| W2-5 | Сквозная сверка терминов между пятью гайдами ядра | done |
 
 ---
 
@@ -128,7 +128,7 @@ Cursor — легаси (решение 2026-09-20). Двенадцать пра
 | W3-1 | `component-standards.json`: уровни, обязательность разделов, DoD | done — сделан вместе с текстом (ADR-004) |
 | W3-2 | `component-states.json`: состояния, маппинг платформ, матрица комбинаций | todo |
 | W3-3 | `component-architecture.json`: уровни, слоты, Role-семьи | todo |
-| W3-4 | `naming.json`: правила имён как проверяемые выражения | todo |
+| W3-4 | `naming.json`: правила имён как проверяемые выражения | done — сделан вместе с текстом |
 | W3-5 | Расширить скилл `guide-lint` — перечень расхождений готов в `guide-template.md` §8; там же почина требует мёртвая ссылка на `.claude/git-workflow.md` | todo |
 
 ---

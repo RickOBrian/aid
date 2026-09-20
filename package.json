@@ -10,7 +10,8 @@
     "build:driver-colors": "vite build --config pages/driver-color-tokens/vite.config.ts",
     "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs",
     "check:docs": "node scripts/check-docs.mjs",
-    "check:docs:full": "node scripts/check-docs.mjs --warnings"
+    "check:docs:full": "node scripts/check-docs.mjs --warnings",
+    "sync:registry": "node scripts/sync-registry.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

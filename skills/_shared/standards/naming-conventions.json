@@ -1,0 +1,184 @@
+{
+  "id": "naming-conventions",
+  "version": "1.1.1",
+  "status": "alpha",
+  "humanFile": "naming-conventions.md",
+  "note": "Машинный слой правил именования. Паттерны даны как регулярные выражения для аудита чужих библиотек и распознавания компонентов.",
+  "componentName": {
+    "formula": "Role + Entity + Qualifier?",
+    "pattern": "^[A-Z][a-zA-Z]+$",
+    "roles": [
+      "Button",
+      "Badge",
+      "Tag",
+      "Chip",
+      "Row",
+      "Island",
+      "Widget",
+      "Surface",
+      "Field",
+      "Avatar"
+    ],
+    "roleFirst": true,
+    "roleSemantics": {
+      "Button": {
+        "level": "surface-view",
+        "use": "интерактивная оболочка с действием"
+      },
+      "Badge": {
+        "level": "surface-view",
+        "use": "компактный статусный индикатор"
+      },
+      "Tag": {
+        "level": "surface-view",
+        "use": "статичная метка"
+      },
+      "Chip": {
+        "level": "surface-view",
+        "use": "интерактивный компактный элемент"
+      },
+      "Row": {
+        "level": "structural-view",
+        "use": "строчный компонент"
+      },
+      "Island": {
+        "level": "structural-view",
+        "use": "повторяемый контентный блок"
+      },
+      "Widget": {
+        "level": "structural-view",
+        "use": "штучный сценарный блок"
+      }
+    },
+    "legacyExceptions": {
+      "_doc": "Row-компоненты сохраняют форму Entity + Role; новые следуют тому же паттерну",
+      "pattern": "^[A-Z][a-zA-Z]+Row$",
+      "examples": [
+        "ListRow",
+        "MenuRow",
+        "BottomSheetRow",
+        "IslandRow",
+        "TableRow"
+      ]
+    },
+    "standaloneNames": [
+      "Avatar",
+      "Badge",
+      "Tag",
+      "Chip",
+      "Dialog",
+      "Icon",
+      "Text",
+      "Image"
+    ],
+    "forbidden": [
+      {
+        "pattern": "Item$",
+        "reason": "Item допустим только как вложенный элемент коллекции: List.Item",
+        "except": [
+          "List.Item",
+          "Menu.Item",
+          "Accordion.Item"
+        ]
+      },
+      {
+        "pattern": "\\\\d",
+        "reason": "числа в имени компонента"
+      },
+      {
+        "name": "ButtonDestructive",
+        "reason": "деструктивность — вариант оформления, не Entity"
+      }
+    ]
+  },
+  "props": {
+    "boolean": "^is[A-Z][a-zA-Z]*$",
+    "callback": "^on[A-Z][a-zA-Z]*$",
+    "enumProps": [
+      "variant",
+      "size"
+    ],
+    "platformOverrides": {
+      "compose": {
+        "isEnabled": "enabled"
+      }
+    }
+  },
+  "variants": {
+    "canonical": [
+      "primary",
+      "secondary",
+      "ghost",
+      "destructive"
+    ],
+    "case": "lowercase",
+    "rejected": {
+      "danger": "destructive"
+    }
+  },
+  "states": {
+    "source": "component-states-guide.md",
+    "figmaIsSourceOfTruth": true,
+    "case": "lowercase"
+  },
+  "slots": {
+    "source": "ds-component-architecture-guide.md",
+    "canonical": [
+      "leading",
+      "content",
+      "trailing",
+      "badge",
+      "header",
+      "footer",
+      "title",
+      "subtitle",
+      "action"
+    ],
+    "platformSynonymsAllowed": false
+  },
+  "tokens": {
+    "notation": "kebab",
+    "separator": "-",
+    "forbiddenNotation": "dot",
+    "platformException": {
+      "stack": "swiftui",
+      "context": "Asset Catalog",
+      "form": "Color(\"bg.accent.main\")",
+      "reason": "точка — путь в каталоге, не нотация токена"
+    },
+    "core": {
+      "pattern": "^(color|spacing|shape-corner|type)-[a-z]+-\\\\d+$",
+      "noSemanticMeaning": true
+    },
+    "semantic": {
+      "forbidsDigits": true,
+      "forbidsColorNames": true,
+      "pattern": "^[a-z]+(-[a-z]+)+$"
+    }
+  },
+  "docs": {
+    "fileName": "^[a-z0-9]+(-[a-z0-9]+)*\\\\.md$",
+    "nameEqualsFileName": true,
+    "suffixIsNotGenre": true,
+    "genreField": "metadata.kind",
+    "genres": [
+      "standard",
+      "protocol",
+      "architecture",
+      "notes"
+    ],
+    "duplicateNameIsError": true
+  },
+  "productFacts": {
+    "_doc": "Фактические имена файлов продукта не хранятся в стандарте",
+    "source": "products/<id>/product.json",
+    "fields": [
+      "tokenDataFiles",
+      "changelogFiles"
+    ],
+    "knownAsymmetry": {
+      "description": "файлы driver без префикса продукта, файлы rider с префиксом",
+      "scheduledFix": "PLAN.md, Волна 3.5, W35-2"
+    }
+  }
+}

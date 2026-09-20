@@ -5,15 +5,22 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.0.0"
+  version: "1.1.1"
+  status: alpha
+  lastReviewed: "2026-09-20"
+  machineFile: naming-conventions.json
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
 ---
 
-# Naming Conventions
+# Правила именования
 
-## Purpose
+> Статус: Alpha · v1.1.1 · обновлено 2026-09-20
+
+---
+
+## 1. Purpose
 
 Этот гайд фиксирует единые правила именования токенов, компонентов и skills в дизайн-системе aid. Согласованный нейминг снижает token gaps при import, упрощает lookup в `*Data.ts` и делает changelog entries однозначными на release boundary.
 
@@ -21,7 +28,7 @@ metadata:
 
 ---
 
-## Relationship to other guides
+## 2. Relationship to other guides
 
 | Гайд | Связь |
 |---|---|
@@ -34,7 +41,7 @@ metadata:
 
 ---
 
-## Token naming
+## 3. Token naming
 
 ### Структура имени
 
@@ -60,9 +67,14 @@ collection-group-property-variant  →  bg-accent-main, space-16, color-neutral-
 ❌ `color.blue.500`, `bg.accent.main` — точечная нотация запрещена как имя токена.  
 ✅ Исключение: **iOS Asset Catalog** — точка как разделитель пути в `.xcassets` (`Color("bg.accent.main")`); имя токена остаётся дефисным.
 
-### Collection naming (Driver)
+### Collection naming
 
-Имена collection для changelog и data-файлов — **фактические имена репозитория**, не абстрактный план:
+Имена collection для changelog и data-файлов читаются из манифеста
+продукта: `products/<id>/product.json` → `changelogFiles` и
+`tokenDataFiles`. Стандарт их не дублирует — иначе при добавлении продукта
+таблица устаревает молча.
+
+Ниже — текущее состояние `driver` как иллюстрация формы имени:
 
 | Collection | Artifact (changelog) | Changelog file | Data file |
 |---|---|---|---|
@@ -73,7 +85,15 @@ collection-group-property-variant  →  bg-accent-main, space-16, color-neutral-
 | Effects/Shadows | `Effects/Shadows` | `tokens/effects-shadows-changelog.json` | `shadowsData.ts` |
 | Icons | `Icons/Wilhelm` | `tokens/icons-changelog.json` | `iconsData.ts` |
 
-Поле `collectionName` в data-файле = имя без -changelog.json (например `spacing-sem`).
+Поле `collectionName` в data-файле = имя без суффикса -changelog.json
+(например `spacing-sem`).
+
+> **Известная асимметрия.** Файлы `driver` идут без префикса продукта, а
+> файлы `rider` — с префиксом (`rider-colors-semantic-changelog.json`).
+> Это наследие того, что driver был первым продуктом, и оно делает его
+> умолчанием системы. Выравнивание запланировано — см. Волну 3.5 в
+> `docs/standards-alpha/PLAN.md`. До тех пор имена читаются из манифеста,
+> а не выводятся по правилу.
 
 ### Core tokens naming
 
@@ -134,7 +154,7 @@ Semantic — **назначение**, не значение. Формула: `<
 
 ---
 
-## Component naming
+## 4. Component naming
 
 ### Формула имени
 
@@ -169,7 +189,7 @@ Semantic — **назначение**, не значение. Формула: `<
 | **Variant** | Prop `variant` | `primary`, `secondary`, `ghost`, `destructive` — lowercase, union type |
 | **State** | CSS / platform state | `default`, `hover`, `pressed`, `focused`, `disabled`, `loading` |
 | **Size** | Prop `size` | `sm`, `md`, `lg` |
-| **Slots** | Props / ViewBuilder | `leading`, `trailing`, `content`, `header`, `footer`, `title`, `subtitle`, `action` |
+| **Slots** | Props / ViewBuilder | Канон — в `ds-component-architecture-guide.md`; собственного списка гайд не держит |
 
 Figma component property `Variant=Primary` → prop `variant="primary"`, **не** новый компонент `ButtonPrimary`.
 
@@ -186,30 +206,39 @@ States map на semantic tokens (`bg-accent-states-hover`), не на отдел
 
 ---
 
-## Skills naming
+## 5. Skills naming
 
 ### Файлы в `skills/_shared/`
 
-| Паттерн | Назначение | Примеры |
-|---|---|---|
-| `<topic>.md` | Общий shared-гайд | `token-rules.md`, `platforms.md`, `git-workflow.md` |
-| `<topic>-guide.md` | Thematic guide | `changelog-guide.md`, `figma-import-guide.md`, `naming-conventions.md` |
-| `core-<domain>-tokens-guide.md` | Core token collection | `core-color-tokens-guide.md`, `core-space-tokens-guide.md` |
-| `semantic-<domain>-tokens-guide.md` | Semantic token collection | `semantic-color-tokens-guide.md`, `semantic-space-tokens-guide.md` |
-| `ds-<topic>-guide.md` | DS process / audit | `ds-component-audit-guide.md`, `ds-component-migration-guide.md` |
-| `<component-topic>-standard.md` | Стандарт / protocol | `anatomy-annotation-standard.md`, `radius-preview-standard.md` |
-| `component-<aspect>-guide.md` | Component-related | `component-states-guide.md`, `component-categories-guide.md` |
+Раскладка по жанрам. Жанр определяет папку **и** дублируется во frontmatter
+полем `metadata.kind` — инструменты отбирают документы по полю, не по пути.
+
+| Папка | `kind` | Что внутри | Публикуется |
+|---|---|---|---|
+| `standards/` | `standard` | Правила для артефактов дизайн-системы | да |
+| `protocols/` | `protocol` | Как работаем мы: git, скиллы, импорт, форма гайдов | нет |
+| `protocols/gates/` | `protocol` | Обязательные гейты процесса | нет |
+| `architecture/` | `architecture` | Технические описания конкретных фич | нет |
+| `notes/` | `notes` | Черновики и заметки | нет |
+
+Суффикс в имени файла **не определяет** жанр и ни на что не влияет:
+`-guide`, `-standards`, `-conventions`, `-protocol` — исторические
+варианты, сосуществующие в корпусе. Переименовывать ради единообразия не
+требуется.
 
 **Правила:**
 
 - kebab-case, lowercase, расширение `.md`
-- Frontmatter обязателен: `destination`, `name`, `metadata.version`
+- Frontmatter обязателен: `destination`, `name`, `metadata.version`,
+  `metadata.kind` — полный состав в `protocols/guide-template.md`
 - Поле `name` = имя файла без `.md` (`naming-conventions`)
-- Не дублировать topic в разных naming patterns без причины
+- `destination` совпадает с фактической папкой файла
+- Два документа с одинаковым `name` — блокер; проверяется
+  `scripts/check-docs.mjs`
 
 ### Product-scoped skills
 
-По умолчанию skills импортируются в `skills/_shared/`. Product-scoped path (например `skills/driver/`) — **только с явным подтверждением** пользователя. Не создавать product-scoped директории молча — см. `skills-import-gate.mdc`.
+По умолчанию skills импортируются в `skills/_shared/`. Product-scoped path (например `skills/driver/`) — **только с явным подтверждением** пользователя. Не создавать product-scoped директории молча — см. `skills/_shared/protocols/gates/skills-import-gate.md`.
 
 ### Platform-specific skills
 
@@ -217,7 +246,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ---
 
-## Platform-specific naming
+## 6. Platform-specific naming
 
 ### Web (React + TypeScript)
 
@@ -264,7 +293,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ---
 
-## Anti-patterns
+## 7. Anti-patterns
 
 | Anti-pattern | Почему плохо | Как исправить |
 |---|---|---|
@@ -285,6 +314,16 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ---
 
-## Changelog
+## 8. Changelog
 
+- **1.1.1** — 2026-09-20. Список слотов заменён ссылкой на канон: гайд
+  держал четвёртый по счёту набор.
+- **1.1.0** — 2026-09-20. Раздел про файлы `skills/_shared/` переписан под
+  раскладку по жанрам (`standards`, `protocols`, `architecture`, `notes`) и
+  поле `metadata.kind`; явно сказано, что суффикс имени файла жанр не
+  определяет. Collection naming перестал дублировать факты продукта —
+  имена читаются из `products/<id>/product.json`; зафиксирована известная
+  асимметрия префиксов driver и rider со ссылкой на Волну 3.5. Добавлен
+  машинный слой `naming-conventions.json`. Форма приведена к
+  `guide-template.md`.
 - **1.0.0** — 2026-08-15. Первая версия: token/component/skills naming, collection names Driver, platform conventions, anti-patterns.

@@ -2,7 +2,10 @@
 destination: skills/_shared/standards/
 name: ds-component-architecture-guide
 metadata:
-  version: "1.3.0"
+  version: "1.5.0"
+  status: alpha
+  lastReviewed: "2026-09-20"
+  machineFile: null
   kind: standard
   owner: design-system-team
   platforms: [web, ios, android]
@@ -14,7 +17,7 @@ description: >
 
 # Архитектура компонентов дизайн-системы
 
-> Статус: Draft · v1.3.0
+> Статус: Alpha · v1.5.0 · обновлено 2026-09-20
 
 ---
 
@@ -211,6 +214,9 @@ Layout — это чистая расстановка. Логика в нём �
 Нейминг состояний, маппинг платформ, правила комбинирования и приоритет
 поглощения — в `component-states-guide.md`.
 
+Какие требования обязательны на каждом уровне — в матрице применимости
+`component-standards.md`, раздел 3. Здесь — из чего уровни состоят.
+
 **Item** — собственных состояний нет. Получает цвет/opacity от родителя через токены.
 
 **Surface View** — несёт локальные состояния одного визуального ядра:
@@ -274,20 +280,32 @@ Layout — это чистая расстановка. Логика в нём �
 | WidgetBalance| Widget  | Balance |
 
 Role — первый в имени. IDE-автодополнение группирует по Role.
-Button → ButtonText, ButtonIcon, ButtonDestructive.
+Button → ButtonText, ButtonIcon.
+
+**Опасность действия — это вариант, а не Entity.** `ButtonDestructive` —
+неверное имя: деструктивность описывает оформление одного и того же
+действия «нажать», а не тип содержимого. Правильно — `ButtonText` с
+`variant="destructive"`. Entity отвечает на вопрос «что внутри», а не
+«насколько это опасно».
 Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — устоявшиеся имена без формулы.
 
 ### Role-семьи
 
-| Role   | Уровень        | Варианты                           |
-|--------|----------------|------------------------------------|
-| Button | Surface View   | ButtonText, ButtonIcon             |
-| Badge  | Surface View   | BadgeStatus, BadgeCount            |
-| Tag    | Surface View   | TagFilter, TagCategory             |
-| Chip   | Surface View   | ChipFilter, ChipInput              |
-| Row    | Structural View| RowList, RowMenu                   |
-| Island | Structural View| IslandProduct, IslandHotel         |
-| Widget | Structural View| WidgetBalance, WidgetSummary       |
+| Role   | Уровень         | Когда использовать                  | Примеры                      |
+|--------|-----------------|-------------------------------------|------------------------------|
+| Button | Surface View    | Интерактивная оболочка с действием  | ButtonText, ButtonIcon       |
+| Badge  | Surface View    | Компактный статусный индикатор      | BadgeStatus, BadgeCount      |
+| Tag    | Surface View    | Статичная метка                     | TagFilter, TagCategory       |
+| Chip   | Surface View    | Интерактивный компактный элемент    | ChipFilter, ChipInput        |
+| Row    | Structural View | Строчный компонент                  | ListRow, MenuRow             |
+| Island | Structural View | Повторяемый контентный блок         | IslandProduct, IslandHotel   |
+| Widget | Structural View | Штучный сценарный блок              | WidgetBalance, WidgetSummary |
+
+Колонка «Когда использовать» — это то, что отличает Role друг от друга.
+Без неё Tag и Chip неразличимы, а Island и Widget выбираются на слух.
+Различение статики и интерактивности (Tag против Chip) и повторяемости
+против штучности (Island против Widget) — рабочий критерий при разборе
+чужой библиотеки.
 
 ### Исключение: Row-компоненты
 
@@ -302,14 +320,24 @@ Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — уст�
 
 ### Слоты Structural View
 
-| Слот      | Назначение                    | Реализация                     |
-|-----------|-------------------------------|--------------------------------|
-| `leading` | Ведущий элемент (левый/верх)  | React props, SwiftUI @ViewBuilder, Compose lambda |
-| `content` | Основной контент              | — |
-| `trailing`| Завершающий элемент           | — |
-| `badge`   | Оверлейный бейдж              | — |
-| `header`  | Заголовочная зона             | — |
-| `footer`  | Нижняя зона                   | — |
+| Слот       | Назначение                          |
+|------------|-------------------------------------|
+| `leading`  | Ведущий элемент: левый или верхний  |
+| `content`  | Основной контент                    |
+| `trailing` | Завершающий элемент                 |
+| `badge`    | Оверлейный бейдж                    |
+| `header`   | Заголовочная зона                   |
+| `footer`   | Нижняя зона                         |
+| `title`    | Заголовок компонента                |
+| `subtitle` | Подзаголовок                        |
+| `action`   | Зона действий                       |
+
+Реализация слота зависит от стека: пропы в React, `@ViewBuilder` в SwiftUI,
+лямбды в Compose — см. `platforms.md`.
+
+**Это единственный канон слотов в системе.** Другие гайды на него
+ссылаются и не заводят собственных списков: до 2026-09-20 в корпусе
+сосуществовали три несовпадающих набора.
 
 Слоты — кросс-платформенные. Одинаковые имена на Web, iOS, Android.
 
@@ -388,7 +416,7 @@ Repeatable Slot — слот, который повторяется переме
 
 ---
 
-## Глоссарий
+## 11. Глоссарий
 
 | Термин | Определение |
 |--------|-------------|
@@ -398,13 +426,29 @@ Repeatable Slot — слот, который повторяется переме
 | Layout | Компонент-расстановщик без дизайна |
 | App Surface | Корневой фон экрана, не уровень архитектуры |
 | Slot | Именованная зона Structural View: leading, content, trailing, header, footer |
-| Variant | Визуальный вариант компонента: primary, secondary, ghost, danger |
+| Variant | Визуальный вариант компонента: primary, secondary, ghost, destructive |
 | Lifecycle | Управление появлением/скрытием Structural View |
 | CollectionView | Оркестратор рендеринга: данные / skeleton / EmptyState / ошибка |
 
 ---
 
-## Changelog
+## 12. Changelog
+
+- **1.5.0** — 2026-09-20. Канон слотов дополнен `title`, `subtitle`,
+  `action` — они жили отдельным списком в `platforms.md`. Всего в корпусе
+  было три несовпадающих набора слотов; теперь канон один, остальные гайды
+  на него ссылаются.
+- **1.4.0** — 2026-09-20. Возвращена колонка «Когда использовать» в таблицу
+  Role-семей: она была в v1.0.0 и потерялась при переходе к v1.3.0, из-за
+  чего Tag и Chip, Island и Widget стали неразличимы по гайду. Уточнено,
+  что `destructive` — вариант оформления, а не Entity: `ButtonDestructive`
+  убран из Role-семьи Button (ADR-022). В глоссарии `danger` заменён на
+  `destructive` — канон подтверждён пятью документами против одного.
+  В Role-семьях `RowList`/`RowMenu` заменены на действующие `ListRow`/
+  `MenuRow` — иллюстративные имена вводили в заблуждение рядом с реальными.
+  Добавлена ссылка на матрицу применимости. Форма приведена к
+  `guide-template.md`.
+
 
 ### v1.3.0 — 2026-07-03
 
