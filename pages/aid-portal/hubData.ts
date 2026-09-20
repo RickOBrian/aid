@@ -47,7 +47,6 @@ export const HUB_ROUTES = {
   badgeCount: '/components/badge-count',
   badgeDot: '/components/badge-dot',
   guides: '/guides',
-  guidesVersioning: '/guides/versioning',
   tools: '/tools',
   toolsTokenComparator: '/tools/token-comparator',
 } as const;
@@ -165,7 +164,7 @@ export const SECTION_LABELS: Record<string, string> = {
   switch: 'Switch',
   badgeCount: 'BadgeCount',
   badgeDot: 'BadgeDot',
-  guidesVersioning: 'Версионность',
+  guide: 'Гайд',
   toolsTokenComparator: 'Token Comparator',
 };
 

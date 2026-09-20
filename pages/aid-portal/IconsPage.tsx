@@ -27,7 +27,7 @@ import {
   downloadSingleIcon,
   type IconDownloadFormat,
 } from './downloadIcons';
-import type { IconItem, type IconSection } from './iconsData';
+import type { IconItem, IconSection } from './iconsData';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { getProductIconContent, productIconAssetPath } from './productIconData';
 import { formatIconSize, getIconDimensions } from './iconDimensions';

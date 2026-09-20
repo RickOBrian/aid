@@ -4,10 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "prebuild": "node scripts/ensure-icon-dimensions.mjs && node scripts/ensure-token-changelogs.mjs && node scripts/sync-token-changelogs.mjs && node scripts/sync-guide-sources.mjs",
-    "dev": "node scripts/ensure-icon-dimensions.mjs && node scripts/sync-guide-sources.mjs && vite",
+    "prebuild": "node scripts/ensure-icon-dimensions.mjs && node scripts/ensure-token-changelogs.mjs && node scripts/sync-token-changelogs.mjs && node scripts/build-guides.mjs",
+    "dev": "node scripts/ensure-icon-dimensions.mjs && node scripts/build-guides.mjs && vite",
     "build": "vite build",
-    "typecheck:api": "tsc -p tsconfig.api.json"
+    "typecheck:api": "tsc -p tsconfig.api.json",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.api.json"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -17,6 +18,7 @@
     "@types/node": "^22.10.7",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "marked": "^18.0.13",
     "typescript": "^5.7.3",
     "vite": "^6.0.7"
   }

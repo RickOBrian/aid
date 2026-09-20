@@ -81,6 +81,11 @@ function u32(value: number): Uint8Array {
   ]);
 }
 
+/** Uint8Array → BlobPart: сужает ArrayBufferLike до ArrayBuffer, которого ждёт Blob. */
+function toBlobPart(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
 function concatBytes(chunks: Uint8Array[]): Uint8Array {
   const total = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
   const result = new Uint8Array(total);
@@ -154,7 +159,9 @@ function createZip(files: { name: string; data: Uint8Array }[]): Blob {
     u16(0),
   ]);
 
-  return new Blob([concatBytes([...localParts, centralDirectory, endRecord])], {
+  // `toBlobPart` — потому что Uint8Array<ArrayBufferLike> не подходит под
+  // BlobPart в актуальном lib.dom: буфер может оказаться SharedArrayBuffer.
+  return new Blob([toBlobPart(concatBytes([...localParts, centralDirectory, endRecord]))], {
     type: 'application/zip',
   });
 }
@@ -342,7 +349,7 @@ export async function downloadSingleIcon(
   const file = await exportIconAsset(asset, format);
   const mimeType =
     format.id === 'svg' ? 'image/svg+xml' : format.id === 'pdf' ? 'application/pdf' : 'image/png';
-  triggerBlobDownload(new Blob([file.data], { type: mimeType }), file.name);
+  triggerBlobDownload(new Blob([toBlobPart(file.data)], { type: mimeType }), file.name);
 }
 
 export async function downloadIconArchive(

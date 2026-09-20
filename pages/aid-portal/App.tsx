@@ -14,7 +14,7 @@ import { BadgeDotPage } from './BadgeDotPage';
 import { GuidesHubPage } from './GuidesHubPage';
 import { ToolsHubPage } from './ToolsHubPage';
 import { TokenComparatorPluginPage } from './TokenComparatorPluginPage';
-import { VersioningGuidePage } from './VersioningGuidePage';
+import { GuidePage, guideExists } from './GuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
@@ -83,8 +83,12 @@ function resolveSectionKey(remainder: string) {
     return 'guides' as const;
   }
 
-  if (path === HUB_ROUTES.guidesVersioning) {
-    return 'guidesVersioning' as const;
+  // Маршрут гайда динамический: /guides/<guideId>. Гайды приходят из
+  // guide-registry.json и собираются build-guides.mjs, поэтому отдельная
+  // ветка на каждый документ здесь не нужна.
+  if (path.startsWith(`${HUB_ROUTES.guides}/`)) {
+    const guideId = path.slice(HUB_ROUTES.guides.length + 1);
+    return guideExists(guideId) ? ('guide' as const) : ('not-found' as const);
   }
 
   if (path === HUB_ROUTES.tools) {
@@ -135,7 +139,10 @@ export function App() {
   const page = resolveSectionKey(remainder);
 
   useEffect(() => {
-    if (page !== 'not-found') {
+    // Гайд не принадлежит продукту и ставит свой заголовок сам. Эффект
+    // родителя выполняется после эффекта потомка, поэтому без этой проверки
+    // он бы перезаписал название гайда меткой продукта.
+    if (page !== 'not-found' && page !== 'guide') {
       document.title = getProductLabel(productId);
     }
   }, [productId, page]);
@@ -162,8 +169,8 @@ export function App() {
     content = <IconsPage productId={productId} />;
   } else if (page === 'guides') {
     content = <GuidesHubPage />;
-  } else if (page === 'guidesVersioning') {
-    content = <VersioningGuidePage />;
+  } else if (page === 'guide') {
+    content = <GuidePage guideId={remainder.slice(HUB_ROUTES.guides.length + 1)} />;
   } else if (page === 'tools') {
     content = <ToolsHubPage />;
   } else if (page === 'toolsTokenComparator') {

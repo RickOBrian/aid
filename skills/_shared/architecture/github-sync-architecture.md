@@ -243,7 +243,7 @@ Product Switcher пустой, `/rider/*` routing не распознаётся.
 | Скилл | Триггер | Делает | Не делает |
 |---|---|---|---|
 | `start-presentbook` | «старт презентбук» | sync main → новая ветка `presentbook/<task>` → pre-flight check критичных файлов → `npm install && npm run dev` | commit, push, PR, deploy |
-| `push-presentbook` | «push presentbook» | pre-push verification gate (критичные файлы + `npm run build` + `npm run typecheck:api`) → commit → push → PR в main | merge, promote production |
+| `push-presentbook` | «push presentbook» | pre-push verification gate (критичные файлы + `npm run build` + `npm run typecheck`) → commit → push → PR в main | merge, promote production |
 | `push-token-comparator` | «push Token Comparator» | typecheck/build плагина и сервера → commit → push feature branch → PR в main | merge, promote production, трогает Presentbook |
 
 Merge и promote остаются вне скиллов — это осознанные разовые решения

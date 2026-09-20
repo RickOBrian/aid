@@ -10,3 +10,5 @@ dist/
 .env*
 !.env*.example
 .tmp-qa/
+pages/aid-portal/generated/
+pages/aid-portal/public/guides/sources/
