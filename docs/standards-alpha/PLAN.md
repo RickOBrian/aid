@@ -78,28 +78,28 @@ Cursor — легаси (решение 2026-09-20). Двенадцать пра
 
 ---
 
-## Волна 1 — ядро: `component-standards` → 2.0.0-alpha
+## Волна 1 — ядро: `component-standards` → 2.0.0-alpha · ЗАВЕРШЕНА
 
 Закрываем дыры из аудита 2026-09-20. Нумерация совпадает с аудитом.
 
 | ID | Задача | Дыра | Статус |
 |---|---|---|---|
-| W1-1 | Матрица применимости по уровням: какие разделы обязательны для Item / Surface View / Structural View / Layout | 2.1 | todo |
-| W1-2 | Полный список состояний, включая `indeterminate` (есть в коде, нет в гайде); матрица строится только из допустимых комбинаций | 1.1, 2.9 | todo |
-| W1-3 | Классификация значений по шкале `semantic-token / platform-convention / raw-value / hardcode` (ADR-006); снять спор про opacity 40% | 1.3 | todo |
-| W1-4 | Раздел «Escape hatches»: ref forwarding, `className`/`style`, проброс `aria-*`/`id`, `data-testid`, полиморфизм, запрет слепого spread | 2.4 | todo |
-| W1-5 | Deprecation lifecycle: помеченный проп живёт минимум один MINOR, удаление — в MAJOR | 2.5 | todo |
-| W1-6 | Content resilience: длинный текст, обрезка, пусто, локализация, RTL, формат чисел + обязательная story «худший случай» | 2.6 | todo |
-| W1-7 | Size / density contract: что меняет `size`; инвариант — touch target не уменьшается | 2.7 | todo |
-| W1-8 | Repeatable Slot и Cell Span в props-стандартах | 2.2 | todo |
-| W1-9 | Controlled / uncontrolled: `defaultValue`, запрет смены режима в runtime, `value` без `onChange` = read-only | 2.14 | todo |
-| W1-10 | Порог «variant или новый компонент» | 2.14 | todo |
-| W1-11 | Структура файлов для iOS и Android, не только Web | 2.3 | todo |
-| W1-12 | Definition of Done + связка с чек-листом интерактивности из `platforms.md` и гейтами | 2.10, 2.11, 2.12 | todo |
-| W1-13 | Убрать продуктовую колонку Driver, перенести в `products/<id>/product.json` | 2.12 | todo |
-| W1-14 | Single source of truth: мини-таблицы a11y / testing заменить ссылкой + компонентной дельтой; снять «Wave 2 / Wave 3» | 1.4 | todo |
-| W1-15 | Починить ссылки: `docs/semver-guide.md` → канон; `space-8/16` → `inset-*`; слоты привести к канону | 1.2, 1.5, 1.7 | todo |
-| W1-16 | Свой раздел Changelog | 2.13 | todo |
+| W1-1 | Матрица применимости по уровням: какие разделы обязательны для Item / Surface View / Structural View / Layout | 2.1 | done |
+| W1-2 | Полный список состояний, включая `indeterminate` (есть в коде, нет в гайде); матрица строится только из допустимых комбинаций | 1.1, 2.9 | done |
+| W1-3 | Классификация значений по шкале `semantic-token / platform-convention / raw-value / hardcode` (ADR-006); снять спор про opacity 40% | 1.3 | done |
+| W1-4 | Раздел «Escape hatches»: ref forwarding, `className`/`style`, проброс `aria-*`/`id`, `data-testid`, полиморфизм, запрет слепого spread | 2.4 | done |
+| W1-5 | Deprecation lifecycle: помеченный проп живёт минимум один MINOR, удаление — в MAJOR | 2.5 | done |
+| W1-6 | Content resilience: длинный текст, обрезка, пусто, локализация, RTL, формат чисел + обязательная story «худший случай» | 2.6 | done |
+| W1-7 | Size / density contract: что меняет `size`; инвариант — touch target не уменьшается | 2.7 | done |
+| W1-8 | Repeatable Slot и Cell Span в props-стандартах | 2.2 | done |
+| W1-9 | Controlled / uncontrolled: `defaultValue`, запрет смены режима в runtime, `value` без `onChange` = read-only | 2.14 | done |
+| W1-10 | Порог «variant или новый компонент» | 2.14 | done |
+| W1-11 | Структура файлов для iOS и Android, не только Web | 2.3 | done |
+| W1-12 | Definition of Done + связка с чек-листом интерактивности из `platforms.md` и гейтами | 2.10, 2.11, 2.12 | done |
+| W1-13 | Убрать продуктовую колонку Driver, перенести в `products/<id>/product.json` | 2.12 | done |
+| W1-14 | Single source of truth: мини-таблицы a11y / testing заменить ссылкой + компонентной дельтой; снять «Wave 2 / Wave 3» | 1.4 | done |
+| W1-15 | Починить ссылки: `docs/semver-guide.md` → канон; `space-8/16` → `inset-*`; слоты привести к канону | 1.2, 1.5, 1.7 | done |
+| W1-16 | Свой раздел Changelog | 2.13 | done |
 
 **Почему 2.0.0, а не 1.1.0:** правила меняются несовместимо — состояния,
 классификация значений, обязательный DoD. По `semver-guide` это MAJOR.
@@ -125,7 +125,7 @@ Cursor — легаси (решение 2026-09-20). Двенадцать пра
 
 | ID | Задача | Статус |
 |---|---|---|
-| W3-1 | `component-standards.json`: уровни, обязательность разделов, DoD | todo |
+| W3-1 | `component-standards.json`: уровни, обязательность разделов, DoD | done — сделан вместе с текстом (ADR-004) |
 | W3-2 | `component-states.json`: состояния, маппинг платформ, матрица комбинаций | todo |
 | W3-3 | `component-architecture.json`: уровни, слоты, Role-семьи | todo |
 | W3-4 | `naming.json`: правила имён как проверяемые выражения | todo |

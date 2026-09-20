@@ -1,0 +1,169 @@
+{
+  "id": "component-standards",
+  "version": "2.0.0",
+  "status": "alpha",
+  "humanFile": "component-standards.md",
+  "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
+
+  "architectureLevels": ["item", "surface-view", "structural-view", "layout"],
+
+  "applicability": {
+    "_doc": "Что обязательно на каждом уровне архитектуры. Раздел 3.",
+    "apiContract":        { "item": true,  "surface-view": true, "structural-view": true, "layout": true },
+    "variants":           { "item": false, "surface-view": true, "structural-view": true, "layout": false },
+    "states":             { "item": "inherited", "surface-view": true, "structural-view": true, "layout": false },
+    "slots":              { "item": false, "surface-view": false, "structural-view": true, "layout": false },
+    "tokens":             { "item": ["color", "typography"], "surface-view": "all", "structural-view": "all", "layout": ["gap"] },
+    "escapeHatches":      { "item": true,  "surface-view": true, "structural-view": true, "layout": true },
+    "contentResilience":  { "item": true,  "surface-view": true, "structural-view": true, "layout": false },
+    "accessibility":      { "item": "via-parent", "surface-view": true, "structural-view": true, "layout": false },
+    "tests":              { "item": ["unit"], "surface-view": ["unit", "visual", "a11y"], "structural-view": ["unit", "visual", "a11y"], "layout": ["unit"] },
+    "definitionOfDone":   { "item": "reduced", "surface-view": "full", "structural-view": "full", "layout": "reduced" }
+  },
+
+  "propNaming": {
+    "boolean": { "prefix": "is", "pattern": "^is[A-Z]", "examples": ["isDisabled", "isLoading", "isSelected"] },
+    "callback": { "prefix": "on", "pattern": "^on[A-Z]", "examples": ["onClick", "onChange", "onBlur"] },
+    "enumProps": ["variant", "size"],
+    "platformExceptions": [
+      { "stack": "compose", "prop": "enabled", "insteadOf": "isEnabled", "reason": "конвенция платформы, см. platforms.md" }
+    ],
+    "rule": "смысловой паритет пропов важнее буквального совпадения имён между стеками"
+  },
+
+  "slots": {
+    "canonical": ["leading", "content", "trailing", "badge", "header", "footer"],
+    "platformSynonymsAllowed": false,
+    "repeatable": {
+      "notation": "cell (repeatable, 2..N)",
+      "spanPropOwner": "child",
+      "note": "colSpan/rowSpan задаётся на повторяющемся элементе, не на родителе"
+    }
+  },
+
+  "escapeHatches": [
+    { "id": "ref-forwarding", "required": true, "scope": "interactive", "rule": "ссылка на корневой узел пробрасывается" },
+    { "id": "class-and-style", "required": true, "scope": "root-only", "rule": "классы и инлайн-стили только на корневом узле" },
+    { "id": "aria-passthrough", "required": true, "rule": "aria-* и идентификаторы пробрасываются всегда" },
+    { "id": "test-hook", "required": true, "rule": "атрибут тестового селектора на корневом узле" },
+    { "id": "polymorphism", "required": false, "allowedLevels": ["layout"], "rule": "смена корневого тега только для Layout" },
+    { "id": "prop-spreading", "required": false, "allowed": false, "rule": "неизвестные пропы не пробрасываются молча" }
+  ],
+
+  "controlledMode": {
+    "controlled": { "requires": ["value", "onChange"], "valueWithoutOnChange": "read-only, должно быть документировано" },
+    "uncontrolled": { "requires": ["defaultValue"], "conflictsWith": ["value"] },
+    "switchAtRuntime": false
+  },
+
+  "size": {
+    "changes": ["padding", "typography", "iconSize", "geometry"],
+    "invariants": [
+      { "id": "touch-target", "rule": "область нажатия не ниже минимума платформы при любом size" },
+      { "id": "variant-parity", "rule": "набор вариантов и состояний одинаков для всех размеров" },
+      { "id": "token-role", "rule": "различается ступень токена, не роль" }
+    ],
+    "touchTargetMinimum": { "web": "44x44px", "ios": "44x44pt", "android": "48x48dp" }
+  },
+
+  "variants": {
+    "canonical": ["primary", "secondary", "ghost", "destructive"],
+    "rejected": ["danger"],
+    "rule": "вариант описывает оформление при одном смысле действия",
+    "newComponentInstead": [
+      "меняется набор слотов или их назначение",
+      "меняется уровень архитектуры",
+      "меняется смысл действия, а не оформление"
+    ],
+    "reviewThreshold": { "count": 5, "note": "больше пяти несравнимых вариантов — повод искать внутри второй компонент" }
+  },
+
+  "states": {
+    "source": "component-states-guide.md",
+    "list": ["default", "hovered", "pressed", "focused", "selected", "disabled", "loading", "skeleton", "error"],
+    "structuralViewExtra": ["expanded", "collapsed"],
+    "restricted": { "hovered": "только стек с курсором", "error": "только контролы форм" },
+    "invalidCombinations": [
+      ["disabled", "loading"],
+      ["pressed", "disabled"],
+      ["loading", "pressed"],
+      ["skeleton", "focused"],
+      ["skeleton", "loading"],
+      ["error", "disabled"]
+    ],
+    "validCombinations": [
+      ["pressed", "focused"],
+      ["selected", "hovered"],
+      ["hovered", "focused"],
+      ["selected", "pressed"],
+      ["selected", "error"],
+      ["error", "focused"]
+    ],
+    "stateVsValue": {
+      "_doc": "ADR-021. Состояние — режим взаимодействия; значение — данные компонента.",
+      "stateCriteria": ["возникает от взаимодействия", "поглощается disabled", "входит в матрицу вариант × состояние"],
+      "knownValues": [
+        { "name": "indeterminate", "actualForm": "checked: 'mixed'", "isState": false, "component": "checkbox" }
+      ]
+    },
+    "matrixRule": "матрица строится только из validCombinations; invalidCombinations не попадают ни в документацию, ни в визуальные снимки"
+  },
+
+  "valueKinds": {
+    "source": "protocols/gates/token-integrity.md",
+    "scale": ["semantic-token", "platform-convention", "raw-value", "hardcode"],
+    "blocking": ["hardcode"],
+    "unclassifiedEqualsHardcode": true,
+    "examples": {
+      "platform-convention": ["touch target 44x44", "disabled opacity 40%"],
+      "raw-value": ["track 32x20", "thumb 16x16"]
+    }
+  },
+
+  "contentResilience": [
+    { "id": "long-text", "rule": "поведение задано: обрезка или перенос" },
+    { "id": "empty-value", "rule": "определено, что показывается вместо значения" },
+    { "id": "localization", "rule": "раскладка выдерживает рост длины строки примерно в 1.5 раза" },
+    { "id": "rtl", "rule": "зеркалятся leading и trailing, если продукт поддерживает RTL", "conditional": true },
+    { "id": "numbers", "rule": "формат, разрядность и переполнение определены" },
+    { "id": "missing-image", "rule": "определён запасной вид" }
+  ],
+  "requiredStory": "worst-case",
+
+  "versioning": {
+    "scheme": "semver",
+    "major": ["удалён или переименован проп, вариант, слот", "изменилось значение по умолчанию так, что меняется вид"],
+    "minor": ["новый вариант, состояние, слот, проп с обратной совместимостью"],
+    "patch": ["визуальная правка", "документация", "исправление доступности без изменения API"],
+    "deprecation": {
+      "steps": ["пометить в таблице пропов с указанием замены", "предупреждение в режиме разработки", "прожить минимум один MINOR", "удалить в MAJOR с путём миграции"],
+      "minMinorReleases": 1
+    },
+    "changelogBoundary": "release-gate"
+  },
+
+  "definitionOfDone": {
+    "full": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "reduced": [1, 2, 6, 9, 10],
+    "items": {
+      "1": "уровень архитектуры определён, имя по формуле Role + Entity",
+      "2": "контракт API опубликован: перечисления, значения по умолчанию, управляемость, escape hatches",
+      "3": "варианты и состояния реализованы, матрица привязана к токенам",
+      "4": "все значения классифицированы, hardcode отсутствует",
+      "5": "устойчивость к контенту проверена, есть пример худшего случая",
+      "6": "доступность: область нажатия, видимый фокус, согласованная недоступность, состояние не только цветом",
+      "7": "тесты: unit, визуальные по допустимым сочетаниям, доступность",
+      "8": "чеклист интерактивности пройден",
+      "9": "документация: пример, таблица пропов, границы применения",
+      "10": "изменения в changes/<id>/pending/, версия и changelog на границе релиза"
+    }
+  },
+
+  "platformModelSource": "products/<id>/product.json → platformModel",
+  "gates": {
+    "mayCreate": "protocols/gates/component-gate.md",
+    "tokenLookup": "protocols/gates/token-integrity.md",
+    "release": "protocols/gates/release-gate.md",
+    "portalPage": "protocols/component-page-baseline.md"
+  }
+}
