@@ -32,6 +32,27 @@
 
 ---
 
+## Волна 0.5 — инженерия документов
+
+Из аудита `DOC-INFRA-AUDIT.md` (2026-09-20). Делается до Волны 1: пишем
+содержание в уже исправную систему, а не в текущую.
+
+| ID | Задача | Статус |
+|---|---|---|
+| W05-1 | Поле `kind` во frontmatter всех 40 файлов `_shared` (standard / protocol / architecture / notes) | todo |
+| W05-2 | `scripts/check-docs.mjs`: форма, живость ссылок, сходимость версий, дубли по `name`, сверка с реестром | todo |
+| W05-3 | Встроить `check-docs` в `prebuild` портала | todo |
+| W05-4 | Починить 28 битых ссылок и 8 неверных путей | todo |
+| W05-5 | Починить `.cursor/rules/token-integrity.mdc` — `alwaysApply`-гейт указывает на несуществующий путь | todo |
+| W05-6 | Починить `CLAUDE.md`: раздел «Скиллы» описывает удалённую `.claude/skills/` | todo |
+| W05-7 | Устранить третий дубль: `_shared/ds-component-spec.md` v1.2.0 против `ds-component-spec/SKILL.md` v1.3.0 | todo |
+| W05-8 | `cursor-component-pipeline-context.md`: 9 ссылок на непостроенное — перевести в будущее время или вынести в backlog | todo |
+| W05-9 | `PROJECT_STRUCTURE.md` генерировать скриптом | todo |
+| W05-10 | Мелочи: `.tmp-qa` в gitignore, `ButtonText-spec.md` из корня, `component-build-workflow.md` на место | todo |
+| W05-11 | Физическая раскладка `_shared` по жанрам — **после публикации альфы**, одной атомарной операцией | blocked |
+
+---
+
 ## Волна 1 — ядро: `component-standards` → 2.0.0-alpha
 
 Закрываем дыры из аудита 2026-09-20. Нумерация совпадает с аудитом.
