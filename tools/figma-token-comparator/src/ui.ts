@@ -254,7 +254,7 @@ function renderStatusFilterMenu(): void {
           (key) => `
         <label class="ds-filter-menu__item">
           <input type="checkbox" value="${escapeHtml(key)}" ${activeStatusFilters.has(key) ? "checked" : ""} />
-          <span class="${badgeClassName(statusMetaForKey(key).tone)}" title="${escapeHtml(statusTooltip(statusMetaForKey(key)))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
+          <span class="${badgeClassName(statusMetaForKey(key).tone)}" data-hint="${escapeHtml(statusTooltip(statusMetaForKey(key)))}">${escapeHtml(statusFilterKeyLabel(key))}</span>
         </label>`
         )
         .join("")}
@@ -322,30 +322,42 @@ function statusLabel(result: ComparisonResult): string {
 }
 
 /** Бейдж статуса строки — используется и таблицей цветов, и таблицей типографики. */
+/**
+ * Пояснение к бейджу: всплывает по наведению и остаётся по клику
+ * (initBadgeHints). Системный `title` не ставим — иначе две подсказки сразу.
+ */
+function setBadgeHint(badge: HTMLElement, hint: string): void {
+  badge.dataset.hint = hint;
+  badge.setAttribute("aria-label", `${badge.textContent}: ${hint}`);
+}
+
 function createStatusBadge(result: ComparisonResult): HTMLSpanElement {
   const badge = document.createElement("span");
   if (result.decision === "value_fix_proposed") {
     const mode = result.decisionProposedModeName;
     badge.className = badgeClassName("info");
     badge.textContent = mode ? `Правка предложена · ${mode}` : "Правка предложена";
-    badge.title = `Value fix proposed — для токена библиотеки предложена ручная правка значения. Статус до решения: ${statusLabel(
-      result
-    )}.`;
+    setBadgeHint(
+      badge,
+      `Value fix proposed — для токена библиотеки предложена ручная правка значения. Статус до решения: ${statusLabel(
+        result
+      )}.`
+    );
     return badge;
   }
   const meta = statusMetaOf(result);
   badge.className = badgeClassName(meta.tone);
   badge.textContent = statusLabel(result);
-  badge.title = statusTooltip(meta);
+  setBadgeHint(badge, statusTooltip(meta));
   return badge;
 }
 
 /** Второй бейдж в ячейке статуса: пометка, а не самостоятельный статус. */
-function createSecondaryBadge(label: string, tone: BadgeTone, title: string): HTMLSpanElement {
+function createSecondaryBadge(label: string, tone: BadgeTone, hint: string): HTMLSpanElement {
   const badge = document.createElement("span");
   badge.className = badgeClassName(tone, true);
   badge.textContent = label;
-  badge.title = title;
+  setBadgeHint(badge, hint);
   return badge;
 }
 
@@ -380,7 +392,7 @@ function createDecisionCheck(decision: Decision): HTMLSpanElement {
   const check = document.createElement("span");
   check.className = "ds-decision-check";
   check.textContent = " ✓";
-  check.title = `Решение принято: ${decisionLabel(decision)}`;
+  setBadgeHint(check, `Решение принято: ${decisionLabel(decision)}`);
   return check;
 }
 
@@ -394,6 +406,8 @@ function createProposalStatusBadge(status: ProposalStatusInfo): HTMLButtonElemen
   badge.type = "button";
   badge.className = `${badgeClassName(isOpen ? "info" : "warning", true)} ds-badge--action`;
   badge.textContent = `${isOpen ? "На согласовании" : "Отклонено"} · #${status.number}`;
+  // Этот бейдж — кнопка: по клику открывается запрос, поэтому пояснение
+  // остаётся системной подсказкой, а клик занят действием.
   badge.title = isOpen
     ? `Решение ждёт согласования в запросе #${status.number}. Нажмите, чтобы открыть запрос.`
     : `Запрос #${status.number} закрыт без согласования${
@@ -466,13 +480,18 @@ function switchToTab(tabName: string): void {
 const HINT_GAP = 6;
 const HINT_VIEWPORT_MARGIN = 8;
 
-let openHintTrigger: HTMLButtonElement | null = null;
+let openHintTrigger: HTMLElement | null = null;
+/** Подсказку открыли кликом — она остаётся, пока её не закроют. */
+let hintPinned = false;
+let hintHoverTimer = 0;
 
 function closeHint(): void {
+  window.clearTimeout(hintHoverTimer);
   if (!openHintTrigger) return;
-  openHintTrigger.setAttribute("aria-expanded", "false");
+  if (openHintTrigger.hasAttribute("aria-expanded")) openHintTrigger.setAttribute("aria-expanded", "false");
   openHintTrigger.removeAttribute("aria-describedby");
   openHintTrigger = null;
+  hintPinned = false;
   $("tc-hint-popover").hidden = true;
 }
 
@@ -500,21 +519,72 @@ function positionHintPopover(trigger: HTMLElement, popover: HTMLElement): void {
   popover.style.top = `${top}px`;
 }
 
-function openHint(trigger: HTMLButtonElement): void {
-  const text = trigger.parentElement?.querySelector<HTMLElement>(".ds-hint-text");
-  if (!text) return;
+function openHintAt(anchor: HTMLElement, text: string, pinned: boolean): void {
+  const value = text.trim();
+  if (!value) return;
 
   const popover = $("tc-hint-popover");
-  popover.textContent = text.textContent?.trim() ?? "";
+  popover.textContent = value;
   popover.hidden = false;
-  positionHintPopover(trigger, popover);
+  positionHintPopover(anchor, popover);
 
-  trigger.setAttribute("aria-expanded", "true");
-  trigger.setAttribute("aria-describedby", "tc-hint-popover");
-  openHintTrigger = trigger;
+  if (anchor.hasAttribute("aria-expanded")) anchor.setAttribute("aria-expanded", "true");
+  anchor.setAttribute("aria-describedby", "tc-hint-popover");
+  openHintTrigger = anchor;
+  hintPinned = pinned;
+}
+
+function openHint(trigger: HTMLButtonElement): void {
+  const text = trigger.parentElement?.querySelector<HTMLElement>(".ds-hint-text");
+  if (text) openHintAt(trigger, text.textContent ?? "", true);
+}
+
+/** Задержка перед подсказкой: без неё она мигает, когда курсор просто проходит по таблице. */
+const HINT_HOVER_DELAY_MS = 200;
+
+/**
+ * Бейджи статусов и пометок объясняют себя сами: при наведении — подсказка,
+ * по клику — остаётся открытой. Подписки — на документе, потому что таблица
+ * перерисовывается после каждого решения.
+ */
+function initBadgeHints(): void {
+  const hintTargetOf = (target: EventTarget | null): HTMLElement | null =>
+    target instanceof Element ? target.closest<HTMLElement>("[data-hint]") : null;
+
+  document.addEventListener("mouseover", (event) => {
+    const anchor = hintTargetOf(event.target);
+    if (!anchor || anchor === openHintTrigger) return;
+    if (hintPinned) return;
+    window.clearTimeout(hintHoverTimer);
+    hintHoverTimer = window.setTimeout(() => {
+      openHintAt(anchor, anchor.dataset.hint ?? "", false);
+    }, HINT_HOVER_DELAY_MS);
+  });
+
+  document.addEventListener("mouseout", (event) => {
+    const anchor = hintTargetOf(event.target);
+    if (!anchor) return;
+    window.clearTimeout(hintHoverTimer);
+    if (!hintPinned && openHintTrigger === anchor) closeHint();
+  });
+
+  // Перехват: иначе клик дойдёт до строки и выделит её — подсказка сама по себе.
+  document.addEventListener(
+    "click",
+    (event) => {
+      const anchor = hintTargetOf(event.target);
+      if (!anchor) return;
+      event.stopPropagation();
+      const wasOpen = openHintTrigger === anchor && hintPinned;
+      closeHint();
+      if (!wasOpen) openHintAt(anchor, anchor.dataset.hint ?? "", true);
+    },
+    true
+  );
 }
 
 function initHints(): void {
+  initBadgeHints();
   document.querySelectorAll<HTMLButtonElement>(".ds-hint-trigger").forEach((trigger) => {
     trigger.addEventListener("click", (event) => {
       event.preventDefault();
@@ -527,7 +597,10 @@ function initHints(): void {
 
   document.addEventListener("click", (event) => {
     if (!openHintTrigger) return;
-    if (!$("tc-hint-popover").contains(event.target as Node)) closeHint();
+    const target = event.target as Node;
+    if ($("tc-hint-popover").contains(target)) return;
+    if (target instanceof Element && target.closest("[data-hint], .ds-hint-trigger")) return;
+    closeHint();
   });
 
   document.addEventListener("keydown", (event) => {
