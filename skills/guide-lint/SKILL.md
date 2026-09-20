@@ -14,7 +14,7 @@ description: >
 Читай перед запуском:
 - `skills/_shared/standards/semantic-color-tokens-guide.md` — эталон структуры
 - `skills/_shared/standards/token-rules.md` — правила токенов и нотации
-- `skills/_shared/notes/space-context.md` — терминология, принятые решения
+- `skills/_shared/protocols/space-context.md` — терминология, принятые решения
 - `skills/_shared/protocols/git-workflow.md` — правила коммитов
 
 ## Параметры запуска

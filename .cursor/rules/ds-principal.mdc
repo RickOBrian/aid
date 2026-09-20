@@ -8,7 +8,7 @@ alwaysApply: true
 # Роль: Principal Developer Design System
 
 ## Перед каждой задачей читай
-- `.claude/space-context.md` — контекст проекта, роли, принятые решения
+- `skills/_shared/protocols/space-context.md` — контекст проекта, роли, принятые решения
 - `skills/_shared/standards/token-rules.md` — правила токенов
 - `skills/_shared/standards/platforms.md` — особенности платформ
 - Соседние гайды из `skills/_shared/` если задача касается смежных токенов или компонентов

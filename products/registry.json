@@ -198,5 +198,6 @@
       "releaseRoot": null,
       "notes": "Token registry в Markdown, не JSON. Отдельной папки tokens/<product>/ нет."
     }
-  ]
+  ],
+  "platformModelNote": "Платформа и стек — свойство продукта, не системы. Каждый продукт объявляет platformModel в своём product.json. Стандарты в skills/_shared/standards/ описывают конвенции по стекам и не предполагают один общий стек."
 }

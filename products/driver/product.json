@@ -2,6 +2,12 @@
   "id": "driver",
   "label": "aid: driver",
   "status": "active",
+  "platformModel": {
+    "targets": null,
+    "stacks": null,
+    "declared": false,
+    "note": "Целевые платформы и стек продукта. Стандарты дизайн-системы платформо-независимы; конкретный стек резолвится отсюда, а не предполагается гайдом. Допустимые targets: web, ios, android. Допустимые stacks: react, swiftui, compose, cmp (Kotlin Compose Multiplatform), иные — по согласованию. Пока declared=false, агент обязан спросить, а не подставлять умолчание."
+  },
   "tokensRoot": null,
   "tokenDataRoot": "pages/driver-color-tokens",
   "tokenDataFiles": [

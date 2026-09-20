@@ -159,7 +159,7 @@ Cursor.
 | Файл | Версия | Что написано |
 |---|---|---|
 | `.claude/space-context.md` | 1.0.1 | Web (React + TypeScript), iOS (SwiftUI / UIKit), Android (Jetpack Compose) |
-| `skills/_shared/notes/space-context.md` | без версии | iOS, Android, Web — единая кодовая база на Kotlin, Compose Multiplatform |
+| `skills/_shared/protocols/space-context.md` | без версии | iOS, Android, Web — единая кодовая база на Kotlin, Compose Multiplatform |
 
 Это не разночтение в формулировке, а разные технические реальности.
 
