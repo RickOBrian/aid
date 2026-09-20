@@ -39,10 +39,10 @@ description: >
   Рабочий инструмент — Claude Code.
 
 > **Смена инструмента (2026-09-20).** Документ писался под Cursor, поэтому
-> ниже в процессных шагах сохранилось слово «Cursor» там, где речь идёт о
-> роли исполнителя. Читать как «агент». Cursor остаётся легаси — отдельные
-> правила в `.cursor/rules/` ещё используются, но source of truth процесса
-> здесь, а не в них.
+> ниже в процессных шагах местами сохранилось слово «Cursor» там, где речь
+> идёт о роли исполнителя. Читать как «агент». Cursor остаётся легаси:
+> его правила превращены в указатели, source of truth процесса — здесь и в
+> `skills/_shared/protocols/gates/`.
 
 ---
 
@@ -283,70 +283,28 @@ changelog entry. Temporary raw exception не повышает версию то
 
 ---
 
-## Планируемые материалы Cursor
+## Материалы пайплайна
 
-### Always-on Cursor Rules
+Гейты переехали из правил Cursor в репозиторий (2026-09-20, разбор —
+`docs/standards-alpha/GATES-MIGRATION.md`). Триггеры срабатывания — в
+`CLAUDE.md`, протоколы — в `skills/_shared/protocols/gates/`.
 
-- `.cursor/rules/ds-principal.mdc`
-- `.cursor/rules/token-integrity.mdc`
-- .cursor/rules/component-release-gate.mdc (не создан)
-- .cursor/rules/figma-import.mdc (не создан)
-- `.cursor/rules/git-push.mdc`
+Действующие:
 
-### Workflow and shared guides
+- `CLAUDE.md` — роль, триггеры гейтов, терминология
+- `skills/_shared/protocols/gates/` — семь гейтов процесса
+- `skills/_shared/protocols/component-page-baseline.md` — вёрстка страницы компонента
+- `skills/_shared/protocols/git-workflow.md` — git и push
+- `skills/ds-import/SKILL.md` — импорт материалов
+- `skills/ds-component-build/component-build-workflow.md` — сборка компонента
 
-- `skills/ds-component-build/component-build-workflow.md`
-- skills/_shared/component-discovery-guide.md (не создан)
-- skills/_shared/token-coverage-guide.md (не создан)
-- skills/_shared/component-sandbox-guide.md (не создан)
-- skills/_shared/release-bundle-guide.md (не создан)
-- skills/_shared/raw-value-exceptions-guide.md (не создан)
+Ещё не созданы (не считать существующими):
 
-### Existing shared sources to reference
-
-- `skills/_shared/standards/token-rules.md`
-- `skills/_shared/standards/core-color-tokens-guide.md`
-- `skills/_shared/standards/semantic-color-tokens-guide.md`
-- `skills/_shared/standards/core-space-tokens-guide.md`
-- `skills/_shared/standards/semantic-space-tokens-guide.md`
-- `skills/_shared/standards/core-typography-tokens-guide.md`
-- `skills/_shared/standards/semantic-typography-tokens-guide.md`
-- `skills/_shared/standards/ds-component-architecture-guide.md`
-- `skills/_shared/standards/component-categories-guide.md`
-- `skills/_shared/standards/component-states-guide.md`
-- `skills/_shared/standards/anatomy-annotation-standard.md`
-- `skills/_shared/architecture/editable-component-spec-layer-guide.md`
-- `skills/_shared/standards/semver-guide.md`
-- `skills/_shared/protocols/git-workflow.md`
-
-### Planned machine-readable sources
-
-```text
-tokens/
-  <collection>.json
-  registry.json
-  <collection>-changelog.json
-
-components/
-  registry.json
-  changelog.json
-
-changes/
-  pending/
-  released/
-
-docs/exceptions/
-  raw-values.json
-```
-
-### Planned Presentbook infrastructure
-
-- `ComponentSandbox`
-- `TokenInspector`
-- component pages at `/components/<component-kebab-name>`
-- existing TokenTable and ChangelogTable remain token review primitives
-
----
+- component-discovery-guide — поиск компонента-аналога
+- token-coverage-guide — покрытие токенами
+- component-sandbox-guide — sandbox review
+- release-bundle-guide — релизный бандл
+- raw-value-exceptions-guide — исключения для raw-value
 
 ## Constraints and non-goals
 

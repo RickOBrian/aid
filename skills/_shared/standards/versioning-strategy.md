@@ -27,11 +27,11 @@ metadata:
 |---|---|
 | `docs/semver-guide.md` | Базовый SemVer: MAJOR / MINOR / PATCH, зависимости Core → Semantic, Component → Component |
 | `changelog-guide.md` | Структура changelog entries, pending → released workflow |
-| `.cursor/rules/release-gate.mdc` | Release plan, группировка pending, финализация версий |
+| `skills/_shared/protocols/gates/release-gate.md` | Release plan, группировка pending, финализация версий |
 | `component-standards.md` | SemVer для компонентов (props, variants, states) |
 | `token-rules.md` | Единицы версионирования токенов (Core / Semantic), запрет component-level tokens |
 | `naming-conventions.md` | Имена artifact/collection (`Colors/Semantic`, `colors-semantic-changelog.json`) |
-| `.cursor/rules/product-context.mdc` | Product-scoped pending queue `changes/<id>/pending/` |
+| `skills/_shared/protocols/gates/product-context.md` | Product-scoped pending queue `changes/<id>/pending/` |
 
 ---
 

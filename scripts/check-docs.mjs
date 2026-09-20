@@ -180,6 +180,11 @@ for (const file of files) {
     }
   }
 
+  /* легаси-пути: Cursor объявлен легаси 2026-09-20 (ADR-018) */
+  const legacy = [...src.matchAll(/`(\.cursor\/[A-Za-z0-9_./-]+)`/g)].map((m) => m[1]);
+  for (const ref of new Set(legacy))
+    err(file, 'legacy-ref', `ссылка на легаси-путь Cursor: ${ref} — правило переехало, см. GATES-MIGRATION.md`);
+
   /* ссылки на файлы */
   const refs = new Set([...src.matchAll(/`([A-Za-z0-9_./-]+\.(?:md|mdc|json|ts|tsx|mjs|js))`/g)].map((m) => m[1]));
   for (const ref of refs) {

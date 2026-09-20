@@ -24,8 +24,8 @@ gate**.
 «Composition gate» и «Token coverage gate» ниже — не новые механики, а имена
 для уже существующих проверок внутри Discovery-фазы `ds-component-build`:
 
-- Composition gate = «Component lookup procedure» из `.cursor/rules/component-gate.mdc`.
-- Token coverage gate = «Token lookup procedure» / «Token gap handling» из `.cursor/rules/token-integrity.mdc`.
+- Composition gate = «Component lookup procedure» из `skills/_shared/protocols/gates/component-gate.md`.
+- Token coverage gate = «Token lookup procedure» / «Token gap handling» из `skills/_shared/protocols/gates/token-integrity.md`.
 
 Единственный **новый** gate в этом файле — Platform scope gate. Он идёт первым,
 потому что Composition gate и Token coverage gate должны проверяться только
@@ -86,13 +86,13 @@ gate**.
 
 ### 1.2 Composition gate
 
-Delegate → `.cursor/rules/component-gate.mdc`, «Component lookup procedure» +
+Delegate → `skills/_shared/protocols/gates/component-gate.md`, «Component lookup procedure» +
 «New component proposal». Применяется только к платформам, подтверждённым в
 1.1.
 
 ### 1.3 Token coverage gate
 
-Delegate → `.cursor/rules/token-integrity.mdc`, «Token lookup procedure» +
+Delegate → `skills/_shared/protocols/gates/token-integrity.md`, «Token lookup procedure» +
 «Token gap handling» + «Standard deviation». Применяется только к платформам,
 подтверждённым в 1.1 (например: SwiftUI-токены проверяются только если iOS в
 scope).

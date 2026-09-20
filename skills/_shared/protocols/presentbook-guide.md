@@ -203,8 +203,9 @@ Pipeline/process статусы, debug/infrastructure поля, заметки �
   прямо обязательных другим gate (см. исключение ниже);
 - внутренние debug/infrastructure поля (`componentsRoot: null`, служебные id
   sandbox, флаги окружения) — если они нужны для отладки самой
-  Presentbook-инфраструктуры, место для них — `.cursor/DS_PIPELINE_CONTEXT.md`
-  или отчёт агента в чате, **не** страница компонента, даже под
+  Presentbook-инфраструктуры, место для них —
+  `skills/_shared/architecture/component-pipeline-context.md` или отчёт
+  агента в чате, **не** страница компонента, даже под
   `import.meta.env.DEV`;
 - заметки о происхождении кода («собирался/не собирался», «есть файл в
   репозитории или нет») — за исключением случая, когда это прямо влияет на
@@ -382,7 +383,7 @@ Hub (/design-system)
 - Обновление `hubData.ts` + `App.tsx` routes + `product.json` tokenRoutes
 - Portal layout changes → update `DS_PORTAL_LAYOUT_TOKENS` once, not per page
 - Periodic audit: portal values vs `*Data.ts` (Audit Gate)
-- Wave completion → update `DS_PIPELINE_CONTEXT.md`
+- Wave completion → update `skills/_shared/architecture/component-pipeline-context.md`
 
 ---
 

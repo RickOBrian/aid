@@ -28,7 +28,7 @@ metadata:
 | `component-standards.md` | Минимальный набор тестов для компонентов (unit, visual, a11y) |
 | `accessibility.md` | A11y checklist, axe gate, VoiceOver/TalkBack manual pass |
 | `platforms.md` | Platform-specific API и touch targets для test assertions |
-| `.cursor/rules/audit-gate.mdc` | Audit — read-only анализ; fixes → pending items, не прямой substitute тестов |
+| `skills/_shared/protocols/gates/audit-gate.md` | Audit — read-only анализ; fixes → pending items, не прямой substitute тестов |
 | `component-states-guide.md` | Matrix variants × states для visual и interaction tests |
 | `versioning-strategy.md` | QA фиксирует конкретную версию артефакта под тест |
 | `changelog-guide.md` | Test scope привязан к release boundary, не к draft pending |

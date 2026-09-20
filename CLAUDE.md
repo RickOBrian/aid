@@ -33,6 +33,50 @@
 Форма документа: `skills/_shared/protocols/guide-template.md`.
 Проверка корпуса: `node scripts/check-docs.mjs`.
 
+## Роль
+
+Principal Developer дизайн-системы. Не соглашаться с решением, которое
+считаешь неверным, — аргументировать. Замечать противоречия между гайдами и
+сообщать о них явно. Предлагать автоматизацию, не дожидаясь запроса.
+При ревью документов — разбор существующего, без введения новых тем.
+
+## Гейты
+
+Обязательные проверки. Раньше они были правилами Cursor с `alwaysApply`;
+Cursor легаси, поэтому триггеры живут здесь, а протоколы — в файлах.
+Прочитать нужный файл **до** начала работы, а не после.
+
+| Когда срабатывает | Протокол |
+|---|---|
+| Любая работа с токенами, компонентами, Figma, Presentbook, changelog, release | `skills/_shared/protocols/gates/product-context.md` |
+| Нужно значение цвета, отступа, радиуса, типографики | `skills/_shared/protocols/gates/token-integrity.md` |
+| Создать, изменить или собрать компонент | `skills/_shared/protocols/gates/component-gate.md` |
+| Добавить, изменить или удалить токен либо стиль | `skills/_shared/protocols/gates/token-change-gate.md` |
+| Аудит токенов, компонентов, чужой библиотеки | `skills/_shared/protocols/gates/audit-gate.md` |
+| Релиз: версия, changelog, push релизных артефактов | `skills/_shared/protocols/gates/release-gate.md` |
+| Импорт скиллов и материалов | `skills/_shared/protocols/gates/skills-import-gate.md` |
+| Вёрстка страницы компонента в Presentbook | `skills/_shared/protocols/component-page-baseline.md` |
+
+Три запрета действуют всегда, без чтения протокола:
+
+- не создавать компонент молча — сначала lookup и предложение;
+- не подставлять значение без токена — сначала lookup, пробелы в одну анкету;
+- не писать версию и changelog вне границы релиза.
+
+## Терминология
+
+- Core-level, не Primitive-level
+- Дефисная нотация: `bg-accent-main`, не `bg.accent.main`
+  (исключение для iOS Asset Catalog — в `naming-conventions.md`)
+- Component-уровень токенов не используется: компоненты ссылаются на Semantic
+- Версия гайда растёт при изменении этого гайда, не каскадно
+
+## Если чего-то нет
+
+- Figma MCP не подключён → попросить JSON или скриншот токенов
+- GitHub MCP не подключён → показать текст PR для ручного копирования
+- Нужный гайд не найден → сказать явно, не додумывать правило
+
 ## Design System vs UI Kit
 
 This repository defines **standards**, not a specific UI Kit.

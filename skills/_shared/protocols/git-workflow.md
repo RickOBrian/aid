@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: git-workflow
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   kind: protocol
   owner: design-system-team
 description: >
@@ -101,8 +101,96 @@ echo "ivanov" > .claude/intake-user
 
 ---
 
+## Push и релизный флоу
+
+Перенесено из .cursor/rules/git-push.mdc (2026-09-20). Решение о самом
+релизе — за `protocols/gates/release-gate.md`; здесь только механика.
+
+When user says "push", "пуш", "запусти пуш", or "commit and push" —
+execute the full release flow below without asking for confirmation,
+unless noted otherwise.
+
+### Step 1 — Analyze changes
+
+Run: git status --short
+
+If output is empty — reply "✅ Nothing to commit, working tree clean" and stop.
+
+Check current branch: git branch --show-current
+If branch is not "main" — warn: "⚠️ You are on branch <name>, not main. Push here? (yes/no)"
+Stop and wait for confirmation before proceeding.
+
+From the list of changed files, determine bump type:
+- patch → token value edits, doc updates, typos, fixes
+- minor → new component spec, new tokens group, new platform support, new skill/rule
+- major → breaking token rename, architecture change, removed component
+
+If bump type cannot be determined from file names alone — ask ONE question:
+"patch, minor, or major?"
+
+### Step 2 — Bump version
+
+Look for version in this order:
+1. package.json → field "version"
+2. VERSION file in repository root
+3. If neither exists — create VERSION file in repository root with content: 0.1.0
+
+Calculate next version by semver rules.
+Write the new version back to the same file.
+Verify the written value matches expected new version before proceeding.
+
+### Step 3 — Update CHANGELOG.md
+
+File location: repository root. Create if missing.
+Date format: ISO 8601 — YYYY-MM-DD.
+Prepend the following block (include only sections that have entries):
+
+    ## [X.Y.Z] - YYYY-MM-DD
+
+    ### Added
+    - ...
+
+    ### Changed
+    - ...
+
+    ### Fixed
+    - ...
+
+    ### Removed
+    - ...
+
+List renamed or new tokens explicitly.
+Mark breaking changes with ⚠️ BREAKING.
+
+### Step 4 — Commit and push
+
+Commit message must always be in English, ASCII only.
+
+git add -A
+git commit -m "<type>(scope): <what changed> vX.Y.Z"
+
+- type: feat | fix | chore | docs | refactor
+- scope: based on actually changed files.
+  If multiple areas changed, pick most significant:
+  tokens > components > platforms > docs > rules
+- Example: feat(tokens): add semantic surface tokens v0.3.0
+
+git push origin main
+
+### Step 5 — Confirm
+
+Print:
+✅ Pushed vX.X.X → vX.Y.Z
+📝 Commit: <commit message>
+📋 Changelog entry added
+
+---
+
 ## Changelog
 
+- **1.2.0** — 2026-09-20. Добавлен раздел «Push и релизный флоу»,
+  перенесённый из `skills/_shared/protocols/git-workflow.md`: Cursor легаси, механика
+  push переехала к остальным git-правилам.
 - **1.1.0** — добавлен тип коммита `migrate(<component>)` для
   pilot/rollout миграции legacy-компонентов (`ds-component-migration`).
 - **1.0.0** — первая версия: команды синхронизации, типы коммитов,

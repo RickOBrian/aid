@@ -38,7 +38,7 @@ Portal primitives — только infrastructure для review page. Не sourc
 | Topic | Source |
 |---|---|
 | Discovery gate order (Platform scope → Composition → Token coverage) | `skills/ds-component-build/component-build-workflow.md` |
-| Product / release gates | `.cursor/rules/product-context.mdc`, `component-gate.mdc`, `token-integrity.mdc`, `release-gate.mdc` |
+| Product / release gates | `skills/_shared/protocols/gates/product-context.md`, `component-gate.mdc`, `token-integrity.mdc`, `release-gate.mdc` |
 | Tokens | `skills/_shared/standards/token-rules.md` |
 | Platforms & a11y | `skills/_shared/standards/platforms.md`, `accessibility.md` |
 | States | `skills/_shared/standards/component-states-guide.md` |

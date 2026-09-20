@@ -155,7 +155,7 @@ States описывают **интерактивность и feedback** — с�
 ### Запрет хардкода
 
 - ⚠️ HEX, rgb, hsl, px для цветов/spacing/radius в implementation — **блокер**.
-- Перед использованием значения — token lookup по `.cursor/rules/token-integrity.mdc`.
+- Перед использованием значения — token lookup по `skills/_shared/protocols/gates/token-integrity.md`.
 - Token gap → единая анкета; реализация останавливается до ответа пользователя.
 
 ### Примеры (Web)
@@ -223,4 +223,4 @@ padding: '16px';
 - **MINOR:** новый variant, state, slot; backward-compatible feature.
 - **PATCH:** visual fix, docs, a11y fix без изменения API.
 
-Во время реализации изменения записываются в `changes/<id>/pending/` — не в changelog напрямую. Финальный changelog entry — на release boundary — см. `changelog-guide.md` и `.cursor/rules/release-gate.mdc`.
+Во время реализации изменения записываются в `changes/<id>/pending/` — не в changelog напрямую. Финальный changelog entry — на release boundary — см. `changelog-guide.md` и `skills/_shared/protocols/gates/release-gate.md`.

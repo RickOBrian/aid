@@ -25,9 +25,9 @@ Changelog — контракт между дизайном, разработко
 | Артефакт | Связь |
 |---|---|
 | `docs/semver-guide.md` | MAJOR / MINOR / PATCH для каждого артефакта |
-| `.cursor/rules/release-gate.mdc` | Release boundary: group pending → SemVer + changelog |
-| `.cursor/rules/product-context.mdc` | Product-scoped pending items в `changes/<id>/pending/` |
-| `.cursor/rules/token-style-changelog-gate.mdc` | Анкета перед изменением токена (artifact, bump type) |
+| `skills/_shared/protocols/gates/release-gate.md` | Release boundary: group pending → SemVer + changelog |
+| `skills/_shared/protocols/gates/product-context.md` | Product-scoped pending items в `changes/<id>/pending/` |
+| `skills/_shared/protocols/gates/token-change-gate.md` | Анкета перед изменением токена (artifact, bump type) |
 | `pages/driver-color-tokens/token-changelog-registry.json` | Реестр collection changelogs (Driver) |
 
 ---

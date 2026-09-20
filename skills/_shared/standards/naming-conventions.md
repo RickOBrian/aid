@@ -29,8 +29,8 @@ metadata:
 | `component-standards.md` | Props (`is*`, `on*`), variants, states, slots |
 | `platforms.md` | Platform-specific API и префиксы (`isDisabled` vs `enabled`, Asset Catalog paths) |
 | `changelog-guide.md` | Имена artifact/collection в changelog; rename → MAJOR |
-| `docs/ds-component-architecture-guide.md` | Формула `[Role] + [Entity] + [Qualifier]` для компонентов |
-| `.cursor/DS_PIPELINE_CONTEXT.md` | Фактические имена файлов (`data.ts`, `*-sem-changelog.json`) |
+| `skills/_shared/standards/ds-component-architecture-guide.md` | Формула `[Role] + [Entity] + [Qualifier]` для компонентов |
+| `products/<id>/product.json` | Фактические имена файлов продукта (`data.ts`, `*-sem-changelog.json`) |
 
 ---
 
@@ -276,7 +276,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 | Числа в semantic space names | Блокер по `token-rules.md` | `inset-control-h-m`, не `-16` |
 | Semantic с именем цвета (`color-white`) | Смысл привязан к значению | `text-primary`, `bg-base-main` |
 | Абстрактные changelog names | Не совпадает с репо | `colors-semantic-changelog.json` |
-| `colorData.ts` для Driver color | Фактический файл — `data.ts` | Смотреть `DS_PIPELINE_CONTEXT.md` |
+| `colorData.ts` для Driver color | Фактический файл — `data.ts` | Смотреть `products/driver/product.json` → `tokenDataFiles` |
 | Дубли одного смысла | Audit noise, token drift | `button-bg-default` + `button-background-default` → одно имя |
 | Figma variant → token name 1:1 | Variants ≠ tokens | Prop + semantic category |
 | Product-scoped skill path без OK | Нарушает Skills Import Gate | Default: `skills/_shared/` |

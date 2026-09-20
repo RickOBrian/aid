@@ -17,7 +17,7 @@ metadata:
 
 Этот гайд описывает, как импортировать токены и компоненты из Figma в scope продукта дизайн-системы: что считать source of truth, как мапить Figma variables/styles на token collections, и как пройти post-import validation через gates pipeline.
 
-Гайд дополняет технический workflow `.cursor/rules/ds-import.mdc` и product-scoped правила `.cursor/rules/skills-import-gate.mdc` — не заменяет их.
+Гайд дополняет технический workflow `skills/ds-import/SKILL.md` и product-scoped правила `skills/_shared/protocols/gates/skills-import-gate.md` — не заменяет их.
 
 ---
 
@@ -25,11 +25,11 @@ metadata:
 
 | Артефакт | Связь |
 |---|---|
-| `.cursor/rules/ds-import.mdc` | Технический import из `~/Desktop/ds-import/` → `skills/_shared/` |
-| `.cursor/rules/skills-import-gate.mdc` | Product context, destination, shared vs product-scoped |
-| `.cursor/rules/product-context.mdc` | Обязательное подтверждение продукта до импорта |
-| `.cursor/rules/token-integrity.mdc` | Token lookup, gaps, запрет hardcode |
-| `.cursor/rules/component-gate.mdc` | Component proposal при импорте компонентов |
+| `skills/ds-import/SKILL.md` | Технический import из `~/Desktop/ds-import/` → `skills/_shared/` |
+| `skills/_shared/protocols/gates/skills-import-gate.md` | Product context, destination, shared vs product-scoped |
+| `skills/_shared/protocols/gates/product-context.md` | Обязательное подтверждение продукта до импорта |
+| `skills/_shared/protocols/gates/token-integrity.md` | Token lookup, gaps, запрет hardcode |
+| `skills/_shared/protocols/gates/component-gate.md` | Component proposal при импорте компонентов |
 | `token-rules.md` | Что считать Core vs Semantic токеном |
 | `component-standards.md` | Стандарты реализации после импорта |
 
@@ -60,7 +60,7 @@ metadata:
 
 ## Import workflow
 
-Высокоуровневый процесс (детали ds-import — в `.cursor/rules/ds-import.mdc`):
+Высокоуровневый процесс (детали ds-import — в `skills/ds-import/SKILL.md`):
 
 ```
 1. Product Context Gate     → подтвердить продукт (driver)
@@ -156,10 +156,10 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 После import (или перед implementation):
 
-1. **Token lookup** — `.cursor/rules/token-integrity.mdc` для каждого required token.
+1. **Token lookup** — `skills/_shared/protocols/gates/token-integrity.md` для каждого required token.
 2. **Gap detection** — consolidated questionnaire если gaps exist.
-3. **Audit (optional)** — `.cursor/rules/audit-gate.mdc`: Figma vs implementation mismatch.
-4. **Pending change** — запись в `changes/<id>/pending/` — `.cursor/rules/product-context.mdc`.
+3. **Audit (optional)** — `skills/_shared/protocols/gates/audit-gate.md`: Figma vs implementation mismatch.
+4. **Pending change** — запись в `changes/<id>/pending/` — `skills/_shared/protocols/gates/product-context.md`.
 
 Не финализировать SemVer/changelog при import — только pending items.
 
