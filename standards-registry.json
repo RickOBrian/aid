@@ -5,7 +5,13 @@
   "canonicalRoot": "skills/_shared",
   "updated": "2026-09-20",
   "note": "Реестр стандартов дизайн-системы. Каждый стандарт версионируется самостоятельно по semver-guide; bundleVersion — версия публикуемого набора целиком. Машинный слой (machineFile) читают инструменты: аудит, линтер, плагины, распознавание компонентов.",
-  "statuses": ["draft", "alpha", "beta", "stable", "deprecated"],
+  "statuses": [
+    "draft",
+    "alpha",
+    "beta",
+    "stable",
+    "deprecated"
+  ],
   "standards": [
     {
       "id": "component-standards",
@@ -43,7 +49,10 @@
       "hasChangelogSection": false,
       "duplicateAt": "docs/ds-component-architecture-guide.md",
       "duplicateNote": "Копия в docs/ на 28 строк ДЛИННЕЕ канонической — требует сверки, не слепого удаления.",
-      "dependsOn": ["naming-conventions", "component-states-guide"]
+      "dependsOn": [
+        "naming-conventions",
+        "component-states-guide"
+      ]
     },
     {
       "id": "component-states-guide",
@@ -58,7 +67,10 @@
       "presentbookRoute": "/guides/component-states",
       "changelogFile": null,
       "hasChangelogSection": true,
-      "dependsOn": ["token-rules", "platforms"]
+      "dependsOn": [
+        "token-rules",
+        "platforms"
+      ]
     },
     {
       "id": "naming-conventions",
@@ -73,7 +85,9 @@
       "presentbookRoute": "/guides/naming-conventions",
       "changelogFile": null,
       "hasChangelogSection": true,
-      "dependsOn": ["ds-component-architecture-guide"]
+      "dependsOn": [
+        "ds-component-architecture-guide"
+      ]
     },
     {
       "id": "platforms",
@@ -89,7 +103,9 @@
       "changelogFile": null,
       "hasChangelogSection": true,
       "versionConflict": "frontmatter=1.1.0, заголовок H1=v1.0.0",
-      "dependsOn": ["component-states-guide"]
+      "dependsOn": [
+        "component-states-guide"
+      ]
     },
     {
       "id": "token-rules",
@@ -119,7 +135,10 @@
       "presentbookRoute": null,
       "changelogFile": null,
       "hasChangelogSection": true,
-      "dependsOn": ["component-standards", "platforms"]
+      "dependsOn": [
+        "component-standards",
+        "platforms"
+      ]
     },
     {
       "id": "testing-strategy",
@@ -134,7 +153,9 @@
       "presentbookRoute": null,
       "changelogFile": null,
       "hasChangelogSection": true,
-      "dependsOn": ["component-standards"]
+      "dependsOn": [
+        "component-standards"
+      ]
     },
     {
       "id": "semver-guide",
@@ -153,6 +174,32 @@
       "publishedFrom": "docs/semver-guide.md",
       "driftNote": "ОПУБЛИКОВАННАЯ версия отстаёт от канонической: портал рендерит docs/semver-guide.md (1.1.0, 213 строк), канон — skills/_shared/semver-guide.md (1.2.0, 246 строк).",
       "dependsOn": []
+    },
+    {
+      "id": "guide-template",
+      "title": "Шаблон гайда",
+      "humanFile": "skills/_shared/guide-template.md",
+      "machineFile": null,
+      "version": "1.0.0",
+      "status": "alpha",
+      "wave": 0,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "note": "Описывает форму гайдов. Не подпадает под маску *-guide.md, в аудит guide-lint не входит.",
+      "dependsOn": [
+        "semver-guide"
+      ]
+    }
+  ],
+  "formTemplate": "skills/_shared/guide-template.md",
+  "renderExceptions": [
+    {
+      "id": "semantic-color-tokens-guide",
+      "reason": "Содержит <style> и блоки token-color с живыми свотчами (token-viz.js). Остаётся React-страницей, в markdown-рендерер не переводится.",
+      "decidedIn": "ADR-007"
     }
   ]
 }
