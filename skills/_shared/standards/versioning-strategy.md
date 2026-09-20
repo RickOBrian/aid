@@ -30,7 +30,7 @@ metadata:
 | `skills/_shared/protocols/gates/release-gate.md` | Release plan, группировка pending, финализация версий |
 | `component-standards.md` | SemVer для компонентов (props, variants, states) |
 | `token-rules.md` | Единицы версионирования токенов (Core / Semantic), запрет component-level tokens |
-| `naming-conventions.md` | Имена artifact/collection (`Colors/Semantic`, `colors-semantic-changelog.json`) |
+| `naming-conventions.md` | Имена artifact/collection (`Colors/Semantic`, `driver-colors-semantic-changelog.json`) |
 | `skills/_shared/protocols/gates/product-context.md` | Product-scoped pending queue `changes/<id>/pending/` |
 
 ---
@@ -41,12 +41,12 @@ metadata:
 
 | Collection | Artifact | Changelog |
 |---|---|---|
-| Colors/Semantic | `Colors/Semantic` | `tokens/colors-semantic-changelog.json` |
-| Typography/Semantic | `Typography/Semantic` | `tokens/typography-sem-changelog.json` |
-| Spacing/Semantic | `Spacing/Semantic` | `tokens/spacing-sem-changelog.json` |
-| Radius/Semantic | `Radius/Semantic` | `tokens/radius-sem-changelog.json` |
-| Effects/Shadows | `Effects/Shadows` | `tokens/effects-shadows-changelog.json` |
-| Icons | `Icons/Wilhelm` | `tokens/icons-changelog.json` |
+| Colors/Semantic | `Colors/Semantic` | `tokens/driver-colors-semantic-changelog.json` |
+| Typography/Semantic | `Typography/Semantic` | `tokens/driver-typography-sem-changelog.json` |
+| Spacing/Semantic | `Spacing/Semantic` | `tokens/driver-spacing-sem-changelog.json` |
+| Radius/Semantic | `Radius/Semantic` | `tokens/driver-radius-sem-changelog.json` |
+| Effects/Shadows | `Effects/Shadows` | `tokens/driver-effects-shadows-changelog.json` |
+| Icons | `Icons/Wilhelm` | `tokens/driver-icons-changelog.json` |
 
 Core-уровень (`Colors/Core`, `Spacing/Core` и т.д.) версионируется отдельно, когда Core-гайды или Core JSON существуют в product scope. Semantic ссылается на Core — см. зависимости ниже.
 

@@ -7,7 +7,7 @@ export interface SpacingToken {
 }
 
 export const spacingCollection = {
-  collectionName: 'spacing-sem',
+  collectionName: 'driver-spacing-sem',
   artifact: 'Spacing/Semantic',
 } as const;
 

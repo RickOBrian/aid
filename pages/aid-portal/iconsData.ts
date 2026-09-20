@@ -241,7 +241,7 @@ export const iconSections: IconSection[] = [
 ];
 
 export const iconCollection = {
-  collectionName: 'icons',
+  collectionName: 'driver-icons',
   artifact: 'Icons/Wilhelm',
 } as const;
 

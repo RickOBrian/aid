@@ -101,7 +101,7 @@ export const typographySections: TypographySection[] = [
 ];
 
 export const typographyCollection = {
-  collectionName: 'typography-sem',
+  collectionName: 'driver-typography-sem',
   artifact: 'Typography/Semantic',
 } as const;
 

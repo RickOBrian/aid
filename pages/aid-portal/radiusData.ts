@@ -8,7 +8,7 @@ export interface RadiusToken {
 }
 
 export const radiusCollection = {
-  collectionName: 'radius-sem',
+  collectionName: 'driver-radius-sem',
   artifact: 'Radius/Semantic',
 } as const;
 

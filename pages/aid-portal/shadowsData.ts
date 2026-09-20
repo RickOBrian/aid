@@ -24,7 +24,7 @@ export interface ShadowSection {
 }
 
 export const shadowsCollection = {
-  collectionName: 'effects-shadows',
+  collectionName: 'driver-effects-shadows',
   artifact: 'Effects/Shadows',
 } as const;
 

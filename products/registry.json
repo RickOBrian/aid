@@ -36,12 +36,12 @@
       "changelogRoot": "tokens",
       "changelogMirrorRoot": "pages/aid-portal/tokens",
       "changelogFiles": [
-        "tokens/colors-semantic-changelog.json",
-        "tokens/typography-sem-changelog.json",
-        "tokens/spacing-sem-changelog.json",
-        "tokens/radius-sem-changelog.json",
-        "tokens/effects-shadows-changelog.json",
-        "tokens/icons-changelog.json"
+        "tokens/driver-colors-semantic-changelog.json",
+        "tokens/driver-typography-sem-changelog.json",
+        "tokens/driver-spacing-sem-changelog.json",
+        "tokens/driver-radius-sem-changelog.json",
+        "tokens/driver-effects-shadows-changelog.json",
+        "tokens/driver-icons-changelog.json"
       ],
       "componentRegistry": null,
       "releaseRoot": "changes/driver",

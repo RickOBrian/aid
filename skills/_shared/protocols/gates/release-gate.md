@@ -173,7 +173,7 @@ After SemVer and changelog are confirmed:
 
 1. For token releases:
    - update or create collection changelog files (for example
-     `tokens/colors-semantic-changelog.json` or Driver-equivalent when defined);
+     `tokens/driver-colors-semantic-changelog.json` or Driver-equivalent when defined);
    - update `pages/aid-portal/token-changelog-registry.json` if needed.
 2. For component releases:
    - update or create `components/{componentId}-changelog.json`;

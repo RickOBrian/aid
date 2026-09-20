@@ -631,7 +631,7 @@ const messagesRows: SemanticColorRow[] = [
 ];
 
 export const colorTokenCollection = {
-  collectionName: 'colors-semantic',
+  collectionName: 'driver-colors-semantic',
   artifact: 'Colors/Semantic',
 } as const;
 

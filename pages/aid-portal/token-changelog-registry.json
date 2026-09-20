@@ -8,9 +8,10 @@
       "productId": "rider"
     },
     {
-      "collectionName": "colors-semantic",
+      "collectionName": "driver-colors-semantic",
       "artifact": "Colors/Semantic",
-      "pageFile": "DriverColorTokensPage.tsx"
+      "pageFile": "DriverColorTokensPage.tsx",
+      "productId": "driver"
     },
     {
       "collectionName": "rider-typography-sem",
@@ -55,12 +56,13 @@
       "productId": "rider"
     },
     {
-      "collectionName": "icons",
+      "collectionName": "driver-icons",
       "artifact": "Icons/Wilhelm",
-      "pageFile": "IconsPage.tsx"
+      "pageFile": "IconsPage.tsx",
+      "productId": "driver"
     },
     {
-      "collectionName": "typography-sem",
+      "collectionName": "driver-typography-sem",
       "artifact": "Typography/Semantic",
       "pageFile": "TypographyPage.tsx",
       "bootstrap": {
@@ -73,10 +75,11 @@
             "description": "Страница Typography: Headline, Subtitle, Body — значения typography-sem (Roboto) из Figma"
           }
         ]
-      }
+      },
+      "productId": "driver"
     },
     {
-      "collectionName": "effects-shadows",
+      "collectionName": "driver-effects-shadows",
       "artifact": "Effects/Shadows",
       "pageFile": "ShadowsPage.tsx",
       "bootstrap": {
@@ -89,10 +92,11 @@
             "description": "Страница Shadows: shadow 1–7 (effects · Shadows) из Figma с preview и таблицей параметров"
           }
         ]
-      }
+      },
+      "productId": "driver"
     },
     {
-      "collectionName": "spacing-sem",
+      "collectionName": "driver-spacing-sem",
       "artifact": "Spacing/Semantic",
       "pageFile": "SpacingPage.tsx",
       "bootstrap": {
@@ -105,10 +109,11 @@
             "description": "Страница Spacing: space-0 … space-128 — значения spacing-sem из Figma (Название · Превью · px · rem)"
           }
         ]
-      }
+      },
+      "productId": "driver"
     },
     {
-      "collectionName": "radius-sem",
+      "collectionName": "driver-radius-sem",
       "artifact": "Radius/Semantic",
       "pageFile": "RadiusPage.tsx",
       "bootstrap": {
@@ -121,7 +126,8 @@
             "description": "Страница Radius: radius-flat … radius-pill — значения radius-sem из Figma (Name · Visual · px)"
           }
         ]
-      }
+      },
+      "productId": "driver"
     }
   ]
 }

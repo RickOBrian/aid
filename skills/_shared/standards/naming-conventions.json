@@ -1,6 +1,6 @@
 {
   "id": "naming-conventions",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "status": "alpha",
   "humanFile": "naming-conventions.md",
   "note": "Машинный слой правил именования. Паттерны даны как регулярные выражения для аудита чужих библиотек и распознавания компонентов.",
@@ -177,8 +177,8 @@
       "changelogFiles"
     ],
     "knownAsymmetry": {
-      "description": "файлы driver без префикса продукта, файлы rider с префиксом",
-      "scheduledFix": "PLAN.md, Волна 3.5, W35-2"
+      "resolved": "2026-09-20",
+      "rule": "префикс продукта обязателен в имени changelog-файла и в collectionName"
     }
   }
 }

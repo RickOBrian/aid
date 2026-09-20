@@ -36,7 +36,7 @@ Changelog — контракт между дизайном, разработко
 
 | Тип | Файл / location | Status |
 |---|---|---|
-| **Token collection** | `tokens/colors-semantic-changelog.json`, … | ✅ Driver |
+| **Token collection** | `tokens/driver-colors-semantic-changelog.json`, … | ✅ Driver |
 | **Component** | `components/{componentId}-changelog.json` + `pages/aid-portal/components/{id}.meta.json` | ✅ Driver (review sandbox; `componentsRoot: null`) |
 | **Skills** | TBD (`metadata.version` in frontmatter + optional changelog file) | 🔜 |
 
@@ -189,7 +189,7 @@ Commit release files only → push via git-push.mdc
 | Resource | Path |
 |---|---|
 | Token values | `pages/aid-portal/data.ts`, `*Data.ts` |
-| Changelog files | `tokens/colors-semantic-changelog.json`, … |
+| Changelog files | `tokens/driver-colors-semantic-changelog.json`, … |
 | Registry | `pages/aid-portal/token-changelog-registry.json` |
 | Pending queue | `changes/driver/pending/` |
 | Released queue | `changes/driver/released/` |
@@ -282,4 +282,4 @@ Sets `currentVersion: "1.0.0"` — unreleased components keep `currentVersion: n
 | `kind: changed` для breaking rename | Должен быть `removed` + `added` или MAJOR `changed` |
 | Changelog в commit с unrelated files | Один artifact — один commit |
 | Using `FigmaStyles` values in changelog | Reference-only source |
-| Abstract names (color-changelog.json) | Use actual names (`colors-semantic-changelog.json`) |
+| Abstract names (color-changelog.json) | Use actual names (`driver-colors-semantic-changelog.json`) |

@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
   status: alpha
   lastReviewed: "2026-09-20"
   machineFile: naming-conventions.json
@@ -16,7 +16,7 @@ metadata:
 
 # Правила именования
 
-> Статус: Alpha · v1.1.1 · обновлено 2026-09-20
+> Статус: Alpha · v1.2.0 · обновлено 2026-09-20
 
 ---
 
@@ -78,22 +78,24 @@ collection-group-property-variant  →  bg-accent-main, space-16, color-neutral-
 
 | Collection | Artifact (changelog) | Changelog file | Data file |
 |---|---|---|---|
-| Colors/Semantic | `Colors/Semantic` | `tokens/colors-semantic-changelog.json` | `data.ts` |
-| Typography/Semantic | `Typography/Semantic` | `tokens/typography-sem-changelog.json` | `typographyData.ts` |
-| Spacing/Semantic | `Spacing/Semantic` | `tokens/spacing-sem-changelog.json` | `spacingData.ts` |
-| Radius/Semantic | `Radius/Semantic` | `tokens/radius-sem-changelog.json` | `radiusData.ts` |
-| Effects/Shadows | `Effects/Shadows` | `tokens/effects-shadows-changelog.json` | `shadowsData.ts` |
-| Icons | `Icons/Wilhelm` | `tokens/icons-changelog.json` | `iconsData.ts` |
+| Colors/Semantic | `Colors/Semantic` | `tokens/driver-colors-semantic-changelog.json` | `data.ts` |
+| Typography/Semantic | `Typography/Semantic` | `tokens/driver-typography-sem-changelog.json` | `typographyData.ts` |
+| Spacing/Semantic | `Spacing/Semantic` | `tokens/driver-spacing-sem-changelog.json` | `spacingData.ts` |
+| Radius/Semantic | `Radius/Semantic` | `tokens/driver-radius-sem-changelog.json` | `radiusData.ts` |
+| Effects/Shadows | `Effects/Shadows` | `tokens/driver-effects-shadows-changelog.json` | `shadowsData.ts` |
+| Icons | `Icons/Wilhelm` | `tokens/driver-icons-changelog.json` | `iconsData.ts` |
 
 Поле `collectionName` в data-файле = имя без суффикса -changelog.json
 (например `spacing-sem`).
 
-> **Известная асимметрия.** Файлы `driver` идут без префикса продукта, а
-> файлы `rider` — с префиксом (`rider-colors-semantic-changelog.json`).
-> Это наследие того, что driver был первым продуктом, и оно делает его
-> умолчанием системы. Выравнивание запланировано — см. Волну 3.5 в
-> `docs/standards-alpha/PLAN.md`. До тех пор имена читаются из манифеста,
-> а не выводятся по правилу.
+**Префикс продукта обязателен.** Имя файла начинается с идентификатора
+продукта: `driver-colors-semantic-changelog.json`,
+`rider-colors-semantic-changelog.json`. То же для `collectionName` в
+data-файле.
+
+Умолчания «продукт можно не указывать, если он первый» больше нет: до
+2026-09-20 файлы `driver` шли без префикса, и это делало его синонимом
+системы. Третий продукт упёрся бы в занятый слот.
 
 ### Core tokens naming
 
@@ -147,7 +149,7 @@ Semantic — **назначение**, не значение. Формула: `<
 | `inset-control-h-m` | `inset-control-h-16` | Число в semantic space-имени |
 | `space-16` | `spacing-16` в компоненте | Component → Core spacing |
 | `heading-m` | `font-size-16` в UI | Typography role, не raw property |
-| `colors-semantic-changelog.json` | color-changelog.json | Фактическое имя collection |
+| `driver-colors-semantic-changelog.json` | color-changelog.json | Фактическое имя collection |
 | `data.ts` | `colorData.ts` | Фактический path Driver |
 | `ButtonText` | `PrimaryButton`, `ButtonPrimary` | Role + Entity, не variant в имени |
 | `bg-accent-states-hover` | `button-bg-hover` | Нет component-level tokens |
@@ -304,7 +306,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 | `IconItem`, `TextItem` на Item-level | Item ≠ collection item | `Icon`, `Text` |
 | Числа в semantic space names | Блокер по `token-rules.md` | `inset-control-h-m`, не `-16` |
 | Semantic с именем цвета (`color-white`) | Смысл привязан к значению | `text-primary`, `bg-base-main` |
-| Абстрактные changelog names | Не совпадает с репо | `colors-semantic-changelog.json` |
+| Абстрактные changelog names | Не совпадает с репо | `driver-colors-semantic-changelog.json` |
 | `colorData.ts` для Driver color | Фактический файл — `data.ts` | Смотреть `products/driver/product.json` → `tokenDataFiles` |
 | Дубли одного смысла | Audit noise, token drift | `button-bg-default` + `button-background-default` → одно имя |
 | Figma variant → token name 1:1 | Variants ≠ tokens | Prop + semantic category |
@@ -316,6 +318,9 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ## 8. Changelog
 
+- **1.2.0** — 2026-09-20. Префикс продукта в имени changelog-файла и в
+  `collectionName` стал обязательным: асимметрия driver без префикса
+  против rider с префиксом устранена (Волна 3.5, W35-2).
 - **1.1.1** — 2026-09-20. Список слотов заменён ссылкой на канон: гайд
   держал четвёртый по счёту набор.
 - **1.1.0** — 2026-09-20. Раздел про файлы `skills/_shared/` переписан под

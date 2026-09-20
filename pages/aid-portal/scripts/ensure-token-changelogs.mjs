@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -74,6 +74,32 @@ for (const collection of registry.collections) {
       createdCount += 1;
     }
   }
+}
+
+/**
+ * Осиротевшие changelog-файлы.
+ *
+ * Скрипт выше при несовпадении имени коллекции не падает, а создаёт новый
+ * changelog с версии 1.0.0. Если коллекцию переименовали, а файл — нет,
+ * страница молча покажет пустую историю вместо настоящей, и заметить это
+ * можно только глазами.
+ *
+ * Поэтому: файл вида *-changelog.json, на который не ссылается ни одна
+ * коллекция реестра, — повод остановиться, а не тихий мусор.
+ */
+const expected = new Set(registry.collections.map((c) => `${c.collectionName}-changelog.json`));
+const orphans = [];
+for (const dir of [appTokensDir, repoTokensDir]) {
+  if (!existsSync(dir)) continue;
+  for (const file of readdirSync(dir))
+    if (file.endsWith('-changelog.json') && !expected.has(file)) orphans.push(join(dir, file));
+}
+
+if (orphans.length) {
+  console.error('[ensure-token-changelogs] осиротевшие changelog-файлы — на них не ссылается ни одна коллекция:');
+  for (const o of orphans) console.error(`  ${o}`);
+  console.error('Если коллекцию переименовали — переименуй файл; если раздел закрыт — удали файл и запись в реестре.');
+  process.exit(1);
 }
 
 if (createdCount === 0) {
