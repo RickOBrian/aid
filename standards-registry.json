@@ -540,10 +540,10 @@
       "dependsOn": []
     },
     {
-      "id": "cursor-component-pipeline-context",
+      "id": "component-pipeline-context",
       "title": "Cursor component pipeline context",
       "kind": "architecture",
-      "humanFile": "skills/_shared/architecture/cursor-component-pipeline-context.md",
+      "humanFile": "skills/_shared/architecture/component-pipeline-context.md",
       "machineFile": null,
       "version": "0.1.0",
       "status": "draft",

@@ -29,7 +29,7 @@ metadata:
 
 ### Уже известный факт
 
-В `cursor-component-pipeline-context.md` уже зафиксировано решение (было принято до этого разговора): "Claude Code не используется. В августе 2026 legacy-папка `.claude/`, `perplexity-skills/` и Claude-specific материалы удалены из репозитория." Проблема в том, что решение исполнено не полностью — `destination: .claude/` продолжал всплывать в новых документах (включая `space-context.md` и `github-sync-architecture.md` до правки 05.09.2026).
+В `component-pipeline-context.md` уже зафиксировано решение (было принято до этого разговора): "Claude Code не используется. В августе 2026 legacy-папка `.claude/`, `perplexity-skills/` и Claude-specific материалы удалены из репозитория." Проблема в том, что решение исполнено не полностью — `destination: .claude/` продолжал всплывать в новых документах (включая `space-context.md` и `github-sync-architecture.md` до правки 05.09.2026).
 
 ### Принятое решение по пути
 
