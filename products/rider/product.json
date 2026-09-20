@@ -2,13 +2,19 @@
   "id": "rider",
   "label": "aid: rider",
   "status": "onboarding",
+  "platformModel": {
+    "targets": null,
+    "stacks": null,
+    "declared": false,
+    "note": "Целевые платформы и стек продукта. Стандарты дизайн-системы платформо-независимы; конкретный стек резолвится отсюда, а не предполагается гайдом. Допустимые targets: web, ios, android. Допустимые stacks: react, swiftui, compose, cmp (Kotlin Compose Multiplatform), иные — по согласованию. Пока declared=false, агент обязан спросить, а не подставлять умолчание."
+  },
   "tokensRoot": null,
-  "tokenDataRoot": "pages/driver-color-tokens/products/rider",
+  "tokenDataRoot": "pages/aid-portal/products/rider",
   "tokenDataFiles": [
     "colorData.ts"
   ],
   "tokenAssetsRoot": null,
-  "presentbookRoot": "pages/driver-color-tokens",
+  "presentbookRoot": "pages/aid-portal",
   "presentbookType": "react-vite",
   "routeBase": "/rider/design-system",
   "tokenRoutes": {
@@ -31,5 +37,5 @@
   "componentsStatus": "not_started",
   "componentRegistry": null,
   "relatedPrototypes": [],
-  "notes": "Onboarding product (2026-08-19). Shares the React portal at pages/driver-color-tokens/ with Driver — same page structure/logic, product-specific content only. Content index lives at pages/driver-color-tokens/products/rider/index.ts and is currently empty (infrastructure only, per explicit user confirmation — no real tokens/components yet). All hub sections resolve as unavailable automatically until that index exports non-empty collections."
+  "notes": "Onboarding product (2026-08-19). Shares the React portal at pages/aid-portal/ with Driver — same page structure/logic, product-specific content only. Content index lives at pages/aid-portal/products/rider/index.ts and is currently empty (infrastructure only, per explicit user confirmation — no real tokens/components yet). All hub sections resolve as unavailable automatically until that index exports non-empty collections."
 }

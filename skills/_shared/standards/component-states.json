@@ -1,0 +1,82 @@
+{
+  "id": "component-states-guide",
+  "version": "1.2.0",
+  "status": "alpha",
+  "humanFile": "component-states-guide.md",
+  "note": "Машинный слой состояний. Имя состояния в Figma — источник истины; платформенные колонки описывают идиому стека, стек резолвится из products/<id>/product.json → platformModel.",
+
+  "states": [
+    { "figma": "default",  "web": "default",  "ios": "normal",      "android": "enabled",  "when": "базовое состояние" },
+    { "figma": "hovered",  "web": "hover",    "ios": null,          "android": null,       "when": "курсор над компонентом", "restriction": "только стек с курсором" },
+    { "figma": "pressed",  "web": "active",   "ios": "highlighted", "android": "pressed",  "when": "нажатие удерживается", "maxDurationMs": 200 },
+    { "figma": "focused",  "web": "focused",  "ios": null,          "android": null,       "when": "фокус клавиатуры или скринридера" },
+    { "figma": "selected", "web": "selected", "ios": "selected",    "android": "selected", "when": "выбран" },
+    { "figma": "disabled", "web": "disabled", "ios": "disabled",    "android": "disabled", "when": "недоступен" },
+    { "figma": "loading",  "web": "loading",  "ios": "loading",     "android": "loading",  "when": "короткое ожидание внутри компонента" },
+    { "figma": "skeleton", "web": "skeleton", "ios": "skeleton",    "android": "skeleton", "when": "первичная загрузка, данных ещё нет" },
+    { "figma": "error",    "web": "error",    "ios": "error",       "android": "error",    "when": "ошибка валидации", "restriction": "только контролы форм" }
+  ],
+
+  "structuralViewExtra": ["expanded", "collapsed"],
+
+  "tokenMapping": {
+    "hovered":  { "token": "bg-accent-states-hover",         "platforms": ["web"] },
+    "pressed":  { "token": "bg-accent-states-pressed",       "platforms": ["web", "ios", "android"] },
+    "selected": { "token": "bg-accent-states-active",        "platforms": ["web", "ios", "android"], "note": "selected в Figma = active в токене, исторический маппинг" },
+    "disabled": { "token": "bg-accent-states-disable",       "platforms": ["web", "ios", "android"] },
+    "focused":  { "token": "bg-accent-states-focused",       "platforms": ["web"] },
+    "focused-ios": { "token": "bg-accent-states-focused-ios", "platforms": ["ios"] },
+    "ripple-android": { "token": "bg-accent-states-ripple-android", "platforms": ["android"] },
+    "skeleton": { "token": "bg-component-skeleton-default",  "platforms": ["web", "ios", "android"] },
+    "skeleton-shimmer": { "token": "bg-component-skeleton-shimmer", "platforms": ["web", "ios", "android"] },
+    "error":    { "token": "bg-component-states-form-error", "platforms": ["web", "ios", "android"], "restriction": "только контролы форм" }
+  },
+
+  "absorptionPriority": ["disabled", "loading", "pressed", "selected", "error", "hovered", "focused"],
+
+  "validCombinations": [
+    ["pressed", "focused"],
+    ["selected", "hovered"],
+    ["hovered", "focused"],
+    ["selected", "pressed"],
+    ["selected", "error"],
+    ["error", "focused"]
+  ],
+
+  "invalidCombinations": [
+    { "pair": ["pressed", "disabled"],  "reason": "disabled поглощает интерактивные состояния" },
+    { "pair": ["loading", "pressed"],   "reason": "loading поглощает интерактивные состояния" },
+    { "pair": ["disabled", "loading"],  "reason": "два поглощающих состояния одновременно" },
+    { "pair": ["skeleton", "focused"],  "reason": "заглушка не принимает фокус" },
+    { "pair": ["skeleton", "loading"],  "reason": "разные фазы ожидания" },
+    { "pair": ["error", "disabled"],    "reason": "недоступное поле не валидируется" }
+  ],
+
+  "stateVsValue": {
+    "_doc": "ADR-021. Состояние — режим взаимодействия; значение — данные компонента.",
+    "stateCriteria": [
+      "возникает от взаимодействия с компонентом",
+      "поглощается disabled",
+      "входит в матрицу вариант × состояние"
+    ],
+    "knownValues": [
+      { "name": "indeterminate", "actualForm": "checked: 'mixed'", "component": "checkbox" },
+      { "name": "expanded", "conditional": "значение, если управляется снаружи; состояние, если переключается нажатием" }
+    ]
+  },
+
+  "levelCarriers": {
+    "item": { "ownStates": false, "note": "получает цвет и прозрачность от родителя через токены" },
+    "surface-view": { "ownStates": true, "set": "все девять" },
+    "structural-view": { "ownStates": true, "set": "все девять + expanded/collapsed", "composite": ["loading", "disabled"] },
+    "layout": { "ownStates": false, "note": "решение что рендерить — на стороне вызывающего экрана" }
+  },
+
+  "ownership": {
+    "_doc": "Кто решает, а кто рендерит",
+    "component": ["рендерит вид по пропу", "анимация появления и исчезновения"],
+    "screen": ["решает когда передать isLoading / isSkeleton", "решает когда показать и скрыть", "передаёт данные"]
+  },
+
+  "matrixRule": "матрица вариант × состояние строится только из validCombinations"
+}

@@ -22,20 +22,20 @@
 - Driver Switch review page: two-column layout (preview left, Code/API/Release right)
 - Shared component review primitives: `ComponentMetaHeader`, `ComponentApiSummary`, `ComponentCodeSnippet`, `CopyButton`, `dsColorSwatch`
 - Anatomy inspector pilot for Switch: leader lines, zoom controls, zone callouts
-- `skills/component-build-workflow.md` — platform scope gate for component builds
+- `skills/ds-component-build/component-build-workflow.md` — platform scope gate for component builds
 - Component changelog empty state via `ChangelogTable` `emptyMessage` prop
 
 ### Changed
 - Switch tokens tab: hex + alpha display with color swatches and copy-to-clipboard
 - `ComponentReleaseStatus`: release meta separated from token-style changelog table
-- `skills/_shared/presentbook-guide.md` v1.1.0 — component page content criteria
-- `skills/_shared/platforms.md` v1.1.0 — interactive snippet verification section
+- `skills/_shared/protocols/presentbook-guide.md` v1.1.0 — component page content criteria
+- `skills/_shared/standards/platforms.md` v1.1.0 — interactive snippet verification section
 - `skills/ds-component-build/SKILL.md` v1.1.0 — platform scope gate step
 
 ## [0.4.0] - 2026-06-27
 
 ### Added
-- `skills/_shared/token-rules.md` v1.3.0 — typography tokens section, role rules, blockers
+- `skills/_shared/standards/token-rules.md` v1.3.0 — typography tokens section, role rules, blockers
 - `skills/ds-component-spec/SKILL.md` v1.2.0 — «Типографика» section in spec template
 
 ## [0.3.2] - 2026-06-27

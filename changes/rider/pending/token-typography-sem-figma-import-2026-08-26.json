@@ -43,7 +43,7 @@
   ],
   "figmaTokenSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=11-8",
   "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=11-502",
-  "sourcePath": "pages/driver-color-tokens/products/rider/typographyData.ts",
+  "sourcePath": "pages/aid-portal/products/rider/typographyData.ts",
   "status": "pending",
   "created": "2026-08-26",
   "author": "sergej"

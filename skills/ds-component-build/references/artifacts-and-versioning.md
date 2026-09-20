@@ -17,8 +17,8 @@ Product-scoped paths resolve from `products/<id>/product.json` and
 
 | Artifact | Path |
 |---|---|
-| Implementation | `pages/driver-color-tokens/components/{Name}.tsx` |
-| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` |
+| Implementation | `pages/aid-portal/components/{Name}.tsx` |
+| Metadata | `pages/aid-portal/components/{id}.meta.json` |
 | Changelog source | `components/{id}-changelog.json` |
 | Pending item | `changes/<product>/pending/component-{slug}.json` |
 | Review page | `pages/<presentbook>/{Name}Page.tsx` |
@@ -36,7 +36,7 @@ Product-scoped paths resolve from `products/<id>/product.json` and
   "product": "{productId}",
   "architectureLevel": "Surface View",
   "supportedPlatforms": ["web"],
-  "sourcePath": "pages/driver-color-tokens/components/{Name}.tsx",
+  "sourcePath": "pages/aid-portal/components/{Name}.tsx",
   "reviewRoute": "/components/{componentId}",
   "pageFile": "{Name}Page.tsx",
   "componentsGroup": "Controls",
@@ -105,6 +105,6 @@ After first release: minor / patch / major per `versioning-strategy.md` and
 
 ## Optional end-to-end reference (Driver)
 
-Switch — see live files under `pages/driver-color-tokens/components/Switch.tsx`,
+Switch — see live files under `pages/aid-portal/components/Switch.tsx`,
 `SwitchPage.tsx`, `components/switch-changelog.json`. Use as pattern only; do not
 hardcode Switch into universal workflow logic.

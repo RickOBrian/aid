@@ -418,7 +418,7 @@ export interface StoredDecision {
   //
   // ВАЖНО: эти поля НЕ являются частью реестра решений. Они не должны
   // попадать в RegistryFileEntry / decisions-registry.json — единственный
-  // machine/audit source of truth. См. skills/_shared/github-sync-architecture.md,
+  // machine/audit source of truth. См. skills/_shared/architecture/github-sync-architecture.md,
   // раздел "Transient review metadata vs registry data".
   // ---------------------------------------------------------------------
   /** LayoutRecord.property на момент Apply (fill/stroke/text-fill). */

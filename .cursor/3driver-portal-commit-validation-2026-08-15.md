@@ -16,13 +16,13 @@ mode: read-only
 
 | Artifact | Path | Git state |
 |---|---|---|
-| **ensure script** | `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs` | untracked |
-| **sync script** | `pages/driver-color-tokens/scripts/sync-token-changelogs.mjs` | **tracked** (без изменений) |
-| **registry** | `pages/driver-color-tokens/token-changelog-registry.json` | untracked |
+| **ensure script** | `pages/aid-portal/scripts/ensure-token-changelogs.mjs` | untracked |
+| **sync script** | `pages/aid-portal/scripts/sync-token-changelogs.mjs` | **tracked** (без изменений) |
+| **registry** | `pages/aid-portal/token-changelog-registry.json` | untracked |
 | **canonical changelogs** | `tokens/{typography-sem,spacing-sem,radius-sem,effects-shadows}-changelog.json` | untracked (4 new) |
 | | `tokens/colors-semantic-changelog.json`, `tokens/icons-changelog.json` | tracked (уже в repo) |
-| **mirror changelogs** | `pages/driver-color-tokens/tokens/{typography-sem,spacing-sem,radius-sem,effects-shadows}-changelog.json` | untracked (4 new) |
-| | `pages/driver-color-tokens/tokens/colors-semantic-changelog.json`, `icons-changelog.json` | tracked |
+| **mirror changelogs** | `pages/aid-portal/tokens/{typography-sem,spacing-sem,radius-sem,effects-shadows}-changelog.json` | untracked (4 new) |
+| | `pages/aid-portal/tokens/colors-semantic-changelog.json`, `icons-changelog.json` | tracked |
 
 **prebuild** (`package.json`):
 
@@ -55,13 +55,13 @@ mode: read-only
 **Proposed files (7):**
 
 ```
-pages/driver-color-tokens/dsChangelogTable.ts       [modified]
-pages/driver-color-tokens/ChangelogTable.tsx        [modified]
-pages/driver-color-tokens/DriverColorTokensPage.tsx [modified]
-pages/driver-color-tokens/index.html                  [modified]
-pages/driver-color-tokens/App.tsx                     [modified]  ← проблема
-pages/driver-color-tokens/hubData.ts                  [modified]  ← проблема
-pages/driver-color-tokens/IconsPage.tsx               [modified]  ← optional
+pages/aid-portal/dsChangelogTable.ts       [modified]
+pages/aid-portal/ChangelogTable.tsx        [modified]
+pages/aid-portal/DriverColorTokensPage.tsx [modified]
+pages/aid-portal/index.html                  [modified]
+pages/aid-portal/App.tsx                     [modified]  ← проблема
+pages/aid-portal/hubData.ts                  [modified]  ← проблема
+pages/aid-portal/IconsPage.tsx               [modified]  ← optional
 ```
 
 | | |
@@ -117,17 +117,17 @@ hubData.ts   [modified]
 **Proposed files (10):**
 
 ```
-pages/driver-color-tokens/token-changelog-registry.json
-pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs
-pages/driver-color-tokens/package.json
+pages/aid-portal/token-changelog-registry.json
+pages/aid-portal/scripts/ensure-token-changelogs.mjs
+pages/aid-portal/package.json
 tokens/typography-sem-changelog.json
 tokens/spacing-sem-changelog.json
 tokens/radius-sem-changelog.json
 tokens/effects-shadows-changelog.json
-pages/driver-color-tokens/tokens/typography-sem-changelog.json   [optional]
-pages/driver-color-tokens/tokens/spacing-sem-changelog.json    [optional]
-pages/driver-color-tokens/tokens/radius-sem-changelog.json       [optional]
-pages/driver-color-tokens/tokens/effects-shadows-changelog.json  [optional]
+pages/aid-portal/tokens/typography-sem-changelog.json   [optional]
+pages/aid-portal/tokens/spacing-sem-changelog.json    [optional]
+pages/aid-portal/tokens/radius-sem-changelog.json       [optional]
+pages/aid-portal/tokens/effects-shadows-changelog.json  [optional]
 ```
 
 | | |
@@ -163,7 +163,7 @@ pages/driver-color-tokens/tokens/effects-shadows-changelog.json  [optional]
 ### Optional — IconsPage.tsx
 
 ```
-pages/driver-color-tokens/IconsPage.tsx  [modified]
+pages/aid-portal/IconsPage.tsx  [modified]
 ```
 
 | | |

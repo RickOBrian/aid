@@ -38,7 +38,7 @@
     "id": "backlog-006",
     "component": "TableRow",
     "title": "Высота строки меньше минимального touch target",
-    "description": "Расчётная высота TableRow (~40px, по текущим inset-control-v-m + line-height ячейки) меньше минимального touch target 44px (Web), зафиксированного в .cursorrules и skills/_shared/platforms.md.",
+    "description": "Расчётная высота TableRow (~40px, по текущим inset-control-v-m + line-height ячейки) меньше минимального touch target 44px (Web), зафиксированного в .cursorrules и skills/_shared/standards/platforms.md.",
     "status": "open"
   }
 ]

@@ -132,7 +132,7 @@ Update this file every time a new token is created.
 ## Surface: Figma-плагин Token Comparator
 
 Отдельная поверхность со **своей палитрой** — портальный chrome Presentbook
-(`pages/driver-color-tokens/*`), а не палитра docs/guides. Имена ступеней
+(`pages/aid-portal/*`), а не палитра docs/guides. Имена ступеней
 совпадают с таблицей выше, **значения — нет**: это разные UI Kit'а на одной
 архитектуре токенов, что допускается правилом «Design System vs UI Kit» в
 `CLAUDE.md`. При переносе значений между поверхностями сверяйтесь с этой

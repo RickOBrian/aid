@@ -23,9 +23,9 @@ one named variant from a prior review using existing semantic tokens only.
 ## Context
 
 Read at the start of each session:
-- `skills/_shared/ui-trends-2026.md` — scoring reference for trend relevance
-- `skills/_shared/token-rules.md` — token constraint reference
-- `skills/_shared/platforms.md` — platform implementation rules (MODE 2 only)
+- `skills/_shared/notes/ui-trends-2026.md` — scoring reference for trend relevance
+- `skills/_shared/standards/token-rules.md` — token constraint reference
+- `skills/_shared/standards/platforms.md` — platform implementation rules (MODE 2 only)
 
 If a `_shared/` file is not found — warn explicitly:
 «`_shared/<name>` not found, working from built-in rules» and continue.
@@ -44,7 +44,7 @@ If the path is ambiguous, ask one clarifying question before proceeding.
 
 ### Step 2. Load references
 
-Read `skills/_shared/ui-trends-2026.md` and `skills/_shared/token-rules.md`.
+Read `skills/_shared/notes/ui-trends-2026.md` and `skills/_shared/standards/token-rules.md`.
 
 ### Step 3. Score on 5 axes (1–10)
 
@@ -156,7 +156,7 @@ run `/review [component]` first.
 
 ### Step 2. Load platform rules
 
-Read `skills/_shared/platforms.md`.
+Read `skills/_shared/standards/platforms.md`.
 Apply changes across Web, iOS, and Android if the component has platform-specific
 files. If a platform is not relevant, skip it and state why explicitly.
 

@@ -42,10 +42,10 @@ Skill запускается **только** по явной команде `/a
 
 Прочитай в начале каждой сессии:
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
-- `skills/_shared/ds-component-architecture-guide.md` — 4-уровневая архитектура
-- `skills/_shared/component-categories-guide.md` — функциональные категории (только для наименования категории, не для вердикта уровня)
-- `skills/_shared/token-rules.md` — двухуровневая система токенов
-- `skills/_shared/platforms.md` — особенности Web / iOS / Android
+- `skills/_shared/standards/ds-component-architecture-guide.md` — 4-уровневая архитектура
+- `skills/_shared/standards/component-categories-guide.md` — функциональные категории (только для наименования категории, не для вердикта уровня)
+- `skills/_shared/standards/token-rules.md` — двухуровневая система токенов
+- `skills/_shared/standards/platforms.md` — особенности Web / iOS / Android
 - `memory/ds-component-audit/log.*.json` — прошлые аудиты (Шаг 8)
 - `memory/ds-component-spec/log.*.json` — cross-check со спеками (Шаг 7)
 
@@ -53,11 +53,11 @@ Skill запускается **только** по явной команде `/a
 покажи существующие `memory/ds-component-audit/log.*.json`, уточни
 «ты новый или один из этих?», создай файл с подтверждённым именем.
 
-**Если `skills/_shared/ds-component-architecture-guide.md` не найден:**
+**Если `skills/_shared/standards/ds-component-architecture-guide.md` не найден:**
 предупреди «файл не найден, работаю на встроенных правилах уровней» и
 используй раздел «Встроенные правила уровней» ниже.
 
-**Если `skills/_shared/component-categories-guide.md` не найден:**
+**Если `skills/_shared/standards/component-categories-guide.md` не найден:**
 предупреди явно, продолжай без категории — категория не блокирует вердикт.
 
 **Если Figma MCP не подключён:** для `source: figma` предупреди «Figma
@@ -377,7 +377,7 @@ State vs Variant — см. «Правило: визуальное подтвер
 
 ## Встроенные правила уровней
 
-*Используются только если `skills/_shared/ds-component-architecture-guide.md` не найден.*
+*Используются только если `skills/_shared/standards/ds-component-architecture-guide.md` не найден.*
 
 - **Item** — только контент, без фона/формы/отступов (Icon, Dot, Text).
 - **Surface View** — один основной контент-элемент в оболочке (фон +
@@ -423,7 +423,7 @@ State vs Variant — см. «Правило: визуальное подтвер
 
 **После каждого согласованного аудита:**
 1. Добавь/обнови запись в файле памяти со статусом `approved` или `rejected`.
-2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
+2. Синхронизируй по командам из `skills/_shared/protocols/git-workflow.md`.
    Если файл недоступен — используй встроенные команды:
 
 ```bash

@@ -2,46 +2,52 @@
   "id": "driver",
   "label": "aid: driver",
   "status": "active",
-  "tokensRoot": null,
-  "tokenDataRoot": "pages/driver-color-tokens",
-  "tokenDataFiles": [
-    "pages/driver-color-tokens/data.ts",
-    "pages/driver-color-tokens/typographyData.ts",
-    "pages/driver-color-tokens/spacingData.ts",
-    "pages/driver-color-tokens/radiusData.ts",
-    "pages/driver-color-tokens/shadowsData.ts",
-    "pages/driver-color-tokens/iconsData.ts"
-  ],
-  "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
-  "presentbookRoot": "pages/driver-color-tokens",
-  "presentbookType": "react-vite",
-  "routeBase": "/design-system",
-  "tokenRoutes": {
-    "hub": "/design-system",
-    "colors": "/tokens/colors",
-    "typography": "/tokens/typography",
-    "spacing": "/tokens/spacing",
-    "radius": "/tokens/radius",
-    "shadows": "/tokens/shadows",
-    "icons": "/tokens/icons"
+  "platformModel": {
+    "targets": null,
+    "stacks": null,
+    "declared": false,
+    "note": "Целевые платформы и стек продукта. Стандарты дизайн-системы платформо-независимы; конкретный стек резолвится отсюда, а не предполагается гайдом. Допустимые targets: web, ios, android. Допустимые stacks: react, swiftui, compose, cmp (Kotlin Compose Multiplatform), иные — по согласованию. Пока declared=false, агент обязан спросить, а не подставлять умолчание."
   },
-  "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+  "tokensRoot": null,
+  "tokenDataRoot": "pages/aid-portal",
+  "tokenDataFiles": [
+    "pages/aid-portal/data.ts",
+    "pages/aid-portal/typographyData.ts",
+    "pages/aid-portal/spacingData.ts",
+    "pages/aid-portal/radiusData.ts",
+    "pages/aid-portal/shadowsData.ts",
+    "pages/aid-portal/iconsData.ts"
+  ],
+  "tokenAssetsRoot": "pages/aid-portal/public/icons",
+  "presentbookRoot": "pages/aid-portal",
+  "presentbookType": "react-vite",
+  "routeBase": "/driver/design-system",
+  "tokenRoutes": {
+    "hub": "/driver/design-system",
+    "colors": "/driver/tokens/colors",
+    "typography": "/driver/tokens/typography",
+    "spacing": "/driver/tokens/spacing",
+    "radius": "/driver/tokens/radius",
+    "shadows": "/driver/tokens/shadows",
+    "icons": "/driver/tokens/icons"
+  },
+  "tokenRegistry": "pages/aid-portal/token-changelog-registry.json",
   "changelogRoot": "tokens",
-  "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+  "changelogMirrorRoot": "pages/aid-portal/tokens",
   "changelogFiles": [
-    "tokens/colors-semantic-changelog.json",
-    "tokens/typography-sem-changelog.json",
-    "tokens/spacing-sem-changelog.json",
-    "tokens/radius-sem-changelog.json",
-    "tokens/effects-shadows-changelog.json",
-    "tokens/icons-changelog.json"
+    "tokens/driver-colors-semantic-changelog.json",
+    "tokens/driver-typography-sem-changelog.json",
+    "tokens/driver-spacing-sem-changelog.json",
+    "tokens/driver-radius-sem-changelog.json",
+    "tokens/driver-effects-shadows-changelog.json",
+    "tokens/driver-icons-changelog.json"
   ],
   "releaseRoot": "changes/driver",
   "releasePendingRoot": "changes/driver/pending",
   "releaseReleasedRoot": "changes/driver/released",
   "componentsRoot": null,
   "componentsStatus": "not_started",
-  "componentRegistry": "pages/driver-color-tokens/component-registry.json",
+  "componentRegistry": "pages/aid-portal/component-registry.json",
   "relatedPrototypes": [
     {
       "path": "src/pages/FigmaStyles",

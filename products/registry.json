@@ -9,39 +9,39 @@
       "status": "active",
       "manifestPath": "products/driver/product.json",
       "tokensRoot": null,
-      "tokenDataRoot": "pages/driver-color-tokens",
+      "tokenDataRoot": "pages/aid-portal",
       "tokenDataFiles": [
-        "pages/driver-color-tokens/data.ts",
-        "pages/driver-color-tokens/typographyData.ts",
-        "pages/driver-color-tokens/spacingData.ts",
-        "pages/driver-color-tokens/radiusData.ts",
-        "pages/driver-color-tokens/shadowsData.ts",
-        "pages/driver-color-tokens/iconsData.ts"
+        "pages/aid-portal/data.ts",
+        "pages/aid-portal/typographyData.ts",
+        "pages/aid-portal/spacingData.ts",
+        "pages/aid-portal/radiusData.ts",
+        "pages/aid-portal/shadowsData.ts",
+        "pages/aid-portal/iconsData.ts"
       ],
-      "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
+      "tokenAssetsRoot": "pages/aid-portal/public/icons",
       "componentsRoot": null,
-      "presentbookRoot": "pages/driver-color-tokens",
+      "presentbookRoot": "pages/aid-portal",
       "presentbookType": "react-vite",
-      "routeBase": "/design-system",
+      "routeBase": "/driver/design-system",
       "tokenRoutes": {
-        "hub": "/design-system",
-        "colors": "/tokens/colors",
-        "typography": "/tokens/typography",
-        "spacing": "/tokens/spacing",
-        "radius": "/tokens/radius",
-        "shadows": "/tokens/shadows",
-        "icons": "/tokens/icons"
+        "hub": "/driver/design-system",
+        "colors": "/driver/tokens/colors",
+        "typography": "/driver/tokens/typography",
+        "spacing": "/driver/tokens/spacing",
+        "radius": "/driver/tokens/radius",
+        "shadows": "/driver/tokens/shadows",
+        "icons": "/driver/tokens/icons"
       },
-      "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+      "tokenRegistry": "pages/aid-portal/token-changelog-registry.json",
       "changelogRoot": "tokens",
-      "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+      "changelogMirrorRoot": "pages/aid-portal/tokens",
       "changelogFiles": [
-        "tokens/colors-semantic-changelog.json",
-        "tokens/typography-sem-changelog.json",
-        "tokens/spacing-sem-changelog.json",
-        "tokens/radius-sem-changelog.json",
-        "tokens/effects-shadows-changelog.json",
-        "tokens/icons-changelog.json"
+        "tokens/driver-colors-semantic-changelog.json",
+        "tokens/driver-typography-sem-changelog.json",
+        "tokens/driver-spacing-sem-changelog.json",
+        "tokens/driver-radius-sem-changelog.json",
+        "tokens/driver-effects-shadows-changelog.json",
+        "tokens/driver-icons-changelog.json"
       ],
       "componentRegistry": null,
       "releaseRoot": "changes/driver",
@@ -66,7 +66,7 @@
       "tokenDataFiles": [],
       "tokenAssetsRoot": null,
       "componentsRoot": null,
-      "presentbookRoot": "pages/driver-color-tokens",
+      "presentbookRoot": "pages/aid-portal",
       "presentbookType": "react-vite",
       "routeBase": "/rider/design-system",
       "tokenRoutes": {
@@ -84,7 +84,7 @@
       "componentRegistry": null,
       "releaseRoot": "changes/rider",
       "relatedPrototypes": [],
-      "notes": "Onboarding product (2026-08-19). Shares the React portal with Driver at pages/driver-color-tokens/; empty product content index at pages/driver-color-tokens/products/rider/index.ts keeps all hub sections auto-disabled until real data is added — no manual availability flags."
+      "notes": "Onboarding product (2026-08-19). Shares the React portal with Driver at pages/aid-portal/; empty product content index at pages/aid-portal/products/rider/index.ts keeps all hub sections auto-disabled until real data is added — no manual availability flags."
     },
     {
       "id": "ui-kit-a",
@@ -198,5 +198,6 @@
       "releaseRoot": null,
       "notes": "Token registry в Markdown, не JSON. Отдельной папки tokens/<product>/ нет."
     }
-  ]
+  ],
+  "platformModelNote": "Платформа и стек — свойство продукта, не системы. Каждый продукт объявляет platformModel в своём product.json. Стандарты в skills/_shared/standards/ описывают конвенции по стекам и не предполагают один общий стек."
 }

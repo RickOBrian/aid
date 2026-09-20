@@ -277,7 +277,7 @@ function renderStorybookTypographyCss(rows) {
     .map((r) => `  ${r.token}: ${r.value};`);
 
   return [
-    '/* Storybook — typography tokens (see skills/_shared/token-rules.md) */',
+    '/* Storybook — typography tokens (see skills/_shared/standards/token-rules.md) */',
     '/* GENERATED from docs/tokens/typography-tokens-registry.md by save-tokens.js — do not edit by hand */',
     '',
     ':root {',

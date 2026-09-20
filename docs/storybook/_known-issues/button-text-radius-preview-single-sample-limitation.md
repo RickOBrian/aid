@@ -3,7 +3,7 @@
 **Status:** known limitation (not a bug)  
 **Component:** `docs/storybook/products/sutochno/components/button-text.html`  
 **Section:** Guide Page «Скругления»  
-**Related standard:** `skills/_shared/radius-preview-standard.md` §1  
+**Related standard:** `skills/_shared/standards/radius-preview-standard.md` §1  
 **Related precedent:** `docs/storybook/_known-issues/switch-knob-radius-preview-limitation.md`
 
 ## Symptom

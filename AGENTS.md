@@ -91,12 +91,17 @@ aid/
 
 | Вопрос | Где смотреть |
 |---|---|
-| Правила токенов | `skills/_shared/token-rules.md` |
-| Архитектура компонентов | `docs/ds-component-architecture-guide.md` |
+| Правила токенов | `skills/_shared/standards/token-rules.md` |
+| Архитектура компонентов | `skills/_shared/standards/ds-component-architecture-guide.md` |
 | Как генерировать спеку | `skills/ds-component-spec/SKILL.md` |
-| Платформенные особенности | `skills/_shared/platforms.md` |
-| Версионирование | `docs/semver-guide.md` |
-| Git-команды для memory/ | `skills/_shared/git-workflow.md` |
+| Платформенные особенности | `skills/_shared/standards/platforms.md` |
+| Версионирование | `skills/_shared/standards/semver-guide.md` |
+| Git-команды для memory/ | `skills/_shared/protocols/git-workflow.md` |
+| Версии и статусы стандартов | `standards-registry.json` |
+| Работа над альфой стандартов | `docs/standards-alpha/PLAN.md` |
+
+> Канон стандартов — только `skills/_shared/`. Копии в `docs/` — производные
+> и подлежат устранению (см. `docs/standards-alpha/DECISIONS.md`, ADR-001).
 
 ---
 
@@ -107,7 +112,7 @@ aid/
 - Компоненты ссылаются **только на semantic-токены**.
 - Хардкод (`#0057FF`, `font-size: 14px`) — **блокер**.
 - Компонент → Core напрямую — **блокер**.
-- Подробно: `skills/_shared/token-rules.md`
+- Подробно: `skills/_shared/standards/token-rules.md`
 
 ### Типографика
 - Компоненты-контролы (кнопки, чипы, инпуты) → `label-*`

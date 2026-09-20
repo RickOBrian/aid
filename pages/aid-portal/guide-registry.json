@@ -1,0 +1,73 @@
+{
+  "defaultAuthor": "sergej",
+  "guides": [
+    {
+      "guideId": "versioning",
+      "canonicalName": "Версионность",
+      "version": "1.2.0",
+      "reviewRoute": "/guides/versioning",
+      "guidesGroup": "Governance",
+      "description": "Правила версионирования артефактов дизайн-системы (SemVer)",
+      "sourcePath": "skills/_shared/standards/semver-guide.md",
+      "sourceDownloadFileName": "semver-guide.md",
+      "sourceDownloadUrl": "/guides/sources/semver-guide.md"
+    },
+    {
+      "guideId": "component-standards",
+      "canonicalName": "Стандарты компонентов",
+      "pageFile": null,
+      "reviewRoute": "/guides/component-standards",
+      "guidesGroup": "Component",
+      "description": "Требования к компоненту: применимость по уровням, контракт API, варианты и состояния, токены, готовность к релизу",
+      "sourcePath": "skills/_shared/standards/component-standards.md",
+      "sourceDownloadFileName": "component-standards.md",
+      "sourceDownloadUrl": "/guides/sources/component-standards.md"
+    },
+    {
+      "guideId": "ds-component-architecture-guide",
+      "canonicalName": "Архитектура компонентов",
+      "pageFile": null,
+      "reviewRoute": "/guides/ds-component-architecture-guide",
+      "guidesGroup": "Component",
+      "description": "Четыре уровня: Item, Surface View, Structural View, Layout. Нейминг, слоты, lifecycle",
+      "sourcePath": "skills/_shared/standards/ds-component-architecture-guide.md",
+      "sourceDownloadFileName": "ds-component-architecture-guide.md",
+      "sourceDownloadUrl": "/guides/sources/ds-component-architecture-guide.md"
+    },
+    {
+      "guideId": "component-states-guide",
+      "canonicalName": "Состояния компонентов",
+      "pageFile": null,
+      "reviewRoute": "/guides/component-states-guide",
+      "guidesGroup": "Component",
+      "description": "Девять состояний, маппинг на платформы, допустимые комбинации, различение состояния и значения",
+      "sourcePath": "skills/_shared/standards/component-states-guide.md",
+      "sourceDownloadFileName": "component-states-guide.md",
+      "sourceDownloadUrl": "/guides/sources/component-states-guide.md"
+    },
+    {
+      "guideId": "naming-conventions",
+      "canonicalName": "Правила именования",
+      "pageFile": null,
+      "reviewRoute": "/guides/naming-conventions",
+      "guidesGroup": "Foundations",
+      "description": "Имена токенов, компонентов, пропов и файлов документации",
+      "sourcePath": "skills/_shared/standards/naming-conventions.md",
+      "sourceDownloadFileName": "naming-conventions.md",
+      "sourceDownloadUrl": "/guides/sources/naming-conventions.md"
+    },
+    {
+      "guideId": "platforms",
+      "canonicalName": "Платформенные правила",
+      "pageFile": null,
+      "reviewRoute": "/guides/platforms",
+      "guidesGroup": "Foundations",
+      "description": "Конвенции по стекам, паритет пропов, touch targets, чеклист интерактивности",
+      "sourcePath": "skills/_shared/standards/platforms.md",
+      "sourceDownloadFileName": "platforms.md",
+      "sourceDownloadUrl": "/guides/sources/platforms.md"
+    }
+  ],
+  "note": "Гайды рендерятся из канонических .md на сборке (scripts/build-guides.mjs, ADR-002). Источник правды — файл в skills/_shared/; страница показывает его результат и не хранит копию.",
+  "changelogNote": "Changelog гайда — раздел в самом .md (обязателен по guide-template.md) и рендерится как часть тела страницы. Отдельного JSON у гайдов нет: он дублировал бы текст и отставал от него, что и произошло с versioning-changelog.json."
+}

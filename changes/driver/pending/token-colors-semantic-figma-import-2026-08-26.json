@@ -33,7 +33,7 @@
   ],
   "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=3-6821",
   "figmaChangelogSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=45-905",
-  "sourcePath": "pages/driver-color-tokens/data.ts",
+  "sourcePath": "pages/aid-portal/data.ts",
   "status": "pending",
   "created": "2026-08-26",
   "author": "sergej"

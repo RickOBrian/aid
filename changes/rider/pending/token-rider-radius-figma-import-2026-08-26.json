@@ -19,7 +19,7 @@
   ],
   "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=63-14",
   "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=204-50",
-  "sourcePath": "pages/driver-color-tokens/products/rider/radiusData.ts",
+  "sourcePath": "pages/aid-portal/products/rider/radiusData.ts",
   "status": "pending",
   "created": "2026-08-26",
   "author": "sergej"

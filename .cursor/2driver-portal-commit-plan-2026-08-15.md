@@ -29,20 +29,20 @@ mode: read-only
 
 | File | Git state | Depends on | Separate commit? |
 |---|---|---|---|
-| `pages/driver-color-tokens/dsChangelogTable.ts` | **modified** (tracked) | — | ✅ да (build Colors/Icons OK) |
-| `pages/driver-color-tokens/ChangelogTable.tsx` | **modified** (tracked) | `dsChangelogTable.ts` | ⚠️ только с `dsChangelogTable.ts` |
-| `pages/driver-color-tokens/DriverColorTokensPage.tsx` | **modified** (tracked) | `dsChangelogTable.ts`, `dsValueMeta.ts` (tracked) | ⚠️ с foundation styles |
-| `pages/driver-color-tokens/index.html` | **modified** (tracked) | — | ✅ да (Roboto для Typography) |
-| `pages/driver-color-tokens/App.tsx` | **modified** (tracked) | все 4 новых `*Page.tsx` | ❌ нет — сломает build без pages |
-| `pages/driver-color-tokens/hubData.ts` | **modified** (tracked) | — | ⚠️ лучше с `App.tsx` + pages |
-| `pages/driver-color-tokens/IconsPage.tsx` | **modified** (tracked) | — | ✅ да (icon selection UX, не блокирует token pages) |
+| `pages/aid-portal/dsChangelogTable.ts` | **modified** (tracked) | — | ✅ да (build Colors/Icons OK) |
+| `pages/aid-portal/ChangelogTable.tsx` | **modified** (tracked) | `dsChangelogTable.ts` | ⚠️ только с `dsChangelogTable.ts` |
+| `pages/aid-portal/DriverColorTokensPage.tsx` | **modified** (tracked) | `dsChangelogTable.ts`, `dsValueMeta.ts` (tracked) | ⚠️ с foundation styles |
+| `pages/aid-portal/index.html` | **modified** (tracked) | — | ✅ да (Roboto для Typography) |
+| `pages/aid-portal/App.tsx` | **modified** (tracked) | все 4 новых `*Page.tsx` | ❌ нет — сломает build без pages |
+| `pages/aid-portal/hubData.ts` | **modified** (tracked) | — | ⚠️ лучше с `App.tsx` + pages |
+| `pages/aid-portal/IconsPage.tsx` | **modified** (tracked) | — | ✅ да (icon selection UX, не блокирует token pages) |
 
 **Уже tracked, без изменений (runtime deps, коммит не нужен):**
 
 - `DsPageHeader.tsx`, `loadTokenChangelog.ts`, `dsValueMeta.ts`, `HubPage.tsx`
 - `searchTokens.ts`, `searchIcons.ts`
 - `scripts/sync-token-changelogs.mjs`
-- `pages/driver-color-tokens/tokens/colors-semantic-changelog.json`, `icons-changelog.json` (mirrors)
+- `pages/aid-portal/tokens/colors-semantic-changelog.json`, `icons-changelog.json` (mirrors)
 - `tokens/colors-semantic-changelog.json`, `icons-changelog.json` (canonical)
 
 ---
@@ -51,18 +51,18 @@ mode: read-only
 
 | File | Git state | Depends on | Separate commit? |
 |---|---|---|---|
-| `pages/driver-color-tokens/TypographyPage.tsx` | **untracked** | `typographyData.ts`, `searchTypography.ts`, foundation, changelog | ⚠️ per-section OK |
-| `pages/driver-color-tokens/typographyData.ts` | **untracked** | — | ⚠️ с `TypographyPage.tsx` |
-| `pages/driver-color-tokens/searchTypography.ts` | **untracked** | `typographyData.ts` | ❌ только с Typography bundle |
-| `pages/driver-color-tokens/SpacingPage.tsx` | **untracked** | `spacingData.ts`, `searchSpacing.ts`, foundation, changelog | ⚠️ per-section OK |
-| `pages/driver-color-tokens/spacingData.ts` | **untracked** | — | ⚠️ с `SpacingPage.tsx` |
-| `pages/driver-color-tokens/searchSpacing.ts` | **untracked** | `spacingData.ts` | ❌ только с Spacing bundle |
-| `pages/driver-color-tokens/RadiusPage.tsx` | **untracked** | `radiusData.ts`, `searchRadius.ts`, foundation, changelog | ⚠️ per-section OK |
-| `pages/driver-color-tokens/radiusData.ts` | **untracked** | — | ⚠️ с `RadiusPage.tsx` |
-| `pages/driver-color-tokens/searchRadius.ts` | **untracked** | `radiusData.ts` | ❌ только с Radius bundle |
-| `pages/driver-color-tokens/ShadowsPage.tsx` | **untracked** | `shadowsData.ts`, `searchShadows.ts`, foundation, changelog | ⚠️ per-section OK |
-| `pages/driver-color-tokens/shadowsData.ts` | **untracked** | — | ⚠️ с `ShadowsPage.tsx` |
-| `pages/driver-color-tokens/searchShadows.ts` | **untracked** | `shadowsData.ts` | ❌ только с Shadows bundle |
+| `pages/aid-portal/TypographyPage.tsx` | **untracked** | `typographyData.ts`, `searchTypography.ts`, foundation, changelog | ⚠️ per-section OK |
+| `pages/aid-portal/typographyData.ts` | **untracked** | — | ⚠️ с `TypographyPage.tsx` |
+| `pages/aid-portal/searchTypography.ts` | **untracked** | `typographyData.ts` | ❌ только с Typography bundle |
+| `pages/aid-portal/SpacingPage.tsx` | **untracked** | `spacingData.ts`, `searchSpacing.ts`, foundation, changelog | ⚠️ per-section OK |
+| `pages/aid-portal/spacingData.ts` | **untracked** | — | ⚠️ с `SpacingPage.tsx` |
+| `pages/aid-portal/searchSpacing.ts` | **untracked** | `spacingData.ts` | ❌ только с Spacing bundle |
+| `pages/aid-portal/RadiusPage.tsx` | **untracked** | `radiusData.ts`, `searchRadius.ts`, foundation, changelog | ⚠️ per-section OK |
+| `pages/aid-portal/radiusData.ts` | **untracked** | — | ⚠️ с `RadiusPage.tsx` |
+| `pages/aid-portal/searchRadius.ts` | **untracked** | `radiusData.ts` | ❌ только с Radius bundle |
+| `pages/aid-portal/ShadowsPage.tsx` | **untracked** | `shadowsData.ts`, `searchShadows.ts`, foundation, changelog | ⚠️ per-section OK |
+| `pages/aid-portal/shadowsData.ts` | **untracked** | — | ⚠️ с `ShadowsPage.tsx` |
+| `pages/aid-portal/searchShadows.ts` | **untracked** | `shadowsData.ts` | ❌ только с Shadows bundle |
 
 **Hard coupling:** `App.tsx` импортирует все 4 page components → **routing commit обязан включать все 4 pages или идти после них**.
 
@@ -72,17 +72,17 @@ mode: read-only
 
 | File | Git state | Depends on | Separate commit? |
 |---|---|---|---|
-| `pages/driver-color-tokens/token-changelog-registry.json` | **untracked** | — | ❌ с `ensure-token-changelogs.mjs` |
-| `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs` | **untracked** | `token-changelog-registry.json` | ❌ с registry |
-| `pages/driver-color-tokens/package.json` | **modified** (tracked) | `ensure-token-changelogs.mjs` | ❌ с ensure script |
+| `pages/aid-portal/token-changelog-registry.json` | **untracked** | — | ❌ с `ensure-token-changelogs.mjs` |
+| `pages/aid-portal/scripts/ensure-token-changelogs.mjs` | **untracked** | `token-changelog-registry.json` | ❌ с registry |
+| `pages/aid-portal/package.json` | **modified** (tracked) | `ensure-token-changelogs.mjs` | ❌ с ensure script |
 | `tokens/typography-sem-changelog.json` | **untracked** | registry bootstrap | ⚠️ с infra bundle |
 | `tokens/spacing-sem-changelog.json` | **untracked** | registry bootstrap | ⚠️ с infra bundle |
 | `tokens/radius-sem-changelog.json` | **untracked** | registry bootstrap | ⚠️ с infra bundle |
 | `tokens/effects-shadows-changelog.json` | **untracked** | registry bootstrap | ⚠️ с infra bundle |
-| `pages/driver-color-tokens/tokens/typography-sem-changelog.json` | **untracked** | canonical + `sync-token-changelogs.mjs` | ✅ optional (prebuild sync) |
-| `pages/driver-color-tokens/tokens/spacing-sem-changelog.json` | **untracked** | canonical + sync | ✅ optional |
-| `pages/driver-color-tokens/tokens/radius-sem-changelog.json` | **untracked** | canonical + sync | ✅ optional |
-| `pages/driver-color-tokens/tokens/effects-shadows-changelog.json` | **untracked** | canonical + sync | ✅ optional |
+| `pages/aid-portal/tokens/typography-sem-changelog.json` | **untracked** | canonical + `sync-token-changelogs.mjs` | ✅ optional (prebuild sync) |
+| `pages/aid-portal/tokens/spacing-sem-changelog.json` | **untracked** | canonical + sync | ✅ optional |
+| `pages/aid-portal/tokens/radius-sem-changelog.json` | **untracked** | canonical + sync | ✅ optional |
+| `pages/aid-portal/tokens/effects-shadows-changelog.json` | **untracked** | canonical + sync | ✅ optional |
 
 **Pipeline:** `prebuild` → `ensure-token-changelogs.mjs` → `sync-token-changelogs.mjs`  
 Ensure создаёт changelog **только если `pageFile` существует** — canonical JSON для 4 новых collections уже на диске; mirrors можно не коммитить, если prebuild всегда запускается перед build.
@@ -137,7 +137,7 @@ index.html ──┘   Roboto font для Typography
 
 **Governance rules** (`.cursor/rules/ds-portal-table-standard.mdc`, `token-section-changelog.mdc`) документируют стандарты portal, но **не нужны для `npm run build`**. Рекомендуется отдельный docs/rules commit после portal.
 
-**Mirrors** (`pages/driver-color-tokens/tokens/*` для 4 collections): можно не коммитить, если CI/local всегда запускает `prebuild`. Для clone-without-prebuild — включить в Group 3.
+**Mirrors** (`pages/aid-portal/tokens/*` для 4 collections): можно не коммитить, если CI/local всегда запускает `prebuild`. Для clone-without-prebuild — включить в Group 3.
 
 ---
 
@@ -154,7 +154,7 @@ index.html ──┘   Roboto font для Typography
 | **5** | Audit docs (optional) | 2× `.cursor/audit-*.md` | `docs(audit): add DS pipeline and Driver portal review reports` |
 
 **Commit 3 mirrors (optional add-on to #1 or #3):**  
-4× `pages/driver-color-tokens/tokens/*-changelog.json`
+4× `pages/aid-portal/tokens/*-changelog.json`
 
 ---
 

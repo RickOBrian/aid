@@ -15,7 +15,7 @@
   },
   "relatedTokenChanges": [],
   "reviewRoute": "/components/switch",
-  "sourcePath": "pages/driver-color-tokens/components/Switch.tsx",
+  "sourcePath": "pages/aid-portal/components/Switch.tsx",
   "status": "pending",
   "created": "2026-08-16",
   "author": "sergej"

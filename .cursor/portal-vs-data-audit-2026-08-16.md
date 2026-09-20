@@ -3,7 +3,7 @@
 **Дата:** 2026-08-16  
 **Product:** `driver` (`aid: driver`, active)  
 **Portal:** https://aid-ds.vercel.app  
-**Canonical source:** `pages/driver-color-tokens/*Data.ts` (per `product-context.mdc`, `token-integrity.mdc`)  
+**Canonical source:** `pages/aid-portal/*Data.ts` (per `product-context.mdc`, `token-integrity.mdc`)  
 **Mode:** read-only audit — файлы не изменялись
 
 ---
@@ -12,7 +12,7 @@
 
 | Вопрос | Ответ |
 |---|---|
-| Cursor будет использовать `*Data.ts` при верстке? | **Да** — `token-integrity.mdc` требует lookup в `pages/driver-color-tokens/*Data.ts` |
+| Cursor будет использовать `*Data.ts` при верстке? | **Да** — `token-integrity.mdc` требует lookup в `pages/aid-portal/*Data.ts` |
 | Portal = `*Data.ts`? | **Да, по архитектуре** — страницы импортируют data напрямую (например `semanticColorSections` из `data.ts`) |
 | Production portal = текущий repo? | **Частично** — live только **Colors** и **Icons**; Typography / Spacing / Radius / Shadows → **404** в SPA |
 
@@ -166,7 +166,7 @@ collectionName: `effects-shadows`, artifact: `Effects/Shadows`
 
 | Требование | Статус | Цитата / факт |
 |---|---|---|
-| Lookup в `*Data.ts` / `data.ts` | ✅ | «canonical token values live in `pages/driver-color-tokens/*Data.ts`» |
+| Lookup в `*Data.ts` / `data.ts` | ✅ | «canonical token values live in `pages/aid-portal/*Data.ts`» |
 | Hardcode без approval запрещён | ✅ | «Never hardcode hex, rgb, hsl … unless user explicitly asks / approves» |
 | Exception flow | ✅ | Standard deviation: option **c** → pending item → **proceed with implementation** |
 | Unresolved gaps | ✅ hard stop | «Do not proceed … until the user resolves all gaps» |
@@ -178,7 +178,7 @@ collectionName: `effects-shadows`, artifact: `Effects/Shadows`
 При соблюдении gates агент:
 
 1. Подтверждает product context → `driver`
-2. Делает token lookup в `pages/driver-color-tokens/*Data.ts`
+2. Делает token lookup в `pages/aid-portal/*Data.ts`
 3. Не хардкодит значения без explicit approval
 4. Записывает изменения в `changes/driver/pending/`
 5. При отклонении от standard — Standard deviation / documented exception
@@ -234,7 +234,7 @@ collectionName: `effects-shadows`, artifact: `Effects/Shadows`
   "id": "portal-deploy-4-missing-sections",
   "type": "infrastructure",
   "reason": "aid-ds.vercel.app serves old bundle: Typography/Spacing/Radius/Shadows → 404",
-  "recommendation": "Redeploy pages/driver-color-tokens from cursor/figma-styles-page-visualization (commits 434c2e3+)",
+  "recommendation": "Redeploy pages/aid-portal from cursor/figma-styles-page-visualization (commits 434c2e3+)",
   "status": "temporary",
   "reviewAt": "release"
 }
@@ -271,4 +271,4 @@ collectionName: `effects-shadows`, artifact: `Effects/Shadows`
 | Hardcode blocked | ✅ |
 | Documented exceptions allowed | ✅ |
 
-**Для верстки компонентов:** используй **`pages/driver-color-tokens/*Data.ts`** как единственный source of truth. Portal на Vercel подтверждает Colors и Icons; остальные 4 коллекции в data уже есть в repo, но **требуют redeploy** для визуальной сверки на aid-ds.vercel.app.
+**Для верстки компонентов:** используй **`pages/aid-portal/*Data.ts`** как единственный source of truth. Portal на Vercel подтверждает Colors и Icons; остальные 4 коллекции в data уже есть в repo, но **требуют redeploy** для визуальной сверки на aid-ds.vercel.app.

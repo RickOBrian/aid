@@ -19,12 +19,12 @@ auditor: audit-gate
 
 | Data file | `collectionName` | Changelog file | Match |
 |---|---|---|---|
-| `pages/driver-color-tokens/data.ts` | `colors-semantic` | `tokens/colors-semantic-changelog.json` | ✅ |
-| `pages/driver-color-tokens/typographyData.ts` | `typography-sem` | `tokens/typography-sem-changelog.json` | ✅ |
-| `pages/driver-color-tokens/spacingData.ts` | `spacing-sem` | `tokens/spacing-sem-changelog.json` | ✅ |
-| `pages/driver-color-tokens/radiusData.ts` | `radius-sem` | `tokens/radius-sem-changelog.json` | ✅ |
-| `pages/driver-color-tokens/shadowsData.ts` | `effects-shadows` | `tokens/effects-shadows-changelog.json` | ✅ |
-| `pages/driver-color-tokens/iconsData.ts` | `icons` | `tokens/icons-changelog.json` | ✅ |
+| `pages/aid-portal/data.ts` | `colors-semantic` | `tokens/colors-semantic-changelog.json` | ✅ |
+| `pages/aid-portal/typographyData.ts` | `typography-sem` | `tokens/typography-sem-changelog.json` | ✅ |
+| `pages/aid-portal/spacingData.ts` | `spacing-sem` | `tokens/spacing-sem-changelog.json` | ✅ |
+| `pages/aid-portal/radiusData.ts` | `radius-sem` | `tokens/radius-sem-changelog.json` | ✅ |
+| `pages/aid-portal/shadowsData.ts` | `effects-shadows` | `tokens/effects-shadows-changelog.json` | ✅ |
+| `pages/aid-portal/iconsData.ts` | `icons` | `tokens/icons-changelog.json` | ✅ |
 
 **Naming:** 6/6 — `collectionName` совпадает с именем changelog-файла (`{collectionName}-changelog.json`).
 
@@ -56,7 +56,7 @@ auditor: audit-gate
 
 **Статус:** ⚠️ — ни один changelog не использует эту схему.
 
-#### Canonical schema (`skills/_shared/changelog-guide.md`)
+#### Canonical schema (`skills/_shared/standards/changelog-guide.md`)
 
 Фактическая структура (все 6 файлов):
 
@@ -101,7 +101,7 @@ Naming и canonical JSON — ✅; git tracking 4/6 changelogs — ❌; audit che
 
 ## 2. Changelog Registry
 
-**File:** `pages/driver-color-tokens/token-changelog-registry.json`
+**File:** `pages/aid-portal/token-changelog-registry.json`
 
 ### 2.1 Registry ↔ changelog files
 
@@ -196,12 +196,12 @@ ls -1 .cursor/rules/*.mdc
 
 | Field | Value | Status |
 |---|---|---|
-| `presentbookRoot` | `pages/driver-color-tokens` | ✅ совпадает с фактическим portal path |
+| `presentbookRoot` | `pages/aid-portal` | ✅ совпадает с фактическим portal path |
 | `componentsRoot` | `null` | ✅ (`componentsStatus: not_started`) |
 | `tokenRoutes` | hub, colors, typography, spacing, radius, shadows, icons | ✅ 7 routes |
 | `changelogRoot` | `tokens` | ✅ |
 | `changelogFiles` | 6 paths | ✅ совпадают с audit scope |
-| `tokenRegistry` | `pages/driver-color-tokens/token-changelog-registry.json` | ✅ (файл есть; untracked) |
+| `tokenRegistry` | `pages/aid-portal/token-changelog-registry.json` | ✅ (файл есть; untracked) |
 | `tokenDataFiles` | 6 data files | ✅ перечислены корректно |
 
 **Product Context (overall):** ✅
@@ -235,26 +235,26 @@ ls -1 .cursor/rules/*.mdc
 
 **Registry:**
 
-- `pages/driver-color-tokens/token-changelog-registry.json`
+- `pages/aid-portal/token-changelog-registry.json`
 
 **Portal pages:**
 
-- `pages/driver-color-tokens/TypographyPage.tsx`
-- `pages/driver-color-tokens/SpacingPage.tsx`
-- `pages/driver-color-tokens/RadiusPage.tsx`
-- `pages/driver-color-tokens/ShadowsPage.tsx`
+- `pages/aid-portal/TypographyPage.tsx`
+- `pages/aid-portal/SpacingPage.tsx`
+- `pages/aid-portal/RadiusPage.tsx`
+- `pages/aid-portal/ShadowsPage.tsx`
 
 **Data files:**
 
-- `pages/driver-color-tokens/typographyData.ts`
-- `pages/driver-color-tokens/spacingData.ts`
-- `pages/driver-color-tokens/radiusData.ts`
-- `pages/driver-color-tokens/shadowsData.ts`
+- `pages/aid-portal/typographyData.ts`
+- `pages/aid-portal/spacingData.ts`
+- `pages/aid-portal/radiusData.ts`
+- `pages/aid-portal/shadowsData.ts`
 
 ### Medium — schema documentation mismatch
 
 Audit checklist ожидал entry format `{ id, timestamp, author, changes: [{ section, token, old, new }] }`.  
-Canonical format зафиксирован в `skills/_shared/changelog-guide.md`: `{ version, date, author, type, changes: [{ kind, description }] }`.  
+Canonical format зафиксирован в `skills/_shared/standards/changelog-guide.md`: `{ version, date, author, type, changes: [{ kind, description }] }`.  
 Рекомендация: обновить будущие audit checklists под canonical schema.
 
 ### Low — git tracking gap

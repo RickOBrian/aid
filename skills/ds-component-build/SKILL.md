@@ -37,15 +37,15 @@ Portal primitives — только infrastructure для review page. Не sourc
 
 | Topic | Source |
 |---|---|
-| Discovery gate order (Platform scope → Composition → Token coverage) | `skills/component-build-workflow.md` |
-| Product / release gates | `.cursor/rules/product-context.mdc`, `component-gate.mdc`, `token-integrity.mdc`, `release-gate.mdc` |
-| Tokens | `skills/_shared/token-rules.md` |
-| Platforms & a11y | `skills/_shared/platforms.md`, `accessibility.md` |
-| States | `skills/_shared/component-states-guide.md` |
-| Architecture & categories | `skills/_shared/ds-component-architecture-guide.md`, `component-categories-guide.md` |
-| Figma discovery | `skills/_shared/figma-import-guide.md` |
-| Review page layout | `skills/_shared/presentbook-guide.md` |
-| Versioning | `skills/_shared/changelog-guide.md`, `versioning-strategy.md` |
+| Discovery gate order (Platform scope → Composition → Token coverage) | `skills/ds-component-build/component-build-workflow.md` |
+| Product / release gates | `skills/_shared/protocols/gates/product-context.md`, `component-gate.mdc`, `token-integrity.mdc`, `release-gate.mdc` |
+| Tokens | `skills/_shared/standards/token-rules.md` |
+| Platforms & a11y | `skills/_shared/standards/platforms.md`, `accessibility.md` |
+| States | `skills/_shared/standards/component-states-guide.md` |
+| Architecture & categories | `skills/_shared/standards/ds-component-architecture-guide.md`, `component-categories-guide.md` |
+| Figma discovery | `skills/_shared/protocols/figma-import-guide.md` |
+| Review page layout | `skills/_shared/protocols/presentbook-guide.md` |
+| Versioning | `skills/_shared/standards/changelog-guide.md`, `versioning-strategy.md` |
 | Artifact templates | `references/artifacts-and-versioning.md` |
 | Routes & changelog block | `references/review-page-and-routes.md` |
 
@@ -104,7 +104,7 @@ Default: <безопасный выбор>.
 
 ### 0. Platform scope gate (mandatory, before Discovery)
 
-Full rule → `skills/component-build-workflow.md` § 1.1. Summary:
+Full rule → `skills/ds-component-build/component-build-workflow.md` § 1.1. Summary:
 
 - Ask explicitly: «Для каких платформ реализуется этот компонент — Web, iOS,
   Android, или подмножество?»
@@ -248,5 +248,5 @@ Cursor proposes; Principal Designer confirms; version + changelog + push — one
 
 ## Changelog
 
-- **1.1.0** — 2026-08-18. Adds mandatory Platform scope gate (step 0, before Discovery) — delegates to `skills/component-build-workflow.md`; final summary now reports platform scope + implementation status per platform.
+- **1.1.0** — 2026-08-18. Adds mandatory Platform scope gate (step 0, before Discovery) — delegates to `skills/ds-component-build/component-build-workflow.md`; final summary now reports platform scope + implementation status per platform.
 - **1.0.0** — 2026-08-16. Universal Figma→component build orchestration: short UX, gates delegation, initial-release model, review-page changelog block, TESTING.md.

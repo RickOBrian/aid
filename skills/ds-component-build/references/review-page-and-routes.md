@@ -4,7 +4,7 @@
 
 Every Product DS Component must have:
 
-1. **Components group** — from `skills/_shared/component-categories-guide.md`
+1. **Components group** — from `skills/_shared/standards/component-categories-guide.md`
    (e.g. Controls, Forms, Navigation).
 2. **Review/sandbox page** — `{Name}Page.tsx` in product presentbook root.
 3. **Route** — registered in `App.tsx` + `HUB_ROUTES` / `hubData.ts`.
@@ -54,7 +54,7 @@ Missing changelog section = **blocker** — do not return verified URL.
 ## Verify route
 
 ```bash
-cd pages/driver-color-tokens && npm run dev
+cd pages/aid-portal && npm run dev
 # open http://localhost:3000{reviewRoute}
 ```
 
