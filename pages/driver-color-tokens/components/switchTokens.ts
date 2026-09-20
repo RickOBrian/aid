@@ -105,7 +105,7 @@ function cssVarBlock(vars: SwitchColorVars): string {
 /**
  * Scoped (non-global) CSS custom properties for `.ds-switch-root`.
  * Day values are the default; `[data-theme="night"]` overrides them —
- * matches the ambient theming convention from `skills/_shared/platforms.md`.
+ * matches the ambient theming convention from `skills/_shared/standards/platforms.md`.
  */
 export const SWITCH_TOKEN_STYLE = `
 .ds-switch-root {

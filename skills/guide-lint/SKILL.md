@@ -12,10 +12,10 @@ description: >
 ## Контекст окружения
 
 Читай перед запуском:
-- `skills/_shared/semantic-color-tokens-guide.md` — эталон структуры
-- `skills/_shared/token-rules.md` — правила токенов и нотации
-- `.claude/space-context.md` — терминология, принятые решения
-- `.claude/git-workflow.md` — правила коммитов
+- `skills/_shared/standards/semantic-color-tokens-guide.md` — эталон структуры
+- `skills/_shared/standards/token-rules.md` — правила токенов и нотации
+- `skills/_shared/notes/space-context.md` — терминология, принятые решения
+- `skills/_shared/protocols/git-workflow.md` — правила коммитов
 
 ## Параметры запуска
 

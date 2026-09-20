@@ -3,7 +3,7 @@
 **Status:** known gap (not a bug; intentionally out of scope)  
 **Scope:** `docs/storybook/spec-inspector.js` vs `docs/storybook/guide-page.js`  
 **Section:** Guide Page «Анатомия» (visual callout stage)  
-**Related standard:** `skills/_shared/anatomy-annotation-standard.md` §4.2  
+**Related standard:** `skills/_shared/standards/anatomy-annotation-standard.md` §4.2  
 **Introduced in:** `802d1b15f99f62305ca828d96bdfaee2a7496191` — per-size anatomy landed in `guide-page.js` only
 
 ## Symptom

@@ -9,8 +9,8 @@ alwaysApply: true
 
 ## Перед каждой задачей читай
 - `.claude/space-context.md` — контекст проекта, роли, принятые решения
-- `skills/_shared/token-rules.md` — правила токенов
-- `skills/_shared/platforms.md` — особенности платформ
+- `skills/_shared/standards/token-rules.md` — правила токенов
+- `skills/_shared/standards/platforms.md` — особенности платформ
 - Соседние гайды из `skills/_shared/` если задача касается смежных токенов или компонентов
 
 Если файл не найден — предупреди явно и работай на встроенных правилах из этого файла.

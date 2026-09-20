@@ -61,7 +61,7 @@ alwaysApply: true
 Финальный SemVer, bump `currentVersion` и запись в release changelog —
 только через **Release Gate** (`release-gate.mdc`) с явным подтверждением
 пользователя на release boundary. См. также `product-context.mdc` и
-`skills/_shared/changelog-guide.md`.
+`skills/_shared/standards/changelog-guide.md`.
 
 Не применяй это правило к правкам, не относящимся к токенам/стилям
 (рефакторинг кода, документация, исправление опечаток в тексте гайдов,

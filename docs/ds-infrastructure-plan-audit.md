@@ -67,41 +67,41 @@
 
 | Путь | Назначение | Статус vs план |
 |---|---|---|
-| `skills/_shared/token-rules.md` | Правила Core → Semantic токенов | **exists** |
-| `skills/_shared/platforms.md` | Особенности Web / iOS / Android | **exists** |
-| `skills/_shared/component-standards.md` | Стандарты компонентов (план) | **missing** |
-| `skills/_shared/figma-import-guide.md` | Гайд импорта из Figma (план) | **missing** |
-| `skills/_shared/presentbook-guide.md` | Гайд Presentbook (план) | **missing** |
-| `skills/_shared/changelog-guide.md` | Гайд changelog (план) | **missing** |
-| `skills/_shared/naming-conventions.md` | Naming conventions (план) | **missing** |
-| `skills/_shared/accessibility.md` | Accessibility (план) | **missing** |
-| `skills/_shared/testing-strategy.md` | Testing strategy (план) | **missing** |
-| `skills/_shared/versioning-strategy.md` | Versioning strategy (план) | **missing** |
+| `skills/_shared/standards/token-rules.md` | Правила Core → Semantic токенов | **exists** |
+| `skills/_shared/standards/platforms.md` | Особенности Web / iOS / Android | **exists** |
+| `skills/_shared/standards/component-standards.md` | Стандарты компонентов (план) | **missing** |
+| `skills/_shared/protocols/figma-import-guide.md` | Гайд импорта из Figma (план) | **missing** |
+| `skills/_shared/protocols/presentbook-guide.md` | Гайд Presentbook (план) | **missing** |
+| `skills/_shared/standards/changelog-guide.md` | Гайд changelog (план) | **missing** |
+| `skills/_shared/standards/naming-conventions.md` | Naming conventions (план) | **missing** |
+| `skills/_shared/standards/accessibility.md` | Accessibility (план) | **missing** |
+| `skills/_shared/standards/testing-strategy.md` | Testing strategy (план) | **missing** |
+| `skills/_shared/standards/versioning-strategy.md` | Versioning strategy (план) | **missing** |
 
 ### 4b. Extra (есть в репо, не в плане)
 
 | Путь | Назначение |
 |---|---|
-| `skills/_shared/git-workflow.md` | Git-команды для memory скиллов |
-| `skills/_shared/no-hardcode-color-protocol.md` | Протокол запрета hardcode цветов |
-| `skills/_shared/core-color-tokens-guide.md` | Core color tokens guide |
-| `skills/_shared/semantic-color-tokens-guide.md` | Semantic color tokens guide |
-| `skills/_shared/core-typography-tokens-guide.md` | Core typography guide |
-| `skills/_shared/semantic-typography-tokens-guide.md` | Semantic typography guide |
-| `skills/_shared/core-space-tokens-guide.md` | Core space tokens guide |
-| `skills/_shared/semantic-space-tokens-guide.md` | Semantic space tokens guide |
-| `skills/_shared/radius-preview-standard.md` | Стандарт radius preview |
-| `skills/_shared/anatomy-annotation-standard.md` | Стандарт anatomy |
-| `skills/_shared/component-categories-guide.md` | Категории компонентов |
-| `skills/_shared/component-states-guide.md` | Состояния компонентов |
-| `skills/_shared/ds-component-architecture-guide.md` | Архитектура компонентов |
-| `skills/_shared/ds-component-audit-guide.md` | Аудит компонентов |
-| `skills/_shared/ds-component-migration-guide.md` | Миграция компонентов |
-| `skills/_shared/editable-component-spec-layer-guide.md` | Editable spec layer |
-| `skills/_shared/ds-import-json.md` | Импорт JSON в DS |
-| `skills/_shared/docs-design-brief.md` | Design brief для docs |
-| `skills/_shared/docs-visual-language.md` | Visual language docs |
-| `skills/_shared/ui-trends-2026.md` | UI trends reference |
+| `skills/_shared/protocols/git-workflow.md` | Git-команды для memory скиллов |
+| `skills/_shared/standards/no-hardcode-color-protocol.md` | Протокол запрета hardcode цветов |
+| `skills/_shared/standards/core-color-tokens-guide.md` | Core color tokens guide |
+| `skills/_shared/standards/semantic-color-tokens-guide.md` | Semantic color tokens guide |
+| `skills/_shared/standards/core-typography-tokens-guide.md` | Core typography guide |
+| `skills/_shared/standards/semantic-typography-tokens-guide.md` | Semantic typography guide |
+| `skills/_shared/standards/core-space-tokens-guide.md` | Core space tokens guide |
+| `skills/_shared/standards/semantic-space-tokens-guide.md` | Semantic space tokens guide |
+| `skills/_shared/standards/radius-preview-standard.md` | Стандарт radius preview |
+| `skills/_shared/standards/anatomy-annotation-standard.md` | Стандарт anatomy |
+| `skills/_shared/standards/component-categories-guide.md` | Категории компонентов |
+| `skills/_shared/standards/component-states-guide.md` | Состояния компонентов |
+| `skills/_shared/standards/ds-component-architecture-guide.md` | Архитектура компонентов |
+| `skills/_shared/protocols/ds-component-audit-guide.md` | Аудит компонентов |
+| `skills/_shared/protocols/ds-component-migration-guide.md` | Миграция компонентов |
+| `skills/_shared/architecture/editable-component-spec-layer-guide.md` | Editable spec layer |
+| `skills/_shared/protocols/ds-import-json.md` | Импорт JSON в DS |
+| `skills/_shared/protocols/docs-design-brief.md` | Design brief для docs |
+| `skills/_shared/protocols/docs-visual-language.md` | Visual language docs |
+| `skills/_shared/notes/ui-trends-2026.md` | UI trends reference |
 
 **Итого:** 22 файла. В плане — 10; **exists: 2**, **missing: 8**. Extra — 20.
 
@@ -271,8 +271,8 @@
 
 **Skills (2/10):**
 
-- `skills/_shared/token-rules.md`
-- `skills/_shared/platforms.md`
+- `skills/_shared/standards/token-rules.md`
+- `skills/_shared/standards/platforms.md`
 
 **Driver tokens (6/7):**
 
@@ -303,14 +303,14 @@
 | # | Путь |
 |---|---|
 | 1 | `pages/driver-color-tokens/colorData.ts` |
-| 2 | `skills/_shared/component-standards.md` |
-| 3 | `skills/_shared/figma-import-guide.md` |
-| 4 | `skills/_shared/presentbook-guide.md` |
-| 5 | `skills/_shared/changelog-guide.md` |
-| 6 | `skills/_shared/naming-conventions.md` |
-| 7 | `skills/_shared/accessibility.md` |
-| 8 | `skills/_shared/testing-strategy.md` |
-| 9 | `skills/_shared/versioning-strategy.md` |
+| 2 | `skills/_shared/standards/component-standards.md` |
+| 3 | `skills/_shared/protocols/figma-import-guide.md` |
+| 4 | `skills/_shared/protocols/presentbook-guide.md` |
+| 5 | `skills/_shared/standards/changelog-guide.md` |
+| 6 | `skills/_shared/standards/naming-conventions.md` |
+| 7 | `skills/_shared/standards/accessibility.md` |
+| 8 | `skills/_shared/standards/testing-strategy.md` |
+| 9 | `skills/_shared/standards/versioning-strategy.md` |
 | 10 | `tokens/color-changelog.json` |
 | 11 | `tokens/typography-changelog.json` |
 | 12 | `tokens/spacing-changelog.json` |

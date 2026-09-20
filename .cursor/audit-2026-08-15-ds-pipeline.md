@@ -56,7 +56,7 @@ auditor: audit-gate
 
 **Статус:** ⚠️ — ни один changelog не использует эту схему.
 
-#### Canonical schema (`skills/_shared/changelog-guide.md`)
+#### Canonical schema (`skills/_shared/standards/changelog-guide.md`)
 
 Фактическая структура (все 6 файлов):
 
@@ -254,7 +254,7 @@ ls -1 .cursor/rules/*.mdc
 ### Medium — schema documentation mismatch
 
 Audit checklist ожидал entry format `{ id, timestamp, author, changes: [{ section, token, old, new }] }`.  
-Canonical format зафиксирован в `skills/_shared/changelog-guide.md`: `{ version, date, author, type, changes: [{ kind, description }] }`.  
+Canonical format зафиксирован в `skills/_shared/standards/changelog-guide.md`: `{ version, date, author, type, changes: [{ kind, description }] }`.  
 Рекомендация: обновить будущие audit checklists под canonical schema.
 
 ### Low — git tracking gap

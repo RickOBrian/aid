@@ -48,7 +48,7 @@
 `AGENTS.md` до сегодняшней правки вёл в `docs/` — к устаревшим копиям.
 `PROJECT_STRUCTURE.md` — снимок от 2026-08-11: знает 5 правил `.cursor/rules/`
 из нынешних 17, не знает про `skills/ds-component-build/` и
-`skills/component-build-workflow.md`.
+`skills/ds-component-build/component-build-workflow.md`.
 
 ---
 
@@ -58,8 +58,8 @@
 
 | Документ | Канон | Копия |
 |---|---|---|
-| SemVer | `skills/_shared/semver-guide.md` v1.2.0 | `docs/semver-guide.md` v1.1.0 |
-| Архитектура компонентов | `skills/_shared/ds-component-architecture-guide.md` v1.3.0 | `docs/ds-component-architecture-guide.md` v1.0.0 |
+| SemVer | `skills/_shared/standards/semver-guide.md` v1.2.0 | `docs/semver-guide.md` v1.1.0 |
+| Архитектура компонентов | `skills/_shared/standards/ds-component-architecture-guide.md` v1.3.0 | `docs/ds-component-architecture-guide.md` v1.0.0 |
 | Генератор спек | `skills/ds-component-spec/SKILL.md` v1.3.0 | `skills/_shared/ds-component-spec.md` v1.2.0 |
 
 Третья пара — новая находка: один и тот же документ лежит и как скилл, и
@@ -127,9 +127,9 @@ frontmatter — проверяемое условие, но никто его н
 
 ## 7. Мелкое, но накапливается
 
-- `skills/component-build-workflow.md` лежит прямо в `skills/` — ни папка
+- `skills/ds-component-build/component-build-workflow.md` лежит прямо в `skills/` — ни папка
   скилла, ни `_shared`.
-- `ButtonText-spec.md` (44 КБ) в корне репозитория.
+- `docs/specs/ButtonText-spec.md` (44 КБ) в корне репозитория.
 - `.tmp-qa/` не в `.gitignore`.
 - Корневые `guide-page-pass.md` и `measure-presentation-pass.md` — рабочие
   проходы, живут рядом с инструктивными файлами.

@@ -60,9 +60,9 @@ Run each check in a fresh session unless noted otherwise.
 
 ## 9. Graceful degradation
 
-- [ ] `skills/_shared/ui-trends-2026.md` not found → explicit warning printed, skill continues on built-in rules
-- [ ] `skills/_shared/token-rules.md` not found → explicit warning printed, skill continues
-- [ ] `skills/_shared/platforms.md` not found (MODE 2) → explicit warning printed, skill applies Web-only changes and states why
+- [ ] `skills/_shared/notes/ui-trends-2026.md` not found → explicit warning printed, skill continues on built-in rules
+- [ ] `skills/_shared/standards/token-rules.md` not found → explicit warning printed, skill continues
+- [ ] `skills/_shared/standards/platforms.md` not found (MODE 2) → explicit warning printed, skill applies Web-only changes and states why
 
 ## 10. Onboarding test
 

@@ -47,8 +47,8 @@
 - [ ] Повторный вход, ранее `approved` → Match с высокой confidence, ссылка на прошлое решение
 - [ ] Повторный вход, ранее `proposed` → отмечено как открытый вопрос
 - [ ] `.claude/intake-user` отсутствует → skill спросил имя
-- [ ] `skills/_shared/ds-component-architecture-guide.md` отсутствует → предупредил, продолжил на встроенных правилах
-- [ ] `skills/_shared/component-categories-guide.md` отсутствует → предупредил, категория не заблокировала вердикт
+- [ ] `skills/_shared/standards/ds-component-architecture-guide.md` отсутствует → предупредил, продолжил на встроенных правилах
+- [ ] `skills/_shared/standards/component-categories-guide.md` отсутствует → предупредил, категория не заблокировала вердикт
 - [ ] Figma MCP не подключён → предупредил, предложил ручной путь
 
 ## Формат вывода

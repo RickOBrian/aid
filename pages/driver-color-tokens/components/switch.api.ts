@@ -120,7 +120,7 @@ function buildSwiftUISnippet(selection: SwitchSelection): string {
     : [];
 
   return [
-    '// Reference implementation per skills/_shared/platforms.md (iOS section).',
+    '// Reference implementation per skills/_shared/standards/platforms.md (iOS section).',
     '// No SwitchView.swift exists in this repository — sample only.',
     ...stateComments,
     ...nightNote,
@@ -182,7 +182,7 @@ function buildComposeSnippet(selection: SwitchSelection): string {
   ].filter((line): line is string => line !== null);
 
   return [
-    '// Reference implementation per skills/_shared/platforms.md (Android section).',
+    '// Reference implementation per skills/_shared/standards/platforms.md (Android section).',
     '// No Switch.kt exists in this repository — sample only.',
     ...stateComments,
     '',

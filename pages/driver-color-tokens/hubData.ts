@@ -8,7 +8,7 @@ export interface HubItem {
   href: string | null;
   /**
    * Optional sub-group inside a HubSection (e.g. "Controls" per
-   * `skills/_shared/component-categories-guide.md`). Items without a group
+   * `skills/_shared/standards/component-categories-guide.md`). Items without a group
    * render as a flat list, preserving the previous behavior.
    */
   group?: string;

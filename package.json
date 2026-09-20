@@ -8,7 +8,9 @@
     "build-storybook": "storybook build",
     "dev:driver-colors": "vite --config pages/driver-color-tokens/vite.config.ts",
     "build:driver-colors": "vite build --config pages/driver-color-tokens/vite.config.ts",
-    "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs"
+    "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "check:docs:full": "node scripts/check-docs.mjs --warnings"
   },
   "dependencies": {
     "react": "^18.3.1",

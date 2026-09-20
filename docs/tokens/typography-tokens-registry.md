@@ -10,7 +10,7 @@ Single source of truth for typography tokens used in the Storybook typography ed
 is created — `docs/storybook/storybook-typography-tokens.css` is generated from it by
 `docs/tokens/save-tokens.js`, do not hand-edit that CSS file.
 
-Composition rule (see `skills/_shared/token-rules.md`, "Состав типографического стиля"):
+Composition rule (see `skills/_shared/standards/token-rules.md`, "Состав типографического стиля"):
 every `heading-*` / `body-*` / `label-*` / `meta-*` role must define all four properties —
 `size`, `lh`, `weight`, `tracking`. Standalone tokens (`font-*`, `leading-*`, `tracking-*`)
 are single values and are not part of a role.

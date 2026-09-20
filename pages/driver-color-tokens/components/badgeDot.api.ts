@@ -65,7 +65,7 @@ function buildSwiftUISnippet(selection: BadgeDotSelection): string {
     : [];
 
   return [
-    '// Reference implementation per skills/_shared/platforms.md (iOS section).',
+    '// Reference implementation per skills/_shared/standards/platforms.md (iOS section).',
     '// No BadgeDotView.swift exists in this repository — sample only.',
     ...nightNote,
     '',
@@ -95,7 +95,7 @@ function buildComposeSnippet(selection: BadgeDotSelection): string {
   const isNight = selection.mode === 'night';
 
   return [
-    '// Reference implementation per skills/_shared/platforms.md (Android section).',
+    '// Reference implementation per skills/_shared/standards/platforms.md (Android section).',
     '// No BadgeDot.kt exists in this repository — sample only.',
     '',
     '@Composable',

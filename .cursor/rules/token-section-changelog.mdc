@@ -51,7 +51,7 @@ Changelog **не создаётся** для записей реестра, по
    changelog во время implementation. SemVer, `currentVersion` и запись в
    `tokens/<collection>-changelog.json` — только через **Release Gate**
    (`release-gate.mdc`) с явным подтверждением. См. `product-context.mdc`,
-   `skills/_shared/changelog-guide.md`.
+   `skills/_shared/standards/changelog-guide.md`.
 
 ## Реестр разделов
 

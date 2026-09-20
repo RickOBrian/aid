@@ -10,7 +10,7 @@
 - Release queues: `changes/driver/pending/`, `changes/driver/released/` (Switch pending item present).
 - Component artifacts: `components/switch-changelog.json`, `pages/driver-color-tokens/component-registry.json`, `pages/driver-color-tokens/components/switch.meta.json`.
 - Component build skill: `skills/ds-component-build/SKILL.md` v1.1.0.
-- Discovery gate order: `skills/component-build-workflow.md` v1.0.0 — Platform scope gate (new) → Composition gate (delegates to `component-gate.mdc`) → Token coverage gate (delegates to `token-integrity.mdc`).
+- Discovery gate order: `skills/ds-component-build/component-build-workflow.md` v1.0.0 — Platform scope gate (new) → Composition gate (delegates to `component-gate.mdc`) → Token coverage gate (delegates to `token-integrity.mdc`).
 - Reference Product DS Component: **Switch** (`/components/switch`, pending initial release, `currentVersion: null` → proposed `1.0.0`).
 - Skills (_shared): 30 гайдов, включая token-rules.md, platforms.md, детальные color/typography/space guides, component architecture/audit/migration.
 - Figma reference: src/pages/FigmaStyles/ (не source of truth).
@@ -37,18 +37,18 @@ Optional:
 ## Completed waves
 
 ### Wave 1 (component pipeline core) — completed 2026-08-15
-- skills/_shared/component-standards.md (committed: 03ad5bc)
-- skills/_shared/figma-import-guide.md (committed: 3f40d37)
-- skills/_shared/changelog-guide.md (committed: 991ffb0)
+- skills/_shared/standards/component-standards.md (committed: 03ad5bc)
+- skills/_shared/protocols/figma-import-guide.md (committed: 3f40d37)
+- skills/_shared/standards/changelog-guide.md (committed: 991ffb0)
 
 ### Wave 2 (naming, versions, accessibility) — completed 2026-08-15
-- skills/_shared/naming-conventions.md (committed: 741b839)
-- skills/_shared/versioning-strategy.md (committed: 050a67a)
-- skills/_shared/accessibility.md (committed: 9075573)
+- skills/_shared/standards/naming-conventions.md (committed: 741b839)
+- skills/_shared/standards/versioning-strategy.md (committed: 050a67a)
+- skills/_shared/standards/accessibility.md (committed: 9075573)
 
 ### Wave 3 (testing, Presentbook) — completed 2026-08-15
-- skills/_shared/testing-strategy.md (committed: c8d7eab)
-- skills/_shared/presentbook-guide.md (committed: de6c842)
+- skills/_shared/standards/testing-strategy.md (committed: c8d7eab)
+- skills/_shared/protocols/presentbook-guide.md (committed: de6c842)
 
 ### Driver portal — completed 2026-08-16
 - 29752e8 — changelog infrastructure

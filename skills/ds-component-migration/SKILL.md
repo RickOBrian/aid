@@ -47,15 +47,15 @@ props/слоты нового компонента и переносит код 
 
 Прочитай в начале сессии:
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
-- `skills/_shared/ds-component-architecture-guide.md` — уровни архитектуры,
+- `skills/_shared/standards/ds-component-architecture-guide.md` — уровни архитектуры,
   нужен для сверки слотов при mapping
-- `skills/_shared/token-rules.md` — Core → Semantic, мигрированный код не
+- `skills/_shared/standards/token-rules.md` — Core → Semantic, мигрированный код не
   должен вносить хардкод вместо старого хардкода
-- `skills/_shared/platforms.md` — особенности Web / iOS / Android при
+- `skills/_shared/standards/platforms.md` — особенности Web / iOS / Android при
   переносе props/слотов
-- `skills/_shared/no-hardcode-color-protocol.md` — обязательно перед
+- `skills/_shared/standards/no-hardcode-color-protocol.md` — обязательно перед
   правкой любого `*.html`, `*.css`, `*.scss` в Pilot/Rollout
-- `skills/_shared/git-workflow.md` — команды синхронизации памяти и push
+- `skills/_shared/protocols/git-workflow.md` — команды синхронизации памяти и push
 - `memory/ds-component-migration/log.*.json` — активные/прошлые сессии
   миграции (Шаг 0.2)
 - `memory/ds-component-spec/log.*.json` — спека канонического компонента:
@@ -72,12 +72,12 @@ props/слоты нового компонента и переносит код 
 **Graceful degradation:**
 - `.claude/intake-user` не найден → спроси имя, покажи существующие
   `memory/ds-component-migration/log.*.json`, создай файл.
-- `skills/_shared/ds-component-architecture-guide.md` или `platforms.md`
+- `skills/_shared/standards/ds-component-architecture-guide.md` или `platforms.md`
   не найден → предупреди «файл не найден, работаю на встроенных правилах
   уровней/платформ» и используй общие принципы: слоты `leading/content/
   trailing/header/footer`, touch target 44×44pt (iOS) / 48×48dp (Android) /
   44px (Web).
-- `skills/_shared/no-hardcode-color-protocol.md` не найден → предупреди,
+- `skills/_shared/standards/no-hardcode-color-protocol.md` не найден → предупреди,
   но всё равно не вноси хардкод цвета — используй уже существующие в
   legacy-коде токены/переменные, если они есть, иначе останови файл как
   manual review.
@@ -495,7 +495,7 @@ Rollout (в отличие от Pilot) блокируется Порогом 2:
 
 **После каждой фазы, меняющей состояние сессии:**
 1. Обнови запись (`phase`, соответствующий блок).
-2. Синхронизируй по `skills/_shared/git-workflow.md`. Если файл
+2. Синхронизируй по `skills/_shared/protocols/git-workflow.md`. Если файл
    недоступен — используй встроенные команды:
 
 ```bash

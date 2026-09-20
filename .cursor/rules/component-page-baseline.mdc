@@ -86,7 +86,7 @@ Baseline + diff протокол выполняется **в дополнени�
      нет — четвёртая категория просто не используется, схему не менять.
    - любое изменение zoom/leader-line/halo/anchor геометрии в этой зоне
      подчиняется `anatomy-standard.mdc` (сначала прочитать
-     `skills/_shared/anatomy-annotation-standard.md` и подтвердить это в
+     `skills/_shared/standards/anatomy-annotation-standard.md` и подтвердить это в
      первой строке ответа, если правка попадает в его scope).
 
 6. **Tokens вкладка** — таблица semantic-токенов компонента (имя, CSS/

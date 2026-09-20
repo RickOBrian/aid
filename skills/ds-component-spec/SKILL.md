@@ -31,9 +31,9 @@ description: >
 
 Прочитай в начале каждой сессии:
 - `.claude/intake-user` — кто запустил (фамилия латиницей)
-- `skills/_shared/token-rules.md` — двухуровневая система токенов (Core → Semantic)
-- `skills/_shared/platforms.md` — особенности Web / iOS / Android
-- `skills/_shared/component-states-guide.md` — нейминг и логика состояний
+- `skills/_shared/standards/token-rules.md` — двухуровневая система токенов (Core → Semantic)
+- `skills/_shared/standards/platforms.md` — особенности Web / iOS / Android
+- `skills/_shared/standards/component-states-guide.md` — нейминг и логика состояний
 
 **Если `.claude/intake-user` не существует:**
 Спроси имя одной строкой, покажи существующие
@@ -46,16 +46,16 @@ description: >
 Если да — создай новый log-файл. Если нет — скорее всего опечатка,
 попроси исправить `intake-user` вручную и перезапустить.
 
-**Если `skills/_shared/token-rules.md` не существует:**
+**Если `skills/_shared/standards/token-rules.md` не существует:**
 Предупреди: «файл _shared/token-rules.md не найден, работаю
 на встроенных правилах». Используй встроенные правила из
 раздела «Встроенные правила токенов» ниже.
 
-**Если `skills/_shared/platforms.md` не существует:**
+**Если `skills/_shared/standards/platforms.md` не существует:**
 Предупреди аналогично, используй встроенные правила из раздела
 «Встроенные правила платформ» ниже.
 
-**Если `skills/_shared/component-states-guide.md` не существует:**
+**Если `skills/_shared/standards/component-states-guide.md` не существует:**
 Используй встроенную таблицу состояний из раздела «Встроенные правила состояний» ниже.
 
 **Если Figma MCP подключён:** забери компонент и токены из фрейма напрямую.
@@ -79,7 +79,7 @@ description: >
 
 ## Шаг 2. Определи уровень архитектуры
 
-Используй правила из `skills/_shared/platforms.md` (если файл есть).
+Используй правила из `skills/_shared/standards/platforms.md` (если файл есть).
 Если нет — встроенные правила ниже.
 
 **Четыре уровня:**
@@ -144,7 +144,7 @@ Avatar, Badge, Dialog, Toast, Tooltip, Switch.
 
 ## Шаг 4. Проверь токены
 
-Используй правила из `skills/_shared/token-rules.md` (если файл есть).
+Используй правила из `skills/_shared/standards/token-rules.md` (если файл есть).
 Если нет — встроенные правила ниже.
 
 Два уровня:
@@ -286,7 +286,7 @@ If a section has no content, write «нет» — do not omit the section.
 
 ## Встроенные правила токенов
 
-*Используются только если `skills/_shared/token-rules.md` не найден.*
+*Используются только если `skills/_shared/standards/token-rules.md` не найден.*
 
 - Core — только сырые значения, без смысловой нагрузки.
 - Semantic — назначение, не привязан к конкретному компоненту.
@@ -298,7 +298,7 @@ If a section has no content, write «нет» — do not omit the section.
 
 ## Встроенные правила платформ
 
-*Используются только если `skills/_shared/platforms.md` не найден.*
+*Используются только если `skills/_shared/standards/platforms.md` не найден.*
 
 - **Web:** API компонента — Props interface в TypeScript.
   Токены через CSS-переменные или design-token-утилиту.
@@ -313,7 +313,7 @@ If a section has no content, write «нет» — do not omit the section.
 
 ## Встроенные правила состояний
 
-*Используются только если `skills/_shared/component-states-guide.md` не найден.*
+*Используются только если `skills/_shared/standards/component-states-guide.md` не найден.*
 
 | Figma    | Web      | iOS         | Android  | Когда                                 |
 |----------|----------|-------------|----------|---------------------------------------|
@@ -354,7 +354,7 @@ If a section has no content, write «нет» — do not omit the section.
 
 **После каждой спеки:**
 1. Добавь запись в файл памяти
-2. Синхронизируй по командам из `skills/_shared/git-workflow.md`.
+2. Синхронизируй по командам из `skills/_shared/protocols/git-workflow.md`.
    Если файл недоступен — используй встроенные команды:
 
 ```bash

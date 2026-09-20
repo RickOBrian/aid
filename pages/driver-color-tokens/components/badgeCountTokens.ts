@@ -88,7 +88,7 @@ function cssVarBlock(vars: BadgeCountColorVars): string {
 /**
  * Scoped (non-global) CSS custom properties for `.ds-badge-count-root`.
  * Day values are the default; `[data-theme="night"]` overrides them —
- * matches the ambient theming convention from `skills/_shared/platforms.md`.
+ * matches the ambient theming convention from `skills/_shared/standards/platforms.md`.
  * Both blocks resolve to the same colors here (theme-independent tokens).
  */
 export const BADGE_COUNT_TOKEN_STYLE = `

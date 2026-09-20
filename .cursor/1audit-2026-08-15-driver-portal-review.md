@@ -120,7 +120,7 @@ mode: read-only
 
 ## 7. Changelog JSON — canonical schema
 
-Все 4 файла соответствуют `skills/_shared/changelog-guide.md`:
+Все 4 файла соответствуют `skills/_shared/standards/changelog-guide.md`:
 
 - `artifact`, `currentVersion`, `entries[]`
 - `entries[].version/date/author/type`
