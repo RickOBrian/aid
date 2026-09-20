@@ -80,7 +80,7 @@ When a new component is proposed:
    - `variants`: known variants (for example `primary`, `secondary`, `ghost`);
    - `modes`: known modes (for example `light`, `dark`, `mobile`, `desktop`);
    - `placement`: proposed component path relative to `componentsRoot`
-     (for example `components/Button/Button.tsx`);
+     (for example components/Button/Button.tsx);
    - `confidence`: `high` | `medium` | `low` based on naming and design clarity.
    - `namingException`: `true` | `false` — component name deviates from DS
      naming standard (Role+Entity, Item suffix rules);

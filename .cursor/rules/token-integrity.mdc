@@ -105,7 +105,7 @@ The following tokens are required but do not exist in the current product scope.
 Before implementation:
 
 - confirm which gaps should be created as new tokens;
-- specify the target collection and file (for example `color`, `pages/driver-color-tokens/colorData.ts`);
+- specify the target collection and file (for example `color`, `pages/driver-color-tokens/data.ts`);
 - or specify existing tokens to reuse instead.
 
 Do not proceed with implementation until the user resolves all gaps.

@@ -92,6 +92,33 @@ function parseFrontmatter(src) {
 
 const files = walk(DOCS_ROOT);
 const index = buildIndex('.');
+
+/* правила Cursor и скиллы — проверяются только на живость ссылок:
+   у них своя форма, но битая ссылка ломает их так же */
+const REF_ONLY = ['.cursor/rules', 'skills'];
+for (const scope of REF_ONLY) {
+  const found = [];
+  const collect = (dir) => {
+    for (const entry of readdirSync(join(repoRoot, dir))) {
+      if (entry === 'node_modules' || entry === '_shared') continue;
+      const rel = join(dir, entry);
+      if (statSync(join(repoRoot, rel)).isDirectory()) collect(rel);
+      else if (entry.endsWith('.md') || entry.endsWith('.mdc')) found.push(rel);
+    }
+  };
+  collect(scope);
+  for (const file of found) {
+    const src = readFileSync(join(repoRoot, file), 'utf-8');
+    const refs = new Set([...src.matchAll(/`([A-Za-z0-9_./-]+\.(?:md|mdc|json|ts|tsx|mjs|js))`/g)].map((m) => m[1]));
+    for (const ref of refs) {
+      if (existsSync(join(repoRoot, ref))) continue;
+      const hits = index.get(basename(ref));
+      if (!hits) err(file, 'dead-ref', `ссылка в никуда: ${ref}`);
+      else if (ref.includes('/') && !hits.some((h) => h.endsWith(ref)))
+        err(file, 'wrong-path', `неверный путь: ${ref} (файл есть: ${hits[0]})`);
+    }
+  }
+}
 const namesSeen = new Map();
 const docs = [];
 

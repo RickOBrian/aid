@@ -66,7 +66,7 @@ gate**.
    - в финальный Review summary (например: «реализовано для: Web, iOS»);
    - в component metadata (`supportedPlatforms` — см.
      `component-gate.mdc` → Component artifact model);
-   - в будущем — в `components/registry.json`, если/когда он появится в
+   - в будущем — в components/registry.json (не создан), если/когда он появится в
      репозитории (сейчас такого файла нет; существующий
      `pages/driver-color-tokens/component-registry.json` — портальный индекс
      review-страниц, не platform-scope реестр).

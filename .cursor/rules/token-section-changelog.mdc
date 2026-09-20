@@ -37,7 +37,7 @@ Changelog **не создаётся** для записей реестра, по
 
 1. JSON: `tokens/<collectionName>-changelog.json` (канон) + зеркало в
    `pages/driver-color-tokens/tokens/` (sync prebuild)
-2. В data-файле раздела: `collectionName` = имя файла без `-changelog.json`
+2. В data-файле раздела: `collectionName` = имя файла без <section>-changelog.json
 3. Внизу страницы:
    - `loadTokenChangelog(collection.collectionName)`
    - `<ChangelogTable data={…} />`

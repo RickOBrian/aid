@@ -43,11 +43,12 @@
 | W05-2 | `scripts/check-docs.mjs`: форма, живость ссылок, сходимость версий, дубли по `name`, сверка с реестром | done |
 | W05-3 | Встроить `check-docs` в `prebuild` портала | отложено до Волны 4 |
 | W05-4 | Починить 28 битых ссылок и 8 неверных путей | done |
-| W05-5 | Починить `.cursor/rules/token-integrity.mdc` — `alwaysApply`-гейт указывает на несуществующий путь | todo |
+| W05-5 | Починить `.cursor/rules/token-integrity.mdc` — `alwaysApply`-гейт указывает на несуществующий путь | done |
 | W05-6 | Починить `CLAUDE.md`: раздел «Скиллы» описывает удалённую `.claude/skills/` | done |
 | W05-7 | Устранить третий дубль: `_shared/ds-component-spec.md` v1.2.0 против `ds-component-spec/SKILL.md` v1.3.0 | done |
 | W05-8 | `cursor-component-pipeline-context.md`: 9 ссылок на непостроенное — перевести в будущее время или вынести в backlog | done |
 | W05-9 | `PROJECT_STRUCTURE.md` генерировать скриптом | todo |
+| W05-12 | Создать `skills/ds-component-spec/TESTING.md` — скилл сам требует этот файл, у соседних скиллов он есть | todo |
 | W05-10 | Мелочи: `.tmp-qa` в gitignore, `docs/specs/ButtonText-spec.md` из корня, `component-build-workflow.md` на место | done |
 | W05-11 | Физическая раскладка `_shared` по жанрам | done — сделано раньше плана: Волна 1 ещё не началась, конфликтовать было не с чем |
 
