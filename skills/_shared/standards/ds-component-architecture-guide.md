@@ -5,7 +5,7 @@ metadata:
   version: "1.5.0"
   status: alpha
   lastReviewed: "2026-09-20"
-  machineFile: null
+  machineFile: component-architecture.json
   kind: standard
   owner: design-system-team
   platforms: [web, ios, android]

@@ -1,0 +1,113 @@
+{
+  "id": "ds-component-architecture-guide",
+  "version": "1.5.0",
+  "status": "alpha",
+  "humanFile": "ds-component-architecture-guide.md",
+  "note": "Машинный слой архитектуры компонентов. Используется при определении уровня чужого компонента, разборе библиотек и распознавании по коду или макету.",
+
+  "levels": [
+    {
+      "id": "item", "order": 1, "label": "Item",
+      "definition": "только контент, без оболочки",
+      "test": "нет фона, формы и собственных отступов",
+      "examples": ["Icon", "Text", "Image", "Number", "Count", "Dot", "AvatarImage"],
+      "alwaysLeaf": true,
+      "ownStates": false,
+      "allowedTokens": ["color", "typography"]
+    },
+    {
+      "id": "surface-view", "order": 2, "label": "Surface View",
+      "definition": "один основной контент-элемент в оболочке",
+      "test": "есть фон или форма вокруг одного контент-элемента; второго именованного слота нет",
+      "examples": ["Badge", "BadgeStatus", "BadgeCount", "Tag", "Chip", "IconSurface", "ButtonIcon", "ButtonText", "Avatar", "AvatarButton", "Switch", "Checkbox", "Radio"],
+      "ownStates": true,
+      "allowedTokens": "all",
+      "note": "вспомогательный элемент допустим, если он не второй именованный слот"
+    },
+    {
+      "id": "structural-view", "order": 3, "label": "Structural View",
+      "definition": "два и более именованных слота, составной макет",
+      "test": "есть несколько именованных зон",
+      "examples": ["ListRow", "MenuRow", "BottomSheetRow", "IslandRow", "TableRow", "StatTile", "FieldCheckbox", "FieldRadio", "IslandProduct", "WidgetBalance", "Banner", "Toast", "EmptyState", "NavBar", "TabBar", "Menu", "BottomSheet", "Dialog", "SidePanel"],
+      "ownStates": true,
+      "allowedTokens": "all"
+    },
+    {
+      "id": "layout", "order": 4, "label": "Layout",
+      "definition": "только расстановка группы компонентов",
+      "test": "нет собственного дизайна, только раскладка",
+      "examples": ["VStack", "HStack", "List", "GroupedList", "Grid", "Carousel", "Wrap"],
+      "ownStates": false,
+      "allowedTokens": ["gap"],
+      "forbidden": ["логика выбора между данными, skeleton, EmptyState и ошибкой"]
+    }
+  ],
+
+  "boundaryCases": [
+    { "case": "Switch / Checkbox / Radio без внешнего Label", "level": "surface-view" },
+    { "case": "то же с внешним Label (FieldCheckbox, FieldRadio)", "level": "structural-view" },
+    { "case": "StatTile", "level": "structural-view", "why": "два равнозначных именованных слота: Label и Value" },
+    { "case": "IconSurface, MediaSurface", "level": "surface-view", "why": "именованные варианты формы, не отдельный уровень" }
+  ],
+
+  "naming": {
+    "formula": "Role + Entity + Qualifier?",
+    "roleFirst": true,
+    "qualifiers": ["Floating", "Compact", "Inline", "Grouped"],
+    "roleFamilies": [
+      { "role": "Button", "level": "surface-view",    "use": "интерактивная оболочка с действием", "examples": ["ButtonText", "ButtonIcon"] },
+      { "role": "Badge",  "level": "surface-view",    "use": "компактный статусный индикатор",     "examples": ["BadgeStatus", "BadgeCount"] },
+      { "role": "Tag",    "level": "surface-view",    "use": "статичная метка",                    "examples": ["TagFilter", "TagCategory"] },
+      { "role": "Chip",   "level": "surface-view",    "use": "интерактивный компактный элемент",   "examples": ["ChipFilter", "ChipInput"] },
+      { "role": "Row",    "level": "structural-view", "use": "строчный компонент",                 "examples": ["ListRow", "MenuRow"] },
+      { "role": "Island", "level": "structural-view", "use": "повторяемый контентный блок",        "examples": ["IslandProduct", "IslandHotel"] },
+      { "role": "Widget", "level": "structural-view", "use": "штучный сценарный блок",             "examples": ["WidgetBalance", "WidgetSummary"] }
+    ],
+    "discriminators": [
+      { "pair": ["Tag", "Chip"], "byWhat": "интерактивность: Tag статичен, Chip интерактивен" },
+      { "pair": ["Island", "Widget"], "byWhat": "повторяемость: Island повторяем и может содержать Grid или List, Widget штучен и не может" }
+    ],
+    "legacyRowPattern": {
+      "form": "Entity + Row",
+      "appliesTo": ["ListRow", "MenuRow", "BottomSheetRow", "IslandRow", "TableRow"],
+      "newComponentsFollowIt": true
+    },
+    "standaloneNames": ["Avatar", "Badge", "Tag", "Chip", "Dialog"],
+    "antipatterns": [
+      { "pattern": "IconItem", "correct": "Icon", "reason": "суффикс Item в самостоятельном компоненте" },
+      { "pattern": "TextSurface", "reason": "Surface как постфикс без смысла" },
+      { "pattern": "ButtonDestructive", "correct": "ButtonText + variant=destructive", "reason": "опасность — вариант оформления, не Entity" },
+      { "pattern": "число или цвет в имени", "reason": "имя описывает роль и содержимое" }
+    ]
+  },
+
+  "slots": {
+    "canonical": ["leading", "content", "trailing", "badge", "header", "footer", "title", "subtitle", "action"],
+    "isSingleCanon": true,
+    "platformSynonymsAllowed": false,
+    "forbiddenExamples": ["leftContent", "startSlot", "rightContent"],
+    "repeatable": {
+      "notation": "cell (repeatable, 2..N)",
+      "spanPropOwner": "child",
+      "spanProps": ["colSpan", "rowSpan"],
+      "doesNotDowngradeLevel": true,
+      "note": "чистый список или сетка без семантики — это Layout, а не Structural View с repeatable slot"
+    }
+  },
+
+  "lifecycle": {
+    "appliesTo": ["BottomSheet", "Dialog", "Menu", "Toast"],
+    "componentOwns": ["анимация появления и исчезновения"],
+    "callerOwns": ["решение показать", "решение скрыть", "передача данных"],
+    "visibilityProp": ["isVisible", "isPresented"],
+    "rule": "компонент не управляет собственным появлением"
+  },
+
+  "appSurface": {
+    "isArchitectureLevel": false,
+    "names": ["AppSurface", "PageSurface", "Screen", "Section", "Zone"],
+    "note": "корневой контейнер экрана: задаёт фон, не управляет UI-логикой"
+  },
+
+  "requirementsByLevel": "component-standards.json → applicability"
+}

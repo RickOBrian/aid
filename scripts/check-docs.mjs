@@ -198,6 +198,43 @@ for (const file of files) {
   docs.push({ file, ...fm });
 }
 
+/* согласованность машинных слоёв между собой:
+   один и тот же факт не должен расходиться между JSON-файлами */
+const machine = {};
+for (const doc of docs)
+  if (doc.machineFile && doc.machineFile !== 'null') {
+    const mf = join(dirname(doc.file), doc.machineFile);
+    if (existsSync(join(repoRoot, mf))) machine[doc.name] = { path: mf, json: JSON.parse(readFileSync(join(repoRoot, mf), 'utf-8')) };
+  }
+
+const same = (a, b) => JSON.stringify([...new Set(a)].sort()) === JSON.stringify([...new Set(b)].sort());
+const pairs = (list) => list.map((x) => (Array.isArray(x) ? x : x.pair).slice().sort().join('+'));
+const cross = [];
+const cs = machine['component-standards']?.json;
+const st = machine['component-states-guide']?.json;
+const ar = machine['ds-component-architecture-guide']?.json;
+const nm = machine['naming-conventions']?.json;
+
+if (cs && st) {
+  if (!same(cs.states.list, st.states.map((x) => x.figma)))
+    cross.push(['состояния', 'component-standards.json ↔ component-states.json']);
+  if (!same(pairs(cs.states.invalidCombinations), pairs(st.invalidCombinations)))
+    cross.push(['недопустимые комбинации состояний', 'component-standards.json ↔ component-states.json']);
+}
+if (cs && ar) {
+  if (!same(cs.architectureLevels, ar.levels.map((l) => l.id)))
+    cross.push(['уровни архитектуры', 'component-standards.json ↔ component-architecture.json']);
+  if (!same(cs.slots.canonical, ar.slots.canonical))
+    cross.push(['канон слотов', 'component-standards.json ↔ component-architecture.json']);
+}
+if (nm && ar && !same(nm.slots.canonical, ar.slots.canonical))
+  cross.push(['канон слотов', 'naming-conventions.json ↔ component-architecture.json']);
+if (cs && nm && !same(cs.variants.canonical, nm.variants.canonical))
+  cross.push(['канон вариантов', 'component-standards.json ↔ naming-conventions.json']);
+
+for (const [what, where] of cross)
+  err('машинные слои', 'machine-cross', `${what} разошлись: ${where}`);
+
 /* дубли по name */
 for (const [name, list] of namesSeen)
   if (list.length > 1) err(list[1], 'duplicate-name', `name="${name}" уже занят: ${list.join(', ')}`);
