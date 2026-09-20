@@ -1,9 +1,9 @@
 import type { ComponentApiSpec } from '../ComponentApiSummary';
 import type { CodeSnippetPlatform } from '../ComponentCodeSnippet';
-import type { DriverColorMode } from './anatomyTypes';
+import type { ProductColorMode } from './anatomyTypes';
 
 export interface BadgeDotSelection {
-  mode: DriverColorMode;
+  mode: ProductColorMode;
 }
 
 export const badgeDotApiSpec: ComponentApiSpec = {
@@ -128,7 +128,7 @@ export function buildBadgeDotSnippets(selection: BadgeDotSelection): CodeSnippet
       id: 'react',
       label: 'React / TSX',
       code: buildReactSnippet(selection),
-      sourcePath: 'pages/driver-color-tokens/components/BadgeDot.tsx',
+      sourcePath: 'pages/aid-portal/components/BadgeDot.tsx',
     },
     {
       id: 'swiftui',

@@ -1,8 +1,8 @@
 import { formatColorModeValueLabel } from '../dsColorSwatch';
 import { switchTokenSources } from './switchTokens';
-import type { AnatomyProperty, DriverColorMode, ResolvedAnatomyProperty } from './anatomyTypes';
+import type { AnatomyProperty, ProductColorMode, ResolvedAnatomyProperty } from './anatomyTypes';
 
-function findSwitchTokenValue(tokenRef: string, mode: DriverColorMode) {
+function findSwitchTokenValue(tokenRef: string, mode: ProductColorMode) {
   const source = switchTokenSources.find((candidate) => candidate.name === tokenRef);
   if (!source) {
     return null;
@@ -12,7 +12,7 @@ function findSwitchTokenValue(tokenRef: string, mode: DriverColorMode) {
 
 export function resolveSwitchAnatomyProperty(
   property: AnatomyProperty,
-  mode: DriverColorMode,
+  mode: ProductColorMode,
 ): ResolvedAnatomyProperty {
   if (property.kind !== 'semantic-token' || !property.tokenRef) {
     return {
@@ -34,7 +34,7 @@ export function resolveSwitchAnatomyProperty(
 
 export function resolveSwitchComputedProperty(
   property: AnatomyProperty,
-  mode: DriverColorMode,
+  mode: ProductColorMode,
   computed: CSSStyleDeclaration | null,
 ): ResolvedAnatomyProperty {
   const base = resolveSwitchAnatomyProperty(property, mode);

@@ -1,8 +1,8 @@
 import { formatColorModeValueLabel } from '../dsColorSwatch';
 import { badgeDotTokenSources } from './badgeDotTokens';
-import type { AnatomyProperty, DriverColorMode, ResolvedAnatomyProperty } from './anatomyTypes';
+import type { AnatomyProperty, ProductColorMode, ResolvedAnatomyProperty } from './anatomyTypes';
 
-function findBadgeDotTokenValue(tokenRef: string, mode: DriverColorMode) {
+function findBadgeDotTokenValue(tokenRef: string, mode: ProductColorMode) {
   const source = badgeDotTokenSources.find((candidate) => candidate.name === tokenRef);
   if (!source) {
     return null;
@@ -12,7 +12,7 @@ function findBadgeDotTokenValue(tokenRef: string, mode: DriverColorMode) {
 
 export function resolveBadgeDotAnatomyProperty(
   property: AnatomyProperty,
-  mode: DriverColorMode,
+  mode: ProductColorMode,
 ): ResolvedAnatomyProperty {
   if (property.kind !== 'semantic-token' || !property.tokenRef) {
     return {
@@ -38,7 +38,7 @@ export function resolveBadgeDotAnatomyProperty(
 
 export function resolveBadgeDotComputedProperty(
   property: AnatomyProperty,
-  mode: DriverColorMode,
+  mode: ProductColorMode,
   computed: CSSStyleDeclaration | null,
 ): ResolvedAnatomyProperty {
   const base = resolveBadgeDotAnatomyProperty(property, mode);

@@ -375,11 +375,11 @@ origin/main: 89bbf35
 В нём находятся незакоммиченные Presentbook Tools изменения:
 
 ```text
-pages/driver-color-tokens/App.tsx                 modified
-pages/driver-color-tokens/hubData.ts              modified
-pages/driver-color-tokens/ToolsHubPage.tsx        untracked
-pages/driver-color-tokens/TokenComparatorPluginPage.tsx  untracked
-pages/driver-color-tokens/tools-registry.json     untracked
+pages/aid-portal/App.tsx                 modified
+pages/aid-portal/hubData.ts              modified
+pages/aid-portal/ToolsHubPage.tsx        untracked
+pages/aid-portal/TokenComparatorPluginPage.tsx  untracked
+pages/aid-portal/tools-registry.json     untracked
 ```
 
 Они не находятся в `origin/main`. Локальная `presentbook/icons` устарела;
@@ -395,11 +395,11 @@ pages/driver-color-tokens/tools-registry.json     untracked
 Patch содержит **только**:
 
 ```text
-pages/driver-color-tokens/App.tsx
-pages/driver-color-tokens/hubData.ts
-pages/driver-color-tokens/ToolsHubPage.tsx
-pages/driver-color-tokens/TokenComparatorPluginPage.tsx
-pages/driver-color-tokens/tools-registry.json
+pages/aid-portal/App.tsx
+pages/aid-portal/hubData.ts
+pages/aid-portal/ToolsHubPage.tsx
+pages/aid-portal/TokenComparatorPluginPage.tsx
+pages/aid-portal/tools-registry.json
 ```
 
 Patch не содержит `tools/figma-token-comparator/**`. Изменения tracked files
@@ -605,15 +605,15 @@ branch: cursor/token-comparator-v0.1.0
 
 Modified tracked:
 
-- `pages/driver-color-tokens/App.tsx` (+14 строк)
-- `pages/driver-color-tokens/hubData.ts` (+17 строк)
+- `pages/aid-portal/App.tsx` (+14 строк)
+- `pages/aid-portal/hubData.ts` (+17 строк)
 - `tools/figma-token-comparator/package.json` (+3/-1)
 
 Untracked:
 
-- `pages/driver-color-tokens/TokenComparatorPluginPage.tsx`
-- `pages/driver-color-tokens/ToolsHubPage.tsx`
-- `pages/driver-color-tokens/tools-registry.json`
+- `pages/aid-portal/TokenComparatorPluginPage.tsx`
+- `pages/aid-portal/ToolsHubPage.tsx`
+- `pages/aid-portal/tools-registry.json`
 - `tools/figma-token-comparator/README-install.txt`
 - `tools/figma-token-comparator/scripts/release.mjs`
 
@@ -638,7 +638,7 @@ Untracked:
 - Patch: `/tmp/aid-main-wip-pre-cleanup.patch`
   - Размер: ~19 KB (~603 строки)
   - SHA-256: `f90b7a4ac32a75052e87dbf73d1ec431c867c04368f9ec599079f2fea768fd28`
-  - Scope: `pages/driver-color-tokens/` + `tools/figma-token-comparator/`
+  - Scope: `pages/aid-portal/` + `tools/figma-token-comparator/`
 
 - Archive branch: `archive/main-wip-pre-cleanup-20260909 → 33dc4c3`
 
@@ -648,8 +648,8 @@ Untracked:
 
 Tracked diff (vs локальный HEAD 33dc4c3) — все три файла идентичны `origin/main`:
 
-- `pages/driver-color-tokens/App.tsx`
-- `pages/driver-color-tokens/hubData.ts`
+- `pages/aid-portal/App.tsx`
+- `pages/aid-portal/hubData.ts`
 - `tools/figma-token-comparator/package.json`
 
 Untracked:
@@ -666,9 +666,9 @@ Untracked:
 
 - Каталог: `/tmp/aid-main-wip-presentbook-20260909/`
 - Файлы:
-  - `pages/driver-color-tokens/TokenComparatorPluginPage.tsx`
-  - `pages/driver-color-tokens/ToolsHubPage.tsx`
-  - `pages/driver-color-tokens/tools-registry.json`
+  - `pages/aid-portal/TokenComparatorPluginPage.tsx`
+  - `pages/aid-portal/ToolsHubPage.tsx`
+  - `pages/aid-portal/tools-registry.json`
 - Manifest: `/tmp/aid-main-wip-presentbook-20260909/MANIFEST.sha256`
 
 SHA-256 всех трёх файлов совпали с оригиналами.
@@ -677,8 +677,8 @@ SHA-256 всех трёх файлов совпали с оригиналами.
 
 ```bash
 git restore -- \
-  pages/driver-color-tokens/App.tsx \
-  pages/driver-color-tokens/hubData.ts \
+  pages/aid-portal/App.tsx \
+  pages/aid-portal/hubData.ts \
   tools/figma-token-comparator/package.json
 ```
 
@@ -695,9 +695,9 @@ Presentbook untracked-файлы не удалялись на этом этап�
 
 ```bash
 rm -- \
-  pages/driver-color-tokens/TokenComparatorPluginPage.tsx \
-  pages/driver-color-tokens/ToolsHubPage.tsx \
-  pages/driver-color-tokens/tools-registry.json
+  pages/aid-portal/TokenComparatorPluginPage.tsx \
+  pages/aid-portal/ToolsHubPage.tsx \
+  pages/aid-portal/tools-registry.json
 
 git pull --ff-only origin main
 ```

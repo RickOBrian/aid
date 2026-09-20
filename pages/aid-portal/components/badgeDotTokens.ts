@@ -1,6 +1,6 @@
 /**
  * Semantic Driver color tokens for the BadgeDot component.
- * Source of truth: `pages/driver-color-tokens/data.ts` (Icons section).
+ * Source of truth: `pages/aid-portal/data.ts` (Icons section).
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *

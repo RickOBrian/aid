@@ -1,6 +1,6 @@
 import type { ComponentApiSpec } from '../ComponentApiSummary';
 import type { CodeSnippetPlatform } from '../ComponentCodeSnippet';
-import type { DriverColorMode } from './anatomyTypes';
+import type { ProductColorMode } from './anatomyTypes';
 
 /**
  * BadgeCount API contract + code snippet generation for the review page.
@@ -8,7 +8,7 @@ import type { DriverColorMode } from './anatomyTypes';
  */
 
 export interface BadgeCountSelection {
-  mode: DriverColorMode;
+  mode: ProductColorMode;
   value: number;
 }
 
@@ -158,7 +158,7 @@ export function buildBadgeCountSnippets(selection: BadgeCountSelection): CodeSni
       id: 'react',
       label: 'React / TSX',
       code: buildReactSnippet(selection),
-      sourcePath: 'pages/driver-color-tokens/components/BadgeCount.tsx',
+      sourcePath: 'pages/aid-portal/components/BadgeCount.tsx',
     },
     {
       id: 'swiftui',

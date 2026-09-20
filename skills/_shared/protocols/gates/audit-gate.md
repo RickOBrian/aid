@@ -50,10 +50,10 @@ After product context is confirmed, resolve the audit scope in this order:
 
 For Driver:
 
-- canonical token values live in `pages/driver-color-tokens/*Data.ts`;
+- canonical token values live in `pages/aid-portal/*Data.ts`;
 - `tokens/*-changelog.json` are historical collection changelogs for other
   products and must not be used as Driver audit sources;
-- `pages/driver-color-tokens/token-changelog-registry.json` indexes collection
+- `pages/aid-portal/token-changelog-registry.json` indexes collection
   changelogs and can be used as a reference;
 - `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
   `relatedPrototypes`. It can be used as a Figma reference, but not as a

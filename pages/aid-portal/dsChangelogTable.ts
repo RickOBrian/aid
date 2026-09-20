@@ -1,5 +1,5 @@
 /**
- * Переиспользуемые стили таблиц и UI-хрома DS-портала (`pages/driver-color-tokens/`).
+ * Переиспользуемые стили таблиц и UI-хрома DS-портала (`pages/aid-portal/`).
  *
  * Новые разделы токенов обязаны подключать:
  * - `DS_TOKEN_TABLE_STYLE` + классы `ds-token-table-wrap` / `ds-token-table`

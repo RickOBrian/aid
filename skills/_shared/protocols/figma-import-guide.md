@@ -39,7 +39,7 @@ metadata:
 
 | Источник | Роль |
 |---|---|
-| **Product token data** (`pages/driver-color-tokens/*Data.ts` для Driver) | Canonical token values |
+| **Product token data** (`pages/aid-portal/*Data.ts` для Driver) | Canonical token values |
 | **Figma file (design)** | Design intent, variants, modes — источник для import/discovery |
 | **`src/pages/FigmaStyles/`** | Reference-only dump; **не** source of truth |
 | **`tokens/*-changelog.json`** | Version history; не источник значений |
@@ -106,7 +106,7 @@ per-component exception. Any future rename to `Light`/`Dark` requires an
 explicit product and release decision.
 
 Canonical metadata: `products/driver/product.json` → `colorModeMapping`.
-Source fields in `pages/driver-color-tokens/data.ts`: `day` (light), `night`
+Source fields in `pages/aid-portal/data.ts`: `day` (light), `night`
 (dark). Portal column labels stay `Day` / `Night`.
 
 Token names such as `Primary light ind` are semantic roles, not color mode

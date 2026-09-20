@@ -16,8 +16,8 @@
   "iconCount": 129,
   "sections": ["brands", "controls", "informative", "actions", "addresses"],
   "figmaSource": "https://www.figma.com/design/n6LppQbTv85yI29h6u30DI/Rider-Icons?node-id=3691-4",
-  "sourcePath": "pages/driver-color-tokens/products/rider/iconsData.ts",
-  "assetsPath": "pages/driver-color-tokens/public/icons/rider/",
+  "sourcePath": "pages/aid-portal/products/rider/iconsData.ts",
+  "assetsPath": "pages/aid-portal/public/icons/rider/",
   "status": "pending",
   "created": "2026-08-26",
   "author": "sergej"

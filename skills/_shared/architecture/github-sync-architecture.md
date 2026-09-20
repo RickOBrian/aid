@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: github-sync-architecture
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   kind: architecture
   owner: design-system-team
   status: stable
@@ -22,7 +22,7 @@ description: >
 > Token Comparator (`tools/figma-token-comparator/`) отправляет решения из Figma
 > через standalone backend `aid-registry-api` в GitHub Pull Request. Канонический
 > реестр — `decisions-registry.json`; GitHub PR body — отдельная
-> человекочитаемая review-проекция. Presentbook (`pages/driver-color-tokens/`)
+> человекочитаемая review-проекция. Presentbook (`pages/aid-portal/`)
 > с 2026-09-08 полностью восстановлен в `main` после структурного инцидента.
 > Этот файл — источник правды для последующих промтов, реализации и аудитов
 > по registry proposal pipeline и по Presentbook git/deploy workflow.
@@ -37,7 +37,7 @@ description: >
 | Продукт | Назначение | Расположение | Vercel-проект |
 |---|---|---|---|
 | **Token Comparator** | Figma-плагин для scan, comparison, решения и proposal в общий registry | `tools/figma-token-comparator/` | `aid-registry-api` для backend |
-| **Presentbook** | Web-витрина и review-среда токенов/компонентов | `pages/driver-color-tokens/` | `aid-ds` |
+| **Presentbook** | Web-витрина и review-среда токенов/компонентов | `pages/aid-portal/` | `aid-ds` |
 
 Backend Token Comparator физически и инфраструктурно отделён от Presentbook:
 
@@ -47,7 +47,7 @@ Token Comparator
         └── standalone Vercel project: aid-registry-api
 
 Presentbook
-  └── pages/driver-color-tokens/
+  └── pages/aid-portal/
         └── separate Vercel project: aid-ds
 ```
 
@@ -146,7 +146,7 @@ production deployment check.
 
 Proposal branches `registry/propose-*` намеренно содержат только файл
 `decisions-registry.json`. Поэтому Vercel checks для проектов с Root Directory
-`tools/figma-token-comparator/server` или `pages/driver-color-tokens` могут
+`tools/figma-token-comparator/server` или `pages/aid-portal` могут
 показывать Error: этих директорий в sparse proposal branch нет.
 
 Это не является ошибкой registry submission и не блокирует review предложений.
@@ -159,17 +159,25 @@ Proposal branches `registry/propose-*` намеренно содержат то�
 ## 3a. Presentbook git/deploy workflow
 
 > Добавлено 2026-09-08 после структурного инцидента (см. §9a). Обязательно к
-> прочтению перед любой работой над `pages/driver-color-tokens/`.
+> прочтению перед любой работой над `pages/aid-portal/`.
 
 ### `aid-ds`
 
 | Параметр | Значение |
 |---|---|
 | Vercel project | `aid-ds` |
-| Root Directory | `pages/driver-color-tokens` |
+| Root Directory | `pages/aid-portal` |
 | Production URL | `https://aid-ds.vercel.app` |
 | Production Branch | `main` |
 | Production promote | **Ручной, отдельное явное решение** — не auto-promote при каждом merge |
+
+> **Переименование 2026-09-20.** Директория переехала
+> `pages/driver-color-tokens` → `pages/aid-portal`: driver — один из
+> продуктов, а портал обслуживает все. Root Directory в настройках проекта
+> `aid-ds` живёт **в Vercel, а не в репозитории**, и меняется вручную.
+> Пока значения расходятся, сборки падают: в git новый путь, в настройке
+> старый. Обоснование — ADR-020, порядок операций — `docs/standards-alpha/
+> PLAN.md`, Волна 3.5.
 
 ### Принцип: merge ≠ promote
 
@@ -197,7 +205,7 @@ pages работают корректно.
 ```text
 1. git checkout main && git pull origin main
 2. git checkout -b presentbook/<short-task-name>
-3. Локальная разработка: cd pages/driver-color-tokens && npm run dev
+3. Локальная разработка: cd pages/aid-portal && npm run dev
 4. Pre-push gate: npm run build && npm run typecheck:api — обязательны
    до commit. Если build падает локально — не продолжать.
 5. Commit (логические, не смешанные) + push feature branch
@@ -213,12 +221,12 @@ pages работают корректно.
 Перед началом любой работы или после checkout проверять наличие:
 
 ```text
-pages/driver-color-tokens/App.tsx
-pages/driver-color-tokens/main.tsx
-pages/driver-color-tokens/index.html
-pages/driver-color-tokens/vite.config.ts
-pages/driver-color-tokens/package.json
-pages/driver-color-tokens/scripts/*.mjs
+pages/aid-portal/App.tsx
+pages/aid-portal/main.tsx
+pages/aid-portal/index.html
+pages/aid-portal/vite.config.ts
+pages/aid-portal/package.json
+pages/aid-portal/scripts/*.mjs
 products/registry.json
 products/driver/product.json
 products/rider/product.json
@@ -719,7 +727,7 @@ Test artifacts не трактовать как approved registry decisions.
 `main` никогда не содержал полного Presentbook. История разошлась на ветке
 `cursor/propose-decision-endpoint`: она была создана с нуля как API-only stub
 (коммит `6d7982b`) и смержена в `main` через PR #4, не принеся с собой frontend.
-`pages/driver-color-tokens/` в `main` содержал только 18 API-файлов вместо
+`pages/aid-portal/` в `main` содержал только 18 API-файлов вместо
 полного Presentbook (~586 файлов + `products/`).
 
 Production жил на устаревшем ручном деплое (`npx vercel --prod`, 30 Aug,
@@ -729,23 +737,23 @@ Production жил на устаревшем ручном деплое (`npx verc
 | Deployment | Статус | Причина |
 |---|---|---|
 | `aid-4hpajnt6m` | Error | `MODULE_NOT_FOUND` на `prebuild` — `scripts/*.mjs` отсутствовали в `main` |
-| `aid-73ovbnhg3` | Canceled | Ignored Build Step: diff не затрагивал `pages/driver-color-tokens/` |
+| `aid-73ovbnhg3` | Canceled | Ignored Build Step: diff не затрагивал `pages/aid-portal/` |
 
 Локально к моменту диагностики также присутствовал гибрид: 578 staged файлов
 восстановлены из `origin/cursor/figma-styles-page-visualization`, но не
 закоммичены — рабочее дерево не совпадало ни со старым, ни с новым состоянием.
 
 Миграция backend (`5c63dc4`, 06.09.2026) не была причиной: она не вносила
-изменений в `pages/driver-color-tokens/`.
+изменений в `pages/aid-portal/`.
 
 ### Восстановление
 
 1. Локальный localhost восстановлен немедленно через checkout нужных путей
-   из `origin/cursor/figma-styles-page-visualization` (`pages/driver-color-tokens/`,
+   из `origin/cursor/figma-styles-page-visualization` (`pages/aid-portal/`,
    `products/`) без commit/push/deploy — production не был затронут.
 2. Подготовлен conflict-resolution checklist для структурного merge
    `cursor/figma-styles-page-visualization → main`.
-3. Legacy co-located registry API (`pages/driver-color-tokens/api/registry/`,
+3. Legacy co-located registry API (`pages/aid-portal/api/registry/`,
    связанные `_lib` файлы, `vitest.config.ts`) удалён при merge — pre-check
    подтвердил, что плагин использует исключительно
    `https://aid-registry-api.vercel.app`, co-located path нигде не
@@ -884,7 +892,7 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
     `Number.isFinite`, но отдельный unit test на этот случай ещё не добавлен.
 
 11. **CI guard против повторного расхождения main/Presentbook.**
-    GitHub Action: `npm run build` в `pages/driver-color-tokens/` на каждый
+    GitHub Action: `npm run build` в `pages/aid-portal/` на каждый
     PR, затрагивающий эту директорию. Блокирующая проверка: директория не
     может содержать меньше N файлов или отсутствовать `App.tsx` /
     `scripts/`. Предотвращает повторение инцидента §9a. Не реализовано.

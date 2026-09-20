@@ -11,7 +11,7 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * component.
  *
  * Tokens: Controls · Checked / Unchecked / Key, Strokes · Primary
- * (`pages/driver-color-tokens/data.ts`). Day → light mode, Night → dark mode
+ * (`pages/aid-portal/data.ts`). Day → light mode, Night → dark mode
  * (`products/driver/product.json` → `colorModeMapping`).
  *
  * States: default, hover (Web only), focus-visible, disabled, loading.

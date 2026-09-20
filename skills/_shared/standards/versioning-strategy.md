@@ -108,8 +108,8 @@ Driver artifact paths (review sandbox while `componentsRoot: null`):
 | Concern | Path |
 |---|---|
 | Changelog | `components/{componentId}-changelog.json` |
-| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` |
-| Registry | `pages/driver-color-tokens/component-registry.json` |
+| Metadata | `pages/aid-portal/components/{id}.meta.json` |
+| Registry | `pages/aid-portal/component-registry.json` |
 | Pending | `changes/driver/pending/component-*.json` |
 
 Reference component: **Switch** (`componentId: switch`, route `/components/switch`,
@@ -235,7 +235,7 @@ Release commit (release files only) → push via git-push.mdc
 
 - Scope: one or more token collections (`spacing-sem`, `colors-semantic`, …)
 - Artifacts: `tokens/*-changelog.json`, `currentVersion` bump
-- Driver mirror: `pages/driver-color-tokens/tokens/` (prebuild sync)
+- Driver mirror: `pages/aid-portal/tokens/` (prebuild sync)
 - **Не менять** token values during release — только changelog metadata
 
 ### Component release

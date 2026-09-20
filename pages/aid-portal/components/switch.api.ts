@@ -1,6 +1,6 @@
 import type { ComponentApiSpec } from '../ComponentApiSummary';
 import type { CodeSnippetPlatform } from '../ComponentCodeSnippet';
-import type { DriverColorMode } from './anatomyTypes';
+import type { ProductColorMode } from './anatomyTypes';
 
 /**
  * Switch API contract + code snippet generation for the review page.
@@ -10,7 +10,7 @@ import type { DriverColorMode } from './anatomyTypes';
 export type SwitchPreviewState = 'default' | 'hover' | 'focus' | 'disabled' | 'loading';
 
 export interface SwitchSelection {
-  mode: DriverColorMode;
+  mode: ProductColorMode;
   checked: boolean;
   state: SwitchPreviewState;
 }
@@ -222,7 +222,7 @@ export function buildSwitchSnippets(selection: SwitchSelection): CodeSnippetPlat
       id: 'react',
       label: 'React / TSX',
       code: buildReactSnippet(selection),
-      sourcePath: 'pages/driver-color-tokens/components/Switch.tsx',
+      sourcePath: 'pages/aid-portal/components/Switch.tsx',
     },
     {
       id: 'swiftui',

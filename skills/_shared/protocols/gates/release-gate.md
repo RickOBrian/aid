@@ -53,9 +53,9 @@ For Driver:
 - released changes live in `changes/driver/released/`;
 - token changelogs: `tokens/*-changelog.json` (Driver collections only);
 - component changelogs: `components/*-changelog.json` (Product DS Components);
-- component registry: `pages/driver-color-tokens/component-registry.json`;
-- component metadata: `pages/driver-color-tokens/components/*.meta.json`;
-- `pages/driver-color-tokens/token-changelog-registry.json` indexes token
+- component registry: `pages/aid-portal/component-registry.json`;
+- component metadata: `pages/aid-portal/components/*.meta.json`;
+- `pages/aid-portal/token-changelog-registry.json` indexes token
   collection changelogs and can be used as a reference.
 
 Do not release tokens, components or skills across multiple products in a single
@@ -174,12 +174,12 @@ After SemVer and changelog are confirmed:
 1. For token releases:
    - update or create collection changelog files (for example
      `tokens/colors-semantic-changelog.json` or Driver-equivalent when defined);
-   - update `pages/driver-color-tokens/token-changelog-registry.json` if needed.
+   - update `pages/aid-portal/token-changelog-registry.json` if needed.
 2. For component releases:
    - update or create `components/{componentId}-changelog.json`;
-   - update `pages/driver-color-tokens/components/{id}.meta.json`
+   - update `pages/aid-portal/components/{id}.meta.json`
      (`currentVersion`, `status`);
-   - update `pages/driver-color-tokens/component-registry.json` if needed.
+   - update `pages/aid-portal/component-registry.json` if needed.
 3. For skills releases:
    - update or create skill changelog files (when skills changelog structure
      is defined).

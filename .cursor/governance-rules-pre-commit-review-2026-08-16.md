@@ -43,9 +43,9 @@
 
 | Ссылка в правиле | Факт | Статус |
 |---|---|---|
-| `dsChangelogTable.ts`, `ChangelogTable.tsx`, `loadTokenChangelog.ts`, `DsPageHeader.tsx` | Есть в `pages/driver-color-tokens/` | ✅ |
+| `dsChangelogTable.ts`, `ChangelogTable.tsx`, `loadTokenChangelog.ts`, `DsPageHeader.tsx` | Есть в `pages/aid-portal/` | ✅ |
 | `token-changelog-registry.json` | Есть | ✅ |
-| `scripts/ensure-token-changelogs.mjs` | Фактически: `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs` | ⚠️ путь без префикса портала — двусмысленно |
+| `scripts/ensure-token-changelogs.mjs` | Фактически: `pages/aid-portal/scripts/ensure-token-changelogs.mjs` | ⚠️ путь без префикса портала — двусмысленно |
 | `semver-guide.md` | Фактически: `docs/semver-guide.md` | ⚠️ нет полного пути |
 | `tokens/<collection>-changelog.json` | 6 файлов на месте | ✅ |
 | Перекрёстные `.mdc` ссылки | Все три файла существуют (untracked) | ✅ |
@@ -61,7 +61,7 @@
 | Классы changelog: `ds-token-table dctp-table dctp-changelog-table` | ✅ в `ChangelogTable.tsx` |
 | `DS_TOKEN_TABLE_STYLE` + `ds-token-table` | ✅ на 5 table-страницах; `IconsPage` — grid UX, без token-table (ожидаемо) |
 | `DsPageHeader` | ✅ на всех 6 страницах |
-| `prebuild` → `ensure-token-changelogs.mjs` | ✅ в `pages/driver-color-tokens/package.json` |
+| `prebuild` → `ensure-token-changelogs.mjs` | ✅ в `pages/aid-portal/package.json` |
 | Эталонные страницы в `ds-portal-table-standard` | ⚠️ 5 из 6; `IconsPage` не указан (другой layout) |
 | «Отложенные Spacing, Radius» в `token-section-changelog` | ⚠️ устарело — разделы уже активны с 2026-08-16 |
 
@@ -93,7 +93,7 @@ chore(rules): add Driver portal governance rules
 
 1. Отдельный коммит — обновить `RULES_OVERVIEW.md` (Portal governance subsection)
 2. Позже — выровнять текст `token-style-changelog-gate` / `token-section-changelog` с `product-context` (pending vs immediate bump)
-3. Поправить пути: `docs/semver-guide.md`, `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs`
+3. Поправить пути: `docs/semver-guide.md`, `pages/aid-portal/scripts/ensure-token-changelogs.mjs`
 4. Убрать «отложенный Spacing, Radius» в `token-section-changelog`
 
 ---

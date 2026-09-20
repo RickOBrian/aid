@@ -28,7 +28,7 @@ import { DS_VALUE_META_STYLE } from './dsValueMeta';
 import { loadComponentChangelog } from './loadComponentChangelog';
 import { loadComponentPendingItems } from './loadComponentPending';
 import switchMeta from './components/switch.meta.json';
-import type { DriverColorMode } from './components/anatomyTypes';
+import type { ProductColorMode } from './components/anatomyTypes';
 
 const switchChangelog = loadComponentChangelog('switch');
 const switchPendingItems = loadComponentPendingItems('switch');
@@ -428,8 +428,8 @@ function SelectionControls({
   state,
   onStateChange,
 }: {
-  mode: DriverColorMode;
-  onModeChange: (next: DriverColorMode) => void;
+  mode: ProductColorMode;
+  onModeChange: (next: ProductColorMode) => void;
   checked: boolean;
   onCheckedChange: (next: boolean) => void;
   state: SwitchPreviewState;
@@ -504,7 +504,7 @@ export function SwitchPage() {
   const { copyText, copyNotice } = useCopyNotice();
   const [activeTab, setActiveTab] = useState<SwitchTab>('preview');
 
-  const [previewMode, setPreviewMode] = useState<DriverColorMode>('day');
+  const [previewMode, setPreviewMode] = useState<ProductColorMode>('day');
   const [previewChecked, setPreviewChecked] = useState(true);
   const [previewState, setPreviewState] = useState<SwitchPreviewState>('default');
 
@@ -600,7 +600,7 @@ export function SwitchPage() {
             {activeTab === 'tokens' && (
               <section className="dsw-section" role="tabpanel">
                 <h2>Semantic tokens</h2>
-                <p>Значения из pages/driver-color-tokens/data.ts через components/switchTokens.ts.</p>
+                <p>Значения из pages/aid-portal/data.ts через components/switchTokens.ts.</p>
                 <div className="ds-token-table-wrap">
                   <table className="ds-token-table dsw-switch-token-table">
                     <thead>

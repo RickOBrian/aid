@@ -45,15 +45,15 @@ confirmed.
 After product context is confirmed, resolve the token source in this order:
 
 1. `tokenDataRoot` from `products/<id>/product.json` (for Driver:
-   `pages/driver-color-tokens/*Data.ts` files).
+   `pages/aid-portal/*Data.ts` files).
 2. `tokensRoot` from `products/<id>/product.json` (for Driver: `null`).
 3. `relatedPrototypes` from `products/<id>/product.json` as reference only.
 
 For Driver:
 
-- canonical token values live in `pages/driver-color-tokens/*Data.ts`;
+- canonical token values live in `pages/aid-portal/*Data.ts`;
 - `tokens/*-changelog.json` are canonical collection changelogs;
-- `pages/driver-color-tokens/token-changelog-registry.json` indexes
+- `pages/aid-portal/token-changelog-registry.json` indexes
   collection changelogs;
 - `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
   `relatedPrototypes`. It is not a token source and must not be used as a
@@ -115,7 +115,7 @@ The following tokens are required but do not exist in the current product scope.
 Before implementation:
 
 - confirm which gaps should be created as new tokens;
-- specify the target collection and file (for example `color`, `pages/driver-color-tokens/data.ts`);
+- specify the target collection and file (for example `color`, `pages/aid-portal/data.ts`);
 - or specify existing tokens to reuse instead.
 
 Do not proceed with implementation until the user resolves all gaps.
@@ -126,7 +126,7 @@ naming/value standards — not when the token is missing.
 
 ## 7. Driver color mode resolution
 
-For product `driver`, color tokens in `pages/driver-color-tokens/data.ts` use
+For product `driver`, color tokens in `pages/aid-portal/data.ts` use
 fields `day` and `night` and portal labels `Day` / `Night`.
 
 - `Day` → light mode → read `row.day`
@@ -203,7 +203,7 @@ approval remain **requirements** — documented exceptions do not override them.
 
 Не всякое значение без токена — хардкод. Перед тем как объявить нарушение,
 значение классифицируется по шкале, которая уже действует в коде
-(`pages/driver-color-tokens/components/anatomyTypes.ts`):
+(`pages/aid-portal/components/anatomyTypes.ts`):
 
 | Вид | Что это | Допустимо |
 |---|---|---|
@@ -237,7 +237,7 @@ these values should later be converted to tokens.
 
 When proposing new tokens:
 
-- prefer existing naming patterns from `pages/driver-color-tokens/*Data.ts`;
+- prefer existing naming patterns from `pages/aid-portal/*Data.ts`;
 - avoid duplicating tokens with slightly different names for the same value;
 - if a semantically equivalent token exists, propose reusing it instead of
   creating a new one.

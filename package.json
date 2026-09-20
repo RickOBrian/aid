@@ -4,14 +4,14 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "dev:driver-colors": "vite --config pages/driver-color-tokens/vite.config.ts",
-    "build:driver-colors": "vite build --config pages/driver-color-tokens/vite.config.ts",
-    "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs",
+    "build:portal": "vite build --config pages/aid-portal/vite.config.ts",
     "check:docs": "node scripts/check-docs.mjs",
     "check:docs:full": "node scripts/check-docs.mjs --warnings",
-    "sync:registry": "node scripts/sync-registry.mjs"
+    "dev:portal": "vite --config pages/aid-portal/vite.config.ts",
+    "storybook": "storybook dev -p 6006",
+    "sync:registry": "node scripts/sync-registry.mjs",
+    "tokens:load": "node --experimental-strip-types scripts/test-load-tokens.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

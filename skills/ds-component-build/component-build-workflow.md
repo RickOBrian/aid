@@ -68,7 +68,7 @@ gate**.
      `component-gate.mdc` → Component artifact model);
    - в будущем — в components/registry.json (не создан), если/когда он появится в
      репозитории (сейчас такого файла нет; существующий
-     `pages/driver-color-tokens/component-registry.json` — портальный индекс
+     `pages/aid-portal/component-registry.json` — портальный индекс
      review-страниц, не platform-scope реестр).
 7. **Расширение scope** (добавление платформы к уже реализованному
    компоненту) в новой сессии — это отдельный явный запрос Principal

@@ -108,7 +108,7 @@ metadata:
 
 ```ts
 // Example pattern — Driver spacing
-import { spacingTokens } from '../pages/driver-color-tokens/spacingData';
+import { spacingTokens } from '../pages/aid-portal/spacingData';
 
 test('spacing-sem exports stable token ids', () => {
   expect(spacingTokens.map(t => t.id)).toMatchSnapshot();
@@ -125,7 +125,7 @@ Snapshot changes → review as **token value or structure change** → pending i
 - Android: `DSTheme.tokens` path matches spec table.
 - Cross-platform audit optional via Audit Gate — automated tests per platform codebase.
 
-**Driver canonical sources:** `pages/driver-color-tokens/data.ts`, `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts`.
+**Driver canonical sources:** `pages/aid-portal/data.ts`, `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts`.
 
 ---
 
@@ -146,7 +146,7 @@ Invalid combinations (`disabled + loading`) — must not render or must follow p
 ### Story-based testing
 
 - **Storybook / Presentbook** — primary visual and interaction sandbox.
-- Driver portal: `pages/driver-color-tokens/` — token section pages (reference, not component library yet).
+- Driver portal: `pages/aid-portal/` — token section pages (reference, not component library yet).
 - Storybook root: `stories/`, `.storybook/` — component stories when `componentsRoot` exists.
 - Each component story covers: default + each variant + key states.
 - Interaction tests via Storybook `play` functions (optional) for click/keyboard smoke.

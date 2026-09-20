@@ -18,7 +18,7 @@ description: >
 
 ---
 
-Портал: `pages/driver-color-tokens/`. Канон стилей — `dsChangelogTable.ts`.
+Портал: `pages/aid-portal/`. Канон стилей — `dsChangelogTable.ts`.
 
 ## 1. Обязательно для нового table-раздела токенов
 

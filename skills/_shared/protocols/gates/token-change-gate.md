@@ -87,7 +87,7 @@ description: >
 
 ## 2. Changelog раздела токенов
 
-Web-портал `pages/driver-color-tokens/` — каждый **merge-ready активный раздел
+Web-портал `pages/aid-portal/` — каждый **merge-ready активный раздел
 токенов** (страница существует и готовится к merge) обязан иметь **таблицу
 changelog** внизу.
 
@@ -97,9 +97,9 @@ changelog** внизу.
 
 ## 3. Автоматическое создание (обязательно)
 
-Реестр: `pages/driver-color-tokens/token-changelog-registry.json`
+Реестр: `pages/aid-portal/token-changelog-registry.json`
 
-Скрипт: `pages/driver-color-tokens/scripts/ensure-token-changelogs.mjs` (запускается в `prebuild`)
+Скрипт: `pages/aid-portal/scripts/ensure-token-changelogs.mjs` (запускается в `prebuild`)
 
 **При создании нового раздела:**
 
@@ -110,7 +110,7 @@ changelog** внизу.
 3. Подключить на странице `ChangelogTable` + `loadTokenChangelog`
 4. Запустить `npm run prebuild` — скрипт **сам создаст**
    `tokens/<collectionName>-changelog.json` в корне репо и в
-   `pages/driver-color-tokens/tokens/`, если файла ещё нет и `pageFile` существует
+   `pages/aid-portal/tokens/`, если файла ещё нет и `pageFile` существует
 
 Changelog **не создаётся** для записей реестра, пока нет файла страницы —
 это нормально для отложенных разделов на hub.
@@ -118,7 +118,7 @@ Changelog **не создаётся** для записей реестра, по
 ## 4. Что должно быть на странице
 
 1. JSON: `tokens/<collectionName>-changelog.json` (канон) + зеркало в
-   `pages/driver-color-tokens/tokens/` (sync prebuild)
+   `pages/aid-portal/tokens/` (sync prebuild)
 2. В data-файле раздела: `collectionName` = имя файла без <section>-changelog.json
 3. Внизу страницы:
    - `loadTokenChangelog(collection.collectionName)`

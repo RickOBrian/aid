@@ -15,7 +15,7 @@
   },
   "relatedTokenChanges": [],
   "reviewRoute": "/components/badge-dot",
-  "sourcePath": "pages/driver-color-tokens/components/BadgeDot.tsx",
+  "sourcePath": "pages/aid-portal/components/BadgeDot.tsx",
   "status": "pending",
   "created": "2026-08-20",
   "author": "sergej"

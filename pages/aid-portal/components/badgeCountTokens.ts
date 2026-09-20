@@ -1,6 +1,6 @@
 /**
  * Semantic Driver color tokens for the BadgeCount component.
- * Source of truth: `pages/driver-color-tokens/data.ts` (Fields, Texts sections).
+ * Source of truth: `pages/aid-portal/data.ts` (Fields, Texts sections).
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *

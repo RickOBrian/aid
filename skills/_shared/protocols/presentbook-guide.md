@@ -34,7 +34,7 @@ metadata:
 | `accessibility.md` | Portal a11y: keyboard, contrast, copy actions |
 | `naming-conventions.md` | Имена collection, data files, routes |
 
-**Product context:** путь Presentbook берётся из `products/<id>/product.json` → `presentbookRoot`. Для Driver: `pages/driver-color-tokens/`.
+**Product context:** путь Presentbook берётся из `products/<id>/product.json` → `presentbookRoot`. Для Driver: `pages/aid-portal/`.
 
 ---
 
@@ -54,7 +54,7 @@ metadata:
 └── ChangelogTable (loadTokenChangelog(collectionName))
 ```
 
-**Registry:** `pages/driver-color-tokens/token-changelog-registry.json` — связь `collectionName` ↔ `pageFile` ↔ `artifact`.
+**Registry:** `pages/aid-portal/token-changelog-registry.json` — связь `collectionName` ↔ `pageFile` ↔ `artifact`.
 
 ### Обязательные секции
 
@@ -84,7 +84,7 @@ const changelog = loadTokenChangelog(collection.collectionName);
 ```
 
 - Canonical JSON: `tokens/{collectionName}-changelog.json`
-- Mirror (prebuild): `pages/driver-color-tokens/tokens/`
+- Mirror (prebuild): `pages/aid-portal/tokens/`
 - **Не** редактировать changelog на token page — только display; bumps на release boundary.
 
 ### Пример: Driver Colors page
@@ -114,7 +114,7 @@ const changelog = loadTokenChangelog(collection.collectionName);
 ## Component pages
 
 > Driver: `componentsRoot: null` — product components live in review sandbox
-> (`pages/driver-color-tokens/components/`) with versioning via
+> (`pages/aid-portal/components/`) with versioning via
 > `components/*-changelog.json`. **Switch** is the reference component.
 
 ### Структура component page
@@ -158,8 +158,8 @@ const pendingItems = loadComponentPendingItems('switch');
 ```
 
 - Canonical changelog: `components/{componentId}-changelog.json`
-- Metadata: `pages/driver-color-tokens/components/{id}.meta.json`
-- Registry: `pages/driver-color-tokens/component-registry.json`
+- Metadata: `pages/aid-portal/components/{id}.meta.json`
+- Registry: `pages/aid-portal/component-registry.json`
 - Pending: `changes/driver/pending/component-*.json`
 - **Display only** on page; bumps on Release Gate after explicit approval
 - Show `Pending release` when pending items exist; empty changelog until first release
@@ -316,7 +316,7 @@ Hub (/design-system)
 
 | Concern | Path |
 |---|---|
-| Portal root | `pages/driver-color-tokens/` |
+| Portal root | `pages/aid-portal/` |
 | Hub config | `hubData.ts` — `HUB_SECTIONS`, `HUB_ROUTES` |
 | Routing | `App.tsx` — pathname → page component |
 | Shared header | `DsPageHeader.tsx` |
@@ -338,7 +338,7 @@ Hub (/design-system)
 | Property | Value |
 |---|---|
 | Product | `driver` |
-| presentbookRoot | `pages/driver-color-tokens` |
+| presentbookRoot | `pages/aid-portal` |
 | presentbookType | `react-vite` |
 | Dev | `npm run dev:driver-colors` |
 | Build | `npm run build:driver-colors` |

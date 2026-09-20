@@ -577,7 +577,7 @@
       "kind": "architecture",
       "humanFile": "skills/_shared/architecture/github-sync-architecture.md",
       "machineFile": null,
-      "version": "1.4.0",
+      "version": "1.5.0",
       "status": "stable",
       "wave": null,
       "core": false,

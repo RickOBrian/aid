@@ -214,7 +214,7 @@ Web не использует `-ios` и `-android` токены.
 ## Product-specific color modes (Driver)
 
 Общие правила выше используют термины **light mode** / **dark mode**. Продукт
-`driver` хранит значения в `pages/driver-color-tokens/data.ts` как `day` /
+`driver` хранит значения в `pages/aid-portal/data.ts` как `day` /
 `night`; portal и Figma artifacts показывают колонки **Day** / **Night**.
 
 Driver color mode mapping: `Day` represents light mode; `Night` represents dark
@@ -225,7 +225,7 @@ per-component exception. Any future rename to `Light`/`Dark` requires an
 explicit product and release decision.
 
 Canonical metadata: `products/driver/product.json` → `colorModeMapping`.
-Source fields in `pages/driver-color-tokens/data.ts`: `day` (light), `night`
+Source fields in `pages/aid-portal/data.ts`: `day` (light), `night`
 (dark).
 
 ---

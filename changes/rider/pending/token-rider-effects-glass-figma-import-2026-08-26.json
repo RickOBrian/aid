@@ -16,7 +16,7 @@
   "addedStyles": ["Glass/Navbar"],
   "figmaSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=70-12",
   "figmaChangelogSource": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/WB-AID-Rider-Tokens---Styles?node-id=71-17",
-  "sourcePath": "pages/driver-color-tokens/products/rider/glassData.ts",
+  "sourcePath": "pages/aid-portal/products/rider/glassData.ts",
   "status": "pending",
   "created": "2026-08-26",
   "author": "sergej"

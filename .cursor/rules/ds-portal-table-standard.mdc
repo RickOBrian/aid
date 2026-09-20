@@ -1,6 +1,6 @@
 ---
-description: Стандарт таблиц и layout-токенов Web-портала aid-ds (pages/driver-color-tokens)
-globs: pages/driver-color-tokens/**/*
+description: Стандарт таблиц и layout-токенов Web-портала aid-ds (pages/aid-portal)
+globs: pages/aid-portal/**/*
 alwaysApply: false
 ---
 

@@ -80,7 +80,7 @@ Layout в системе существуют и релизятся. Вариа�
 ## Q-05 · open · блокирует W4-1
 **Чем рендерить markdown в портале.**
 
-В `pages/driver-color-tokens/package.json` markdown-библиотеки нет.
+В `pages/aid-portal/package.json` markdown-библиотеки нет.
 В репозитории лежит вендорный `docs/assets/vendor/marked.min.js` — но это
 для статических HTML-страниц, не для Vite-приложения. Варианты: добавить
 зависимость; написать минимальный рендерер под наш набор разметки;

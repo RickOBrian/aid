@@ -98,7 +98,7 @@
 ## ADR-006 · 2026-09-20 · accepted
 **Классификация значений берётся из кода, а не изобретается в гайде.**
 
-В `pages/driver-color-tokens/components/anatomyTypes.ts` уже есть шкала
+В `pages/aid-portal/components/anatomyTypes.ts` уже есть шкала
 `semantic-token | platform-convention | raw-value | hardcode`, и
 «disabled opacity 40%» в `switch.api.ts` классифицировано как
 `platform-convention`.
@@ -351,7 +351,7 @@ Cursor-обёртки (anatomy, radius-preview) оставлены как арх
 **Driver — продукт, а не система. Переименование — Волна 3.5.**
 
 Замер: 69 файлов кода упоминают driver, портал из 75 файлов называется
-`pages/driver-color-tokens/` и при этом обслуживает оба продукта.
+`pages/aid-portal/` и при этом обслуживает оба продукта.
 Асимметрия в трёх местах: changelog-файлы driver без префикса против
 `rider-*` с префиксом; маршрут driver — корень сайта, rider — вложенный;
 типы `DriverColorMode` в анатомии и API компонентов.

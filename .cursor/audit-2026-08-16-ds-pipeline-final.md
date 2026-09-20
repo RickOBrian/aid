@@ -116,7 +116,7 @@ radius-sem-changelog.json        (Commit 1)
 effects-shadows-changelog.json (Commit 1)
 ```
 
-Mirrors в `pages/driver-color-tokens/tokens/` — также committed в Commit 1.
+Mirrors в `pages/aid-portal/tokens/` — также committed в Commit 1.
 
 ### 3.3 Prebuild ✅
 

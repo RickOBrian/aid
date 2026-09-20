@@ -31,7 +31,13 @@ export interface AnatomySchema {
   zones: AnatomyZone[];
 }
 
-export type DriverColorMode = 'day' | 'night';
+/**
+ * Режим цветовой темы продукта. Значения `day` / `night` — терминология
+ * продукта driver (см. products/driver/product.json → colorModeMapping:
+ * day = light, night = dark). Тип назван по продуктовому слою, а не по
+ * конкретному продукту: driver — один из продуктов, не синоним системы.
+ */
+export type ProductColorMode = 'day' | 'night';
 
 export interface ResolvedAnatomyProperty extends AnatomyProperty {
   resolvedValue: string;

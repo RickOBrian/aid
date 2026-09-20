@@ -147,8 +147,8 @@ For product `driver`, component `modes` may be documented as `light` / `dark`
 (platform themes) while color token source uses `day` / `night` fields and
 portal labels `Day` / `Night`.
 
-- light mode → lookup `row.day` in `pages/driver-color-tokens/data.ts`
-- dark mode → lookup `row.night` in `pages/driver-color-tokens/data.ts`
+- light mode → lookup `row.day` in `pages/aid-portal/data.ts`
+- dark mode → lookup `row.night` in `pages/aid-portal/data.ts`
 
 Driver color mode mapping: `Day` represents light mode; `Night` represents dark
 mode. The `Day`/`Night` labels are current product terminology and must be
@@ -262,11 +262,11 @@ from token collections:
 
 | Artifact | Driver path (review sandbox) | Purpose |
 |---|---|---|
-| Registry | `pages/driver-color-tokens/component-registry.json` | Index of product components |
-| Metadata | `pages/driver-color-tokens/components/{id}.meta.json` | Canonical name, aliases, architecture, routes, status |
+| Registry | `pages/aid-portal/component-registry.json` | Index of product components |
+| Metadata | `pages/aid-portal/components/{id}.meta.json` | Canonical name, aliases, architecture, routes, status |
 | Changelog source | `components/{id}-changelog.json` | `currentVersion`, structured release entries |
 | Pending item | `changes/driver/pending/component-{slug}.json` | Proposed change + SemVer impact (not released) |
-| Review page | `pages/driver-color-tokens/{Name}Page.tsx` | Sandbox + changelog display |
+| Review page | `pages/aid-portal/{Name}Page.tsx` | Sandbox + changelog display |
 
 Metadata fields (minimum):
 

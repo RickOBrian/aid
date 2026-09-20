@@ -12,7 +12,7 @@ import type {
   AnatomyProperty,
   AnatomySchema,
   AnatomyZone,
-  DriverColorMode,
+  ProductColorMode,
   ResolvedAnatomyProperty,
 } from './anatomyTypes';
 import { anatomyKindLabel } from './anatomyResolveSwitch';
@@ -368,13 +368,13 @@ interface BadgePlacement {
 
 type PropertyResolver = (
   property: AnatomyProperty,
-  mode: DriverColorMode,
+  mode: ProductColorMode,
   computed: CSSStyleDeclaration | null,
 ) => ResolvedAnatomyProperty;
 
 export interface AnatomyInspectorProps {
   schema: AnatomySchema;
-  mode: DriverColorMode;
+  mode: ProductColorMode;
   simState: 'default' | 'hover' | 'focus';
   /** Changes when preview layout may shift (checked/state/mode) — avoids remount loops from `children`. */
   remeasureKey: string;
@@ -525,7 +525,7 @@ function PropertyRow({
   resolveProperty,
 }: {
   property: AnatomyProperty;
-  mode: DriverColorMode;
+  mode: ProductColorMode;
   stageRef: React.RefObject<HTMLDivElement | null>;
   zone: AnatomyZone;
   resolveProperty: PropertyResolver;

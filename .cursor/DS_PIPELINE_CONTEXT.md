@@ -8,7 +8,7 @@
 - Driver token sources: data.ts (color), typographyData.ts, spacingData.ts, radiusData.ts, shadowsData.ts, iconsData.ts.
 - Changelogs: tokens/colors-semantic-changelog.json, typography-sem-changelog.json, spacing-sem-changelog.json, radius-sem-changelog.json, effects-shadows-changelog.json, icons-changelog.json.
 - Release queues: `changes/driver/pending/`, `changes/driver/released/` (Switch pending item present).
-- Component artifacts: `components/switch-changelog.json`, `pages/driver-color-tokens/component-registry.json`, `pages/driver-color-tokens/components/switch.meta.json`.
+- Component artifacts: `components/switch-changelog.json`, `pages/aid-portal/component-registry.json`, `pages/aid-portal/components/switch.meta.json`.
 - Component build skill: `skills/ds-component-build/SKILL.md` v1.1.0.
 - Discovery gate order: `skills/ds-component-build/component-build-workflow.md` v1.0.0 — Platform scope gate (new) → Composition gate (delegates to `component-gate.mdc`) → Token coverage gate (delegates to `token-integrity.mdc`).
 - Reference Product DS Component: **Switch** (`/components/switch`, pending initial release, `currentVersion: null` → proposed `1.0.0`).

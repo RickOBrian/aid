@@ -80,7 +80,7 @@ frontmatter — проверяемое условие, но никто его н
 
 | Где | Ссылается на | Почему опасно |
 |---|---|---|
-| `.cursor/rules/token-integrity.mdc` | `pages/driver-color-tokens/colorData.ts` | Правило с `alwaysApply`. Отправляет проверку токенов по несуществующему пути |
+| `.cursor/rules/token-integrity.mdc` | `pages/aid-portal/colorData.ts` | Правило с `alwaysApply`. Отправляет проверку токенов по несуществующему пути |
 | `component-pipeline-context.md` | 5 гайдов, 2 правила, 2 JSON — ничего из этого нет | Документ написан в настоящем времени про то, чего не построили |
 | `skills/ds-component-spec/SKILL.md` | собственный `TESTING.md` | Файла нет; у соседних скиллов он есть |
 | `skills/guide-lint/SKILL.md` | `.claude/git-workflow.md` | Файл переехал 2026-09-08 |

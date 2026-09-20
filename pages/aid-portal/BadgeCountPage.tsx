@@ -29,7 +29,7 @@ import { DS_VALUE_META_STYLE } from './dsValueMeta';
 import { loadComponentChangelog } from './loadComponentChangelog';
 import { loadComponentPendingItems } from './loadComponentPending';
 import badgeCountMeta from './components/badge-count.meta.json';
-import type { DriverColorMode } from './components/anatomyTypes';
+import type { ProductColorMode } from './components/anatomyTypes';
 
 const badgeCountChangelog = loadComponentChangelog('badge-count');
 const badgeCountPendingItems = loadComponentPendingItems('badge-count');
@@ -409,8 +409,8 @@ function SelectionControls({
   variantId,
   onVariantIdChange,
 }: {
-  mode: DriverColorMode;
-  onModeChange: (next: DriverColorMode) => void;
+  mode: ProductColorMode;
+  onModeChange: (next: ProductColorMode) => void;
   variantId: string;
   onVariantIdChange: (next: string) => void;
 }) {
@@ -468,7 +468,7 @@ export function BadgeCountPage() {
   const { copyText, copyNotice } = useCopyNotice();
   const [activeTab, setActiveTab] = useState<BadgeCountTab>('preview');
 
-  const [previewMode, setPreviewMode] = useState<DriverColorMode>('day');
+  const [previewMode, setPreviewMode] = useState<ProductColorMode>('day');
   const [previewVariantId, setPreviewVariantId] = useState(BADGE_COUNT_VALUE_VARIANTS[0].id);
   const previewValue =
     BADGE_COUNT_VALUE_VARIANTS.find((variant) => variant.id === previewVariantId)?.value ??
@@ -556,7 +556,7 @@ export function BadgeCountPage() {
               <section className="dsbc-section" role="tabpanel">
                 <h2>Semantic tokens</h2>
                 <p>
-                  Цвета — из <code>pages/driver-color-tokens/data.ts</code> через
+                  Цвета — из <code>pages/aid-portal/data.ts</code> через
                   <code> components/badgeCountTokens.ts</code>; оба токена не зависят от темы (Day = Night).
                 </p>
                 <div className="ds-token-table-wrap">

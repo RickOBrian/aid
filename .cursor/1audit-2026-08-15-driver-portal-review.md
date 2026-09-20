@@ -9,19 +9,19 @@ mode: read-only
 # Driver Portal Review — read-only (post Audit Gate)
 
 **Scope:** 13 untracked artifacts + связанные modified deps (`App.tsx`, `hubData.ts` — вне списка, но нужны для merge)  
-**Build:** `npm run build` в `pages/driver-color-tokens/` — ✅ passed (70 modules, 364ms)
+**Build:** `npm run build` в `pages/aid-portal/` — ✅ passed (70 modules, 364ms)
 
 **Reviewed artifacts:**
 
-- `pages/driver-color-tokens/typographyData.ts`
-- `pages/driver-color-tokens/spacingData.ts`
-- `pages/driver-color-tokens/radiusData.ts`
-- `pages/driver-color-tokens/shadowsData.ts`
-- `pages/driver-color-tokens/TypographyPage.tsx`
-- `pages/driver-color-tokens/SpacingPage.tsx`
-- `pages/driver-color-tokens/RadiusPage.tsx`
-- `pages/driver-color-tokens/ShadowsPage.tsx`
-- `pages/driver-color-tokens/token-changelog-registry.json`
+- `pages/aid-portal/typographyData.ts`
+- `pages/aid-portal/spacingData.ts`
+- `pages/aid-portal/radiusData.ts`
+- `pages/aid-portal/shadowsData.ts`
+- `pages/aid-portal/TypographyPage.tsx`
+- `pages/aid-portal/SpacingPage.tsx`
+- `pages/aid-portal/RadiusPage.tsx`
+- `pages/aid-portal/ShadowsPage.tsx`
+- `pages/aid-portal/token-changelog-registry.json`
 - `tokens/typography-sem-changelog.json`
 - `tokens/spacing-sem-changelog.json`
 - `tokens/radius-sem-changelog.json`
@@ -147,14 +147,14 @@ Build прошёл как implicit compile check. Отдельный `tsc --noEm
 **`git diff --stat` (modified, staged нет):**
 
 ```
- pages/driver-color-tokens/App.tsx                  |  36 ++++
- pages/driver-color-tokens/ChangelogTable.tsx       |  25 ++-
- pages/driver-color-tokens/DriverColorTokensPage.tsx |  64 +------
- pages/driver-color-tokens/IconsPage.tsx            |  10 +-
- pages/driver-color-tokens/dsChangelogTable.ts      | 188 +++++++++++++++++----
- pages/driver-color-tokens/hubData.ts               |  34 +++-
- pages/driver-color-tokens/index.html               |   4 +-
- pages/driver-color-tokens/package.json             |   2 +-
+ pages/aid-portal/App.tsx                  |  36 ++++
+ pages/aid-portal/ChangelogTable.tsx       |  25 ++-
+ pages/aid-portal/DriverColorTokensPage.tsx |  64 +------
+ pages/aid-portal/IconsPage.tsx            |  10 +-
+ pages/aid-portal/dsChangelogTable.ts      | 188 +++++++++++++++++----
+ pages/aid-portal/hubData.ts               |  34 +++-
+ pages/aid-portal/index.html               |   4 +-
+ pages/aid-portal/package.json             |   2 +-
  8 files changed, 260 insertions(+), 103 deletions(-)
 ```
 
@@ -164,7 +164,7 @@ Build прошёл как implicit compile check. Отдельный `tsc --noEm
 
 - `searchTypography.ts`, `searchSpacing.ts`, `searchRadius.ts`, `searchShadows.ts`
 - `scripts/ensure-token-changelogs.mjs`
-- `pages/driver-color-tokens/tokens/*-changelog.json` (mirrors)
+- `pages/aid-portal/tokens/*-changelog.json` (mirrors)
 
 ---
 
@@ -186,7 +186,7 @@ Build прошёл как implicit compile check. Отдельный `tsc --noEm
 
 4. **Нет dedicated typecheck** — build OK, но strict TS check не формализован.
 
-5. **Prebuild side effect** — `npm run build` запускает `ensure-token-changelogs.mjs` + `sync-token-changelogs.mjs` (mirror sync в `pages/driver-color-tokens/tokens/`). Для read-only review это ожидаемо, но стоит учитывать при diff review.
+5. **Prebuild side effect** — `npm run build` запускает `ensure-token-changelogs.mjs` + `sync-token-changelogs.mjs` (mirror sync в `pages/aid-portal/tokens/`). Для read-only review это ожидаемо, но стоит учитывать при diff review.
 
 ---
 

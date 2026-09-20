@@ -28,7 +28,7 @@ import { DS_VALUE_META_STYLE } from './dsValueMeta';
 import { loadComponentChangelog } from './loadComponentChangelog';
 import { loadComponentPendingItems } from './loadComponentPending';
 import badgeDotMeta from './components/badge-dot.meta.json';
-import type { DriverColorMode } from './components/anatomyTypes';
+import type { ProductColorMode } from './components/anatomyTypes';
 
 const badgeDotChangelog = loadComponentChangelog('badge-dot');
 const badgeDotPendingItems = loadComponentPendingItems('badge-dot');
@@ -378,7 +378,7 @@ function useCopyNotice() {
 export function BadgeDotPage() {
   const { copyText, copyNotice } = useCopyNotice();
   const [activeTab, setActiveTab] = useState<BadgeDotTab>('preview');
-  const [previewMode, setPreviewMode] = useState<DriverColorMode>('day');
+  const [previewMode, setPreviewMode] = useState<ProductColorMode>('day');
 
   const selection: BadgeDotSelection = { mode: previewMode };
 
@@ -448,7 +448,7 @@ export function BadgeDotPage() {
               <section className="dsbd-section" role="tabpanel">
                 <h2>Semantic tokens</h2>
                 <p>
-                  Цвет — из <code>pages/driver-color-tokens/data.ts</code> через
+                  Цвет — из <code>pages/aid-portal/data.ts</code> через
                   <code> components/badgeDotTokens.ts</code>; токен не зависит от темы (Day = Night).
                 </p>
                 <div className="ds-token-table-wrap">

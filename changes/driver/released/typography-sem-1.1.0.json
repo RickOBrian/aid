@@ -14,7 +14,7 @@
   },
   "relatedTokenChanges": [],
   "reviewRoute": "/tokens/typography",
-  "sourcePath": "pages/driver-color-tokens/typographyData.ts",
+  "sourcePath": "pages/aid-portal/typographyData.ts",
   "status": "released",
   "releasedVersion": "1.1.0",
   "created": "2026-08-18",

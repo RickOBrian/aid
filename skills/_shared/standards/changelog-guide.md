@@ -28,7 +28,7 @@ Changelog — контракт между дизайном, разработко
 | `skills/_shared/protocols/gates/release-gate.md` | Release boundary: group pending → SemVer + changelog |
 | `skills/_shared/protocols/gates/product-context.md` | Product-scoped pending items в `changes/<id>/pending/` |
 | `skills/_shared/protocols/gates/token-change-gate.md` | Анкета перед изменением токена (artifact, bump type) |
-| `pages/driver-color-tokens/token-changelog-registry.json` | Реестр collection changelogs (Driver) |
+| `pages/aid-portal/token-changelog-registry.json` | Реестр collection changelogs (Driver) |
 
 ---
 
@@ -37,10 +37,10 @@ Changelog — контракт между дизайном, разработко
 | Тип | Файл / location | Status |
 |---|---|---|
 | **Token collection** | `tokens/colors-semantic-changelog.json`, … | ✅ Driver |
-| **Component** | `components/{componentId}-changelog.json` + `pages/driver-color-tokens/components/{id}.meta.json` | ✅ Driver (review sandbox; `componentsRoot: null`) |
+| **Component** | `components/{componentId}-changelog.json` + `pages/aid-portal/components/{id}.meta.json` | ✅ Driver (review sandbox; `componentsRoot: null`) |
 | **Skills** | TBD (`metadata.version` in frontmatter + optional changelog file) | 🔜 |
 
-Mirror для Driver portal: `pages/driver-color-tokens/tokens/` (sync prebuild).
+Mirror для Driver portal: `pages/aid-portal/tokens/` (sync prebuild).
 
 ---
 
@@ -188,13 +188,13 @@ Commit release files only → push via git-push.mdc
 
 | Resource | Path |
 |---|---|
-| Token values | `pages/driver-color-tokens/data.ts`, `*Data.ts` |
+| Token values | `pages/aid-portal/data.ts`, `*Data.ts` |
 | Changelog files | `tokens/colors-semantic-changelog.json`, … |
-| Registry | `pages/driver-color-tokens/token-changelog-registry.json` |
+| Registry | `pages/aid-portal/token-changelog-registry.json` |
 | Pending queue | `changes/driver/pending/` |
 | Released queue | `changes/driver/released/` |
-| Component registry | `pages/driver-color-tokens/component-registry.json` |
-| Component metadata | `pages/driver-color-tokens/components/*.meta.json` |
+| Component registry | `pages/aid-portal/component-registry.json` |
+| Component metadata | `pages/aid-portal/components/*.meta.json` |
 | Component changelogs | `components/*-changelog.json` |
 
 ### Другие продукты

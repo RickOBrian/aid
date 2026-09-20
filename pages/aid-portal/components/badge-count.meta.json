@@ -5,7 +5,7 @@
   "product": "driver",
   "architectureLevel": "Surface View",
   "supportedPlatforms": ["web", "ios", "android"],
-  "sourcePath": "pages/driver-color-tokens/components/BadgeCount.tsx",
+  "sourcePath": "pages/aid-portal/components/BadgeCount.tsx",
   "reviewRoute": "/components/badge-count",
   "pageFile": "BadgeCountPage.tsx",
   "componentsGroup": "Indicators",

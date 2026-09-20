@@ -8,19 +8,19 @@
 
 - **active/onboarding продукты:** `driver` (`aid: driver`, status: `active`) — единственный продукт в pipeline; `onboarding`-продуктов в registry пока нет.
 - **Driver:**
-  - токены: `pages/driver-color-tokens/data.ts` (color tokens),
-    `pages/driver-color-tokens/typographyData.ts`,
-    `pages/driver-color-tokens/spacingData.ts`,
-    `pages/driver-color-tokens/radiusData.ts`,
-    `pages/driver-color-tokens/shadowsData.ts`,
-    `pages/driver-color-tokens/iconsData.ts`;
+  - токены: `pages/aid-portal/data.ts` (color tokens),
+    `pages/aid-portal/typographyData.ts`,
+    `pages/aid-portal/spacingData.ts`,
+    `pages/aid-portal/radiusData.ts`,
+    `pages/aid-portal/shadowsData.ts`,
+    `pages/aid-portal/iconsData.ts`;
   - `componentsRoot: null`, `componentsStatus: "not_started"` — канонической директории компонентов пока нет;
   - skills: дефолтное назначение импорта — `skills/_shared/` (product-scoped skills не созданы);
   - release-очереди: `changes/driver/pending/` (pending changes) и `changes/driver/released/` (обработанные release);
   - token changelog: `tokens/colors-semantic-changelog.json`, …;
   - component changelog: `components/{componentId}-changelog.json` (Product DS Components, independent from tokens);
-  - component registry: `pages/driver-color-tokens/component-registry.json`;
-  - component metadata: `pages/driver-color-tokens/components/*.meta.json`;
+  - component registry: `pages/aid-portal/component-registry.json`;
+  - component metadata: `pages/aid-portal/components/*.meta.json`;
   - reference component: **Switch** (`/components/switch`, `currentVersion: null`, pending initial release);
   - reference-only: `src/pages/FigmaStyles/` (не source of truth).
 
@@ -45,9 +45,9 @@
   ## Product context
   Product: aid: driver (`driver`)
   Status: active
-  Token source: pages/driver-color-tokens
+  Token source: pages/aid-portal
   Components: not created yet
-  Presentbook: pages/driver-color-tokens
+  Presentbook: pages/aid-portal
   Release queue: changes/driver
 
   Continue in this scope.
@@ -63,7 +63,7 @@
   - Token gap → единая анкета «Token gaps detected»; реализация останавливается.
   - Запрет хардкода hex/rgb/hsl без явного разрешения пользователя.
   - Предпочитать reuse существующих токенов; не создавать token files в рамках этого gate.
-- **Key artifacts:** `pages/driver-color-tokens/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `pages/driver-color-tokens/token-changelog-registry.json`; не использовать `src/pages/FigmaStyles/` как source.
+- **Key artifacts:** `pages/aid-portal/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `pages/aid-portal/token-changelog-registry.json`; не использовать `src/pages/FigmaStyles/` как source.
 - **Example dialog:**
   ```
   ## Token gaps detected
@@ -91,7 +91,7 @@
   - Pending change item в `changes/<id>/pending/`; без немедленного SemVer/changelog.
   - Component metadata + changelog source + review page display; version bump только на Release Gate.
   - Portal UI (`ChangelogTable`, `ComponentReleaseStatus`) — display primitives, не Product DS Components.
-- **Key artifacts:** `componentsRoot` из `product.json`, `changes/<id>/pending/`, `components/*-changelog.json`, `component-registry.json`; для Driver `componentsRoot: null`, review sandbox under `pages/driver-color-tokens/components/`.
+- **Key artifacts:** `componentsRoot` из `product.json`, `changes/<id>/pending/`, `components/*-changelog.json`, `component-registry.json`; для Driver `componentsRoot: null`, review sandbox under `pages/aid-portal/components/`.
 - **Example dialog:**
   ```
   ## New component proposal
@@ -142,13 +142,13 @@
   - Consolidated report с полями type, category, path, expected, actual, impact, confidence.
   - Audit read-only: fixes → pending items; прямые правки артефактов запрещены.
   - SemVer/changelog — только через Release Gate.
-- **Key artifacts:** `pages/driver-color-tokens/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `componentsRoot`, `skills/_shared/`, `changes/<id>/pending/`, `pages/driver-color-tokens/token-changelog-registry.json`.
+- **Key artifacts:** `pages/aid-portal/data.ts` (color), `typographyData.ts`, `spacingData.ts`, `radiusData.ts`, `shadowsData.ts`, `iconsData.ts` (остальные коллекции); `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`; `componentsRoot`, `skills/_shared/`, `changes/<id>/pending/`, `pages/aid-portal/token-changelog-registry.json`.
 - **Example dialog:**
   ```
   ## Audit plan
   Product: driver
   Type: Token audit + Figma mismatch
-  Scan: pages/driver-color-tokens/data.ts (color), *Data.ts (остальные), Figma node 1763:113
+  Scan: pages/aid-portal/data.ts (color), *Data.ts (остальные), Figma node 1763:113
   Output: structured table
 
   Confirm or adjust the plan?
@@ -168,7 +168,7 @@
   - Version/changelog/push — одна связанная операция; не менять version при implementation.
   - Update changelog files; move pending → `released/`; не менять token values / implementations.
   - Stage только release files; commit и push — с подтверждением (`git-push.mdc`).
-- **Key artifacts:** `changes/<id>/pending/`, `changes/<id>/released/`, `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`, `pages/driver-color-tokens/token-changelog-registry.json`.
+- **Key artifacts:** `changes/<id>/pending/`, `changes/<id>/released/`, `tokens/colors-semantic-changelog.json`, `tokens/typography-sem-changelog.json`, `tokens/spacing-sem-changelog.json`, `tokens/radius-sem-changelog.json`, `tokens/effects-shadows-changelog.json`, `tokens/icons-changelog.json`, `pages/aid-portal/token-changelog-registry.json`.
 - **Example dialog:**
   ```
   ## Release plan
@@ -238,7 +238,7 @@ a pending record.
 
 1. **User request:** «Импортировать токены из Figma и сделать компонент Button».
 2. **Product Gate** — подтвердить `driver`, показать token source и release queue.
-3. **Token Integrity** — lookup required tokens из Figma в `pages/driver-color-tokens/data.ts` (color) и `*Data.ts` (остальные коллекции); показать gaps или подтвердить reuse.
+3. **Token Integrity** — lookup required tokens из Figma в `pages/aid-portal/data.ts` (color) и `*Data.ts` (остальные коллекции); показать gaps или подтвердить reuse.
 4. **Skills Import Gate** (если импорт skills) — destination `skills/_shared/`, координация с `ds-import.mdc`.
 5. **Component Gate** — proposal Button, coupling с tokens, подтверждение path при `componentsRoot: null`.
 6. **Implementation** — отдельные задачи; каждое изменение → pending item в `changes/driver/pending/`.
@@ -269,7 +269,7 @@ Commit / Push (explicit approval)
 
 ### Push & Sync Gate (будущее правило)
 
-Может формализовать post-release sync: проверка, что remote содержит все release commits; синхронизация changelog mirror (`pages/driver-color-tokens/tokens/`); блокировка force-push и cross-branch merges без review. Дополнит `git-push.mdc` product-scoped проверками.
+Может формализовать post-release sync: проверка, что remote содержит все release commits; синхронизация changelog mirror (`pages/aid-portal/tokens/`); блокировка force-push и cross-branch merges без review. Дополнит `git-push.mdc` product-scoped проверками.
 
 ---
 

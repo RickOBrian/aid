@@ -1,6 +1,6 @@
 /**
  * Semantic Driver color tokens for the Switch component.
- * Source of truth: `pages/driver-color-tokens/data.ts` (Controls, Strokes sections).
+ * Source of truth: `pages/aid-portal/data.ts` (Controls, Strokes sections).
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *

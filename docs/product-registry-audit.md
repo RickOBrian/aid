@@ -10,7 +10,7 @@
 
 | Product ID | Название | Основание | Статус |
 |---|---|---|---|
-| `driver` | aid: driver | Отдельный Vite-портал `pages/driver-color-tokens/`, hub «aid: driver», 6 разделов токенов, пакет `aid-ds` | **Активный** — единственный полностью сверстанный React token portal |
+| `driver` | aid: driver | Отдельный Vite-портал `pages/aid-portal/`, hub «aid: driver», 6 разделов токенов, пакет `aid-ds` | **Активный** — единственный полностью сверстанный React token portal |
 | `ui-kit-a` | UI Kit A | `tokens/ui-kit-a/`, `docs/storybook/_products.json`, Storybook `stories/ui-kit-a/` | Stable — JSON-токены + HTML/Storybook preview |
 | `ui-kit-b` | UI Kit B | `tokens/ui-kit-b/`, `docs/storybook/_products.json`, Storybook `stories/ui-kit-b/` | Stable — JSON-токены + HTML/Storybook preview |
 | `sutochno` | Sutochno | `tokens/sutochno/`, React `src/components/sutochno/`, HTML `docs/storybook/products/sutochno/` | Legacy — legacy-токены + 2 компонента |
@@ -27,19 +27,19 @@
 
 - **tokensRoot:** `null` — в `tokens/` **нет** JSON-бандла driver; значения лежат в TS data-файлах портала
 - **componentsRoot:** `null` — React-компонентов продукта нет (только UI портала: `DsPageHeader`, `ChangelogTable` и т.д.)
-- **presentbookRoot:** `pages/driver-color-tokens/`
+- **presentbookRoot:** `pages/aid-portal/`
 - **routeBase:** `/design-system` (hub), `/tokens/*` (разделы)
 - **существующие token files (runtime):**
-  - `pages/driver-color-tokens/data.ts` — Colors
-  - `pages/driver-color-tokens/typographyData.ts`
-  - `pages/driver-color-tokens/spacingData.ts`
-  - `pages/driver-color-tokens/radiusData.ts`
-  - `pages/driver-color-tokens/shadowsData.ts`
-  - `pages/driver-color-tokens/iconsData.ts`
-  - `pages/driver-color-tokens/public/icons/**/*.svg` — 178 SVG иконок
+  - `pages/aid-portal/data.ts` — Colors
+  - `pages/aid-portal/typographyData.ts`
+  - `pages/aid-portal/spacingData.ts`
+  - `pages/aid-portal/radiusData.ts`
+  - `pages/aid-portal/shadowsData.ts`
+  - `pages/aid-portal/iconsData.ts`
+  - `pages/aid-portal/public/icons/**/*.svg` — 178 SVG иконок
 - **существующие changelog/version files:**
-  - `pages/driver-color-tokens/token-changelog-registry.json` — реестр коллекций
-  - `tokens/*-changelog.json` (канон) + зеркало `pages/driver-color-tokens/tokens/*-changelog.json`
+  - `pages/aid-portal/token-changelog-registry.json` — реестр коллекций
+  - `tokens/*-changelog.json` (канон) + зеркало `pages/aid-portal/tokens/*-changelog.json`
   - Коллекции: `colors-semantic`, `typography-sem`, `spacing-sem`, `radius-sem`, `effects-shadows`, `icons`
 
 **Routes (client-side, `hubData.ts` + `App.tsx`):**
@@ -159,15 +159,15 @@
 - **Название:** `driver` (aid: driver / aid-ds)
 - **Почему определён как активный:**
   - Единственный продукт с полноценным React token portal и 6 живыми разделами
-  - Активная разработка в `pages/driver-color-tokens/` (Spacing, Radius, Typography, Shadows, Icons, Colors)
+  - Активная разработка в `pages/aid-portal/` (Spacing, Radius, Typography, Shadows, Icons, Colors)
   - Changelog-инфраструктура: `token-changelog-registry.json` + `tokens/*-changelog.json`
   - Root scripts: `dev:driver-colors`, `build:driver-colors`
   - Title страницы: «aid: driver»
-- **Страница токенов:** `pages/driver-color-tokens/` (hub + section pages)
+- **Страница токенов:** `pages/aid-portal/` (hub + section pages)
 - **Текущий route:** `/design-system`, `/tokens/colors|typography|spacing|radius|shadows|icons`
 - **Источники данных токенов:**
-  - **Значения:** TS data-файлы в `pages/driver-color-tokens/*Data.ts` + `data.ts`
-  - **Иконки:** `pages/driver-color-tokens/public/icons/`
+  - **Значения:** TS data-файлы в `pages/aid-portal/*Data.ts` + `data.ts`
+  - **Иконки:** `pages/aid-portal/public/icons/`
   - **Версии/changelog:** `tokens/*-changelog.json` (канон) через `loadTokenChangelog.ts`
   - **Не используются:** `tokens/ui-kit-*`, `tokens/sutochno`, `src/tokens/loadTokens.ts`
 
@@ -188,18 +188,18 @@
       "label": "aid: driver",
       "status": "active",
       "tokensRoot": null,
-      "tokenDataRoot": "pages/driver-color-tokens",
+      "tokenDataRoot": "pages/aid-portal",
       "tokenDataFiles": [
-        "pages/driver-color-tokens/data.ts",
-        "pages/driver-color-tokens/typographyData.ts",
-        "pages/driver-color-tokens/spacingData.ts",
-        "pages/driver-color-tokens/radiusData.ts",
-        "pages/driver-color-tokens/shadowsData.ts",
-        "pages/driver-color-tokens/iconsData.ts"
+        "pages/aid-portal/data.ts",
+        "pages/aid-portal/typographyData.ts",
+        "pages/aid-portal/spacingData.ts",
+        "pages/aid-portal/radiusData.ts",
+        "pages/aid-portal/shadowsData.ts",
+        "pages/aid-portal/iconsData.ts"
       ],
-      "tokenAssetsRoot": "pages/driver-color-tokens/public/icons",
+      "tokenAssetsRoot": "pages/aid-portal/public/icons",
       "componentsRoot": null,
-      "presentbookRoot": "pages/driver-color-tokens",
+      "presentbookRoot": "pages/aid-portal",
       "presentbookType": "react-vite",
       "routeBase": "/design-system",
       "tokenRoutes": {
@@ -211,9 +211,9 @@
         "shadows": "/tokens/shadows",
         "icons": "/tokens/icons"
       },
-      "tokenRegistry": "pages/driver-color-tokens/token-changelog-registry.json",
+      "tokenRegistry": "pages/aid-portal/token-changelog-registry.json",
       "changelogRoot": "tokens",
-      "changelogMirrorRoot": "pages/driver-color-tokens/tokens",
+      "changelogMirrorRoot": "pages/aid-portal/tokens",
       "componentRegistry": null,
       "releaseRoot": null,
       "notes": "Значения токенов в TS, не в tokens/*.json. Changelog — единственная связь с tokens/."
@@ -356,7 +356,7 @@
 | `tokens/ui-kit-b/*-changelog.json` | ui-kit-b | Product-level versioning |
 | `tokens/sutochno/core/*.json` | sutochno | Папка пустая (.gitkeep) |
 | `tokens/sutochno/semantic/*.json` | sutochno | Папка пустая (.gitkeep) |
-| `pages/driver-color-tokens/components/` | driver | Component catalog (hub placeholder `href: null`) |
+| `pages/aid-portal/components/` | driver | Component catalog (hub placeholder `href: null`) |
 | `products/<id>/release/` или per-product CHANGELOG | all | Сейчас только repo-level `CHANGELOG.md` + `VERSION` |
 | `componentRegistry` JSON для driver / ui-kit-* | driver, ui-kit-a/b | Единый machine-readable component registry |
 | `docs/storybook/_products.json` entry for `driver` | driver | Driver portal не зарегистрирован в HTML presentbook products |
@@ -365,7 +365,7 @@
 
 ## Дополнительные наблюдения
 
-1. **Два параллельных presentbook-слоя:** HTML (`docs/storybook/`) и React (`pages/driver-color-tokens/`). Активный token UI — второй.
+1. **Два параллельных presentbook-слоя:** HTML (`docs/storybook/`) и React (`pages/aid-portal/`). Активный token UI — второй.
 2. **`src/pages/`** содержит только `FigmaStyles/` — driver portal **не** в `src/pages/`.
 3. **Storybook** (`stories/`, `.storybook/`) — entry points для ui-kit-a/b, sutochno, FigmaStyles; driver portal **не** подключён к Storybook.
 4. **`docs/tokens/*-registry.md`** — источник истины для HTML typography/colors editor, **не** для aid: driver portal.
@@ -379,7 +379,7 @@
 |---|---|
 | Repo version | `VERSION` (0.4.0) |
 | Repo changelog | `CHANGELOG.md` |
-| Driver changelog registry | `pages/driver-color-tokens/token-changelog-registry.json` |
+| Driver changelog registry | `pages/aid-portal/token-changelog-registry.json` |
 | HTML products manifest | `docs/storybook/_products.json` |
 | HTML nav | `docs/storybook/_storybook-nav.json` |
 | Token loader (JSON kits) | `src/tokens/loadTokens.ts` |

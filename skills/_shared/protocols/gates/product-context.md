@@ -152,7 +152,7 @@ After product context is confirmed, still follow these rules for the same task:
   pending changes for each affected artifact;
 - `protocols/gates/token-change-gate.md` and `protocols/portal-table-standard.md` remain
   responsible for Driver portal token section pages in
-  `pages/driver-color-tokens/`, but must not force an immediate version bump;
+  `pages/aid-portal/`, but must not force an immediate version bump;
 - `protocols/git-workflow.md` applies only after explicit user approval to commit/push.
   Product release bundles belong under `changes/<id>/`;
 - `skills/ds-import/SKILL.md` is a separate skills-import workflow; resolve product

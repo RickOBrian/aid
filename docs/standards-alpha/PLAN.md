@@ -146,7 +146,7 @@ Driver — один из продуктов, с теми же правами, ч
 |---|---|---|---|
 | W35-1 | Идентификаторы | `DriverColorMode` → `ProductColorMode` и подобные, 12+ файлов | Низкий — ловится typecheck |
 | W35-2 | Имена файлов | `tokens/*-changelog.json` без префикса → `driver-*`, симметрично rider | Средний — путь прописан в манифесте, реестре и загрузчике |
-| W35-3 | Директория портала | `pages/driver-color-tokens/` → `pages/aid-portal/`, 75 файлов | **Высокий** — Root Directory проекта `aid-ds` настроен в Vercel, вне git |
+| W35-3 | Директория портала | `pages/aid-portal/` → `pages/aid-portal/`, 75 файлов | **Высокий** — Root Directory проекта `aid-ds` настроен в Vercel, вне git |
 | W35-4 | Маршруты | driver: `/design-system` (корень) → `/driver/design-system`; корень отдать AID-хабу | Высокий — внешний контракт, нужны редиректы |
 
 ### Когда

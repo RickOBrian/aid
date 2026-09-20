@@ -11,7 +11,7 @@ import { BADGE_COUNT_TOKEN_STYLE } from './badgeCountTokens';
  * component.
  *
  * Tokens: Fields · Warning (background), Texts · Primary light ind (text
- * color) — both theme-independent (`pages/driver-color-tokens/data.ts`).
+ * color) — both theme-independent (`pages/aid-portal/data.ts`).
  * Geometry: radius-12, space-6 / space-2 padding, shadow-1, typography
  * subtitle-2 (Roboto Medium 14/16, tracking 0.1) — all semantic tokens,
  * referenced directly, not duplicated as component-level tokens.

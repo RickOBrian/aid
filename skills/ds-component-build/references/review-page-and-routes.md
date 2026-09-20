@@ -54,7 +54,7 @@ Missing changelog section = **blocker** — do not return verified URL.
 ## Verify route
 
 ```bash
-cd pages/driver-color-tokens && npm run dev
+cd pages/aid-portal && npm run dev
 # open http://localhost:3000{reviewRoute}
 ```
 
