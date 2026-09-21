@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: github-sync-architecture
 metadata:
-  version: "1.5.1"
+  version: "1.5.2"
   kind: architecture
   owner: design-system-team
   status: stable
@@ -17,7 +17,7 @@ description: >
 
 # Архитектура: синхронизация реестра решений через GitHub
 
-> Статус: Stable · v1.5.1 · обновлено 2026-09-20
+> Статус: Stable · v1.5.2 · обновлено 2026-09-21
 
 ---
 
@@ -182,6 +182,13 @@ Proposal branches `registry/propose-*` намеренно содержат то�
 > Пока значения расходятся, сборки падают: в git новый путь, в настройке
 > старый. Обоснование — ADR-020, порядок операций — `docs/standards-alpha/
 > PLAN.md`, Волна 3.5.
+
+> **Наблюдение 2026-09-20.** Деплой с `main` после merge PR #28 забрал
+> production-алиас сам, без отдельного promote. То есть принцип ниже
+> описывает договорённость команды, а не настройку проекта. Расхождение
+> открыто как Q-11 в `docs/standards-alpha/OPEN-QUESTIONS.md`: либо
+> включить ручной promote в настройках Vercel, либо переписать раздел под
+> фактическое поведение.
 
 ### Принцип: merge ≠ promote
 
@@ -1006,6 +1013,8 @@ terminal/report/PR.
 
 ## 17. Changelog
 
+- **1.5.2** — 2026-09-21. Отмечено расхождение §3a с фактическим
+  поведением promote (Q-11): деплой с `main` забирает production-алиас сам.
 - **1.5.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.4.0 — 2026-09-19.** Бэкенд 1.3.0: категория `icons`, canonical поля
   `targetComponentKey` / `targetComponentName` (плагин 1.5.0). Бэкенд 1.2.0
