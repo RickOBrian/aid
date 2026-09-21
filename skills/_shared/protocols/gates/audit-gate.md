@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: audit-gate
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Audit Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.1.0 · обновлено 2026-09-21
 
 ---
 
@@ -114,6 +114,14 @@ Each finding must include a `disposition` in addition to `severity`:
 | `accepted-exception` | User-approved documented deviation; tracked in `changes/<id>/pending/` |
 | `deferred` | Acknowledged; fix later; no immediate action |
 
+**Умолчание берётся из уровня правила** (`conformance-levels.md`):
+`must` → `blocker`, `should` → `recommendation`, `may` → `deferred`.
+Понижение находки уровня `must` требует явного решения и записи.
+
+Отчёт показывает профиль соответствия, а не список нарушений: сколько
+правил каждого уровня выполнено из скольких. Продукт может годами жить с
+неполным `should` и быть здоровым.
+
 **Guidance:** Naming/value drift is **`recommendation` by default**. Use
 **`blocker`** only if token lookup fails, product isolation is violated,
 release integrity is at risk, or the user explicitly marks the finding as a
@@ -165,4 +173,7 @@ explicitly requested product release boundary.
 
 ## 9. Changelog
 
+- **1.1.0** — 2026-09-21. Disposition находки выводится из уровня правила
+  (`conformance-levels.md`); отчёт показывает профиль соответствия вместо
+  списка нарушений.
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/audit-gate.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.

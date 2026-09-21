@@ -1,6 +1,6 @@
 {
   "id": "component-standards",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "status": "alpha",
   "humanFile": "component-standards.md",
   "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
@@ -359,6 +359,13 @@
         "track 32x20",
         "thumb 16x16"
       ]
+    },
+    "levelByCategory": {
+      "color": "must",
+      "typography": "should",
+      "space": "should",
+      "radius": "should",
+      "shadow": "should"
     }
   },
   "contentResilience": [
@@ -445,7 +452,20 @@
       "8": "чеклист интерактивности пройден",
       "9": "документация: пример, таблица пропов, границы применения",
       "10": "изменения в changes/<id>/pending/, версия и changelog на границе релиза"
-    }
+    },
+    "levelByItem": {
+      "1": "must",
+      "2": "must",
+      "3": "should",
+      "4": "must",
+      "5": "should",
+      "6": "should",
+      "7": "should",
+      "8": "must",
+      "9": "should",
+      "10": "should"
+    },
+    "_levelNote": "Пункты 1, 2, 4 и 8 содержат правила уровня must; пункт 4 — только в части цвета, остальные категории значений уровня should. Пункт, отмеченный must, не делает must всё его содержание."
   },
   "platformModelSource": "products/<id>/product.json → platformModel",
   "gates": {
@@ -453,5 +473,59 @@
     "tokenLookup": "protocols/gates/token-integrity.md",
     "release": "protocols/gates/release-gate.md",
     "portalPage": "protocols/component-page-baseline.md"
+  },
+  "conformance": {
+    "_doc": "Уровни соответствия. Семантика — conformance-levels.json. Правило без уровня читается как should.",
+    "source": "conformance-levels.json",
+    "must": [
+      {
+        "rule": "architecture-level-declared",
+        "dod": 1,
+        "why": "пока неизвестен уровень, неизвестно какие требования применимы"
+      },
+      {
+        "rule": "canonical-name",
+        "dod": 1,
+        "why": "имя — идентичность: иначе компонент не найти и не сопоставить"
+      },
+      {
+        "rule": "public-typed-contract",
+        "dod": 2,
+        "why": "без контракта компонент нельзя применить, не читая исходник"
+      },
+      {
+        "rule": "color-via-token",
+        "dod": 4,
+        "why": "литерал цвета ломает темизацию и переносимость между продуктами"
+      },
+      {
+        "rule": "handlers-actually-wired",
+        "dod": 8,
+        "why": "заглушенный компонент выглядит рабочим и не работает — это отказ"
+      }
+    ],
+    "should": [
+      "variant-state-matrix",
+      "value-classification-non-color",
+      "content-resilience",
+      "accessibility-full",
+      "tests-unit",
+      "tests-visual",
+      "tests-a11y",
+      "documentation",
+      "size-contract",
+      "deprecation-lifecycle",
+      "pending-change-recorded",
+      "escape-hatch-ref-forwarding",
+      "escape-hatch-test-id",
+      "slots-from-canon",
+      "controlled-mode-explicit"
+    ],
+    "may": [
+      "polymorphism",
+      "rtl-mirroring",
+      "escape-hatch-class-and-style"
+    ],
+    "expandingMustIs": "major"
   }
 }
