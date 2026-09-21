@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: semantic-space-tokens-guide
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -12,7 +12,7 @@ description: >
 
 # Semantic Space Tokens Guide
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.1.0 · обновлено 2026-09-21
 
 ---
 
@@ -24,7 +24,8 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 
 ## 1. Принципы Semantic-уровня
 
-- **Компоненты ссылаются только на Semantic.** Прямое использование `spacing-N` или `shape-corner-N` в коде компонента — нарушение слоёности и блокер по `token-rules.md`.
+- **Компоненты ссылаются только на Semantic.** Прямое использование `spacing-N` или `shape-corner-N` в коде компонента —
+нарушение слоёности, уровень `should` по `token-rules.md`.
 - **Ценность Semantic — развязка.** Если завтра «стандартный горизонтальный padding контрола m-size» должен вырасти с 16 до 20px — меняется одна строка в Semantic, все компоненты подтягиваются. При прямом использовании Core пришлось бы найти и обновить каждое место.
 - **Числа в именах — только для Core.** На Semantic-уровне используются функциональные суффиксы (`xs/s/m/l/xl`) или функциональные имена (`none/full`). Это обязательное условие: Semantic-токен с числом в имени — красный флаг.
 - **Независимые шкалы по категориям.** `inset-control-h-m` и `inset-container-h-m` могут указывать на разные значения. Буква `m` не означает «одно и то же число» глобально — она означает «среднее в своей категории».
@@ -221,7 +222,7 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 | Документ | Связь |
 |---|---|
 | `core-space-tokens-guide.md` | Source of truth для числовых значений (`spacing-N`, `shape-corner-N`) |
-| `token-rules.md` | Компонент ссылается только на Semantic, прямой Core — блокер |
+| `token-rules.md` | Компонент ссылается только на Semantic; прямой Core — `should` |
 | `ds-component-architecture-guide.md` | Категории `inset-*` согласованы с уровнями компонентов (Item / Surface View / Structural View / Layout) |
 | `skills/ds-component-spec/SKILL.md` | В шаблоне спеки строки padding и border-radius должны ссылаться на `inset-*` и `radius-*` |
 | `platforms.md` | Оси `h/v` транслируются в платформенные свойства: Web (padding-inline / padding-block), iOS (horizontal / vertical), Android (start+end / top+bottom) |
@@ -278,5 +279,6 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 
 ## 9. Changelog
 
+- **1.1.0** — 2026-09-21. Ссылки на стоп-правила заменены уровнями соответствия.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — Первая версия. `inset-*` с осями h/v и четырьмя категориями (control, row, container, screen). `gap-*` для Layout. `radius-*` как Semantic-алиасы над `shape-corner-N`.

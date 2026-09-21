@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: core-space-tokens-guide
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -12,7 +12,7 @@ description: >
 
 # Core Space Tokens Guide
 
-> Статус: Draft · v1.1.1 · обновлено 2026-09-20
+> Статус: Draft · v1.1.2 · обновлено 2026-09-21
 
 ---
 
@@ -210,7 +210,7 @@ Core-радиус задаёт только **значение**, не к как
 
 ## 7. Связанные задачи
 
-- **`skills/ds-component-spec/SKILL.md`** — в шаблоне таблицы токенов строки `padding-h → spacing-4` и `border-radius → shape-corner-8` имеют пустую Semantic-колонку. После финализации `semantic-space-tokens-guide.md` эти строки должны ссылаться на semantic-токены. Прямое использование Core-токена в компоненте является блокером по правилам `token-rules.md`.
+- **`skills/ds-component-spec/SKILL.md`** — в шаблоне таблицы токенов строки `padding-h → spacing-4` и `border-radius → shape-corner-8` имеют пустую Semantic-колонку. После финализации `semantic-space-tokens-guide.md` эти строки должны ссылаться на semantic-токены. Прямое использование Core-токена в компоненте — расхождение уровня `should` по `token-rules.md`.
 - **`platforms.md`** — touch targets прописаны хардкодом. После принятия `size-44` и `size-48` стоит добавить ссылки на токены, чтобы не было двух source of truth.
 
 ---
@@ -229,6 +229,7 @@ Core-радиус задаёт только **значение**, не к как
 
 ## 9. Changelog
 
+- **1.1.2** — 2026-09-21. Ссылка на стоп-правило заменена указанием уровня `should`.
 - **1.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.0** — `space-N` → `spacing-N`. Micro-зона расширена до `spacing-10` (обоснование: покрывает вертикальный padding кнопок без хардкодов). Убран `size-56` (нет универсального применения). Убран `shape-corner-2` (нет реального потребителя). Добавлена политика раздельных неймспейсов `spacing` vs `size`. Проверка шкалы на кнопках (раздел 2.3). Уточнены связанные задачи.
 - **1.0.0** — Первая версия.

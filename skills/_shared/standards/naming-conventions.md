@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   status: alpha
   lastReviewed: "2026-09-20"
   machineFile: naming-conventions.json
@@ -16,7 +16,7 @@ metadata:
 
 # Правила именования
 
-> Статус: Alpha · v1.2.0 · обновлено 2026-09-20
+> Статус: Alpha · v1.3.0 · обновлено 2026-09-21
 
 ---
 
@@ -235,7 +235,8 @@ States map на semantic tokens (`bg-accent-states-hover`), не на отдел
   `metadata.kind` — полный состав в `protocols/guide-template.md`
 - Поле `name` = имя файла без `.md` (`naming-conventions`)
 - `destination` совпадает с фактической папкой файла
-- Два документа с одинаковым `name` — блокер; проверяется
+- Два документа с одинаковым `name` — ошибка корпуса, останавливает
+  проверку; проверяется
   `scripts/check-docs.mjs`
 
 ### Product-scoped skills
@@ -304,7 +305,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 | Variant в имени компонента (`ButtonPrimary`) | Variant = prop, не имя | `ButtonText` + `variant="primary"` |
 | Entity перед Role (`TextButton`) | Ломает IDE-группировку | `ButtonText` |
 | `IconItem`, `TextItem` на Item-level | Item ≠ collection item | `Icon`, `Text` |
-| Числа в semantic space names | Блокер по `token-rules.md` | `inset-control-h-m`, не `-16` |
+| Числа в semantic space names | Уровень `should` по `token-rules.md` | `inset-control-h-m`, не `-16` |
 | Semantic с именем цвета (`color-white`) | Смысл привязан к значению | `text-primary`, `bg-base-main` |
 | Абстрактные changelog names | Не совпадает с репо | `driver-colors-semantic-changelog.json` |
 | `colorData.ts` для Driver color | Фактический файл — `data.ts` | Смотреть `products/driver/product.json` → `tokenDataFiles` |
@@ -318,6 +319,8 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ## 8. Changelog
 
+- **1.3.0** — 2026-09-21. Уровни соответствия вместо «блокера»; дубль `name` назван
+  ошибкой корпуса, а не расхождением артефакта — это разные вещи.
 - **1.2.0** — 2026-09-20. Префикс продукта в имени changelog-файла и в
   `collectionName` стал обязательным: асимметрия driver без префикса
   против rider с префиксом устранена (Волна 3.5, W35-2).
