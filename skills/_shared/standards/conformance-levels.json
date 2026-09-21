@@ -1,0 +1,64 @@
+{
+  "id": "conformance-levels",
+  "version": "1.0.0",
+  "status": "alpha",
+  "humanFile": "conformance-levels.md",
+  "note": "Машинный слой уровней соответствия. Инструменты читают levels и dispositionByLevel, чтобы превращать расхождения в findings с верным весом.",
+
+  "levels": [
+    {
+      "id": "must",
+      "meaning": "Без этого артефакт не является артефактом дизайн-системы",
+      "violationMeans": "Артефакт не может считаться компонентом или токеном ДС",
+      "criterion": "Без правила артефакт нельзя опознать, использовать или безопасно переиспользовать",
+      "expandingListIs": "major"
+    },
+    {
+      "id": "should",
+      "meaning": "Эталон, к которому движемся",
+      "violationMeans": "Дистанция до эталона; не блокирует использование и релиз",
+      "isDefault": true
+    },
+    {
+      "id": "may",
+      "meaning": "Ориентир; применимость зависит от продукта, стека или сценария",
+      "violationMeans": "Не расхождение, если продукт сам не объявил это требование"
+    }
+  ],
+
+  "defaultLevel": "should",
+  "defaultLevelReason": "Незаданный уровень не должен случайно блокировать работу продукта",
+
+  "dispositionByLevel": {
+    "must": "blocker",
+    "should": "recommendation",
+    "may": "deferred"
+  },
+
+  "dispositionOverrides": [
+    { "when": "пользователь явно пометил находку", "to": "blocker" },
+    { "when": "есть принятое исключение в changes/<id>/pending/", "to": "accepted-exception", "requires": "pendingRef" },
+    { "when": "понижение находки уровня must", "to": "любое", "requires": "явное решение и запись" }
+  ],
+
+  "reportShape": {
+    "_doc": "Профиль соответствия вместо списка нарушений",
+    "example": {
+      "scope": "driver · BadgeCount",
+      "must": { "met": 5, "total": 5 },
+      "should": { "met": 7, "total": 11 },
+      "may": { "met": 2, "total": 4 }
+    }
+  },
+
+  "notGraded": {
+    "_doc": "Что уровни не отменяют",
+    "gates": "Гейты обязательны независимо от уровней: они решают, можно ли начинать",
+    "alwaysOnProhibitions": [
+      "не создавать компонент молча",
+      "не подставлять значение без token lookup",
+      "не писать версию и changelog вне границы релиза"
+    ],
+    "productExceptions": "оформляются записью в changes/<id>/pending/, а не умолчанием"
+  }
+}
