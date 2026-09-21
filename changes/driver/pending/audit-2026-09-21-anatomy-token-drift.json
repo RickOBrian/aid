@@ -1,0 +1,23 @@
+{
+  "id": "audit-2026-09-21-anatomy-token-drift",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "badge-count, badge-dot",
+  "product": "driver",
+  "changeSummary": "Анатомия BadgeCount и BadgeDot объявляла semantic-token для радиуса, отступов, тени, типографики и размера, а реализация писала литералы. У Switch все semantic-записи — цвета, он уже шёл через токен-слой и в находку попал ошибочно.",
+  "auditFinding": {
+    "number": 1,
+    "category": "drift",
+    "disposition": "blocker",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Расширить токен-слой компонентов на space, radius, shadow, typography по образцу цветового: чтение строк из данных продукта с ошибкой при отсутствии.",
+    "resolution": "Добавлен components/productTokens.ts — чтение space, radius, shadow, typography из данных продукта с ошибкой при отсутствии имени, как было сделано для цвета. Компоненты переведены на CSS-переменные. Вычисленные значения совпали с прежними литералами до пикселя: вид не изменился, изменился источник. По дороге выяснилось, что анатомия ссылалась на id токена (shadow-1), а не на name (shadow 1) — поиск исправлен на id, затем name.",
+    "guard": "components/anatomyTokens.test.ts — каждая непветовая ссылка анатомии обязана резолвиться"
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "resolved",
+  "created": "2026-09-21",
+  "author": "sergej",
+  "resolved": "2026-09-21"
+}

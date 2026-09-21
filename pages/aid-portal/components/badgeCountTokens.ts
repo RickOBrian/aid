@@ -11,6 +11,7 @@
  * canonical token rows.
  */
 import { semanticColorSections, type ColorModeValue } from '../data';
+import { radius, shadow, spacing, typographyCss } from './productTokens';
 
 function toCssColor({ hex, opacity }: ColorModeValue): string {
   if (opacity >= 100) {
@@ -91,8 +92,25 @@ function cssVarBlock(vars: BadgeCountColorVars): string {
  * matches the ambient theming convention from `skills/_shared/standards/platforms.md`.
  * Both blocks resolve to the same colors here (theme-independent tokens).
  */
+/**
+ * Непветовые токены компонента: радиус, отступы, тень и типографика.
+ * Читаются из данных продукта теми же правилами, что и цвет — имя не найдено,
+ * сборка падает. До 2026-09-21 эти значения писались в CSS литералами, тогда
+ * как анатомия объявляла их semantic-токенами (аудит, находка №1).
+ */
+export const badgeCountShapeVars = {
+  '--ds-badge-count-radius': radius('radius-12'),
+  '--ds-badge-count-pad-v': spacing('space-2'),
+  '--ds-badge-count-pad-h': spacing('space-6'),
+  '--ds-badge-count-shadow': shadow('shadow-1'),
+} as const;
+
+/** Объявления типографики роли `subtitle-2` — подставляются в правило текста. */
+export const BADGE_COUNT_TYPOGRAPHY_CSS = typographyCss('subtitle-2');
+
 export const BADGE_COUNT_TOKEN_STYLE = `
 .ds-badge-count-root {
+${Object.entries(badgeCountShapeVars).map(([n, v]) => `  ${n}: ${v};`).join('\n')}
 ${cssVarBlock(badgeCountColorVars.day)}
 }
 [data-theme="night"] .ds-badge-count-root {

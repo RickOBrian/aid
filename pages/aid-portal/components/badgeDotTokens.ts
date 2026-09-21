@@ -8,6 +8,7 @@
  * (#D62347 in Day and Night). No raw hex is authored here.
  */
 import { semanticColorSections, type ColorModeValue } from '../data';
+import { spacing } from './productTokens';
 
 function toCssColor({ hex, opacity }: ColorModeValue): string {
   if (opacity >= 100) {
@@ -72,8 +73,17 @@ function cssVarBlock(vars: BadgeDotColorVars): string {
     .join('\n');
 }
 
+/**
+ * Размер точки — токен пространства, а не литерал. Анатомия объявляла
+ * `space-8`, реализация писала `8px` (аудит 2026-09-21, находка №1).
+ */
+export const badgeDotShapeVars = {
+  '--ds-badge-dot-size': spacing('space-8'),
+} as const;
+
 export const BADGE_DOT_TOKEN_STYLE = `
 .ds-badge-dot-root {
+${Object.entries(badgeDotShapeVars).map(([n, v]) => `  ${n}: ${v};`).join('\n')}
 ${cssVarBlock(badgeDotColorVars.day)}
 }
 [data-theme="night"] .ds-badge-dot-root {

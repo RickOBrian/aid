@@ -1,0 +1,20 @@
+{
+  "id": "audit-2026-09-21-indeterminate-as-state",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "switch",
+  "product": "driver",
+  "changeSummary": "switch.api.ts перечисляет indeterminate среди состояний, а component-standards 2.0.1 относит его к значениям (ADR-021). Там же selected помечен как «supported via checked prop» — то же смешение.",
+  "auditFinding": {
+    "number": 5,
+    "category": "drift",
+    "disposition": "recommendation",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Перенести indeterminate из states в описание значения checked; убрать selected или переформулировать."
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-09-21",
+  "author": "sergej"
+}

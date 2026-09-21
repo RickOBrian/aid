@@ -1,0 +1,20 @@
+{
+  "id": "audit-2026-09-21-switch-standalone-name",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "switch",
+  "product": "driver",
+  "changeSummary": "Имя Switch как самостоятельное (вне формулы Role+Entity) зафиксировано только в .cursorrules. В naming-conventions.json списка standaloneNames оно нет.",
+  "auditFinding": {
+    "number": 7,
+    "category": "naming",
+    "disposition": "recommendation",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Внести Switch в standaloneNames канона либо обосновать отказ."
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-09-21",
+  "author": "sergej"
+}
