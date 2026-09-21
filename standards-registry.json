@@ -3,7 +3,7 @@
   "bundleVersion": "0.1.0-alpha",
   "bundleStatus": "alpha",
   "canonicalRoot": "skills/_shared",
-  "updated": "2026-09-20",
+  "updated": "2026-09-21",
   "note": "Реестр стандартов дизайн-системы. Каждый стандарт версионируется самостоятельно по semver-guide; bundleVersion — версия публикуемого набора целиком. Машинный слой (machineFile) читают инструменты: аудит, линтер, плагины, распознавание компонентов.",
   "statuses": [
     "draft",
@@ -571,7 +571,7 @@
       "kind": "architecture",
       "humanFile": "skills/_shared/architecture/github-sync-architecture.md",
       "machineFile": null,
-      "version": "1.5.1",
+      "version": "1.5.2",
       "status": "stable",
       "wave": null,
       "core": false,
