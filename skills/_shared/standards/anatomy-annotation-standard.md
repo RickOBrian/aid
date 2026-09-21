@@ -2,13 +2,13 @@
 destination: skills/_shared/standards/
 name: anatomy-annotation-standard
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   kind: standard
 ---
 
 # Стандарт аннотации anatomy (halo / anchor / callout)
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.0.2 · обновлено 2026-09-21
 
 ---
 
@@ -153,8 +153,7 @@ Tiny-сэмпле ButtonText возник именно из копировани
 - `docs/storybook/components/storybook-button.html`
 - `docs/storybook/components/switch.html`
 - `docs/storybook/components/table.html`
-- `docs/storybook/products/sutochno/components/button-text.html`
-- `docs/storybook/products/sutochno/components/counter-value.html`
+- `pages/aid-portal/components/AnatomyInspector.tsx` — действующая реализация
 
 Известное baseline-состояние (не регрессия, проверять на 
 изменение, а не на отсутствие): `color-swatch.html` — 0 
@@ -172,6 +171,8 @@ callout'ов (части без selector'ов); `card.html`,
 
 ## 9. Changelog
 
+- **1.0.2** — 2026-09-21. Примеры заменены: страницы удалённого продукта → действующий
+  AnatomyInspector в портале.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
   статуса, нумерация разделов, раздел Changelog.
 - **1.0.0** — предыдущие версии до введения раздела; история — в git.
