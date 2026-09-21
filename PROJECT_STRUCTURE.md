@@ -11,7 +11,6 @@ aid/
 │   └── rules/
 ├── .github/
 │   └── workflows/
-├── .storybook/
 ├── changes/
 │   ├── driver/
 │   │   ├── pending/  (13)
@@ -70,8 +69,6 @@ aid/
 ├── src/
 │   └── pages/
 │       └── FigmaStyles/  (2)
-├── stories/
-│   └── figma-styles/
 ├── tokens/
 ├── tools/
 │   └── figma-token-comparator/

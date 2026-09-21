@@ -2,13 +2,13 @@
 destination: skills/_shared/protocols/
 name: ds-import-json
 metadata:
-  version: "1.4.2"
+  version: "1.5.0"
   kind: protocol
 ---
 
 # Скилл: ds-import-json
 
-> Статус: Draft · v1.4.2 · обновлено 2026-09-21
+> Статус: Draft · v1.5.0 · обновлено 2026-09-21
 
 ---
 
@@ -16,6 +16,18 @@ metadata:
 Один раунд уточняющих вопросов — на файл целиком, не на каждый токен внутри.
 
 ---
+
+> **Внимание: раскладка, в которую импортирует этот протокол, удалена.**
+>
+> Шаги ниже создают `tokens/{product}/core|semantic|legacy` и
+> `stories/{product}/` — структуру легаси-продуктов, удалённых 2026-09-21
+> вместе со Storybook. Действующие продукты хранят значения иначе:
+> `driver` и `rider` — в `pages/aid-portal/*Data.ts`, а changelog коллекций
+> в `tokens/<product>-*-changelog.json`.
+>
+> Протокол сохранён как описание процедуры импорта (разбор JSON, разрешение
+> конфликтов, запись changelog), но пути назначения требуют переписывания
+> под текущую раскладку. До этого не применять шаги 4 и 5 буквально.
 
 ## 1. Запуск
 
@@ -127,11 +139,9 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 Токены со статусом legacy — с бейджем LEGACY и tooltip из поля deviation.
 
-**React Storybook (:6006)** — опционально, только если уже есть `stories/{product}/tokens/*.stories.tsx`. Не создавать новый Storybook и не дублировать конфигурацию.
-
-Перед импортом проверить наличие единственной конфигурации:
-- `.storybook/main.ts`, `.storybook/preview.tsx` в корне репо
-- `package.json` → `"storybook": "storybook dev -p 6006"`
+> Раздел про React Storybook удалён 2026-09-21 вместе с самим Storybook:
+> инструмент, его конфигурация и все истории убраны из репозитория.
+> Витрина токенов и компонентов — Presentbook (`pages/aid-portal/`).
 
 ---
 
@@ -161,6 +171,9 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ## 11. Changelog
 
+- **1.5.0** — 2026-09-21. Добавлено предупреждение: целевая раскладка импорта
+  (`tokens/{product}/core|semantic`, `stories/{product}/`) удалена вместе со
+  Storybook. Процедура сохранена, пути назначения требуют переписывания.
 - **1.4.2** — 2026-09-21. Пример лога переведён на действующий продукт.
 - **1.4.1** — 2026-09-20. guide-lint: нормализация формы.
 - 1.4.0 — dual-mode импорт: поле `valueDark` для Light/Dark Figma-экспорта; не писать Dark в `deviation`.

@@ -4,13 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "build-storybook": "storybook build",
     "build:portal": "vite build --config pages/aid-portal/vite.config.ts",
     "build:structure": "node scripts/build-structure.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "check:docs:full": "node scripts/check-docs.mjs --warnings",
     "dev:portal": "vite --config pages/aid-portal/vite.config.ts",
-    "storybook": "storybook dev -p 6006",
     "sync:registry": "node scripts/sync-registry.mjs"
   },
   "dependencies": {
@@ -18,12 +16,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/react": "^8.6.14",
-    "@storybook/react-vite": "^8.6.14",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "storybook": "^8.6.14",
     "typescript": "^5.7.3",
     "vite": "^6.0.7"
   }

@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: testing-strategy
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Testing Strategy
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.1.0 · обновлено 2026-09-21
 
 ---
 
@@ -151,7 +151,7 @@ Invalid combinations (`disabled + loading`) — must not render or must follow p
 
 - **Storybook / Presentbook** — primary visual and interaction sandbox.
 - Driver portal: `pages/aid-portal/` — token section pages (reference, not component library yet).
-- Storybook root: `stories/`, `.storybook/` — component stories when `componentsRoot` exists.
+- Страницы ревью компонентов: `pages/aid-portal/` — см. `protocols/component-page-baseline.md`.
 - Each component story covers: default + each variant + key states.
 - Interaction tests via Storybook `play` functions (optional) for click/keyboard smoke.
 
@@ -236,7 +236,7 @@ Assert `contentDescription`, `semantics { role }`, `enabled` / `disabled()` stat
 | **A11y automated** | axe: 0 critical, 0 serious | Component stories / E2E |
 | **Visual regression** | No unapproved diff vs baseline | Component matrix |
 | **Lint** | No new jsx-a11y errors | Web components |
-| **Build** | Storybook / portal build pass | `build-storybook`, `build:driver-colors` |
+| **Build** | Сборка портала проходит | `npm run build:portal` |
 
 Token-only PRs (Driver `*Data.ts`): unit/snapshot tests for token files; visual portal check optional manual until automated.
 
@@ -331,5 +331,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ## 11. Changelog
 
+- **1.1.0** — 2026-09-21. Ссылки на удалённый Storybook заменены на страницы ревью портала
+  и действующий скрипт сборки.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: testing levels, token/component strategy, platform tools, CI gate, manual checklist, tools matrix, anti-patterns.

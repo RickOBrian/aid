@@ -13,9 +13,5 @@
     "allowImportingTsExtensions": true,
     "types": ["vite/client"]
   },
-  "include": [
-    "src",
-    "stories",
-    ".storybook"
-  ]
+  "include": ["src"]
 }
