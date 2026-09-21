@@ -10,7 +10,15 @@
     "category": "missing",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Добавить проброс ref на корневой узел и data-testid — либо смягчить правило в стандарте до рекомендованного."
+    "proposedFix": "Добавить проброс ref на корневой узел и data-testid — либо смягчить правило в стандарте до рекомендованного.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Проброс ref и атрибут тестового селектора — should. Классы и инлайн-стили на корне — may.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

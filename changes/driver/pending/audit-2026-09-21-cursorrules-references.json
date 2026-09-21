@@ -10,7 +10,15 @@
     "category": "drift",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Заменить ссылки на skills/_shared/standards/component-standards.md и naming-conventions.md."
+    "proposedFix": "Заменить ссылки на skills/_shared/standards/component-standards.md и naming-conventions.md.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Ссылки на легаси-источник правил — should.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],
