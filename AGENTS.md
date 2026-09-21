@@ -35,7 +35,7 @@ token JSON (`tokens/`) и presentbook (`docs/storybook/` — ~10 spec-стран
 | `skills/` | **Канонические** скиллы и shared-гайды — единственное место для правок |
 | `src/` | React-компоненты и token loader (Web) |
 | `stories/` | Storybook stories |
-| `tokens/` | Token JSON bundles (ui-kit-a, ui-kit-b, sutochno) |
+| `tokens/` | Changelog коллекций токенов по продуктам (`driver-*`, `rider-*`) |
 
 ---
 

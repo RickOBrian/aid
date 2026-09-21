@@ -33,7 +33,7 @@ const ALL_PRODUCTS: ProductRegistryEntry[] = registryFile?.products ?? [];
 /** Statuses eligible for the product switcher, per `product-context.mdc`. */
 const SWITCHABLE_STATUSES = new Set(['active', 'onboarding']);
 
-/** Products shown in the switcher and eligible for URL-prefix routing — excludes legacy/reference products (ui-kit-a, ui-kit-b, sutochno, design-system). */
+/** Products shown in the switcher and eligible for URL-prefix routing — excludes reference products such as design-system. */
 export const SWITCHABLE_PRODUCTS: ProductRegistryEntry[] = ALL_PRODUCTS.filter((product) =>
   SWITCHABLE_STATUSES.has(product.status),
 );

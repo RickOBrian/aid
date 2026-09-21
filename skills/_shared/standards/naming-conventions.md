@@ -256,7 +256,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 | Область | Convention |
 |---|---|
 | **Token CSS var** | `--<token-name>` kebab-case: `var(--bg-accent-main)` |
-| **Component file** | PascalCase: `ButtonText.tsx` |
+| **Component file** | PascalCase: ButtonText.tsx |
 | **Props — boolean** | `isDisabled`, `isLoading`, `isSelected` |
 | **Props — callbacks** | `onClick`, `onChange`, `onBlur` |
 | **Props — variants** | `variant?: 'primary' \| 'secondary'` |

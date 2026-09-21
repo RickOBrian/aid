@@ -2,7 +2,7 @@
 
 > Файл собирается `node scripts/build-structure.mjs`. Руками не править:
 > дерево строится из репозитория, таблица назначений — из PURPOSE в скрипте.
-> Снимок: 2026-09-20
+> Снимок: 2026-09-21
 
 ```
 aid/
@@ -12,11 +12,9 @@ aid/
 ├── .github/
 │   └── workflows/
 ├── .storybook/
-│   └── addons/
-│       └── ui-kit-sidebar/  (1)
 ├── changes/
 │   ├── driver/
-│   │   ├── pending/  (6)
+│   │   ├── pending/  (13)
 │   │   └── released/  (2)
 │   └── rider/
 │       ├── pending/  (9)
@@ -34,9 +32,8 @@ aid/
 │   ├── specs/
 │   ├── standards-alpha/
 │   ├── storybook/
-│   │   ├── _known-issues/  (5)
-│   │   ├── components/  (10)
-│   │   └── products/  (1)
+│   │   ├── _known-issues/  (3)
+│   │   └── components/  (10)
 │   └── tokens/
 ├── memory/
 │   ├── ds-component-audit/
@@ -45,7 +42,7 @@ aid/
 ├── pages/
 │   └── aid-portal/
 │       ├── api/  (2)
-│       ├── components/  (20)
+│       ├── components/  (24)
 │       ├── products/  (2)
 │       ├── public/  (2)
 │       ├── scripts/  (14)
@@ -59,7 +56,7 @@ aid/
 │   │   ├── architecture/  (5)
 │   │   ├── notes/  (2)
 │   │   ├── protocols/  (14)
-│   │   └── standards/  (25)
+│   │   └── standards/  (27)
 │   ├── ds-component-audit/
 │   │   └── references/  (1)
 │   ├── ds-component-build/
@@ -71,35 +68,11 @@ aid/
 │   ├── ds-ui-review/
 │   └── guide-lint/
 ├── src/
-│   ├── components/
-│   │   └── sutochno/  (2)
-│   ├── pages/
-│   │   └── FigmaStyles/  (2)
-│   └── tokens/
+│   └── pages/
+│       └── FigmaStyles/  (2)
 ├── stories/
-│   ├── figma-styles/
-│   ├── sutochno/
-│   │   ├── components/  (3)
-│   │   └── tokens/  (1)
-│   ├── ui-kit-a/
-│   │   ├── components/  (1)
-│   │   └── tokens/  (1)
-│   └── ui-kit-b/
-│       ├── components/  (1)
-│       └── tokens/  (1)
+│   └── figma-styles/
 ├── tokens/
-│   ├── sutochno/
-│   │   ├── core/  (1)
-│   │   ├── legacy/  (2)
-│   │   └── semantic/  (1)
-│   ├── ui-kit-a/
-│   │   ├── core/  (1)
-│   │   ├── legacy/  (1)
-│   │   └── semantic/  (1)
-│   └── ui-kit-b/
-│       ├── core/  (1)
-│       ├── legacy/  (1)
-│       └── semantic/  (1)
 ├── tools/
 │   └── figma-token-comparator/
 │       ├── docs/  (3)

@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: product-context
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Product Context Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.0.1 · обновлено 2026-09-21
 
 ---
 
@@ -43,8 +43,6 @@ Products with any other status, including `stable`, `legacy`, `prototype` or
 `archived`, are historical/reference products. Do not automatically select,
 suggest, read token values from, or write component/release artifacts to them.
 
-Do not suggest or select `ui-kit-a`, `ui-kit-b`, `sutochno` or
-`design-system` for new work unless the user explicitly asks to work with that
 historical product.
 
 ## 3. Product resolution
@@ -184,4 +182,6 @@ After product context is confirmed, still follow these rules for the same task:
 
 ## 10. Changelog
 
+- **1.0.1** — 2026-09-21. Убрано правило об исключении `ui-kit-a`, `ui-kit-b` и `sutochno`:
+  продукты удалены из репозитория.
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/product-context.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.

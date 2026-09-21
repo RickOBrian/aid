@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/protocols/
 name: presentbook-guide
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   kind: protocol
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Presentbook Guide
 
-> Статус: Draft · v1.1.1 · обновлено 2026-09-20
+> Статус: Draft · v1.1.2 · обновлено 2026-09-21
 
 ---
 
@@ -348,7 +348,8 @@ Hub (/design-system)
 | Build | `npm run build:driver-colors` |
 | routeBase | `/design-system` |
 
-Исторические product portals (`docs/storybook/` для ui-kit-a/b) — reference architecture, **не** template для нового Driver work без explicit request.
+Исторический product portal (`docs/storybook/`) — reference architecture,
+**не** template для нового Presentbook-работы без явного запроса.
 
 ---
 
@@ -412,6 +413,7 @@ Hub (/design-system)
 
 ## 10. Changelog
 
+- **1.1.2** — 2026-09-21. Убрана ссылка на порталы удалённых продуктов.
 - **1.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.0** — 2026-08-18. Добавлена секция «Критерий содержания component
   page»: единственный критерий контента — помогает ли разработчику прямо

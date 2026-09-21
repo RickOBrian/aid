@@ -2,13 +2,13 @@
 destination: skills/_shared/protocols/
 name: ds-import-json
 metadata:
-  version: "1.4.1"
+  version: "1.4.2"
   kind: protocol
 ---
 
 # Скилл: ds-import-json
 
-> Статус: Draft · v1.4.1 · обновлено 2026-09-20
+> Статус: Draft · v1.4.2 · обновлено 2026-09-21
 
 ---
 
@@ -123,7 +123,6 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 3. Страницы подхватят изменения автоматически:
    - `docs/storybook/product.html?product={product}` — хаб продукта
    - `docs/storybook/product-colors.html?product={product}` — таблица цветовых токенов
-   - `docs/storybook/product-typography.html?product={product}` — витрина типографики (если есть `tokens/{product}/legacy/typography-styles.json`)
    - `docs/storybook/product-components.html?product={product}` — хаб компонентов
 
 Токены со статусом legacy — с бейджем LEGACY и tooltip из поля deviation.
@@ -133,7 +132,6 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 Перед импортом проверить наличие единственной конфигурации:
 - `.storybook/main.ts`, `.storybook/preview.tsx` в корне репо
 - `package.json` → `"storybook": "storybook dev -p 6006"`
-- Кастомный аддон `.storybook/addons/ui-kit-sidebar/register.ts` не трогать без явного запроса.
 
 ---
 
@@ -157,15 +155,16 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 Каждый импорт логировать в memory/ds-import-log.jsonl (append, одна строка — один файл):
 
-{"date": "2026-07-16", "file": "colors-export.json", "product": "ui-kit-a", "type": "semantic", "status": "legacy", "tokensImported": 24, "tokensSkipped": 1, "owner": "user"}
+{"date": "2026-07-16", "file": "colors-export.json", "product": "driver", "type": "semantic", "status": "imported", "tokensImported": 24, "tokensSkipped": 1, "owner": "user"}
 
 ---
 
 ## 11. Changelog
 
+- **1.4.2** — 2026-09-21. Пример лога переведён на действующий продукт.
 - **1.4.1** — 2026-09-20. guide-lint: нормализация формы.
 - 1.4.0 — dual-mode импорт: поле `valueDark` для Light/Dark Figma-экспорта; не писать Dark в `deviation`.
-- 1.3.0 — Typography: `typography-styles.json`, `product-typography.html`, пункт Tokens → Typography в nav.
+- 1.3.0 — Typography: typography-styles.json, product-typography.html, пункт Tokens → Typography в nav.
 - 1.2.0 — продукт Storybook: `_products.json`, хаб `product.html`, Components `product-components.html`, секции продуктов в nav.
 - 1.1.0 — вывод токенов в static System Storybook (:8000): `product-colors.html`, _product-tokens.json, секция Products в nav.
 - 1.0.0 — первая версия: импорт JSON по одному раунду вопросов на файл, обработка конфликтов, создание продукта, git-коммит перед очисткой, лог импорта.

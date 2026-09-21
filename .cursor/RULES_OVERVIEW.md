@@ -24,7 +24,7 @@
   - reference component: **Switch** (`/components/switch`, `currentVersion: null`, pending initial release);
   - reference-only: `src/pages/FigmaStyles/` (не source of truth).
 
-**Исторические продукты** (`ui-kit-a`, `ui-kit-b`, `sutochno`, `design-system`) — status `stable`/`legacy`; не участвуют в pipeline без явного запроса.
+**Исторические продукты** (`design-system`) — status `stable`; не участвуют в pipeline без явного запроса.
 
 ---
 
