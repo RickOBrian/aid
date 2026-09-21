@@ -1,0 +1,20 @@
+{
+  "id": "audit-2026-09-21-space-tokens-numbering",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "badge-count, badge-dot, switch",
+  "product": "driver",
+  "changeSummary": "Компоненты ссылаются на space-2, space-6, radius-12 — токены с числами в имени. token-rules §3 запрещает числа в semantic-именах, §6 называет блокером «компонент → spacing-N напрямую». Ни один реальный токен пространства driver правилу не соответствует.",
+  "auditFinding": {
+    "number": 2,
+    "category": "naming",
+    "disposition": "recommendation",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Решение на уровне стандарта: либо у driver появляется semantic-слой пространства поверх шкалы, либо правило меняется. Не дефект компонентов."
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-09-21",
+  "author": "sergej"
+}

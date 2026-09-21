@@ -1,4 +1,4 @@
-import { BADGE_COUNT_TOKEN_STYLE } from './badgeCountTokens';
+import { BADGE_COUNT_TOKEN_STYLE, BADGE_COUNT_TYPOGRAPHY_CSS } from './badgeCountTokens';
 
 /**
  * BadgeCount — Surface View. Indicators group.
@@ -32,18 +32,14 @@ ${BADGE_COUNT_TOKEN_STYLE}
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 6px;
-  border-radius: 12px;
+  padding: var(--ds-badge-count-pad-v) var(--ds-badge-count-pad-h);
+  border-radius: var(--ds-badge-count-radius);
   background-color: var(--ds-badge-count-bg);
-  box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--ds-badge-count-shadow);
 }
 .ds-badge-count-root .ds-badge-count__value {
   margin: 0;
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  letter-spacing: 0.1px;
+  ${BADGE_COUNT_TYPOGRAPHY_CSS}
   color: var(--ds-badge-count-text);
   text-align: center;
   white-space: nowrap;

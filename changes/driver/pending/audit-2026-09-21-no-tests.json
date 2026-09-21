@@ -1,0 +1,23 @@
+{
+  "id": "audit-2026-09-21-no-tests",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "switch, badge-count, badge-dot",
+  "product": "driver",
+  "changeSummary": "Ни одного теста и нет тест-раннера в портале. DoD п.7 невыполним: требование есть, инфраструктуры нет.",
+  "auditFinding": {
+    "number": 3,
+    "category": "missing",
+    "disposition": "blocker",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Поставить тест-раннер и написать первые тесты: значения по умолчанию, поведение в disabled и loading, вызов колбэков, ограничение значения BadgeCount.",
+    "resolution": "Поставлен vitest + jsdom + @testing-library/react. Написан 21 тест: контракт и интерактивность Switch (включая путь с клавиатуры и различие disabled/loading), ограничение значения BadgeCount, резолв токенов анатомии. Скрипты npm test и npm run test:watch.",
+    "remaining": "Визуальные тесты по матрице вариант × состояние и автоматическая проверка доступности (axe) — DoD п.7 закрыт частично."
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "resolved",
+  "created": "2026-09-21",
+  "author": "sergej",
+  "resolved": "2026-09-21"
+}

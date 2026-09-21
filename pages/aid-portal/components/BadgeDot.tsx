@@ -23,8 +23,8 @@ const BADGE_DOT_STYLE = `
 ${BADGE_DOT_TOKEN_STYLE}
 .ds-badge-dot-root {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: var(--ds-badge-dot-size);
+  height: var(--ds-badge-dot-size);
   border-radius: 50%;
   background-color: var(--ds-badge-dot-bg);
   flex-shrink: 0;

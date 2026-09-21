@@ -1,0 +1,20 @@
+{
+  "id": "audit-2026-09-21-cursorrules-references",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "switch",
+  "product": "driver",
+  "changeSummary": "Switch.tsx ссылается на .cursorrules как на источник двух правил: приглушение недоступного на 40% и исключение для имени Switch. Cursor объявлен легаси, оба правила живут в стандартах.",
+  "auditFinding": {
+    "number": 6,
+    "category": "drift",
+    "disposition": "recommendation",
+    "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
+    "proposedFix": "Заменить ссылки на skills/_shared/standards/component-standards.md и naming-conventions.md."
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-09-21",
+  "author": "sergej"
+}
