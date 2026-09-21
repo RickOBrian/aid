@@ -1,10 +1,9 @@
 {
   "id": "conformance-levels",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "alpha",
   "humanFile": "conformance-levels.md",
   "note": "Машинный слой уровней соответствия. Инструменты читают levels и dispositionByLevel, чтобы превращать расхождения в findings с верным весом.",
-
   "levels": [
     {
       "id": "must",
@@ -25,32 +24,47 @@
       "violationMeans": "Не расхождение, если продукт сам не объявил это требование"
     }
   ],
-
   "defaultLevel": "should",
   "defaultLevelReason": "Незаданный уровень не должен случайно блокировать работу продукта",
-
   "dispositionByLevel": {
     "must": "blocker",
     "should": "recommendation",
     "may": "deferred"
   },
-
   "dispositionOverrides": [
-    { "when": "пользователь явно пометил находку", "to": "blocker" },
-    { "when": "есть принятое исключение в changes/<id>/pending/", "to": "accepted-exception", "requires": "pendingRef" },
-    { "when": "понижение находки уровня must", "to": "любое", "requires": "явное решение и запись" }
+    {
+      "when": "пользователь явно пометил находку",
+      "to": "blocker"
+    },
+    {
+      "when": "есть принятое исключение в changes/<id>/pending/",
+      "to": "accepted-exception",
+      "requires": "pendingRef"
+    },
+    {
+      "when": "понижение находки уровня must",
+      "to": "любое",
+      "requires": "явное решение и запись"
+    }
   ],
-
   "reportShape": {
     "_doc": "Профиль соответствия вместо списка нарушений",
     "example": {
       "scope": "driver · BadgeCount",
-      "must": { "met": 5, "total": 5 },
-      "should": { "met": 7, "total": 11 },
-      "may": { "met": 2, "total": 4 }
+      "must": {
+        "met": 5,
+        "total": 5
+      },
+      "should": {
+        "met": 7,
+        "total": 11
+      },
+      "may": {
+        "met": 2,
+        "total": 4
+      }
     }
   },
-
   "notGraded": {
     "_doc": "Что уровни не отменяют",
     "gates": "Гейты обязательны независимо от уровней: они решают, можно ли начинать",
@@ -60,5 +74,73 @@
       "не писать версию и changelog вне границы релиза"
     ],
     "productExceptions": "оформляются записью в changes/<id>/pending/, а не умолчанием"
+  },
+  "mustRegistry": {
+    "_doc": "Полный список правил уровня must по корпусу. Существует, чтобы утверждение «список узкий» можно было проверить, а не принять на веру. Добавление сюда — изменение MAJOR у соответствующего стандарта.",
+    "updated": "2026-09-21",
+    "rules": [
+      {
+        "id": "architecture-level-declared",
+        "standard": "component-standards",
+        "what": "уровень архитектуры объявлен"
+      },
+      {
+        "id": "canonical-name",
+        "standard": "component-standards",
+        "what": "имя компонента по канону нейминга"
+      },
+      {
+        "id": "public-typed-contract",
+        "standard": "component-standards",
+        "what": "контракт опубликован и типизирован"
+      },
+      {
+        "id": "handlers-actually-wired",
+        "standard": "component-standards",
+        "what": "состояние и обработчики связаны реально"
+      },
+      {
+        "id": "color-via-token",
+        "standard": "token-rules, no-hardcode-color-protocol",
+        "what": "цвет задан токеном, не литералом"
+      },
+      {
+        "id": "semantic-named-by-purpose",
+        "standard": "token-rules, no-hardcode-color-protocol",
+        "what": "semantic-токен назван по назначению, не по значению"
+      },
+      {
+        "id": "semantic-references-core",
+        "standard": "no-hardcode-color-protocol",
+        "what": "semantic-токен ссылается на Core, а не на литерал"
+      },
+      {
+        "id": "core-name-without-semantics",
+        "standard": "core-typography-tokens-guide",
+        "what": "имя Core-токена не несёт роли"
+      },
+      {
+        "id": "typography-style-complete",
+        "standard": "token-rules, semantic-typography-tokens-guide",
+        "what": "типографический токен содержит все пять свойств"
+      },
+      {
+        "id": "typography-named-by-role",
+        "standard": "semantic-typography-tokens-guide",
+        "what": "имя типографической роли описывает роль, не размер"
+      },
+      {
+        "id": "token-single-category",
+        "standard": "token-rules",
+        "what": "токен принадлежит ровно одной категории"
+      },
+      {
+        "id": "focus-indicator-present",
+        "standard": "accessibility, component-states-guide",
+        "what": "индикатор фокуса не убран"
+      }
+    ],
+    "count": 12,
+    "theme": "Одиннадцать из двенадцати сводятся к двум причинам: артефакт нельзя опознать (имя врёт об уровне, роли или назначении) либо нельзя безопасно перенести между продуктами и режимами (литерал не переключается вместе с темой). Двенадцатое — индикатор фокуса: без него компонент недоступен целому классу пользователей."
   }
 }

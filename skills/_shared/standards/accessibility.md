@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: accessibility
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Accessibility
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.1.0 · обновлено 2026-09-21
 
 ---
 
@@ -49,7 +49,8 @@ Accessibility — часть контракта компонента нарав�
 | **UI components & graphics** | **3:1** | Borders, icons, focus rings, control outlines |
 | **Non-text contrast** | **3:1** | `line-default`, focus indicator vs adjacent colors |
 
-WCAG AAA (7:1 / 4.5:1) — опционально для critical content; не блокер, если AA соблюдён.
+WCAG AAA (7:1 / 4.5:1) — уровень `may`: желателен для критичного контента,
+расхождением не считается, если AA соблюдён.
 
 ### Как проверять contrast
 
@@ -94,7 +95,12 @@ Focus indicator **обязателен** для всех интерактивн�
 | **Visible** | Минимум 3:1 contrast vs adjacent colors |
 | **Non-color-only** | Ring/outline/shadow — не только смена fill |
 | **Token-based** | Web: `bg-accent-states-focused`; iOS: `bg-accent-states-focused-ios` |
-| **Not removed** | «Minimal design» без focus — **блокер** |
+| **Not removed** | «Minimal design» без focus — уровень `must` |
+
+> Убранный индикатор фокуса — единственное требование доступности уровня
+> `must` в этом гайде. Причина: компонент без видимого фокуса невозможно
+> использовать с клавиатуры — он не «хуже», он недоступен целому классу
+> пользователей. Остальные требования гайда — `should`.
 
 Web: предпочитать `:focus-visible` — focus ring при keyboard navigation, без лишнего ring при mouse click.
 
@@ -326,5 +332,7 @@ Automated tests **не заменяют** VoiceOver/TalkBack manual pass для 
 
 ## 10. Changelog
 
+- **1.1.0** — 2026-09-21. Требования переведены на уровни соответствия: убранный индикатор
+  фокуса — `must`, WCAG AAA — `may`, остальное `should`.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: WCAG AA contrast, focus/keyboard/screen reader standards, platform requirements, testing checklist, anti-patterns.
