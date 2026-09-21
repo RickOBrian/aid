@@ -10,7 +10,15 @@
     "category": "naming",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Внести Switch в standaloneNames канона либо обосновать отказ."
+    "proposedFix": "Внести Switch в standaloneNames канона либо обосновать отказ.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Правило «имя по канону» уровня must, но отказывает здесь не компонент, а канон: имя Switch работает и опознаётся, его просто нет в списке standaloneNames. Чинится дополнением канона, а не переименованием. Поэтому should.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

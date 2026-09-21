@@ -8,11 +8,19 @@
   "auditFinding": {
     "number": 3,
     "category": "missing",
-    "disposition": "blocker",
+    "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
     "proposedFix": "Поставить тест-раннер и написать первые тесты: значения по умолчанию, поведение в disabled и loading, вызов колбэков, ограничение значения BadgeCount.",
     "resolution": "Поставлен vitest + jsdom + @testing-library/react. Написан 21 тест: контракт и интерактивность Switch (включая путь с клавиатуры и различие disabled/loading), ограничение значения BadgeCount, резолв токенов анатомии. Скрипты npm test и npm run test:watch.",
-    "remaining": "Визуальные тесты по матрице вариант × состояние и автоматическая проверка доступности (axe) — DoD п.7 закрыт частично."
+    "remaining": "Визуальные тесты по матрице вариант × состояние и автоматическая проверка доступности (axe) — DoD п.7 закрыт частично.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "blocker",
+      "to": "recommendation",
+      "reason": "Тесты — should. Был назван blocker. Отсутствие тестов измеряет риск и дистанцию, а не годность: компонент от этого не перестаёт быть компонентом ДС.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

@@ -10,7 +10,15 @@
     "category": "drift",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Перенести indeterminate из states в описание значения checked; убрать selected или переформулировать."
+    "proposedFix": "Перенести indeterminate из states в описание значения checked; убрать selected или переформулировать.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Разделение состояния и значения в контракте — should.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

@@ -8,11 +8,19 @@
   "auditFinding": {
     "number": 1,
     "category": "drift",
-    "disposition": "blocker",
+    "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
     "proposedFix": "Расширить токен-слой компонентов на space, radius, shadow, typography по образцу цветового: чтение строк из данных продукта с ошибкой при отсутствии.",
     "resolution": "Добавлен components/productTokens.ts — чтение space, radius, shadow, typography из данных продукта с ошибкой при отсутствии имени, как было сделано для цвета. Компоненты переведены на CSS-переменные. Вычисленные значения совпали с прежними литералами до пикселя: вид не изменился, изменился источник. По дороге выяснилось, что анатомия ссылалась на id токена (shadow-1), а не на name (shadow 1) — поиск исправлен на id, затем name.",
-    "guard": "components/anatomyTokens.test.ts — каждая непветовая ссылка анатомии обязана резолвиться"
+    "guard": "components/anatomyTokens.test.ts — каждая непветовая ссылка анатомии обязана резолвиться",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "blocker",
+      "to": "recommendation",
+      "reason": "Непветовые значения мимо токенов — should. Был назван blocker; под моделью соответствия это дистанция, а не отказ: цвет у этих компонентов и так шёл через токены, то есть must соблюдался всё время.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

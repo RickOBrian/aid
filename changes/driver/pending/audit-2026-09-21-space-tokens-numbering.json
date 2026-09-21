@@ -10,7 +10,15 @@
     "category": "naming",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Решение на уровне стандарта: либо у driver появляется semantic-слой пространства поверх шкалы, либо правило меняется. Не дефект компонентов."
+    "proposedFix": "Решение на уровне стандарта: либо у driver появляется semantic-слой пространства поверх шкалы, либо правило меняется. Не дефект компонентов.",
+    "conformanceLevel": "should",
+    "regraded": {
+      "date": "2026-09-21",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Имена токенов пространства с числами — should. Это расхождение стандарта с продуктом, а не дефект компонентов.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],
