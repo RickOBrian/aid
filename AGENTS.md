@@ -15,7 +15,7 @@ destination: ./
 Web (React + TypeScript), iOS (SwiftUI / UIKit), Android (Jetpack Compose).
 
 Репо содержит документацию дизайн-системы, skill-гайды для AI-агентов, логи памяти
-скиллов, а также рабочий Web-слой: Storybook-портал (`src/`, `stories/`, `.storybook/`),
+скиллов, а также рабочий Web-слой: Presentbook (`pages/aid-portal/`),
 token JSON (`tokens/`) и presentbook (`docs/storybook/` — ~10 spec-страниц, активная
 зона последних коммитов).
 
@@ -34,7 +34,6 @@ token JSON (`tokens/`) и presentbook (`docs/storybook/` — ~10 spec-стран
 | `scripts/` | Dev-серверы и утилиты (`docs-server.py`, `preview.py`) |
 | `skills/` | **Канонические** скиллы и shared-гайды — единственное место для правок |
 | `src/` | React-компоненты и token loader (Web) |
-| `stories/` | Storybook stories |
 | `tokens/` | Changelog коллекций токенов по продуктам (`driver-*`, `rider-*`) |
 
 ---
@@ -62,8 +61,6 @@ aid/
 │   └── semver-guide.md
 │
 ├── src/                           ← React-компоненты, token loader
-├── stories/                       ← Storybook stories
-├── .storybook/                    ← Конфиг Storybook-портала
 ├── tokens/                        ← Token JSON bundles
 │
 ├── memory/                        ← Логи памяти скиллов
