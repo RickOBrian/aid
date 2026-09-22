@@ -4,7 +4,7 @@
   "changeType": "audit-finding",
   "artifact": "switch",
   "product": "driver",
-  "changeSummary": "switch.api.ts перечисляет indeterminate среди состояний, а component-standards 2.0.1 относит его к значениям (ADR-021). Там же selected помечен как «supported via checked prop» — то же смешение.",
+  "changeSummary": "switch.api.ts перечислял indeterminate среди состояний, а component-standards §7.3 относит его к значениям (ADR-021). Там же selected был помечен «supported: checked prop» — то же смешение. Дополнительно вскрылось, что в списке вовсе не было skeleton: контракт расходился с каноном в обе стороны.",
   "auditFinding": {
     "number": 5,
     "category": "drift",
@@ -18,11 +18,15 @@
       "to": "recommendation",
       "reason": "Разделение состояния и значения в контракте — should.",
       "model": "skills/_shared/standards/conformance-levels.md"
-    }
+    },
+    "resolution": "indeterminate убран из состояний. Появилась отдельная секция values в контракте компонента (ComponentApiSpec.values) и карточка Values на странице — состояние и значение теперь разные вещи и в типе, и в интерфейсе. checked объявлен значением типа boolean с пометкой, что третье значение mixed принадлежит чекбоксу, а не бинарному переключателю. selected переведён в supported: false: у переключателя вкл/выкл — это значение, а не выбранность. Добавлен недостающий skeleton. Состояния перечислены в порядке канона.",
+    "guard": "components/apiStates.test.ts — имена состояний сверяются с машинным слоем стандарта (component-standards.json → states.list и states.stateVsValue.knownValues), а не переписаны в тесте. Проверено, что возвращение indeterminate роняет три теста.",
+    "spawned": "Находка №8: BadgeCount описывает через состояния свои значения («default (1–2 digits)», «overflow (value > max)») — то же смешение в другом компоненте."
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],
-  "status": "pending",
+  "status": "resolved",
   "created": "2026-09-21",
-  "author": "sergej"
+  "author": "sergej",
+  "resolved": "2026-09-22"
 }

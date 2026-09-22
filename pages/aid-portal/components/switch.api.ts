@@ -28,16 +28,26 @@ export const switchApiSpec: ComponentApiSpec = {
     { name: 'aria-label', type: 'string', optional: true },
     { name: 'aria-labelledby', type: 'string', optional: true },
   ],
+  // The nine canonical states, in the order of component-standards.md §7.3.
+  // `indeterminate` is deliberately absent: it is a value, not a state
+  // (ADR-021) — see `values` below.
   states: [
     { name: 'default', supported: true },
     { name: 'hovered', supported: true, note: 'CSS-only, @media (hover: hover)' },
+    { name: 'pressed', supported: false },
     { name: 'focused', supported: true, note: 'CSS-only, :focus-visible' },
-    { name: 'selected', supported: true, note: 'checked prop' },
+    { name: 'selected', supported: false, note: 'on / off is the checked value, not selection' },
     { name: 'disabled', supported: true, note: 'isDisabled prop' },
     { name: 'loading', supported: true, note: 'isLoading prop' },
-    { name: 'pressed', supported: false },
-    { name: 'error', supported: false },
-    { name: 'indeterminate', supported: false },
+    { name: 'skeleton', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'error', supported: false, note: 'form controls only' },
+  ],
+  values: [
+    {
+      name: 'checked',
+      type: 'boolean',
+      note: 'two values. `mixed` belongs to checkbox-like controls (ADR-021); a switch is binary',
+    },
   ],
   modes: [
     { name: 'Day', maps: 'light · row.day' },

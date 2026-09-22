@@ -3,7 +3,9 @@ import { ValueKindChip, type ComponentValueKind } from './componentValueKind';
 
 /**
  * Machine-readable API contract for a component review page: props as a
- * TypeScript interface, plus states / modes / slots / tokens as flat lists.
+ * TypeScript interface, plus states / values / modes / slots / tokens as flat
+ * lists. States and values are separate sections on purpose — see
+ * `component-standards.md` §7.3 «Состояние против значения» (ADR-021).
  *
  * Shared primitive — pass a different `ComponentApiSpec` for a new component.
  */
@@ -19,6 +21,17 @@ export interface ComponentPropDef {
 export interface ComponentStateDef {
   name: string;
   supported: boolean;
+  note?: string;
+}
+
+/**
+ * A value is what the component holds, not how it is being interacted with:
+ * it does not arise from interaction, survives `disabled`, and stays out of
+ * the variant × state matrix (`component-standards.md` §7.3).
+ */
+export interface ComponentValueDef {
+  name: string;
+  type: string;
   note?: string;
 }
 
@@ -42,6 +55,8 @@ export interface ComponentApiSpec {
   interfaceName: string;
   props: ComponentPropDef[];
   states: ComponentStateDef[];
+  /** Omitted when the component holds no value of its own. */
+  values?: ComponentValueDef[];
   modes: ComponentModeDef[];
   slots: ComponentSlotDef[];
   tokens: ComponentTokenDef[];
@@ -187,6 +202,21 @@ export function ComponentApiSummary({ spec }: { spec: ComponentApiSpec }) {
             ))}
           </ul>
         </div>
+
+        {spec.values && spec.values.length > 0 && (
+          <div className="ds-capi-card">
+            <h3>Values</h3>
+            <ul className="ds-capi-list">
+              {spec.values.map((value) => (
+                <li key={value.name}>
+                  <code>{value.name}</code>
+                  <code className="ds-capi-note">{value.type}</code>
+                  {value.note && <span className="ds-capi-note">{value.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="ds-capi-card">
           <h3>Modes</h3>

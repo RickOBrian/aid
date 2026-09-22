@@ -16,8 +16,10 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * (`products/driver/product.json` → `colorModeMapping`).
  *
  * States: default, hover (Web only), focus-visible, disabled, loading.
- * `error` / `indeterminate` / `skeleton` are intentionally not implemented —
- * no product scenario and no Figma variant for them.
+ * `pressed`, `skeleton` and `error` are not implemented — no product scenario
+ * and no Figma variant. `selected` does not apply: on / off is the `checked`
+ * value, not selection. `indeterminate` is not a state at all — it is a third
+ * value of checkbox-like controls (ADR-021), and a switch is binary.
  *
  * Disabled visual: opacity 40% per `skills/_shared/standards/accessibility.md`
  * §7 (Web): `aria-disabled` + `pointer-events: none` + opacity 40% on custom

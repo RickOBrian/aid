@@ -253,7 +253,7 @@ merge (`github-sync-architecture.md` §3a).
 | Что | Откуда | Статус |
 |---|---|---|
 | Escape hatches в трёх компонентах | Находка №4 | `changes/driver/pending/` |
-| `indeterminate` как состояние в `switch.api.ts` | Находка №5 | `changes/driver/pending/` |
+| Значения среди состояний в `badgeCount.api.ts` | Находка №8, 2026-09-22 | `overflow` — значение или вариант? |
 | Списки `standaloneNames` расходятся | Находка №7, расширена | Четыре списка в четырёх местах, проза против машинного слоя |
 | Пути назначения в `ds-import-json` | Раскладка удалена, процедура жива | Протокол помечен предупреждением |
 | `TESTING.md` для `ds-component-spec` | W05-12 | Скилл сам на него ссылается |
