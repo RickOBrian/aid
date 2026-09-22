@@ -4,25 +4,28 @@
   "changeType": "audit-finding",
   "artifact": "badge-count, badge-dot, switch",
   "product": "driver",
-  "changeSummary": "Компоненты ссылаются на space-2, space-6, radius-12 — токены с числами в имени. token-rules §3 запрещает числа в semantic-именах, §6 называет блокером «компонент → spacing-N напрямую». Ни один реальный токен пространства driver правилу не соответствует.",
+  "changeSummary": "Компоненты ссылаются на space-2, space-6, radius-12 — токены с числами в имени. token-rules §3 описывает semantic-слой пространства через inset-*, gap-*, radius-* с буквенными суффиксами. У driver такого слоя нет: шкала space-0…space-128 — это Core, а semantic поверх неё не построен.",
   "auditFinding": {
     "number": 2,
     "category": "naming",
-    "disposition": "recommendation",
+    "disposition": "accepted-exception",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Решение на уровне стандарта: либо у driver появляется semantic-слой пространства поверх шкалы, либо правило меняется. Не дефект компонентов.",
+    "proposedFix": "Не требуется. Набор токенов продукта — свойство продукта, а не дефект компонентов.",
+    "resolution": "Закрыто без работы. Токены и стили продукта вправе отличаться от стандарта — цвета, типографика, пространство. Расхождение записано как факт и остаётся фактом; приведение driver к semantic-слою пространства — отдельная задача, которая берётся по решению Principal Designer и сейчас не в работе (ADR-036).",
+    "acceptedBy": "ADR-036",
     "conformanceLevel": "should",
     "regraded": {
-      "date": "2026-09-21",
+      "date": "2026-09-22",
       "from": "recommendation",
-      "to": "recommendation",
-      "reason": "Имена токенов пространства с числами — should. Это расхождение стандарта с продуктом, а не дефект компонентов.",
+      "to": "accepted-exception",
+      "reason": "Расхождение набора токенов продукта со стандартом — принятое исключение, а не находка к исправлению. Стандарт описывает эталон, продукт устроен иначе, обе системы внутренне последовательны.",
       "model": "skills/_shared/standards/conformance-levels.md"
     }
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],
-  "status": "pending",
+  "status": "resolved",
   "created": "2026-09-21",
-  "author": "sergej"
+  "author": "sergej",
+  "resolved": "2026-09-22"
 }
