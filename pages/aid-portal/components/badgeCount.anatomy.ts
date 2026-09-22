@@ -2,8 +2,8 @@ import type { AnatomySchema } from './anatomyTypes';
 
 /**
  * Visual anatomy schema for BadgeCount — 2 zones (Container, Number).
- * Simplified vs Switch baseline per `component-page-baseline.mdc` diff
- * protocol: no interactive geometry (no touch target, no focus ring, no
+ * Simplified vs Switch baseline per
+ * `skills/_shared/protocols/component-page-baseline.md` diff protocol: no interactive geometry (no touch target, no focus ring, no
  * motion) since the component is a non-interactive display element.
  * Geometry targets map to class selectors in `components/BadgeCount.tsx`.
  */

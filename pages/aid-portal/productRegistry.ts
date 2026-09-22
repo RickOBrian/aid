@@ -30,7 +30,8 @@ const registryModules = import.meta.glob('../../products/registry.json', {
 const registryFile = Object.values(registryModules)[0];
 const ALL_PRODUCTS: ProductRegistryEntry[] = registryFile?.products ?? [];
 
-/** Statuses eligible for the product switcher, per `product-context.mdc`. */
+/** Statuses eligible for the product switcher, per
+ * `skills/_shared/protocols/gates/product-context.md`. */
 const SWITCHABLE_STATUSES = new Set(['active', 'onboarding']);
 
 /** Products shown in the switcher and eligible for URL-prefix routing — excludes reference products such as design-system. */

@@ -5,7 +5,8 @@
  * see `products/driver/product.json` → `colorModeMapping`.
  *
  * Both tokens used here are "light ind" / theme-independent rows — day and
- * night resolve to the same value (see `token-integrity.mdc` § Driver color
+ * night resolve to the same value (see
+ * `skills/_shared/protocols/gates/token-integrity.md` §7 Driver color
  * mode resolution: "light ind"/"dark ind" are semantic color roles, not
  * theme labels). No raw hex is authored here: every value is read from the
  * canonical token rows.

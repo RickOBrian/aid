@@ -20,7 +20,8 @@
       "model": "skills/_shared/standards/conformance-levels.md"
     },
     "resolution": "Все четыре ссылки заменены на канонические адреса: имя Switch — naming-conventions.md «Исключения (устоявшиеся имена)», opacity 40% и touch target — accessibility.md §7 и platforms.md §6. В пользовательском тексте страницы имя легаси-файла убрано вовсе: читателю Presentbook незачем знать, в каком файле у нас лежало правило. Ссылок на .cursorrules в коде портала не осталось.",
-    "remaining": "Имя Switch есть в прозе naming-conventions.md, но отсутствует в машинном слое naming-conventions.json → standaloneNames. Это находка №7, отдельная запись."
+    "remaining": "Имя Switch есть в прозе naming-conventions.md, но отсутствует в машинном слое naming-conventions.json → standaloneNames. Это находка №7, отдельная запись.",
+    "amended": "2026-09-22: формулировка «ссылок на .cursorrules не осталось» была точна буквально, но уже класса дефекта. Ссылки на правила Cursor жили ещё в пяти местах через расширение .mdc — product-context, component-gate, token-integrity и дважды component-page-baseline. Найдены при работе над находкой №8 и заменены там же. Урок: искать по классу (правила Cursor), а не по одному имени файла."
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

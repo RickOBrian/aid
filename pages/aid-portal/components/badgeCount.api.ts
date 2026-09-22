@@ -12,9 +12,12 @@ export interface BadgeCountSelection {
   value: number;
 }
 
-/** Value-length variants — replaces the interactive state matrix for this
- * non-interactive component (per `component-page-baseline.mdc` diff protocol). */
-export const BADGE_COUNT_VALUE_VARIANTS: { id: string; label: string; value: number }[] = [
+/** Sample values for the preview selector — they stand in for the state
+ * matrix of an interactive component, per
+ * `skills/_shared/protocols/component-page-baseline.md` diff protocol.
+ * Not variants in the sense of component-standards.md §7.1: nothing about
+ * the rendering changes, only the number being shown. */
+export const BADGE_COUNT_VALUE_SAMPLES: { id: string; label: string; value: number }[] = [
   { id: 'single-digit', label: '1 digit', value: 3 },
   { id: 'double-digit', label: '2 digits', value: 42 },
   { id: 'overflow', label: 'Overflow (>99)', value: 128 },
@@ -29,11 +32,27 @@ export const badgeCountApiSpec: ComponentApiSpec = {
     { name: 'className', type: 'string', optional: true },
     { name: 'aria-label', type: 'string', optional: true },
   ],
+  // The nine canonical states, in the order of component-standards.md §7.3.
+  // Digit count and overflow are not here: they follow from `value`, not from
+  // interaction — see `values` below.
   states: [
-    { name: 'default (1–2 digits)', supported: true },
-    { name: 'overflow (value > max)', supported: true, note: 'renders "{max}+"' },
-    { name: 'hover / pressed / focused', supported: false, note: 'non-interactive — nothing to click' },
-    { name: 'disabled / loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'default', supported: true },
+    { name: 'hovered', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'pressed', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'focused', supported: false, note: 'non-interactive — not in the tab order' },
+    { name: 'selected', supported: false, note: 'nothing to select' },
+    { name: 'disabled', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'skeleton', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'error', supported: false, note: 'form controls only' },
+  ],
+  values: [
+    { name: 'value', type: 'number', note: 'what the badge counts' },
+    {
+      name: 'max',
+      type: 'number',
+      note: 'threshold: above it `value` renders as "{max}+" — formatting of the same value, not a variant and not a state',
+    },
   ],
   modes: [
     { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },
