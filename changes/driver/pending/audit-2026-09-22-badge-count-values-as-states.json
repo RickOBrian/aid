@@ -1,0 +1,29 @@
+{
+  "id": "audit-2026-09-22-badge-count-values-as-states",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "badge-count",
+  "product": "driver",
+  "changeSummary": "badgeCount.api.ts перечисляет среди состояний «default (1–2 digits)» и «overflow (value > max)». Это значения, а не состояния: они возникают из пропа count, а не из взаимодействия, и переживают disabled. То же смешение, что было в switch.api.ts (находка №5), в другом компоненте.",
+  "auditFinding": {
+    "number": 8,
+    "category": "drift",
+    "disposition": "recommendation",
+    "source": "обнаружено 2026-09-22 при закрытии находки №5",
+    "proposedFix": "Перенести обе записи в секцию values (ComponentApiSpec.values появилась вместе с находкой №5). Попутно решить, overflow — значение или вариант: он меняет и содержимое, и вид.",
+    "conformanceLevel": "should",
+    "note": "Страж apiStates.test.ts пока сверяет с каноном только switch: BadgeCount и BadgeDot группируют имена в одной строке («hover / pressed / focused»), и такая запись по канону не проверяется. Запрет «значение среди состояний» действует на все три контракта уже сейчас — но формулировки BadgeCount под него не попадают, потому что состоят не из канонических имён.",
+    "regraded": {
+      "date": "2026-09-22",
+      "from": "recommendation",
+      "to": "recommendation",
+      "reason": "Разделение состояния и значения в контракте — should, как и в находке №5.",
+      "model": "skills/_shared/standards/conformance-levels.md"
+    }
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-09-22",
+  "author": "sergej"
+}
