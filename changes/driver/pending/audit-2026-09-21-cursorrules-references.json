@@ -4,7 +4,7 @@
   "changeType": "audit-finding",
   "artifact": "switch",
   "product": "driver",
-  "changeSummary": "Switch.tsx ссылается на .cursorrules как на источник двух правил: приглушение недоступного на 40% и исключение для имени Switch. Cursor объявлен легаси, оба правила живут в стандартах.",
+  "changeSummary": "Switch ссылался на .cursorrules как на источник трёх правил: приглушение недоступного на 40%, минимальный touch target и исключение для имени Switch. Cursor объявлен легаси, все три правила живут в стандартах. Ссылки нашлись не только в Switch.tsx, но и в switch.anatomy.ts и в тексте страницы SwitchPage.tsx, видимом пользователям.",
   "auditFinding": {
     "number": 6,
     "category": "drift",
@@ -18,11 +18,14 @@
       "to": "recommendation",
       "reason": "Ссылки на легаси-источник правил — should.",
       "model": "skills/_shared/standards/conformance-levels.md"
-    }
+    },
+    "resolution": "Все четыре ссылки заменены на канонические адреса: имя Switch — naming-conventions.md «Исключения (устоявшиеся имена)», opacity 40% и touch target — accessibility.md §7 и platforms.md §6. В пользовательском тексте страницы имя легаси-файла убрано вовсе: читателю Presentbook незачем знать, в каком файле у нас лежало правило. Ссылок на .cursorrules в коде портала не осталось.",
+    "remaining": "Имя Switch есть в прозе naming-conventions.md, но отсутствует в машинном слое naming-conventions.json → standaloneNames. Это находка №7, отдельная запись."
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],
-  "status": "pending",
+  "status": "resolved",
   "created": "2026-09-21",
-  "author": "sergej"
+  "author": "sergej",
+  "resolved": "2026-09-22"
 }

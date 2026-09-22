@@ -7,7 +7,8 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * (https://www.figma.com/design/9yNZhsbTfqC8Nv3JFlVtBq/%F0%9F%95%93-Wilhelm-Library?node-id=9872-15)
  *
  * Naming: `Switch` is a pre-approved exception to the Role+Entity formula
- * (see `.cursorrules`). `Toggle` is a recognized alias, not a separate
+ * (`skills/_shared/standards/naming-conventions.md`, «Исключения
+ * (устоявшиеся имена)»). `Toggle` is a recognized alias, not a separate
  * component.
  *
  * Tokens: Controls · Checked / Unchecked / Key, Strokes · Primary
@@ -18,9 +19,10 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * `error` / `indeterminate` / `skeleton` are intentionally not implemented —
  * no product scenario and no Figma variant for them.
  *
- * Disabled visual: opacity 40% per the repo-wide rule ("Disabled = opacity
- * 40% + неинтерактивен", `.cursorrules`) — overrides the literal 50% shown
- * in the Figma mockup, which predates this governance rule.
+ * Disabled visual: opacity 40% per `skills/_shared/standards/accessibility.md`
+ * §7 (Web): `aria-disabled` + `pointer-events: none` + opacity 40% on custom
+ * controls — overrides the literal 50% shown in the Figma mockup, which
+ * predates this rule.
  *
  * Accessibility: native `<button role="switch">`, keyboard support (Enter /
  * Space) comes from the native button element, `focus-visible` ring, 44×44px
