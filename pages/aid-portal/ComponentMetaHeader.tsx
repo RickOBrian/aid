@@ -8,7 +8,8 @@ import { CopyButton } from './CopyButton';
  * No pipeline/process status, no infrastructure debug fields — those never
  * render here, in any form (banner/tooltip/comment/label), regardless of
  * environment. Release/version/changelog facts required by
- * `component-gate.mdc` live in `ComponentReleaseStatus`, not in this header —
+ * `skills/_shared/protocols/gates/component-gate.md` live in
+ * `ComponentReleaseStatus`, not in this header —
  * do not duplicate them here.
  *
  * Shared primitive: extend this component for new review pages instead of

@@ -19,7 +19,7 @@ import {
   badgeCountApiSpec,
   buildBadgeCountSnippets,
   formatBadgeCountSelection,
-  BADGE_COUNT_VALUE_VARIANTS,
+  BADGE_COUNT_VALUE_SAMPLES,
   type BadgeCountSelection,
 } from './components/badgeCount.api';
 import { DS_CHANGELOG_TABLE_STYLE, DS_COPYABLE_STYLE, DS_TOKEN_TABLE_STYLE, DS_TOAST_STYLE } from './dsChangelogTable';
@@ -361,11 +361,11 @@ ${COMPONENT_CODE_SNIPPET_STYLE}
 function ValueMatrix() {
   return (
     <div className="dsbc-matrix">
-      {BADGE_COUNT_VALUE_VARIANTS.map((variant) => (
-        <div key={variant.id} className="dsbc-matrix-cell">
-          <BadgeCount value={variant.value} />
+      {BADGE_COUNT_VALUE_SAMPLES.map((sample) => (
+        <div key={sample.id} className="dsbc-matrix-cell">
+          <BadgeCount value={sample.value} />
           <span className="dsbc-matrix-cell-label">
-            {variant.label} ({variant.value})
+            {sample.label} ({sample.value})
           </span>
         </div>
       ))}
@@ -406,12 +406,12 @@ function SegmentControl<T extends string>({
 function SelectionControls({
   mode,
   onModeChange,
-  variantId,
+  sampleId,
   onVariantIdChange,
 }: {
   mode: ProductColorMode;
   onModeChange: (next: ProductColorMode) => void;
-  variantId: string;
+  sampleId: string;
   onVariantIdChange: (next: string) => void;
 }) {
   return (
@@ -427,8 +427,8 @@ function SelectionControls({
       />
       <SegmentControl
         label="Value"
-        value={variantId}
-        options={BADGE_COUNT_VALUE_VARIANTS.map((variant) => ({ value: variant.id, label: variant.label }))}
+        value={sampleId}
+        options={BADGE_COUNT_VALUE_SAMPLES.map((sample) => ({ value: sample.id, label: sample.label }))}
         onChange={onVariantIdChange}
       />
     </div>
@@ -469,10 +469,10 @@ export function BadgeCountPage() {
   const [activeTab, setActiveTab] = useState<BadgeCountTab>('preview');
 
   const [previewMode, setPreviewMode] = useState<ProductColorMode>('day');
-  const [previewVariantId, setPreviewVariantId] = useState(BADGE_COUNT_VALUE_VARIANTS[0].id);
+  const [previewSampleId, setPreviewSampleId] = useState(BADGE_COUNT_VALUE_SAMPLES[0].id);
   const previewValue =
-    BADGE_COUNT_VALUE_VARIANTS.find((variant) => variant.id === previewVariantId)?.value ??
-    BADGE_COUNT_VALUE_VARIANTS[0].value;
+    BADGE_COUNT_VALUE_SAMPLES.find((sample) => sample.id === previewSampleId)?.value ??
+    BADGE_COUNT_VALUE_SAMPLES[0].value;
 
   const selection: BadgeCountSelection = { mode: previewMode, value: previewValue };
 
@@ -501,8 +501,8 @@ export function BadgeCountPage() {
             <SelectionControls
               mode={previewMode}
               onModeChange={setPreviewMode}
-              variantId={previewVariantId}
-              onVariantIdChange={setPreviewVariantId}
+              sampleId={previewSampleId}
+              onVariantIdChange={setPreviewSampleId}
             />
 
             <div className="dsbc-tabs" role="tablist" aria-label="BadgeCount review sections">

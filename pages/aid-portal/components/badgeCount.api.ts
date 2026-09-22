@@ -12,9 +12,12 @@ export interface BadgeCountSelection {
   value: number;
 }
 
-/** Value-length variants — replaces the interactive state matrix for this
- * non-interactive component (per `component-page-baseline.mdc` diff protocol). */
-export const BADGE_COUNT_VALUE_VARIANTS: { id: string; label: string; value: number }[] = [
+/** Sample values for the preview selector — they stand in for the state
+ * matrix of an interactive component, per
+ * `skills/_shared/protocols/component-page-baseline.md` diff protocol.
+ * Not variants in the sense of component-standards.md §7.1: nothing about
+ * the rendering changes, only the number being shown. */
+export const BADGE_COUNT_VALUE_SAMPLES: { id: string; label: string; value: number }[] = [
   { id: 'single-digit', label: '1 digit', value: 3 },
   { id: 'double-digit', label: '2 digits', value: 42 },
   { id: 'overflow', label: 'Overflow (>99)', value: 128 },
