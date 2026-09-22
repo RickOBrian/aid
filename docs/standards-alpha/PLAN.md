@@ -254,8 +254,7 @@ merge (`github-sync-architecture.md` §3a).
 |---|---|---|
 | Escape hatches в трёх компонентах | Находка №4 | `changes/driver/pending/` |
 | `indeterminate` как состояние в `switch.api.ts` | Находка №5 | `changes/driver/pending/` |
-| Ссылки на `.cursorrules` в `Switch.tsx` | Находка №6 | `changes/driver/pending/` |
-| Имя `Switch` в каноне `standaloneNames` | Находка №7 | `changes/driver/pending/` |
+| Списки `standaloneNames` расходятся | Находка №7, расширена | Четыре списка в четырёх местах, проза против машинного слоя |
 | Пути назначения в `ds-import-json` | Раскладка удалена, процедура жива | Протокол помечен предупреждением |
 | `TESTING.md` для `ds-component-spec` | W05-12 | Скилл сам на него ссылается |
 | Визуальные тесты и axe | DoD п.7 закрыт частично | После решения по инфраструктуре |

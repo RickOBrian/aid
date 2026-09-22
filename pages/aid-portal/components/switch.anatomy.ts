@@ -19,7 +19,7 @@ export const switchAnatomySchema: AnatomySchema = {
           kind: 'platform-convention',
           staticValue: '44×44px',
           source: 'components/Switch.tsx · .ds-switch-root',
-          note: 'Repo touch-target rule (.cursorrules); visual track is smaller.',
+          note: 'Touch-target rule (standards/platforms.md §6); visual track is smaller.',
         },
         {
           property: 'Padding',
@@ -198,7 +198,7 @@ export const switchAnatomySchema: AnatomySchema = {
           kind: 'platform-convention',
           staticValue: '40%',
           source: 'components/Switch.tsx · .ds-switch-root:disabled',
-          note: 'Governance rule (.cursorrules); Figma mockup shows 50% — documented exception.',
+          note: 'standards/accessibility.md §7; Figma mockup shows 50% — documented exception.',
         },
         {
           property: 'Interaction',

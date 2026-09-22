@@ -2,15 +2,15 @@
   "id": "audit-2026-09-21-switch-standalone-name",
   "type": "component",
   "changeType": "audit-finding",
-  "artifact": "switch",
+  "artifact": "switch, naming-conventions, ds-component-architecture-guide",
   "product": "driver",
-  "changeSummary": "Имя Switch как самостоятельное (вне формулы Role+Entity) зафиксировано только в .cursorrules. В naming-conventions.json списка standaloneNames оно нет.",
+  "changeSummary": "Списков «устоявшихся имён» четыре, и все четыре разные. naming-conventions.md (проза): Avatar, Badge, Dialog, Toast, Tooltip, Switch. naming-conventions.json → standaloneNames: Avatar, Badge, Tag, Chip, Dialog, Icon, Text, Image. ds-component-architecture-guide.md (проза) и component-architecture.json: Avatar, Badge, Tag, Chip, Dialog. То есть человеческий и машинный слой одного стандарта противоречат друг другу, а машинный слой вдобавок смешал два разных правила: устоявшиеся имена и Item-level имена (Icon, Text, Image), которые в прозе разведены по отдельным абзацам.",
   "auditFinding": {
     "number": 7,
     "category": "naming",
     "disposition": "recommendation",
     "source": "audit 2026-09-21: три компонента driver против component-standards 2.0.1",
-    "proposedFix": "Внести Switch в standaloneNames канона либо обосновать отказ.",
+    "proposedFix": "Свести четыре списка к одному канону и решить, где он живёт. Отдельно решить судьбу Icon, Text, Image: это Item-level правило, а не исключение из формулы. Switch, Toast и Tooltip есть только в прозе naming-conventions.",
     "conformanceLevel": "should",
     "regraded": {
       "date": "2026-09-21",
@@ -18,7 +18,8 @@
       "to": "recommendation",
       "reason": "Правило «имя по канону» уровня must, но отказывает здесь не компонент, а канон: имя Switch работает и опознаётся, его просто нет в списке standaloneNames. Чинится дополнением канона, а не переименованием. Поэтому should.",
       "model": "skills/_shared/standards/conformance-levels.md"
-    }
+    },
+    "discovered": "2026-09-22, при закрытии находки №6: чтобы честно сослаться на канон из Switch.tsx, пришлось проверить, что канон говорит. Оказалось — четыре разных вещи."
   },
   "proposedSemVerImpact": "undetermined",
   "relatedTokenChanges": [],

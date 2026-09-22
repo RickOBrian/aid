@@ -669,7 +669,7 @@ export function SwitchPage() {
                     Figma.
                   </li>
                   <li>
-                    Disabled — нативный атрибут <code>disabled</code>, opacity 40% (правило `.cursorrules`, не
+                    Disabled — нативный атрибут <code>disabled</code>, opacity 40% (правило доступности, не
                     50% из Figma-мокапа).
                   </li>
                   <li>
