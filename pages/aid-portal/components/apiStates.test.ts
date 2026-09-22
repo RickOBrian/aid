@@ -7,7 +7,7 @@ import { switchApiSpec } from './switch.api';
 import type { ComponentApiSpec } from '../ComponentApiSummary';
 
 /**
- * Страж находки №5 (аудит 2026-09-21).
+ * Страж находок №5 и №8 (аудит 2026-09-21, дополнен 2026-09-22).
  *
  * `switch.api.ts` перечислял `indeterminate` среди состояний, хотя ADR-021
  * относит его к значениям: оно не возникает от взаимодействия и переживает
@@ -57,14 +57,12 @@ const valuesNotStates = new Set(
 );
 
 /**
- * BadgeCount и BadgeDot группируют имена в одной строке («hover / pressed /
- * focused»), а BadgeCount вдобавок описывает через состояния свои значения —
- * это находка, записанная отдельно. Поэтому по канону сверяется тот контракт,
- * который уже приведён к нему.
+ * Все три контракта продукта. До 2026-09-22 сверялся только `switch`:
+ * BadgeCount и BadgeDot группировали имена в одной строке («hover / pressed /
+ * focused»), и такая запись по канону не проверялась — страж существовал, но
+ * две трети предмета не покрывал (находка №8).
  */
-const specs: [string, ComponentApiSpec][] = [['switch', switchApiSpec]];
-
-const allSpecs: [string, ComponentApiSpec][] = [
+const specs: [string, ComponentApiSpec][] = [
   ['switch', switchApiSpec],
   ['badge-count', badgeCountApiSpec],
   ['badge-dot', badgeDotApiSpec],
@@ -76,7 +74,7 @@ describe('контракт компонента: состояния против
     expect(unknown).toEqual([]);
   });
 
-  it.each(allSpecs)('%s: значение не выдаётся за состояние', (_id, spec) => {
+  it.each(specs)('%s: значение не выдаётся за состояние', (_id, spec) => {
     const misplaced = spec.states.map((s) => s.name).filter((name) => valuesNotStates.has(name));
     expect(misplaced).toEqual([]);
   });
@@ -89,5 +87,11 @@ describe('контракт компонента: состояния против
   it('switch объявляет checked значением, а не состоянием', () => {
     expect(switchApiSpec.values?.map((v) => v.name)).toContain('checked');
     expect(switchApiSpec.states.map((s) => s.name)).not.toContain('indeterminate');
+  });
+
+  it('badge-count объявляет value и max значениями, а не состояниями', () => {
+    expect(badgeCountApiSpec.values?.map((v) => v.name)).toEqual(['value', 'max']);
+    const stateNames = badgeCountApiSpec.states.map((s) => s.name).join(' ');
+    expect(stateNames).not.toMatch(/overflow|digit/);
   });
 });

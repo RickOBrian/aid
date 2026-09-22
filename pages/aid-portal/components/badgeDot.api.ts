@@ -14,10 +14,18 @@ export const badgeDotApiSpec: ComponentApiSpec = {
     { name: 'aria-label', type: 'string', optional: true },
     { name: 'aria-hidden', type: 'boolean', optional: true },
   ],
+  // The nine canonical states, in the order of component-standards.md §7.3.
+  // BadgeDot holds no value of its own — hence no `values` section.
   states: [
     { name: 'default', supported: true },
-    { name: 'hover / pressed / focused', supported: false, note: 'non-interactive — nothing to click' },
-    { name: 'disabled / loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'hovered', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'pressed', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'focused', supported: false, note: 'non-interactive — not in the tab order' },
+    { name: 'selected', supported: false, note: 'nothing to select' },
+    { name: 'disabled', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'skeleton', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'error', supported: false, note: 'form controls only' },
   ],
   modes: [
     { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },

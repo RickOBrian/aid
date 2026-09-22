@@ -29,11 +29,27 @@ export const badgeCountApiSpec: ComponentApiSpec = {
     { name: 'className', type: 'string', optional: true },
     { name: 'aria-label', type: 'string', optional: true },
   ],
+  // The nine canonical states, in the order of component-standards.md §7.3.
+  // Digit count and overflow are not here: they follow from `value`, not from
+  // interaction — see `values` below.
   states: [
-    { name: 'default (1–2 digits)', supported: true },
-    { name: 'overflow (value > max)', supported: true, note: 'renders "{max}+"' },
-    { name: 'hover / pressed / focused', supported: false, note: 'non-interactive — nothing to click' },
-    { name: 'disabled / loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'default', supported: true },
+    { name: 'hovered', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'pressed', supported: false, note: 'non-interactive — nothing to click' },
+    { name: 'focused', supported: false, note: 'non-interactive — not in the tab order' },
+    { name: 'selected', supported: false, note: 'nothing to select' },
+    { name: 'disabled', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'loading', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'skeleton', supported: false, note: 'no product scenario, no Figma variant' },
+    { name: 'error', supported: false, note: 'form controls only' },
+  ],
+  values: [
+    { name: 'value', type: 'number', note: 'what the badge counts' },
+    {
+      name: 'max',
+      type: 'number',
+      note: 'threshold: above it `value` renders as "{max}+" — formatting of the same value, not a variant and not a state',
+    },
   ],
   modes: [
     { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },
