@@ -33,6 +33,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     version: "1.6.0",
+    date: "2026-09-26",
     summary: "Статусы объясняют себя прямо в таблице.",
     groups: [
       {
