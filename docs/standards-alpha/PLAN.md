@@ -85,7 +85,7 @@ merge в `main`, promote, изменение конфигов Vercel и CI. Ра
 | W05-8 | `component-pipeline-context.md`: 9 ссылок на непостроенное — перевести в будущее время или вынести в backlog | done |
 | W05-9 | `PROJECT_STRUCTURE.md` генерировать скриптом | done — `scripts/build-structure.mjs` |
 | W05-12 | Создать `skills/ds-component-spec/TESTING.md` — скилл сам требует этот файл, у соседних скиллов он есть | todo |
-| W05-10 | Мелочи: `.tmp-qa` в gitignore, `docs/specs/ButtonText-spec.md` из корня, `component-build-workflow.md` на место | done |
+| W05-10 | Мелочи: `.tmp-qa` в gitignore, спека ButtonText из корня (позже удалена, ADR-037), `component-build-workflow.md` на место | done |
 | W05-11 | Физическая раскладка `_shared` по жанрам | done — сделано раньше плана: Волна 1 ещё не началась, конфликтовать было не с чем |
 
 ---
