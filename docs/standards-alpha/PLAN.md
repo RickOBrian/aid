@@ -85,7 +85,7 @@ merge в `main`, promote, изменение конфигов Vercel и CI. Ра
 | W05-8 | `component-pipeline-context.md`: 9 ссылок на непостроенное — перевести в будущее время или вынести в backlog | done |
 | W05-9 | `PROJECT_STRUCTURE.md` генерировать скриптом | done — `scripts/build-structure.mjs` |
 | W05-12 | Создать `skills/ds-component-spec/TESTING.md` — скилл сам требует этот файл, у соседних скиллов он есть | todo |
-| W05-10 | Мелочи: `.tmp-qa` в gitignore, `docs/specs/ButtonText-spec.md` из корня, `component-build-workflow.md` на место | done |
+| W05-10 | Мелочи: `.tmp-qa` в gitignore, спека ButtonText из корня (позже удалена, ADR-037), `component-build-workflow.md` на место | done |
 | W05-11 | Физическая раскладка `_shared` по жанрам | done — сделано раньше плана: Волна 1 ещё не началась, конфликтовать было не с чем |
 
 ---
@@ -238,7 +238,7 @@ merge (`github-sync-architecture.md` §3a).
 | Модель соответствия | `conformance-levels` 1.1.0: must / should / may вместо «блокера» | #33 |
 | Перегрейд находок | Все семь → `recommendation`, блокеров ноль | #34 |
 | Перевод корпуса под уровни | 33 упоминания «блокера» в 9 стандартах убраны; `mustRegistry` из 12 правил | #35 |
-| Удаление легаси-продуктов | `ui-kit-a`, `ui-kit-b`, `sutochno` — 63 файла, −4857 строк | #36 |
+| Удаление легаси-продуктов | Три продукта — 63 файла, −4857 строк; следы дочищены, ADR-037 | #36 |
 | Удаление Storybook | `.storybook/`, `stories/`, 4 зависимости; `node_modules` 62 МБ | #37 |
 | Корень `/` | Остаётся на driver; чистка устаревших вопросов | #38 |
 | Передача контекста между сессиями | PLAN обрывался на Волне 4; четыре вопроса жили в чате | #39 |

@@ -129,7 +129,7 @@ frontmatter — проверяемое условие, но никто его н
 
 - `skills/ds-component-build/component-build-workflow.md` лежит прямо в `skills/` — ни папка
   скилла, ни `_shared`.
-- `docs/specs/ButtonText-spec.md` (44 КБ) в корне репозитория.
+- Спека ButtonText (44 КБ) в корне репозитория — перенесена в W05-10, удалена 2026-09-26 (ADR-037).
 - `.tmp-qa/` не в `.gitignore`.
 - Корневые `guide-page-pass.md` и `measure-presentation-pass.md` — рабочие
   проходы, живут рядом с инструктивными файлами.
