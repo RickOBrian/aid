@@ -62,11 +62,19 @@ const PULLS = [
   },
 ];
 
+const HUMAN = { login: 'RickOBrian', type: 'User' };
+const VERCEL_BOT = { login: 'vercel[bot]', type: 'Bot' };
+
+let issueComments: Array<Record<string, unknown>>;
 let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
 
 beforeEach(() => {
   process.env.PLUGIN_SHARED_SECRET = VALID_SECRET;
   process.env.GITHUB_TOKEN = 'github-token-test';
+  issueComments = [
+    { body: 'сначала', user: HUMAN },
+    { body: 'Такой токен уже есть — используйте text-primary.', user: HUMAN },
+  ];
   fetchMock = vi.fn<typeof fetch>(async (input) => {
     const url = String(input);
     if (url.includes('/pulls?state=all')) return jsonResponse(200, PULLS);
@@ -79,7 +87,7 @@ beforeEach(() => {
       return registry([MAIN_ENTRY, { signature: 'sig-rejected', decision: 'candidate', status: 'approved' }]);
     }
     if (url.endsWith('/issues/6/comments?per_page=100')) {
-      return jsonResponse(200, [{ body: 'сначала' }, { body: 'Такой токен уже есть — используйте text-primary.' }]);
+      return jsonResponse(200, issueComments);
     }
     throw new Error(`Unexpected fetch: ${url}`);
   });
@@ -139,6 +147,35 @@ describe('handleProposalStatus', () => {
       url: 'https://github.com/RickOBrian/aid/pull/6',
       closedAt: '2026-09-17T10:00:00Z',
       comment: 'Такой токен уже есть — используйте text-primary.',
+    });
+  });
+
+  it('комментарий бота причиной не считается — берётся последний человеческий', async () => {
+    issueComments = [
+      { body: 'Такой токен уже есть — используйте text-primary.', user: HUMAN },
+      { body: '[vc]: #eyJpc01vbm9yZXBvIjp0cnVlLCJ0eXBlIjoiZ2l0aHViIn0=', user: VERCEL_BOT },
+    ];
+    const body = await (await call({ sharedSecret: VALID_SECRET, signatures: ['sig-rejected'] })).json();
+    expect(body.statuses['sig-rejected'].comment).toBe('Такой токен уже есть — используйте text-primary.');
+  });
+
+  it('бот узнаётся и по суффиксу [bot] в логине, если тип не пришёл', async () => {
+    issueComments = [
+      { body: 'Причина.', user: HUMAN },
+      { body: 'Deployment ready', user: { login: 'github-actions[bot]' } },
+    ];
+    const body = await (await call({ sharedSecret: VALID_SECRET, signatures: ['sig-rejected'] })).json();
+    expect(body.statuses['sig-rejected'].comment).toBe('Причина.');
+  });
+
+  it('закрыт молча, комментировали только боты — rejected без причины', async () => {
+    issueComments = [{ body: '[vc]: #eyJpc01vbm9yZXBvIjp0cnVlfQ==', user: VERCEL_BOT }];
+    const body = await (await call({ sharedSecret: VALID_SECRET, signatures: ['sig-rejected'] })).json();
+    expect(body.statuses['sig-rejected']).toEqual({
+      state: 'rejected',
+      number: 6,
+      url: 'https://github.com/RickOBrian/aid/pull/6',
+      closedAt: '2026-09-17T10:00:00Z',
     });
   });
 
