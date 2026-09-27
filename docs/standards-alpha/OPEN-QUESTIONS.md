@@ -352,3 +352,50 @@ Storybook был его единственным просмотрщиком и �
 
 Пока они висят, очередь PR перестаёт что-либо означать: невозможно
 отличить «ждёт ревью» от «забыто полгода назад».
+
+---
+
+## Q-17 · open
+**Правка стандарта не доходит до Presentbook: сборка портала её пропускает.**
+
+Найдено 2026-09-27 после мержа #51 и #53. Production-сборка `aid-ds` на
+мерж-коммитах `1ff7690`, `7597f30` и следующем `150d97d` отменена с
+пометкой «Canceled by Ignored Build Step». На сайте остались
+`component-standards` 3.0.0 со сбитой нумерацией и прежние версии двух
+соседних гайдов.
+
+Правило пропуска задано в настройках проекта в Vercel, в репозитории его
+нет. Судя по поведению, сборка запускается только при изменениях внутри
+`pages/aid-portal/`. А портал при сборке читает и то, что лежит снаружи
+(разбор чата Presentbook):
+
+| Источник | Кто читает |
+|---|---|
+| `skills/_shared/` | `build-guides` по `guide-registry.json` |
+| `tokens/` | `ensure-` и `sync-token-changelogs`, `loadTokenChangelog` |
+| `components/*-changelog.json` | `loadComponentChangelog` |
+| `changes/driver/pending/*.json` | `loadComponentPending` |
+| `products/registry.json` | `vite.config.ts`, `productRegistry.ts` |
+
+То есть сломан стык «Гайды в Presentbook» из `CLAUDE.md`, и не только он:
+правка токенов или pending-изменений тоже могла не доехать до сайта.
+Незаметно это было потому, что Preview на PR пропускается так же, а CI
+собирает портал сам и зелёный.
+
+Согласуется с ADR-032: версии на проде тогда совпали с каноном только
+потому, что #28 менял и сам портал.
+
+**Предложение чата Presentbook** — вынести правило в репозиторий,
+`pages/aid-portal/vercel.json` → `ignoreCommand`:
+
+```
+git diff --quiet HEAD^ HEAD -- . ../../skills/_shared ../../tokens ../../components ../../changes/driver/pending ../../products/registry.json
+```
+
+Правка — в чате Presentbook, с «да» Principal Designer: это конфиг
+Vercel. Мерж такого PR сам соберёт production из текущего `main`, и
+гайды 3.0.1 выйдут без отдельного redeploy.
+
+**Закрыть, когда:** правило в репозитории, коммит, меняющий только
+`skills/_shared/`, запускает сборку `aid-ds`, а на
+`/guides/component-standards` видна v3.0.1.
