@@ -8,7 +8,9 @@ name: checks
 #   check-docs  — форма документов, живость ссылок, сходимость версий,
 #                 дубли имён, легаси-пути, согласованность машинных слоёв
 #   typecheck   — приложение портала целиком, не только api/
+#   test        — тесты компонентов и стражи находок аудита
 #   build       — сборка портала, включая генерацию гайдов из .md
+#   plugin      — Token Comparator и его сервер: типы, тесты, сборка
 
 on:
   pull_request:
@@ -41,7 +43,41 @@ jobs:
           cache: npm
           cache-dependency-path: pages/aid-portal/package-lock.json
       - run: npm ci
+      # Тесты появились 2026-09-21, на день позже самого workflow, и в список
+      # не попали: 31 тест, включая двух стражей находок аудита, не запускался
+      # ни на одном PR. Страж, который не гоняется, сторожит только дисциплину
+      # того, кто помнит запустить его руками.
+      - run: npm run typecheck
+      - run: npm test
       # prebuild здесь важен: он же проверяет осиротевшие changelog-файлы
       # и собирает гайды из канонических .md
-      - run: npm run typecheck
       - run: npm run build
+
+  plugin:
+    name: Плагин
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/figma-token-comparator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            tools/figma-token-comparator/package-lock.json
+            tools/figma-token-comparator/server/package-lock.json
+      # Плагин и его сервер жили без CI вовсе: 326 тестов плагина и 75 тестов
+      # сервера запускались только руками перед релизом. Архив для дизайнеров
+      # собирается из main, значит main должен быть проверен всегда.
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm ci
+        working-directory: tools/figma-token-comparator/server
+      - run: npm run typecheck
+        working-directory: tools/figma-token-comparator/server
+      - run: npm test
+        working-directory: tools/figma-token-comparator/server
