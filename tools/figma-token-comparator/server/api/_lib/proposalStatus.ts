@@ -41,7 +41,7 @@ export interface ProposalStatus {
   number: number;
   url: string;
   closedAt?: string;
-  /** Последний комментарий в отклонённом запросе — обычно причина. */
+  /** Последний комментарий человека в отклонённом запросе — обычно причина. */
   comment?: string;
 }
 

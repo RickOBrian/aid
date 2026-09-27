@@ -291,7 +291,22 @@ export async function listProposalPullRequests(
   return result;
 }
 
-/** Текст последнего комментария в обсуждении pull request'а; null — комментариев нет. */
+/**
+ * Комментарий оставил бот (Vercel, GitHub Actions). У GitHub App тип `Bot` и
+ * логин с суффиксом `[bot]`; суффикс проверяется на случай, если типа нет.
+ */
+function isBotComment(comment: Record<string, unknown>): boolean {
+  const user = comment.user;
+  if (!isRecord(user)) return false;
+  if (user.type === 'Bot') return true;
+  return typeof user.login === 'string' && user.login.endsWith('[bot]');
+}
+
+/**
+ * Текст последнего комментария человека в обсуждении pull request'а; null —
+ * таких нет. Комментарии ботов пропускаются: причина отклонения не должна
+ * зависеть от того, успел ли бот деплоя написать после человека.
+ */
 export async function fetchLatestIssueComment(
   fetchImpl: FetchLike,
   token: string,
@@ -311,9 +326,13 @@ export async function fetchLatestIssueComment(
   } catch {
     return null;
   }
-  if (!Array.isArray(comments) || comments.length === 0) return null;
-  const last = comments[comments.length - 1];
-  return isRecord(last) && typeof last.body === 'string' ? last.body : null;
+  if (!Array.isArray(comments)) return null;
+  for (let i = comments.length - 1; i >= 0; i -= 1) {
+    const comment: unknown = comments[i];
+    if (!isRecord(comment) || isBotComment(comment)) continue;
+    if (typeof comment.body === 'string' && comment.body.trim()) return comment.body;
+  }
+  return null;
 }
 
 /** Содержимое реестра на произвольной ветке; null — файла на ней нет. */
