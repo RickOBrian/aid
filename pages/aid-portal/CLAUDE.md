@@ -40,6 +40,11 @@
   копирует их в `pages/aid-portal/tokens/`. Копию не править.
 - Инструменты: `tools-registry.json`, страницы `ToolsHubPage.tsx` и
   `TokenComparatorPluginPage.tsx`.
+- Когда Vercel пересобирает портал — `ignoreCommand` в `vercel.json`: при
+  изменении `pages/aid-portal/` и всего, что сборка читает снаружи
+  (`skills/_shared/`, `tokens/`, `components/`, `changes/driver/pending/`,
+  `products/registry.json`). Новый вход сборки вне портала — добавить и туда,
+  иначе его правки не дойдут до сайта.
 
 ## Стыки — что здесь чужое
 
