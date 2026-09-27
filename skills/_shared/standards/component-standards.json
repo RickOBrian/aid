@@ -1,6 +1,6 @@
 {
   "id": "component-standards",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "status": "alpha",
   "humanFile": "component-standards.md",
   "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
