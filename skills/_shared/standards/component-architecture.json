@@ -1,6 +1,6 @@
 {
   "id": "ds-component-architecture-guide",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "status": "alpha",
   "humanFile": "ds-component-architecture-guide.md",
   "note": "Машинный слой архитектуры компонентов. Используется при определении уровня чужого компонента, разборе библиотек и распознавании по коду или макету.",
