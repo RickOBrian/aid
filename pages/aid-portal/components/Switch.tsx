@@ -80,9 +80,12 @@ ${SWITCH_TOKEN_STYLE}
     box-shadow: 0 0 0 2px var(--ds-switch-stroke);
   }
 }
+/* The ring lives on the track; the browser outline on the button would be a second one. */
+.ds-switch-root:focus-visible {
+  outline: none;
+}
 .ds-switch-root:focus-visible .ds-switch__track {
   box-shadow: 0 0 0 2px var(--ds-switch-stroke);
-  outline: none;
 }
 .ds-switch__knob {
   position: absolute;

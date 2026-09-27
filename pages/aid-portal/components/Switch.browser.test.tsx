@@ -45,6 +45,12 @@ describe('Switch — матрица', () => {
             // С клавиатуры, чтобы сработал :focus-visible, а не просто :focus.
             await userEvent.tab();
             expect(document.activeElement).toBe(control.element());
+            // Одно кольцо — на треке. Браузерный outline на <button> был бы
+            // вторым (найдено этими тестами 2026-09-27).
+            const root = control.element();
+            const track = root.querySelector('.ds-switch__track')!;
+            expect(getComputedStyle(root).outlineStyle).toBe('none');
+            expect(getComputedStyle(track).boxShadow).not.toBe('none');
           }
 
           await expect.element(page.getByTestId('cell')).toMatchScreenshot(name);
