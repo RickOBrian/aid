@@ -40,6 +40,12 @@
   копирует их в `pages/aid-portal/tokens/`. Копию не править.
 - Инструменты: `tools-registry.json`, страницы `ToolsHubPage.tsx` и
   `TokenComparatorPluginPage.tsx`.
+- Версия плагина на кнопке «Скачать» — `api/plugin-version.ts`: спрашивает
+  GitHub `releases/latest` и кэширует ответ на CDN 10 минут. Меняется сама
+  при публикации плагина, без пересборки портала. Необязательная переменная
+  Vercel `GITHUB_RELEASES_TOKEN` (read-only) — без неё лимит GitHub на общих
+  IP Vercel может кончиться, и кнопка покажется без номера. Локальный
+  `npm run dev` функций не выполняет — там кнопка всегда без номера.
 - Когда Vercel пересобирает портал — `ignoreCommand` в `vercel.json`: при
   изменении `pages/aid-portal/` и всего, что сборка читает снаружи
   (`skills/_shared/`, `tokens/`, `components/`, `changes/driver/pending/`,

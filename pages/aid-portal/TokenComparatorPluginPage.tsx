@@ -5,6 +5,7 @@ import { ProductAccentScope } from './ProductAccentScope';
 import { HUB_ROUTES } from './hubData';
 import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
+import { usePluginVersion } from './pluginRelease';
 
 interface RegistryPlugin {
   pluginId: string;
@@ -108,6 +109,11 @@ ${DS_PRODUCT_ACCENT_STYLE}
   line-height: 20px;
   text-decoration: none;
 }
+.dstp-download-version {
+  margin-left: 8px;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
 .dstp-download:hover {
   filter: brightness(0.95);
   text-decoration: none;
@@ -171,6 +177,7 @@ const INSTALL_STEPS = [
 export function TokenComparatorPluginPage() {
   const productId = resolveProductId(window.location.pathname);
   const backHref = `/${productId}${HUB_ROUTES.tools}`;
+  const version = usePluginVersion();
 
   return (
     <ProductAccentScope productId={productId}>
@@ -197,9 +204,10 @@ export function TokenComparatorPluginPage() {
                   href={pluginMeta.downloadUrl}
                   target="_blank"
                   rel="noreferrer noopener"
-                  aria-label="Скачать Token Comparator для Figma Desktop (ZIP, откроется в новой вкладке)"
+                  aria-label={`Скачать Token Comparator${version ? ` ${version}` : ''} для Figma Desktop (ZIP, откроется в новой вкладке)`}
                 >
                   {pluginMeta.downloadLabel}
+                  {version && <span className="dstp-download-version">{version}</span>}
                 </a>
                 <p className="dstp-download-note">
                   Скачивается последняя опубликованная версия плагина.

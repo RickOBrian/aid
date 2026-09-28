@@ -1,0 +1,50 @@
+import { PLUGIN_RELEASE, releaseVersion } from './_lib/pluginRelease.js';
+
+/**
+ * GET /api/plugin-version → `{ "version": "v1.6.0" }` или `{ "version": null }`.
+ *
+ * Зачем прослойка, а не запрос к GitHub из браузера: без авторизации GitHub
+ * даёт 60 запросов в час на IP, и офис за одним IP выбирает их быстро —
+ * версия на кнопке то появлялась бы, то пропадала. Здесь ответ кэширует CDN
+ * Vercel на 10 минут, и все посетители получают одну копию.
+ *
+ * `GITHUB_RELEASES_TOKEN` (необязательно, переменная Vercel) — read-only
+ * токен: исходящие IP Vercel общие, и без токена лимит на них может выбрать
+ * кто-то чужой. Токен не читается, не печатается и не коммитится.
+ */
+
+const FRESH = 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400';
+const RETRY_SOON = 'public, max-age=0, s-maxage=60';
+
+function json(version: string | null, cacheControl: string): Response {
+  return new Response(JSON.stringify({ version }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': cacheControl },
+  });
+}
+
+export async function GET(): Promise<Response> {
+  const { owner, repo, asset } = PLUGIN_RELEASE;
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'aid-ds-portal',
+  };
+  const token = process.env.GITHUB_RELEASES_TOKEN;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  try {
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, {
+      headers,
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) {
+      return json(null, RETRY_SOON);
+    }
+    const version = releaseVersion(await response.json(), asset);
+    return json(version, version ? FRESH : RETRY_SOON);
+  } catch {
+    return json(null, RETRY_SOON);
+  }
+}
