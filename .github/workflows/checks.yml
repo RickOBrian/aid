@@ -52,6 +52,22 @@ jobs:
       # prebuild здесь важен: он же проверяет осиротевшие changelog-файлы
       # и собирает гайды из канонических .md
       - run: npm run build
+      # Снимки матрицы вариант × состояние в обеих темах и axe (DoD п.7) —
+      # в настоящем Chromium: jsdom не рисует, не считает контраст и не
+      # знает :hover и :focus-visible. Эталоны для Linux свои — шрифты
+      # здесь рендерятся иначе, чем на macOS.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      # При падении — новые снимки, эталоны и диффы, чтобы посмотреть их
+      # глазами и, если вид изменился намеренно, забрать эталоны в PR.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-screenshots
+          path: |
+            pages/aid-portal/components/__screenshots__/
+            pages/aid-portal/.vitest/attachments/
+          if-no-files-found: ignore
 
   plugin:
     name: Плагин
