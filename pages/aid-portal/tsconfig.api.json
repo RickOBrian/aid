@@ -6,7 +6,15 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["api/login.ts", "api/_lib/session.ts", "middleware.ts"]
+  "include": [
+    "api/login.ts",
+    "api/plugin-version.ts",
+    "api/_lib/session.ts",
+    "api/_lib/pluginRelease.ts",
+    "middleware.ts"
+  ]
 }
