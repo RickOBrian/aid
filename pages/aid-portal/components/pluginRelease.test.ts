@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { PLUGIN_RELEASE, parseLatestDownloadUrl, releaseVersion } from '../api/_lib/pluginRelease';
+import { PLUGIN_RELEASE, parseLatestDownloadUrl, releaseInfo, releaseVersion } from '../api/_lib/pluginRelease';
 import { GET } from '../api/plugin-version';
 import toolsRegistry from '../tools-registry.json';
 
@@ -47,6 +47,35 @@ describe('releaseVersion', () => {
   });
 });
 
+describe('releaseInfo', () => {
+  const release = {
+    tag_name: 'v1.6.0',
+    published_at: '2026-09-26T17:20:23Z',
+    html_url: 'https://github.com/RickOBrian/aid/releases/tag/v1.6.0',
+    body: '### Новое\n\n- Пункт',
+    assets: [{ name: 'token-comparator.zip' }],
+  };
+
+  it('собирает дату, описание и ссылки', () => {
+    expect(releaseInfo(release, PLUGIN_RELEASE)).toEqual({
+      version: 'v1.6.0',
+      publishedAt: '2026-09-26T17:20:23Z',
+      notes: '### Новое\n\n- Пункт',
+      releaseUrl: 'https://github.com/RickOBrian/aid/releases/tag/v1.6.0',
+      releasesUrl: 'https://github.com/RickOBrian/aid/releases',
+    });
+  });
+
+  it('не пропускает ссылку не на github.com и битую дату', () => {
+    const info = releaseInfo(
+      { ...release, html_url: 'javascript:alert(1)', published_at: 'вчера' },
+      PLUGIN_RELEASE,
+    );
+    expect(info?.releaseUrl).toBeNull();
+    expect(info?.publishedAt).toBeNull();
+  });
+});
+
 describe('GET /api/plugin-version', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -60,14 +89,14 @@ describe('GET /api/plugin-version', () => {
       ),
     );
     const response = await GET();
-    expect(await response.json()).toEqual({ version: 'v1.6.0' });
+    expect((await response.json()).release.version).toBe('v1.6.0');
     expect(response.headers.get('Cache-Control')).toContain('s-maxage=600');
   });
 
   it('на лимите GitHub отвечает без версии и ненадолго', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 403 })));
     const response = await GET();
-    expect(await response.json()).toEqual({ version: null });
+    expect(await response.json()).toEqual({ release: null });
     expect(response.headers.get('Cache-Control')).toContain('s-maxage=60');
   });
 
@@ -75,6 +104,6 @@ describe('GET /api/plugin-version', () => {
     vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('offline'))));
     const response = await GET();
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ version: null });
+    expect(await response.json()).toEqual({ release: null });
   });
 });

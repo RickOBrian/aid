@@ -41,6 +41,53 @@ export function parseLatestDownloadUrl(url: string): LatestDownload | null {
   }
 }
 
+export interface PluginReleaseInfo {
+  /** `v1.6.0` */
+  version: string;
+  /** ISO-дата публикации релиза. */
+  publishedAt: string | null;
+  /** Описание релиза как есть (Markdown), обрезанное до `NOTES_LIMIT`. */
+  notes: string;
+  /** Страница этого релиза на GitHub. */
+  releaseUrl: string | null;
+  /** Список всех релизов. */
+  releasesUrl: string;
+}
+
+const NOTES_LIMIT = 20_000;
+
+function httpsGithubUrl(value: unknown): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname === 'github.com' ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Всё, что нужно странице плагина, из ответа `releases/latest`. */
+export function releaseInfo(release: unknown, target: LatestDownload): PluginReleaseInfo | null {
+  const version = releaseVersion(release, target.asset);
+  if (!version) {
+    return null;
+  }
+  const { published_at: publishedAt, body, html_url: htmlUrl } = release as {
+    published_at?: unknown;
+    body?: unknown;
+    html_url?: unknown;
+  };
+  return {
+    version,
+    publishedAt: typeof publishedAt === 'string' && !Number.isNaN(Date.parse(publishedAt)) ? publishedAt : null,
+    notes: typeof body === 'string' ? body.slice(0, NOTES_LIMIT) : '',
+    releaseUrl: httpsGithubUrl(htmlUrl),
+    releasesUrl: `https://github.com/${target.owner}/${target.repo}/releases`,
+  };
+}
+
 /** `v1.6.0` из ответа `releases/latest`, если в релизе есть нужный файл. */
 export function releaseVersion(release: unknown, asset: string): string | null {
   if (!release || typeof release !== 'object') {

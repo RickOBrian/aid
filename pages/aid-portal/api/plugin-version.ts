@@ -1,7 +1,8 @@
-import { PLUGIN_RELEASE, releaseVersion } from './_lib/pluginRelease.js';
+import { PLUGIN_RELEASE, releaseInfo, type PluginReleaseInfo } from './_lib/pluginRelease.js';
 
 /**
- * GET /api/plugin-version → `{ "version": "v1.6.0" }` или `{ "version": null }`.
+ * GET /api/plugin-version → `{ "release": { version, publishedAt, notes,
+ * releaseUrl, releasesUrl } }` или `{ "release": null }`.
  *
  * Зачем прослойка, а не запрос к GitHub из браузера: без авторизации GitHub
  * даёт 60 запросов в час на IP, и офис за одним IP выбирает их быстро —
@@ -16,15 +17,15 @@ import { PLUGIN_RELEASE, releaseVersion } from './_lib/pluginRelease.js';
 const FRESH = 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400';
 const RETRY_SOON = 'public, max-age=0, s-maxage=60';
 
-function json(version: string | null, cacheControl: string): Response {
-  return new Response(JSON.stringify({ version }), {
+function json(release: PluginReleaseInfo | null, cacheControl: string): Response {
+  return new Response(JSON.stringify({ release }), {
     status: 200,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': cacheControl },
   });
 }
 
 export async function GET(): Promise<Response> {
-  const { owner, repo, asset } = PLUGIN_RELEASE;
+  const { owner, repo } = PLUGIN_RELEASE;
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'User-Agent': 'aid-ds-portal',
@@ -42,8 +43,8 @@ export async function GET(): Promise<Response> {
     if (!response.ok) {
       return json(null, RETRY_SOON);
     }
-    const version = releaseVersion(await response.json(), asset);
-    return json(version, version ? FRESH : RETRY_SOON);
+    const release = releaseInfo(await response.json(), PLUGIN_RELEASE);
+    return json(release, release ? FRESH : RETRY_SOON);
   } catch {
     return json(null, RETRY_SOON);
   }

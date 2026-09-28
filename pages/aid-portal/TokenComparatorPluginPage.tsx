@@ -5,7 +5,8 @@ import { ProductAccentScope } from './ProductAccentScope';
 import { HUB_ROUTES } from './hubData';
 import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
-import { usePluginVersion } from './pluginRelease';
+import { formatReleaseDate, usePluginRelease } from './pluginRelease';
+import { parseReleaseNotes, type NoteInline } from './releaseNotes';
 
 interface RegistryPlugin {
   pluginId: string;
@@ -160,6 +161,53 @@ ${DS_PRODUCT_ACCENT_STYLE}
   line-height: 22px;
   color: ${T.textSecondary};
 }
+.dstp-notes {
+  font-size: 14px;
+  line-height: 22px;
+  color: ${T.textPrimary};
+}
+.dstp-notes p,
+.dstp-notes ul,
+.dstp-notes ol {
+  margin: 0 0 12px;
+}
+.dstp-notes ul,
+.dstp-notes ol {
+  padding-left: 20px;
+}
+.dstp-notes li + li {
+  margin-top: 6px;
+}
+.dstp-notes h3 {
+  margin: 24px 0 8px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.dstp-notes code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: ${T.surfaceMuted};
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+}
+.dstp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 20px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid ${T.border};
+  font-size: 14px;
+  line-height: 20px;
+}
+.dstp-links a {
+  color: var(--ds-accent);
+  text-decoration: none;
+}
+.dstp-links a:hover {
+  text-decoration: underline;
+}
 @media (max-width: 768px) {
   .dstp {
     padding: ${T.pagePaddingMobile};
@@ -174,10 +222,54 @@ const INSTALL_STEPS = [
   'Для обновления повторите импорт manifest из новой распакованной версии.',
 ] as const;
 
+function Inline({ parts }: { parts: NoteInline[] }) {
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.kind === 'code' ? <code key={index}>{part.text}</code> : part.text,
+      )}
+    </>
+  );
+}
+
+function ReleaseNotes({ markdown }: { markdown: string }) {
+  return (
+    <div className="dstp-notes">
+      {parseReleaseNotes(markdown).map((block, index) => {
+        if (block.kind === 'heading') {
+          return (
+            <h3 key={index}>
+              <Inline parts={block.inline} />
+            </h3>
+          );
+        }
+        if (block.kind === 'paragraph') {
+          return (
+            <p key={index}>
+              <Inline parts={block.inline} />
+            </p>
+          );
+        }
+        const List = block.ordered ? 'ol' : 'ul';
+        return (
+          <List key={index}>
+            {block.items.map((item, itemIndex) => (
+              <li key={itemIndex}>
+                <Inline parts={item} />
+              </li>
+            ))}
+          </List>
+        );
+      })}
+    </div>
+  );
+}
+
 export function TokenComparatorPluginPage() {
   const productId = resolveProductId(window.location.pathname);
   const backHref = `/${productId}${HUB_ROUTES.tools}`;
-  const version = usePluginVersion();
+  const release = usePluginRelease();
+  const version = release?.version ?? null;
 
   return (
     <ProductAccentScope productId={productId}>
@@ -210,7 +302,9 @@ export function TokenComparatorPluginPage() {
                   {version && <span className="dstp-download-version">{version}</span>}
                 </a>
                 <p className="dstp-download-note">
-                  Скачивается последняя опубликованная версия плагина.
+                  {release?.publishedAt
+                    ? `Последняя версия, опубликована ${formatReleaseDate(release.publishedAt)}`
+                    : 'Скачивается последняя опубликованная версия плагина.'}
                 </p>
                 <ol className="dstp-install-steps">
                   {INSTALL_STEPS.map((step) => (
@@ -218,6 +312,25 @@ export function TokenComparatorPluginPage() {
                   ))}
                 </ol>
               </section>
+
+              {release && (
+                <section className="dstp-section" aria-labelledby="dstp-notes-heading">
+                  <h2 className="dstp-section-title" id="dstp-notes-heading">
+                    Что нового в {release.version}
+                  </h2>
+                  {release.notes.trim() && <ReleaseNotes markdown={release.notes} />}
+                  <p className="dstp-links">
+                    {release.releaseUrl && (
+                      <a href={release.releaseUrl} target="_blank" rel="noreferrer noopener">
+                        Релиз {release.version} на GitHub
+                      </a>
+                    )}
+                    <a href={release.releasesUrl} target="_blank" rel="noreferrer noopener">
+                      Все версии и что в них менялось
+                    </a>
+                  </p>
+                </section>
+              )}
             </>
           ) : (
             <section className="dstp-unavailable" aria-labelledby="dstp-unavailable-heading">
