@@ -1,0 +1,170 @@
+/**
+ * Профиль продукта — набор материалов, на которые опирается перевод
+ * (трекер, «Материалы продукта»). Продукт — это данные, а не код: имён
+ * продуктов и режимов здесь нет, их вводит пользователь.
+ */
+
+import type { ThemeRole } from "../lib/vocabulary";
+
+export type { ThemeRole };
+
+/** Виды материалов по умолчанию. Список расширяемый — новый вид = новый адаптер. */
+export type MaterialKind = "tokens" | "components" | "icons" | "exemplars" | "standards";
+
+export const MATERIAL_KINDS: MaterialKind[] = ["tokens", "components", "icons", "exemplars", "standards"];
+
+export const MATERIAL_LABELS: Record<MaterialKind, string> = {
+  tokens: "Токены и стили",
+  components: "Компоненты",
+  icons: "Иконки",
+  exemplars: "Образцовые макеты",
+  standards: "Стандарты ДС",
+};
+
+/** Откуда прочитан материал. REST — этап 2b. */
+export type MaterialSource = "open-file" | "rest";
+
+export interface Material {
+  /** Стабильный id: kind + имя файла. Повторная индексация того же файла заменяет запись. */
+  id: string;
+  kind: MaterialKind;
+  fileName: string;
+  source: MaterialSource;
+  indexedAt: string;
+  /** Что нашли — для карточки профиля: «переменных 161», «компонентов 9». */
+  stats: Record<string, number>;
+}
+
+
+export interface ThemeMode {
+  modeId: string;
+  name: string;
+  role: ThemeRole;
+}
+
+export interface ThemeSetting {
+  /** Ключ коллекции темы в библиотеке токенов. */
+  collectionKey: string;
+  collectionName: string;
+  modes: ThemeMode[];
+}
+
+/** Режим проверки по стандартам ДС (трекер, «пакеты правил»). */
+export type StandardsMode = "off" | "reference" | "enforced";
+
+export interface ProductProfile {
+  id: string;
+  name: string;
+  materials: Material[];
+  theme: ThemeSetting | null;
+  standardsMode: StandardsMode;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Индексы материалов
+// ---------------------------------------------------------------------------
+
+export type VariableValue =
+  | { kind: "color"; r: number; g: number; b: number; a: number }
+  | { kind: "number"; value: number }
+  | { kind: "string"; value: string }
+  | { kind: "boolean"; value: boolean }
+  | { kind: "alias"; name: string; key: string | null };
+
+export interface IndexedVariable {
+  key: string;
+  name: string;
+  resolvedType: VariableResolvedDataType;
+  description: string;
+  scopes: string[];
+  /** Значение по id режима. */
+  valuesByMode: Record<string, VariableValue>;
+}
+
+export interface IndexedCollection {
+  key: string;
+  name: string;
+  modes: Array<{ modeId: string; name: string }>;
+  variables: IndexedVariable[];
+}
+
+export interface IndexedTextStyle {
+  key: string;
+  name: string;
+  description: string;
+  fontFamily: string;
+  fontStyle: string;
+  fontSize: number;
+  /** px; null — «авто». */
+  lineHeight: number | null;
+  letterSpacing: number;
+  textCase: string;
+  textDecoration: string;
+}
+
+export interface IndexedEffectStyle {
+  key: string;
+  name: string;
+  description: string;
+  effects: string[];
+}
+
+export interface IndexedPaintStyle {
+  key: string;
+  name: string;
+  description: string;
+  paints: string[];
+}
+
+export interface TokensIndex {
+  collections: IndexedCollection[];
+  textStyles: IndexedTextStyle[];
+  effectStyles: IndexedEffectStyle[];
+  paintStyles: IndexedPaintStyle[];
+}
+
+export interface IndexedProperty {
+  name: string;
+  type: ComponentPropertyType;
+  defaultValue: string | boolean;
+  variantOptions?: string[];
+}
+
+export interface IndexedComponent {
+  key: string;
+  name: string;
+  description: string;
+  width: number;
+  height: number;
+  /** Ближайший фрейм-группа на странице: «action», «navigator»… */
+  group: string;
+  page: string;
+  properties: IndexedProperty[];
+}
+
+export interface IndexedComponentSet extends IndexedComponent {
+  variants: Array<{ key: string; name: string; width: number; height: number }>;
+}
+
+export interface ComponentsIndex {
+  sets: IndexedComponentSet[];
+  components: IndexedComponent[];
+}
+
+export type MaterialIndex =
+  | { kind: "tokens"; data: TokensIndex }
+  | { kind: "components"; data: ComponentsIndex }
+  | { kind: "icons"; data: ComponentsIndex };
+
+/** Формат файла экспорта профиля. */
+export const PROFILE_EXPORT_FORMAT = "aid-style-migration/profile";
+export const PROFILE_EXPORT_VERSION = 1;
+
+export interface ProfileExport {
+  format: typeof PROFILE_EXPORT_FORMAT;
+  version: number;
+  profile: ProductProfile;
+  indexes: Record<string, MaterialIndex>;
+}

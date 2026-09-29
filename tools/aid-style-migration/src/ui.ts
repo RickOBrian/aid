@@ -1,12 +1,13 @@
 /**
- * UI плагина. Этап 1 — сборка макетов; проверки API этапа 0 — в
- * «Диагностике».
+ * UI плагина. Вкладки «Сборка» (этап 1) и «Продукт» (этап 2a); проверки
+ * API этапа 0 — в «Диагностике».
  */
 
 import type { CodeToUi } from "./messages";
 import { assembleHandlers, initAssemble } from "./ui/assemblePanel";
 import { el } from "./ui/dom";
 import { initProbes, probeHandlers } from "./ui/probesPanel";
+import { initProduct, productHandlers } from "./ui/productPanel";
 
 let fileName = "";
 const status = el<HTMLDivElement>("status");
@@ -16,6 +17,17 @@ const setStatus = (text: string) => {
 
 initAssemble(setStatus);
 initProbes(setStatus, () => fileName);
+initProduct(setStatus);
+
+function showTab(tab: "assemble" | "product"): void {
+  el("tab-btn-assemble").setAttribute("aria-pressed", String(tab === "assemble"));
+  el("tab-btn-product").setAttribute("aria-pressed", String(tab === "product"));
+  el("tab-assemble").hidden = tab !== "assemble";
+  el("assemble-footer").hidden = tab !== "assemble";
+  el("tab-product").hidden = tab !== "product";
+}
+el("tab-btn-assemble").addEventListener("click", () => showTab("assemble"));
+el("tab-btn-product").addEventListener("click", () => showTab("product"));
 
 window.onmessage = (event: MessageEvent) => {
   const message = event.data?.pluginMessage as CodeToUi | undefined;
@@ -56,6 +68,18 @@ window.onmessage = (event: MessageEvent) => {
       break;
     case "probe-results":
       probeHandlers.done(message.results);
+      break;
+    case "profile-state":
+      productHandlers.state(message.state);
+      break;
+    case "file-survey":
+      productHandlers.survey(message.survey);
+      break;
+    case "profile-export":
+      productHandlers.exported(message.fileName, message.text);
+      break;
+    case "index-progress":
+      productHandlers.progress(message.title);
       break;
     case "notice":
       setStatus(message.message);

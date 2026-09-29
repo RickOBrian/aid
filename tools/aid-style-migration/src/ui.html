@@ -503,6 +503,36 @@
         color: var(--ds-text-secondary);
       }
 
+      .ds-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .ds-material {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--ds-line-subtle);
+      }
+
+      .ds-material__body {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .ds-mode {
+        display: grid;
+        grid-template-columns: 1fr 160px;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 0;
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -515,7 +545,65 @@
         <p id="file-name">Сборка макетов</p>
       </header>
 
-      <div class="ds-scroll">
+      <div class="ds-segment" role="tablist" aria-label="Разделы">
+        <button type="button" role="tab" id="tab-btn-assemble" aria-pressed="true">Сборка</button>
+        <button type="button" role="tab" id="tab-btn-product" aria-pressed="false">Продукт</button>
+      </div>
+
+      <div class="ds-scroll" id="tab-product" hidden>
+        <section class="ds-card" aria-labelledby="product-title">
+          <h2 id="product-title">Продукт</h2>
+          <p class="ds-hint">В какой продукт переводим. Один запуск — один продукт; продуктов может быть сколько угодно.</p>
+          <div class="ds-row">
+            <select class="ds-input" id="profile-select" aria-label="Продукт"></select>
+            <button class="ds-link" id="profile-delete" type="button">удалить</button>
+          </div>
+          <div class="ds-row">
+            <input class="ds-input" id="profile-name" type="text" placeholder="Название нового продукта" />
+            <button class="ds-btn" id="profile-create" type="button">Создать</button>
+          </div>
+          <div class="ds-actions">
+            <button class="ds-btn" id="profile-export" type="button">Экспорт профиля</button>
+            <button class="ds-btn" id="profile-import" type="button">Импорт профиля</button>
+            <input type="file" id="profile-file" accept=".json,application/json" hidden />
+          </div>
+        </section>
+
+        <section class="ds-card" id="materials-card" aria-labelledby="materials-title" hidden>
+          <h2 id="materials-title">Материалы</h2>
+          <div id="materials-list"></div>
+          <div class="ds-hint" id="missing-list"></div>
+          <h2>Добавить из открытого файла</h2>
+          <p class="ds-hint">
+            Откройте в Figma файл библиотеки и запустите плагин в нём: плагин прочитает файл один раз
+            и запомнит. Индекс хранится в плагине и доступен в любом файле с макетами.
+          </p>
+          <div class="ds-actions">
+            <button class="ds-btn" id="survey" type="button">Изучить открытый файл</button>
+          </div>
+          <div id="survey-box" hidden>
+            <p class="ds-hint" id="survey-summary"></p>
+            <div id="survey-kinds"></div>
+            <div class="ds-actions">
+              <button class="ds-btn ds-btn-primary" id="index-file" type="button">Проиндексировать</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-card" id="theme-card" aria-labelledby="theme-title" hidden>
+          <h2 id="theme-title">Тема</h2>
+          <p class="ds-hint">
+            Какая коллекция отвечает за тему и какой режим тёмный. Плагин предлагает сам — проверьте.
+          </p>
+          <select class="ds-input" id="theme-collection" aria-label="Коллекция темы"></select>
+          <div id="theme-modes"></div>
+          <div class="ds-actions">
+            <button class="ds-btn" id="theme-save" type="button">Сохранить тему</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="ds-scroll" id="tab-assemble">
         <section class="ds-card" aria-labelledby="scope-title">
           <h2 id="scope-title">1. Что собираем</h2>
           <div class="ds-segment" role="group" aria-label="Область">
@@ -585,7 +673,7 @@
       </div>
 
       <div class="ds-status" id="status" role="status" aria-live="polite"></div>
-      <footer class="ds-footer">
+      <footer class="ds-footer" id="assemble-footer">
         <button class="ds-btn ds-btn-primary" id="assemble" type="button" disabled>Собрать</button>
         <button class="ds-btn" id="disassemble" type="button">Разобрать сборку</button>
       </footer>

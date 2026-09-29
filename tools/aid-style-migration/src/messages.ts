@@ -1,5 +1,8 @@
 import type { AssembleRequest, ScanResult, ScanScope } from "./assemble/types";
 import type { ProbeKind, ProbeResult } from "./probes/types";
+import type { FileSurvey } from "./profile/indexFile";
+import type { ProfileState } from "./profile/controller";
+import type { MaterialKind, ThemeRole } from "./profile/types";
 
 export interface PageInfo {
   id: string;
@@ -14,6 +17,16 @@ export type UiToCode =
   | { type: "disassemble" }
   | { type: "focus"; nodeId: string }
   | { type: "run-probes"; kind: ProbeKind }
+  | { type: "profile-load" }
+  | { type: "profile-create"; name: string }
+  | { type: "profile-select"; id: string }
+  | { type: "profile-delete"; id: string }
+  | { type: "file-survey" }
+  | { type: "file-index"; kinds: MaterialKind[] }
+  | { type: "material-remove"; id: string }
+  | { type: "theme-set"; collectionKey: string | null; roles: Record<string, ThemeRole> }
+  | { type: "profile-export" }
+  | { type: "profile-import"; text: string }
   | { type: "close" };
 
 /** Главный поток → UI. */
@@ -29,5 +42,9 @@ export type CodeToUi =
   | { type: "disassemble-done"; removed: number }
   | { type: "probe-progress"; title: string }
   | { type: "probe-results"; kind: ProbeKind; results: ProbeResult[] }
+  | { type: "profile-state"; state: ProfileState }
+  | { type: "file-survey"; survey: FileSurvey }
+  | { type: "profile-export"; fileName: string; text: string }
+  | { type: "index-progress"; title: string }
   | { type: "notice"; message: string }
   | { type: "error"; message: string };

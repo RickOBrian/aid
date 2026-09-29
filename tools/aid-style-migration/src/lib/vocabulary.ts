@@ -37,3 +37,11 @@ export function stripThemeWords(name: string): string {
     .filter((w) => ![...DARK_STEMS, ...LIGHT_STEMS].some((s) => w.startsWith(s)))
     .join(" ");
 }
+
+/**
+ * Роли режимов темы. Это роли, а не имена режимов: имя у продукта любое
+ * (`day`, `Night`…), роль — одна из этих. Живут здесь, рядом со словами
+ * темы, чтобы в движке не было строковых литералов режимов.
+ */
+export const THEME_ROLES = { light: "light", dark: "dark", other: "other" } as const;
+export type ThemeRole = (typeof THEME_ROLES)[keyof typeof THEME_ROLES];

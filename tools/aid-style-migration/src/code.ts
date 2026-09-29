@@ -2,7 +2,8 @@
  * AID Style Migration — главный поток плагина.
  *
  * Этап 1 — сборка: найти экраны в выбранной области, свести тёмные пары,
- * разложить копии на странице «AID Migration» строками «было → стало».
+ * разложить копии на странице «AID Migration» плитками «было».
+ * Этап 2a — профиль продукта: материалы, индекс открытого файла, тема.
  * Исходные страницы не меняются. Проверки API этапа 0 — в «Диагностике».
  */
 
@@ -12,6 +13,8 @@ import { WORK_PAGE_NAME } from "./lib/workPage";
 import type { CodeToUi, UiToCode } from "./messages";
 import { runReadProbes } from "./probes/readProbes";
 import { runWriteProbes } from "./probes/writeProbes";
+import * as profiles from "./profile/controller";
+import { surveyFile } from "./profile/indexFile";
 
 const WINDOW = { width: 480, height: 720 };
 /** Превью — не больше стольких экранов за скан: остальное без картинки. */
@@ -88,6 +91,45 @@ async function handle(message: UiToCode): Promise<void> {
       if (page && page.type === "PAGE" && page !== figma.currentPage) await figma.setCurrentPageAsync(page);
       figma.currentPage.selection = [node as SceneNode];
       figma.viewport.scrollAndZoomIntoView([node as SceneNode]);
+      return;
+    }
+
+    case "profile-load":
+      post({ type: "profile-state", state: await profiles.state() });
+      return;
+    case "profile-create":
+      post({ type: "profile-state", state: await profiles.create(message.name) });
+      return;
+    case "profile-select":
+      post({ type: "profile-state", state: await profiles.select(message.id) });
+      return;
+    case "profile-delete":
+      post({ type: "profile-state", state: await profiles.remove(message.id) });
+      return;
+    case "file-survey":
+      post({ type: "file-survey", survey: await surveyFile() });
+      return;
+    case "file-index": {
+      const state = await profiles.indexOpenFile(message.kinds, (title) => post({ type: "index-progress", title }));
+      post({ type: "profile-state", state });
+      post({ type: "notice", message: `Файл «${figma.root.name}» проиндексирован` });
+      return;
+    }
+    case "material-remove":
+      post({ type: "profile-state", state: await profiles.dropMaterial(message.id) });
+      return;
+    case "theme-set":
+      post({ type: "profile-state", state: await profiles.setTheme(message.collectionKey, message.roles) });
+      return;
+    case "profile-export": {
+      const out = await profiles.exportActive();
+      if (out) post({ type: "profile-export", ...out });
+      return;
+    }
+    case "profile-import": {
+      const result = await profiles.importProfile(message.text);
+      if ("error" in result) post({ type: "notice", message: result.error });
+      else post({ type: "profile-state", state: result });
       return;
     }
 
