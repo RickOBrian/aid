@@ -526,6 +526,14 @@
         min-width: 0;
       }
 
+      .ds-link-row {
+        display: grid;
+        grid-template-columns: 1fr 150px auto;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
       .ds-mode {
         display: grid;
         grid-template-columns: 1fr 160px;
@@ -574,14 +582,18 @@
           <h2 id="materials-title">Материалы</h2>
           <div id="materials-list"></div>
           <div class="ds-hint" id="missing-list"></div>
-          <h2>Добавить по ссылке</h2>
+          <h2>Добавить по ссылкам</h2>
           <p class="ds-hint">
-            Токены и стили — из любого файла, без открытия библиотеки. Компоненты и иконки по ссылке —
-            следующим шагом; пока — из открытого файла.
+            Библиотеки продукта — токены и стили, компоненты, иконки — из любого файла, без открытия.
+            Вид можно оставить «определить сам».
           </p>
-          <div class="ds-row">
-            <input class="ds-input" id="library-url" type="url" placeholder="Ссылка на файл библиотеки токенов" />
-            <button class="ds-btn" id="url-index" type="button">Прочитать</button>
+          <div id="link-rows"></div>
+          <div class="ds-actions">
+            <button class="ds-link" id="link-add" type="button">+ ещё ссылка</button>
+          </div>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="links-index" type="button">Прочитать</button>
+            <button class="ds-btn" id="links-refresh" type="button">Обновить по ссылкам</button>
           </div>
           <details id="pat-box">
             <summary id="pat-summary">Доступ по ссылке: токен не задан</summary>

@@ -3,7 +3,7 @@ import type { ProbeKind, ProbeResult } from "./probes/types";
 import type { ExemplarScope } from "./profile/usage";
 import type { FileSurvey } from "./profile/indexFile";
 import type { ProfileState } from "./profile/controller";
-import type { MaterialKind, ThemeRole } from "./profile/types";
+import type { LibraryLink, MaterialKind, ThemeRole } from "./profile/types";
 
 export interface PageInfo {
   id: string;
@@ -28,7 +28,8 @@ export type UiToCode =
   | { type: "theme-set"; collectionKey: string | null; roles: Record<string, ThemeRole> }
   | { type: "profile-export" }
   | { type: "profile-import"; text: string }
-  | { type: "url-index"; url: string }
+  | { type: "links-index"; links: LibraryLink[] }
+  | { type: "links-refresh" }
   | { type: "pat-set"; token: string }
   | { type: "close" };
 

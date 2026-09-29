@@ -16,11 +16,24 @@ import {
 } from "./profile";
 import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
+import { parseFigmaFileKey } from "../lib/figmaUrl";
+import { fileName } from "./rest";
+import { fetchComponents } from "./restComponents";
+import { smallShare } from "./restParse";
 import { fetchTokens } from "./restTokens";
 import { THEME_ROLES } from "../lib/vocabulary";
 import * as store from "./storage";
 import { exemplarVariableOrigin } from "./profile";
-import type { ExemplarIndex, MaterialIndex, MaterialKind, ProductProfile, ThemeRole, ThemeSetting } from "./types";
+import type {
+  ExemplarIndex,
+  LibraryLink,
+  LinkKind,
+  MaterialIndex,
+  MaterialKind,
+  ProductProfile,
+  ThemeRole,
+  ThemeSetting,
+} from "./types";
 
 export interface ThemeCandidate {
   key: string;
@@ -165,21 +178,79 @@ export async function indexOpenFile(
 }
 
 /**
- * Материал по ссылке через REST API — без открытия файла. Пока — токены и
- * стили; компоненты и иконки по ссылке — следующим шагом. Имя материала —
- * имя файла из REST: то же, что у индексации открытого файла, поэтому
- * повторное чтение любым способом заменяет запись, а не дублирует.
+ * Библиотеки по ссылкам через REST API — без открытия файлов. Каждая
+ * ссылка — свой вид материала или «определить сам»: переменные и стили →
+ * токены; компоненты → иконки, если ≥ 70 % не больше 48×48, иначе
+ * компоненты. Имя материала — имя файла из REST: повторное чтение любым
+ * способом заменяет запись, а не дублирует. Ошибка по одной ссылке не
+ * останавливает остальные.
  */
-export async function indexFromUrl(url: string, report: (title: string) => void): Promise<ProfileState> {
+export async function indexLinks(links: LibraryLink[], report: (title: string) => void): Promise<{ state: ProfileState; errors: string[] }> {
   let profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
-  const { fileName, index } = await fetchTokens(url, await store.getPat(), report);
-  const id = materialId("tokens", fileName);
-  await store.saveIndex(profile.id, id, { kind: "tokens", data: index });
-  profile = upsertMaterial(profile, { id, kind: "tokens", fileName, source: "rest", indexedAt: now(), stats: tokensStats(index) }, now());
-  if (!profile.theme) profile = { ...profile, theme: suggestTheme(index.collections.filter((c) => c.published)) };
-  await store.saveProfile(profile);
-  return state();
+  const token = await store.getPat();
+  if (!token) throw new Error("Нужен токен — задайте его в «Доступ по ссылке»");
+  const errors: string[] = [];
+
+  for (const [i, link] of links.entries()) {
+    const file = parseFigmaFileKey(link.url);
+    const label = `ссылка ${i + 1} из ${links.length}`;
+    if (!file) {
+      errors.push(`${label}: не получилось взять ключ файла — нужна ссылка на файл Figma целиком`);
+      continue;
+    }
+    try {
+      report(`${label}: имя файла`);
+      const name = await fileName(file, token);
+      const found: Array<{ kind: MaterialKind; index: MaterialIndex; stats: Record<string, number> }> = [];
+
+      if (link.kind === "tokens" || link.kind === "auto") {
+        const data = await fetchTokens(file, token, (t) => report(`${name}: ${t}`));
+        const stats = tokensStats(data);
+        if (link.kind === "tokens" || stats.variables + stats.textStyles + stats.effectStyles > 0) found.push({ kind: "tokens", index: { kind: "tokens", data }, stats });
+      }
+      if (link.kind !== "tokens") {
+        const data = await fetchComponents(file, token, (t) => report(`${name}: ${t}`));
+        const stats = componentsStats(data);
+        const count = stats.sets + stats.components;
+        if (link.kind !== "auto" || count > 0) {
+          const kind: MaterialKind = link.kind === "auto" ? (smallShare(data) >= 0.7 ? "icons" : "components") : link.kind;
+          found.push({ kind, index: kind === "icons" ? { kind: "icons", data } : { kind: "components", data }, stats });
+        }
+      }
+      if (found.length === 0) {
+        errors.push(`«${name}»: не нашлось ни опубликованных токенов, ни компонентов`);
+        continue;
+      }
+      for (const f of found) {
+        const id = materialId(f.kind, name);
+        await store.saveIndex(profile.id, id, f.index);
+        profile = upsertMaterial(
+          profile,
+          { id, kind: f.kind, fileName: name, source: "rest", url: link.url, indexedAt: now(), stats: f.stats },
+          now(),
+        );
+        if (f.index.kind === "tokens" && !profile.theme) {
+          profile = { ...profile, theme: suggestTheme(f.index.data.collections.filter((c) => c.published)) };
+        }
+      }
+      // Сохраняем после каждой ссылки: ошибка на следующей не должна терять прочитанное.
+      await store.saveProfile(profile);
+    } catch (e) {
+      errors.push(`${label}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+  return { state: await state(), errors };
+}
+
+/** Перечитать всё, что добавлено по ссылкам, — когда библиотеки обновили. */
+export async function refreshLinks(report: (title: string) => void): Promise<{ state: ProfileState; errors: string[] }> {
+  const profile = await activeProfile();
+  const links: LibraryLink[] = (profile?.materials ?? [])
+    .filter((m) => m.url && m.kind !== "exemplars" && m.kind !== "standards")
+    .map((m) => ({ url: m.url!, kind: m.kind as LinkKind }));
+  if (links.length === 0) return { state: await state(), errors: ["Материалов, добавленных по ссылке, нет"] };
+  return indexLinks(links, report);
 }
 
 export async function savePat(token: string): Promise<ProfileState> {

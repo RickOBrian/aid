@@ -36,6 +36,16 @@ export interface Material {
   stats: Record<string, number>;
   /** Пояснения к числам человеческим языком — например, откуда токены образцов. */
   notes?: string[];
+  /** Ссылка, если материал прочитан по ней, — для «Обновить по ссылкам». */
+  url?: string;
+}
+
+/** Вид материала для ссылки: конкретный или «определить сам». */
+export type LinkKind = "auto" | "tokens" | "components" | "icons";
+
+export interface LibraryLink {
+  url: string;
+  kind: LinkKind;
 }
 
 

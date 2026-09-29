@@ -118,10 +118,13 @@ async function handle(message: UiToCode): Promise<void> {
       post({ type: "notice", message: `Файл «${figma.root.name}» проиндексирован` });
       return;
     }
-    case "url-index": {
-      const state = await profiles.indexFromUrl(message.url, (title) => post({ type: "index-progress", title }));
+    case "links-index":
+    case "links-refresh": {
+      const report = (title: string) => post({ type: "index-progress", title });
+      const { state, errors } =
+        message.type === "links-index" ? await profiles.indexLinks(message.links, report) : await profiles.refreshLinks(report);
       post({ type: "profile-state", state });
-      post({ type: "notice", message: "Библиотека прочитана по ссылке" });
+      post({ type: "notice", message: errors.length ? `Не всё прочитано: ${errors.join("; ")}` : "Библиотеки прочитаны по ссылкам" });
       return;
     }
     case "pat-set":

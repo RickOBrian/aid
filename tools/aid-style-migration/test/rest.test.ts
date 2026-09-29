@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { parseFigmaFileKey } from "../src/lib/figmaUrl";
-import { collectionsFromRest, effectStyleFromRest, textStyleFromRest } from "../src/profile/restParse";
+import {
+  collectionsFromRest,
+  componentsIndexFromRest,
+  effectStyleFromRest,
+  smallShare,
+  textStyleFromRest,
+  type RestComponentNode,
+} from "../src/profile/restParse";
 
 describe("ссылка на файл", () => {
   it("ключ из ссылки, ветки и голый ключ", () => {
@@ -59,5 +66,56 @@ describe("стили из REST", () => {
       ],
     });
     expect(s.effects).toEqual(["DROP_SHADOW 0,4 r16 s0 #00000029"]);
+  });
+});
+
+describe("компоненты из REST", () => {
+  const set = { key: "kset", node_id: "1:1", name: "Button", containing_frame: { name: "Buttons", pageName: "Controls" } };
+  const variant = (id: string, name: string) => ({
+    key: `k${id}`,
+    node_id: id,
+    name,
+    containing_frame: { name: "Button", pageName: "Controls", containingComponentSet: { name: "Button", nodeId: "1:1" } },
+  });
+  const icon = (id: string) => ({ key: `k${id}`, node_id: id, name: `icon-${id}`, containing_frame: { name: "action", pageName: "Icons" } });
+
+  it("варианты — внутри своего набора, с размерами из дочерних нод", () => {
+    const nodes = new Map<string, RestComponentNode | undefined>([
+      [
+        "1:1",
+        {
+          absoluteBoundingBox: { width: 300, height: 120 },
+          componentPropertyDefinitions: { Size: { type: "VARIANT", defaultValue: "L", variantOptions: ["L", "M"] } },
+          children: [
+            { id: "1:2", absoluteBoundingBox: { width: 140, height: 48 } },
+            { id: "1:3", absoluteBoundingBox: { width: 120, height: 40 } },
+          ],
+        },
+      ],
+    ]);
+    const index = componentsIndexFromRest([set], [variant("1:2", "Size=L"), variant("1:3", "Size=M")], nodes);
+    expect(index.components).toEqual([]);
+    expect(index.sets[0]).toMatchObject({ name: "Button", group: "Buttons", page: "Controls", width: 300 });
+    expect(index.sets[0].properties).toEqual([{ name: "Size", type: "VARIANT", defaultValue: "L", variantOptions: ["L", "M"] }]);
+    expect(index.sets[0].variants).toEqual([
+      { key: "k1:2", name: "Size=L", width: 140, height: 48 },
+      { key: "k1:3", name: "Size=M", width: 120, height: 40 },
+    ]);
+  });
+
+  it("библиотека из мелких одиночных — иконки; служебные «_» не берём", () => {
+    const nodes = new Map<string, RestComponentNode | undefined>([
+      ["2:1", { absoluteBoundingBox: { width: 24, height: 24 } }],
+      ["2:2", { absoluteBoundingBox: { width: 24, height: 24 } }],
+      ["2:3", { absoluteBoundingBox: { width: 24, height: 24 } }],
+    ]);
+    const index = componentsIndexFromRest([], [icon("2:1"), icon("2:2"), { ...icon("2:3"), name: "_helper" }], nodes);
+    expect(index.components.map((c) => c.name)).toEqual(["icon-2:1", "icon-2:2"]);
+    expect(smallShare(index)).toBe(1);
+  });
+
+  it("крупные компоненты — не иконки", () => {
+    const index = componentsIndexFromRest([set], [variant("1:2", "Size=L")], new Map([["1:1", { absoluteBoundingBox: { width: 300, height: 120 } }]]));
+    expect(smallShare(index)).toBe(0);
   });
 });

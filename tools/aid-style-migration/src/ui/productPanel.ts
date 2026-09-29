@@ -4,7 +4,7 @@ import { THEME_ROLES, type ThemeRole } from "../lib/vocabulary";
 import type { ProfileState } from "../profile/controller";
 import { EXEMPLAR_LIMIT, type ExemplarScope } from "../profile/usage";
 import type { FileSurvey } from "../profile/indexFile";
-import { MATERIAL_LABELS, type Material, type MaterialKind } from "../profile/types";
+import { MATERIAL_LABELS, type LibraryLink, type LinkKind, type Material, type MaterialKind } from "../profile/types";
 import { badge, el, h, send } from "./dom";
 
 const STAT_LABELS: Record<string, string> = {
@@ -121,6 +121,7 @@ function renderModes(state: ProfileState): void {
 
 function render(state: ProfileState): void {
   current = state;
+  el("links-refresh").hidden = !(state.active?.materials ?? []).some((m) => m.url);
   el("pat-summary").textContent = state.hasPat ? "Доступ по ссылке: токен задан" : "Доступ по ссылке: токен не задан";
   el("pat-clear").hidden = !state.hasPat;
   const select = el<HTMLSelectElement>("profile-select");
@@ -151,6 +152,34 @@ function render(state: ProfileState): void {
     );
   }
   renderTheme(state);
+}
+
+const LINK_KINDS: Array<[LinkKind, string]> = [
+  ["auto", "определить сам"],
+  ["tokens", MATERIAL_LABELS.tokens],
+  ["components", MATERIAL_LABELS.components],
+  ["icons", MATERIAL_LABELS.icons],
+];
+
+function addLinkRow(): void {
+  const input = h("input", { className: "ds-input" });
+  input.type = "url";
+  input.placeholder = "Ссылка на файл библиотеки";
+  const kind = h("select", { className: "ds-input" });
+  kind.setAttribute("aria-label", "Вид материала");
+  for (const [value, text] of LINK_KINDS) {
+    const o = h("option", { text });
+    o.value = value;
+    kind.append(o);
+  }
+  const drop = h("button", { className: "ds-link", text: "×", type: "button" });
+  drop.setAttribute("aria-label", "Убрать строку");
+  const row = h("div", { className: "ds-link-row" }, [input, kind, drop]);
+  drop.addEventListener("click", () => {
+    row.remove();
+    if (!el("link-rows").children.length) addLinkRow();
+  });
+  el("link-rows").append(row);
 }
 
 function scopeChoice(screens: number): HTMLElement {
@@ -252,10 +281,17 @@ export function initProduct(status: (text: string) => void): void {
     send({ type: "file-index", kinds, exemplarScope: (scope?.value as ExemplarScope) ?? "page" });
   });
 
-  el("url-index").addEventListener("click", () => {
-    const url = el<HTMLInputElement>("library-url").value.trim();
-    if (!url) {
-      setStatus("Вставьте ссылку на файл библиотеки");
+  el("link-add").addEventListener("click", () => addLinkRow());
+  addLinkRow();
+  el("links-index").addEventListener("click", () => {
+    const links: LibraryLink[] = [...el("link-rows").querySelectorAll<HTMLElement>(".ds-link-row")]
+      .map((row) => ({
+        url: row.querySelector<HTMLInputElement>("input")!.value.trim(),
+        kind: row.querySelector<HTMLSelectElement>("select")!.value as LinkKind,
+      }))
+      .filter((l) => l.url);
+    if (!links.length) {
+      setStatus("Вставьте хотя бы одну ссылку");
       return;
     }
     if (!current?.hasPat) {
@@ -263,8 +299,17 @@ export function initProduct(status: (text: string) => void): void {
       setStatus("Сначала задайте токен доступа");
       return;
     }
-    setStatus("Читаю по ссылке…");
-    send({ type: "url-index", url });
+    setStatus("Читаю по ссылкам…");
+    send({ type: "links-index", links });
+  });
+  el("links-refresh").addEventListener("click", () => {
+    if (!current?.hasPat) {
+      (el("pat-box") as HTMLDetailsElement).open = true;
+      setStatus("Сначала задайте токен доступа");
+      return;
+    }
+    setStatus("Обновляю по ссылкам…");
+    send({ type: "links-refresh" });
   });
   el("pat-save").addEventListener("click", () => {
     const input = el<HTMLInputElement>("pat-input");

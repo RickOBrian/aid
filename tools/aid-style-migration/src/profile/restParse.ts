@@ -5,7 +5,16 @@
  */
 
 import { convertValue, resolveValue, type ResolveEntry } from "./tokenValues";
-import type { IndexedCollection, IndexedEffectStyle, IndexedTextStyle, TokensIndex } from "./types";
+import type {
+  ComponentsIndex,
+  IndexedCollection,
+  IndexedComponent,
+  IndexedComponentSet,
+  IndexedEffectStyle,
+  IndexedProperty,
+  IndexedTextStyle,
+  TokensIndex,
+} from "./types";
 
 export interface RestVariable {
   id: string;
@@ -171,4 +180,109 @@ export function tokensIndexFromRest(
     .filter((s): s is IndexedTextStyle => s !== null);
   const effectStyles = styles.filter((s) => s.style_type === "EFFECT").map((s) => effectStyleFromRest(s, nodes.get(s.node_id)));
   return { collections: collectionsFromRest(meta), textStyles, effectStyles, paintStyles: [] };
+}
+
+// ---------------------------------------------------------------------------
+// Компоненты и иконки
+// ---------------------------------------------------------------------------
+
+export interface RestComponentEntry {
+  key: string;
+  node_id: string;
+  name: string;
+  description?: string;
+  containing_frame?: {
+    name?: string;
+    pageName?: string;
+    containingComponentSet?: { name?: string; nodeId?: string } | null;
+  };
+}
+
+export interface RestPropertyDefinition {
+  type: ComponentPropertyType;
+  defaultValue: string | boolean;
+  variantOptions?: string[];
+}
+
+export interface RestComponentNode {
+  absoluteBoundingBox?: { width: number; height: number };
+  componentPropertyDefinitions?: Record<string, RestPropertyDefinition>;
+  children?: Array<{ id: string; absoluteBoundingBox?: { width: number; height: number } }>;
+}
+
+/** Опубликованное не начинается с «_» или «.» — REST и так отдаёт только опубликованное, но наборы внутри бывают служебными. */
+function isPrivate(name: string): boolean {
+  return name.startsWith("_") || name.startsWith(".");
+}
+
+function props(node: RestComponentNode | undefined): IndexedProperty[] {
+  return Object.entries(node?.componentPropertyDefinitions ?? {}).map(([name, d]) => ({
+    name,
+    type: d.type,
+    defaultValue: d.defaultValue,
+    ...(d.variantOptions ? { variantOptions: [...d.variantOptions] } : {}),
+  }));
+}
+
+function size(node: { absoluteBoundingBox?: { width: number; height: number } } | undefined): { width: number; height: number } {
+  return { width: Math.round(node?.absoluteBoundingBox?.width ?? 0), height: Math.round(node?.absoluteBoundingBox?.height ?? 0) };
+}
+
+export function componentsIndexFromRest(
+  sets: RestComponentEntry[],
+  components: RestComponentEntry[],
+  nodes: Map<string, RestComponentNode | undefined>,
+): ComponentsIndex {
+  const variantsOf = new Map<string, RestComponentEntry[]>();
+  const standalone: RestComponentEntry[] = [];
+  for (const c of components) {
+    const setId = c.containing_frame?.containingComponentSet?.nodeId;
+    if (setId) variantsOf.set(setId, [...(variantsOf.get(setId) ?? []), c]);
+    else standalone.push(c);
+  }
+
+  const indexedSets: IndexedComponentSet[] = sets
+    .filter((s) => !isPrivate(s.name))
+    .map((s) => {
+      const node = nodes.get(s.node_id);
+      const childSize = new Map((node?.children ?? []).map((ch) => [ch.id, size(ch)]));
+      return {
+        key: s.key,
+        name: s.name,
+        description: s.description ?? "",
+        ...size(node),
+        group: s.containing_frame?.name ?? "",
+        page: s.containing_frame?.pageName ?? "",
+        properties: props(node),
+        variants: (variantsOf.get(s.node_id) ?? []).map((v) => ({
+          key: v.key,
+          name: v.name,
+          ...(childSize.get(v.node_id) ?? { width: 0, height: 0 }),
+        })),
+      };
+    });
+
+  const indexedComponents: IndexedComponent[] = standalone
+    .filter((c) => !isPrivate(c.name))
+    .map((c) => {
+      const node = nodes.get(c.node_id);
+      return {
+        key: c.key,
+        name: c.name,
+        description: c.description ?? "",
+        ...size(node),
+        group: c.containing_frame?.name ?? "",
+        page: c.containing_frame?.pageName ?? "",
+        properties: props(node),
+      };
+    });
+
+  return { sets: indexedSets, components: indexedComponents };
+}
+
+/** Доля мелких (≤ 48×48) — признак библиотеки иконок, как при чтении открытого файла. */
+export function smallShare(index: ComponentsIndex): number {
+  const all = [...index.sets, ...index.components];
+  if (all.length === 0) return 0;
+  return all.filter((c) => c.width > 0 && c.width <= 48 && c.height <= 48).length / all.length;
 }
