@@ -1,12 +1,12 @@
 /**
  * Сборка: копии экранов на странице «AID Migration», секция на исходную
- * страницу, строки «было → стало». Исходники не трогаются — на них можно
+ * страницу, плитка на экран (было и его тёмная пара рядом). Исходники не трогаются — на них можно
  * откатиться и с ними сравнить (решение Principal Designer).
  */
 
 import { findOrCreateWorkPage, WORK_PAGE_NAME } from "../lib/workPage";
 import { findThemeCollection } from "./collect";
-import { COLUMNS, DEFAULT_LAYOUT, layoutRows, type Size } from "./layout";
+import { DEFAULT_LAYOUT, layoutTiles } from "./layout";
 import type { AssemblePage, AssembleRequest, AssembleRow } from "./types";
 
 /** Метки pluginData. Префикс — чтобы не спутать с чужими ключами. */
@@ -14,7 +14,7 @@ export const KEY_SECTION = "sm:section";
 const KEY_ROLE = "sm:role";
 const KEY_SOURCE = "sm:source";
 
-type Role = "before-light" | "before-dark" | "after-light";
+type Role = "before-light" | "before-dark";
 
 const FONT_REGULAR: FontName = { family: "Inter", style: "Regular" };
 const FONT_MEDIUM: FontName = { family: "Inter", style: "Medium" };
@@ -70,28 +70,50 @@ function bottom(page: PageNode): number {
   return page.children.reduce((max, n) => Math.max(max, n.y + n.height), 0);
 }
 
-async function rowSizes(row: AssembleRow, darkFromTheme: boolean): Promise<Array<Size | null>> {
-  const light = await node(row.lightId ?? row.imageId);
+interface Cell {
+  source: SceneNode;
+  role: Role;
+  caption: string;
+  /** Коллекция и режим, если ячейка — копия в тёмном режиме темы исходника. */
+  mode?: { collection: VariableCollection; modeId: string };
+}
+
+type Theme = Awaited<ReturnType<typeof findThemeCollection>>;
+
+/**
+ * Ячейки плитки. На этапе 1 — только «было»: копии «стало» появятся, когда
+ * будет перевод (замечание Principal Designer: одинаковые «было» и
+ * «стало» и пустая колонка вводят в заблуждение и удваивают объём).
+ */
+async function rowCells(row: AssembleRow, theme: Theme): Promise<Cell[]> {
+  const cells: Cell[] = [];
+  const image = await node(row.imageId);
+  const light = await node(row.lightId);
   const dark = await node(row.darkId);
-  const size = (n: SceneNode | null) => (n ? { width: n.width, height: n.height } : null);
-  const beforeDark = dark ?? (darkFromTheme && row.lightId ? light : null);
-  const after = row.imageId ? null : (light ?? dark);
-  return [size(light), size(beforeDark), size(after), null];
+  if (image) cells.push({ source: image, role: "before-light", caption: "Было · картинка" });
+  if (light) cells.push({ source: light, role: "before-light", caption: "Было" });
+  if (dark) {
+    cells.push({ source: dark, role: "before-dark", caption: "Было · тёмная" });
+  } else if (light && theme) {
+    cells.push({
+      source: light,
+      role: "before-dark",
+      caption: `Было · тёмная — из темы исходника (${theme.info.darkMode})`,
+      mode: { collection: theme.collection, modeId: theme.darkModeId },
+    });
+  }
+  return cells;
 }
 
-function rowName(light: SceneNode | null, dark: SceneNode | null): string {
-  const base = (light ?? dark)?.name ?? "—";
-  return dark && light ? `${base}  ·  тёмная пара: ${dark.name}` : base;
-}
-
-function place(section: SectionNode, source: SceneNode, x: number, y: number, role: Role): SceneNode {
-  const copy = source.clone();
+function place(section: SectionNode, cell: Cell, x: number, y: number): SceneNode {
+  const copy = cell.source.clone();
   section.appendChild(copy);
   copy.x = x;
   copy.y = y;
   clearOwnData(copy);
-  copy.setPluginData(KEY_ROLE, role);
-  copy.setPluginData(KEY_SOURCE, source.id);
+  copy.setPluginData(KEY_ROLE, cell.role);
+  copy.setPluginData(KEY_SOURCE, cell.source.id);
+  if (cell.mode) copy.setExplicitVariableModeForCollection(cell.mode.collection, cell.mode.modeId);
   return copy;
 }
 
@@ -104,8 +126,11 @@ async function buildSection(
   progress: () => void,
 ): Promise<SectionNode> {
   const theme = request.darkFromTheme ? await findThemeCollection() : null;
-  const sizes = await Promise.all(page.rows.map((r) => rowSizes(r, Boolean(theme))));
-  const layout = layoutRows(sizes, DEFAULT_LAYOUT);
+  const rows = await Promise.all(page.rows.map((r) => rowCells(r, theme)));
+  const layout = layoutTiles(
+    rows.map((cells) => cells.map((c) => ({ width: c.source.width, height: c.source.height }))),
+    DEFAULT_LAYOUT,
+  );
 
   const section = figma.createSection();
   section.name = `Сборка · ${page.pageName}${suffix}`;
@@ -115,34 +140,19 @@ async function buildSection(
   section.resizeWithoutConstraints(layout.width, layout.height);
   section.setPluginData(KEY_SECTION, page.pageId);
 
-  COLUMNS.forEach((title, c) => {
-    const label = c === 3 ? `${title} — после перевода` : title;
-    text(section, label, layout.columnX[c], DEFAULT_LAYOUT.padding, 32, FONT_MEDIUM);
-  });
+  for (let i = 0; i < rows.length; i++) {
+    const cells = rows[i];
+    const tile = layout.tiles[i];
+    if (cells.length === 0) continue;
 
-  for (let i = 0; i < page.rows.length; i++) {
-    const row = page.rows[i];
-    const geo = layout.rows[i];
-    const light = await node(row.lightId ?? row.imageId);
-    const dark = await node(row.darkId);
+    const main = cells[0].source;
+    const name = text(section, main.name, tile.x, tile.y, 24, FONT_MEDIUM);
+    name.hyperlink = { type: "NODE", value: main.id };
+    cells.forEach((cell, c) => {
+      text(section, cell.caption, tile.cellX[c], tile.y + 44, 16, FONT_REGULAR);
+      place(section, cell, tile.cellX[c], tile.cellY);
+    });
 
-    const label = text(section, rowName(light, dark), layout.columnX[0], geo.labelY, 20, FONT_REGULAR);
-    const target = light ?? dark;
-    if (target) label.hyperlink = { type: "NODE", value: target.id };
-
-    if (light) place(section, light, layout.columnX[0], geo.y, "before-light");
-    if (dark) {
-      place(section, dark, layout.columnX[1], geo.y, "before-dark");
-    } else if (theme && row.lightId && light) {
-      const copy = place(section, light, layout.columnX[1], geo.y, "before-dark");
-      copy.setExplicitVariableModeForCollection(theme.collection, theme.darkModeId);
-      text(section, `из темы исходника: ${theme.info.darkMode}`, layout.columnX[1], geo.labelY, 16, FONT_REGULAR);
-    }
-    if (row.imageId) {
-      text(section, "картинка — не переводится", layout.columnX[2], geo.labelY, 16, FONT_REGULAR);
-    } else if (light ?? dark) {
-      place(section, (light ?? dark)!, layout.columnX[2], geo.y, "after-light");
-    }
     progress();
     // Отдаём управление Figma, чтобы интерфейс не замирал на больших страницах.
     await new Promise((resolve) => setTimeout(resolve, 0));

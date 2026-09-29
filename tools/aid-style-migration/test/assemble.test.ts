@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { findDarkPairs, isDark, relativeLuminance, type ScreenFacts } from "../src/assemble/darkPairs";
-import { COLUMNS, layoutRows } from "../src/assemble/layout";
+import { DEFAULT_LAYOUT, layoutTiles } from "../src/assemble/layout";
 import { classify, type NodeFacts } from "../src/assemble/screens";
 import { hasDarkWord, stripThemeWords } from "../src/lib/vocabulary";
 
@@ -103,20 +103,32 @@ describe("тёмные пары", () => {
 });
 
 describe("раскладка", () => {
-  it("четыре колонки: пустая получает ширину первой", () => {
-    const layout = layoutRows([[{ width: 390, height: 844 }, null, { width: 390, height: 844 }, null]]);
-    expect(COLUMNS).toHaveLength(4);
-    expect(layout.columnX).toHaveLength(4);
-    expect(layout.columnX[1] - layout.columnX[0]).toBe(390 + 80);
-    expect(layout.columnX[3] - layout.columnX[2]).toBe(390 + 80);
+  const phone = { width: 390, height: 844 };
+
+  it("36 экранов — не колонка вниз, а сетка близкая к пропорции экрана", () => {
+    const layout = layoutTiles(Array.from({ length: 36 }, () => [phone]));
+    expect(layout.perLine).toBeGreaterThan(4);
+    expect(layout.width / layout.height).toBeGreaterThan(1);
+    expect(layout.width / layout.height).toBeLessThan(3);
   });
 
-  it("высота строки — самый высокий экран; строки не наезжают", () => {
-    const layout = layoutRows([
-      [{ width: 390, height: 844 }, { width: 390, height: 2051 }, null, null],
-      [{ width: 390, height: 209 }, null, null, null],
-    ]);
-    expect(layout.rows[0].height).toBe(2051);
-    expect(layout.rows[1].labelY).toBeGreaterThan(layout.rows[0].y + 2051);
+  it("плитка с тёмной парой шире, ячейки не наезжают", () => {
+    const layout = layoutTiles([[phone, phone], [phone]]);
+    const [a, b] = layout.tiles;
+    expect(a.cellX[1] - a.cellX[0]).toBe(390 + DEFAULT_LAYOUT.cellGap);
+    expect(b.x - a.x).toBeGreaterThanOrEqual(390 * 2 + DEFAULT_LAYOUT.cellGap);
+  });
+
+  it("высокий экран раздвигает свой ряд, следующий ряд ниже него", () => {
+    const layout = layoutTiles([[{ width: 390, height: 2051 }], ...Array.from({ length: 20 }, () => [phone])]);
+    const firstLine = layout.tiles[0];
+    const nextLine = layout.tiles.find((t) => t.y > firstLine.y)!;
+    expect(nextLine.y).toBeGreaterThan(firstLine.cellY + 2051);
+  });
+
+  it("один экран — одна плитка", () => {
+    const layout = layoutTiles([[phone]]);
+    expect(layout.perLine).toBe(1);
+    expect(layout.tiles).toHaveLength(1);
   });
 });
