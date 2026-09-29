@@ -223,7 +223,8 @@ export const mapHandlers = {
     el<HTMLButtonElement>("map-build").disabled = false;
     render();
     el("apply-box").hidden = false;
-    setStatus("Карта стиля готова — ничего не изменено");
+    el("apply-box").scrollIntoView({ block: "nearest" });
+    setStatus("Карта готова, макеты пока не менялись. Чтобы увидеть на макетах — «Применить к «Стало»» (под кнопкой «Построить карту»)");
   },
   applied(r: ApplyResult): void {
     busy(false);

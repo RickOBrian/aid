@@ -239,6 +239,12 @@ export async function applyStyle(decisions: Decisions, report: (title: string) =
     .flatMap((s) => s.children)
     .filter((n) => n.getPluginData(KEY_ROLE) === "after-light");
 
+  if (cells.length === 0) {
+    // Пересборка прошла, а ячеек «Стало» нет — молча отчитаться «Готово» нельзя.
+    throw new Error(
+      "«Стало» не создано: в собранных плитках нет экранов для перевода (только картинки или пусто). Пересоберите на вкладке «Сборка» и повторите",
+    );
+  }
   const applier = new Applier(decisions, await tokenAlpha());
   const prevSkip = figma.skipInvisibleInstanceChildren;
   figma.skipInvisibleInstanceChildren = true;
@@ -259,6 +265,8 @@ export async function applyStyle(decisions: Decisions, report: (title: string) =
     figma.skipInvisibleInstanceChildren = prevSkip;
   }
   if (!dark) applier.failures.unshift("у продукта не задан тёмный режим темы — «Стало · тёмная» совпадает со светлой");
+  // Показать результат: первая переведённая плитка.
+  figma.viewport.scrollAndZoomIntoView([cells[0]]);
   return { screens: cells.length, ...applier.result, failures: applier.failures, ms: Date.now() - t0 };
 }
 
