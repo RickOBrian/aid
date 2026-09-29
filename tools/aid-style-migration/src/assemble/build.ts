@@ -232,7 +232,9 @@ export async function assemble(request: AssembleRequest, report: BuildProgress):
 
   for (const page of request.pages) {
     if (page.rows.length === 0) continue;
-    const old = existing.filter((s) => s.getPluginData(KEY_SECTION) === page.pageId);
+    // Секции прошлых страниц этого прогона уже удалены — у удалённой ноды
+    // getPluginData бросает («node does not exist»), поэтому их пропускаем.
+    const old = existing.filter((s) => !s.removed && s.getPluginData(KEY_SECTION) === page.pageId);
     let origin = { x: 0, y: bottom(work) + (work.children.length ? SECTION_GAP : 0) };
     let suffix = "";
     if (old.length && request.onConflict === "replace") {
