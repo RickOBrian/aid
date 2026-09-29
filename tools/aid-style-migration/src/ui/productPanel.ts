@@ -9,6 +9,7 @@ import { badge, el, h, send } from "./dom";
 const STAT_LABELS: Record<string, string> = {
   collections: "коллекций",
   variables: "переменных",
+  hiddenVariables: "скрытых от публикации (в перевод не идут)",
   textStyles: "стилей текста",
   effectStyles: "стилей эффектов",
   sets: "наборов",

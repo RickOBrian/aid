@@ -115,6 +115,25 @@ function describePaint(p: Paint): string {
   return p.type;
 }
 
+/**
+ * Пройти ссылки до конкретного значения. Режим ищем по id в коллекции
+ * цели; если там его нет (примитивы обычно в одном режиме) — режим по
+ * умолчанию коллекции цели.
+ */
+export function resolveValue(
+  value: VariableValue,
+  modeId: string,
+  byKey: Map<string, { valuesByMode: Record<string, VariableValue>; defaultModeId: string }>,
+  depth = 0,
+): VariableValue | null {
+  if (value.kind !== "alias") return value;
+  if (depth > 16 || !value.key) return null;
+  const target = byKey.get(value.key);
+  if (!target) return null;
+  const next = target.valuesByMode[modeId] ?? target.valuesByMode[target.defaultModeId];
+  return next ? resolveValue(next, modeId, byKey, depth + 1) : null;
+}
+
 export async function indexTokens(): Promise<TokensIndex> {
   const collections = await figma.variables.getLocalVariableCollectionsAsync();
   const variables = await figma.variables.getLocalVariablesAsync();
@@ -123,6 +142,7 @@ export async function indexTokens(): Promise<TokensIndex> {
   const indexed: IndexedCollection[] = collections.map((c) => ({
     key: c.key,
     name: c.name,
+    published: !c.hiddenFromPublishing,
     modes: c.modes.map((m) => ({ modeId: m.modeId, name: m.name })),
     variables: c.variableIds
       .map((id) => byId.get(id))
@@ -130,18 +150,21 @@ export async function indexTokens(): Promise<TokensIndex> {
       .map((v) => ({
         key: v.key,
         name: v.name,
+        published: !c.hiddenFromPublishing && !v.hiddenFromPublishing,
         resolvedType: v.resolvedType,
         description: v.description,
         scopes: [...v.scopes],
         valuesByMode: Object.fromEntries(
           Object.entries(v.valuesByMode).map(([mode, value]) => [mode, convertValue(value, byId)]),
         ),
+        resolvedByMode: {},
       })),
   }));
 
   const textStyles: IndexedTextStyle[] = (await figma.getLocalTextStylesAsync()).map((s) => ({
     key: s.key,
     name: s.name,
+    published: !isPrivate(s.name),
     description: s.description,
     fontFamily: s.fontName.family,
     fontStyle: s.fontName.style,
@@ -155,6 +178,7 @@ export async function indexTokens(): Promise<TokensIndex> {
   const effectStyles: IndexedEffectStyle[] = (await figma.getLocalEffectStylesAsync()).map((s) => ({
     key: s.key,
     name: s.name,
+    published: !isPrivate(s.name),
     description: s.description,
     effects: s.effects.map(describeEffect),
   }));
@@ -162,9 +186,22 @@ export async function indexTokens(): Promise<TokensIndex> {
   const paintStyles: IndexedPaintStyle[] = (await figma.getLocalPaintStylesAsync()).map((s) => ({
     key: s.key,
     name: s.name,
+    published: !isPrivate(s.name),
     description: s.description,
     paints: s.paints.map(describePaint),
   }));
+
+  // Итоговые значения — после того, как собраны все переменные файла.
+  const defaults = new Map(collections.map((c) => [c.key, c.defaultModeId]));
+  const byKey = new Map<string, { valuesByMode: Record<string, VariableValue>; defaultModeId: string }>();
+  for (const c of indexed) for (const v of c.variables) byKey.set(v.key, { valuesByMode: v.valuesByMode, defaultModeId: defaults.get(c.key) ?? "" });
+  for (const c of indexed) {
+    for (const v of c.variables) {
+      v.resolvedByMode = Object.fromEntries(
+        Object.entries(v.valuesByMode).map(([mode, value]) => [mode, resolveValue(value, mode, byKey)]),
+      );
+    }
+  }
 
   return { collections: indexed, textStyles, effectStyles, paintStyles };
 }
@@ -223,12 +260,16 @@ export async function indexComponents(): Promise<ComponentsIndex> {
   return { sets: indexedSets, components: standalone.map(component) };
 }
 
+/** Числа для карточки: опубликованное — то, на что можно переводить. */
 export function tokensStats(index: TokensIndex): Record<string, number> {
+  const all = index.collections.flatMap((c) => c.variables);
+  const published = all.filter((v) => v.published).length;
   return {
-    collections: index.collections.length,
-    variables: index.collections.reduce((n, c) => n + c.variables.length, 0),
-    textStyles: index.textStyles.length,
-    effectStyles: index.effectStyles.length,
+    collections: index.collections.filter((c) => c.published).length,
+    variables: published,
+    hiddenVariables: all.length - published,
+    textStyles: index.textStyles.filter((s) => s.published).length,
+    effectStyles: index.effectStyles.filter((s) => s.published).length,
   };
 }
 

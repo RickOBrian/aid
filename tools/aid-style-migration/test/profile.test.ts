@@ -9,7 +9,8 @@ import {
   suggestTheme,
   upsertMaterial,
 } from "../src/profile/profile";
-import type { IndexedCollection, Material } from "../src/profile/types";
+import { resolveValue } from "../src/profile/indexFile";
+import type { IndexedCollection, Material, VariableValue } from "../src/profile/types";
 
 const NOW = "2026-09-29T12:00:00Z";
 
@@ -21,14 +22,17 @@ function collection(name: string, modes: string[], colors = 1): IndexedCollectio
   return {
     key: `k-${name}`,
     name,
+    published: true,
     modes: modes.map((m, i) => ({ modeId: `${i}`, name: m })),
     variables: Array.from({ length: colors }, (_, i) => ({
       key: `v${i}`,
       name: `c${i}`,
+      published: true,
       resolvedType: "COLOR" as const,
       description: "",
       scopes: [],
       valuesByMode: {},
+      resolvedByMode: {},
     })),
   };
 }
@@ -96,5 +100,31 @@ describe("экспорт и импорт", () => {
     expect(parseExport(JSON.stringify({ format: "aid-style-migration/profile", version: 99 }))).toEqual({
       error: "Профиль из более новой версии плагина — обновите плагин",
     });
+  });
+});
+
+describe("итоговые значения переменных", () => {
+  const red = { kind: "color" as const, r: 1, g: 0, b: 0, a: 1 };
+  const black = { kind: "color" as const, r: 0, g: 0, b: 0, a: 1 };
+  type Entry = { valuesByMode: Record<string, VariableValue>; defaultModeId: string };
+  const byKey = new Map<string, Entry>([
+    // примитивы — один режим «core»
+    ["core-red", { valuesByMode: { core: red }, defaultModeId: "core" }],
+    ["core-black", { valuesByMode: { core: black }, defaultModeId: "core" }],
+    // семантика ссылается на семантику
+    ["sem-accent", { valuesByMode: { day: { kind: "alias" as const, name: "red", key: "core-red" } }, defaultModeId: "day" }],
+  ]);
+
+  it("семантика → примитив в режиме по умолчанию коллекции цели", () => {
+    expect(resolveValue({ kind: "alias", name: "red", key: "core-red" }, "night", byKey)).toEqual(red);
+  });
+  it("цепочка ссылок проходится до конца", () => {
+    expect(resolveValue({ kind: "alias", name: "accent", key: "sem-accent" }, "day", byKey)).toEqual(red);
+  });
+  it("ссылка наружу — null, а не ошибка", () => {
+    expect(resolveValue({ kind: "alias", name: "x", key: "remote" }, "day", byKey)).toBeNull();
+  });
+  it("не ссылка — как есть", () => {
+    expect(resolveValue(black, "day", byKey)).toEqual(black);
   });
 });

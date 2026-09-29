@@ -35,7 +35,7 @@ window.onmessage = (event: MessageEvent) => {
   switch (message.type) {
     case "init":
       fileName = message.fileName;
-      el("file-name").textContent = `Сборка макетов · ${message.fileName}`;
+      el("file-name").textContent = message.fileName;
       el("selection-count").textContent = String(message.selectionCount);
       assembleHandlers.pages(message.pages);
       break;

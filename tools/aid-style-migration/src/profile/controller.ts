@@ -53,7 +53,7 @@ async function themeCandidates(profile: ProductProfile): Promise<ThemeCandidate[
   for (const m of profile.materials.filter((x) => x.kind === "tokens")) {
     const index = await store.getIndex(profile.id, m.id);
     if (index?.kind !== "tokens") continue;
-    for (const c of index.data.collections) if (c.modes.length >= 2) out.push({ key: c.key, name: c.name, modes: c.modes });
+    for (const c of index.data.collections) if (c.published && c.modes.length >= 2) out.push({ key: c.key, name: c.name, modes: c.modes });
   }
   return out;
 }
@@ -134,7 +134,7 @@ export async function indexOpenFile(kinds: MaterialKind[], report: (title: strin
 
     // Тема предлагается автоматически, если её ещё нет; пользователь может поменять.
     if (kind === "tokens" && !profile.theme && index.kind === "tokens") {
-      profile = { ...profile, theme: suggestTheme(index.data.collections) };
+      profile = { ...profile, theme: suggestTheme(index.data.collections.filter((c) => c.published)) };
     }
   }
   await store.saveProfile(profile);

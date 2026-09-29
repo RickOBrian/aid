@@ -76,16 +76,28 @@ export type VariableValue =
 export interface IndexedVariable {
   key: string;
   name: string;
+  /**
+   * Видна ли переменная файлам с макетами. Скрытые от публикации (обычно
+   * примитивы Core) в перевод не идут: макеты ссылаются на семантику.
+   */
+  published: boolean;
   resolvedType: VariableResolvedDataType;
   description: string;
   scopes: string[];
-  /** Значение по id режима. */
+  /** Значение по id режима — как записано: число, цвет или ссылка. */
   valuesByMode: Record<string, VariableValue>;
+  /**
+   * Итоговое значение по id режима — ссылки пройдены до конца. Нужно для
+   * перевода по значению-улике и подсчёта контраста; null — цепочку не
+   * разрешить (ссылка за пределы файла или цикл).
+   */
+  resolvedByMode: Record<string, VariableValue | null>;
 }
 
 export interface IndexedCollection {
   key: string;
   name: string;
+  published: boolean;
   modes: Array<{ modeId: string; name: string }>;
   variables: IndexedVariable[];
 }
@@ -93,6 +105,8 @@ export interface IndexedCollection {
 export interface IndexedTextStyle {
   key: string;
   name: string;
+  /** Стили с «_» или «.» в начале имени Figma не публикует. */
+  published: boolean;
   description: string;
   fontFamily: string;
   fontStyle: string;
@@ -107,6 +121,8 @@ export interface IndexedTextStyle {
 export interface IndexedEffectStyle {
   key: string;
   name: string;
+  /** Стили с «_» или «.» в начале имени Figma не публикует. */
+  published: boolean;
   description: string;
   effects: string[];
 }
@@ -114,6 +130,8 @@ export interface IndexedEffectStyle {
 export interface IndexedPaintStyle {
   key: string;
   name: string;
+  /** Стили с «_» или «.» в начале имени Figma не публикует. */
+  published: boolean;
   description: string;
   paints: string[];
 }
