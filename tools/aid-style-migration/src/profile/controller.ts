@@ -203,25 +203,43 @@ export async function indexLinks(links: LibraryLink[], report: (title: string) =
       report(`${label}: имя файла`);
       const name = await fileName(file, token);
       const found: Array<{ kind: MaterialKind; index: MaterialIndex; stats: Record<string, number> }> = [];
+      // Токены и компоненты читаем порознь: отказ одного запроса (например,
+      // нет scope на переменные) не должен прятать остальное.
+      const reasons: string[] = [];
 
       if (link.kind === "tokens" || link.kind === "auto") {
-        const data = await fetchTokens(file, token, (t) => report(`${name}: ${t}`));
-        const stats = tokensStats(data);
-        if (link.kind === "tokens" || stats.variables + stats.textStyles + stats.effectStyles > 0) found.push({ kind: "tokens", index: { kind: "tokens", data }, stats });
-      }
-      if (link.kind !== "tokens") {
-        const data = await fetchComponents(file, token, (t) => report(`${name}: ${t}`));
-        const stats = componentsStats(data);
-        const count = stats.sets + stats.components;
-        if (link.kind !== "auto" || count > 0) {
-          const kind: MaterialKind = link.kind === "auto" ? (smallShare(data) >= 0.7 ? "icons" : "components") : link.kind;
-          found.push({ kind, index: kind === "icons" ? { kind: "icons", data } : { kind: "components", data }, stats });
+        try {
+          const { index: data, variablesError } = await fetchTokens(file, token, (t) => report(`${name}: ${t}`));
+          if (variablesError) reasons.push(`токены: переменные не прочитаны — ${variablesError}`);
+          const stats = tokensStats(data);
+          if (stats.variables + stats.textStyles + stats.effectStyles > 0) found.push({ kind: "tokens", index: { kind: "tokens", data }, stats });
+          else reasons.push("опубликованных переменных и стилей нет");
+        } catch (e) {
+          reasons.push(`токены: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
+      if (link.kind !== "tokens") {
+        try {
+          const data = await fetchComponents(file, token, (t) => report(`${name}: ${t}`));
+          const stats = componentsStats(data);
+          if (stats.sets + stats.components > 0) {
+            const kind: MaterialKind = link.kind === "auto" ? (smallShare(data) >= 0.7 ? "icons" : "components") : link.kind;
+            found.push({ kind, index: kind === "icons" ? { kind: "icons", data } : { kind: "components", data }, stats });
+          } else {
+            reasons.push("опубликованных компонентов нет");
+          }
+        } catch (e) {
+          reasons.push(`компоненты: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      }
+      // Пустой материал не сохраняем — он выглядит как прочитанный и путает.
       if (found.length === 0) {
-        errors.push(`«${name}»: не нашлось ни опубликованных токенов, ни компонентов`);
+        errors.push(`«${name}»: ${reasons.join("; ")}`);
         continue;
       }
+      // Прочитали не всё, что ожидали (например, стили есть, а переменные не отдались) — сказать.
+      if (reasons.length && link.kind === "tokens") errors.push(`«${name}»: ${reasons.join("; ")}`);
+      if (reasons.some((r) => r.startsWith("токены:")) && link.kind === "auto") errors.push(`«${name}»: ${reasons.filter((r) => r.startsWith("токены:")).join("; ")}`);
       for (const f of found) {
         const id = materialId(f.kind, name);
         await store.saveIndex(profile.id, id, f.index);
