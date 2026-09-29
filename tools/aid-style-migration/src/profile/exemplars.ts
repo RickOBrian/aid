@@ -45,15 +45,39 @@ function emptyIndex(): ExemplarIndex {
   };
 }
 
+interface VariableInfo {
+  key: string;
+  name: string;
+  collection: string;
+  remote: boolean;
+}
+
 interface Lookup {
-  variables: Map<string, { key: string; name: string } | null>;
+  variables: Map<string, VariableInfo | null>;
+  collections: Map<string, string>;
   styles: Map<string, { key: string; name: string } | null>;
 }
 
-async function variable(id: string, lookup: Lookup): Promise<{ key: string; name: string } | null> {
+async function collectionName(id: string, lookup: Lookup): Promise<string> {
+  if (!lookup.collections.has(id)) {
+    let name = "";
+    try {
+      name = (await figma.variables.getVariableCollectionByIdAsync(id))?.name ?? "";
+    } catch {
+      // Коллекция чужой библиотеки может быть недоступна — имя останется пустым.
+    }
+    lookup.collections.set(id, name);
+  }
+  return lookup.collections.get(id) ?? "";
+}
+
+async function variable(id: string, lookup: Lookup): Promise<VariableInfo | null> {
   if (!lookup.variables.has(id)) {
     const v = await figma.variables.getVariableByIdAsync(id);
-    lookup.variables.set(id, v ? { key: v.key, name: v.name } : null);
+    lookup.variables.set(
+      id,
+      v ? { key: v.key, name: v.name, collection: await collectionName(v.variableCollectionId, lookup), remote: v.remote } : null,
+    );
   }
   return lookup.variables.get(id) ?? null;
 }
@@ -99,7 +123,7 @@ async function visit(
     for (const alias of aliases) {
       const v = await variable(alias.id, lookup);
       if (!v) continue;
-      const entry = (index.variables[v.key] ??= { name: v.name, light: {}, dark: {} });
+      const entry = (index.variables[v.key] ??= { name: v.name, collection: v.collection, remote: v.remote, light: {}, dark: {} });
       bump<keyof UsageCounts & string>(screen.dark ? entry.dark : entry.light, use);
     }
   }
@@ -161,7 +185,7 @@ export async function indexExemplars(scope: ExemplarScope, report: (done: number
   }
   index.screensFound = screens.length;
   const chosen = sample(screens, EXEMPLAR_LIMIT);
-  const lookup: Lookup = { variables: new Map(), styles: new Map() };
+  const lookup: Lookup = { variables: new Map(), collections: new Map(), styles: new Map() };
 
   const prevSkip = figma.skipInvisibleInstanceChildren;
   figma.skipInvisibleInstanceChildren = true;

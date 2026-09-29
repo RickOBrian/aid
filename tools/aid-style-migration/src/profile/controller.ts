@@ -18,7 +18,8 @@ import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { THEME_ROLES } from "../lib/vocabulary";
 import * as store from "./storage";
-import type { MaterialIndex, MaterialKind, ProductProfile, ThemeRole, ThemeSetting } from "./types";
+import { exemplarVariableOrigin } from "./profile";
+import type { ExemplarIndex, MaterialIndex, MaterialKind, ProductProfile, ThemeRole, ThemeSetting } from "./types";
 
 export interface ThemeCandidate {
   key: string;
@@ -119,6 +120,7 @@ export async function indexOpenFile(
   for (const kind of kinds) {
     let index: MaterialIndex;
     let stats: Record<string, number>;
+    let notes: string[] | undefined;
     if (kind === "tokens") {
       report("токены и стили");
       const data = await indexTokens();
@@ -132,14 +134,16 @@ export async function indexOpenFile(
     } else if (kind === "exemplars") {
       const data = await indexExemplars(exemplarScope, (done, total) => report(`образцы: экран ${done} из ${total}`));
       index = { kind, data };
-      stats = { ...exemplarStats(data), fromProduct: await usedFromProduct(profile, Object.keys(data.variables)) };
+      const origin = await exemplarOrigin(profile, data);
+      stats = { ...exemplarStats(data), ...origin.stats };
+      notes = origin.notes;
     } else {
       // Стандарты — пакетом правил, позже.
       continue;
     }
     const id = materialId(kind, fileName);
     await store.saveIndex(profile.id, id, index);
-    profile = upsertMaterial(profile, { id, kind, fileName, source: "open-file", indexedAt: now(), stats }, now());
+    profile = upsertMaterial(profile, { id, kind, fileName, source: "open-file", indexedAt: now(), stats, notes }, now());
 
     // Тема предлагается автоматически, если её ещё нет; пользователь может поменять.
     if (kind === "tokens" && !profile.theme && index.kind === "tokens") {
@@ -150,15 +154,34 @@ export async function indexOpenFile(
   return state();
 }
 
-/** Сколько переменных из образцов нашлось в опубликованных токенах продукта — доверие к образцам. */
-async function usedFromProduct(profile: ProductProfile, keys: string[]): Promise<number> {
-  const published = new Set<string>();
+/**
+ * Откуда токены образцов: из продукта (тот же ключ), похоже на копию
+ * библиотеки продукта (то же имя, другой ключ), локальные переменные
+ * файла образцов, другие библиотеки. От этого зависит, насколько
+ * образцам верить на этапе 3.
+ */
+async function exemplarOrigin(profile: ProductProfile, data: ExemplarIndex): Promise<{ stats: Record<string, number>; notes: string[] }> {
+  const keys = new Set<string>();
+  const names = new Set<string>();
   for (const m of profile.materials.filter((x) => x.kind === "tokens")) {
     const index = await store.getIndex(profile.id, m.id);
     if (index?.kind !== "tokens") continue;
-    for (const c of index.data.collections) for (const v of c.variables) if (v.published) published.add(v.key);
+    for (const c of index.data.collections) {
+      for (const v of c.variables) {
+        if (!v.published) continue;
+        keys.add(v.key);
+        names.add(v.name);
+      }
+    }
   }
-  return keys.filter((k) => published.has(k)).length;
+  const origin = exemplarVariableOrigin(data, keys, names);
+  const notes = origin.foreignCollections.length
+    ? [`Не из продукта, по коллекциям: ${origin.foreignCollections.map(([name, n]) => `«${name || "без имени"}» — ${n}`).join(", ")}`]
+    : [];
+  return {
+    stats: { fromProduct: origin.fromProduct, sameNameOnly: origin.sameNameOnly, localInFile: origin.local, otherLibraries: origin.other },
+    notes,
+  };
 }
 
 export async function dropMaterial(id: string): Promise<ProfileState> {

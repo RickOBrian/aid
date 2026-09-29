@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildExport,
+  exemplarVariableOrigin,
   createProfile,
   materialId,
   missingMaterials,
@@ -126,5 +127,25 @@ describe("итоговые значения переменных", () => {
   });
   it("не ссылка — как есть", () => {
     expect(resolveValue(black, "day", byKey)).toEqual(black);
+  });
+});
+
+describe("откуда токены образцов", () => {
+  const usage = { light: {}, dark: {} };
+  const data = {
+    screens: 1, darkScreens: 0, screensFound: 1, nodes: 1, textStyles: {}, components: {},
+    unbound: { fills: 0, strokes: 0, texts: 0 }, textCases: {},
+    variables: {
+      k1: { name: "Bg/Primary", collection: "color-sem", remote: true, ...usage },
+      k2: { name: "Bg/Primary", collection: "color-sem", remote: true, ...usage },
+      k3: { name: "tx-bg/level 1", collection: "Color", remote: false, ...usage },
+      k4: { name: "map/road", collection: "Maps", remote: true, ...usage },
+    },
+  };
+
+  it("тот же ключ, то же имя, локальные, чужие", () => {
+    const o = exemplarVariableOrigin(data, new Set(["k1"]), new Set(["Bg/Primary"]));
+    expect([o.fromProduct, o.sameNameOnly, o.local, o.other]).toEqual([1, 1, 1, 1]);
+    expect(o.foreignCollections.map(([n]) => n).sort()).toEqual(["Color", "Maps", "color-sem"]);
   });
 });

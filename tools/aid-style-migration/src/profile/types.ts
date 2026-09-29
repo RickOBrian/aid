@@ -34,6 +34,8 @@ export interface Material {
   indexedAt: string;
   /** Что нашли — для карточки профиля: «переменных 161», «компонентов 9». */
   stats: Record<string, number>;
+  /** Пояснения к числам человеческим языком — например, откуда токены образцов. */
+  notes?: string[];
 }
 
 
@@ -185,7 +187,7 @@ export interface ExemplarIndex {
   screensFound: number;
   nodes: number;
   /** Ключ переменной → где встречается, отдельно в светлых и тёмных экранах. */
-  variables: Record<string, { name: string; light: UsageCounts; dark: UsageCounts }>;
+  variables: Record<string, { name: string; collection: string; remote: boolean; light: UsageCounts; dark: UsageCounts }>;
   textStyles: Record<string, { name: string; uses: number; fontSize: number; cases: Partial<Record<TextCaseKind, number>> }>;
   /** Компонент → сколько раз и каким регистром в нём набран текст (подписи кнопок и т. п.). */
   components: Record<string, { name: string; setName: string; uses: number; cases: Partial<Record<TextCaseKind, number>> }>;

@@ -6,6 +6,7 @@ import { hasDarkWord, hasLightWord, THEME_ROLES } from "../lib/vocabulary";
 import {
   PROFILE_EXPORT_FORMAT,
   PROFILE_EXPORT_VERSION,
+  type ExemplarIndex,
   type IndexedCollection,
   type Material,
   type MaterialIndex,
@@ -123,4 +124,29 @@ export function parseExport(text: string): ProfileExport | { error: string } {
     profile: { ...(p as ProductProfile), theme: p.theme ?? null, standardsMode: p.standardsMode ?? "reference" },
     indexes: d.indexes && typeof d.indexes === "object" ? d.indexes : {},
   };
+}
+
+/** Раскладка токенов образцов по происхождению — чистая часть exemplarOrigin. */
+export function exemplarVariableOrigin(
+  data: ExemplarIndex,
+  productKeys: Set<string>,
+  productNames: Set<string>,
+): { fromProduct: number; sameNameOnly: number; local: number; other: number; foreignCollections: Array<[string, number]> } {
+  let fromProduct = 0;
+  let sameNameOnly = 0;
+  let local = 0;
+  let other = 0;
+  const foreign = new Map<string, number>();
+  for (const [key, v] of Object.entries(data.variables)) {
+    if (productKeys.has(key)) {
+      fromProduct++;
+      continue;
+    }
+    if (productNames.has(v.name)) sameNameOnly++;
+    else if (!v.remote) local++;
+    else other++;
+    foreign.set(v.collection, (foreign.get(v.collection) ?? 0) + 1);
+  }
+  const foreignCollections = [...foreign.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  return { fromProduct, sameNameOnly, local, other, foreignCollections };
 }

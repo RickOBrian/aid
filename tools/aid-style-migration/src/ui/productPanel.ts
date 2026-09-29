@@ -20,6 +20,9 @@ const STAT_LABELS: Record<string, string> = {
   darkScreens: "из них тёмных",
   usedVariables: "токенов в ходу",
   fromProduct: "из них из токенов продукта",
+  sameNameOnly: "то же имя, другой ключ (копия библиотеки?)",
+  localInFile: "локальные в файле образцов",
+  otherLibraries: "из других библиотек",
   usedTextStyles: "стилей текста в ходу",
   usedComponents: "компонентов в ходу",
 };
@@ -56,6 +59,7 @@ function materialRow(m: Material, state: ProfileState): HTMLElement {
     h("div", { className: "ds-material__body" }, [
       h("div", {}, [badge(MATERIAL_LABELS[m.kind], "info"), ` ${m.fileName}`]),
       h("div", { className: "ds-screen__meta" }, meta),
+      ...(m.notes ?? []).map((n) => h("div", { className: "ds-screen__meta", text: n })),
       h("div", { className: "ds-screen__meta", text: `прочитан ${new Date(m.indexedAt).toLocaleString("ru-RU")}` }),
     ]),
     drop,
