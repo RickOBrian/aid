@@ -5,6 +5,7 @@
  */
 
 import type { Rgba } from "../map/color";
+import type { ApplyResult, Decisions } from "../map/apply";
 import type { Candidate, Confidence, Proposal, StyleMap } from "../map/types";
 import { badge, el, h, send } from "./dom";
 
@@ -74,7 +75,7 @@ function chooser(p: Proposal): HTMLElement | null {
   select.value = choice.get(p.sourceId) ?? p.target?.key ?? "";
   select.addEventListener("change", () => {
     choice.set(p.sourceId, select.value);
-    setStatus("Выбор отмечен — сохранение решений и применение появятся на этапе 3b");
+    setStatus("Выбор отмечен — нажмите «Применить к «Стало»», чтобы увидеть на макетах");
   });
   return select;
 }
@@ -124,7 +125,7 @@ function render(): void {
         row(
           [
             h("div", { className: "ds-map-line" }, [swatch(source.light, "светлая"), swatch(source.dark, "тёмная"), focusLink(source.label, source.examples[0])]),
-            h("div", { className: "ds-screen__meta", text: `×${source.count}${inside}` }),
+            h("div", { className: "ds-screen__meta", text: `×${source.count}${inside} · ${source.origin}` }),
           ],
           [
             h("div", { className: "ds-map-line" }, [swatch(target?.light, "светлая"), swatch(target?.dark, "тёмная"), h("span", { text: proposal.target?.name ?? "нет токена" })]),
@@ -167,8 +168,40 @@ function render(): void {
   );
 }
 
+/** Решения для применения: предложение карты или ручной выбор; пустые — не трогаем. */
+function decisions(map: StyleMap): Decisions {
+  const pick = (items: Array<{ proposal: Proposal }>) =>
+    Object.fromEntries(
+      items
+        .map(({ proposal }) => [proposal.sourceId, choice.get(proposal.sourceId) ?? proposal.target?.key] as const)
+        .filter((x): x is readonly [string, string] => Boolean(x[1])),
+    );
+  return {
+    colors: pick(map.colors),
+    texts: pick(map.texts),
+    radii: pick(map.radii),
+    spacing: pick(map.spacing),
+    keepUpper: el<HTMLInputElement>("keep-upper").checked,
+  };
+}
+
+function busy(on: boolean): void {
+  for (const id of ["map-build", "map-apply", "map-remove"]) el<HTMLButtonElement>(id).disabled = on;
+}
+
 export function initMap(status: (text: string) => void): void {
   setStatus = status;
+  el("map-apply").addEventListener("click", () => {
+    if (!current) return;
+    busy(true);
+    setStatus("Применяю карту к «Стало»…");
+    send({ type: "style-apply", decisions: decisions(current) });
+  });
+  el("map-remove").addEventListener("click", () => {
+    busy(true);
+    setStatus("Убираю «Стало»…");
+    send({ type: "style-remove" });
+  });
   el("map-build").addEventListener("click", () => {
     el<HTMLButtonElement>("map-build").disabled = true;
     setStatus("Строю карту стиля…");
@@ -189,9 +222,21 @@ export const mapHandlers = {
     choice.clear();
     el<HTMLButtonElement>("map-build").disabled = false;
     render();
+    el("apply-box").hidden = false;
     setStatus("Карта стиля готова — ничего не изменено");
   },
+  applied(r: ApplyResult): void {
+    busy(false);
+    const failed = r.failed ? `, не удалось ${r.failed}: ${r.failures.join("; ")}` : "";
+    setStatus(
+      `Готово за ${(r.ms / 1000).toFixed(1)} с: экранов ${r.screens}, цветов ${r.colors}, текстов ${r.texts}, радиусов ${r.radii}, отступов ${r.spacing}${failed}. Смотрите «AID Migration».`,
+    );
+  },
+  removed(rows: number): void {
+    busy(false);
+    setStatus(rows ? `«Стало» убрано, плиток ${rows}` : "Собранных экранов нет");
+  },
   failed(): void {
-    el<HTMLButtonElement>("map-build").disabled = false;
+    busy(false);
   },
 };

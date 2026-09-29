@@ -15,8 +15,12 @@ export const KEY_ROLE = "sm:role";
 export const KEY_SOURCE = "sm:source";
 /** У настоящей тёмной пары — id исходного светлого экрана: так карта стиля находит двойника. */
 export const KEY_PAIR = "sm:pair";
+/** Ячейка — картинка-скриншот: «Стало» для неё не строится. */
+export const KEY_IMAGE = "sm:image";
+/** Ячейка «Стало · тёмная» — копия «Стало · светлая», её место в плитке. */
+export const KEY_SLOT = "sm:slot";
 
-type Role = "before-light" | "before-dark";
+export type Role = "before-light" | "before-dark" | "after-light" | "after-dark";
 
 const FONT_REGULAR: FontName = { family: "Inter", style: "Regular" };
 const FONT_MEDIUM: FontName = { family: "Inter", style: "Medium" };
@@ -80,6 +84,9 @@ interface Cell {
   mode?: { collection: VariableCollection; modeId: string };
   /** id светлого исходника, если ячейка — его настоящая тёмная пара. */
   pairOf?: string;
+  image?: boolean;
+  /** Только место и подпись: копию положит применение (этап 3b). */
+  slot?: boolean;
 }
 
 type Theme = Awaited<ReturnType<typeof findThemeCollection>>;
@@ -89,12 +96,12 @@ type Theme = Awaited<ReturnType<typeof findThemeCollection>>;
  * будет перевод (замечание Principal Designer: одинаковые «было» и
  * «стало» и пустая колонка вводят в заблуждение и удваивают объём).
  */
-async function rowCells(row: AssembleRow, theme: Theme): Promise<Cell[]> {
+async function rowCells(row: AssembleRow, theme: Theme, withAfter: boolean): Promise<Cell[]> {
   const cells: Cell[] = [];
   const image = await node(row.imageId);
   const light = await node(row.lightId);
   const dark = await node(row.darkId);
-  if (image) cells.push({ source: image, role: "before-light", caption: "Было · картинка" });
+  if (image) cells.push({ source: image, role: "before-light", caption: "Было · картинка", image: true });
   if (light) cells.push({ source: light, role: "before-light", caption: "Было" });
   if (dark) {
     cells.push({ source: dark, role: "before-dark", caption: "Было · тёмная", pairOf: light?.id });
@@ -106,10 +113,16 @@ async function rowCells(row: AssembleRow, theme: Theme): Promise<Cell[]> {
       mode: { collection: theme.collection, modeId: theme.darkModeId },
     });
   }
+  const base = light ?? dark;
+  if (withAfter && base && !image) {
+    cells.push({ source: base, role: "after-light", caption: "Стало · светлая" });
+    cells.push({ source: base, role: "after-dark", caption: "Стало · тёмная", slot: true });
+  }
   return cells;
 }
 
-function place(section: SectionNode, cell: Cell, x: number, y: number): SceneNode {
+function place(section: SectionNode, cell: Cell, x: number, y: number): SceneNode | null {
+  if (cell.slot) return null;
   const copy = cell.source.clone();
   section.appendChild(copy);
   copy.x = x;
@@ -119,6 +132,7 @@ function place(section: SectionNode, cell: Cell, x: number, y: number): SceneNod
   copy.setPluginData(KEY_SOURCE, cell.source.id);
   if (cell.mode) copy.setExplicitVariableModeForCollection(cell.mode.collection, cell.mode.modeId);
   if (cell.pairOf) copy.setPluginData(KEY_PAIR, cell.pairOf);
+  if (cell.image) copy.setPluginData(KEY_IMAGE, "1");
   return copy;
 }
 
@@ -131,7 +145,7 @@ async function buildSection(
   progress: () => void,
 ): Promise<SectionNode> {
   const theme = request.darkFromTheme ? await findThemeCollection() : null;
-  const rows = await Promise.all(page.rows.map((r) => rowCells(r, theme)));
+  const rows = await Promise.all(page.rows.map((r) => rowCells(r, theme, Boolean(request.withAfter))));
   const layout = layoutTiles(
     rows.map((cells) => cells.map((c) => ({ width: c.source.width, height: c.source.height }))),
     DEFAULT_LAYOUT,
@@ -163,6 +177,47 @@ async function buildSection(
     await new Promise((resolve) => setTimeout(resolve, 0));
   }
   return section;
+}
+
+/**
+ * План строк из уже собранной страницы — чтобы пересобрать с «Стало», не
+ * повторяя поиск экранов. Исходники берутся по меткам копий.
+ */
+export async function plannedFromWorkPage(): Promise<{ pages: AssemblePage[]; darkFromTheme: boolean }> {
+  const work = figma.root.children.find((p) => p.name === WORK_PAGE_NAME);
+  if (!work) return { pages: [], darkFromTheme: false };
+  await work.loadAsync();
+  let darkFromTheme = false;
+  const pages: AssemblePage[] = [];
+  const seen = new Set<string>();
+  for (const section of await sectionsOnWorkPage(work)) {
+    // Несколько версий одной страницы — берём первую: пересборка заменит все.
+    if (seen.has(section.getPluginData(KEY_SECTION))) continue;
+    seen.add(section.getPluginData(KEY_SECTION));
+    const cells = section.children.filter((n) => n.getPluginData(KEY_ROLE));
+    const lights = cells.filter((n) => n.getPluginData(KEY_ROLE) === "before-light");
+    const lightSources = new Set(lights.map((n) => n.getPluginData(KEY_SOURCE)));
+    const pairs = new Map(cells.filter((n) => n.getPluginData(KEY_PAIR)).map((n) => [n.getPluginData(KEY_PAIR), n.getPluginData(KEY_SOURCE)]));
+    const rows: AssembleRow[] = lights.map((n) => {
+      const id = n.getPluginData(KEY_SOURCE);
+      return n.getPluginData(KEY_IMAGE) ? { imageId: id } : { lightId: id, darkId: pairs.get(id) };
+    });
+    for (const n of cells.filter((c) => c.getPluginData(KEY_ROLE) === "before-dark")) {
+      const source = n.getPluginData(KEY_SOURCE);
+      if (lightSources.has(source)) darkFromTheme = true; // копия светлого в тёмном режиме темы исходника
+      else if (!n.getPluginData(KEY_PAIR)) rows.push({ darkId: source }); // тёмный без пары
+    }
+    // Порядок — как на странице: сверху вниз, слева направо.
+    const pos = new Map(cells.map((n) => [n.getPluginData(KEY_SOURCE), n]));
+    rows.sort((a, b) => {
+      const na = pos.get(a.lightId ?? a.imageId ?? a.darkId ?? "");
+      const nb = pos.get(b.lightId ?? b.imageId ?? b.darkId ?? "");
+      if (!na || !nb) return 0;
+      return Math.abs(na.y - nb.y) > 40 ? na.y - nb.y : na.x - nb.x;
+    });
+    pages.push({ pageId: section.getPluginData(KEY_SECTION), pageName: section.name.replace(/^Сборка · /, "").replace(/ · версия \d+$/, ""), rows });
+  }
+  return { pages, darkFromTheme };
 }
 
 export async function assemble(request: AssembleRequest, report: BuildProgress): Promise<BuildResult> {

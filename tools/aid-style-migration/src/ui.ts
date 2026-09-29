@@ -89,6 +89,12 @@ window.onmessage = (event: MessageEvent) => {
     case "style-map":
       mapHandlers.map(message.map);
       break;
+    case "style-applied":
+      mapHandlers.applied(message.result);
+      break;
+    case "style-removed":
+      mapHandlers.removed(message.rows);
+      break;
     case "style-map-progress":
       setStatus(`Карта стиля: ${message.title}…`);
       break;

@@ -5,12 +5,14 @@
  * разложить копии на странице «AID Migration» плитками «было».
  * Этап 2 — профиль продукта: материалы (открытый файл и ссылки), тема.
  * Этап 3a — карта стиля: анализ перевода на токены продукта, без изменений.
+ * Этап 3b — применение карты к копиям «Стало» (светлая и тёмная).
  * Исходные страницы не меняются. Проверки API этапа 0 — в «Диагностике».
  */
 
 import { assemble, disassemble, existingSections } from "./assemble/build";
 import { pairFromSelection, scan, thumbnail } from "./assemble/collect";
 import { WORK_PAGE_NAME } from "./lib/workPage";
+import { applyStyle, removeAfter } from "./map/apply";
 import { buildStyleMap } from "./map/styleMap";
 import type { CodeToUi, UiToCode } from "./messages";
 import { runReadProbes } from "./probes/readProbes";
@@ -154,6 +156,17 @@ async function handle(message: UiToCode): Promise<void> {
     case "style-map": {
       const map = await buildStyleMap((title) => post({ type: "style-map-progress", title }));
       post({ type: "style-map", map });
+      return;
+    }
+
+    case "style-apply": {
+      const result = await applyStyle(message.decisions, (title) => post({ type: "style-map-progress", title }));
+      post({ type: "style-applied", result });
+      return;
+    }
+    case "style-remove": {
+      const rows = await removeAfter((title) => post({ type: "style-map-progress", title }));
+      post({ type: "style-removed", rows });
       return;
     }
 

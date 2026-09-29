@@ -15,6 +15,7 @@ import { isSystemName } from "../lib/system";
 import { WORK_PAGE_NAME } from "../lib/workPage";
 import { fillUse, visibleCase, type TextCaseKind, type UseKind } from "../profile/usage";
 import { toHex, type Rgba } from "./color";
+import { colorAtomId, colorKey, textAtomId, valueAtomId } from "./keys";
 import { weightOf } from "./typography";
 import type { SourceColor, SourceText, SourceValue } from "./types";
 
@@ -70,6 +71,23 @@ class Collector {
     return null;
   }
 
+  private collections = new Map<string, string>();
+
+  /** Откуда переменная исходника: коллекция и локальная или из библиотеки — у одноимённых разное. */
+  private async origin(v: Variable): Promise<string> {
+    if (!this.collections.has(v.variableCollectionId)) {
+      let name = "";
+      try {
+        name = (await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId))?.name ?? "";
+      } catch {
+        // коллекция чужой библиотеки может быть недоступна
+      }
+      this.collections.set(v.variableCollectionId, name);
+    }
+    const name = this.collections.get(v.variableCollectionId) || "коллекция неизвестна";
+    return `${name} · ${v.remote ? "из библиотеки" : "локальная"}`;
+  }
+
   private static solids(node: SceneNode, field: "fills" | "strokes"): SolidPaint[] {
     if (!(field in node)) return [];
     const paints = (node as unknown as Record<string, unknown>)[field];
@@ -78,23 +96,24 @@ class Collector {
 
   private async addColor(node: SceneNode, paint: SolidPaint, use: UseKind, ctx: Ctx, twinPaint: SolidPaint | undefined): Promise<void> {
     let light: Rgba = { ...paint.color, a: paint.opacity ?? 1 };
-    let key = toHex(light);
-    let label = key;
     let dark: Rgba | null = twinPaint ? { ...twinPaint.color, a: twinPaint.opacity ?? 1 } : null;
     const alias = paint.boundVariables?.color;
+    const v = alias ? await this.variable(alias.id) : null;
+    const key = colorKey(paint, v);
+    let label = toHex(light);
+    let origin = "без токена";
     if (alias) {
-      const v = await this.variable(alias.id);
       if (v) {
-        key = v.key || v.id;
         label = v.name;
+        origin = await this.origin(v);
         const resolved = v.resolveForConsumer(node).value;
         if (resolved && typeof resolved === "object" && "r" in resolved) light = { r: resolved.r, g: resolved.g, b: resolved.b, a: ("a" in resolved ? resolved.a : 1) * (paint.opacity ?? 1) };
         if (!dark && this.theme && v.variableCollectionId === this.theme.collectionId) dark = await this.darkValue(v);
       }
     }
     if (dark) this.darkEvidence++;
-    const id = `${key}|${use}`;
-    const entry = this.colors.get(id) ?? { id, key, label, use, light, dark, count: 0, inInstances: 0, examples: [] };
+    const id = colorAtomId(key, use);
+    const entry = this.colors.get(id) ?? { id, key, label, origin, use, light, dark, count: 0, inInstances: 0, examples: [] };
     entry.count++;
     if (ctx.inInstance) entry.inInstances++;
     if (!entry.dark && dark) entry.dark = dark;
@@ -104,7 +123,7 @@ class Collector {
 
   private addValue(map: Map<number, SourceValue>, value: number, node: SceneNode): void {
     const v = Math.round(value * 10) / 10;
-    const entry = map.get(v) ?? { id: String(v), value: v, count: 0, examples: [] };
+    const entry = map.get(v) ?? { id: valueAtomId(value), value: v, count: 0, examples: [] };
     entry.count++;
     if (entry.examples.length < EXAMPLES) entry.examples.push(node.id);
     map.set(v, entry);
@@ -119,7 +138,7 @@ class Collector {
     const size = node.fontSize;
     const lh = node.lineHeight === figma.mixed ? null : node.lineHeight.unit === "PIXELS" ? node.lineHeight.value : null;
     const kase = visibleCase(node.characters, typeof node.textCase === "string" ? node.textCase : "ORIGINAL");
-    const id = `${font.family}|${font.style}|${size}`;
+    const id = textAtomId(font, size);
     const entry = this.texts.get(id) ?? {
       id,
       label: `${font.family} ${font.style} ${size}`,

@@ -29,6 +29,9 @@ export function weightOf(style: string): number {
 /** Меньше этого — стиль продукта в образцах почти не встречается и в выбор не идёт. */
 const MIN_POOL = 4;
 
+/** Уровень, который встречается не чаще — возможная случайность. */
+const RARE = 2;
+
 function cost(s: SourceText, t: TargetText): number {
   const weight = Math.abs(s.weight - t.weight) / 300;
   return Math.log(s.count + 1) * (ratioCost(s.size, t.size) + 0.35 * weight);
@@ -51,10 +54,13 @@ export function mapTexts(sources: SourceText[], targets: TargetText[]): Proposal
   // Слить два разных уровня исходника — потеря иерархии; чем сильнее они
   // различались, тем дороже. Так Title 34 и Title 30 не схлопнутся, пока в
   // продукте есть куда их развести.
+  // Редкий уровень (≤ 2 раз) — скорее случайность, его слияние не штрафуем:
+  // иначе он раздвигает шкалу и тянет соседей вверх (48 → 62 на Flot Tasks).
   const merge = (i: number) => {
     const a = src[i - 1];
     const b = src[i];
-    const distinct = ratioCost(a.size, b.size) + Math.abs(a.weight - b.weight) / 300;
+    if (Math.min(a.count, b.count) <= RARE) return 0;
+    const distinct = ratioCost(a.size, b.size) + (0.3 * Math.abs(a.weight - b.weight)) / 300;
     return 4 * distinct * Math.log(Math.min(a.count, b.count) + 1);
   };
   const assigned = monotoneAssign(src.length, pool.length, (i, j) => cost(src[i], pool[j]), merge);
@@ -67,7 +73,7 @@ export function mapTexts(sources: SourceText[], targets: TargetText[]): Proposal
     }
     reasons.push(`уровень ${i + 1} из ${src.length} в исходнике → ${t.name} (${t.size}/${t.weight})`);
     if (used.length >= MIN_POOL) reasons.push("выбор из стилей, которые продукт использует в образцах");
-    if (s.count <= 2) reasons.push(`встречается ${s.count} раз — возможно, случайность; можно свести к соседнему уровню`);
+    if (s.count <= RARE) reasons.push(`встречается ${s.count} раз — возможно, случайность; можно свести к соседнему уровню`);
     if (s.visibleCase === "upper" && t.textCase !== "UPPER") {
       reasons.push(`в исходнике текст ${CASE_LABEL.upper}, у стиля продукта капса нет — решить при применении`);
     }

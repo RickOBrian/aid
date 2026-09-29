@@ -1,5 +1,6 @@
 import type { AssembleRequest, ScanResult, ScanScope } from "./assemble/types";
 import type { ProbeKind, ProbeResult } from "./probes/types";
+import type { ApplyResult, Decisions } from "./map/apply";
 import type { StyleMap } from "./map/types";
 import type { ExemplarScope } from "./profile/usage";
 import type { FileSurvey } from "./profile/indexFile";
@@ -32,6 +33,8 @@ export type UiToCode =
   | { type: "links-index"; links: LibraryLink[] }
   | { type: "links-refresh" }
   | { type: "style-map" }
+  | { type: "style-apply"; decisions: Decisions }
+  | { type: "style-remove" }
   | { type: "pat-set"; token: string }
   | { type: "close" };
 
@@ -54,5 +57,7 @@ export type CodeToUi =
   | { type: "index-progress"; title: string }
   | { type: "style-map"; map: StyleMap }
   | { type: "style-map-progress"; title: string }
+  | { type: "style-applied"; result: ApplyResult }
+  | { type: "style-removed"; rows: number }
   | { type: "notice"; message: string }
   | { type: "error"; message: string };

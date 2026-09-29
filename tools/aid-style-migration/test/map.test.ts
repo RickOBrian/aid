@@ -13,7 +13,7 @@ const hex = (h: string, a = 1): Rgba => ({
 });
 
 function src(id: string, use: SourceColor["use"], color: string, count = 10, dark: string | null = null): SourceColor {
-  return { id, key: id, label: color, use, light: hex(color), dark: dark ? hex(dark) : null, count, inInstances: 0, examples: [] };
+  return { id, key: id, label: color, origin: "", use, light: hex(color), dark: dark ? hex(dark) : null, count, inInstances: 0, examples: [] };
 }
 
 function tgt(name: string, light: string, dark: string, scopes: string[] = []): TargetColor {
@@ -200,5 +200,15 @@ describe("радиусы и отступы", () => {
     );
     expect(out[0]).toMatchObject({ confidence: "high", target: { name: "radius-8" } });
     expect(out[1].reasons[0]).toContain("14 →");
+  });
+});
+
+describe("иерархия текста на данных Flot Tasks", () => {
+  const product = [tt("Title Price", 62, "Medium"), tt("Headline 1", 44, "Medium"), tt("Headline 3", 30, "Bold"), tt("Title Large", 24, "Medium"), tt("Body 1", 18, "Regular")];
+  it("крупный кегль не растёт из-за единичного соседа", () => {
+    const out = mapTexts([st("black48", 48, "Black", 7), st("bold34", 34, "Bold", 1), st("sb24", 24, "SemiBold", 107)], product);
+    const pick = (id: string) => out.find((p) => p.sourceId === id)!.target!.name;
+    expect(pick("black48")).toBe("Headline 1");
+    expect(pick("sb24")).toBe("Title Large");
   });
 });

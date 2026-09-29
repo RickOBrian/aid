@@ -58,4 +58,6 @@ export interface AssembleRequest {
   pages: AssemblePage[];
   darkFromTheme: boolean;
   onConflict?: ConflictPolicy;
+  /** Добавить в плитки «Стало · светлая» и место под «Стало · тёмная» (этап 3b). */
+  withAfter?: boolean;
 }

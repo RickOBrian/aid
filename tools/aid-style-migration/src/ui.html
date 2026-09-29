@@ -647,6 +647,20 @@
           <div class="ds-actions">
             <button class="ds-btn ds-btn-primary" id="map-build" type="button">Построить карту</button>
           </div>
+          <div id="apply-box" hidden>
+            <p class="ds-hint">
+              Применить — в плитках появятся «Стало · светлая» и «Стало · тёмная»: копии, переведённые по
+              карте (с вашими правками в списке). «Было» и исходники не меняются.
+            </p>
+            <label class="ds-check">
+              <input type="checkbox" id="keep-upper" checked />
+              <span>Сохранять капс исходника, если у стиля продукта его нет</span>
+            </label>
+            <div class="ds-actions">
+              <button class="ds-btn ds-btn-primary" id="map-apply" type="button">Применить к «Стало»</button>
+              <button class="ds-btn" id="map-remove" type="button">Убрать «Стало»</button>
+            </div>
+          </div>
           <p class="ds-hint" id="map-summary"></p>
           <div class="ds-segment" role="group" aria-label="Фильтр" id="map-filter" hidden>
             <button type="button" data-filter="all" aria-pressed="true">Все</button>
