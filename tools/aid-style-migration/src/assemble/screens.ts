@@ -3,6 +3,8 @@
  * решение и причина, которую увидит пользователь.
  */
 
+import { isAnnotationName } from "../lib/annotations";
+
 export interface NodeFacts {
   id: string;
   name: string;
@@ -41,6 +43,7 @@ export function isDeviceSized(width: number, height: number): boolean {
 
 export function classify(node: NodeFacts): Classified {
   if (!node.visible) return { kind: "skip", reason: "скрыт" };
+  if (isAnnotationName(node.name)) return { kind: "skip", reason: "аннотация или пояснение" };
   const sized = isDeviceSized(node.width, node.height);
   if (node.imageOnly && IMAGE_TYPES.has(node.type)) {
     return sized

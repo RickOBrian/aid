@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { findDarkPairs, isDark, relativeLuminance, type ScreenFacts } from "../src/assemble/darkPairs";
 import { DEFAULT_LAYOUT, layoutTiles } from "../src/assemble/layout";
 import { classify, type NodeFacts } from "../src/assemble/screens";
+import { isAnnotationName, outside } from "../src/lib/annotations";
 import { hasDarkWord, stripThemeWords } from "../src/lib/vocabulary";
 
 function node(over: Partial<NodeFacts> = {}): NodeFacts {
@@ -130,5 +131,26 @@ describe("раскладка", () => {
     const layout = layoutTiles([[phone]]);
     expect(layout.perLine).toBe(1);
     expect(layout.tiles).toHaveLength(1);
+  });
+});
+
+describe("аннотации — не макет", () => {
+  it("узнаёт по имени на двух языках и служебные описания", () => {
+    for (const name of ["Annotation", "Notes / Flow", "Redline", "Spec", "Аннотация", "Заметка дизайнера", "Пояснение", "_description/info_row", "Техническая схема"]) {
+      expect(isAnnotationName(name)).toBe(true);
+    }
+  });
+  it("не трогает обычные слои", () => {
+    for (const name of ["Button", "Notification", "Header", "Text", "Nav Bar", "Карточка заказа"]) {
+      expect(isAnnotationName(name)).toBe(false);
+    }
+  });
+  it("экран с именем аннотации не собирается", () => {
+    expect(classify(node({ name: "Annotation / Login" })).reason).toBe("аннотация или пояснение");
+  });
+  it("целиком вне экрана — не макет, пересекает — макет", () => {
+    const screenBox = { x: 0, y: 0, width: 390, height: 844 };
+    expect(outside({ x: 420, y: 10, width: 200, height: 40 }, screenBox)).toBe(true);
+    expect(outside({ x: 380, y: 10, width: 200, height: 40 }, screenBox)).toBe(false);
   });
 });

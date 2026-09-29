@@ -25,6 +25,7 @@ const STAT_LABELS: Record<string, string> = {
   otherLibraries: "из других библиотек",
   usedTextStyles: "стилей текста в ходу",
   usedComponents: "компонентов в ходу",
+  annotationsSkipped: "аннотаций и выносок пропущено",
 };
 
 const ROLE_LABELS: Record<ThemeRole, string> = {
@@ -52,8 +53,20 @@ function materialRow(m: Material, state: ProfileState): HTMLElement {
   if (status === true) meta.push(badge("подключена в этом файле", "success"));
   if (status === false) meta.push(badge("не подключена в этом файле", "warning"));
 
+  // В два шага: материал с индексом легко убрать случайно, а собирать его заново — долго.
   const drop = h("button", { className: "ds-link", text: "убрать", type: "button" });
-  drop.addEventListener("click", () => send({ type: "material-remove", id: m.id }));
+  drop.addEventListener("click", () => {
+    if (!drop.dataset.armed) {
+      drop.dataset.armed = "1";
+      drop.textContent = "точно убрать?";
+      setTimeout(() => {
+        delete drop.dataset.armed;
+        drop.textContent = "убрать";
+      }, 4000);
+      return;
+    }
+    send({ type: "material-remove", id: m.id });
+  });
 
   return h("div", { className: "ds-material" }, [
     h("div", { className: "ds-material__body" }, [

@@ -97,9 +97,12 @@ async function handle(message: UiToCode): Promise<void> {
     case "profile-load":
       post({ type: "profile-state", state: await profiles.state() });
       return;
-    case "profile-create":
-      post({ type: "profile-state", state: await profiles.create(message.name) });
+    case "profile-create": {
+      const result = await profiles.create(message.name);
+      if ("error" in result) post({ type: "notice", message: result.error });
+      post({ type: "profile-state", state: await profiles.state() });
       return;
+    }
     case "profile-select":
       post({ type: "profile-state", state: await profiles.select(message.id) });
       return;

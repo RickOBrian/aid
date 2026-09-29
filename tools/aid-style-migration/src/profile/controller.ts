@@ -89,8 +89,14 @@ export async function state(): Promise<ProfileState> {
   };
 }
 
-export async function create(name: string): Promise<ProfileState> {
+export async function create(name: string): Promise<ProfileState | { error: string }> {
   const profiles = await store.getProfiles();
+  // Два продукта с одним именем путают: не видно, в какой из них ушёл материал.
+  const same = profiles.find((p) => p.name.trim().toLowerCase() === name.trim().toLowerCase());
+  if (same) {
+    await store.setActiveProfileId(same.id);
+    return { error: `Продукт «${same.name}» уже есть — он выбран` };
+  }
   const profile = createProfile(name, profiles.map((p) => p.id), now());
   await store.saveProfile(profile);
   await store.setActiveProfileId(profile.id);

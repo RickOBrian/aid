@@ -8,6 +8,7 @@
  */
 
 import { expand, facts, type Root } from "../assemble/collect";
+import { isAnnotationName, outside } from "../lib/annotations";
 import { isDark } from "../assemble/darkPairs";
 import { classify } from "../assemble/screens";
 import type { ExemplarIndex, UsageCounts } from "./types";
@@ -37,6 +38,7 @@ function emptyIndex(): ExemplarIndex {
     darkScreens: 0,
     screensFound: 0,
     nodes: 0,
+    annotationsSkipped: 0,
     variables: {},
     textStyles: {},
     components: {},
@@ -96,13 +98,27 @@ function solidPaints(value: unknown): SolidPaint[] {
 
 type Aliases = Record<string, VariableAlias | VariableAlias[] | undefined>;
 
-async function visit(
-  node: SceneNode,
-  screen: { width: number; height: number; dark: boolean },
-  index: ExemplarIndex,
-  lookup: Lookup,
-): Promise<void> {
+interface ScreenInfo {
+  width: number;
+  height: number;
+  dark: boolean;
+  box: Rect | null;
+}
+
+async function visit(node: SceneNode, screen: ScreenInfo, index: ExemplarIndex, lookup: Lookup, root = false): Promise<void> {
   if (!node.visible) return;
+  // Только макет: аннотации, пояснения и то, что целиком вне экрана, не считаем.
+  if (!root && (isAnnotationName(node.name) || outside(node.absoluteBoundingBox, screen.box))) {
+    index.annotationsSkipped++;
+    return;
+  }
+  // Инстанс из кита аннотаций — тоже не макет; проверяем до подсчёта привязок.
+  const main = node.type === "INSTANCE" ? await node.getMainComponentAsync() : null;
+  const setName = main?.parent?.type === "COMPONENT_SET" ? main.parent.name : "";
+  if (main && (isAnnotationName(main.name) || isAnnotationName(setName))) {
+    index.annotationsSkipped++;
+    return;
+  }
   index.nodes++;
 
   // Привязки переменных.
@@ -159,7 +175,6 @@ async function visit(
   if (node.type === "INSTANCE") {
     // Внутрь инстанса не идём: там устройство компонента, а не решения
     // автора образца. Считаем, какой компонент и сколько раз.
-    const main = await node.getMainComponentAsync();
     if (main) {
       const set = main.parent?.type === "COMPONENT_SET" ? main.parent : null;
       const key = set ? set.key : main.key;
@@ -194,7 +209,7 @@ export async function indexExemplars(scope: ExemplarScope, report: (done: number
       const { node, dark } = chosen[i];
       index.screens++;
       if (dark) index.darkScreens++;
-      await visit(node, { width: node.width, height: node.height, dark }, index, lookup);
+      await visit(node, { width: node.width, height: node.height, dark, box: node.absoluteBoundingBox }, index, lookup, true);
       report(i + 1, chosen.length);
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
@@ -211,5 +226,6 @@ export function exemplarStats(index: ExemplarIndex): Record<string, number> {
     usedVariables: Object.keys(index.variables).length,
     usedTextStyles: Object.keys(index.textStyles).length,
     usedComponents: Object.keys(index.components).length,
+    annotationsSkipped: index.annotationsSkipped,
   };
 }

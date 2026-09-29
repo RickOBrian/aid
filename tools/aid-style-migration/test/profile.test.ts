@@ -133,7 +133,7 @@ describe("итоговые значения переменных", () => {
 describe("откуда токены образцов", () => {
   const usage = { light: {}, dark: {} };
   const data = {
-    screens: 1, darkScreens: 0, screensFound: 1, nodes: 1, textStyles: {}, components: {},
+    screens: 1, darkScreens: 0, screensFound: 1, nodes: 1, annotationsSkipped: 0, textStyles: {}, components: {},
     unbound: { fills: 0, strokes: 0, texts: 0 }, textCases: {},
     variables: {
       k1: { name: "Bg/Primary", collection: "color-sem", remote: true, ...usage },

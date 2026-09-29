@@ -186,6 +186,8 @@ export interface ExemplarIndex {
   darkScreens: number;
   screensFound: number;
   nodes: number;
+  /** Аннотации, пояснения, выноски вне экрана — пропущены, в статистику не вошли. */
+  annotationsSkipped: number;
   /** Ключ переменной → где встречается, отдельно в светлых и тёмных экранах. */
   variables: Record<string, { name: string; collection: string; remote: boolean; light: UsageCounts; dark: UsageCounts }>;
   textStyles: Record<string, { name: string; uses: number; fontSize: number; cases: Partial<Record<TextCaseKind, number>> }>;
