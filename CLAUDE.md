@@ -71,7 +71,7 @@ Q-11 в `docs/standards-alpha/OPEN-QUESTIONS.md`.
 
 ## Три продукта — три чата
 
-Работа идёт в трёх отдельных чатах, у каждого своя папка (git worktree) —
+Работа идёт в отдельных чатах, по одному на продукт, у каждого своя папка (git worktree) —
 чтобы один чат не переключил ветку под другим посреди работы. Стандарты —
 третий продукт: своего деплоя у них нет, пользователи видят их через
 Presentbook.
@@ -81,8 +81,9 @@ Presentbook.
 | Стандарты ДС | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
 | Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
 | Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
+| AID Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
 
-Правила для всех трёх:
+Правила для всех чатов:
 
 - **Своя папка — только своя.** Не переключать ветки и не править файлы в
   чужой папке. Новую ветку начинать от свежего `origin/main`:
@@ -95,8 +96,9 @@ Presentbook.
 - **Правила живут в репозитории, а не в памяти чата.** Память привязана к
   папке, и другие чаты её не видят. Правило, которое должно пережить
   сессию, записывается в `CLAUDE.md` своего продукта или в журнал.
-- CI проверяет все три продукта на каждом PR (`.github/workflows/checks.yml`):
-  зелёный PR не ломает чужой продукт по тестам и сборке.
+- CI проверяет продукты на каждом PR (`.github/workflows/checks.yml`):
+  зелёный PR не ломает чужой продукт по тестам и сборке. Новый продукт
+  попадает в CI вместе с первым кодом, который есть чем проверять.
 
 ## Стыки между продуктами
 
@@ -109,6 +111,7 @@ Presentbook.
 | Гайды в Presentbook: `pages/aid-portal/guide-registry.json` → `sourcePath` в `skills/_shared/` | Стандарты — текст, Presentbook — показ | Текст гайда правится только в `skills/_shared/`, не в `generated/` и не в `public/guides/`. Переименование или перенос файла-источника — вместе с правкой `guide-registry.json`, то есть через оба чата. |
 | Токены и changelog продуктов: `tokens/`, `components/*-changelog.json` | Стандарты | Presentbook их читает при сборке; формат меняется только согласованно. |
 | Очередь предложений `registry/propose-*` | Token Comparator — код, Стандарты — решения | Разбор предложений (мерж или закрытие с причиной) — решение Principal Designer в чате стандартов, ADR-035. |
+| GitHub Releases репозитория: метка **Latest** | Token Comparator | Кнопка Presentbook ведёт на `releases/latest/download/token-comparator.zip`, поэтому Latest должен оставаться за релизом Token Comparator. Релизы других продуктов (AID Style Migration) публикуются **без** Latest, со своим префиксом тега; собственную кнопку скачивания такой продукт получает через чат Presentbook. |
 
 Удалённые легаси-продукты не возвращаются и не упоминаются ни в одном
 продукте — ADR-037.
