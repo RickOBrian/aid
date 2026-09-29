@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AID Style Migration</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Токены — копия из Token Comparator: общий визуальный стиль плагинов
+         компании (решение №13). Общий пакет — после готовности обоих
+         плагинов (решение №12). */
+      /* ================================================================= */
+      /* Core tokens — сырые значения. Используются ТОЛЬКО в Semantic ниже. */
+      /* Источник значений: pages/aid-portal/* (Presentbook portal) */
+      /* ================================================================= */
+      :root {
+        /* neutral — светлые ступени */
+        --core-neutral-x-0: #ffffff;
+        --core-neutral-x-5: #fafafa;
+        --core-neutral-x-10: #f5f5f5;
+        --core-neutral-x-15: #eeeeee;
+        --core-neutral-x-20: #ebedf0;
+        --core-neutral-x-85: #3a393c;
+        --core-neutral-x-90: #2d2c2e;
+
+        /* neutral — alpha-ступени на чёрном */
+        --core-neutral-x-100-a10: rgba(0, 0, 0, 0.1);
+        --core-neutral-x-100-a12: rgba(0, 0, 0, 0.12);
+        --core-neutral-x-100-a16: rgba(0, 0, 0, 0.16);
+        --core-neutral-x-100-a22: rgba(0, 0, 0, 0.22);
+        --core-neutral-x-100-a26: rgba(0, 0, 0, 0.26);
+        --core-neutral-x-100-a30: rgba(0, 0, 0, 0.3);
+        --core-neutral-x-100-a38: rgba(0, 0, 0, 0.38);
+        --core-neutral-x-100-a40: rgba(0, 0, 0, 0.4);
+        --core-neutral-x-100-a54: rgba(0, 0, 0, 0.54);
+        --core-neutral-x-90-a32: rgba(45, 44, 46, 0.32);
+
+        /* azure — акцент интерфейса плагинов */
+        --core-azure-10: #ebf0ff;
+        --core-azure-25: #bccdfe;
+        --core-azure-45: #2f58e0;
+        --core-azure-55: #3d6afe;
+
+        /* moss — успешное состояние */
+        --core-moss-10: #eef8f1;
+        --core-moss-25: #b9e6c9;
+        --core-moss-60: #1f7a3f;
+
+        /* amber — состояние «требует внимания» */
+        --core-amber-10: #fff8e6;
+        --core-amber-30: #f0d48a;
+        --core-amber-60: #8a6a00;
+
+        /* carmine — ошибочное состояние */
+        --core-carmine-10: #fdecea;
+        --core-carmine-25: #f4c2c2;
+        --core-carmine-50: #d62347;
+      }
+
+      /* ================================================================= */
+      /* Semantic tokens — назначение. В компонентах используются только они. */
+      /* ================================================================= */
+      :root {
+        --ds-font: "Google Sans", system-ui, sans-serif;
+
+        /* Текст */
+        --ds-text: var(--core-neutral-x-90);
+        --ds-text-secondary: var(--core-neutral-x-100-a54);
+        --ds-text-muted: var(--core-neutral-x-100-a38);
+        --ds-text-placeholder: var(--core-neutral-x-100-a26);
+        --ds-text-on-accent: var(--core-neutral-x-0);
+
+        /* Поверхности */
+        --ds-surface: var(--core-neutral-x-0);
+        --ds-surface-muted: var(--core-neutral-x-10);
+        --ds-surface-zebra: var(--core-neutral-x-5);
+        --ds-surface-checker: var(--core-neutral-x-15);
+        --ds-surface-checker-base: var(--core-neutral-x-0);
+        /* Тёмная шахматка под превью, где светлый снимок на светлой не читается (lib/previewBackdrop.ts). */
+        --ds-surface-checker-inverse: var(--core-neutral-x-85);
+        --ds-surface-checker-inverse-base: var(--core-neutral-x-90);
+
+        /* Линии и границы */
+        --ds-border: var(--core-neutral-x-20);
+        --ds-line-subtle: var(--core-neutral-x-100-a12);
+        --ds-line-control: var(--core-neutral-x-100-a26);
+        --ds-line-control-hover: var(--core-neutral-x-100-a40);
+        --ds-line-dashed: var(--core-neutral-x-100-a30);
+        --ds-line-handle: var(--core-neutral-x-100-a10);
+        --ds-line-handle-hover: var(--core-neutral-x-100-a22);
+        --ds-focus: var(--core-neutral-x-90-a32);
+
+        /* Акцент */
+        --ds-accent: var(--core-azure-55);
+        --ds-accent-hover: var(--core-azure-45);
+        --ds-accent-bg: var(--core-azure-10);
+
+        /* Радиусы и тени */
+        --ds-radius: 8px;
+        --ds-radius-card: 12px;
+        --ds-overlay-backdrop: var(--core-neutral-x-100-a38);
+        --ds-shadow-elevated: 0 16px 48px var(--core-neutral-x-100-a16);
+        --ds-shadow-dropdown: 0 8px 24px var(--core-neutral-x-100-a16);
+
+        /* ---------------------------------------------------------------- */
+        /* Тональности бейджей — единственный источник цвета для статусов.   */
+        /* Каждый статус относится ровно к одной тональности (см. ui.ts).    */
+        /* ---------------------------------------------------------------- */
+        --ds-badge-neutral-bg: var(--core-neutral-x-10);
+        --ds-badge-neutral-text: var(--core-neutral-x-100-a54);
+        --ds-badge-neutral-border: var(--core-neutral-x-20);
+
+        --ds-badge-success-bg: var(--core-moss-10);
+        --ds-badge-success-text: var(--core-moss-60);
+        --ds-badge-success-border: var(--core-moss-25);
+
+        --ds-badge-info-bg: var(--core-azure-10);
+        --ds-badge-info-text: var(--core-azure-45);
+        --ds-badge-info-border: var(--core-azure-25);
+
+        --ds-badge-warning-bg: var(--core-amber-10);
+        --ds-badge-warning-text: var(--core-amber-60);
+        --ds-badge-warning-border: var(--core-amber-30);
+
+        --ds-badge-danger-bg: var(--core-carmine-10);
+        --ds-badge-danger-text: var(--core-carmine-50);
+        --ds-badge-danger-border: var(--core-carmine-25);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--ds-font);
+        font-size: 13px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .ds-page {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        padding: 20px 16px 16px;
+        gap: 12px;
+      }
+
+      .ds-page-header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 32px;
+      }
+
+      .ds-page-header p {
+        margin: 4px 0 0;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-card {
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius-card);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .ds-card h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+      }
+
+      .ds-hint {
+        margin: 0;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .ds-btn {
+        font-family: var(--ds-font);
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .ds-btn:hover:not(:disabled) {
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-btn:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 2px;
+      }
+
+      .ds-btn:disabled {
+        color: var(--ds-text-placeholder);
+        cursor: not-allowed;
+      }
+
+      .ds-btn-primary {
+        color: var(--ds-text-on-accent);
+        background: var(--ds-accent);
+        border-color: var(--ds-accent);
+      }
+
+      .ds-btn-primary:hover:not(:disabled) {
+        background: var(--ds-accent-hover);
+        border-color: var(--ds-accent-hover);
+      }
+
+      .ds-btn-primary:disabled {
+        opacity: 0.5;
+        color: var(--ds-text-on-accent);
+      }
+
+      .ds-status {
+        min-height: 16px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-results {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .ds-result {
+        border: 1px solid var(--ds-line-subtle);
+        border-radius: var(--ds-radius);
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .ds-result__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-weight: 500;
+      }
+
+      .ds-result__row {
+        color: var(--ds-text-secondary);
+        word-break: break-word;
+      }
+
+      .ds-result__row b {
+        font-weight: 500;
+        color: var(--ds-text);
+      }
+
+      .ds-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 14px;
+        white-space: nowrap;
+        border: 1px solid transparent;
+      }
+
+      .ds-badge--neutral {
+        background: var(--ds-badge-neutral-bg);
+        color: var(--ds-badge-neutral-text);
+        border-color: var(--ds-badge-neutral-border);
+      }
+
+      .ds-badge--success {
+        background: var(--ds-badge-success-bg);
+        color: var(--ds-badge-success-text);
+        border-color: var(--ds-badge-success-border);
+      }
+
+      .ds-badge--info {
+        background: var(--ds-badge-info-bg);
+        color: var(--ds-badge-info-text);
+        border-color: var(--ds-badge-info-border);
+      }
+
+      .ds-badge--danger {
+        background: var(--ds-badge-danger-bg);
+        color: var(--ds-badge-danger-text);
+        border-color: var(--ds-badge-danger-border);
+      }
+
+      .ds-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="ds-page">
+      <header class="ds-page-header">
+        <h1>AID Style Migration</h1>
+        <p id="file-name">Этап 0 · проверка API</p>
+      </header>
+
+      <section class="ds-card" aria-labelledby="probes-title">
+        <h2 id="probes-title">Проверка API</h2>
+        <p class="ds-hint">
+          Отвечает на вопросы из трекера до того, как на них строится архитектура.
+          Для замеров откройте страницу с макетами; для скорости копирования
+          выделите 1–5 экранов.
+        </p>
+        <div class="ds-actions">
+          <button class="ds-btn ds-btn-primary" id="run-read" type="button">Проверки на чтение</button>
+          <button class="ds-btn" id="run-write" type="button">Проверки с записью</button>
+        </div>
+        <p class="ds-hint">
+          «С записью» — во временном фрейме на странице «AID Migration»; фрейм удаляется в конце.
+          Исходные страницы не меняются. Выделено: <span id="selection-count">0</span>.
+        </p>
+      </section>
+
+      <div class="ds-status" id="status" role="status" aria-live="polite"></div>
+      <div class="ds-results" id="results"></div>
+
+      <footer class="ds-footer">
+        <button class="ds-btn" id="copy-report" type="button" disabled>Скопировать отчёт</button>
+        <button class="ds-btn" id="close" type="button">Закрыть</button>
+      </footer>
+    </main>
+    <!-- UI_BUNDLE -->
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "AID Style Migration",
+  "id": "aid-style-migration-dev",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "permissions": ["teamlibrary"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "reasoning": "fonts.googleapis.com / fonts.gstatic.com — шрифт Google Sans, общий визуальный стиль с Token Comparator. api.figma.com появится вместе с чтением библиотек по REST (этап 2)."
+  }
+}

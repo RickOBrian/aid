@@ -1,0 +1,20 @@
+{
+  "name": "aid-style-migration",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Figma plugin: перевод макетов на токены и компоненты выбранного продукта с ревью «было → стало». Детерминированный, без AI.",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.137.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}
