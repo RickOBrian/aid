@@ -249,9 +249,6 @@
       }
 
       .ds-results {
-        flex: 1;
-        min-height: 0;
-        overflow: auto;
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -326,38 +323,271 @@
         gap: 8px;
         flex-shrink: 0;
       }
+
+      .ds-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 4px;
+      }
+
+      .ds-segment {
+        display: inline-flex;
+        border: 1px solid var(--ds-border);
+        border-radius: var(--ds-radius);
+        padding: 2px;
+        gap: 2px;
+        align-self: flex-start;
+      }
+
+      .ds-segment button {
+        font-family: var(--ds-font);
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 16px;
+        color: var(--ds-text-secondary);
+        background: transparent;
+        border: 0;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+
+      .ds-segment button[aria-pressed="true"] {
+        color: var(--ds-text);
+        background: var(--ds-surface-muted);
+      }
+
+      .ds-input {
+        font-family: var(--ds-font);
+        font-size: 13px;
+        line-height: 16px;
+        color: var(--ds-text);
+        background: var(--ds-surface);
+        border: 1px solid var(--ds-line-control);
+        border-radius: var(--ds-radius);
+        padding: 7px 10px;
+        width: 100%;
+      }
+
+      .ds-input:focus-visible {
+        outline: 2px solid var(--ds-focus);
+        outline-offset: 1px;
+      }
+
+      .ds-checklist {
+        max-height: 168px;
+        overflow: auto;
+        border: 1px solid var(--ds-line-subtle);
+        border-radius: var(--ds-radius);
+        padding: 4px 0;
+      }
+
+      .ds-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .ds-check input {
+        accent-color: var(--ds-accent);
+        margin: 0;
+      }
+
+      .ds-link {
+        font-family: var(--ds-font);
+        font-size: 12px;
+        color: var(--ds-accent);
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .ds-link:hover {
+        color: var(--ds-accent-hover);
+        text-decoration: underline;
+      }
+
+      .ds-group-title {
+        margin: 4px 0 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-screen {
+        display: grid;
+        grid-template-columns: auto 40px 1fr;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 4px;
+        border-bottom: 1px solid var(--ds-line-subtle);
+      }
+
+      .ds-screen--pair {
+        padding-left: 28px;
+      }
+
+      .ds-thumb {
+        width: 40px;
+        height: 56px;
+        border-radius: 4px;
+        background: var(--ds-surface-muted);
+        object-fit: cover;
+        object-position: top;
+      }
+
+      .ds-screen__body {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .ds-screen__name {
+        text-align: left;
+        font-family: var(--ds-font);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ds-text);
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .ds-screen__name:hover {
+        text-decoration: underline;
+      }
+
+      .ds-screen__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        color: var(--ds-text-secondary);
+        font-size: 12px;
+      }
+
+      .ds-badge--warning {
+        background: var(--ds-badge-warning-bg);
+        color: var(--ds-badge-warning-text);
+        border-color: var(--ds-badge-warning-border);
+      }
+
+      .ds-confirm {
+        border: 1px solid var(--ds-badge-warning-border);
+        background: var(--ds-badge-warning-bg);
+        border-radius: var(--ds-radius-card);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .ds-confirm p {
+        margin: 0;
+      }
+
+      details > summary {
+        cursor: pointer;
+        color: var(--ds-text-secondary);
+      }
+
+      [hidden] {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
     <main class="ds-page">
       <header class="ds-page-header">
         <h1>AID Style Migration</h1>
-        <p id="file-name">Этап 0 · проверка API</p>
+        <p id="file-name">Сборка макетов</p>
       </header>
 
-      <section class="ds-card" aria-labelledby="probes-title">
-        <h2 id="probes-title">Проверка API</h2>
-        <p class="ds-hint">
-          Отвечает на вопросы из трекера до того, как на них строится архитектура.
-          Для замеров откройте страницу с макетами; для скорости копирования
-          выделите 1–5 экранов.
-        </p>
-        <div class="ds-actions">
-          <button class="ds-btn ds-btn-primary" id="run-read" type="button">Проверки на чтение</button>
-          <button class="ds-btn" id="run-write" type="button">Проверки с записью</button>
+      <div class="ds-scroll">
+        <section class="ds-card" aria-labelledby="scope-title">
+          <h2 id="scope-title">1. Что собираем</h2>
+          <div class="ds-segment" role="group" aria-label="Область">
+            <button type="button" id="scope-selection" aria-pressed="false">Выделение · <span id="selection-count">0</span></button>
+            <button type="button" id="scope-pages" aria-pressed="true">Страницы</button>
+          </div>
+          <div id="pages-box">
+            <input class="ds-input" id="page-filter" type="search" placeholder="Фильтр страниц, например ✅" />
+            <div class="ds-actions" style="margin: 6px 0">
+              <button class="ds-link" id="pages-all" type="button">все найденные</button>
+              <button class="ds-link" id="pages-none" type="button">снять все</button>
+            </div>
+            <div class="ds-checklist" id="pages-list"></div>
+          </div>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="scan" type="button">Найти экраны</button>
+          </div>
+        </section>
+
+        <section class="ds-card" id="screens-card" aria-labelledby="screens-title" hidden>
+          <h2 id="screens-title">2. Экраны</h2>
+          <p class="ds-hint" id="scan-summary"></p>
+          <label class="ds-check" id="theme-option" hidden>
+            <input type="checkbox" id="dark-from-theme" checked />
+            <span id="theme-label"></span>
+          </label>
+          <div class="ds-actions">
+            <button class="ds-btn" id="pair-selected" type="button">Связать два выделенных в пару</button>
+          </div>
+          <div id="screens-list"></div>
+          <details id="skipped-box">
+            <summary id="skipped-summary"></summary>
+            <div id="skipped-list" class="ds-hint"></div>
+          </details>
+        </section>
+
+        <div class="ds-confirm" id="conflict" hidden>
+          <p id="conflict-text"></p>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="conflict-replace" type="button">Заменить</button>
+            <button class="ds-btn" id="conflict-add" type="button">Добавить версию рядом</button>
+            <button class="ds-btn" id="conflict-cancel" type="button">Отмена</button>
+          </div>
         </div>
-        <p class="ds-hint">
-          «С записью» — во временном фрейме на странице «AID Migration»; фрейм удаляется в конце.
-          Исходные страницы не меняются. Выделено: <span id="selection-count">0</span>.
-        </p>
-      </section>
+
+        <div class="ds-confirm" id="disassemble-confirm" hidden>
+          <p>Убрать все секции сборки со страницы «AID Migration»? Исходные макеты не затрагиваются.</p>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="disassemble-yes" type="button">Убрать</button>
+            <button class="ds-btn" id="disassemble-no" type="button">Отмена</button>
+          </div>
+        </div>
+
+        <details class="ds-card">
+          <summary>Диагностика: проверка API</summary>
+          <p class="ds-hint">
+            Проверки этапа 0. «С записью» — во временном фрейме на странице «AID Migration»,
+            фрейм удаляется в конце.
+          </p>
+          <div class="ds-actions">
+            <button class="ds-btn" id="run-read" type="button">Проверки на чтение</button>
+            <button class="ds-btn" id="run-write" type="button">Проверки с записью</button>
+            <button class="ds-btn" id="copy-report" type="button" disabled>Скопировать отчёт</button>
+          </div>
+          <div class="ds-results" id="results"></div>
+        </details>
+      </div>
 
       <div class="ds-status" id="status" role="status" aria-live="polite"></div>
-      <div class="ds-results" id="results"></div>
-
       <footer class="ds-footer">
-        <button class="ds-btn" id="copy-report" type="button" disabled>Скопировать отчёт</button>
-        <button class="ds-btn" id="close" type="button">Закрыть</button>
+        <button class="ds-btn ds-btn-primary" id="assemble" type="button" disabled>Собрать</button>
+        <button class="ds-btn" id="disassemble" type="button">Разобрать сборку</button>
       </footer>
     </main>
     <!-- UI_BUNDLE -->
