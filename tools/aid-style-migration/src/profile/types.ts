@@ -5,6 +5,7 @@
  */
 
 import type { ThemeRole } from "../lib/vocabulary";
+import type { TextCaseKind, UseKind } from "./usage";
 
 export type { ThemeRole };
 
@@ -171,10 +172,33 @@ export interface ComponentsIndex {
   components: IndexedComponent[];
 }
 
+export type UsageCounts = Partial<Record<UseKind, number>>;
+
+/**
+ * Как образцы продукта на деле используют токены, стили и компоненты.
+ * Агрегаты, а не сырые ноды: в clientStorage должно поместиться.
+ */
+export interface ExemplarIndex {
+  /** Сколько экранов прочитано и из скольких выбрано. */
+  screens: number;
+  darkScreens: number;
+  screensFound: number;
+  nodes: number;
+  /** Ключ переменной → где встречается, отдельно в светлых и тёмных экранах. */
+  variables: Record<string, { name: string; light: UsageCounts; dark: UsageCounts }>;
+  textStyles: Record<string, { name: string; uses: number; fontSize: number; cases: Partial<Record<TextCaseKind, number>> }>;
+  /** Компонент → сколько раз и каким регистром в нём набран текст (подписи кнопок и т. п.). */
+  components: Record<string, { name: string; setName: string; uses: number; cases: Partial<Record<TextCaseKind, number>> }>;
+  /** Значения без токена и текст без стиля — насколько образец сам следует библиотеке. */
+  unbound: { fills: number; strokes: number; texts: number };
+  textCases: Partial<Record<TextCaseKind, number>>;
+}
+
 export type MaterialIndex =
   | { kind: "tokens"; data: TokensIndex }
   | { kind: "components"; data: ComponentsIndex }
-  | { kind: "icons"; data: ComponentsIndex };
+  | { kind: "icons"; data: ComponentsIndex }
+  | { kind: "exemplars"; data: ExemplarIndex };
 
 /** Формат файла экспорта профиля. */
 export const PROFILE_EXPORT_FORMAT = "aid-style-migration/profile";

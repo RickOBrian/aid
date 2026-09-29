@@ -110,7 +110,7 @@ async function handle(message: UiToCode): Promise<void> {
       post({ type: "file-survey", survey: await surveyFile() });
       return;
     case "file-index": {
-      const state = await profiles.indexOpenFile(message.kinds, (title) => post({ type: "index-progress", title }));
+      const state = await profiles.indexOpenFile(message.kinds, message.exemplarScope, (title) => post({ type: "index-progress", title }));
       post({ type: "profile-state", state });
       post({ type: "notice", message: `Файл «${figma.root.name}» проиндексирован` });
       return;

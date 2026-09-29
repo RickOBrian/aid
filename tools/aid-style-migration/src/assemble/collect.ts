@@ -13,12 +13,12 @@ import type { ScanItem, ScanPage, ScanResult, ScanScope, SkippedItem, ThemeColle
 /** Сколько пропущенных показывать поимённо — остальное числом. */
 const SKIPPED_LIMIT = 200;
 
-interface Root {
+export interface Root {
   node: SceneNode;
   page: PageNode;
 }
 
-function expand(node: SceneNode, page: PageNode, out: Root[]): void {
+export function expand(node: SceneNode, page: PageNode, out: Root[]): void {
   if (node.type === "SECTION") {
     for (const child of node.children) expand(child, page, out);
   } else {
@@ -60,7 +60,7 @@ async function backgroundLuminance(node: SceneNode): Promise<number | null> {
   return relativeLuminance(color.r, color.g, color.b);
 }
 
-async function facts(node: SceneNode, page: PageNode): Promise<ScreenFacts> {
+export async function facts(node: SceneNode, page: PageNode): Promise<ScreenFacts> {
   const children = "children" in node ? node.children : [];
   const paints = visiblePaints(node);
   const box = node.absoluteBoundingBox;

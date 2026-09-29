@@ -2,6 +2,7 @@
 
 import { THEME_ROLES, type ThemeRole } from "../lib/vocabulary";
 import type { ProfileState } from "../profile/controller";
+import { EXEMPLAR_LIMIT, type ExemplarScope } from "../profile/usage";
 import type { FileSurvey } from "../profile/indexFile";
 import { MATERIAL_LABELS, type Material, type MaterialKind } from "../profile/types";
 import { badge, el, h, send } from "./dom";
@@ -15,6 +16,12 @@ const STAT_LABELS: Record<string, string> = {
   sets: "наборов",
   variants: "вариантов",
   components: "компонентов",
+  screens: "экранов прочитано",
+  darkScreens: "из них тёмных",
+  usedVariables: "токенов в ходу",
+  fromProduct: "из них из токенов продукта",
+  usedTextStyles: "стилей текста в ходу",
+  usedComponents: "компонентов в ходу",
 };
 
 const ROLE_LABELS: Record<ThemeRole, string> = {
@@ -23,8 +30,8 @@ const ROLE_LABELS: Record<ThemeRole, string> = {
   [THEME_ROLES.other]: "другое",
 };
 
-/** Что можно проиндексировать из открытого файла сейчас. Образцы — этап 2b. */
-const INDEXABLE: MaterialKind[] = ["tokens", "components", "icons"];
+/** Что можно проиндексировать из открытого файла сейчас. Стандарты — пакетом, позже. */
+const INDEXABLE: MaterialKind[] = ["tokens", "components", "icons", "exemplars"];
 
 let current: ProfileState | null = null;
 let setStatus: (text: string) => void = () => undefined;
@@ -127,12 +134,28 @@ function render(state: ProfileState): void {
   renderTheme(state);
 }
 
+function scopeChoice(screens: number): HTMLElement {
+  const option = (value: ExemplarScope, text: string, checked: boolean) => {
+    const input = h("input");
+    input.type = "radio";
+    input.name = "exemplar-scope";
+    input.value = value;
+    input.checked = checked;
+    return h("label", { className: "ds-check" }, [input, h("span", { text })]);
+  };
+  return h("div", {}, [
+    option("page", `текущая страница · экранов ${screens}`, true),
+    option("selection", "только выделенное", false),
+  ]);
+}
+
 function renderSurvey(survey: FileSurvey): void {
   const parts = [
     survey.variables ? `переменных ${survey.variables} в ${survey.collections} коллекц.` : "",
     survey.textStyles ? `стилей текста ${survey.textStyles}` : "",
     survey.effectStyles ? `стилей эффектов ${survey.effectStyles}` : "",
     survey.components ? `компонентов ${survey.components}${survey.componentSets ? ` (наборов ${survey.componentSets})` : ""}` : "",
+    survey.screensOnPage ? `экранов на текущей странице ${survey.screensOnPage}` : "",
   ].filter(Boolean);
   el("survey-summary").textContent = `«${survey.fileName}»: ${parts.join(", ") || "ничего подходящего"}. Чем этот файл служит продукту?`;
   el("survey-kinds").replaceChildren(
@@ -143,10 +166,8 @@ function renderSurvey(survey: FileSurvey): void {
       input.checked = survey.suggested.includes(kind);
       return h("label", { className: "ds-check" }, [input, h("span", { text: MATERIAL_LABELS[kind] })]);
     }),
-    h("label", { className: "ds-check" }, [
-      Object.assign(h("input"), { type: "checkbox", disabled: true }),
-      h("span", { text: `${MATERIAL_LABELS.exemplars} — следующим шагом (этап 2b)` }),
-    ]),
+    h("div", { className: "ds-hint", text: `Образцы читаются с текущей страницы или из выделения — не больше ${EXEMPLAR_LIMIT} экранов, равномерно.` }),
+    scopeChoice(survey.screensOnPage),
   );
   el("survey-box").hidden = false;
 }
@@ -199,7 +220,7 @@ export function initProduct(status: (text: string) => void): void {
     send({ type: "file-survey" });
   });
   el("index-file").addEventListener("click", () => {
-    const kinds = [...el("survey-kinds").querySelectorAll<HTMLInputElement>("input:checked")]
+    const kinds = [...el("survey-kinds").querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')]
       .map((i) => i.value as MaterialKind)
       .filter((k) => INDEXABLE.includes(k));
     if (!kinds.length) {
@@ -208,7 +229,8 @@ export function initProduct(status: (text: string) => void): void {
     }
     el("survey-box").hidden = true;
     setStatus("Индексирую…");
-    send({ type: "file-index", kinds });
+    const scope = el("survey-kinds").querySelector<HTMLInputElement>('input[name="exemplar-scope"]:checked');
+    send({ type: "file-index", kinds, exemplarScope: (scope?.value as ExemplarScope) ?? "page" });
   });
 
   el("theme-collection").addEventListener("change", () => current && renderModes(current));

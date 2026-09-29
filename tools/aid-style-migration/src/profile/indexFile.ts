@@ -7,6 +7,7 @@
  * переменные со значениями, стили, компоненты со свойствами.
  */
 
+import { countScreens } from "./exemplars";
 import type {
   ComponentsIndex,
   IndexedCollection,
@@ -31,6 +32,8 @@ export interface FileSurvey {
   components: number;
   /** Доля компонентов не больше 48×48 — признак библиотеки иконок. */
   smallShare: number;
+  /** Экранов на текущей странице — признак файла образцов. */
+  screensOnPage: number;
   suggested: MaterialKind[];
 }
 
@@ -61,7 +64,10 @@ export async function surveyFile(): Promise<FileSurvey> {
 
   const suggested: MaterialKind[] = [];
   if (variables + textStyles + effectStyles > 0) suggested.push("tokens");
-  if (all.length > 0) suggested.push(smallShare >= 0.7 ? "icons" : "components");
+  const screensOnPage = await countScreens();
+  // Файл образцов тоже содержит компоненты, но экранов в нём больше.
+  if (screensOnPage >= 3) suggested.push("exemplars");
+  else if (all.length > 0) suggested.push(smallShare >= 0.7 ? "icons" : "components");
 
   return {
     fileName: figma.root.name,
@@ -72,6 +78,7 @@ export async function surveyFile(): Promise<FileSurvey> {
     componentSets: sets.length,
     components: standalone.length + sets.reduce((n, s) => n + s.children.length, 0),
     smallShare,
+    screensOnPage,
     suggested,
   };
 }

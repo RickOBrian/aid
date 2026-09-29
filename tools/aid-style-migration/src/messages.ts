@@ -1,5 +1,6 @@
 import type { AssembleRequest, ScanResult, ScanScope } from "./assemble/types";
 import type { ProbeKind, ProbeResult } from "./probes/types";
+import type { ExemplarScope } from "./profile/usage";
 import type { FileSurvey } from "./profile/indexFile";
 import type { ProfileState } from "./profile/controller";
 import type { MaterialKind, ThemeRole } from "./profile/types";
@@ -22,7 +23,7 @@ export type UiToCode =
   | { type: "profile-select"; id: string }
   | { type: "profile-delete"; id: string }
   | { type: "file-survey" }
-  | { type: "file-index"; kinds: MaterialKind[] }
+  | { type: "file-index"; kinds: MaterialKind[]; exemplarScope: ExemplarScope }
   | { type: "material-remove"; id: string }
   | { type: "theme-set"; collectionKey: string | null; roles: Record<string, ThemeRole> }
   | { type: "profile-export" }

@@ -14,6 +14,7 @@ import {
   suggestTheme,
   upsertMaterial,
 } from "./profile";
+import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { THEME_ROLES } from "../lib/vocabulary";
 import * as store from "./storage";
@@ -106,7 +107,11 @@ export async function remove(id: string): Promise<ProfileState> {
 }
 
 /** Индексирует открытый файл для выбранных видов материалов активного профиля. */
-export async function indexOpenFile(kinds: MaterialKind[], report: (title: string) => void): Promise<ProfileState> {
+export async function indexOpenFile(
+  kinds: MaterialKind[],
+  exemplarScope: ExemplarScope,
+  report: (title: string) => void,
+): Promise<ProfileState> {
   let profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
   const fileName = figma.root.name;
@@ -124,8 +129,12 @@ export async function indexOpenFile(kinds: MaterialKind[], report: (title: strin
       const data = await indexComponents();
       index = { kind, data };
       stats = componentsStats(data);
+    } else if (kind === "exemplars") {
+      const data = await indexExemplars(exemplarScope, (done, total) => report(`образцы: экран ${done} из ${total}`));
+      index = { kind, data };
+      stats = { ...exemplarStats(data), fromProduct: await usedFromProduct(profile, Object.keys(data.variables)) };
     } else {
-      // Образцы и стандарты — этап 2b и позже.
+      // Стандарты — пакетом правил, позже.
       continue;
     }
     const id = materialId(kind, fileName);
@@ -139,6 +148,17 @@ export async function indexOpenFile(kinds: MaterialKind[], report: (title: strin
   }
   await store.saveProfile(profile);
   return state();
+}
+
+/** Сколько переменных из образцов нашлось в опубликованных токенах продукта — доверие к образцам. */
+async function usedFromProduct(profile: ProductProfile, keys: string[]): Promise<number> {
+  const published = new Set<string>();
+  for (const m of profile.materials.filter((x) => x.kind === "tokens")) {
+    const index = await store.getIndex(profile.id, m.id);
+    if (index?.kind !== "tokens") continue;
+    for (const c of index.data.collections) for (const v of c.variables) if (v.published) published.add(v.key);
+  }
+  return keys.filter((k) => published.has(k)).length;
 }
 
 export async function dropMaterial(id: string): Promise<ProfileState> {
