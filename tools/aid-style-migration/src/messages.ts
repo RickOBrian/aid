@@ -28,6 +28,8 @@ export type UiToCode =
   | { type: "theme-set"; collectionKey: string | null; roles: Record<string, ThemeRole> }
   | { type: "profile-export" }
   | { type: "profile-import"; text: string }
+  | { type: "url-index"; url: string }
+  | { type: "pat-set"; token: string }
   | { type: "close" };
 
 /** Главный поток → UI. */

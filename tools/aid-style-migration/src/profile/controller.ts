@@ -16,6 +16,7 @@ import {
 } from "./profile";
 import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
+import { fetchTokens } from "./restTokens";
 import { THEME_ROLES } from "../lib/vocabulary";
 import * as store from "./storage";
 import { exemplarVariableOrigin } from "./profile";
@@ -35,6 +36,8 @@ export interface LibraryStatus {
 
 export interface ProfileState {
   fileName: string;
+  /** Задан ли токен для чтения по ссылке. Сам токен в UI не уходит. */
+  hasPat: boolean;
   profiles: Array<{ id: string; name: string }>;
   active: ProductProfile | null;
   themeCandidates: ThemeCandidate[];
@@ -81,6 +84,7 @@ export async function state(): Promise<ProfileState> {
   const active = await activeProfile();
   return {
     fileName: figma.root.name,
+    hasPat: Boolean(await store.getPat()),
     profiles: profiles.map((p) => ({ id: p.id, name: p.name })),
     active,
     themeCandidates: active ? await themeCandidates(active) : [],
@@ -157,6 +161,29 @@ export async function indexOpenFile(
     }
   }
   await store.saveProfile(profile);
+  return state();
+}
+
+/**
+ * Материал по ссылке через REST API — без открытия файла. Пока — токены и
+ * стили; компоненты и иконки по ссылке — следующим шагом. Имя материала —
+ * имя файла из REST: то же, что у индексации открытого файла, поэтому
+ * повторное чтение любым способом заменяет запись, а не дублирует.
+ */
+export async function indexFromUrl(url: string, report: (title: string) => void): Promise<ProfileState> {
+  let profile = await activeProfile();
+  if (!profile) throw new Error("Сначала создайте продукт");
+  const { fileName, index } = await fetchTokens(url, await store.getPat(), report);
+  const id = materialId("tokens", fileName);
+  await store.saveIndex(profile.id, id, { kind: "tokens", data: index });
+  profile = upsertMaterial(profile, { id, kind: "tokens", fileName, source: "rest", indexedAt: now(), stats: tokensStats(index) }, now());
+  if (!profile.theme) profile = { ...profile, theme: suggestTheme(index.collections.filter((c) => c.published)) };
+  await store.saveProfile(profile);
+  return state();
+}
+
+export async function savePat(token: string): Promise<ProfileState> {
+  await store.setPat(token.trim());
   return state();
 }
 

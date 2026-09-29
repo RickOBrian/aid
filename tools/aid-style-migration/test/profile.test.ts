@@ -10,7 +10,7 @@ import {
   suggestTheme,
   upsertMaterial,
 } from "../src/profile/profile";
-import { resolveValue } from "../src/profile/indexFile";
+import { resolveValue } from "../src/profile/tokenValues";
 import type { IndexedCollection, Material, VariableValue } from "../src/profile/types";
 
 const NOW = "2026-09-29T12:00:00Z";

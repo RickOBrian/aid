@@ -12,6 +12,7 @@ import type { MaterialIndex, ProductProfile } from "./types";
 const KEYS = {
   PROFILES: "sm_profiles",
   ACTIVE: "sm_active_profile",
+  PAT: "sm_pat",
 } as const;
 const INDEX_PREFIX = "sm_index:";
 
@@ -73,4 +74,19 @@ export async function getAllIndexes(profile: ProductProfile): Promise<Record<str
     if (index) out[m.id] = index;
   }
   return out;
+}
+
+/**
+ * Personal Access Token для чтения по ссылке. Хранится только здесь: не
+ * уходит в UI (туда — лишь «задан / не задан»), не попадает в экспорт
+ * профиля и в логи.
+ */
+export async function getPat(): Promise<string> {
+  const value = await figma.clientStorage.getAsync(KEYS.PAT);
+  return typeof value === "string" ? value : "";
+}
+
+export async function setPat(token: string): Promise<void> {
+  if (token) await figma.clientStorage.setAsync(KEYS.PAT, token);
+  else await figma.clientStorage.deleteAsync(KEYS.PAT);
 }

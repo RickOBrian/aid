@@ -8,6 +8,7 @@
  */
 
 import { countScreens } from "./exemplars";
+import { convertValue, resolveValue, type ResolveEntry } from "./tokenValues";
 import type {
   ComponentsIndex,
   IndexedCollection,
@@ -19,7 +20,6 @@ import type {
   IndexedTextStyle,
   MaterialKind,
   TokensIndex,
-  VariableValue,
 } from "./types";
 
 export interface FileSurvey {
@@ -93,18 +93,6 @@ function hex(c: RGB | RGBA): string {
   return `#${to(c.r)}${to(c.g)}${to(c.b)}${alpha}`.toUpperCase();
 }
 
-function convertValue(value: VariableValue | unknown, byId: Map<string, Variable>): VariableValue {
-  if (typeof value === "number") return { kind: "number", value };
-  if (typeof value === "string") return { kind: "string", value };
-  if (typeof value === "boolean") return { kind: "boolean", value };
-  const v = value as { type?: string; id?: string; r?: number; g?: number; b?: number; a?: number };
-  if (v.type === "VARIABLE_ALIAS" && v.id) {
-    const target = byId.get(v.id);
-    return { kind: "alias", name: target?.name ?? v.id, key: target?.key ?? null };
-  }
-  return { kind: "color", r: v.r ?? 0, g: v.g ?? 0, b: v.b ?? 0, a: v.a ?? 1 };
-}
-
 function px(value: LineHeight | LetterSpacing, fontSize: number): number | null {
   if (value.unit === "AUTO") return null;
   return value.unit === "PIXELS" ? value.value : (fontSize * value.value) / 100;
@@ -120,25 +108,6 @@ function describeEffect(e: Effect): string {
 function describePaint(p: Paint): string {
   if (p.type === "SOLID") return `${hex(p.color)}${p.opacity !== undefined && p.opacity < 1 ? ` ${Math.round(p.opacity * 100)}%` : ""}`;
   return p.type;
-}
-
-/**
- * Пройти ссылки до конкретного значения. Режим ищем по id в коллекции
- * цели; если там его нет (примитивы обычно в одном режиме) — режим по
- * умолчанию коллекции цели.
- */
-export function resolveValue(
-  value: VariableValue,
-  modeId: string,
-  byKey: Map<string, { valuesByMode: Record<string, VariableValue>; defaultModeId: string }>,
-  depth = 0,
-): VariableValue | null {
-  if (value.kind !== "alias") return value;
-  if (depth > 16 || !value.key) return null;
-  const target = byKey.get(value.key);
-  if (!target) return null;
-  const next = target.valuesByMode[modeId] ?? target.valuesByMode[target.defaultModeId];
-  return next ? resolveValue(next, modeId, byKey, depth + 1) : null;
 }
 
 export async function indexTokens(): Promise<TokensIndex> {
@@ -162,7 +131,7 @@ export async function indexTokens(): Promise<TokensIndex> {
         description: v.description,
         scopes: [...v.scopes],
         valuesByMode: Object.fromEntries(
-          Object.entries(v.valuesByMode).map(([mode, value]) => [mode, convertValue(value, byId)]),
+          Object.entries(v.valuesByMode).map(([mode, value]) => [mode, convertValue(value, (id) => byId.get(id))]),
         ),
         resolvedByMode: {},
       })),
@@ -200,7 +169,7 @@ export async function indexTokens(): Promise<TokensIndex> {
 
   // Итоговые значения — после того, как собраны все переменные файла.
   const defaults = new Map(collections.map((c) => [c.key, c.defaultModeId]));
-  const byKey = new Map<string, { valuesByMode: Record<string, VariableValue>; defaultModeId: string }>();
+  const byKey = new Map<string, ResolveEntry>();
   for (const c of indexed) for (const v of c.variables) byKey.set(v.key, { valuesByMode: v.valuesByMode, defaultModeId: defaults.get(c.key) ?? "" });
   for (const c of indexed) {
     for (const v of c.variables) {

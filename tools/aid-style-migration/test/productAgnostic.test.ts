@@ -28,13 +28,20 @@ const MODE_LITERALS = /["'`](day|night|light|dark)["'`]/i;
  */
 const VOCABULARY = join("lib", "vocabulary.ts");
 
+/**
+ * Явное исключение для файла, где те же слова значат другое (например,
+ * начертание шрифта «Light»). Пометка видна на ревью и требует объяснения
+ * рядом; имена продуктов она не разрешает.
+ */
+const MODE_WORDS_MARKER = "страж: слова режимов здесь не режимы";
+
 describe("движок не знает продуктов", () => {
   for (const path of files(SRC).filter((p) => /\.(ts|html)$/.test(p))) {
     const rel = path.slice(SRC.length + 1);
     it(rel, () => {
       const text = readFileSync(path, "utf8");
       expect(text).not.toMatch(PRODUCT_NAMES);
-      if (rel !== VOCABULARY) expect(text).not.toMatch(MODE_LITERALS);
+      if (rel !== VOCABULARY && !text.includes(MODE_WORDS_MARKER)) expect(text).not.toMatch(MODE_LITERALS);
     });
   }
 });

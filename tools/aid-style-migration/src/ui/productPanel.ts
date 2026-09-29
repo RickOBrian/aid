@@ -49,7 +49,7 @@ function statsText(stats: Record<string, number>): string {
 
 function materialRow(m: Material, state: ProfileState): HTMLElement {
   const status = state.libraries.find((l) => l.materialId === m.id)?.enabled;
-  const meta: Array<Node | string> = [statsText(m.stats) || "пусто"];
+  const meta: Array<Node | string> = [statsText(m.stats) || "пусто", badge(m.source === "rest" ? "по ссылке" : "из открытого файла", "neutral")];
   if (status === true) meta.push(badge("подключена в этом файле", "success"));
   if (status === false) meta.push(badge("не подключена в этом файле", "warning"));
 
@@ -121,6 +121,8 @@ function renderModes(state: ProfileState): void {
 
 function render(state: ProfileState): void {
   current = state;
+  el("pat-summary").textContent = state.hasPat ? "Доступ по ссылке: токен задан" : "Доступ по ссылке: токен не задан";
+  el("pat-clear").hidden = !state.hasPat;
   const select = el<HTMLSelectElement>("profile-select");
   select.replaceChildren(
     ...(state.profiles.length
@@ -249,6 +251,28 @@ export function initProduct(status: (text: string) => void): void {
     const scope = el("survey-kinds").querySelector<HTMLInputElement>('input[name="exemplar-scope"]:checked');
     send({ type: "file-index", kinds, exemplarScope: (scope?.value as ExemplarScope) ?? "page" });
   });
+
+  el("url-index").addEventListener("click", () => {
+    const url = el<HTMLInputElement>("library-url").value.trim();
+    if (!url) {
+      setStatus("Вставьте ссылку на файл библиотеки");
+      return;
+    }
+    if (!current?.hasPat) {
+      (el("pat-box") as HTMLDetailsElement).open = true;
+      setStatus("Сначала задайте токен доступа");
+      return;
+    }
+    setStatus("Читаю по ссылке…");
+    send({ type: "url-index", url });
+  });
+  el("pat-save").addEventListener("click", () => {
+    const input = el<HTMLInputElement>("pat-input");
+    const token = input.value.trim();
+    input.value = "";
+    if (token) send({ type: "pat-set", token });
+  });
+  el("pat-clear").addEventListener("click", () => send({ type: "pat-set", token: "" }));
 
   el("theme-collection").addEventListener("change", () => current && renderModes(current));
   el("theme-save").addEventListener("click", () => {

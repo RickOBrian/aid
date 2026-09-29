@@ -118,6 +118,16 @@ async function handle(message: UiToCode): Promise<void> {
       post({ type: "notice", message: `Файл «${figma.root.name}» проиндексирован` });
       return;
     }
+    case "url-index": {
+      const state = await profiles.indexFromUrl(message.url, (title) => post({ type: "index-progress", title }));
+      post({ type: "profile-state", state });
+      post({ type: "notice", message: "Библиотека прочитана по ссылке" });
+      return;
+    }
+    case "pat-set":
+      post({ type: "profile-state", state: await profiles.savePat(message.token) });
+      post({ type: "notice", message: message.token.trim() ? "Токен сохранён" : "Токен удалён" });
+      return;
     case "material-remove":
       post({ type: "profile-state", state: await profiles.dropMaterial(message.id) });
       return;
