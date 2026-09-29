@@ -29,7 +29,14 @@ export const WEIGHTS = {
   meaning: 0.3,
   darkEvidence: 0.15,
   closeness: 0.1,
+  /** Штраф токену, который не меняется с темой, там, где исходник меняется или неизвестно. */
+  independent: 0.6,
 };
+
+/** Токен не меняется с темой: одинаков в светлом и тёмном режиме. */
+export function isThemeIndependent(t: TargetColor): boolean {
+  return t.dark !== null && distance(t.light, t.dark) < 3;
+}
 
 /** Места с цветом, которые переводим на этапе 3; эффекты — стилями, отдельно. */
 export const COLOR_USES: UseKind[] = ["background", "surface", "text", "icon", "stroke"];
@@ -160,12 +167,18 @@ export function mapColors(sources: SourceColor[], targets: TargetColor[]): Propo
         const rank = sameMeaning && inRanked ? 1 - Math.abs(srcRank - rankOf(t, tgtByMeaning.get(tm)!)) : 0;
         const dark = s.dark && t.dark ? Math.exp(-distance(s.dark, t.dark) / 40) : 0;
         const close = Math.exp(-distance(s.light, t.light) / 60);
+        // Токен вне темы (у продукта из спайка — «…Ind») годится, только если исходник в
+        // этом месте сам не меняется с темой. Иначе в тёмной теме текст
+        // останется чёрным на тёмном (Flot Tasks: Texts/Primary Dark Ind).
+        const sourceFixed = s.dark !== null && distance(s.light, s.dark) < 3;
+        const penalty = isThemeIndependent(t) && !sourceFixed ? WEIGHTS.independent : 0;
         const score =
           WEIGHTS.roleFit * fit +
           WEIGHTS.meaning * (sameMeaning ? 1 : 0) +
           WEIGHTS.rank * rank +
           WEIGHTS.darkEvidence * dark +
-          WEIGHTS.closeness * close;
+          WEIGHTS.closeness * close -
+          penalty;
         return { key: t.key, name: t.name, score: Math.round(score * 100) / 100 };
       });
       scored.sort((a, b) => b.score - a.score);
@@ -178,6 +191,8 @@ export function mapColors(sources: SourceColor[], targets: TargetColor[]): Propo
       if (meaning === "accent" && brand) reasons.push("самый частый хроматический цвет исходника — бренд → акцент продукта");
       if (meaning === "info" && brand !== "blue") reasons.push("синий не бренд исходника → инфо; если это второй акцент — поправьте");
       if (s.dark) reasons.push("есть значение в тёмной теме — учтено");
+      const chosen = scored[0] ? targets.find((t) => t.key === scored[0].key) : undefined;
+      if (chosen && isThemeIndependent(chosen)) reasons.push("выбран токен, который не меняется с темой — исходник здесь тоже не меняется");
       if (!scored.length) reasons.push("в продукте нет токена для этого места — кандидат в предложения");
       const conf = scored.length ? confidence(best, second) : "low";
       proposals.push({

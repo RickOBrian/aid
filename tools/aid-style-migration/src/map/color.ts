@@ -53,9 +53,26 @@ export function chroma(c: Rgba): number {
   return Math.hypot(a, b);
 }
 
-/** Нейтральный — серые, белый, чёрный: у них роль задаёт светлота, а не оттенок. */
+/** Насыщенность HSL 0…1: у пастели при низкой «цветности» Lab она высокая. */
+export function saturation(c: Rgba): number {
+  const max = Math.max(c.r, c.g, c.b);
+  const min = Math.min(c.r, c.g, c.b);
+  const l = (max + min) / 2;
+  const d = max - min;
+  if (d === 0) return 0;
+  return d / (1 - Math.abs(2 * l - 1));
+}
+
+/**
+ * Нейтральный — серые, белый, чёрный: у них роль задаёт светлота, а не
+ * оттенок. Пастельная подложка (#F9EDFC) по «цветности» Lab почти серая,
+ * но насыщенность у неё высокая — это тинт, а не серый (Flot Tasks:
+ * цветные кружки опций стали серыми).
+ */
 export function isNeutral(c: Rgba): boolean {
-  return chroma(c) < 12;
+  const ch = chroma(c);
+  if (ch < 3) return true;
+  return ch < 12 && saturation(c) < 0.35;
 }
 
 export type HueFamily = "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink";

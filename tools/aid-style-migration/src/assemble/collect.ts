@@ -80,19 +80,66 @@ export async function facts(node: SceneNode, page: PageNode): Promise<ScreenFact
   };
 }
 
-/** Локальная коллекция с режимами «светлый / тёмный»; при нескольких — самая большая. */
-export async function findThemeCollection(): Promise<{ collection: VariableCollection; info: ThemeCollectionInfo; darkModeId: string } | null> {
-  let best: { collection: VariableCollection; info: ThemeCollectionInfo; darkModeId: string } | null = null;
-  for (const collection of await figma.variables.getLocalVariableCollectionsAsync()) {
+type ThemeCollection = { collection: VariableCollection; info: ThemeCollectionInfo; darkModeId: string };
+
+/**
+ * Коллекции, переменные которых реально привязаны на экранах, — с числом
+ * привязок. Исходник может жить на библиотечных переменных, а не на
+ * локальных (Flot Tasks: `tx-*` из библиотеки, «Было · тёмная» из
+ * локальной коллекции ничем не отличалась от светлой).
+ */
+export async function usedCollections(screens: SceneNode[], nodeLimit = 3000): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  const collectionOf = new Map<string, string | null>();
+  let seen = 0;
+  for (const screen of screens) {
+    const nodes = "findAll" in screen ? [screen, ...screen.findAll()] : [screen];
+    for (const n of nodes) {
+      if (++seen > nodeLimit) return counts;
+      const bound = ("boundVariables" in n ? n.boundVariables : undefined) as Record<string, VariableAlias | VariableAlias[] | undefined> | undefined;
+      for (const value of Object.values(bound ?? {})) {
+        for (const alias of Array.isArray(value) ? value : value ? [value] : []) {
+          if (!collectionOf.has(alias.id)) {
+            const v = await figma.variables.getVariableByIdAsync(alias.id);
+            collectionOf.set(alias.id, v ? v.variableCollectionId : null);
+          }
+          const c = collectionOf.get(alias.id);
+          if (c) counts.set(c, (counts.get(c) ?? 0) + 1);
+        }
+      }
+    }
+  }
+  return counts;
+}
+
+/**
+ * Коллекция темы исходника: режимы «светлый / тёмный». Кандидаты —
+ * коллекции, реально используемые на экранах (в том числе библиотечные),
+ * и локальные; выигрывает самая используемая, при равенстве — самая
+ * большая.
+ */
+export async function findThemeCollection(used: Map<string, number> = new Map()): Promise<ThemeCollection | null> {
+  const candidates = new Map<string, VariableCollection>();
+  for (const c of await figma.variables.getLocalVariableCollectionsAsync()) candidates.set(c.id, c);
+  for (const id of used.keys()) {
+    if (candidates.has(id)) continue;
+    try {
+      const c = await figma.variables.getVariableCollectionByIdAsync(id);
+      if (c) candidates.set(id, c);
+    } catch {
+      // коллекция недоступна — пропускаем
+    }
+  }
+  let best: ThemeCollection | null = null;
+  let bestScore = -1;
+  for (const collection of candidates.values()) {
     const dark = collection.modes.find((m) => hasDarkWord(m.name));
     const light = collection.modes.find((m) => !hasDarkWord(m.name));
     if (!dark || !light) continue;
-    if (!best || collection.variableIds.length > best.collection.variableIds.length) {
-      best = {
-        collection,
-        info: { name: collection.name, lightMode: light.name, darkMode: dark.name },
-        darkModeId: dark.modeId,
-      };
+    const score = (used.get(collection.id) ?? 0) * 1000 + collection.variableIds.length;
+    if (score > bestScore) {
+      bestScore = score;
+      best = { collection, info: { name: collection.name, lightMode: light.name, darkMode: dark.name }, darkModeId: dark.modeId };
     }
   }
   return best;
@@ -152,7 +199,9 @@ export async function scan(scope: ScanScope): Promise<ScanResult> {
     });
   }
 
-  const theme = await findThemeCollection();
+  const sampled = await Promise.all(screens.slice(0, 5).map((f) => figma.getNodeByIdAsync(f.id)));
+  const used = await usedCollections(sampled.filter((n): n is SceneNode => Boolean(n) && n!.type !== "PAGE" && n!.type !== "DOCUMENT"));
+  const theme = await findThemeCollection(used);
   return { pages: [...byPage.values()], skipped, skippedTotal, themeCollection: theme ? theme.info : null };
 }
 

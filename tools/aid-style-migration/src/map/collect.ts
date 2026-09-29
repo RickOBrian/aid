@@ -9,7 +9,7 @@
  */
 
 import { KEY_PAIR, KEY_ROLE, KEY_SECTION, KEY_SOURCE } from "../assemble/build";
-import { findThemeCollection } from "../assemble/collect";
+import { findThemeCollection, usedCollections } from "../assemble/collect";
 import { isAnnotationName, outside } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { WORK_PAGE_NAME } from "../lib/workPage";
@@ -240,7 +240,7 @@ export async function collectAtoms(report: (done: number, total: number) => void
   const darkByLight = new Map<string, SceneNode>();
   for (const s of sections) for (const n of s.children) if (n.getPluginData(KEY_PAIR)) darkByLight.set(n.getPluginData(KEY_PAIR), n);
 
-  const theme = await findThemeCollection();
+  const theme = await findThemeCollection(await usedCollections(cells.slice(0, 5)));
   const collector = new Collector(theme ? { collectionId: theme.collection.id, darkModeId: theme.darkModeId } : null);
   const prevSkip = figma.skipInvisibleInstanceChildren;
   figma.skipInvisibleInstanceChildren = true;

@@ -5,7 +5,7 @@
  */
 
 import { findOrCreateWorkPage, WORK_PAGE_NAME } from "../lib/workPage";
-import { findThemeCollection } from "./collect";
+import { findThemeCollection, usedCollections } from "./collect";
 import { DEFAULT_LAYOUT, layoutTiles } from "./layout";
 import type { AssemblePage, AssembleRequest, AssembleRow } from "./types";
 
@@ -144,7 +144,11 @@ async function buildSection(
   suffix: string,
   progress: () => void,
 ): Promise<SectionNode> {
-  const theme = request.darkFromTheme ? await findThemeCollection() : null;
+  let theme: Theme = null;
+  if (request.darkFromTheme) {
+    const sources = await Promise.all(page.rows.slice(0, 5).map((r) => node(r.lightId)));
+    theme = await findThemeCollection(await usedCollections(sources.filter((n): n is SceneNode => n !== null)));
+  }
   const rows = await Promise.all(page.rows.map((r) => rowCells(r, theme, Boolean(request.withAfter))));
   const layout = layoutTiles(
     rows.map((cells) => cells.map((c) => ({ width: c.source.width, height: c.source.height }))),

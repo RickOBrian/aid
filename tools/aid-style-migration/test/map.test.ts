@@ -212,3 +212,28 @@ describe("иерархия текста на данных Flot Tasks", () => {
     expect(pick("sb24")).toBe("Title Large");
   });
 });
+
+describe("находки Flot Tasks, этап 3b", () => {
+  it("пастельная подложка — не серый, серо-голубой фон — серый", () => {
+    expect(isNeutral(hex("#F9EDFC"))).toBe(false);
+    expect(isNeutral(hex("#EDF9F3"))).toBe(false);
+    expect(isNeutral(hex("#F6F6F9"))).toBe(true);
+    expect(isNeutral(hex("#8F8FA3"))).toBe(true);
+  });
+
+  it("текст не уходит в токен вне темы, если есть токен, который меняется с темой", () => {
+    const targets = [
+      tgt("Texts/Primary Dark Ind", "#000000", "#000000"),
+      tgt("Texts/Primary", "#1C1B1F", "#F2F2F2"),
+      tgt("Texts/Secondary", "#6B6B6B", "#A0A0A0"),
+    ];
+    const out = mapColors([src("t", "text", "#242429", 100)], targets);
+    expect(out[0].target?.name).toBe("Texts/Primary");
+  });
+
+  it("если исходник сам не меняется с темой — токен вне темы допустим", () => {
+    const targets = [tgt("Texts/Primary Light Ind", "#FFFFFF", "#FFFFFF"), tgt("Texts/Primary", "#1C1B1F", "#F2F2F2")];
+    const out = mapColors([src("onAccent", "text", "#FFFFFF", 30, "#FFFFFF")], targets);
+    expect(out[0].target?.name).toBe("Texts/Primary Light Ind");
+  });
+});
