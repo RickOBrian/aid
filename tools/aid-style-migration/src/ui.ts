@@ -7,6 +7,7 @@ import type { CodeToUi } from "./messages";
 import { assembleHandlers, initAssemble } from "./ui/assemblePanel";
 import { el } from "./ui/dom";
 import { initProbes, probeHandlers } from "./ui/probesPanel";
+import { initMap, mapHandlers } from "./ui/mapPanel";
 import { initProduct, productHandlers } from "./ui/productPanel";
 
 let fileName = "";
@@ -19,14 +20,18 @@ initAssemble(setStatus);
 initProbes(setStatus, () => fileName);
 initProduct(setStatus);
 
-function showTab(tab: "assemble" | "product"): void {
-  el("tab-btn-assemble").setAttribute("aria-pressed", String(tab === "assemble"));
-  el("tab-btn-product").setAttribute("aria-pressed", String(tab === "product"));
-  el("tab-assemble").hidden = tab !== "assemble";
+initMap(setStatus);
+
+type Tab = "assemble" | "map" | "product";
+function showTab(tab: Tab): void {
+  for (const t of ["assemble", "map", "product"] as Tab[]) {
+    el(`tab-btn-${t}`).setAttribute("aria-pressed", String(t === tab));
+    el(`tab-${t}`).hidden = t !== tab;
+  }
   el("assemble-footer").hidden = tab !== "assemble";
-  el("tab-product").hidden = tab !== "product";
 }
 el("tab-btn-assemble").addEventListener("click", () => showTab("assemble"));
+el("tab-btn-map").addEventListener("click", () => showTab("map"));
 el("tab-btn-product").addEventListener("click", () => showTab("product"));
 
 window.onmessage = (event: MessageEvent) => {
@@ -81,6 +86,12 @@ window.onmessage = (event: MessageEvent) => {
     case "index-progress":
       productHandlers.progress(message.title);
       break;
+    case "style-map":
+      mapHandlers.map(message.map);
+      break;
+    case "style-map-progress":
+      setStatus(`Карта стиля: ${message.title}…`);
+      break;
     case "notice":
       setStatus(message.message);
       break;
@@ -88,6 +99,7 @@ window.onmessage = (event: MessageEvent) => {
       setStatus(`Ошибка: ${message.message}`);
       probeHandlers.failed();
       assembleHandlers.failed();
+      mapHandlers.failed();
       break;
   }
 };

@@ -11,8 +11,10 @@ import type { AssemblePage, AssembleRequest, AssembleRow } from "./types";
 
 /** Метки pluginData. Префикс — чтобы не спутать с чужими ключами. */
 export const KEY_SECTION = "sm:section";
-const KEY_ROLE = "sm:role";
-const KEY_SOURCE = "sm:source";
+export const KEY_ROLE = "sm:role";
+export const KEY_SOURCE = "sm:source";
+/** У настоящей тёмной пары — id исходного светлого экрана: так карта стиля находит двойника. */
+export const KEY_PAIR = "sm:pair";
 
 type Role = "before-light" | "before-dark";
 
@@ -76,6 +78,8 @@ interface Cell {
   caption: string;
   /** Коллекция и режим, если ячейка — копия в тёмном режиме темы исходника. */
   mode?: { collection: VariableCollection; modeId: string };
+  /** id светлого исходника, если ячейка — его настоящая тёмная пара. */
+  pairOf?: string;
 }
 
 type Theme = Awaited<ReturnType<typeof findThemeCollection>>;
@@ -93,7 +97,7 @@ async function rowCells(row: AssembleRow, theme: Theme): Promise<Cell[]> {
   if (image) cells.push({ source: image, role: "before-light", caption: "Было · картинка" });
   if (light) cells.push({ source: light, role: "before-light", caption: "Было" });
   if (dark) {
-    cells.push({ source: dark, role: "before-dark", caption: "Было · тёмная" });
+    cells.push({ source: dark, role: "before-dark", caption: "Было · тёмная", pairOf: light?.id });
   } else if (light && theme) {
     cells.push({
       source: light,
@@ -114,6 +118,7 @@ function place(section: SectionNode, cell: Cell, x: number, y: number): SceneNod
   copy.setPluginData(KEY_ROLE, cell.role);
   copy.setPluginData(KEY_SOURCE, cell.source.id);
   if (cell.mode) copy.setExplicitVariableModeForCollection(cell.mode.collection, cell.mode.modeId);
+  if (cell.pairOf) copy.setPluginData(KEY_PAIR, cell.pairOf);
   return copy;
 }
 

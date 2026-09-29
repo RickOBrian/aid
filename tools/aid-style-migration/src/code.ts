@@ -3,13 +3,15 @@
  *
  * Этап 1 — сборка: найти экраны в выбранной области, свести тёмные пары,
  * разложить копии на странице «AID Migration» плитками «было».
- * Этап 2a — профиль продукта: материалы, индекс открытого файла, тема.
+ * Этап 2 — профиль продукта: материалы (открытый файл и ссылки), тема.
+ * Этап 3a — карта стиля: анализ перевода на токены продукта, без изменений.
  * Исходные страницы не меняются. Проверки API этапа 0 — в «Диагностике».
  */
 
 import { assemble, disassemble, existingSections } from "./assemble/build";
 import { pairFromSelection, scan, thumbnail } from "./assemble/collect";
 import { WORK_PAGE_NAME } from "./lib/workPage";
+import { buildStyleMap } from "./map/styleMap";
 import type { CodeToUi, UiToCode } from "./messages";
 import { runReadProbes } from "./probes/readProbes";
 import { runWriteProbes } from "./probes/writeProbes";
@@ -146,6 +148,12 @@ async function handle(message: UiToCode): Promise<void> {
       const result = await profiles.importProfile(message.text);
       if ("error" in result) post({ type: "notice", message: result.error });
       else post({ type: "profile-state", state: result });
+      return;
+    }
+
+    case "style-map": {
+      const map = await buildStyleMap((title) => post({ type: "style-map-progress", title }));
+      post({ type: "style-map", map });
       return;
     }
 

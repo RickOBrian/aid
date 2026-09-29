@@ -542,6 +542,83 @@
         padding: 4px 0;
       }
 
+      .ds-fold > summary {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        color: var(--ds-text);
+        padding: 4px 0;
+      }
+
+      .ds-map-row {
+        display: grid;
+        grid-template-columns: 1fr 16px 1fr;
+        gap: 8px;
+        align-items: start;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--ds-line-subtle);
+      }
+
+      .ds-map-side {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .ds-map-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .ds-map-line > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .ds-map-arrow {
+        color: var(--ds-text-muted);
+        padding-top: 2px;
+      }
+
+      .ds-map-why {
+        grid-column: 1 / -1;
+        font-size: 12px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-swatch {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid var(--ds-line-control);
+        background-image: conic-gradient(var(--ds-surface-checker) 25%, var(--ds-surface-checker-base) 0 50%, var(--ds-surface-checker) 0 75%, var(--ds-surface-checker-base) 0);
+        background-size: 8px 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ds-swatch > i {
+        position: absolute;
+        inset: 0;
+      }
+
+      .ds-swatch--none {
+        background-image: none;
+        border-style: dashed;
+      }
+
+      .ds-map-group {
+        margin: 12px 0 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ds-text-secondary);
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -556,7 +633,28 @@
 
       <div class="ds-segment" role="tablist" aria-label="Разделы">
         <button type="button" role="tab" id="tab-btn-assemble" aria-pressed="true">Сборка</button>
+        <button type="button" role="tab" id="tab-btn-map" aria-pressed="false">Карта стиля</button>
         <button type="button" role="tab" id="tab-btn-product" aria-pressed="false">Продукт</button>
+      </div>
+
+      <div class="ds-scroll" id="tab-map" hidden>
+        <section class="ds-card" aria-labelledby="map-title">
+          <h2 id="map-title">Карта стиля</h2>
+          <p class="ds-hint">
+            Только анализ — ничего не меняет. Читает собранное «Было» на странице «AID Migration» и
+            предлагает перевод на токены продукта: по роли, а не по похожему значению.
+          </p>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="map-build" type="button">Построить карту</button>
+          </div>
+          <p class="ds-hint" id="map-summary"></p>
+          <div class="ds-segment" role="group" aria-label="Фильтр" id="map-filter" hidden>
+            <button type="button" data-filter="all" aria-pressed="true">Все</button>
+            <button type="button" data-filter="doubt" aria-pressed="false">Спорные</button>
+            <button type="button" data-filter="gap" aria-pressed="false">Нет в продукте</button>
+          </div>
+        </section>
+        <div id="map-sections"></div>
       </div>
 
       <div class="ds-scroll" id="tab-product" hidden>
@@ -582,7 +680,8 @@
           <h2 id="materials-title">Материалы</h2>
           <div id="materials-list"></div>
           <div class="ds-hint" id="missing-list"></div>
-          <h2>Добавить по ссылкам</h2>
+          <details class="ds-fold" id="add-links">
+          <summary>Добавить по ссылкам</summary>
           <p class="ds-hint">
             Библиотеки продукта — токены и стили, компоненты, иконки — из любого файла, без открытия.
             Вид можно оставить «определить сам».
@@ -608,8 +707,10 @@
               <button class="ds-link" id="pat-clear" type="button">удалить</button>
             </div>
           </details>
+          </details>
 
-          <h2>Добавить из открытого файла</h2>
+          <details class="ds-fold" id="add-open">
+          <summary>Добавить из открытого файла</summary>
           <p class="ds-hint">
             Откройте в Figma файл библиотеки и запустите плагин в нём: плагин прочитает файл один раз
             и запомнит. Индекс хранится в плагине и доступен в любом файле с макетами.
@@ -624,6 +725,7 @@
               <button class="ds-btn ds-btn-primary" id="index-file" type="button">Проиндексировать</button>
             </div>
           </div>
+          </details>
         </section>
 
         <section class="ds-card" id="theme-card" aria-labelledby="theme-title" hidden>

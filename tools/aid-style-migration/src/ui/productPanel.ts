@@ -141,6 +141,11 @@ function render(state: ProfileState): void {
 
   const profile = state.active;
   el("materials-card").hidden = !profile;
+  // Пока материалов нет — блоки добавления раскрыты; когда профиль собран, свёрнуты.
+  if (profile && profile.materials.length === 0) {
+    (el("add-links") as HTMLDetailsElement).open = true;
+    (el("add-open") as HTMLDetailsElement).open = true;
+  }
   if (profile) {
     el("materials-list").replaceChildren(
       ...(profile.materials.length
