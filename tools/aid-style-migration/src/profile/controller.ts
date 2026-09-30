@@ -168,10 +168,10 @@ async function languageState(profile: ProductProfile): Promise<Pick<ProfileState
 export async function learn(scope: ExemplarScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
   const profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
-  const { source, thumbs } = await learnOpenFile(scope, report);
+  const { source, thumbs, shots } = await learnOpenFile(scope, report);
   if (source.screens === 0) return { state: await state(), screens: 0 };
   await store.saveLanguageSources(profile.id, upsertSource(await store.getLanguageSources(profile.id), source));
-  await store.saveThumbs(profile.id, thumbs);
+  await store.saveThumbs(profile.id, thumbs, shots);
   return { state: await state(), screens: source.screens };
 }
 
@@ -191,7 +191,8 @@ export async function board(questionId: string | null, report: (title: string) =
   if (!profile) throw new Error("Сначала создайте продукт");
   const { questions, answers } = await languageState(profile);
   if (!questions.length) throw new Error("Вопросов нет — сначала изучите образцы");
-  await buildBoard(profile.name, questions, answers, (nodeId) => store.getThumb(profile.id, nodeId), questionId, report);
+  const images = { thumb: (nodeId: string) => store.getThumb(profile.id, nodeId), shot: (screenId: string) => store.getShot(profile.id, screenId) };
+  await buildBoard(profile.name, questions, answers, images, questionId, report);
 }
 
 export async function forgetLanguageSource(fileName: string): Promise<ProfileState> {

@@ -27,6 +27,7 @@ const BASE: Record<string, string> = {
   "text/secondary": "Вторичный текст",
   "text/tertiary": "Третичный текст",
   "text/status": "Текст статуса",
+  "text/on-color": "Текст на цвете",
   "icon/primary": "Основная иконка",
   "icon/secondary": "Вторичная иконка",
   "icon/tertiary": "Третичная иконка",

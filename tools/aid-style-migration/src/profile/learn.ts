@@ -15,60 +15,116 @@ import { LanguageLearner, type LanguageSource } from "../core/language";
 import { roots } from "./exemplars";
 import { EXEMPLAR_LIMIT, sample, type ExemplarScope } from "./usage";
 
-/** Картинок примеров за одно изучение — хватает на доски вопросов, не раздувая хранилище. */
-const THUMB_LIMIT = 150;
-/** Длинная сторона картинки примера, px. */
-const THUMB_SIZE = 240;
+/**
+ * Картинки примеров для досок вопросов (замечание Principal Designer:
+ * цветной прямоугольник решения не даёт — нужен элемент в окружении и
+ * экран). Сначала — примеры спорных правил и отступлений, потом по одному
+ * на остальные значения. Лимиты держат хранилище плагина в пределах.
+ */
+const CROP_LIMIT = 200;
+const SHOT_LIMIT = 80;
+/** Длинная сторона картинки окружения, px; мельче — текст не читается. */
+const CROP_SIZE = 320;
+/** Ширина мини-экрана, px. */
+const SHOT_WIDTH = 120;
 
+export interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** Элемент в окружении: картинка и где на ней сам элемент (для рамки). */
 export interface Thumb {
   nodeId: string;
+  screenId: string;
   png: Uint8Array;
+  box: Box;
+  /** Где элемент на мини-экране. */
+  screenBox: Box;
+}
+
+export interface Shot {
+  screenId: string;
+  jpg: Uint8Array;
 }
 
 /**
- * Что показать как пример: заливку — сам элемент; подпись и иконку —
- * элемент, которому они принадлежат (кнопку, чип), чтобы было видно
- * контекст. Поднимаемся не выше трёх уровней и не до экрана.
+ * Окружение элемента: поднимаемся, пока он мельче строки или карточки
+ * (160×48), но не выше пяти уровней и не до самого экрана.
  */
-function context(node: SceneNode, screenIds: Set<string>): SceneNode {
+function context(node: SceneNode, screenId: string): SceneNode {
   let n: SceneNode = node;
-  for (let i = 0; i < 3 && (n.type === "TEXT" || n.width < 40 || n.height < 24); i++) {
+  for (let i = 0; i < 5 && (n.width < 160 || n.height < 48); i++) {
     const p = n.parent;
-    if (!p || p.type === "PAGE" || p.type === "DOCUMENT" || p.type === "SECTION" || screenIds.has(p.id)) break;
+    if (!p || p.type === "PAGE" || p.type === "DOCUMENT" || p.type === "SECTION" || p.id === screenId) break;
     n = p as SceneNode;
   }
   return n;
 }
 
-async function thumbs(source: LanguageSource, screenIds: Set<string>, report: (done: number, total: number) => void): Promise<Thumb[]> {
-  const ids: string[] = [];
-  for (const r of source.rules) for (const v of r.values) if (v.examples[0] && !ids.includes(v.examples[0].nodeId)) ids.push(v.examples[0].nodeId);
-  const chosen = ids.slice(0, THUMB_LIMIT);
-  const out: Thumb[] = [];
-  for (let i = 0; i < chosen.length; i++) {
-    const node = await figma.getNodeByIdAsync(chosen[i]);
-    if (node && "exportAsync" in node && node.type !== "PAGE") {
-      const target = context(node as SceneNode, screenIds);
-      const long = Math.max(target.width, target.height);
-      try {
-        const png = await target.exportAsync({
-          format: "PNG",
-          constraint: long > THUMB_SIZE ? { type: target.width >= target.height ? "WIDTH" : "HEIGHT", value: THUMB_SIZE } : { type: "SCALE", value: 1 },
-        });
-        out.push({ nodeId: chosen[i], png });
-      } catch {
-        // Не отрисовалось (пустая группа, огромный узел) — пример останется без картинки.
-      }
-    }
-    report(i + 1, chosen.length);
+function pickExamples(source: LanguageSource): Array<{ nodeId: string; screenId: string }> {
+  const out: Array<{ nodeId: string; screenId: string }> = [];
+  const add = (e: { nodeId: string; screenId: string } | undefined) => {
+    if (e && !out.some((x) => x.nodeId === e.nodeId)) out.push({ nodeId: e.nodeId, screenId: e.screenId });
+  };
+  // Спор и отступления — всё, что будет на досках вопросов.
+  for (const r of source.rules) {
+    if (r.values.length < 2) continue;
+    for (const v of r.values) for (const e of v.examples) add(e);
   }
-  return out;
+  for (const r of source.rules) for (const v of r.values) add(v.examples[0]);
+  return out.slice(0, CROP_LIMIT);
+}
+
+function rel(inner: Rect, outer: Rect, scale: number): Box {
+  return { x: (inner.x - outer.x) * scale, y: (inner.y - outer.y) * scale, w: inner.width * scale, h: inner.height * scale };
+}
+
+async function thumbs(source: LanguageSource, report: (title: string) => void): Promise<{ thumbs: Thumb[]; shots: Shot[] }> {
+  const chosen = pickExamples(source);
+  const out: Thumb[] = [];
+  const shotIds: string[] = [];
+  for (let i = 0; i < chosen.length; i++) {
+    report(`примеры ${i + 1} из ${chosen.length}`);
+    const { nodeId, screenId } = chosen[i];
+    const node = await figma.getNodeByIdAsync(nodeId);
+    const screen = await figma.getNodeByIdAsync(screenId);
+    if (!node || !screen || !("exportAsync" in node) || node.type === "PAGE" || !("absoluteBoundingBox" in screen)) continue;
+    const el = node as SceneNode;
+    const target = context(el, screenId);
+    const bounds = ("absoluteRenderBounds" in target ? target.absoluteRenderBounds : null) ?? target.absoluteBoundingBox;
+    const own = el.absoluteBoundingBox;
+    const screenBounds = (screen as SceneNode).absoluteBoundingBox;
+    if (!bounds || !own || !screenBounds) continue;
+    const scale = Math.min(1.5, CROP_SIZE / Math.max(bounds.width, bounds.height));
+    try {
+      const png = await target.exportAsync({ format: "PNG", constraint: { type: "SCALE", value: scale } });
+      out.push({ nodeId, screenId, png, box: rel(own, bounds, scale), screenBox: rel(own, screenBounds, SHOT_WIDTH / screenBounds.width) });
+      if (!shotIds.includes(screenId) && shotIds.length < SHOT_LIMIT) shotIds.push(screenId);
+    } catch {
+      // Не отрисовалось (пустая группа, огромный узел) — пример останется без картинки.
+    }
+  }
+  const shots: Shot[] = [];
+  for (let i = 0; i < shotIds.length; i++) {
+    report(`экраны примеров ${i + 1} из ${shotIds.length}`);
+    const screen = (await figma.getNodeByIdAsync(shotIds[i])) as SceneNode | null;
+    if (!screen || !("exportAsync" in screen)) continue;
+    try {
+      shots.push({ screenId: shotIds[i], jpg: await screen.exportAsync({ format: "JPG", constraint: { type: "WIDTH", value: SHOT_WIDTH } }) });
+    } catch {
+      // экран без картинки — пример покажется без мини-экрана
+    }
+  }
+  return { thumbs: out, shots };
 }
 
 export async function learnOpenFile(
   scope: ExemplarScope,
   report: (title: string) => void,
-): Promise<{ source: LanguageSource; thumbs: Thumb[] }> {
+): Promise<{ source: LanguageSource; thumbs: Thumb[]; shots: Shot[] }> {
   const screens: Array<{ node: SceneNode; dark: boolean }> = [];
   for (const { node, page } of roots(scope)) {
     const f = await facts(node, page);
@@ -92,6 +148,5 @@ export async function learnOpenFile(
     figma.skipInvisibleInstanceChildren = prevSkip;
   }
   const source = learner.source(figma.root.name, new Date().toISOString(), screens.length);
-  const screenIds = new Set(chosen.map((c) => c.node.id));
-  return { source, thumbs: await thumbs(source, screenIds, (done, total) => report(`примеры ${done} из ${total}`)) };
+  return { source, ...(await thumbs(source, report)) };
 }

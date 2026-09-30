@@ -54,9 +54,14 @@ export interface RuleValue {
   token: TokenRef | null;
   /** Первый встреченный цвет — различает значения без токена. */
   hex: string;
-  /** Цвет, как он выглядит в светлых и в тёмных экранах образцов. */
+  /** Цвет, как он чаще всего выглядит в светлых и в тёмных экранах образцов. */
   hexLight?: string;
   hexDark?: string;
+  /** Поверхность под элементом — чаще всего, по теме: для образца текста на настоящем фоне. */
+  surfaceLight?: string;
+  surfaceDark?: string;
+  /** Счётчики цветов и поверхностей по теме — из них выбирается самое частое. */
+  tally?: Partial<Record<"hexLight" | "hexDark" | "surfaceLight" | "surfaceDark", Record<string, number>>>;
   count: number;
   /** Сколько раз в светлых и в тёмных экранах. */
   light: number;
@@ -213,13 +218,10 @@ export class LanguageLearner {
         rule.values.push(value);
       }
       value.count++;
-      if (meta.dark) {
-        value.dark++;
-        value.hexDark ??= hex;
-      } else {
-        value.light++;
-        value.hexLight ??= hex;
-      }
+      if (meta.dark) value.dark++;
+      else value.light++;
+      countTally(value, meta.dark ? "hexDark" : "hexLight", hex);
+      countTally(value, meta.dark ? "surfaceDark" : "surfaceLight", toHex(hit.surface));
       if (value.examples.length < EXAMPLES_PER_VALUE && !value.examples.some((e) => e.screenId === meta.screenId)) {
         value.examples.push({ screenId: meta.screenId, screenName: meta.screenName, nodeId: hit.nodeId, nodeName: hit.nodeName });
       }
@@ -257,6 +259,20 @@ export class LanguageLearner {
       rules: finish([...this.rules.values()]),
     };
   }
+}
+
+type TallyKey = "hexLight" | "hexDark" | "surfaceLight" | "surfaceDark";
+
+/**
+ * Считаем цвет по теме и держим самое частое в поле. Первый встреченный
+ * врёт: на тёмных экранах `Texts/Primary` белый 361 раз и чёрный 14 (на
+ * светлых вставках) — показать надо белый.
+ */
+function countTally(value: RuleValue, key: TallyKey, hex: string, by = 1): void {
+  const tally = (value.tally ??= {});
+  const m = (tally[key] ??= {});
+  m[hex] = (m[hex] ?? 0) + by;
+  value[key] = Object.entries(m).sort((a, b) => b[1] - a[1])[0][0];
 }
 
 // ---------------------------------------------------------------------------
@@ -310,8 +326,9 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
           found.count += v.count;
           found.light += v.light;
           found.dark += v.dark;
-          found.hexLight ??= v.hexLight;
-          found.hexDark ??= v.hexDark;
+          for (const [k, m] of Object.entries(v.tally ?? {}) as Array<[TallyKey, Record<string, number>]>) {
+            for (const [hex, n] of Object.entries(m)) countTally(found, k, hex, n);
+          }
           for (const [f, m] of Object.entries(v.features ?? {}) as Array<[Feature, Record<string, number>]>) {
             const into2 = (found.features[f] ??= {});
             for (const [k, n] of Object.entries(m)) into2[k] = (into2[k] ?? 0) + n;
@@ -323,6 +340,7 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
             ...v,
             examples: [...v.examples],
             features: Object.fromEntries(Object.entries(v.features ?? {}).map(([f, m]) => [f, { ...m }])),
+            tally: Object.fromEntries(Object.entries(v.tally ?? {}).map(([k, m]) => [k, { ...m }])),
             labels: [...(v.labels ?? [])],
           });
         }

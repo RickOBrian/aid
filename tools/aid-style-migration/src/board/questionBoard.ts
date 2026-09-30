@@ -11,6 +11,8 @@
 
 import { type Answer, isOpen, type Question } from "../core/questions";
 import type { RuleValue } from "../core/language";
+import type { Layer } from "../core/roles";
+import type { Box, Thumb } from "../profile/learn";
 import { roleLabel } from "../core/roleLabels";
 import { LANGUAGE_PAGE_NAME } from "../lib/workPage";
 
@@ -18,8 +20,14 @@ const KEY_BOARD = "sm:board";
 const BOARD_WIDTH = 1280;
 const PAD = 40;
 const GAP = 120;
-const CARD_WIDTH = 300;
+const CARD_WIDTH = 580;
 const IMAGE_WIDTH = CARD_WIDTH - 32;
+const MARK = { r: 1, g: 0.23, b: 0.19 };
+
+export interface BoardImages {
+  thumb: (nodeId: string) => Promise<Thumb | null>;
+  shot: (screenId: string) => Promise<Uint8Array | null>;
+}
 
 const INK = { r: 0.11, g: 0.11, b: 0.12 };
 const MUTED = { r: 0.42, g: 0.42, b: 0.45 };
@@ -62,6 +70,17 @@ function rgb(hex: string): RGB | null {
   return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
 }
 
+/** Прозрачность из #RRGGBBAA; нет — 1. */
+function alpha(hex: string): number {
+  const m = /^#?[0-9a-f]{6}([0-9a-f]{2})$/i.exec(hex);
+  return m ? parseInt(m[1], 16) / 255 : 1;
+}
+
+function paint(hex: string): SolidPaint | null {
+  const color = rgb(hex);
+  return color ? { type: "SOLID", color, opacity: alpha(hex) } : null;
+}
+
 function stack(mode: "VERTICAL" | "HORIZONTAL", name: string, gap: number, fill?: RGB): FrameNode {
   const f = figma.createFrame();
   f.name = name;
@@ -96,39 +115,92 @@ function text(parent: FrameNode, characters: string, fonts: Fonts, opts: { size?
   return t;
 }
 
-function swatch(parent: FrameNode, hex: string | undefined, caption: string, fonts: Fonts): void {
+/**
+ * Как выглядит значение на настоящем фоне, в одной теме: текст — надписью
+ * этим цветом, иконка — кружком, заливка — плашкой. Фон — поверхность, на
+ * которой значение чаще всего лежит в образцах этой темы.
+ */
+function specimen(parent: FrameNode, layer: Layer, hex: string | undefined, surface: string | undefined, sample: string, caption: string, fonts: Fonts): void {
   const box = column(caption, 6);
-  const r = figma.createRectangle();
-  r.resize(128, 56);
-  r.cornerRadius = 8;
-  const color = hex ? rgb(hex) : null;
-  if (color) {
-    r.fills = [{ type: "SOLID", color }];
-    r.strokes = [{ type: "SOLID", color: MUTED, opacity: 0.25 }];
+  const bg = figma.createFrame();
+  bg.name = `Образец · ${caption}`;
+  bg.resize((IMAGE_WIDTH - 16) / 2, 72);
+  bg.cornerRadius = 10;
+  const surfacePaint = surface ? paint(surface) : null;
+  bg.fills = surfacePaint ? [surfacePaint] : [];
+  bg.strokes = [{ type: "SOLID", color: MUTED, opacity: 0.25 }];
+  bg.layoutMode = "HORIZONTAL";
+  bg.primaryAxisAlignItems = "CENTER";
+  bg.counterAxisAlignItems = "CENTER";
+  bg.primaryAxisSizingMode = "FIXED";
+  bg.counterAxisSizingMode = "FIXED";
+  const p = hex ? paint(hex) : null;
+  if (!p) {
+    bg.dashPattern = [4, 4];
+    text(bg, "в образцах этой темы нет", fonts, { size: 12, color: MUTED });
+  } else if (layer === "text") {
+    const t = text(bg, sample, fonts, { size: 18 });
+    t.fills = [p];
+  } else if (layer === "icon") {
+    const dot = figma.createEllipse();
+    dot.resize(24, 24);
+    dot.fills = [p];
+    bg.appendChild(dot);
   } else {
-    r.fills = [];
-    r.strokes = [{ type: "SOLID", color: MUTED }];
-    r.dashPattern = [4, 4];
+    const plate = figma.createRectangle();
+    plate.resize(bg.width - 48, 40);
+    plate.cornerRadius = 8;
+    plate.fills = [p];
+    bg.appendChild(plate);
   }
-  r.strokeWeight = 1;
-  box.appendChild(r);
-  text(box, `${caption} · ${hex ?? "нет в образцах"}`, fonts, { size: 12, color: MUTED });
+  box.appendChild(bg);
+  text(box, `${caption} · ${hex ?? "—"}${surface ? ` на ${surface}` : ""}`, fonts, { size: 12, color: MUTED });
   parent.appendChild(box);
 }
 
-async function image(parent: FrameNode, png: Uint8Array): Promise<void> {
+/** Картинка с рамкой вокруг элемента: где он и как выглядит в окружении. */
+function marked(name: string, png: Uint8Array, width: number, height: number, box: Box): FrameNode {
+  const f = figma.createFrame();
+  f.name = name;
+  f.resize(Math.max(1, Math.round(width)), Math.max(1, Math.round(height)));
+  f.cornerRadius = 6;
+  f.clipsContent = true;
   const img = figma.createImage(png);
-  const { width, height } = await img.getSizeAsync();
-  const scale = Math.min(1, IMAGE_WIDTH / width);
+  f.fills = [{ type: "IMAGE", imageHash: img.hash, scaleMode: "FILL" }];
   const r = figma.createRectangle();
-  r.name = "Пример из образцов";
-  r.resize(Math.max(1, Math.round(width * scale)), Math.max(1, Math.round(height * scale)));
-  r.cornerRadius = 6;
-  r.fills = [{ type: "IMAGE", imageHash: img.hash, scaleMode: "FIT" }];
-  parent.appendChild(r);
+  r.name = "Элемент";
+  const pad = 3;
+  r.x = Math.max(0, box.x - pad);
+  r.y = Math.max(0, box.y - pad);
+  r.resize(Math.max(4, Math.min(width - r.x, box.w + pad * 2)), Math.max(4, Math.min(height - r.y, box.h + pad * 2)));
+  r.fills = [];
+  r.strokes = [{ type: "SOLID", color: MARK }];
+  r.strokeWeight = 2;
+  r.cornerRadius = 4;
+  f.appendChild(r);
+  return f;
 }
 
-async function valueCard(v: RuleValue, total: number, fonts: Fonts, thumb: (nodeId: string) => Promise<Uint8Array | null>): Promise<FrameNode> {
+async function example(parent: FrameNode, t: Thumb, screenName: string, images: BoardImages, fonts: Fonts): Promise<void> {
+  const line = row("Пример", 16);
+  const img = figma.createImage(t.png);
+  const size = await img.getSizeAsync();
+  const shotWidth = 120;
+  const maxCrop = IMAGE_WIDTH - shotWidth - 16;
+  const k = Math.min(1, maxCrop / size.width);
+  line.appendChild(marked("Элемент в окружении", t.png, size.width * k, size.height * k, { x: t.box.x * k, y: t.box.y * k, w: t.box.w * k, h: t.box.h * k }));
+  const shot = await images.shot(t.screenId);
+  if (shot) {
+    const s = await figma.createImage(shot).getSizeAsync();
+    const side = column("Экран", 4);
+    side.appendChild(marked("Экран", shot, s.width, s.height, t.screenBox));
+    text(side, screenName, fonts, { size: 11, color: MUTED, width: shotWidth });
+    line.appendChild(side);
+  }
+  parent.appendChild(line);
+}
+
+async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, images: BoardImages): Promise<FrameNode> {
   const card = column(v.token?.name ?? v.hex, 12, CARD);
   card.paddingTop = card.paddingBottom = card.paddingLeft = card.paddingRight = 16;
   card.cornerRadius = 12;
@@ -143,15 +215,21 @@ async function valueCard(v: RuleValue, total: number, fonts: Fonts, thumb: (node
       .join(", ");
     text(card, `${v.count} из ${total} · ${Math.round((v.count / total) * 100)} %${where ? ` · ${where}` : ""}`, fonts, { size: 13, color: MUTED, width: IMAGE_WIDTH });
   }
-  const swatches = row("Светлая и тёмная", 12);
-  swatch(swatches, v.hexLight, "Светлая", fonts);
-  swatch(swatches, v.hexDark, "Тёмная", fonts);
-  card.appendChild(swatches);
-  if (v.labels?.length) text(card, v.labels.map((l) => `«${l}»`).join(", "), fonts, { size: 13, width: IMAGE_WIDTH });
+  const sample = v.labels?.[0] ? `«${v.labels[0]}»` : "Пример текста";
+  const specimens = row("Светлая и тёмная", 16);
+  specimen(specimens, layer, v.hexLight, v.surfaceLight, sample, "Светлая", fonts);
+  specimen(specimens, layer, v.hexDark, v.surfaceDark, sample, "Тёмная", fonts);
+  card.appendChild(specimens);
+  if (v.labels?.length) text(card, `Подписи: ${v.labels.map((l) => `«${l}»`).join(", ")}`, fonts, { size: 13, width: IMAGE_WIDTH });
+  let shown = 0;
   for (const ex of v.examples ?? []) {
-    const png = await thumb(ex.nodeId);
-    if (png) await image(card, png);
+    const t = await images.thumb(ex.nodeId);
+    if (!t) continue;
+    if (!shown) text(card, "Примеры из образцов — элемент в рамке", fonts, { size: 13, bold: true, width: IMAGE_WIDTH });
+    await example(card, t, ex.screenName, images, fonts);
+    shown++;
   }
+  if (!shown && total > 0) text(card, "Картинок примеров нет — изучите образцы заново", fonts, { size: 12, color: MUTED, width: IMAGE_WIDTH });
   return card;
 }
 
@@ -164,7 +242,7 @@ async function questionFrame(
   answer: Answer | undefined,
   open: boolean,
   fonts: Fonts,
-  thumb: (nodeId: string) => Promise<Uint8Array | null>,
+  images: BoardImages,
 ): Promise<FrameNode> {
   const f = column(`Вопрос ${n} · ${roleLabel(q.role)}`, 16, { r: 1, g: 1, b: 1 });
   f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = PAD;
@@ -196,7 +274,7 @@ async function questionFrame(
     text(f, q.values.length ? "Как это в образцах" : "Подходящие токены библиотеки", fonts, { size: 18, bold: true, width: inner });
     const cards = row("Варианты", 24);
     const totalCount = q.values.reduce((s, v) => s + v.count, 0);
-    for (const v of values) cards.appendChild(await valueCard(v, totalCount, fonts, thumb));
+    for (const v of values) cards.appendChild(await valueCard(v, totalCount, q.layer, fonts, images));
     f.appendChild(cards);
     cards.layoutSizingHorizontal = "FILL";
     cards.layoutWrap = "WRAP";
@@ -228,7 +306,7 @@ export async function buildBoard(
   productName: string,
   questions: Question[],
   answers: Record<string, Answer>,
-  thumb: (nodeId: string) => Promise<Uint8Array | null>,
+  images: BoardImages,
   focusId: string | null,
   report: (title: string) => void,
 ): Promise<void> {
@@ -253,7 +331,7 @@ export async function buildBoard(
     const q = questions[i];
     report(`доска ${i + 1} из ${questions.length}`);
     const isOpenQ = isOpen(q, answers);
-    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, thumb);
+    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, images);
     page.appendChild(f);
     f.x = 0;
     f.y = y;

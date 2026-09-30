@@ -234,6 +234,10 @@ export function detectRoles(screen: NNode): ScreenRoles {
           const m = meaningOf(c);
           const statusLike = /^[+\-−–\d]/.test(chars) || m === "negative" || m === "positive" || m === "warning";
           hit(n, statusLike ? `text/status-${m}` : "link", "text", fill, ctx.surface);
+        } else if (!isNeutral(ctx.surface) && contrast(ctx.surface, screenBg) >= 1.8) {
+          // Текст на насыщенной цветной плитке («Меню», «Инфо») — своя роль:
+          // его цвет задаёт плитка, а не иерархия текста экрана.
+          hit(n, "text/on-color", "text", fill, ctx.surface);
         } else {
           const h = hit(n, "text/primary", "text", fill, ctx.surface);
           if (h) neutral.push({ hit: h, kind: "text", k: contrast(c, ctx.surface) });

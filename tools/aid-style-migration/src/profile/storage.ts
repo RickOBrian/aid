@@ -9,6 +9,7 @@
 
 import type { LanguageSource } from "../core/language";
 import type { Answer } from "../core/questions";
+import type { Shot, Thumb } from "./learn";
 import type { MaterialIndex, ProductProfile } from "./types";
 
 const KEYS = {
@@ -126,18 +127,37 @@ async function thumbIds(profileId: string): Promise<string[]> {
   return Array.isArray(value) ? (value as string[]) : [];
 }
 
-export async function saveThumbs(profileId: string, thumbs: Array<{ nodeId: string; png: Uint8Array }>): Promise<void> {
+/** clientStorage может вернуть байты не как Uint8Array — приводим. */
+function bytes(value: unknown): Uint8Array | null {
+  if (value instanceof Uint8Array) return value;
+  if (Array.isArray(value)) return new Uint8Array(value as number[]);
+  if (value && typeof value === "object") return new Uint8Array(Object.values(value as Record<string, number>));
+  return null;
+}
+
+/** Картинки примеров: ключ — узел примера (`n:`) или экран (`s:`). */
+export async function saveThumbs(profileId: string, thumbs: Thumb[], shots: Shot[]): Promise<void> {
   const ids = new Set(await thumbIds(profileId));
   for (const t of thumbs) {
-    await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}:${t.nodeId}`, t.png);
-    ids.add(t.nodeId);
+    await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}:n:${t.nodeId}`, t);
+    ids.add(`n:${t.nodeId}`);
+  }
+  for (const s of shots) {
+    await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}:s:${s.screenId}`, s);
+    ids.add(`s:${s.screenId}`);
   }
   await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}`, [...ids]);
 }
 
-export async function getThumb(profileId: string, nodeId: string): Promise<Uint8Array | null> {
-  const value = await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}:${nodeId}`);
-  return value instanceof Uint8Array ? value : null;
+export async function getThumb(profileId: string, nodeId: string): Promise<Thumb | null> {
+  const value = (await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}:n:${nodeId}`)) as Thumb | undefined;
+  const png = value ? bytes(value.png) : null;
+  return value && png ? { ...value, png } : null;
+}
+
+export async function getShot(profileId: string, screenId: string): Promise<Uint8Array | null> {
+  const value = (await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}:s:${screenId}`)) as Shot | undefined;
+  return value ? bytes(value.jpg) : null;
 }
 
 async function deleteThumbs(profileId: string): Promise<void> {
