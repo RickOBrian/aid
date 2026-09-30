@@ -68,6 +68,11 @@ export interface NNode {
   layout?: NLayout;
   text?: NText;
   component?: NComponent;
+  /**
+   * Цвет (заливка или обводка) переопределён в инстансе — решение автора
+   * макета, а не устройство компонента.
+   */
+  colorOverride?: boolean;
   children: NNode[];
 }
 

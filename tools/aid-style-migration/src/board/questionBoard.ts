@@ -70,8 +70,16 @@ class Camera {
   /** Файлы образцов, примеры из которых здесь не снять. */
   readonly elsewhere = new Set<string>();
 
-  /** Окружение: поднимаемся, пока элемент мельче строки или карточки, не выше 5 уровней и не до экрана. */
+  /**
+   * Окружение: ближайший инстанс крупнее иконки — элемент целиком, а не
+   * его кусок (кнопки собраны из кусков). Нет такого — поднимаемся, пока
+   * элемент мельче строки или карточки, не выше 5 уровней и не до экрана.
+   */
   private context(node: SceneNode, screenId: string): SceneNode {
+    for (let p: BaseNode | null = node; p && p.id !== screenId && p.type !== "PAGE" && p.type !== "DOCUMENT" && p.type !== "SECTION"; p = p.parent) {
+      const sn = p as SceneNode;
+      if (sn.type === "INSTANCE" && Math.max(sn.width, sn.height) > 32 && sn.height <= 400) return sn;
+    }
     let n: SceneNode = node;
     for (let i = 0; i < 5 && (n.width < 160 || n.height < 48); i++) {
       const p = n.parent;
@@ -556,6 +564,12 @@ async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts
       .map(([k, n]) => `${PLACE[k] ?? k} ${n}`)
       .join(", ");
     text(card, `${v.count} из ${total} · ${Math.round((v.count / total) * 100)} %${where ? ` · ${where}` : ""}`, fonts, { size: 13, color: MUTED, width: IMAGE_WIDTH });
+    const comps = Object.entries(v.features?.component ?? {})
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([k, n]) => `${k === "—" ? "нарисовано вручную" : k} ${n}`)
+      .join(", ");
+    if (comps) text(card, `Компоненты: ${comps}`, fonts, { size: 13, color: MUTED, width: IMAGE_WIDTH });
   }
   if (v.labels?.length) text(card, `Подписи: ${v.labels.map((l) => `«${l}»`).join(", ")}`, fonts, { size: 13, width: IMAGE_WIDTH });
   let shown = 0;

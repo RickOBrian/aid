@@ -17,7 +17,7 @@ import { relativeLuminance } from "../assemble/darkPairs";
 import { isHelperLayerName } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { hueFamily, isNeutral, type Rgba } from "../map/color";
-import { solidFill, solidStroke, texts, type NNode, type NPaint } from "./node";
+import { solidFill, solidStroke, texts, walk, type NNode, type NPaint } from "./node";
 
 export type ActionRole = "action-main" | "action-primary" | "action-secondary" | "action-disabled" | "action-destructive" | "action-floating";
 
@@ -36,9 +36,57 @@ export interface RoleHit {
   surface: Rgba;
   /** Где лежит: `screen`, `sheet`, `modal`, `card` — признак для объяснения споров. */
   place: Place;
+  /**
+   * Компонент элемента — ближайший инстанс крупнее иконки: «fab/primary ·
+   * Text=Yes». Разные варианты одного компонента по-разному окрашены
+   * законно — это не спор (замечание Principal Designer, 2026-09-30).
+   */
+  component: string | null;
+  /** Откуда цвет: из компонента, переопределён автором в инстансе, нарисован вручную. */
+  origin: ColorOrigin;
 }
 
 export type Place = "screen" | "sheet" | "modal" | "card";
+
+export type ColorOrigin = "component" | "override" | "free";
+
+/** «fab/primary · Text=Yes» — набор и вариант; одиночный компонент — его имя. */
+export function componentIdentity(n: NNode): string | null {
+  if (!n.component) return null;
+  return n.component.setName ? `${n.component.setName} · ${n.component.name}` : n.component.name;
+}
+
+/**
+ * Фон элемента: своя заливка или крупный кусок внутри — кнопки в образцах
+ * собирают из «левого куска», «середины», «правого куска». Кусок ≥ 40 %
+ * площади, не глубже двух уровней.
+ */
+export function body(n: NNode): { node: NNode; paint: NPaint } | undefined {
+  const own = solidFill(n);
+  if (own) return { node: n, paint: own };
+  const area = n.width * n.height;
+  let best: { node: NNode; paint: NPaint } | undefined;
+  walk(n, (x, _p, depth) => {
+    if (depth === 0) return;
+    if (depth > 2) return "skip";
+    const f = solidFill(x);
+    if (f && !x.text && x.width * x.height >= area * 0.4 && (!best || x.width * x.height > best.node.width * best.node.height)) best = { node: x, paint: f };
+    return undefined;
+  });
+  return best;
+}
+
+/** Обёртка без своей заливки вокруг единственного элемента того же размера — роль у элемента, не у обёртки. */
+function isWrapper(n: NNode): boolean {
+  if (solidFill(n)) return false;
+  return n.children.some((c) => CONTAINERS.has(c.type) && c.width >= n.width * 0.95 && c.height >= n.height * 0.95);
+}
+
+function samePaint(a: NPaint | undefined, b: NPaint | undefined): boolean {
+  if (!a?.color || !b?.color) return false;
+  if (a.variable || b.variable) return a.variable?.key === b.variable?.key;
+  return a.color.r === b.color.r && a.color.g === b.color.g && a.color.b === b.color.b && a.color.a === b.color.a;
+}
 
 export interface ScreenRoles {
   hits: RoleHit[];
@@ -87,7 +135,11 @@ interface Ctx {
   baseBottom: number;
   /** Роль, внутри которой находимся: текст и иконки внутри кнопки — её подпись и иконка. */
   owner: string | null;
+  /** Заливка элемента-владельца: куски того же цвета — его фон, а не детали. */
+  ownerPaint?: NPaint;
   place: Place;
+  /** Компонент, внутри которого находимся (ближайший крупнее иконки). */
+  component: string | null;
 }
 
 function labelTexts(n: NNode): NNode[] {
@@ -109,8 +161,9 @@ function isCentered(n: NNode, label: NNode): boolean {
 
 export function isButtonLike(n: NNode): boolean {
   if (!CONTAINERS.has(n.type) || n.children.length === 0) return false;
-  if (n.height < 32 || n.height > 72 || n.width < 64) return false;
-  if (!solidFill(n) && !solidStroke(n)) return false;
+  // Кнопка с подписью шире, чем высока; квадрат с надписью — значок, не кнопка.
+  if (n.height < 32 || n.height > 72 || n.width < 64 || n.width < n.height * 1.3) return false;
+  if (isWrapper(n) || (!body(n) && !solidStroke(n))) return false;
   const labels = labelTexts(n);
   if (labels.length < 1 || labels.length > 2) return false;
   if (labels.reduce((s, t) => s + (t.text?.characters.length ?? 0), 0) > 40) return false;
@@ -118,9 +171,10 @@ export function isButtonLike(n: NNode): boolean {
 }
 
 function isFab(n: NNode): boolean {
+  if (isWrapper(n)) return false;
   if (/(^|\/)fab/i.test(n.component?.setName || n.name)) return true;
   const square = Math.abs(n.width - n.height) <= 8 && n.width >= 40 && n.width <= 64;
-  return square && labelTexts(n).length === 0 && (n.radius ?? 0) >= 12 && Boolean(solidFill(n));
+  return square && labelTexts(n).length === 0 && (n.radius ?? 0) >= 12 && Boolean(body(n));
 }
 
 function isInput(n: NNode, W: number): boolean {
@@ -133,7 +187,7 @@ function isInput(n: NNode, W: number): boolean {
 
 function isChip(n: NNode, W: number): boolean {
   if (!CONTAINERS.has(n.type) || n.height < 20 || n.height > 48 || n.width >= W * 0.6) return false;
-  if ((n.radius ?? 0) < 6 || (!solidFill(n) && !solidStroke(n))) return false;
+  if (isWrapper(n) || (n.radius ?? 0) < 6 || (!body(n) && !solidStroke(n))) return false;
   const labels = labelTexts(n);
   return labels.length >= 1 && labels.length <= 2 && labels.every((t) => (t.text?.characters.length ?? 0) <= 24);
 }
@@ -142,7 +196,7 @@ function actionRole(n: NNode, ctx: Ctx, W: number): ActionRole {
   if (isFab(n)) return "action-floating";
   const id = `${n.name} ${n.component?.name ?? ""} ${n.component?.setName ?? ""}`;
   if (/disabled|inactive|неактив/i.test(id)) return "action-disabled";
-  const fill = solidFill(n)?.color;
+  const fill = body(n)?.paint.color;
   const label = labelTexts(n)[0];
   const labelColor = label ? solidFill(label)?.color : undefined;
   const reddish = (c?: Rgba) => Boolean(c && !isNeutral(c) && meaningOf(c) === "negative");
@@ -172,9 +226,13 @@ export function detectRoles(screen: NNode): ScreenRoles {
   const neutral: Array<{ hit: RoleHit; kind: "text" | "icon"; k: number }> = [];
 
   let place: Place = "screen";
-  const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba) => {
+  let component: string | null = null;
+  /** Цвет переопределён у самого узла или у куска, давшего цвет. */
+  let override = false;
+  const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba, from: NNode = n) => {
     if (!paint?.color) return undefined;
-    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place };
+    const origin: ColorOrigin = from.colorOverride || override ? "override" : component ? "component" : "free";
+    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place, component, origin };
     hits.push(h);
     return h;
   };
@@ -211,7 +269,12 @@ export function detectRoles(screen: NNode): ScreenRoles {
     const fill = solidFill(n);
     const stroke = solidStroke(n);
     ctx = { ...ctx, surface: root ? WHITE : surfaceAt(n, ctx.surface) };
+    // Экран-инстанс — не компонент элемента; иконки — тоже (их цвет — переопределение).
+    const own = !root && Math.max(n.width, n.height) > 32 ? componentIdentity(n) : null;
+    if (own) ctx = { ...ctx, component: own };
     place = ctx.place;
+    component = ctx.component;
+    override = false;
     let next: Ctx = ctx;
 
     if (root) {
@@ -225,7 +288,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       // прочие заливки — детали (таймер в кнопке), чтобы не путать с её заливкой.
       if (n.text) hit(n, `${ctx.owner}/label`, "text", fill, ctx.surface);
       else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32) hit(n, `${ctx.owner}/icon`, "icon", fill, ctx.surface);
-      else if (fill && n.type !== "TEXT" && !claimed.has(n.id)) hit(n, `${ctx.owner}/part`, "fill", fill, ctx.surface);
+      else if (fill && n.type !== "TEXT" && !claimed.has(n.id) && !samePaint(fill, ctx.ownerPaint)) hit(n, `${ctx.owner}/part`, "fill", fill, ctx.surface);
     } else if (n.text) {
       const c = fill?.color;
       if (c) {
@@ -249,19 +312,28 @@ export function detectRoles(screen: NNode): ScreenRoles {
       next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "input" };
     } else if (CONTAINERS.has(n.type) && isButtonLike(n)) {
       const role = actionRole(n, ctx, W);
-      hit(n, role, "fill", fill, ctx.surface);
+      const b = body(n);
+      hit(n, role, "fill", b?.paint, ctx.surface, b?.node);
       if (stroke) hit(n, `${role}/stroke`, "stroke", stroke, ctx.surface);
       claimed.add(n.id);
-      const surface = fill?.color ? composite(fill.color, ctx.surface) : ctx.surface;
-      paint(n, fill?.color, ctx.surface);
-      next = { ...ctx, surface, owner: role };
+      if (b) claimed.add(b.node.id);
+      const c = b?.paint.color;
+      const surface = c ? composite(c, ctx.surface) : ctx.surface;
+      paint(n, c, ctx.surface);
+      next = { ...ctx, surface, owner: role, ownerPaint: b?.paint };
     } else if (CONTAINERS.has(n.type) && isFab(n)) {
-      hit(n, "action-floating", "fill", fill, ctx.surface);
-      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "action-floating" };
+      const b = body(n);
+      hit(n, "action-floating", "fill", b?.paint, ctx.surface, b?.node);
+      if (b) claimed.add(b.node.id);
+      const c = b?.paint.color;
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "action-floating", ownerPaint: b?.paint };
     } else if (isChip(n, W)) {
-      hit(n, "chip", "fill", fill, ctx.surface);
+      const b = body(n);
+      hit(n, "chip", "fill", b?.paint, ctx.surface, b?.node);
       if (stroke) hit(n, "chip/stroke", "stroke", stroke, ctx.surface);
-      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "chip" };
+      if (b) claimed.add(b.node.id);
+      const c = b?.paint.color;
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "chip", ownerPaint: b?.paint };
     } else if (SHAPES.has(n.type) && n.height <= 6 && n.width >= 16 && n.width <= 48 && (n.radius ?? 0) >= 1) {
       hit(n, "handle", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && ((n.height <= 2 && n.width >= W * 0.3) || (n.width <= 2 && n.height >= 24))) {
@@ -315,7 +387,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
     for (const c of n.children) visit(c, next, false);
   };
 
-  visit(screen, { screen, surface: WHITE, baseBottom: screen.y + screen.height, owner: null, place: "screen" }, true);
+  visit(screen, { screen, surface: WHITE, baseBottom: screen.y + screen.height, owner: null, place: "screen", component: null }, true);
 
   // Уровни нейтрального текста и иконок — относительно самого контрастного
   // на экране (в логарифмах): абсолютные пороги у продуктов разные — у

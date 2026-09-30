@@ -33,8 +33,17 @@ const LABELS_PER_VALUE = 6;
  * тёмная — в модалке». Место — контейнер элемента; ширина — у заливок
  * (во всю ширину экрана или нет); тема — светлый или тёмный экран.
  */
-export type Feature = "place" | "width" | "theme";
-export const FEATURES: Feature[] = ["place", "width", "theme"];
+export type Feature = "component" | "place" | "width" | "theme";
+/**
+ * Порядок — приоритет объяснения: компонент первым. Разные варианты
+ * одного компонента окрашены по-разному законно (замечание Principal
+ * Designer: `fab/secondary` белая, `fab/primary` тёмная — не спор).
+ * «—» у компонента — нарисовано вручную.
+ */
+export const FEATURES: Feature[] = ["component", "place", "width", "theme"];
+/** Признак разделяет варианты, если объясняет не меньше этой доли случаев. */
+const SPLIT_PURITY = 0.9;
+export const FREE_DRAWN = "—";
 
 export interface Example {
   screenId: string;
@@ -97,6 +106,11 @@ export interface LanguageRule {
   height: Array<Counted<number>>;
   /** Решение дизайнера по анкете — есть у `confirmed`. */
   decision?: Decision;
+  /**
+   * Роль оформлена по-разному, но это объясняет компонент: у каждого
+   * варианта своё значение. Не спор — правило по компонентам.
+   */
+  byComponent?: Array<{ component: string; value: number }>;
 }
 
 export interface LanguageSource {
@@ -107,14 +121,28 @@ export interface LanguageSource {
   /** Сколько экранов нашлось всего (читаем выборку). */
   screensFound: number;
   rules: LanguageRule[];
+  findings: LibraryFinding[];
+}
+
+/**
+ * Находка для библиотеки: цвет без токена внутри компонента, не
+ * переопределённый автором макета, — решение не дизайнера образца, а
+ * библиотеки. В анкету не идёт; идёт в предложения библиотеке.
+ */
+export interface LibraryFinding {
+  component: string;
+  role: string;
+  hex: string;
+  count: number;
 }
 
 export interface StyleLanguage {
   $schema: typeof LANGUAGE_SCHEMA;
   product: { id: string; name: string };
   updatedAt: string;
-  sources: Array<Omit<LanguageSource, "rules">>;
+  sources: Array<Omit<LanguageSource, "rules" | "findings">>;
   rules: LanguageRule[];
+  findings: LibraryFinding[];
 }
 
 /**
@@ -193,6 +221,7 @@ export interface ScreenMeta {
 /** Собирает наблюдения по экранам одного источника. */
 export class LanguageLearner {
   private rules = new Map<string, LanguageRule>();
+  private findings = new Map<string, LibraryFinding>();
   screens = 0;
   darkScreens = 0;
 
@@ -206,6 +235,15 @@ export class LanguageLearner {
     for (const hit of detectRoles(screen).hits) {
       const color = hit.paint.color;
       if (!color) continue;
+      if (!hit.paint.variable && hit.origin === "component" && hit.component) {
+        // Цвет задан внутри компонента без токена — это библиотека, не автор макета.
+        const hex = toHex(color);
+        const key = `${hit.component}|${hit.key}|${hex}`;
+        const f = this.findings.get(key) ?? { component: hit.component, role: hit.key, hex, count: 0 };
+        f.count++;
+        this.findings.set(key, f);
+        continue;
+      }
       const id = ruleId(hit.key, hit.layer);
       const rule = this.rules.get(id) ?? emptyRule(hit.key, hit.layer);
       this.rules.set(id, rule);
@@ -235,6 +273,7 @@ export class LanguageLearner {
         const m = (value.features[f] ??= {});
         m[v] = (m[v] ?? 0) + 1;
       };
+      feature("component", hit.component ?? FREE_DRAWN);
       feature("place", hit.place);
       feature("theme", meta.dark ? THEME_ROLES.dark : THEME_ROLES.light);
       if (hit.layer === "fill") feature("width", node.width >= screen.width * 0.9 ? "full" : "part");
@@ -260,9 +299,68 @@ export class LanguageLearner {
       darkScreens: this.darkScreens,
       screensFound,
       rules: finish([...this.rules.values()]),
+      findings: [...this.findings.values()].sort((a, b) => b.count - a.count),
     };
   }
 }
+
+function mergeFindings(list: LibraryFinding[]): LibraryFinding[] {
+  const m = new Map<string, LibraryFinding>();
+  for (const f of list) {
+    const key = `${f.component}|${f.role}|${f.hex}`;
+    const into = m.get(key) ?? { ...f, count: 0 };
+    into.count += f.count;
+    m.set(key, into);
+  }
+  return [...m.values()].sort((a, b) => b.count - a.count);
+}
+
+export interface Split {
+  feature: Feature;
+  /** Значение признака → индекс варианта в `values`. */
+  map: Record<string, number>;
+  purity: number;
+}
+
+/**
+ * Какой признак лучше всего объясняет, почему роль оформлена по-разному.
+ * Для каждого значения признака берём вариант, который там чаще; доля
+ * случаев, которые так объяснены, — «чистота». Признак годится, если
+ * объясняет почти всё и у разных вариантов разные значения признака.
+ */
+export function findSplit(values: RuleValue[]): Split | null {
+  let best: Split | null = null;
+  const total = values.reduce((s, v) => s + v.count, 0);
+  for (const f of FEATURES) {
+    const keys = new Set(values.flatMap((v) => Object.keys(v.features?.[f] ?? {})));
+    if (keys.size < 2) continue;
+    const map: Record<string, number> = {};
+    let explained = 0;
+    let observed = 0;
+    for (const k of keys) {
+      let bestI = 0;
+      let bestN = -1;
+      values.forEach((v, i) => {
+        const n = v.features?.[f]?.[k] ?? 0;
+        observed += n;
+        if (n > bestN) {
+          bestN = n;
+          bestI = i;
+        }
+      });
+      map[k] = bestI;
+      explained += bestN;
+    }
+    // Признак есть не у всех случаев (ширина — только у заливок): мерим по наблюдённым.
+    if (observed < total * 0.8) continue;
+    const used = new Set(Object.values(map));
+    if (used.size < 2) continue;
+    const purity = explained / observed;
+    if (purity >= SPLIT_PURITY && (!best || purity > best.purity)) best = { feature: f, map, purity };
+  }
+  return best;
+}
+
 
 type TallyKey = "hexLight" | "hexDark" | "surfaceLight" | "surfaceDark";
 
@@ -291,10 +389,21 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
   const out = rules.map((r): LanguageRule => {
     const values = byCount(r.values);
     const share = r.total ? values[0].count / r.total : 0;
-    const status: RuleStatus = r.total === 0 ? "missing" : share >= DOMINANT_SHARE ? "proposed" : "disputed";
+    let status: RuleStatus = r.total === 0 ? "missing" : share >= DOMINANT_SHARE ? "proposed" : "disputed";
+    let byComponent: LanguageRule["byComponent"];
+    if (status === "disputed") {
+      const split = findSplit(values.filter((v) => v.count / r.total >= 0.05));
+      if (split?.feature === "component") {
+        status = "proposed";
+        byComponent = Object.entries(split.map)
+          .map(([component, value]) => ({ component, value }))
+          .sort((a, b) => a.value - b.value);
+      }
+    }
     return {
       ...r,
       status,
+      ...(byComponent ? { byComponent } : { byComponent: undefined }),
       values,
       textStyles: byCount(r.textStyles),
       textCases: byCount(r.textCases),
@@ -358,8 +467,9 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
     $schema: LANGUAGE_SCHEMA,
     product,
     updatedAt,
-    sources: sources.map(({ rules: _rules, ...meta }) => meta),
+    sources: sources.map(({ rules: _rules, findings: _findings, ...meta }) => meta),
     rules: finish([...rules.values()]),
+    findings: mergeFindings(sources.flatMap((s) => s.findings ?? [])),
   };
 }
 

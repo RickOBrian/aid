@@ -9,7 +9,7 @@
  */
 
 import { THEME_ROLES } from "../lib/vocabulary";
-import { EXPECTED_ROLES, type Feature, FEATURES, type LanguageRule, type RuleValue, type StyleLanguage, type TokenRef } from "./language";
+import { EXPECTED_ROLES, type Feature, findSplit, FREE_DRAWN, type LanguageRule, type RuleValue, type StyleLanguage, type TokenRef } from "./language";
 import { roleGroup, roleLabel } from "./roleLabels";
 
 export type QuestionKind = "contradiction" | "gap" | "outlier";
@@ -60,8 +60,6 @@ export interface TokenCandidate extends TokenRef {
 const OUTLIER_SHARE = 0.2;
 /** Отступления спрашиваем только у правил с достаточной опорой. */
 const OUTLIER_MIN_TOTAL = 5;
-/** Признак разделяет варианты, если объясняет не меньше этой доли случаев. */
-const SPLIT_PURITY = 0.9;
 /** В споре показываем варианты не реже этой доли. */
 const MIN_VARIANT_SHARE = 0.05;
 
@@ -78,9 +76,10 @@ const PLACE_WORDS: Record<string, string> = {
 
 const WIDTH_WORDS: Record<string, string> = { full: "во всю ширину", part: "не во всю ширину" };
 
-const FEATURE_NAMES: Record<Feature, string> = { place: "места", width: "ширины", theme: "темы" };
+const FEATURE_NAMES: Record<Feature, string> = { component: "компонента", place: "места", width: "ширины", theme: "темы" };
 
 function featureWord(f: Feature, v: string): string {
+  if (f === "component") return v === FREE_DRAWN ? "нарисовано вручную" : `в «${v}»`;
   if (f === "place") return PLACE_WORDS[v] ?? v;
   if (f === "width") return WIDTH_WORDS[v] ?? v;
   return v === THEME_ROLES.dark ? "в тёмной теме" : "в светлой теме";
@@ -104,7 +103,7 @@ function valueId(v: Pick<RuleValue, "token" | "hex">): string {
 /** Признаки, которые у значения почти всегда одни и те же: «в шторке, во всю ширину». */
 function typical(v: RuleValue): string[] {
   const out: string[] = [];
-  for (const f of ["place", "width"] as Feature[]) {
+  for (const f of ["component", "place", "width"] as Feature[]) {
     const m = v.features?.[f];
     if (!m) continue;
     const [top, n] = Object.entries(m).sort((a, b) => b[1] - a[1])[0] ?? [];
@@ -130,52 +129,6 @@ function variantLine(v: RuleValue, total: number): string {
 // ---------------------------------------------------------------------------
 // Разделяющий признак
 // ---------------------------------------------------------------------------
-
-export interface Split {
-  feature: Feature;
-  /** Значение признака → индекс варианта в `values`. */
-  map: Record<string, number>;
-  purity: number;
-}
-
-/**
- * Какой признак лучше всего объясняет, почему роль оформлена по-разному.
- * Для каждого значения признака берём вариант, который там чаще; доля
- * случаев, которые так объяснены, — «чистота». Признак годится, если
- * объясняет почти всё и у разных вариантов разные значения признака.
- */
-export function findSplit(values: RuleValue[]): Split | null {
-  let best: Split | null = null;
-  const total = values.reduce((s, v) => s + v.count, 0);
-  for (const f of FEATURES) {
-    const keys = new Set(values.flatMap((v) => Object.keys(v.features?.[f] ?? {})));
-    if (keys.size < 2) continue;
-    const map: Record<string, number> = {};
-    let explained = 0;
-    let observed = 0;
-    for (const k of keys) {
-      let bestI = 0;
-      let bestN = -1;
-      values.forEach((v, i) => {
-        const n = v.features?.[f]?.[k] ?? 0;
-        observed += n;
-        if (n > bestN) {
-          bestN = n;
-          bestI = i;
-        }
-      });
-      map[k] = bestI;
-      explained += bestN;
-    }
-    // Признак есть не у всех случаев (ширина — только у заливок): мерим по наблюдённым.
-    if (observed < total * 0.8) continue;
-    const used = new Set(Object.values(map));
-    if (used.size < 2) continue;
-    const purity = explained / observed;
-    if (purity >= SPLIT_PURITY && (!best || purity > best.purity)) best = { feature: f, map, purity };
-  }
-  return best;
-}
 
 // ---------------------------------------------------------------------------
 // Вопросы
@@ -233,7 +186,10 @@ function contradiction(rule: LanguageRule): Question {
 
 function outlier(rule: LanguageRule): Question | null {
   if (rule.total < OUTLIER_MIN_TOTAL || rule.values.length < 2) return null;
-  const [main, ...rest] = rule.values;
+  const [main, ...all] = rule.values;
+  // Другое значение в другом компоненте — вариант компонента, не отступление.
+  const top = (v: RuleValue) => Object.entries(v.features?.component ?? {}).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const rest = all.filter((v) => top(v) === top(main));
   const restCount = rest.reduce((s, v) => s + v.count, 0);
   if (restCount === 0 || restCount / rule.total >= OUTLIER_SHARE) return null;
   const label = roleLabel(rule.role);

@@ -23,6 +23,8 @@ interface Compact {
   l?: [string, number, number, number, number, number, string, string];
   x?: [string, string, number, string, string];
   c?: string;
+  /** Цвет переопределён в инстансе. */
+  o?: number;
   k?: Compact[];
 }
 
@@ -82,6 +84,7 @@ function convert(c: Compact): NNode {
         }
       : {}),
     ...(c.c ? { component: { key: c.c, name: variant ?? setName, setName: variant ? setName : "" } } : {}),
+    ...(c.o ? { colorOverride: true } : {}),
     children: (c.k ?? []).map(convert),
   };
 }

@@ -5,7 +5,8 @@
 
 import { describe, expect, it } from "vitest";
 import { LANGUAGE_SCHEMA, type LanguageRule, type RuleValue, type StyleLanguage } from "../src/core/language";
-import { applyAnswers, buildQuestions, findSplit, isOpen } from "../src/core/questions";
+import { applyAnswers, buildQuestions, isOpen } from "../src/core/questions";
+import { findSplit } from "../src/core/language";
 import { THEME_ROLES } from "../src/lib/vocabulary";
 
 function value(name: string, count: number, place: Record<string, number>, labels: string[], extra: Partial<RuleValue> = {}): RuleValue {
@@ -37,7 +38,7 @@ function rule(role: string, status: LanguageRule["status"], values: RuleValue[])
 }
 
 function lang(rules: LanguageRule[]): StyleLanguage {
-  return { $schema: LANGUAGE_SCHEMA, product: { id: "p", name: "П" }, updatedAt: "t", sources: [], rules };
+  return { $schema: LANGUAGE_SCHEMA, product: { id: "p", name: "П" }, updatedAt: "t", sources: [], rules, findings: [] };
 }
 
 const green = value("Buttons/Positive", 82, { sheet: 80, modal: 2 }, ["Принять заказ", "Повторить попытку"]);

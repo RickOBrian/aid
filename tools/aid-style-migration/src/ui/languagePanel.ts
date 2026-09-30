@@ -87,6 +87,17 @@ function ruleRow(r: LanguageRule): HTMLElement {
   if (r.decision) {
     return h("div", { className: "ds-lang-row" }, [head, h("div", { className: "ds-screen__meta", text: `Решение: ${r.decision.label}` })]);
   }
+  if (r.byComponent?.length) {
+    // Разные варианты компонента — не спор: у каждого своё значение.
+    return h("div", { className: "ds-lang-row" }, [
+      head,
+      h("div", { className: "ds-screen__meta", text: "Зависит от компонента — у каждого варианта своё:" }),
+      ...r.byComponent.slice(0, 5).map((b) => {
+        const v = r.values[b.value];
+        return h("div", { className: "ds-map-line" }, [swatch(v.hexLight, "светлая"), swatch(v.hexDark, "тёмная"), h("span", { text: `${b.component === "—" ? "нарисовано вручную" : b.component} — ${v.token?.name ?? v.hex}` })]);
+      }),
+    ]);
+  }
   const shown = r.status === "disputed" ? r.values.slice(0, 4) : r.values.slice(0, 1);
   const rest = r.values.length - shown.length;
   const shape = shapeText(r);
@@ -196,6 +207,19 @@ function submit(): void {
   if (nextOpen) currentId = nextOpen.id;
 }
 
+/** Находки для библиотеки: цвет без токена внутри компонента — вопрос к библиотеке, не к дизайнеру. */
+function findingsList(lang: StyleLanguage): HTMLElement[] {
+  const list = lang.findings ?? [];
+  if (!list.length) return [];
+  const fold = h("details", { className: "ds-fold" });
+  fold.append(
+    h("summary", { text: `Находки для библиотеки: ${list.length}` }),
+    h("p", { className: "ds-hint", text: "Цвет задан внутри компонента без токена, автор макета его не выбирал. В анкету не идёт — это предложение владельцу библиотеки." }),
+    ...list.slice(0, 15).map((f) => h("div", { className: "ds-map-line" }, [swatch(f.hex, "цвет"), h("span", { text: `${f.component} · ${roleLabel(f.role)} — ${f.hex}, ${f.count}` })])),
+  );
+  return [fold];
+}
+
 function render(): void {
   const state = lastState;
   el("language-card").hidden = !state?.active;
@@ -213,7 +237,7 @@ function render(): void {
     `Правило есть: ${s.proposed} · решено: ${s.confirmed} · нужно ваше решение: ${s.disputed} · образцов нет: ${s.missing}. ` +
     `Правило есть, если один вариант — не меньше ${Math.round(DOMINANT_SHARE * 100)} % случаев; иначе плагин спрашивает.`;
   renderQuestion(state);
-  el("language-sources").replaceChildren(...sourcesList(lang));
+  el("language-sources").replaceChildren(...sourcesList(lang), ...findingsList(lang));
 
   const rules = lang.rules.filter((r) => filter === "all" || r.status === "disputed" || r.status === "missing");
   const blocks: HTMLElement[] = [];

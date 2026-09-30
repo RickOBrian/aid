@@ -10,6 +10,8 @@ export class FigmaReader {
   private variables = new Map<string, NVariable | null>();
   private collections = new Map<string, string>();
   private styles = new Map<string, { key: string; name: string } | null>();
+  /** Слои с переопределённым цветом — из `overrides` прочитанных инстансов. */
+  private overridden = new Set<string>();
 
   private async variable(id: string): Promise<NVariable | null> {
     if (!this.variables.has(id)) {
@@ -80,6 +82,7 @@ export class FigmaReader {
       strokeWeight: "strokeWeight" in node && typeof node.strokeWeight === "number" ? node.strokeWeight : 0,
       radius: "cornerRadius" in node && typeof node.cornerRadius === "number" ? node.cornerRadius : null,
       children: [],
+      ...(this.overridden.has(node.id) ? { colorOverride: true } : {}),
     };
     if ("layoutMode" in node && node.layoutMode !== "NONE" && node.layoutMode !== "GRID") {
       n.layout = {
@@ -104,6 +107,9 @@ export class FigmaReader {
       };
     }
     if (node.type === "INSTANCE") {
+      for (const o of node.overrides ?? []) {
+        if (o.overriddenFields.some((f) => f === "fills" || f === "strokes")) this.overridden.add(o.id);
+      }
       const main = await node.getMainComponentAsync();
       if (main) {
         const set = main.parent?.type === "COMPONENT_SET" ? main.parent : null;
