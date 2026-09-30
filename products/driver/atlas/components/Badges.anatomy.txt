@@ -1,0 +1,38 @@
+# Driver Components · Badges — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+## reward
+  Motivation:s = Strokes/Informative
+  Motivation/✏️ Text here:t = Texts/Primary
+  Motivation/motivation_round/Color:f = Icons/Accent
+  Coefficient:s = Strokes/Informative
+  Coefficient/surge/Color:f = Icons/Accent
+  Coefficient/✏️ Text here:t = Texts/Primary
+## big
+  ·:s = Buttons/Secondary
+  motivation_round/Color:f = GRADIENT
+  ✏️ Text here:t = Texts/Primary
+## medium/color
+  ·:s = Pastels/Rose
+  baby_chair/Color:f = Pastels/Rose
+  ✏️ Text here:t = Texts/Primary
+## medium/mono
+  ·:s = Strokes/Primary
+  plane/Color:f = Icons/Primary
+  ✏️ Text here:t = Texts/Primary
+## small
+  ·:s = Strokes/Secondary
+  door/Color:f = Icons/Informative
+  Text/✏️ Text here:t = Texts/Tertiary
+## tag
+  ·:f = Pastels/Nebula
+  bonus/Color:f = Icons/Secondary Dark Ind
+  Text/✏️ Text here:t = Texts/Secondary Dark Ind
+## notification
+  content:f = Icons/Warning
+  content/icon/Color:f = Icons/Primary Light Ind
+  content/count:t = Texts/Primary Light Ind
+  corner:f = Icons/Warning
+## Counter
+  ·:f = Fields/Warning
+  ✏️ Number here:t = Texts/Primary Light Ind
+## mini_notification
+  mini_notification:f = Icons/Warning

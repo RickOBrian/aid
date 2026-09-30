@@ -1,0 +1,72 @@
+# Driver Components · Buttons — анатомия (эталон библиотеки)
+# Формат: путь части:слой (f заливка, t текст, s обводка) = токен[варианты]; * — во всех вариантах; без [] — один для всех.
+## Motivation
+  ✏️Text here:t = Texts/Primary Inverted
+  motivation_round/Color:f = Icons/Primary Inverted
+## default
+  v: 0=Primary,True,On,False; 1=Primary,True,Off,False; 2=Secondary,True,On,False; 3=Secondary,True,Off,False; 4=Primary,False,Off,False; 5=Primary,False,On,False; 6=Secondary,False,Off,False; 7=Secondary,False,On,False; 8=Transparent,True,On,False; 9=Transparent,True,Off,False; 10=Transparent,False,On,False; 11=Transparent,False,Off,False; 12=Primary,True,On,True; 13=Primary,True,Off,True; 14=Secondary,True,On,True; 15=Secondary,True,Off,True; 16=Transparent,True,On,True; 17=Transparent,True,Off,True  (Type,Active,Icon,Destructive)
+  ·:f = Buttons/Primary[0,1] Buttons/Secondary[2,3,14,15] Buttons/Disabled[4,5,6,7] Buttons/Warning[12,13]
+  ✏️Text here:t = Texts/Primary Inverted[0,1,12,13] Texts/Primary[2,3,8,9] Texts/Disabled[4,5,6,7,10,11] Texts/Warning[14,15,16,17]
+  icon/Color:f = Icons/Primary Inverted[0,12] Icons/Primary[2,8] Icons/Inactive[5,7,10] Icons/Warning[14,16]
+## set
+  default:f = Buttons/Secondary
+  default/✏️Text here:t = Texts/Primary
+## wide  (варианты как у default)
+  ·:f = Buttons/Primary[0,1] Buttons/Secondary[2,3,14,15] Buttons/Disabled[4,5,6,7] Buttons/Warning[12,13]
+  ✏️Text here:t = Texts/Primary Inverted[0,1,12,13] Texts/Primary[2,3,8,9] Texts/Disabled[4,5,6,7,10,11] Texts/Warning[14,15,16,17]
+  Motivation/✏️Text here:t = Texts/Primary Inverted[0,12] Texts/Primary[2,8] Texts/Disabled[5,7,10] Texts/Warning[14,16]
+  Motivation/motivation_round/Color:f = Icons/Primary Inverted[0,12] Icons/Primary[2,8] Icons/Inactive[5,7,10] Icons/Warning[14,16]
+## big  (Type,Active,Icon,Gradient BG,Destructive)
+  v: 0=Primary,True,On,Off,False; 1=Primary,True,On,On,False; 2=Primary,True,Off,Off,False; 3=Primary,True,Off,On,False; 4=Primary,False,Off,Off; 5=Primary,False,On,Off; 6=Primary,False,Off,On; 7=Primary,False,On,On; 8=Secondary,True,On,Off; 9=Secondary,True,On,On; 10=Secondary,True,Off,Off; 11=Secondary,True,Off,On; 12=Secondary,False,Off,Off; 13=Secondary,False,On,Off; 14=Secondary,False,Off,On; 15=Secondary,False,On,On; 16=Transparent,True,On,Off; 17=Transparent,True,On,On; 18=Transparent,True,Off,Off; 19=Transparent,True,Off,On; 20=Transparent,False,Off,Off; 21=Transparent,False,On,Off; 22=Transparent,False,Off,On; 23=Transparent,False,On,On; 24-27=Primary,True,*,*,True; 28-31=Secondary,True,*,*,True; 32-35=Transparent,True,*,*,True
+  button:f = Buttons/Primary[0,1,2,3] Buttons/Disabled[4,5,6,7,12,13,14,15] Buttons/Secondary[8,9,10,11,28,29,30,31] Buttons/Warning[24,25,26,27]
+  button/✏️Text here:t = Texts/Primary Inverted[0,1,2,3,24,25,26,27] Texts/Disabled[4-7,12-15,20-23] Texts/Primary[8-11,16-19] Texts/Warning[28-35]
+  button/Motivation/✏️Text here:t = Texts/Primary Inverted[0,1,24,25] Texts/Disabled[5,7,13,15,21,23] Texts/Primary[8,9,16,17] Texts/Warning[28,29,32,33]
+  button/Motivation/motivation_round/Color:f = Icons/Primary Inverted[0,1,24,25] Icons/Primary[8,9,16,17] Icons/Warning[28,29,32,33]
+  gradient bg:f = GRADIENT[Gradient BG=On]
+  button/Motivation/motivation/Combined Shape:f = Icons/Inactive[5,7,13,15,21,23]
+  button/Motivation/motivation/Combined Shape/Circle:f = Icons/Primary[5,7,13,15,21,23]
+  button/Motivation/motivation/Combined Shape/Letter:f = Buttons/Floating[5,7,13,15,21,23]
+## full  (Active,Icon,Timer)
+  v: 0=True,On,Off; 1=True,On,On; 2=True,Off,Off; 3=True,Off,On; 4=False,On,Off; 5=False,Off,Off
+  ·:f = Buttons/Positive[0,1,2,3] Buttons/Positive Disabled[4,5]
+  icon+text/Icon/Color:f = Icons/Primary Light Ind[0,1] Icons/Inactive[4]
+  icon+text/✏️ Text here:t = Texts/Primary Light Ind[0,1,2,3] Texts/Disabled[4,5]
+  timer:f = Buttons/Positive Deep[1,3]
+## slider  (Active)
+  v: 0=True; 1=False
+  gradient bg:f = GRADIENT
+  button/Left piece/left background:f = Buttons/Positive[0] Buttons/Positive Disabled[1]
+  button/Right piece/right background:f = Buttons/Positive[0] Buttons/Positive Disabled[1]
+  button/content:f = Buttons/Positive[0] Buttons/Positive Disabled[1]
+  button/content/Left icon box/Color background:f = Icons/Primary Light Ind[0]
+  button/content/Left icon box/arrow_right/Color:f = Icons/Positive[0] Icons/Inactive[1]
+  button/content/На месте:t = Texts/Primary Light Ind[0] Texts/Disabled[1]
+  button/content/Right icon box/pin_dot/Color:f = Icons/Secondary Light Ind[0] Icons/Inactive[1]
+## fab/zoom
+  Bg Color:f = Buttons/Floating
+  Icon/Color:f = Icons/Primary
+## fab/secondary  (Text)
+  Left piece/left background:f = Buttons/Floating
+  Content:f = Buttons/Floating
+  Content/Icon/Color:f = Icons/Primary
+  Right piece/right background:f = Buttons/Floating
+  Content/✏️ Text here:t = Texts/Primary[Text=Yes]
+## fab/primary  (Text)
+  Left piece/left background:f = Buttons/Primary
+  Content:f = Buttons/Primary
+  Content/Icon/Color:f = Icons/Primary Inverted
+  Right piece/right background:f = Buttons/Primary
+  Content/✏️ Text here:t = Texts/Primary Inverted[Text=Yes]
+## floating  (Icon)
+  ·:f = Buttons/Floating
+  ✏️Text here:t = Texts/Primary
+  Motivation/✏️Text here:t = Texts/Primary[Icon=Yes]
+  Motivation/Icon/Color:f = Icons/Primary[Icon=Yes]
+## selector  (Checked,Subtitle)
+  v: 0=False,False; 1=False,True; 2=True,False; 3=True,True
+  ·:f = Bg/Primary[0,1] Messages/Action[2,3]
+  ·:s = Strokes/Informative[0,1]
+  Frame 66/Да, хочу оставить :t = Texts/Primary[0] Texts/Primary Light Ind[2]
+  Frame 66/Image:f = IMAGE
+  Frame 66/Frame 497/Да, хочу оставить :t = Texts/Secondary[1]
+  Frame 66/Frame 498/Да, хочу оставить :t = Texts/Secondary Light Ind[3]

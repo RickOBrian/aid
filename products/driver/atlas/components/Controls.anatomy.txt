@@ -1,0 +1,69 @@
+# Driver Components · Controls — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+## _counter  (Type,Active)
+  v: 0=Minus,True; 1=Plus,True; 2=Minus,False; 3=Plus,False
+  border background:f = Icons/Primary[0,1] Icons/Inactive[2,3]
+  minus/Color:f = Icons/Primary[0] Icons/Inactive[2]
+  plus/Color:f = Icons/Primary[1] Icons/Inactive[3]
+## counter
+  Right control/border background:f = Icons/Primary
+  Right control/plus/Color:f = Icons/Primary
+  Left control/border background:f = Icons/Inactive
+  Left control/minus/Color:f = Icons/Inactive
+## balance  (Active,Notification)
+  v: 0=True,Off; 1=True,On; 2=False,Off; 3=False,On
+  ✏️ Text here:t = Texts/Primary Light Ind[0,1] Texts/Tertiary Light Ind[2,3]
+  Icon/Color:f = Icons/Primary Light Ind[0,1] Icons/Informative Light Ind[2,3]
+  Red layer:f = Icons/Warning[1,3]
+  Red layer:s = Strokes/Primary[1,3]
+## bar/button  (Buttons,Type)
+  v: 0=3 buttons,Main; 1=3 buttons,Balance; 2=2 buttons,Balance
+  ·:f = Bg/Actions
+  button 1/✏️ Text here:t = Texts/Primary Inverted[0] Texts/Primary Light Ind[1,2]
+  button 1/Icon/Color:f = Icons/Primary Inverted[0] Icons/Primary Light Ind[1,2]
+  button 2/✏️ Text here:t = Texts/Primary Inverted[0] Texts/Primary Light Ind[1]
+  button 2/Icon/Color:f = Icons/Primary Inverted[0] Icons/Primary Light Ind[1]
+  button 3/✏️ Text here:t = Texts/Primary Inverted[0] Texts/Primary Light Ind[1,2]
+  button 3/Icon/Color:f = Icons/Primary Inverted[0] Icons/Primary Light Ind[1,2]
+## done  (Active)
+  border background:f = Icons/Positive[True] Buttons/Positive Disabled[False]
+  check/Color:f = Icons/Primary Light Ind
+## amount  (State)
+  v: 0=Active; 1=Focused
+  ·:f = Icons/Inactive Light Ind[0] Icons/Primary Inverted[1]
+  50 ₽:t = Texts/Primary Light Ind[0] Texts/Primary Dark Ind[1]
+## Selection Control  (Checked)
+  v: 0=False; 1=True
+  ·:f = Buttons/Secondary
+  ·:s = Buttons/Secondary
+  icon/✏️ Title:t = Texts/Secondary[0] Texts/Primary[1]
+  icon/checkbox/Unchecked:f = Icons/Primary Inverted[0]
+  icon/Group/Color background:f = Bg/Primary
+  icon/Group/surge/Color:f = Icons/Accent
+  icon/checkbox/Checked:f = Controls/Checked[1]
+## bar/slider  (Type,State)
+  v: 0=Home,Active; 1=By the way,Active; 2=Home,Inactive; 3=Home,Disabled; 4=By the way,Inactive; 5=By the way,Disabled; 6=Queue,Active; 7=Queue,Inactive; 8=Online,Active; 9=Offline,Active; 10=Slider,Active; 11=Online,Inactive; 12=Offline,Inactive; 13=Offline,Disabled; 14=Settings,Inactive; 15=Queue,Disabled
+  ·:f = Bg/Actions
+  avatar/background:f = Icons/Positive[0,1,2,4,8,11] Icons/Inactive Light Ind[3,5,15] Icons/Special[6,7] Icons/Warning[9,10,12,13]
+  avatar/house/Color:f = Icons/Primary Light Ind[0,2] Icons/Inactive Light Ind[3]
+  text/title:t = Texts/Primary Light Ind[0,1,6,8,9,10] Texts/Secondary Light Ind[2,4,7,11,12,13] Texts/Disabled Light Ind[3,5,15] Texts/Secondary Inverted[14]
+  text/description/description:t = Texts/Secondary Light Ind[0,1,2,6,14] Texts/Disabled Light Ind[3]
+  chevron_zone/chevron/Color:f = Icons/Primary Light Ind[0,1,6,8,9,10]
+  avatar/pin/Color:f = Icons/Primary Light Ind[1,4] Icons/Inactive Light Ind[5]
+  edit_zone/edit/Color:f = Icons/Primary Light Ind[2]
+  avatar/plane/Color:f = Icons/Primary Light Ind[6,7] Icons/Inactive Light Ind[15]
+  text/description/gates/gate N:s = Strokes/Informative Light Ind[6]
+  text/description/gates/gate N/✏️ Text here:t = Texts/Secondary Light Ind[6]
+  avatar/radar/Color:f = Icons/Primary Light Ind[8,11]
+  avatar/stop/Color:f = Icons/Primary Light Ind[9,12] Icons/Secondary Light Ind[13]
+  avatar/arrow_right/Color:f = Icons/Primary Light Ind[10]
+  avatar/settings/Color:f = Icons/Secondary Inverted[14]
+## checkbox  (Checked,Active,Loading)
+  v: 0=True,True,False; 1=False,True,False; 2=False,True,True; 3=True,False,False; 4=False,False,False
+  Checked:f = Controls/Checked[0,3]
+  Unchecked:s = Controls/Unchecked[1,2,4]
+  loader:f = Controls/Checked[2]
+## switch  (Checked,Active,Loading)
+  v: 0=True,True,False; 1=False,True,False; 2=True,True,True; 3=False,True,True; 4=True,False,False; 5=False,False,False
+  case:f = Controls/Checked[0,3,4] Controls/Unchecked[1,5] Controls/Accent[2]
+  key:f = Controls/Accent[0,1,3,4,5]
+  loader:f = Controls/Checked[2,3]

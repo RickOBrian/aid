@@ -1,0 +1,149 @@
+# Driver Components · Rows — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+## avatar  (Type)
+  v: 0=Photo; 1=No photo; 2=Letters; 3=Icon
+  photo:f = IMAGE[0] Pastels/Concrete[1]
+  person_solid/Color:f = Icons/Secondary[1]
+  background:f = Pastels/Azure[2] Pastels/Corn[3]
+  АБ:t = Texts/Primary Light Ind[2]
+  cash/Color:f = Icons/Secondary Inverted[3]
+## _parameters  (Text)
+  v: 0=on; 1=off
+  ✏️ Value:t = Texts/Positive[0]
+  timer/Color:f = Icons/Inactive[0]
+  Icon/Color:f = Icons/Primary[1]
+## ActiveOrderClientView
+  ·:f = Bg/Primary
+  Divider/olddivider:s = Strokes/Separator
+  content/avatar/photo:f = IMAGE
+  content/Info/✏️ Name:t = Texts/Primary
+  content/Action/default:f = Buttons/Secondary
+  content/Action/default/icon/Color:f = Icons/Primary
+## options  (Options)
+  v: 0=Single; 1=Several
+  ·:f = Bg/Primary
+  Divider/olddivider:s = Strokes/Separator
+  options/credit_card/Color:f = Pastels/Azure[0]
+  options/medium/color:s = Pastels/Bronze[0]
+  options/medium/color/delivery_from_door/Color:f = Pastels/Bronze[0]
+  options/medium/color/✏️ Text here:t = Texts/Primary[0]
+  content/animals_in_the_car/Color:f = Pastels/Bronze[1]
+  content/baby_chair/Color:f = Pastels/Rose[1]
+  content/busline/Color:f = Pastels/Cobalt[1]
+  content/no smoking/Color:f = Pastels/Charcoal[1]
+  content/plane/Color:f = Pastels/Azure[1]
+## tarif
+  ·:f = Bg/Primary
+  content/medium/mono:s = Strokes/Primary
+  content/medium/mono/✏️ Text here:t = Texts/Primary
+  content/credit_card/Color:f = Pastels/Azure
+## price  (Show Price)
+  v: 0=False; 1=True
+  ·:f = Bg/Primary
+  Стоимость будет ви…:t = Texts/Secondary[0]
+  fab/primary/* = Buttons/Primary (фон), Texts/Primary Inverted, Icons/Primary Inverted
+  price/price:t = Texts/Primary[1]
+  price/rub/₽:t = Texts/Primary[1]
+## booster
+  plane/Color:f = Icons/Accent
+  132 847:t = Texts/Accent
+## time-distance
+  132 846:t = Texts/Primary
+  pin_dot/Color:f = Icons/Primary
+  132 847:t = Texts/Primary
+## suggest
+  ·:f = Bg/Primary
+  address/pin_dot_big/Color:f = Icons/Primary
+  address/texts/title:t = Texts/Primary
+  address/texts/description:t = Texts/Secondary
+  distance:t = Texts/Secondary
+## line  (Framed,Lines)
+  v: 0=True,Single; 1=False,Single; 2=True,Double; 3=False,Double
+  ·:s = Buttons/Secondary[0,2]
+  Orders/✏️ Title:t = Texts/Primary[0,1]
+  Orders/✏️ Value:t = Texts/Primary[0]
+  Orders/chevron_right/Color:f = Icons/Informative[0,2]
+  Orders/avatar/background:f = Pastels/Cobalt[0,1] Pastels/Corn[2]
+  Orders/avatar/pin/Color:f = Icons/Secondary Inverted[0,1]
+  Orders/Frame 496/✏️ Value:t = Texts/Primary[1]
+  Orders/Frame 496/chevron_right/Color:f = Icons/Informative[1]
+  Divider/olddivider:s = Strokes/Separator[1,3]
+  Orders/Frame 442/✏️ Title:t = Texts/Primary[2]
+  Orders/avatar/wallet/Color:f = Icons/Secondary Inverted[2]
+  ·:f = Bg/Primary[3]
+  Content/Icon + Text/avatar/background:f = Pastels/Corn[3]
+  Content/Icon + Text/avatar/cash/Color:f = Icons/Secondary Inverted[3]
+  Content/Icon + Text/Text/✏️ Row 1:t = Texts/Primary[3]
+  Content/Icon + Text/Text/✏️ Row 2:t = Texts/Primary[3]
+  Content/price-box/_parameters/✏️ Value:t = Texts/Positive[3]
+  Content/price-box/_parameters/timer/Color:f = Icons/Inactive[3]
+## single line
+  ·:f = Bg/Primary
+  falcon/Color:f = Icons/Primary
+  ✏️ Text here:t = Texts/Primary
+## attention
+  ♦️ Line:f = Pastels/Rose
+  ✏️ Text here:t = Texts/Primary
+## reference point
+  Stack/door/Color:f = Icons/Secondary
+  Stack/Подъезд:t = Texts/Secondary
+  Text:t = Texts/Primary
+## info
+  ✏️ Text here:t = Texts/Primary
+## subtitle
+  ·:f = Bg/Secondary
+  Title:t = Texts/Secondary
+  Subtitle:t = Texts/Secondary
+## address  (Type,Comment,Entrance)
+  v: 0=Order,False,False; 1=Order,False,True; 2=Order,True,False; 3=Order,True,True; 4=Offer,False,False; 5=Offer,True,False
+  Dot+line/point/dot/Color:f = Icons/Primary
+  Dot+line/Line:s = Strokes/Informative[0,1,2,3,4]
+  Text/✏️ Text here:t = Texts/Primary[0,2] Texts/Secondary[4,5]
+  address+entrance/address/✏️ Text here:t = Texts/Primary[1]
+  address+entrance/small (бейдж small):s = Strokes/Secondary[1,3]; door = Icons/Informative; текст = Texts/Tertiary
+  Text/comment:f = Messages/Default[2,3,5]
+  Text/comment/text/Darkner:f = GRADIENT[2,3]
+  Text/comment/text/✏️ Text here:t = Texts/Primary[2,3]
+  Text/comment/chevron_right/Color:f = Icons/Primary[2,3]
+  Text/comment/✏️ Text here:t = Texts/Primary[5]
+## adresses/offer
+  address/Dot+line/Line:s = Strokes/Informative
+  address/Dot+line/point/dot/Color:f = Icons/Primary
+  address/Text/✏️ Text here:t = Texts/Secondary
+## adresses/order
+  address/Dot+line/point/dot/Color:f = Icons/Primary
+  address/Dot+line/Line:s = Strokes/Informative
+  address/Text/✏️ Text here:t = Texts/Primary
+  address/Text/comment:f = Messages/Default
+  address/Text/comment/text/Darkner:f = GRADIENT
+  address/Text/comment/text/✏️ Text here:t = Texts/Primary
+  address/Text/comment/chevron_right/Color:f = Icons/Primary
+  comment/Общий комментарий:t = Texts/Secondary
+  comment/comment:f = Pastels/Parchment
+  comment/comment/text/Darkner:f = GRADIENT
+  comment/comment/text/✏️ Text here:t = Texts/Primary Dark Ind
+  comment/comment/chevron_right/Color:f = Icons/Secondary Dark Ind
+  button_wait/wide:f = Buttons/Secondary
+  button_wait/wide/✏️Text here:t = Texts/Primary
+## card
+  ·:f = Bg/Primary
+  Title/Options/baby_chair/Color:f = Pastels/Rose
+  Title/Options/animals_in_the_car/Color:f = Pastels/Bronze
+  Title/Options/no smoking/Color:f = Pastels/Charcoal
+  Title/Options/busline/Color:f = Pastels/Cobalt
+  Title/Options/credit_card/Color:f = Pastels/Azure
+  Title/Title/When:t = Texts/Secondary
+  Title/Title/_tarif:f = Pastels/Olive
+  Title/Title/_tarif/✏️ Text here:t = Texts/Secondary Dark Ind
+  Title/Title/_tarif/plus_mini/Color:f = Icons/Secondary Dark Ind
+  Address points/Points/point/dot/Color:f = Icons/Primary
+  Address points/Points/Line:s = Strokes/Informative
+  Address points/Address/Start point/Frame 444/address:t = Texts/Primary
+  Address points/Address/Start point/Distance/distance:t = Texts/Primary
+  Address points/Address/End point/Time:t = Texts/Primary
+  Address points/Address/End point/Price/surge/Color:f = Icons/Accent
+  Address points/Address/End point/Price/Price:t = Texts/Accent
+## Booster Section  (Type)
+  v: 0=Fast Pickup; 1=No Commission; 2=Airport; 3=Chain Order; 4=Good Passenger; 5=Pickup Surcharge; 6=Comfort Plus; 7=Custom
+  ·:f = Boosters/Blue[0] Boosters/Green[1] Boosters/Red[2] Boosters/Bronze[3] Boosters/Pink[4] Boosters/Lime[5] Boosters/Purple[6] Boosters/Custom[7]
+  Content/<иконка>/Color:f = Icons/Variant[0-6] Icons/Primary Dark Ind[7]
+  Content/<подпись>:t = Texts/Variant[0-6] Texts/Primary Dark Ind[7]

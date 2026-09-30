@@ -1,0 +1,131 @@
+Bg/Primary|#ffffff|#1f1f23|FRAME_FILL|Основной фон
+Bg/Primary Inverted|#1f1f23|#f5f5f5|FRAME_FILL|
+Bg/Secondary|#f5f5f5|#111113|FRAME_FILL,SHAPE_FILL|Используется для обозначения "нулевого" слоя-подло…
+Bg/Tertiary|#0000001f|#00000029|FRAME_FILL,SHAPE_FILL|
+Bg/Tertiary Solid|#bdbdbd|#5a5a5a|FRAME_FILL,SHAPE_FILL|
+Bg/Actions|#2d2c2e|#1f1f23|FRAME_FILL|Обычно используется для бэкграундов с действиями — для обосо…
+Texts/Primary|#000000de|#ffffff|TEXT_FILL|Основной текст
+Texts/Primary Inverted|#ffffff|#000000de|TEXT_FILL|Основной текст для тёмных/светлых областей
+Texts/Secondary|#0000008a|#ffffffb2|TEXT_FILL|Второстепенный текст, подписи, пояснения
+Texts/Secondary Inverted|#ffffff|#0000008a|TEXT_FILL|Второстепенный текст для тёмных/светлых областей
+Texts/Tertiary|#00000061|#ffffff61|TEXT_FILL|Подписи, неактивные состояния в полях, тексты на малозначимы…
+Texts/Disabled|#00000042|#ffffff29|TEXT_FILL|Для текстов в неактивном состоянии
+Texts/Accent|#8526ff|#9966ff|TEXT_FILL|Акцентное состояние для максимального привлечения внимания.
+Texts/Positive|#23ad58|#23ad58|TEXT_FILL|Акцентные тексты и обозначение положительного баланса сумм.
+Texts/Warning|#d62347|#f85973|TEXT_FILL|Для состояния ошибок
+Bg/Warning|#f9ecee|#a22c3e4d|FRAME_FILL,SHAPE_FILL|Для состояния ошибок
+Texts/Attention|#d49311|#ebb447|TEXT_FILL|
+Texts/Link|#005aff|#0056f5|TEXT_FILL|Для ссылок
+Texts/Primary Dark Ind|#000000de|#000000de|TEXT_FILL|Основной текст. Не зависит от темы.
+Texts/Secondary Dark Ind|#0000008a|#0000008a|TEXT_FILL|Второстепенный текст, подписи, пояснения. Не зависит от темы
+Texts/Accent Light Ind|#9966ff|#9966ff|TEXT_FILL|Акцентное состояние для максимального привлечения внимания.
+Texts/Primary Light Ind|#ffffff|#ffffff|TEXT_FILL|Основной текст. Не зависит от темы.
+Texts/Secondary Light Ind|#ffffffb2|#ffffffb2|TEXT_FILL|Второстепенный текст, подписи, пояснения. Не зависит от темы
+Texts/Tertiary Light Ind|#ffffff61|#ffffff61|TEXT_FILL|Подписи, неактивные состояния в полях. Не зависит от темы.
+Texts/Disabled Light Ind|#ffffff29|#ffffff29|TEXT_FILL|Для текстов в неактивном состоянии. Не зависит от темы.
+Icons/Primary|#2d2c2e|#ffffff|SHAPE_FILL|Для важных акцентных состояний. Когда иконка является ключев…
+Icons/Primary Inverted|#ffffff|#2d2c2e|SHAPE_FILL|Для важных акцентных состояний на тёмном/светлом фоне
+Icons/Primary Light Ind|#ffffff|#ffffff|SHAPE_FILL|Для важных акцентных состояний. Не зависит от темы.
+Icons/Primary Dark Ind|#2d2c2e|#2d2c2e|SHAPE_FILL|Для важных акцентных состояний. Не зависит от темы.
+Icons/Secondary|#0000008a|#ffffff80|SHAPE_FILL|Для иконок действий. Например, для закрытия виджета.
+Icons/Secondary Inverted|#ffffff|#0000008a|SHAPE_FILL|Для иконок действий на тёмных/цветных областях
+Icons/Secondary Light Ind|#ffffff80|#ffffff80|SHAPE_FILL|Для иконок действий. Не зависит от темы.
+Icons/Secondary Dark Ind|#0000008a|#0000008a|SHAPE_FILL|Для иконок действий. Не зависит от темы.
+Icons/Tertiary|#00000061|#f6f7f961|SHAPE_FILL|
+Icons/Informative|#00000061|#ffffff61|SHAPE_FILL|Для информационных иконок. Например, для указания подъезда.
+Icons/Informative Light Ind|#ffffff61|#ffffff61|SHAPE_FILL|Для информационных иконок. Не зависит от темы.
+Icons/Inactive|#00000042|#ffffff29|SHAPE_FILL|Неактивное состояние иконок.
+Icons/Inactive Light Ind|#ffffff29|#ffffff29|SHAPE_FILL|Неактивное состояние иконок. Не зависит от темы.
+Icons/Variant|#323036|#f6f7f9|SHAPE_FILL|
+Icons/Accent|#8526ff|#884dff|SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
+Icons/Accent Light Ind|#884dff|#884dff|SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
+Icons/Positive|#23ad58|#23ad58|SHAPE_FILL|Акцентное состояние кнопок, в кейсе заказов.
+Icons/Warning|#d62347|#f85973|SHAPE_FILL|Для состояния ошибок
+Icons/Attention|#ffaa00|#e6a219|SHAPE_FILL|
+Icons/Special|#005aff|#005aff|SHAPE_FILL|Для очереди
+Strokes/Primary|#2d2c2e|#cbcacc|STROKE_COLOR|Для обводок важных элементов
+Strokes/Primary Inverted|#ffffff|#2d2c2e|STROKE_COLOR|Для обводок важных элементов
+Strokes/Secondary|#00000061|#ffffff61|STROKE_COLOR|Для обводок второстепенных элементов
+Strokes/Tertiary|#0000001f|#ffffff33|STROKE_COLOR|Для обводок небольших элементов
+Strokes/Informative|#ebedf0|#ffffff29|STROKE_COLOR|Для лёгкого отображения границ элемента
+Strokes/Informative Light Ind|#ffffff29|#ffffff29|STROKE_COLOR|Для лёгкого отображения границ элемента. Не зависит от темы.
+Strokes/Warning|#d62347|#f85973|STROKE_COLOR|Для состояния ошибок
+Pastels/Wisteria|#8e6eb8|#855fb8|FRAME_FILL,SHAPE_FILL|
+Pastels/Plum|#e1d5f0|#4e4657|FRAME_FILL,SHAPE_FILL|
+Pastels/Rose|#cc5a87|#bd4b78|FRAME_FILL,SHAPE_FILL|
+Pastels/Orchid|#ebcee1|#52414c|FRAME_FILL,SHAPE_FILL|
+Pastels/Blush|#eb676b|#cc5255|FRAME_FILL,SHAPE_FILL|
+Pastels/Oyster|#ebcece|#524141|FRAME_FILL,SHAPE_FILL|
+Pastels/Bronze|#a37b5b|#996843|FRAME_FILL,SHAPE_FILL|
+Pastels/Sand|#f0d4c5|#574942|FRAME_FILL,SHAPE_FILL|
+Pastels/Wheat|#e6d5b8|#4c4537|FRAME_FILL,SHAPE_FILL|
+Bg/Attention|#ffaa00|#e6a219|FRAME_FILL,SHAPE_FILL|
+Pastels/Peach|#f0a869|#cc8b52|FRAME_FILL,SHAPE_FILL|
+Pastels/Corn|#e8bb53|#cca039|FRAME_FILL,SHAPE_FILL|
+Pastels/Parchment|#f6eedf|#433e3d|FRAME_FILL,SHAPE_FILL|
+Pastels/Pesto|#8c8f56|#868a48|FRAME_FILL,SHAPE_FILL|
+Pastels/Olive|#dfe0c5|#464739|FRAME_FILL,SHAPE_FILL|
+Pastels/Avocado|#6e9e4c|#608f3f|FRAME_FILL,SHAPE_FILL|
+Pastels/Leaf|#d0e0c5|#3f4739|FRAME_FILL,SHAPE_FILL|
+Pastels/Emerald|#749987|#618f78|FRAME_FILL,SHAPE_FILL|
+Pastels/Nebula|#cde6da|#3e4c45|FRAME_FILL,SHAPE_FILL|
+Pastels/Turquoise|#659ba8|#568b99|FRAME_FILL,SHAPE_FILL|
+Pastels/Opal|#cae5e5|#3d4c4c|FRAME_FILL,SHAPE_FILL|
+Pastels/Cobalt|#6997cc|#5c86b8|FRAME_FILL,SHAPE_FILL|
+Pastels/Slate|#dfe7f5|#4c525c|FRAME_FILL,SHAPE_FILL|
+Pastels/Azure|#6386a3|#437299|FRAME_FILL,SHAPE_FILL|
+Pastels/Mist|#c3d9eb|#3d4952|FRAME_FILL,SHAPE_FILL|
+Pastels/Charcoal|#4d4d5c|#818199|FRAME_FILL,SHAPE_FILL|
+Pastels/Concrete|#e6e6eb|#4b4952|FRAME_FILL,SHAPE_FILL|
+Buttons/Primary|#2d2c2e|#ebedf0|FRAME_FILL,SHAPE_FILL|Для кнопок, выполняющих главное или рекомендуемое действие.
+Buttons/Secondary|#ebedf0|#333234|FRAME_FILL,SHAPE_FILL,STROKE_COLOR|Для кнопок, выполняющих второстепенное действие
+Buttons/Disabled|#f5f5f5|#2e2d2f|FRAME_FILL,SHAPE_FILL|Неактивное состояние кнопок.
+Buttons/Positive|#23ad58|#23ad58|FRAME_FILL,SHAPE_FILL|Акцентное состояние кнопок, в кейсе заказов.
+Buttons/Positive Deep|#0e8a3d|#0e8a3d|FRAME_FILL,SHAPE_FILL|Прогресс в акцентной кнопке.
+Buttons/Positive Disabled|#edf5f0|#373d39|FRAME_FILL,SHAPE_FILL|Неактивное состояние акцентной кнопки.
+Buttons/Accent|#8526ff|#8526ff|FRAME_FILL,SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
+Buttons/Accent Deep|#660bdb|#660bdb|FRAME_FILL,SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
+Buttons/Floating|#ffffff|#1f1f23|FRAME_FILL|Для навигационных FAB. Например, на карте.
+Controls/Checked|#2d2c2e|#ffffff|ALL_SCOPES|
+Controls/Unchecked|#cbcacc|#ffffff29|ALL_SCOPES|
+Controls/Accent|#ffffff|#2d2c2e|ALL_SCOPES|
+Fields/Primary|#2d2c2e|#cbcacc|FRAME_FILL,SHAPE_FILL|Для текстовых полей в фокусе и в заполненном состоянии
+Fields/Primary Inverted|#ebedf0|#00000061|FRAME_FILL,SHAPE_FILL|Для поисковых полей в фокусе
+Fields/Secondary|#00000061|#ffffff61|FRAME_FILL,SHAPE_FILL|Для текстовых полей в неактивном состоянии
+Fields/Secondary Inverted|#f5f5f5|#00000042|FRAME_FILL,SHAPE_FILL|Для поисковых полей в неактивном и заполненном состояниях
+Fields/Disabled|#00000042|#ffffff29|FRAME_FILL,SHAPE_FILL|Для текстовых полей в заблокированном состоянии
+Fields/Warning|#d62347|#f85973|FRAME_FILL,SHAPE_FILL|Для текстовых полей в состоянии ошибки
+Messages/Default|#ebedf0|#2d2c2e|FRAME_FILL,SHAPE_FILL|Для отображения комментариев и для сообщений от собеседника
+Messages/Push|#2d2c2e|#38373a|FRAME_FILL,SHAPE_FILL|Для отображения комментариев и для сообщений от собеседника
+Messages/Action|#8526ff|#884dff|FRAME_FILL,SHAPE_FILL|Для отображения собственных сообщений
+Messages/Positive|#23ad58|#23ad58|FRAME_FILL,SHAPE_FILL|Для отображения сообщений, связанных с заказом
+Messages/Attention|#f0a11d|#f0a11d|FRAME_FILL,SHAPE_FILL|Для отображения сообщений, требующих внимания или ожидания
+Messages/Warning|#d62347|#f85973|FRAME_FILL,SHAPE_FILL|Для состояния ошибок и предупреждений
+Bg/Overlay|#00000066|#00000066|FRAME_FILL,SHAPE_FILL|
+Bg/Accent|#8526ff|#9966ff|FRAME_FILL,SHAPE_FILL|
+Strokes/Attention|#ffaa00|#e6a219|STROKE_COLOR|
+Bg/Search Area|#0056f51f|#0056f533|FRAME_FILL,SHAPE_FILL|
+Boosters/Blue|#cbe7f6|#4587c9|FRAME_FILL|
+Boosters/Green|#daf6cb|#50a550|FRAME_FILL|
+Boosters/Red|#f6cbcb|#cb4d4d|FRAME_FILL|
+Boosters/Bronze|#f5daa3|#c37d4b|FRAME_FILL|
+Boosters/Pink|#f6cbe6|#c0599d|FRAME_FILL|
+Boosters/Lime|#cbf6e7|#3999ac|FRAME_FILL|
+Boosters/Purple|#e1cbf6|#8960c3|FRAME_FILL|
+Boosters/Custom|#f5f589|#f1f17e|FRAME_FILL|
+Bg/Separator|#c4c4d4|#5f5f6d|FRAME_FILL,SHAPE_FILL|
+Strokes/Separator|#c4c4d4|#5f5f6d|STROKE_COLOR|
+Bg/Fade|#ffffff|#252428|FRAME_FILL|
+Pastels/Morion|#605e5e|#403e3e|FRAME_FILL,SHAPE_FILL|
+Pastels/Lips|#cf6f96|#c76b90|FRAME_FILL,SHAPE_FILL|
+Pastels/Shame|#eb676b|#e54c59|FRAME_FILL,SHAPE_FILL|
+Icons/Special Pale|#0099e5|#0099e5|SHAPE_FILL|
+Bg/Special Pale|#0088cc|#0099e5|FRAME_FILL,SHAPE_FILL|
+Strokes/Positive|#23ad58|#23ad58|STROKE_COLOR|
+Texts/Special Pale|#0099e5|#0099e5|TEXT_FILL|
+Bg/Demand|#006c7c|#1d9eb1|FRAME_FILL,SHAPE_FILL|
+Bg/Primary Light Ind|#ffffff|#ffffff|FRAME_FILL,SHAPE_FILL|Фон/поверхность, не меняющаяся между режимами. Для элементов поверх карты, пинов, бейджей, индикаторов, которы…
+Texts/Informative|#00000061|#ffffff61|TEXT_FILL|Вспомогательный информативный текст с пониженным контрастом. Для надписей на клавиатуре, информационных подпис…
+Texts/Variant|#323036|#f6f7f9|TEXT_FILL|Текст особого стиля для специфических контекстов — числовые значения в бустерах, баллы, специальные метки. Не…
+Bg/Positive|#23ad58|#23ad58|FRAME_FILL,SHAPE_FILL|Полноцветный позитивный (зелёный) фон для индикаторов и бейджей статуса. Используется на малых элементах — не…
+Buttons/Warning|#d62347|#f85973|FRAME_FILL,SHAPE_FILL|Фон кнопки деструктивного/предупреждающего действия — отклонить звонок, отменить заказ, прервать. Пара к Butto…

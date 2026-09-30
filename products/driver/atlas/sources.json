@@ -1,0 +1,17 @@
+{
+  "product": "driver",
+  "note": "Источники атласа. Читаются только чтением через Figma MCP (use_figma). Макеты Rider — другой продукт (своя библиотека Rider Tokens & Styles), в атлас Driver не входят.",
+  "figma": {
+    "tokens": { "name": "🚖 WB AID Driver Tokens & Styles", "fileKey": "ouP1hUC4YjVRpfgdvzy3FA" },
+    "components": { "name": "WB AID Driver Components", "fileKey": "o0IUYIS7vadbmXPXd81ql9" },
+    "icons": { "name": "Driver Icons", "fileKey": "AwRpEGfyeNjRbZP8KGG1wy" },
+    "exemplars": [
+      { "name": "✅ Driver App • Order, Main, Port queue", "fileKey": "TLVVI8O6J0FGUcHzxxLq8H", "page": "2430:22084" }
+    ]
+  },
+  "extractedAt": "2026-09-30",
+  "extractors": {
+    "anatomy": "tools/aid-style-migration/scripts/atlas/anatomy.js",
+    "audit": "tools/aid-style-migration/scripts/audit/"
+  }
+}

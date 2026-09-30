@@ -1,0 +1,68 @@
+# Driver Components · Headers, System — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+# PAGE Headers
+## center  (Type,Color,Title,Icon back,Shadow)
+  v: 0-3=Default,Light,Title=Yes; 4-7=Default,Dark,Title=Yes; 8,9=Default,Light,No; 10,11=Default,Dark,No; 12-14=Search,Light; 15-18=Tabs,Light
+  ·:f = Bg/Primary[Light] Bg/Actions[Dark]
+  Icon/arrow_left/Color:f = Icons/Primary[Light] Icons/Primary Inverted[Dark]
+  Title:t = Texts/Primary[Light] Texts/Primary Inverted[Dark]
+  hand:f = Buttons/Secondary[Light] Icons/Inactive Light Ind[Dark]
+  search:f = Fields/Secondary Inverted; search/Color = Icons/Inactive; Label = Texts/Disabled
+  Tabs:f = Bg/Secondary; Tab 1:f = Buttons/Floating; Tab N/текст = Texts/Primary
+## small  (Icon,Time,Big icon,Search,Shadow)
+  ·:f = Bg/Primary
+  hand:f = Buttons/Secondary
+  Title/Title + icon/✏️ Title:t = Texts/Secondary
+  Title/Title + icon/Icon/Color:f = Icons/Accent[Icon=Yes]
+  Title/⏳ Time:t = Texts/Primary[Time=Yes]
+  Title/✈️ Big Icon/background:f = Icons/Special[Big icon=Yes]
+  Title/✈️ Big Icon/Icon/Color:f = Icons/Primary Light Ind[Big icon=Yes]
+  search:f = Fields/Secondary Inverted; search/Color = Icons/Inactive; Label = Texts/Disabled
+## selector  (Type,Collapsed)
+  ·:f = Bg/Primary
+  Divider/olddivider:s = Strokes/Separator
+  день / неделя / месяц — невыбранный:f = Buttons/Disabled, текст = Texts/Primary
+  день / неделя / месяц — выбранный:f = Buttons/Primary, текст = Texts/Primary Inverted
+  Icon/chevron_down/Color:f = Icons/Primary
+  подписи День/Неделя/Месяц:t = Texts/Primary
+  hand:f = Buttons/Secondary
+## navigation  (Route)
+  ·:f = Bg/Primary
+  center/hand:f = Buttons/Secondary
+  Route Values (время, расстояние, ETA):t = Texts/Primary
+  Route Progress/Background:f = Bg/Secondary[Route=Yes]
+  Route Progress/Progress:f = GRADIENT[Route=Yes]
+  Driver arrow small/Bounds:f = Icons/Accent, :s = Strokes/Primary Inverted
+  Route Values/pin_dot/Color:f = Icons/Informative[Route=No]
+## order  (State)
+  v: 0=Default; 1=Free; 2=Paid
+  ·:f = Bg/Primary
+  small/hand:f = Buttons/Secondary
+  small/Title/…/✏️ Title:t = Texts/Secondary
+  small/Title/…/Icon/Color:f = Icons/Accent[0]
+  small/Title/⏳ Time:t = Texts/Primary[0,1] Texts/Positive[2]
+  content/✏️ Message:t = Texts/Primary[1]
+  Money/+10, ₽:t = Texts/Primary[2]
+## story  (Closeable,Lines)
+  hand:f = Bg/Tertiary[Closeable=Yes]
+  lines/line 1:f = Bg/Overlay; lines/line 2..10:f = Bg/Tertiary
+# PAGE System
+## keyboard/number, keyboard/qwerty — системные, пропущены
+## Divider  (Alight,Paddings)
+  olddivider:s = Strokes/Separator
+## description
+  ·:f = Pastels/Parchment
+  ✏️ Text:t = Texts/Primary
+## Notification
+  ·:f = Bg/Primary
+  Group 33/logo_round/Color:f = Icons/Primary
+  Group 33/Title, Text, Name:t = Texts/Primary
+## Tooltips
+  ·:f = Icons/Secondary
+  ✏️ Text:t = Texts/Primary Inverted
+## statusbar  (Night mode)
+  ·:f = #00000026[on] #ffffff47[off]
+  time, battery, cellular, wifi = Texts/Icons Primary Light Ind[on] Secondary Dark Ind[off]
+  wifi/Shape/Path, Path 13:f = Buttons/Floating
+## bottombar
+  ·:f = #000000
+  recent/home/back:s = Texts/Primary Inverted

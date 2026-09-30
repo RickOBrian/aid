@@ -1,0 +1,63 @@
+# Driver Components · Fields, Tabs, Dialogues, Chat — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+# PAGE Fields
+## textfield  (State,Icon)
+  v: 0=Disabled,On; 1=Disabled,Off; 2=Inactive,On; 3=Inactive,Off; 4=Activated,On; 5=Activated,Off; 6=Focused,On; 7=Focused,Off; 8=Focused error,On; 9=Error,On
+  Background:s = Strokes/Tertiary[0,1] Strokes/Secondary[2,3] Strokes/Primary[5,6,7] Strokes/Warning[8,9]
+  ✏️ Input text:t = Texts/Disabled[0,1] Texts/Secondary[2,3] Texts/Primary[5,9]
+  scan_card/Color:f = Icons/Inactive[0] Icons/Primary[2,6]
+  ✏️ Label:t = Texts/Secondary[2,3] Texts/Tertiary[5] Texts/Warning[9]
+  Label:f = Bg/Primary[5,6,7,8,9]
+  Label/✏️ Label:t = Texts/Primary[5] Texts/Warning[9]
+  Content/✏️ Input text:t = Texts/Primary[6,7,8]
+  Content/Cursor:f = Icons/Primary[6,7] Icons/Warning[8]
+  Label/✏️Label:t = Texts/Primary[6,7] Texts/Warning[8]
+  ✏️Helper text:t = Texts/Secondary[6,7] Texts/Warning[8]
+  attention_round/Color:f = Icons/Warning[8,9]
+## search  (State)
+  v: 0=Activated; 1=Focused; 2=Inactive
+  ·:f = Fields/Secondary Inverted[0,2] Fields/Primary Inverted[1]
+  search/Color:f = Icons/Informative[0] Icons/Primary[1] Icons/Inactive[2]
+  Label:t = Texts/Tertiary[0] Texts/Disabled[2]
+  close_round/Color:f = Icons/Informative[1]
+  Input/✏️ Input text:t = Texts/Primary[1]
+  Input/Cursor:f = Icons/Primary[1]
+# PAGE Tabs
+## Tabs (сегменты)  (Tabs,Active)
+  v: 0=3 tabs,Tab 1; 1=3 tabs,Tab 2; 2=3 tabs,Tab 3; 3=2 tabs,Tab 1; 4=2 tabs,Tab 2
+  ·:f = Bg/Secondary
+  Tab N (активный):f = Buttons/Floating
+  Tab N/✏️ Text here:t = Texts/Primary
+## Tab  (State)
+  v: 0=Active; 1=Normal
+  ·:f = Buttons/Primary[Active] Buttons/Disabled[Normal]
+  текст:t = Texts/Primary Inverted[Active] Texts/Primary[Normal]
+## Tabs (набор Tab)  (Quantity)
+  Tab:f = Buttons/Disabled
+  Tab/текст:t = Texts/Primary
+# PAGE Dialogues
+## default  (Type,Image)
+  v: 0=2 Buttons,Yes; 1=1 Button,Yes; 2=Button Set,Yes; 3=1 Button,No; 4=Button Set,No; 5=2 Buttons,No
+  ·:f = Bg/Primary
+  Image 1:f = IMAGE[0,1,2]
+  Texts/✏️Title:t = Texts/Primary
+  Texts/✏️Description:t = Texts/Secondary
+  Buttons/wide:f = Buttons/Secondary[0,5]
+  Buttons/wide/✏️Text here:t = Texts/Primary[0,5]
+  Buttons/wide/Motivation/✏️Text here:t = Texts/Primary Inverted[0,5]
+  Buttons/wide/Motivation/motivation_round/Color:f = Icons/Primary Inverted[0,5]
+  wide:f = Buttons/Primary[1,3]
+  wide/✏️Text here:t = Texts/Primary Inverted[1,3]
+  set/default:f = Buttons/Secondary[2,4]
+  set/default/✏️Text here:t = Texts/Primary[2,4]
+# PAGE Chat
+## Left  (Side,Rows,State)
+  v: 0=Top,Single,Sent; 1=Top,Several,Sent; 2=Bottom,Single,Sent; 3=Bottom,Several,Sent; 4=Top,Single,Printing; 5=Bottom,Single,Printing
+  ·:f = Messages/Default
+  ✏️ Text here:t = Texts/Primary[0-3]
+  time:t = Texts/Tertiary[0-3]
+  Frame 5/Rectangle*:f = Icons/Inactive[4,5]
+## Right  (Side,Rows,State)
+  edit_round/Subtract:f = Icons/Primary[0,1]
+  bubble:f = Messages/Action
+  bubble/✏️ Text here:t = Texts/Primary Light Ind
+  bubble/time:t = Texts/Secondary Light Ind

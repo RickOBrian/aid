@@ -1,0 +1,88 @@
+# Driver Components · Widgets — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+## alert  (Buttons,Description)
+  v: 0=Set,On; 1=Set,Off; 2=Wide,On; 3=Double wide,On; 4=Wide,Off; 5=Double wide,Off; 6=None,On; 7=None,Off
+  ·:f = Bg/Primary
+  Content/Head/falcon/Color:f = Icons/Accent
+  Content/Head/✏️ Title:t = Texts/Primary
+  Content/Head/close_round/Color:f = Icons/Inactive
+  Content/✏️ Description:t = Texts/Primary[0,2,3,6]
+  set/default:f = Buttons/Secondary[0,1]
+  set/default/✏️Text here:t = Texts/Primary[0,1]
+  wide:f = Buttons/Primary[2,4] Buttons/Secondary[3,5]
+  wide/✏️Text here:t = Texts/Primary Inverted[2,4] Texts/Primary[3,5]
+  wide/Motivation/✏️Text here:t = Texts/Primary[3,5]
+  wide/Motivation/motivation_round/Color:f = Icons/Primary[3,5]
+## push  (Type)
+  v: 0=default; 1=warning
+  ·:f = Messages/Push[0] Messages/Warning[1]
+  check_round/Color:f = Icons/Primary Light Ind
+  ✏️ Text:t = Texts/Primary Light Ind
+## push/motivation  (Type)
+  v: 0=Increased; 1=Decreased
+  ·:f = Bg/Primary
+  Progress/Bar/Base:s = Strokes/Informative
+  Progress/Bar/Filled:s = Strokes/Positive[0] Strokes/Warning[1]
+  Progress/Count:t = Texts/Primary
+  Content/Title/✏️ Title:t = Texts/Primary[0] Texts/Warning[1]
+  Content/Title/close_round/Color:f = Icons/Inactive[0]
+  Content/✏️ Description:t = Texts/Secondary[0] Texts/Primary[1]
+## instruction/rounded
+  ·:f = Bg/Primary
+  Header/Frame 55/✏️ Title:t = Texts/Primary
+  Header/Frame 55/✏️ Number:t = Texts/Secondary
+  Header/Header/Group 56/close/Color:f = Icons/Informative
+  Header/Header/Group 56/avatar/photo:f = IMAGE
+  Stack/Divider/olddivider:s = Strokes/Separator
+  Stack/Pagination/check_round/Color:f = Icons/Positive
+  Stack/Pagination/chevron_right_mini/Color:f = Icons/Inactive
+  Stack/Pagination/box_mini/Color:f = Icons/Primary
+  Stack/Pagination/car/Color:f = Icons/Informative
+  Stack/Pagination/flag/Color:f = Icons/Informative
+  Stack/✏️ Description:t = Texts/Primary
+  Stack/comment:f = Messages/Default
+  Stack/comment/✏️ Text here:t = Texts/Primary
+  Stack/.../reference point: Подъезд/Домофон/Этаж/Квартира:t = Texts/Secondary; значение:t = Texts/Primary
+  wide:f = Buttons/Secondary
+  wide/✏️Text here:t = Texts/Primary
+## comment/order
+  Border:f = Bg/Primary Inverted
+  Content/Label:t = Texts/Secondary
+  Content/✏️ Text here:t = Texts/Primary
+## comment  (Type,Long)
+  v: 0=Address,True; 1=Address,False; 2=General Order,True; 3=General Order,False
+  ·:f = Messages/Default[0,1]
+  text/Darkner:f = GRADIENT[0]
+  text/✏️ Text here:t = Texts/Primary[0]
+  chevron_right/Color:f = Icons/Primary[0]
+  ✏️ Text here:t = Texts/Primary[1]
+  Общий комментарий:t = Texts/Secondary[2,3]
+  comment:f = Pastels/Parchment[2,3]
+  comment/text/Darkner:f = GRADIENT[2]
+  comment/text/✏️ Text here:t = Texts/Primary Dark Ind[2]
+  comment/chevron_right/Color:f = Icons/Secondary Dark Ind[2]
+  comment/✏️ Text here:t = Texts/Primary Dark Ind[3]
+## way_progress
+  ·:f = Bg/Actions
+  progress/progress to be:f = Icons/Accent
+  progress/progress passed:f = Icons/Informative Light Ind
+  progress/runner:f = Icons/Primary Light Ind
+  info/✏️ Time passed|Distance|Time to:t = Texts/Primary Light Ind
+## StatusInfo  (Type)
+  v: 0=Warning; 1=Attention; 2=Positive
+  ·:f = Messages/Warning[0] Messages/Attention[1] Messages/Positive[2]
+  statusbar:f = #00000026
+  statusbar/contents right/time:t = Texts/Primary Inverted
+  statusbar/contents right/battery|cellular|wifi/Shape:f = Icons/Primary Inverted
+  statusbar/contents right/wifi/Shape/Path, Path 13:f = Buttons/Floating
+  info/icon/Color:f = Icons/Primary Light Ind
+  info/✏️ Title:t = Texts/Primary Light Ind
+## progress  (Value)
+  ·:f = Icons/Inactive
+  current:f = Icons/Warning
+## Demand  (State)
+  v: 0=Progress; 1=Level 5; 2=Level 4; 3=Level 3; 4=Level 2; 5=Level 1; 6=Level 0; 7=Driver outside the map
+  ·:f = Bg/Primary
+  Text Label:t = Texts/Secondary
+  Line/bg:f = Bg/Demand[0] GRADIENT[1-7]
+  Line/Union:f = Bg/Primary[0]
+  pointer/Color background:f = Icons/Primary Dark Ind[1-6]

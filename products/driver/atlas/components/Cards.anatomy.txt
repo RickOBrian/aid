@@ -1,0 +1,22 @@
+# Driver Components · Cards — анатомия (эталон библиотеки). Формат — см. Buttons.anatomy.txt
+## tariff  (Tarif,State,To door,Nightmode) — 54 варианта; картинки машин — IMAGE
+  ·:f = Buttons/Disabled[State=Disabled] Buttons/Secondary[остальные]
+  название тарифа:t = Texts/Tertiary[Disabled] Texts/Secondary[Unselected, Loading] Texts/Primary[Selected]
+  checkbox/Unchecked:f = Icons/Primary Inverted
+  checkbox/Checked:f = Controls/Checked
+  checkbox/loader:f = Controls/Checked[Loading]
+  Frame 495/до двери:t = Texts/Primary[Delivery, Selected|Loading+Option]
+  Frame 495/Switch / ON/Track:f = Buttons/Primary[To door=Yes] Texts/Secondary Dark Ind[Selected, To door=No] Icons/Secondary[Loading+Option, No]
+  Frame 495/Switch / ON/Thumb:f = Icons/Primary Light Ind[To door=Yes] Icons/Primary Inverted[To door=No]
+  Frame 495/Switch / ON/Tint:f = Icons/Primary[To door=Yes]
+  Frame 495/Switch / ON/Surface Copy:f = Icons/Primary[Loading+Option,No] Icons/Primary Inverted[Loading+Option,Yes]
+  (переключатель «до двери» нарисован внутри карточки, а не взят из компонента switch)
+## review  (Remark,Big,Important,Disabled)
+  v: 0=no,no,no,no; 1=yes,no,no,no; 2=yes,no,yes,no; 3=no,yes,no,no; 4=no,yes,no,yes; 5=yes,yes,no,no; 6=yes,yes,yes,no
+  ·:f = Pastels/Nebula[0,3] Buttons/Secondary[1,2,5,6] Bg/Secondary[4]
+  ✏️ Title:t = Texts/Primary Dark Ind[0,3] Texts/Primary[1,2,5,6] Texts/Tertiary[4]
+  image:f = IMAGE
+  lines:f = Strokes/Tertiary[1,2,5,6]
+  attention_round/Color:f = Icons/Warning[2,6]
+  progress:f = Icons/Informative Light Ind[3] Icons/Inactive[5,6]
+  progress/current:f = Icons/Primary Light Ind[3] Icons/Warning[5,6]
