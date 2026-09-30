@@ -83,11 +83,11 @@ describe("восприятие элементов", () => {
     expect(src.rules.flatMap((r) => r.values).some((v) => !v.token && v.hex === "#FFFFFF")).toBe(false);
   });
 
-  it("переопределённый автором цвет без токена — не находка, а решение макета", () => {
+  it("цвет без токена внутри компонента — находка и при переопределении (аудит: «переопределён» не признак автора)", () => {
     const overridden = node({ name: "bg", type: "VECTOR", x: 288, y: 220, width: 56, height: 112, fills: [raw(1, 0, 0)], colorOverride: true });
     const inst = node({ name: "card", type: "INSTANCE", x: 288, y: 220, width: 56, height: 112, component: { key: "k", name: "card", setName: "" }, children: [overridden] });
     const learner = new LanguageLearner();
     learner.add(screen([inst]), { screenId: "s", screenName: "s", dark: false });
-    expect(learner.source("f", "t", 1).findings).toEqual([]);
+    expect(learner.source("f", "t", 1).findings.map((f) => f.component)).toEqual(["card"]);
   });
 });

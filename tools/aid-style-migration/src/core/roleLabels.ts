@@ -20,6 +20,10 @@ const BASE: Record<string, string> = {
   input: "Поле ввода",
   chip: "Чип",
   handle: "Ручка шторки",
+  header: "Заголовок",
+  row: "Строка списка",
+  bubble: "Пузырь сообщения",
+  badge: "Бейдж-счётчик",
   divider: "Разделитель",
   "tab/indicator": "Индикатор таба",
   link: "Ссылка",
@@ -27,11 +31,11 @@ const BASE: Record<string, string> = {
   "text/secondary": "Вторичный текст",
   "text/tertiary": "Третичный текст",
   "text/status": "Текст статуса",
-  "text/on-color": "Текст на цвете",
+  "text/on-color": "Текст на контрастном фоне",
   "icon/primary": "Основная иконка",
   "icon/secondary": "Вторичная иконка",
   "icon/tertiary": "Третичная иконка",
-  "icon/on-color": "Иконка на цвете",
+  "icon/on-color": "Иконка на контрастном фоне",
   "icon/accent": "Иконка-акцент",
   "icon/status": "Иконка статуса",
   "icon/stroke": "Иконка · обводка",
@@ -42,6 +46,7 @@ const PART: Record<string, string> = {
   label: "подпись",
   icon: "иконка",
   part: "деталь",
+  meta: "метка (время)",
   stroke: "обводка",
 };
 
@@ -82,6 +87,6 @@ export function roleGroup(key: string): RoleGroup {
   if (/^(action-|input|chip|tab\/|link|handle)/.test(key)) return "actions";
   if (key.startsWith("text/")) return "text";
   if (key.startsWith("icon/")) return "icons";
-  if (/^(screen-bg|overlay|sheet|modal|card|surface|divider)/.test(key)) return "surfaces";
+  if (/^(screen-bg|overlay|sheet|modal|card|surface|divider|header|row)/.test(key)) return "surfaces";
   return "other";
 }

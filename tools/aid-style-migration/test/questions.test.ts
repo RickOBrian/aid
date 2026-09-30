@@ -129,3 +129,18 @@ describe("было / стало: значение варианта для эле
     expect(valueFor(always, hit)?.token?.name).toBe("Buttons/Positive");
   });
 });
+
+describe("о чём спрашивать (аудит 2026-09-30)", () => {
+  it("декор, куски и обводки иконок — без вопросов; кнопки и текст — с вопросами", async () => {
+    const { isAskable } = await import("../src/core/questions");
+    for (const r of ["decor/neutral", "action-main/part", "icon/stroke", "surface", "bubble", "row", "header", "card-tint/accent"]) expect(isAskable(r)).toBe(false);
+    for (const r of ["action-main", "action-secondary/stroke", "input/stroke", "text/secondary", "link", "icon/on-color", "card"]) expect(isAskable(r)).toBe(true);
+  });
+
+  it("правило из одного случая — вопрос «мало образцов»", () => {
+    const one = value("Texts/Link", 1, { screen: 1 }, ["Картой"]);
+    const qs = buildQuestions(lang([{ ...rule("link", "proposed", [one]), layer: "text" }]));
+    expect(qs.map((q) => q.kind)).toEqual(["thin"]);
+    expect(qs[0].lines[0]).toContain("всего 1 раз");
+  });
+});

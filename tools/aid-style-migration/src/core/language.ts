@@ -235,8 +235,10 @@ export class LanguageLearner {
     for (const hit of detectRoles(screen).hits) {
       const color = hit.paint.color;
       if (!color) continue;
-      if (!hit.paint.variable && hit.origin === "component" && hit.component) {
-        // Цвет задан внутри компонента без токена — это библиотека, не автор макета.
+      if (!hit.paint.variable && hit.component) {
+        // Цвет без токена внутри компонента — находка, не правило: задан в
+        // компоненте или переопределён в макете. «Переопределён» как признак
+        // автора не работает — экраны образцов сами инстансы (аудит 2026-09-30).
         const hex = toHex(color);
         const key = `${hit.component}|${hit.key}|${hex}`;
         const f = this.findings.get(key) ?? { component: hit.component, role: hit.key, hex, count: 0 };

@@ -139,6 +139,7 @@ const KIND_LABEL: Record<Question["kind"], string> = {
   contradiction: "в образцах по-разному",
   gap: "в образцах нет",
   outlier: "отступления от правила",
+  thin: "мало образцов",
 };
 
 function renderQuestion(state: ProfileState): void {
@@ -214,7 +215,7 @@ function findingsList(lang: StyleLanguage): HTMLElement[] {
   const fold = h("details", { className: "ds-fold" });
   fold.append(
     h("summary", { text: `Находки для библиотеки: ${list.length}` }),
-    h("p", { className: "ds-hint", text: "Цвет задан внутри компонента без токена, автор макета его не выбирал. В анкету не идёт — это предложение владельцу библиотеки." }),
+    h("p", { className: "ds-hint", text: "Цвет без токена внутри компонента — задан в самом компоненте или переопределён в макете. В анкету не идёт: это предложение для библиотеки или повод поправить образец." }),
     ...list.slice(0, 15).map((f) => h("div", { className: "ds-map-line" }, [swatch(f.hex, "цвет"), h("span", { text: `${f.component} · ${roleLabel(f.role)} — ${f.hex}, ${f.count}` })])),
   );
   return [fold];

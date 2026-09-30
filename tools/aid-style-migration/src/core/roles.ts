@@ -90,12 +90,12 @@ function samePaint(a: NPaint | undefined, b: NPaint | undefined): boolean {
 
 export interface ScreenRoles {
   hits: RoleHit[];
-  /** Что не читали: системное, аннотации, картинки. */
-  skipped: { system: number; annotation: number; media: number };
+  /** Что не читали: системное, аннотации, картинки, перекрытое. */
+  skipped: { system: number; annotation: number; media: number; hidden: number };
 }
 
 const SHAPES = new Set(["VECTOR", "BOOLEAN_OPERATION", "ELLIPSE", "STAR", "POLYGON", "LINE", "RECTANGLE"]);
-const CONTAINERS = new Set(["FRAME", "INSTANCE", "COMPONENT", "GROUP", "RECTANGLE"]);
+const CONTAINERS = new Set(["FRAME", "INSTANCE", "COMPONENT", "GROUP", "RECTANGLE", "SLOT"]);
 const WHITE: Rgba = { r: 1, g: 1, b: 1, a: 1 };
 
 // ---------------------------------------------------------------------------
@@ -128,11 +128,18 @@ export function meaningOf(c: Rgba): Meaning {
 // Формы
 // ---------------------------------------------------------------------------
 
+interface Base {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 interface Ctx {
   screen: NNode;
   surface: Rgba;
-  /** Нижний край ближайшего контейнера-основы (шторка, модалка, экран) — для «главного действия». */
-  baseBottom: number;
+  /** Ближайший контейнер-основа (шторка, модалка, экран) — для «главного действия», заголовка и ручки. */
+  base: Base;
   /** Роль, внутри которой находимся: текст и иконки внутри кнопки — её подпись и иконка. */
   owner: string | null;
   /** Заливка элемента-владельца: куски того же цвета — его фон, а не детали. */
@@ -146,14 +153,21 @@ function labelTexts(n: NNode): NNode[] {
   return texts(n).filter((t) => (t.text?.characters.trim().length ?? 0) > 0);
 }
 
+/** Время «23:58» — метка сообщения, не подпись. */
+function isTimeText(t: NNode): boolean {
+  return /^\d{1,2}:\d{2}$/.test(t.text?.characters.trim() ?? "");
+}
+
 /** Подпись по центру: сначала выравнивание текста (рамка поля ввода часто во всю ширину), потом геометрия. */
 function isCentered(n: NNode, label: NNode): boolean {
   const align = label.text?.align;
   if (align === "C" || align === "CENTER") return true;
   if (align === "L" || align === "LEFT" || align === "R" || align === "RIGHT") {
-    // Текст «по левому краю» в рамке по ширине содержимого — всё равно по центру кнопки.
+    // Текст «по левому краю» в рамке по ширине содержимого — всё равно по
+    // центру кнопки. Прижатый к левому краю — строка списка, не кнопка.
     const mid = label.x + label.width / 2;
-    return label.width < n.width * 0.8 && Math.abs(mid - (n.x + n.width / 2)) <= n.width * 0.08;
+    const hugsLeft = label.x - n.x <= n.width * 0.15;
+    return !hugsLeft && label.width < n.width * 0.8 && Math.abs(mid - (n.x + n.width / 2)) <= n.width * 0.08;
   }
   const mid = label.x + label.width / 2;
   return Math.abs(mid - (n.x + n.width / 2)) <= n.width * 0.08;
@@ -167,7 +181,20 @@ export function isButtonLike(n: NNode): boolean {
   const labels = labelTexts(n);
   if (labels.length < 1 || labels.length > 2) return false;
   if (labels.reduce((s, t) => s + (t.text?.characters.length ?? 0), 0) > 40) return false;
+  // Две подписи — в одну строку («Отказаться без штрафа»); текст над текстом — не кнопка.
+  if (labels.length === 2 && Math.abs(labels[0].y + labels[0].height / 2 - (labels[1].y + labels[1].height / 2)) > 6) return false;
   return isCentered(n, labels[0]);
+}
+
+/**
+ * Пузырь сообщения: плашка с текстом и временем «23:58» (аудит
+ * 2026-09-30: пузыри чата считались кнопками).
+ */
+function isBubble(n: NNode, W: number): boolean {
+  // Пузырь не бывает во всю ширину — карточки со временем заказа не пузыри.
+  if (!CONTAINERS.has(n.type) || n.height < 32 || n.height > 240 || n.width >= W * 0.85 || !body(n)) return false;
+  const labels = labelTexts(n);
+  return labels.length >= 2 && labels.some(isTimeText) && labels.some((t) => !isTimeText(t));
 }
 
 function isFab(n: NNode): boolean {
@@ -175,6 +202,25 @@ function isFab(n: NNode): boolean {
   if (/(^|\/)fab/i.test(n.component?.setName || n.name)) return true;
   const square = Math.abs(n.width - n.height) <= 8 && n.width >= 40 && n.width <= 64;
   return square && labelTexts(n).length === 0 && (n.radius ?? 0) >= 12 && Boolean(body(n));
+}
+
+/** Бейдж-счётчик: кружок ≤ 24 px с короткой надписью (аудит: счётчик «2» считался чипом). */
+function isBadge(n: NNode): boolean {
+  if (!CONTAINERS.has(n.type) || n.width > 28 || n.height > 24 || n.height < 12 || !body(n)) return false;
+  const round = (n.radius ?? 0) >= n.height / 2 - 1 || Math.abs(n.width - n.height) <= 4;
+  const labels = labelTexts(n);
+  return round && labels.length === 1 && (labels[0].text?.characters.trim().length ?? 0) <= 3;
+}
+
+/**
+ * Строка списка: одна из нескольких одинаковых соседних плашек во всю
+ * ширину (аудит: варианты маршрута считались полями ввода).
+ */
+function isRow(n: NNode, parent: NNode | null, W: number): boolean {
+  if (!parent || !CONTAINERS.has(n.type) || n.width < W * 0.8 || n.height < 40 || n.height > 120) return false;
+  if ((!solidFill(n) && !solidStroke(n)) || labelTexts(n).length === 0) return false;
+  const same = parent.children.filter((c) => c.type === n.type && Math.abs(c.width - n.width) <= 2 && Math.abs(c.height - n.height) <= 2);
+  return same.length >= 2;
 }
 
 function isInput(n: NNode, W: number): boolean {
@@ -192,6 +238,20 @@ function isChip(n: NNode, W: number): boolean {
   return labels.length >= 1 && labels.length <= 2 && labels.every((t) => (t.text?.characters.length ?? 0) <= 24);
 }
 
+/**
+ * Заголовок: во всю ширину у верха основы (экрана, шторки, модалки), с
+ * надписью и без своей видимой плашки (аудит: заголовки «Чат с клиентом»
+ * считались второстепенными кнопками).
+ */
+function isHeader(n: NNode, ctx: Ctx, W: number): boolean {
+  if (!CONTAINERS.has(n.type) || n.width < W * 0.95 || n.height < 40 || n.height > 80) return false;
+  if (n.y - ctx.base.y > (ctx.base.y === ctx.screen.y ? 100 : 30)) return false;
+  const labels = labelTexts(n);
+  if (labels.length < 1 || labels.length > 3) return false;
+  const fill = body(n)?.paint.color;
+  return !fill || contrast(fill, ctx.surface) < 1.1;
+}
+
 function actionRole(n: NNode, ctx: Ctx, W: number): ActionRole {
   if (isFab(n)) return "action-floating";
   const id = `${n.name} ${n.component?.name ?? ""} ${n.component?.setName ?? ""}`;
@@ -203,23 +263,78 @@ function actionRole(n: NNode, ctx: Ctx, W: number): ActionRole {
   if (reddish(fill) || reddish(labelColor)) return "action-destructive";
   const strong = fill ? contrast(fill, ctx.surface) >= 1.8 : false;
   if (!strong) return "action-secondary";
-  const bottomAnchored = Math.abs(n.y + n.height - ctx.baseBottom) <= 8;
+  const bottomAnchored = Math.abs(n.y + n.height - (ctx.base.y + ctx.base.height)) <= 8;
   if (n.width >= W * 0.9 && bottomAnchored) return "action-main";
   return "action-primary";
+}
+
+/** Кнопку видно: фон отличается от поверхности, есть обводка или она лежит на картинке. */
+function hasBoundary(n: NNode, surface: Rgba, onMedia: boolean): boolean {
+  if (onMedia || solidStroke(n)) return true;
+  const fill = body(n)?.paint.color;
+  return Boolean(fill && contrast(fill, surface) >= 1.1);
+}
+
+// ---------------------------------------------------------------------------
+// Видимость: перекрытое не читаем
+// ---------------------------------------------------------------------------
+
+interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Узлы, целиком закрытые непрозрачным слоем, нарисованным позже (аудит:
+ * нижняя панель под шторкой, первая шторка чата под второй). Порядок
+ * отрисовки — обход в глубину; «позже» — после всего поддерева узла.
+ */
+function hiddenNodes(screen: NNode): Set<string> {
+  const order = new Map<string, { i: number; end: number }>();
+  const covers: Array<{ i: number; box: Box }> = [];
+  let i = 0;
+  const visit = (n: NNode, root: boolean) => {
+    const start = i++;
+    const f = n.fills.find((p) => (p.kind === "solid" && (p.color?.a ?? 0) >= 0.95) || p.kind === "image");
+    if (!root && f && n.width * n.height >= screen.width * screen.height * 0.02) covers.push({ i: start, box: { x: n.x, y: n.y, w: n.width, h: n.height } });
+    for (const c of n.children) visit(c, false);
+    order.set(n.id, { i: start, end: i - 1 });
+  };
+  visit(screen, true);
+  const hidden = new Set<string>();
+  walk(screen, (n, _p, depth) => {
+    if (depth === 0) return undefined;
+    const o = order.get(n.id)!;
+    const inside = (b: Box) => n.x >= b.x - 1 && n.y >= b.y - 1 && n.x + n.width <= b.x + b.w + 1 && n.y + n.height <= b.y + b.h + 1;
+    if (covers.some((c) => c.i > o.end && inside(c.box))) {
+      hidden.add(n.id);
+      return "skip";
+    }
+    return undefined;
+  });
+  return hidden;
 }
 
 // ---------------------------------------------------------------------------
 // Обход
 // ---------------------------------------------------------------------------
 
+/** Картинка крупнее этой доли экрана — медиа (карта, фото): поверх неё в язык идут только кнопки. */
+const MEDIA_SHARE = 0.3;
+/** Цвет «под картинкой» для контраста: средний серый — видна и белая, и тёмная кнопка. */
+const MEDIA_GRAY: Rgba = { r: 0.5, g: 0.5, b: 0.5, a: 1 };
+
 export function detectRoles(screen: NNode): ScreenRoles {
   const W = screen.width;
   const H = screen.height;
   const hits: RoleHit[] = [];
-  const skipped = { system: 0, annotation: 0, media: 0 };
+  const skipped = { system: 0, annotation: 0, media: 0, hidden: 0 };
   const claimed = new Set<string>();
+  const hidden = hiddenNodes(screen);
   /** Нарисованное в порядке отрисовки: поверхность под элементом — последнее, что его накрывает. */
-  const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba }> = [];
+  const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba; media: boolean }> = [];
   let overlaySeen = false;
   let screenBg: Rgba = WHITE;
   /** Нейтральный текст и иконки: уровень считается после обхода — относительно самого контрастного на экране. */
@@ -227,31 +342,38 @@ export function detectRoles(screen: NNode): ScreenRoles {
 
   let place: Place = "screen";
   let component: string | null = null;
-  /** Цвет переопределён у самого узла или у куска, давшего цвет. */
-  let override = false;
+  /** Над картинкой (карта): не-кнопки не учим. */
+  let quiet = false;
   const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba, from: NNode = n) => {
-    if (!paint?.color) return undefined;
-    const origin: ColorOrigin = from.colorOverride || override ? "override" : component ? "component" : "free";
+    if (!paint?.color || quiet) return undefined;
+    const origin: ColorOrigin = from.colorOverride ? "override" : component ? "component" : "free";
     const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place, component, origin };
     hits.push(h);
     return h;
   };
 
-  const surfaceAt = (n: NNode, fallback: Rgba): Rgba => {
+  const topAt = (n: NNode) => {
     const cx = n.x + n.width / 2;
     const cy = n.y + n.height / 2;
     for (let i = painted.length - 1; i >= 0; i--) {
       const p = painted[i];
-      if (cx >= p.x && cx <= p.x + p.w && cy >= p.y && cy <= p.y + p.h) return p.color;
+      if (cx >= p.x && cx <= p.x + p.w && cy >= p.y && cy <= p.y + p.h) return p;
     }
-    return fallback;
+    return undefined;
   };
 
   const paint = (n: NNode, color: Rgba | undefined, under: Rgba) => {
-    if (color) painted.push({ x: n.x, y: n.y, w: n.width, h: n.height, color: composite(color, under) });
+    if (color) painted.push({ x: n.x, y: n.y, w: n.width, h: n.height, color: composite(color, under), media: false });
   };
 
-  const visit = (n: NNode, ctx: Ctx, root: boolean) => {
+  /**
+   * Текст и иконка на контрастной плашке (цветной или тёмной на светлом) —
+   * «на контрастном фоне». Порог 3: серые кнопки тёмной темы чуть светлее
+   * фона (≈ 1,9) — это не контрастная плашка (повторный аудит 2026-09-30).
+   */
+  const onContrast = (surface: Rgba) => contrast(surface, screenBg) >= 3;
+
+  const visit = (n: NNode, parent: NNode | null, ctx: Ctx, root: boolean) => {
     const id = `${n.name} ${n.component?.setName ?? ""} ${n.component?.name ?? ""}`;
     if (!root && isSystemName(id)) {
       skipped.system++;
@@ -264,17 +386,31 @@ export function detectRoles(screen: NNode): ScreenRoles {
       skipped.annotation++;
       return;
     }
-    if (n.fills.some((p) => p.kind === "image")) skipped.media++;
+    if (hidden.has(n.id)) {
+      skipped.hidden++;
+      return;
+    }
+    const image = n.fills.some((p) => p.kind === "image");
+    if (image) {
+      skipped.media++;
+      if (!root && n.width * n.height >= W * H * MEDIA_SHARE) painted.push({ x: n.x, y: n.y, w: n.width, h: n.height, color: MEDIA_GRAY, media: true });
+    }
 
     const fill = solidFill(n);
     const stroke = solidStroke(n);
-    ctx = { ...ctx, surface: root ? WHITE : surfaceAt(n, ctx.surface) };
+    const top = root ? undefined : topAt(n);
+    const onMedia = Boolean(top?.media);
+    ctx = { ...ctx, surface: root ? WHITE : (top?.color ?? ctx.surface) };
     // Экран-инстанс — не компонент элемента; иконки — тоже (их цвет — переопределение).
     const own = !root && Math.max(n.width, n.height) > 32 ? componentIdentity(n) : null;
     if (own) ctx = { ...ctx, component: own };
     place = ctx.place;
     component = ctx.component;
-    override = false;
+    const wasQuiet = quiet;
+    // Над картой учим только кнопки и то, что в них; остальное небольшое —
+    // объекты карты (метки, знаки, машина). Крупные панели (шторка) — нет.
+    const action = CONTAINERS.has(n.type) && ((isButtonLike(n) && hasBoundary(n, ctx.surface, onMedia)) || isFab(n));
+    if (onMedia && !ctx.owner && !action && n.width * n.height < W * H * 0.25) quiet = true;
     let next: Ctx = ctx;
 
     if (root) {
@@ -284,9 +420,9 @@ export function detectRoles(screen: NNode): ScreenRoles {
         next = { ...ctx, surface: screenBg };
       }
     } else if (ctx.owner) {
-      // Внутри кнопки, поля, чипа: текст — подпись, мелкая форма — иконка,
-      // прочие заливки — детали (таймер в кнопке), чтобы не путать с её заливкой.
-      if (n.text) hit(n, `${ctx.owner}/label`, "text", fill, ctx.surface);
+      // Внутри кнопки, поля, чипа: текст — подпись (время — метка), мелкая
+      // форма — иконка, прочие заливки — детали (таймер в кнопке).
+      if (n.text) hit(n, `${ctx.owner}/${isTimeText(n) ? "meta" : "label"}`, "text", fill, ctx.surface);
       else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32) hit(n, `${ctx.owner}/icon`, "icon", fill, ctx.surface);
       else if (fill && n.type !== "TEXT" && !claimed.has(n.id) && !samePaint(fill, ctx.ownerPaint)) hit(n, `${ctx.owner}/part`, "fill", fill, ctx.surface);
     } else if (n.text) {
@@ -297,21 +433,31 @@ export function detectRoles(screen: NNode): ScreenRoles {
           const m = meaningOf(c);
           const statusLike = /^[+\-−–\d]/.test(chars) || m === "negative" || m === "positive" || m === "warning";
           hit(n, statusLike ? `text/status-${m}` : "link", "text", fill, ctx.surface);
-        } else if (!isNeutral(ctx.surface) && contrast(ctx.surface, screenBg) >= 1.8) {
-          // Текст на насыщенной цветной плитке («Меню», «Инфо») — своя роль:
-          // его цвет задаёт плитка, а не иерархия текста экрана.
+        } else if (onContrast(ctx.surface)) {
+          // Текст на плашке, контрастной экрану («Меню» на тёмной, белое на
+          // цветной), — своя роль: его цвет задаёт плашка, а не иерархия текста.
           hit(n, "text/on-color", "text", fill, ctx.surface);
         } else {
           const h = hit(n, "text/primary", "text", fill, ctx.surface);
           if (h) neutral.push({ hit: h, kind: "text", k: contrast(c, ctx.surface) });
         }
       }
-    } else if (isInput(n, W)) {
-      hit(n, "input", "fill", fill, ctx.surface);
-      hit(n, "input/stroke", "stroke", stroke, ctx.surface);
-      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "input" };
-    } else if (CONTAINERS.has(n.type) && isButtonLike(n)) {
-      const role = actionRole(n, ctx, W);
+    } else if (isHeader(n, ctx, W)) {
+      hit(n, "header", "fill", fill, ctx.surface);
+    } else if (isBubble(n, W)) {
+      const b = body(n);
+      hit(n, "bubble", "fill", b?.paint, ctx.surface, b?.node);
+      if (b) claimed.add(b.node.id);
+      const c = b?.paint.color;
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "bubble", ownerPaint: b?.paint };
+    } else if (isBadge(n)) {
+      const b = body(n);
+      hit(n, "badge", "fill", b?.paint, ctx.surface, b?.node);
+      const c = b?.paint.color;
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "badge", ownerPaint: b?.paint };
+    } else if (CONTAINERS.has(n.type) && isButtonLike(n) && hasBoundary(n, ctx.surface, onMedia)) {
+      // Кнопка над картой — плавающая, какой бы формы ни была.
+      const role = onMedia ? "action-floating" : actionRole(n, ctx, W);
       const b = body(n);
       hit(n, role, "fill", b?.paint, ctx.surface, b?.node);
       if (stroke) hit(n, `${role}/stroke`, "stroke", stroke, ctx.surface);
@@ -321,6 +467,19 @@ export function detectRoles(screen: NNode): ScreenRoles {
       const surface = c ? composite(c, ctx.surface) : ctx.surface;
       paint(n, c, ctx.surface);
       next = { ...ctx, surface, owner: role, ownerPaint: b?.paint };
+    } else if (isRow(n, parent, W)) {
+      // Строка списка — роль у плашки; тексты внутри — обычная иерархия.
+      const b = body(n);
+      hit(n, "row", "fill", b?.paint, ctx.surface, b?.node);
+      if (stroke) hit(n, "row/stroke", "stroke", stroke, ctx.surface);
+      if (b) claimed.add(b.node.id);
+      const c = b?.paint.color;
+      paint(n, c, ctx.surface);
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface };
+    } else if (isInput(n, W)) {
+      hit(n, "input", "fill", fill, ctx.surface);
+      hit(n, "input/stroke", "stroke", stroke, ctx.surface);
+      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "input" };
     } else if (CONTAINERS.has(n.type) && isFab(n)) {
       const b = body(n);
       hit(n, "action-floating", "fill", b?.paint, ctx.surface, b?.node);
@@ -334,7 +493,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
       next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "chip", ownerPaint: b?.paint };
-    } else if (SHAPES.has(n.type) && n.height <= 6 && n.width >= 16 && n.width <= 48 && (n.radius ?? 0) >= 1) {
+    } else if (SHAPES.has(n.type) && n.height <= 6 && n.width >= 16 && n.width <= 120 && (n.radius ?? 0) >= 1 && isHandle(n, ctx)) {
       hit(n, "handle", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && ((n.height <= 2 && n.width >= W * 0.3) || (n.width <= 2 && n.height >= 24))) {
       hit(n, "divider", fill ? "fill" : "stroke", fill ?? stroke, ctx.surface);
@@ -342,10 +501,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, "tab/indicator", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32 && n.children.length === 0) {
       const c = fill?.color;
-      const onColor = !isNeutral(ctx.surface) && contrast(ctx.surface, screenBg) >= 1.8;
-      if (c && isNeutral(c) && onColor) {
-        // Иконка на насыщенном цветном круге — своя роль: её цвет задаёт
-        // круг, а не иерархия иконок экрана.
+      if (c && isNeutral(c) && onContrast(ctx.surface)) {
+        // Иконка на контрастной плашке — своя роль: её цвет задаёт плашка.
         hit(n, "icon/on-color", "icon", fill, ctx.surface);
       } else if (c && isNeutral(c)) {
         const h = hit(n, "icon/primary", "icon", fill, ctx.surface);
@@ -364,7 +521,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       let key: string;
       const named = /modal|dialog|alert|модал|диалог/i.test(`${n.name} ${n.component?.setName ?? ""}`);
       if (full && c.a < 0.85) key = "overlay";
-      else if (n.width >= W * 0.95 && n.y + n.height >= H - 4 && n.height < H * 0.9) key = "sheet";
+      else if (n.width >= W * 0.95 && n.y + n.height >= H - 4 && n.height < H * 0.97 && n.y >= 24) key = "sheet";
       else if ((overlaySeen || named) && (n.radius ?? 0) >= 12 && n.width >= W * 0.6 && n.width < W * 0.95 && n.children.length > 0) key = "modal";
       else if (!isNeutral(c)) key = `card-tint/${meaningOf(c)}`;
       else if (n.children.length > 0 && (n.radius ?? 0) >= 8) key = "card";
@@ -374,20 +531,29 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, key, "fill", fill, ctx.surface);
       if (stroke) hit(n, `${key}/stroke`, "stroke", stroke, ctx.surface);
       const opaque = c.a > 0.85;
+      const isBase = key === "sheet" || key === "modal";
       next = {
         ...ctx,
         surface: opaque ? composite(c, ctx.surface) : ctx.surface,
-        baseBottom: key === "sheet" || key === "modal" ? n.y + n.height : ctx.baseBottom,
-        place: key === "sheet" || key === "modal" || key === "card" ? key : key.startsWith("card-tint") ? "card" : ctx.place,
+        base: isBase ? { x: n.x, y: n.y, width: n.width, height: n.height } : ctx.base,
+        place: isBase || key === "card" ? (key as Place) : key.startsWith("card-tint") ? "card" : ctx.place,
       };
     } else if (stroke) {
       hit(n, "surface/stroke", "stroke", stroke, ctx.surface);
     }
 
-    for (const c of n.children) visit(c, next, false);
+    for (const c of n.children) visit(c, n, next, false);
+    quiet = wasQuiet;
   };
 
-  visit(screen, { screen, surface: WHITE, baseBottom: screen.y + screen.height, owner: null, place: "screen", component: null }, true);
+  /** Ручка шторки: короткая полоска по центру у верха основы — при любой ширине до 120. */
+  const isHandle = (n: NNode, ctx: Ctx) => {
+    if (n.width <= 48) return true;
+    const centered = Math.abs(n.x + n.width / 2 - (ctx.base.x + ctx.base.width / 2)) <= 8;
+    return centered && n.y - ctx.base.y <= 24;
+  };
+
+  visit(screen, null, { screen, surface: WHITE, base: { x: screen.x, y: screen.y, width: W, height: H }, owner: null, place: "screen", component: null }, true);
 
   // Уровни нейтрального текста и иконок — относительно самого контрастного
   // на экране (в логарифмах): абсолютные пороги у продуктов разные — у

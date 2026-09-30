@@ -21,7 +21,21 @@ function standardLine(role: string): string {
     : "Стандарт ДС эту роль отдельно не описывает.";
 }
 
-export type QuestionKind = "contradiction" | "gap" | "outlier";
+export type QuestionKind = "contradiction" | "gap" | "outlier" | "thin";
+
+/** Меньше стольких случаев — «мало образцов»: правило из одного примера не надёжнее догадки (аудит 2026-09-30). */
+export const MIN_SUPPORT = 3;
+
+/**
+ * О чём спрашивать: роли, важные для перевода. Остальное (декор, куски
+ * компонентов, обводки иконок, объекты вроде пузырей и бейджей) копится
+ * молча — аудит 2026-09-30: из 25 вопросов осмысленных было ~7.
+ */
+export function isAskable(role: string): boolean {
+  if (/\/(part|meta)$/.test(role) || role.endsWith("/stroke") && role !== "input/stroke" && !role.startsWith("action-")) return false;
+  if (/^(decor|card-tint|surface|handle|tab\/|bubble|badge|row|header)/.test(role)) return false;
+  return true;
+}
 
 export type OptionKind = "value" | "split" | "not-used" | "new-token";
 
@@ -293,13 +307,45 @@ function gap(rule: LanguageRule, tokens: TokenCandidate[]): Question {
 }
 
 /** Все вопросы по языку: сначала споры (по числу элементов), потом отступления, потом пробелы. */
+function thin(rule: LanguageRule): Question {
+  const label = roleLabel(rule.role);
+  const v = rule.values[0];
+  const ex = v.examples[0];
+  return {
+    id: `thin:${rule.role}|${rule.layer}`,
+    kind: "thin",
+    role: rule.role,
+    layer: rule.layer,
+    title: `«${label}»: мало образцов`,
+    lines: [
+      `В образцах «${label}» встречается всего ${times(rule.total)}: ${valueName(v)}${ex ? ` на экране «${ex.screenName}»` : ""}${quoteLabels(v) ? `, ${quoteLabels(v)}` : ""}.`,
+      "Правило из одного-двух случаев может оказаться случайностью. Подтвердите его или оставьте вопрос открытым, пока не появятся ещё образцы.",
+      standardLine(rule.role),
+    ],
+    impact: rule.total,
+    values: rule.values.slice(0, 2),
+    options: [
+      {
+        id: `value:${valueId(v)}`,
+        kind: "value",
+        label: `Да, «${label}» — ${valueName(v)}`,
+        value: { token: v.token, hex: v.hex, hexLight: v.hexLight, hexDark: v.hexDark },
+      },
+      { id: "new-token", kind: "new-token", label: "Нет — это частный случай; нужен свой вариант (в предложения библиотеке)" },
+    ],
+  };
+}
+
+/** Все вопросы по языку: сначала споры (по числу элементов), потом отступления, «мало образцов», пробелы. */
 export function buildQuestions(lang: StyleLanguage, tokens: TokenCandidate[] = []): Question[] {
   const expected = new Set(EXPECTED_ROLES.map(([r, l]) => `${r}|${l}`));
-  const contradictions = lang.rules.filter((r) => r.status === "disputed").map(contradiction);
-  const outliers = lang.rules.filter((r) => r.status === "proposed").map(outlier).filter((q): q is Question => q !== null);
+  const askable = lang.rules.filter((r) => isAskable(r.role));
+  const contradictions = askable.filter((r) => r.status === "disputed").map(contradiction);
+  const outliers = askable.filter((r) => r.status === "proposed" && r.total >= MIN_SUPPORT).map(outlier).filter((q): q is Question => q !== null);
+  const thins = askable.filter((r) => r.status === "proposed" && r.total > 0 && r.total < MIN_SUPPORT && !r.byComponent).map(thin);
   const gaps = lang.rules.filter((r) => r.status === "missing" && expected.has(`${r.role}|${r.layer}`)).map((r) => gap(r, tokens));
   const byImpact = (a: Question, b: Question) => b.impact - a.impact;
-  return [...contradictions.sort(byImpact), ...outliers.sort(byImpact), ...gaps];
+  return [...contradictions.sort(byImpact), ...outliers.sort(byImpact), ...thins, ...gaps];
 }
 
 // ---------------------------------------------------------------------------
