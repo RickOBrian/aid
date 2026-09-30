@@ -95,3 +95,20 @@ describe("контраст", () => {
     expect(contrast({ r: 0, g: 0, b: 0, a: 0 }, white)).toBeCloseTo(1, 5);
   });
 });
+
+describe("что внутри экрана не читается", () => {
+  it("целиком за границей экрана — не читается; слой «comment» внутри — читается", () => {
+    const screen = loadFixture("driver-cancel-modal");
+    const text = (id: string, name: string, x: number) => ({
+      id, name, type: "TEXT", x, y: 100, width: 100, height: 20,
+      fills: [{ kind: "solid" as const, color: { r: 0, g: 0, b: 0, a: 1 } }],
+      strokes: [], strokeWeight: 0, radius: null,
+      text: { characters: name, fontFamily: "Roboto", fontStyle: "Regular", fontSize: 14, textCase: "ORIGINAL", textDecoration: "NONE", align: "LEFT" },
+      children: [],
+    });
+    screen.children.push(text("out", "Выноска", 400), text("in", "comment", 20));
+    const ids = detectRoles(screen).hits.map((h) => h.nodeId);
+    expect(ids).not.toContain("out");
+    expect(ids).toContain("in");
+  });
+});

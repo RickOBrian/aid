@@ -45,6 +45,17 @@ export function isAnnotationName(name: string): boolean {
   return words(name).some((w) => STEMS.some((s) => w.startsWith(s)));
 }
 
+/**
+ * Внутри экрана слова выше не работают: в образцах «comment» — поле
+ * комментария к заказу, «description» — текст алерта, вариант
+ * `Comment=False` — свойство адреса (проверено на образцах 2026-09-30).
+ * Заметки и выноски лежат рядом с экраном, а не в нём; внутри отсекаем
+ * только служебные слои библиотек и то, что целиком за границей экрана.
+ */
+export function isHelperLayerName(name: string): boolean {
+  return name.startsWith("_description");
+}
+
 /** Нода целиком вне экрана — стрелка, выноска, подпись сбоку; в макет не входит. */
 export function outside(
   box: { x: number; y: number; width: number; height: number } | null,

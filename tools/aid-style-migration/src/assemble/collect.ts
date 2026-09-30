@@ -60,6 +60,23 @@ async function backgroundLuminance(node: SceneNode): Promise<number | null> {
   return relativeLuminance(color.r, color.g, color.b);
 }
 
+/** Видимая плотная заливка: сплошная, картинка или градиент. */
+function painted(node: SceneNode): boolean {
+  return visiblePaints(node).some((p) => (p.opacity ?? 1) > 0.5);
+}
+
+function hasBackground(node: SceneNode): boolean {
+  if (painted(node)) return true;
+  if (!("children" in node)) return false;
+  const area = node.width * node.height;
+  return node.children.some((c) => c.visible && painted(c) && c.width * c.height >= area * 0.9);
+}
+
+function hasInstance(node: SceneNode): boolean {
+  if (node.type === "INSTANCE") return true;
+  return "findOne" in node && node.findOne((x) => x.type === "INSTANCE") !== null;
+}
+
 export async function facts(node: SceneNode, page: PageNode): Promise<ScreenFacts> {
   const children = "children" in node ? node.children : [];
   const paints = visiblePaints(node);
@@ -73,6 +90,8 @@ export async function facts(node: SceneNode, page: PageNode): Promise<ScreenFact
     visible: node.visible,
     childTypes: children.map((c) => c.type),
     imageOnly: children.length === 0 && paints.length > 0 && paints.every((p) => p.type === "IMAGE"),
+    hasInstance: hasInstance(node),
+    hasBackground: hasBackground(node),
     pageId: page.id,
     x: box ? box.x : node.x,
     y: box ? box.y : node.y,

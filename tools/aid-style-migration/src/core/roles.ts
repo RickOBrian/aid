@@ -14,7 +14,7 @@
  */
 
 import { relativeLuminance } from "../assemble/darkPairs";
-import { isAnnotationName } from "../lib/annotations";
+import { isHelperLayerName } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { hueFamily, isNeutral, type Rgba } from "../map/color";
 import { solidFill, solidStroke, texts, type NNode, type NPaint } from "./node";
@@ -193,7 +193,10 @@ export function detectRoles(screen: NNode): ScreenRoles {
       skipped.system++;
       return;
     }
-    if (!root && isAnnotationName(n.name)) {
+    const off = n.x + n.width <= screen.x || n.y + n.height <= screen.y || n.x >= screen.x + W || n.y >= screen.y + H;
+    if (!root && (isHelperLayerName(`${n.name} ${n.component?.setName ?? ""}`.trim()) || isHelperLayerName(n.component?.setName ?? "") || off)) {
+      // Служебный слой библиотеки или то, что целиком за границей экрана
+      // (выноска, прокрученный за край список): на экране этого не видно.
       skipped.annotation++;
       return;
     }

@@ -10,7 +10,7 @@
  */
 
 import { afterSections, KEY_AFTER, KEY_AFTER_KIND, KEY_IMAGE, KEY_PAIR, KEY_ROLE, KEY_SOURCE, SECTION_GAP, sectionsOnWorkPage } from "../assemble/build";
-import { isAnnotationName, outside } from "../lib/annotations";
+import { isHelperLayerName, outside } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { WORK_PAGE_NAME } from "../lib/workPage";
 import * as store from "../profile/storage";
@@ -148,7 +148,7 @@ class Applier {
 
   async visit(node: SceneNode, screen: { width: number; height: number; box: Rect | null }, inInstance: boolean, root = false): Promise<void> {
     if (!node.visible) return;
-    if (!root && (isAnnotationName(node.name) || outside(node.absoluteBoundingBox, screen.box))) return;
+    if (!root && (isHelperLayerName(node.name) || outside(node.absoluteBoundingBox, screen.box))) return;
     let inside = inInstance;
     if (node.type === "INSTANCE") {
       const main = await node.getMainComponentAsync();

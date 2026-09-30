@@ -8,7 +8,7 @@
  */
 
 import { expand, facts, type Root } from "../assemble/collect";
-import { isAnnotationName, outside } from "../lib/annotations";
+import { isHelperLayerName, outside } from "../lib/annotations";
 import { isDark } from "../assemble/darkPairs";
 import { classify } from "../assemble/screens";
 import type { ExemplarIndex, UsageCounts } from "./types";
@@ -108,14 +108,14 @@ interface ScreenInfo {
 async function visit(node: SceneNode, screen: ScreenInfo, index: ExemplarIndex, lookup: Lookup, root = false): Promise<void> {
   if (!node.visible) return;
   // Только макет: аннотации, пояснения и то, что целиком вне экрана, не считаем.
-  if (!root && (isAnnotationName(node.name) || outside(node.absoluteBoundingBox, screen.box))) {
+  if (!root && (isHelperLayerName(node.name) || outside(node.absoluteBoundingBox, screen.box))) {
     index.annotationsSkipped++;
     return;
   }
   // Инстанс из кита аннотаций — тоже не макет; проверяем до подсчёта привязок.
   const main = node.type === "INSTANCE" ? await node.getMainComponentAsync() : null;
   const setName = main?.parent?.type === "COMPONENT_SET" ? main.parent.name : "";
-  if (main && (isAnnotationName(main.name) || isAnnotationName(setName))) {
+  if (main && (isHelperLayerName(main.name) || isHelperLayerName(setName))) {
     index.annotationsSkipped++;
     return;
   }

@@ -10,7 +10,7 @@
 
 import { KEY_PAIR, KEY_ROLE, KEY_SECTION, KEY_SOURCE } from "../assemble/build";
 import { findThemeCollection, usedCollections } from "../assemble/collect";
-import { isAnnotationName, outside } from "../lib/annotations";
+import { isHelperLayerName, outside } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { WORK_PAGE_NAME } from "../lib/workPage";
 import { fillUse, visibleCase, type TextCaseKind, type UseKind } from "../profile/usage";
@@ -160,7 +160,7 @@ class Collector {
 
   async visit(node: SceneNode, ctx: Ctx, root = false): Promise<void> {
     if (!node.visible) return;
-    if (!root && (isAnnotationName(node.name) || outside(node.absoluteBoundingBox, ctx.screen.box))) {
+    if (!root && (isHelperLayerName(node.name) || outside(node.absoluteBoundingBox, ctx.screen.box))) {
       this.skipped.annotations++;
       return;
     }

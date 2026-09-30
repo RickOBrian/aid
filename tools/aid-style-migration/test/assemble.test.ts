@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { findDarkPairs, isDark, relativeLuminance, type ScreenFacts } from "../src/assemble/darkPairs";
 import { DEFAULT_LAYOUT, layoutTiles } from "../src/assemble/layout";
 import { classify, type NodeFacts } from "../src/assemble/screens";
-import { isAnnotationName, outside } from "../src/lib/annotations";
+import { isAnnotationName, isHelperLayerName, outside } from "../src/lib/annotations";
 import { hasDarkWord, stripThemeWords } from "../src/lib/vocabulary";
 
 function node(over: Partial<NodeFacts> = {}): NodeFacts {
@@ -15,6 +15,8 @@ function node(over: Partial<NodeFacts> = {}): NodeFacts {
     visible: true,
     childTypes: ["INSTANCE", "TEXT"],
     imageOnly: false,
+    hasInstance: true,
+    hasBackground: true,
     ...over,
   };
 }
@@ -147,6 +149,21 @@ describe("аннотации — не макет", () => {
   });
   it("экран с именем аннотации не собирается", () => {
     expect(classify(node({ name: "Annotation / Login" })).reason).toBe("аннотация или пояснение");
+  });
+  it("обвязка флоу размером с экран — не экран (образцы 2026-09-30)", () => {
+    // Стрелка с подписью «Свайп вниз», ромб условия: группа без фона и компонентов.
+    expect(classify(node({ type: "GROUP", width: 357, height: 346, hasInstance: false, hasBackground: false })).kind).toBe("skip");
+    // Заголовок сценария 1560×126 — с фоном, но низкий для широкой полосы.
+    expect(classify(node({ type: "GROUP", width: 1560, height: 126, hasInstance: false })).kind).toBe("skip");
+    // Экран с картой во вложенном компоненте — без своего фона, но с компонентами.
+    expect(classify(node({ hasBackground: false })).kind).toBe("screen");
+    // Макет без компонентов, но с фоном — экран (грязные исходники).
+    expect(classify(node({ hasInstance: false })).kind).toBe("screen");
+  });
+  it("внутри экрана слова аннотаций не работают: комментарий и описание — элементы интерфейса", () => {
+    expect(isHelperLayerName("comment")).toBe(false);
+    expect(isHelperLayerName("Description")).toBe(false);
+    expect(isHelperLayerName("_description/info_row")).toBe(true);
   });
   it("целиком вне экрана — не макет, пересекает — макет", () => {
     const screenBox = { x: 0, y: 0, width: 390, height: 844 };
