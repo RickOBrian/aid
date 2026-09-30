@@ -220,6 +220,27 @@ function findingsList(lang: StyleLanguage): HTMLElement[] {
   return [fold];
 }
 
+/** Сверка со стандартами: ориентир, не решение; риск — может сломать тёмную тему. */
+function renderStandards(state: ProfileState): void {
+  const st = state.standards;
+  el("standards-fold").hidden = !st || !state.language;
+  if (!st) return;
+  const risks = st.findings.filter((f) => f.level === "risk").length;
+  el("standards-summary").textContent = `Сверка со стандартами ДС: рисков ${risks}, отличий ${st.findings.length - risks}`;
+  el("standards-refs").textContent =
+    `Стандарт — ориентир: подсказывает и сверяет, но не решает вместо образцов. Прочитано: ${st.refs.map((r) => `${r.id} ${r.version} (${r.status})`).join(", ")}.`;
+  el("standards-list").replaceChildren(
+    ...(st.findings.length
+      ? st.findings.map((f) =>
+          h("div", { className: "ds-lang-row" }, [
+            h("div", { className: "ds-map-line" }, [h("span", { text: f.title }), badge(f.level === "risk" ? "риск" : "отличие", f.level === "risk" ? "danger" : "neutral")]),
+            ...f.lines.map((l) => h("div", { className: "ds-screen__meta", text: l })),
+          ]),
+        )
+      : [h("p", { className: "ds-hint", text: "Отличий от стандарта не нашлось" })]),
+  );
+}
+
 function render(): void {
   const state = lastState;
   el("language-card").hidden = !state?.active;
@@ -237,6 +258,7 @@ function render(): void {
     `Правило есть: ${s.proposed} · решено: ${s.confirmed} · нужно ваше решение: ${s.disputed} · образцов нет: ${s.missing}. ` +
     `Правило есть, если один вариант — не меньше ${Math.round(DOMINANT_SHARE * 100)} % случаев; иначе плагин спрашивает.`;
   renderQuestion(state);
+  renderStandards(state);
   el("language-sources").replaceChildren(...sourcesList(lang), ...findingsList(lang));
 
   const rules = lang.rules.filter((r) => filter === "all" || r.status === "disputed" || r.status === "missing");

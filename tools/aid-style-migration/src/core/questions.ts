@@ -11,6 +11,15 @@
 import { THEME_ROLES } from "../lib/vocabulary";
 import { EXPECTED_ROLES, type Feature, findSplit, FREE_DRAWN, type LanguageRule, type RuleValue, type StyleLanguage, type TokenRef } from "./language";
 import { roleGroup, roleLabel } from "./roleLabels";
+import { slotFor } from "../standards/standards";
+
+/** Строка-подсказка стандарта: ориентир, не решение. */
+function standardLine(role: string): string {
+  const slot = slotFor(role);
+  return slot
+    ? `По стандарту ДС: ${slot.slot} — «${slot.use}» (${slot.basis}). Это ориентир: решение — по продукту.`
+    : "Стандарт ДС эту роль отдельно не описывает.";
+}
 
 export type QuestionKind = "contradiction" | "gap" | "outlier";
 
@@ -148,6 +157,7 @@ function contradiction(rule: LanguageRule): Question {
   } else {
     lines.push("Ни место, ни ширина, ни тема не объясняют разницу — возможно, дело в смысле действия или в ошибках образцов.");
   }
+  lines.push(standardLine(rule.role));
   lines.push(`От ответа зависит, как плагин оформит «${label}» при переводе макетов.`);
 
   const options: QuestionOption[] = [];
@@ -243,8 +253,12 @@ function candidatesFor(role: string, tokens: TokenCandidate[]): TokenCandidate[]
     "action-disabled": /disabled|inactive|secondary/i,
   };
   const inFamily = tokens.filter((t) => family.test(t.name.split("/").pop() ?? "") || family.test(t.name));
-  const hint = words[role];
-  const ranked = hint ? [...inFamily.filter((t) => hint.test(t.name)), ...inFamily.filter((t) => !hint.test(t.name))] : inFamily;
+  // Слова слота стандарта (text-accent → accent) — тоже подсказка: имя у продукта своё, но смысл часто тот же.
+  const slot = slotFor(role);
+  const slotWords = slot ? slot.slot.replace(/\*$/, "").split("-").filter((w) => w.length > 3 && !["main", "text", "icon", "line"].includes(w)) : [];
+  const hints = [words[role], ...slotWords.map((w) => new RegExp(w, "i"))].filter((x): x is RegExp => Boolean(x));
+  const score = (t: TokenCandidate) => hints.filter((h) => h.test(t.name)).length;
+  const ranked = [...inFamily].sort((a, b) => score(b) - score(a));
   return ranked.slice(0, 4);
 }
 
@@ -260,6 +274,7 @@ function gap(rule: LanguageRule, tokens: TokenCandidate[]): Question {
     lines: [
       `В изученных образцах нет ни одного элемента «${label}».`,
       "Если такой элемент встретится в переводимых макетах, плагину не на что опереться — ответ станет правилом.",
+      standardLine(rule.role),
       candidates.length ? "Подходящие по имени токены библиотеки — ниже." : "Подходящих по имени токенов в библиотеке не нашлось.",
     ],
     impact: 0,

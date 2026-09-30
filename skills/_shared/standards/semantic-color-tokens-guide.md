@@ -3,6 +3,7 @@ destination: skills/_shared/standards/
 name: semantic-color-tokens-guide
 metadata:
   version: "1.5.3"
+  machineFile: semantic-color-tokens.json
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team

@@ -21,6 +21,7 @@ import type { ScanScope } from "../assemble/types";
 import { applyAnswers, buildQuestions, isOpen, type Answer, type Question, type TokenCandidate } from "../core/questions";
 import { buildBoard } from "../board/questionBoard";
 import { themeModes } from "./themeModes";
+import { compareWithStandards, STANDARDS, type StandardFinding, type StandardRef } from "../standards/standards";
 import { sourceIndex } from "../board/sourceExamples";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { parseFigmaFileKey } from "../lib/figmaUrl";
@@ -69,6 +70,8 @@ export interface ProfileState {
   /** Анкета по языку: открытые — первыми. */
   questions: Question[];
   answers: Record<string, Answer>;
+  /** Сверка со стандартами ДС: какие прочитаны и что нашлось; null — режим «выключен». */
+  standards: { refs: StandardRef[]; findings: StandardFinding[] } | null;
 }
 
 const now = () => new Date().toISOString();
@@ -116,7 +119,7 @@ export async function state(): Promise<ProfileState> {
     themeCandidates: active ? await themeCandidates(active) : [],
     missing: active ? missingMaterials(active) : [],
     libraries: active ? await libraryStatus(active) : [],
-    ...(active ? await languageState(active) : { language: null, questions: [], answers: {} }),
+    ...(active ? await languageState(active) : { language: null, questions: [], answers: {}, standards: null }),
   };
 }
 
@@ -157,14 +160,17 @@ async function tokenCandidates(profile: ProductProfile): Promise<TokenCandidate[
   return out;
 }
 
-async function languageState(profile: ProductProfile): Promise<Pick<ProfileState, "language" | "questions" | "answers">> {
+async function languageState(profile: ProductProfile): Promise<Pick<ProfileState, "language" | "questions" | "answers" | "standards">> {
   const raw = await rawLanguage(profile);
-  if (!raw) return { language: null, questions: [], answers: {} };
+  if (!raw) return { language: null, questions: [], answers: {}, standards: null };
   const answers = await store.getAnswers(profile.id);
-  const questions = buildQuestions(raw, await tokenCandidates(profile));
+  const tokens = await tokenCandidates(profile);
+  const questions = buildQuestions(raw, tokens);
   const open = questions.filter((q) => isOpen(q, answers));
   const closed = questions.filter((q) => !isOpen(q, answers));
-  return { language: applyAnswers(raw, questions, answers), questions: [...open, ...closed], answers };
+  const language = applyAnswers(raw, questions, answers);
+  const standards = profile.standardsMode === "off" ? null : { refs: STANDARDS, findings: compareWithStandards(language, tokens) };
+  return { language, questions: [...open, ...closed], answers, standards };
 }
 
 /** Изучить образцы в открытом файле: вклад этого файла в язык продукта заменяется. */
