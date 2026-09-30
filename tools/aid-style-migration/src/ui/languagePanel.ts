@@ -115,6 +115,21 @@ function ruleBody(r: LanguageRule): HTMLElement {
       }),
     ]);
   }
+  if (r.byPart) {
+    // Разница — строение элемента: место внутри компонента или пара с его фоном / обводкой.
+    const p = r.byPart;
+    const word = p.feature === "slot" ? "от места внутри компонента" : p.feature === "pair" ? "от того, чем окрашен сам элемент" : p.feature === "under" ? "от плашки под ним" : "от компонента";
+    const rest = r.rest && r.restTotal ? [h("div", { className: "ds-screen__meta", text: `Остальное (${r.restTotal}) — ${r.status === "disputed" ? "спорно, вопрос в анкете" : r.rest[0].token?.name ?? r.rest[0].hex}` })] : [];
+    return h("div", { className: "ds-lang-row" }, [
+      head,
+      h("div", { className: "ds-screen__meta", text: `${p.partial ? "Частично зависит" : "Зависит"} ${word}:` }),
+      ...p.entries.slice(0, 5).map((b) => {
+        const v = r.values[b.value];
+        return h("div", { className: "ds-map-line" }, [swatch(v.hexLight, "светлая"), swatch(v.hexDark, "тёмная"), h("span", { text: `${b.key} — ${v.token?.name ?? v.hex}` })]);
+      }),
+      ...rest,
+    ]);
+  }
   if (r.byState?.length) {
     return h("div", { className: "ds-lang-row" }, [
       head,

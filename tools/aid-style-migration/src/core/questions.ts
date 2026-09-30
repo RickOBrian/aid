@@ -35,7 +35,7 @@ export const MIN_SUPPORT = 3;
  */
 export function isAskable(role: string): boolean {
   if (/\/(part|meta)$/.test(role) || role.endsWith("/stroke") && role !== "input/stroke" && !role.startsWith("action-")) return false;
-  if (/^(decor|card-tint|surface|handle|tab\/|bubble|badge|row|header)/.test(role)) return false;
+  if (/^(decor|card-tint|surface|handle|tab\/|bubble|badge|row|header)/.test(role) || role.endsWith("/decor")) return false;
   return true;
 }
 
@@ -103,11 +103,25 @@ const PLACE_WORDS: Record<string, string> = {
 
 const WIDTH_WORDS: Record<string, string> = { full: "во всю ширину", part: "не во всю ширину" };
 
-const FEATURE_NAMES: Record<Feature, string> = { component: "компонента", state: "состояния", place: "места", width: "ширины", theme: "темы" };
+const FEATURE_NAMES: Record<Feature, string> = {
+  component: "компонента",
+  slot: "места внутри компонента",
+  pair: "того, чем окрашен сам элемент",
+  under: "плашки под ним",
+  state: "состояния",
+  place: "места",
+  width: "ширины",
+  theme: "темы",
+  origin: "того, где задан цвет",
+};
 
 function featureWord(f: Feature, v: string): string {
   if (f === "component") return v === FREE_DRAWN ? "нарисовано вручную" : `в «${v}»`;
   if (f === "state") return v === "on" ? "отмечен / включён" : "не отмечен / выключен";
+  if (f === "slot") return `в «${v}»`;
+  if (f === "pair") return `у элемента ${v}`;
+  if (f === "under") return `на ${v}`;
+  if (f === "origin") return v === "component" ? "задано в компоненте" : v === "override" ? "переопределено в макете" : "нарисовано вручную";
   if (f === "place") return PLACE_WORDS[v] ?? v;
   if (f === "width") return WIDTH_WORDS[v] ?? v;
   return v === THEME_ROLES.dark ? "в тёмной теме" : "в светлой теме";
@@ -199,13 +213,25 @@ function asideLines(rule: LanguageRule): string[] {
 // Вопросы
 // ---------------------------------------------------------------------------
 
+/** Что уже объяснено строением элемента — одной строкой для вопроса. */
+function explainedLine(rule: LanguageRule): string[] {
+  const p = rule.byPart;
+  if (!p?.partial) return [];
+  const parts = p.entries.slice(0, 4).map((e) => `${featureWord(p.feature, e.key)} — всегда ${valueName(rule.values[e.value])}`);
+  return [`Уже понятно (по признаку ${FEATURE_NAMES[p.feature]}): ${parts.join("; ")}${p.entries.length > 4 ? " и др." : ""}. Вопрос — только про остальные ${times(rule.restTotal ?? 0)}.`];
+}
+
 function contradiction(rule: LanguageRule): Question {
-  const values = rule.values.filter((v) => v.count / rule.total >= MIN_VARIANT_SHARE).slice(0, 4);
+  // Частично объяснённое строением — спрашиваем только про остаток.
+  const all = rule.rest ?? rule.values;
+  const total = rule.restTotal ?? rule.total;
+  const values = all.filter((v) => v.count / total >= MIN_VARIANT_SHARE).slice(0, 4);
   const label = roleLabel(rule.role);
   const split = findSplit(values);
   const lines = [
     `В образцах «${label}» оформлено по-разному, и ни один вариант не встречается хотя бы в 80 % случаев. Плагин не знает, какой правильный.`,
-    ...values.map((v) => variantLine(v, rule.total)),
+    ...explainedLine(rule),
+    ...values.map((v) => variantLine(v, total)),
   ];
   if (split) {
     const parts = Object.entries(split.map).map(([k, i]) => `${featureWord(split.feature, k)} — ${valueName(values[i])}`);
@@ -245,13 +271,15 @@ function contradiction(rule: LanguageRule): Question {
     layer: rule.layer,
     title: `«${label}» в образцах выглядит по-разному`,
     lines,
-    impact: rule.total,
+    impact: total,
     values,
     options,
   };
 }
 
 function outlier(rule: LanguageRule): Question | null {
+  // Разница объяснена строением элемента — не отступления.
+  if (rule.byPart || rule.byComponent || rule.byState) return null;
   if (rule.total < OUTLIER_MIN_TOTAL || rule.values.length < 2) return null;
   const [main, ...all] = rule.values;
   // Другое значение в другом компоненте — вариант компонента, не отступление.
@@ -424,7 +452,7 @@ export function buildQuestions(lang: StyleLanguage, tokens: TokenCandidate[] = [
   const askable = lang.rules.filter((r) => isAskable(r.role));
   const contradictions = askable.filter((r) => r.status === "disputed").map(contradiction);
   const outliers = askable.filter((r) => r.status === "proposed" && r.total >= MIN_SUPPORT).map(outlier).filter((q): q is Question => q !== null);
-  const thins = askable.filter((r) => r.status === "proposed" && r.total > 0 && r.total < MIN_SUPPORT && !r.byComponent).map(thin);
+  const thins = askable.filter((r) => r.status === "proposed" && r.total > 0 && r.total < MIN_SUPPORT && !r.byComponent && !r.byPart).map(thin);
   const gaps = lang.rules.filter((r) => r.status === "missing" && expected.has(`${r.role}|${r.layer}`)).map((r) => gap(r, tokens));
   const byImpact = (a: Question, b: Question) => b.impact - a.impact;
   return [...terms, ...contradictions.sort(byImpact), ...outliers.sort(byImpact), ...thins, ...gaps];

@@ -47,14 +47,28 @@ function visiblePaints(node: SceneNode): Paint[] {
   return (node.fills as Paint[]).filter((p) => p.visible !== false);
 }
 
+/**
+ * Яркость фона экрана: своя заливка, а если её нет — нижний слой во весь
+ * экран (у экранов раздела «ночь» фон часто отдельным слоем — без этого
+ * тёмный экран считался светлым, аудит 2026-09-30).
+ */
 async function backgroundLuminance(node: SceneNode): Promise<number | null> {
-  const solid = visiblePaints(node).find((p): p is SolidPaint => p.type === "SOLID");
+  let source: SceneNode = node;
+  let solid = visiblePaints(node).find((p): p is SolidPaint => p.type === "SOLID");
+  if (!solid && "children" in node) {
+    const area = node.width * node.height;
+    const layer = node.children.find((c) => c.visible && c.width * c.height >= area * 0.9 && visiblePaints(c).some((p) => p.type === "SOLID" && (p.opacity ?? 1) > 0.5));
+    if (layer) {
+      source = layer;
+      solid = visiblePaints(layer).find((p): p is SolidPaint => p.type === "SOLID");
+    }
+  }
   if (!solid) return null;
   let color: RGB = solid.color;
   const alias = solid.boundVariables?.color;
   if (alias) {
     const variable = await figma.variables.getVariableByIdAsync(alias.id);
-    const value = variable?.resolveForConsumer(node).value;
+    const value = variable?.resolveForConsumer(source).value;
     if (value && typeof value === "object" && "r" in value) color = value as RGB;
   }
   return relativeLuminance(color.r, color.g, color.b);

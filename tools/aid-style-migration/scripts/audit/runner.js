@@ -24,8 +24,11 @@ for (const n of roots) {
   const bg = painted(n)||n.children.some(c=>c.visible&&painted(c)&&c.width*c.height>=n.width*n.height*0.9);
   if (!inst&&!bg) continue;
   let dark = words(n.name).some(w=>DARK.some(x=>w.startsWith(x)));
-  const f=Array.isArray(n.fills)?n.fills.find(p=>p.type==="SOLID"&&p.visible!==false):null;
-  if (f&&!dark){ let c=f.color; if(f.boundVariables&&f.boundVariables.color){ const v=await figma.variables.getVariableByIdAsync(f.boundVariables.color.id); const r=v&&v.resolveForConsumer(n).value; if(r&&r.r!==undefined)c=r; } dark = lum(c)<0.2; }
+  // Фон — своя заливка или нижний слой во весь экран (как collect.ts).
+  const solidOf=(x)=>Array.isArray(x.fills)?x.fills.find(p=>p.type==="SOLID"&&p.visible!==false):null;
+  const layer=solidOf(n)?n:n.children.find(c=>c.visible&&c.width*c.height>=n.width*n.height*0.9&&solidOf(c));
+  const f=layer?solidOf(layer):null;
+  if (f&&!dark){ let c=f.color; if(f.boundVariables&&f.boundVariables.color){ const v=await figma.variables.getVariableByIdAsync(f.boundVariables.color.id); const r=v&&v.resolveForConsumer(layer).value; if(r&&r.r!==undefined)c=r; } dark = lum(c)<0.2; }
   screens.push({n,dark});
 }
 const reader = new A.FigmaReader();
@@ -50,7 +53,11 @@ const lang = A.mergeSources({id:"p",name:"P"},[learner.source("f","t",screens.le
 const st={}; for(const r of lang.rules){ const k=r.status+(r.byComponent?"+byComp":"")+(r.byState?"+byState":""); st[k]=(st[k]||0)+1; }
 const issues=A.checkExemplars(lang.quality,tokens);
 const lines=[`screens=${screens.length} dark=${screens.filter(s=>s.dark).length} tokens=${tokens.length} statuses=${JSON.stringify(st)} findings=${lang.findings.length} issues=${issues.length}`];
-for (const r of lang.rules.filter(r=>r.status==="disputed")) lines.push(`D ${r.role}|${r.layer}|${r.total}|`+r.values.slice(0,3).map(v=>`${clean(v.token?v.token.name:v.hex,24)}x${v.count}`).join(", "));
+// Спрашиваемые роли — как isAskable в questions.ts.
+const askable=(role)=>!(/\/(part|meta)$/.test(role)||role.endsWith("/stroke")&&role!=="input/stroke"&&!role.startsWith("action-"))&&!/^(decor|card-tint|surface|handle|tab\/|bubble|badge|row|header)/.test(role)&&!role.endsWith("/decor");
+for (const r of lang.rules.filter(r=>r.status==="disputed")) lines.push(`D${askable(r.role)?"?":" "} ${r.role}|${r.layer}|${r.restTotal??r.total}|`+(r.rest??r.values).slice(0,3).map(v=>`${clean(v.token?v.token.name:v.hex,24)}x${v.count}`).join(", "));
+// Объяснено строением: место внутри компонента, пара, частично по компоненту.
+for (const r of lang.rules.filter(r=>r.byPart)) lines.push(`P ${r.role}|${r.layer}|${r.status}|${r.byPart.feature}${r.byPart.partial?" partial":""}|`+r.byPart.entries.slice(0,3).map(e=>`${clean(e.key,30)}→${clean(r.values[e.value].token?r.values[e.value].token.name:r.values[e.value].hex,20)}`).join("; "));
 // Отложено как похожее на ошибку образца и оставлено, потому что таких большинство.
 for (const r of lang.rules.filter(r=>r.setAside||r.suspectKept)) lines.push(`A ${r.role}|${r.layer}|${r.status}|kept=${r.total}|susp=${r.suspectKept||0}|`+(r.setAside||[]).slice(0,3).map(v=>`${v.reason}:${clean(v.token?v.token.name:v.hex,24)}x${v.count}`).join(", "));
 return lines.join("\n");

@@ -34,14 +34,23 @@ const LABELS_PER_VALUE = 6;
  * тёмная — в модалке». Место — контейнер элемента; ширина — у заливок
  * (во всю ширину экрана или нет); тема — светлый или тёмный экран.
  */
-export type Feature = "component" | "state" | "place" | "width" | "theme";
+export type Feature = "component" | "slot" | "pair" | "under" | "state" | "place" | "width" | "theme" | "origin";
 /**
  * Порядок — приоритет объяснения: компонент первым. Разные варианты
  * одного компонента окрашены по-разному законно (замечание Principal
  * Designer: `fab/secondary` белая, `fab/primary` тёмная — не спор).
  * «—» у компонента — нарисовано вручную.
  */
-export const FEATURES: Feature[] = ["component", "state", "place", "width", "theme"];
+export const FEATURES: Feature[] = ["component", "slot", "pair", "under", "state", "place", "width", "theme"];
+/**
+ * Признаки строения элемента: разница по ним — разные части или виды
+ * элемента, а не спор (разбор 2026-09-30: иконка чипа идёт в паре с его
+ * обводкой; точка и стрелка слайдера — разные места компонента).
+ * `origin` — откуда цвет: не объясняет, а говорит, чьё это решение.
+ */
+export const STRUCTURAL: Feature[] = ["component", "slot", "pair", "under", "state"];
+/** Признак отделяет часть случаев, если внутри его значения один вариант не реже этой доли. */
+const PEEL_PURITY = 0.95;
 /** Признак разделяет варианты, если объясняет не меньше этой доли случаев. */
 const SPLIT_PURITY = 0.9;
 export const FREE_DRAWN = "—";
@@ -124,6 +133,15 @@ export interface LanguageRule {
    * управления (отмечен / нет, включён / нет): у каждого состояния своё.
    */
   byState?: Array<{ state: string; value: number }>;
+  /**
+   * Разница объяснена строением элемента (место внутри компонента, пара с
+   * соседними частями) или — `partial` — объяснена только часть случаев:
+   * тогда спрашиваем про остаток (`rest`).
+   */
+  byPart?: { feature: Feature; entries: Array<{ key: string; value: number }>; partial: boolean };
+  /** Остаток после частичного объяснения — о нём вопрос анкеты. */
+  rest?: RuleValue[];
+  restTotal?: number;
   /**
    * Случаи, похожие на ошибку сборки образца, — в правило не взяты
    * (решение Principal Designer, 2026-09-30). Анкета о них говорит.
@@ -319,7 +337,9 @@ export class LanguageLearner {
       const id = ruleId(hit.key, hit.layer);
       const rule = this.rules.get(id) ?? emptyRule(hit.key, hit.layer);
       this.rules.set(id, rule);
-      const why = suspectOf(hit, this.tokens);
+      // Цвет из компонента библиотеки — решение библиотеки: в «Ошибках в
+      // образцах» он есть, но правило продукта не искажает.
+      const why = hit.origin === "component" ? null : suspectOf(hit, this.tokens);
       if (!why) rule.total++;
 
       const v = hit.paint.variable;
@@ -351,6 +371,12 @@ export class LanguageLearner {
         m[v] = (m[v] ?? 0) + 1;
       };
       feature("component", hit.component ?? FREE_DRAWN);
+      if (hit.slot !== undefined && hit.component) feature("slot", `${hit.component} › ${hit.slot || "корень"}`);
+      if (hit.pair) feature("pair", hit.pair);
+      // На чём лежит: белый текст на голубой плашке и инверсный на тёмной
+      // кнопке — разные случаи, а не спор (аудит 2026-09-30).
+      if (hit.under && (hit.layer === "text" || hit.layer === "icon")) feature("under", hit.under.variable?.name ?? toHex(hit.under.color ?? { r: 1, g: 1, b: 1, a: 1 }));
+      feature("origin", hit.origin);
       if (hit.state) feature("state", hit.state);
       feature("place", hit.place);
       feature("theme", meta.dark ? THEME_ROLES.dark : THEME_ROLES.light);
@@ -465,6 +491,48 @@ function byCount<T extends { count: number }>(list: T[]): T[] {
 }
 
 /**
+ * Частичное объяснение: значения признака строения (компонент, место,
+ * пара), внутри которых вариант один, — снимаем как правило по части;
+ * остаток — вопрос. Пример: `reward` — всегда Accent, спорно только
+ * `small`. «Нарисовано вручную» не снимаем — это не строение.
+ */
+function peel(values: RuleValue[], total: number): { feature: Feature; entries: Array<{ key: string; value: number }>; rest: RuleValue[]; restTotal: number } | null {
+  let best: { feature: Feature; entries: Array<{ key: string; value: number }>; covered: number } | null = null;
+  for (const f of ["component", "slot", "pair", "under"] as Feature[]) {
+    const keys = new Set(values.flatMap((v) => Object.keys(v.features?.[f] ?? {})));
+    const entries: Array<{ key: string; value: number }> = [];
+    let covered = 0;
+    for (const k of keys) {
+      if (k === FREE_DRAWN || k.startsWith("—")) continue;
+      const counts = values.map((v) => v.features?.[f]?.[k] ?? 0);
+      const n = counts.reduce((a, b) => a + b, 0);
+      const top = Math.max(...counts);
+      if (n >= MIN_PEEL && top / n >= PEEL_PURITY) {
+        entries.push({ key: k, value: counts.indexOf(top) });
+        covered += n;
+      }
+    }
+    if (entries.length && covered < total && (!best || covered > best.covered)) best = { feature: f, entries, covered };
+  }
+  if (!best || best.covered < total * 0.2) return null;
+  const f = best.feature;
+  const gone = new Set(best.entries.map((e) => e.key));
+  const rest = values
+    .map((v): RuleValue => {
+      const minus = Object.entries(v.features?.[f] ?? {}).reduce((n, [k, c]) => n + (gone.has(k) ? c : 0), 0);
+      const fm = Object.fromEntries(Object.entries(v.features?.[f] ?? {}).filter(([k]) => !gone.has(k)));
+      return { ...v, count: v.count - minus, features: { ...v.features, [f]: fm } };
+    })
+    .filter((v) => v.count > 0)
+    .sort((a, b) => b.count - a.count);
+  const restTotal = rest.reduce((n, v) => n + v.count, 0);
+  if (restTotal === 0) return null;
+  return { feature: f, entries: best.entries.sort((a, b) => a.value - b.value), rest, restTotal };
+}
+/** Меньше стольких случаев — значение признака не снимаем: одиночка не правило. */
+const MIN_PEEL = 3;
+
+/**
  * Случаи, похожие на ошибку образца: чужое семейство (видно только по
  * всем правилам) — в сторону; а если похожих на ошибку не меньше, чем
  * обычных, это основной вариант продукта — возвращаем в правило.
@@ -475,6 +543,8 @@ function setAside(rules: LanguageRule[]): LanguageRule[] {
     const r: LanguageRule = { ...r0, values: [...r0.values], setAside: [...(r0.setAside ?? [])] };
     for (const v of r0.values) {
       if (!v.token || !alien.has(`${r.layer}|${v.token.name}`)) continue;
+      // Так задано в компоненте библиотеки — предложение библиотеке, не ошибка образца.
+      if ((v.features.origin?.component ?? 0) >= v.count / 2) continue;
       r.values = r.values.filter((x) => x !== v);
       r.total -= v.count;
       mergeValue<AsideValue>(r.setAside!, { ...v, reason: "family" }, asideId);
@@ -502,18 +572,28 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
     let status: RuleStatus = r.total === 0 ? "missing" : share >= DOMINANT_SHARE ? "proposed" : "disputed";
     let byComponent: LanguageRule["byComponent"];
     let byState: LanguageRule["byState"];
+    let byPart: LanguageRule["byPart"];
+    let rest: RuleValue[] | undefined;
+    let restTotal: number | undefined;
     if (status === "disputed") {
-      const split = findSplit(values.filter((v) => v.count / r.total >= 0.05));
-      if (split?.feature === "component") {
+      const main = values.filter((v) => v.count / r.total >= 0.05);
+      const split = findSplit(main);
+      if (split && STRUCTURAL.includes(split.feature)) {
         status = "proposed";
-        byComponent = Object.entries(split.map)
-          .map(([component, value]) => ({ component, value }))
+        const entries = Object.entries(split.map)
+          .map(([key, value]) => ({ key, value }))
           .sort((a, b) => a.value - b.value);
-      } else if (split?.feature === "state") {
-        status = "proposed";
-        byState = Object.entries(split.map)
-          .map(([state, value]) => ({ state, value }))
-          .sort((a, b) => a.value - b.value);
+        if (split.feature === "component") byComponent = entries.map((e) => ({ component: e.key, value: e.value }));
+        else if (split.feature === "state") byState = entries.map((e) => ({ state: e.key, value: e.value }));
+        else byPart = { feature: split.feature, entries, partial: false };
+      } else if (!split) {
+        const peeled = peel(values, r.total);
+        if (peeled) {
+          byPart = { feature: peeled.feature, entries: peeled.entries, partial: true };
+          rest = peeled.rest;
+          restTotal = peeled.restTotal;
+          if (rest[0] && rest[0].count / restTotal >= DOMINANT_SHARE) status = "proposed";
+        }
       }
     }
     return {
@@ -521,6 +601,8 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
       status,
       ...(byComponent ? { byComponent } : { byComponent: undefined }),
       ...(byState ? { byState } : { byState: undefined }),
+      ...(byPart ? { byPart } : { byPart: undefined }),
+      ...(rest ? { rest, restTotal } : { rest: undefined, restTotal: undefined }),
       values,
       textStyles: byCount(r.textStyles),
       textCases: byCount(r.textCases),

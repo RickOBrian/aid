@@ -25,8 +25,11 @@ for (const n of roots) {
   const bg = painted(n)||n.children.some(c=>c.visible&&painted(c)&&c.width*c.height>=n.width*n.height*0.9);
   if (!inst&&!bg) continue;
   let dark = words(n.name).some(w=>DARK.some(x=>w.startsWith(x)));
-  const f=Array.isArray(n.fills)?n.fills.find(p=>p.type==="SOLID"&&p.visible!==false):null;
-  if (f&&!dark){ let c=f.color; if(f.boundVariables&&f.boundVariables.color){ const v=await figma.variables.getVariableByIdAsync(f.boundVariables.color.id); const r=v&&v.resolveForConsumer(n).value; if(r&&r.r!==undefined)c=r; } dark = lum(c)<0.2; }
+  // Фон — своя заливка или нижний слой во весь экран (как collect.ts).
+  const solidOf=(x)=>Array.isArray(x.fills)?x.fills.find(p=>p.type==="SOLID"&&p.visible!==false):null;
+  const layer=solidOf(n)?n:n.children.find(c=>c.visible&&c.width*c.height>=n.width*n.height*0.9&&solidOf(c));
+  const f=layer?solidOf(layer):null;
+  if (f&&!dark){ let c=f.color; if(f.boundVariables&&f.boundVariables.color){ const v=await figma.variables.getVariableByIdAsync(f.boundVariables.color.id); const r=v&&v.resolveForConsumer(layer).value; if(r&&r.r!==undefined)c=r; } dark = lum(c)<0.2; }
   screens.push({n,dark});
 }
 const reader = new A.FigmaReader();

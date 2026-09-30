@@ -17,7 +17,7 @@ import { relativeLuminance } from "../assemble/darkPairs";
 import { isHelperLayerName } from "../lib/annotations";
 import { controlByName, controlState, type ControlKind } from "../lib/controls";
 import { isSystemName } from "../lib/system";
-import { hueFamily, isNeutral, type Rgba } from "../map/color";
+import { hueFamily, isNeutral, toHex, type Rgba } from "../map/color";
 import { solidFill, solidStroke, texts, walk, type NNode, type NPaint } from "./node";
 
 export type ActionRole = "action-main" | "action-primary" | "action-secondary" | "action-disabled" | "action-destructive" | "action-floating";
@@ -49,7 +49,42 @@ export interface RoleHit {
   under?: NPaint;
   /** Состояние элемента управления: отмечен / включён или нет — разные цвета законны. */
   state?: "on" | "off";
+  /**
+   * Место внутри компонента — путь слоёв от корня компонента: «Left icon
+   * box/arrow_right». Разные места — разные части (точка и стрелка
+   * слайдера), сравнивать цвета можно только в одном месте. Нет — вне компонента.
+   */
+  slot?: string;
+  /**
+   * Чем окрашен элемент-владелец (фон + обводка) — для частей: иконка чипа
+   * меняется вместе с его обводкой, это два вида элемента, а не разнобой.
+   */
+  pair?: string;
 }
+
+/**
+ * Слова статуса в имени токена. Статус по-прежнему угадываем по оттенку
+ * (у продуктов бывают палитры «accent/orange» для предупреждений), но
+ * иконка, покрашенная токеном чужого семейства без слова статуса
+ * (двухцветная пастельная иконка опции), — декор, а не «ошибка».
+ */
+const STATUS_WORDS = /warn|error|negative|danger|alert|attention|caution|critical|success|positive|info/i;
+/** Семейство токена иконок или текста — по первой части имени. */
+const FG_FAMILY = /^(icon|ic[-_/ ]|text|tx[-_/ ]|typo|label|content|foreground|fg)/i;
+/** Токен кнопки или действия: заливка карточки таким токеном — нажимаемая плитка. */
+const ACTION_WORDS = /button|btn|action|cta/i;
+
+/** Имя токена краски, если есть. */
+const tokenName = (p: NPaint | undefined): string | undefined => p?.variable?.name;
+
+/** Как подписать краску для признака «пара»: токен или hex. */
+function paintLabel(p: NPaint | undefined): string {
+  if (!p?.color) return "—";
+  return p.variable?.name ?? toHex(p.color);
+}
+
+/** Имя слоя для пути места: без эмодзи и лишних пробелов. */
+const slotName = (n: NNode) => n.name.replace(/[^\p{L}\p{N} _\-=,]/gu, "").trim() || n.type.toLowerCase();
 
 export type Place = "screen" | "sheet" | "modal" | "card";
 
@@ -156,6 +191,10 @@ interface Ctx {
   component: string | null;
   /** Состояние элемента управления, внутри которого находимся. */
   state?: "on" | "off";
+  /** Путь слоёв от корня текущего компонента. */
+  slotPath?: string[];
+  /** Обводка владельца — вместе с `ownerPaint` даёт признак «пара». */
+  ownerStroke?: NPaint;
 }
 
 function labelTexts(n: NNode): NNode[] {
@@ -383,6 +422,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
   const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba; media: boolean; paint?: NPaint }> = [];
   let overlaySeen = false;
   let screenBg: Rgba = WHITE;
+  /** Фон экрана найден: своя заливка экрана или нижний слой во весь экран. */
+  let bgFound = false;
   /** Нейтральный текст и иконки: уровень считается после обхода — относительно самого контрастного на экране. */
   const neutral: Array<{ hit: RoleHit; kind: "text" | "icon"; k: number }> = [];
 
@@ -390,6 +431,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
   let component: string | null = null;
   let underPaint: NPaint | undefined;
   let curState: "on" | "off" | undefined;
+  let curSlot: string | undefined;
+  let curPair: string | undefined;
   /** Над картинкой (карта): не-кнопки не учим. */
   let quiet = false;
   const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba, from: NNode = n) => {
@@ -407,6 +450,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
       origin,
       ...(underPaint ? { under: underPaint } : {}),
       ...(curState ? { state: curState } : {}),
+      ...(curSlot !== undefined ? { slot: curSlot } : {}),
+      ...(curPair ? { pair: curPair } : {}),
     };
     hits.push(h);
     return h;
@@ -463,11 +508,14 @@ export function detectRoles(screen: NNode): ScreenRoles {
     ctx = { ...ctx, surface: root ? WHITE : (top?.color ?? ctx.surface), surfacePaint: root ? undefined : top ? top.paint : ctx.surfacePaint };
     // Экран-инстанс — не компонент элемента; иконки — тоже (их цвет — переопределение).
     const own = !root && Math.max(n.width, n.height) > 32 ? componentIdentity(n) : null;
-    if (own) ctx = { ...ctx, component: own };
+    if (own) ctx = { ...ctx, component: own, slotPath: [] };
+    else if (ctx.component && !root) ctx = { ...ctx, slotPath: [...(ctx.slotPath ?? []), slotName(n)] };
     place = ctx.place;
     component = ctx.component;
     underPaint = ctx.surfacePaint;
     curState = ctx.state;
+    curSlot = ctx.component ? (ctx.slotPath ?? []).join("/") : undefined;
+    curPair = ctx.owner ? `${paintLabel(ctx.ownerPaint)} + ${paintLabel(ctx.ownerStroke)}` : undefined;
     const wasQuiet = quiet;
     // Над картой учим только кнопки и то, что в них; остальное небольшое —
     // объекты карты (метки, знаки, машина). Крупные панели (шторка) — нет.
@@ -486,8 +534,18 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, "screen-bg", "fill", fill, WHITE);
       if (fill?.color && fill.color.a > 0.5) {
         screenBg = composite(fill.color, WHITE);
+        bgFound = true;
         next = { ...ctx, surface: screenBg, surfacePaint: fill };
       }
+    } else if (!bgFound && !ctx.owner && fill?.color && fill.color.a > 0.85 && n.width >= W * 0.9 && n.height >= H * 0.9) {
+      // У экрана нет своей заливки — фон нарисован слоем во весь экран. Без
+      // этого фоном считался белый, и весь текст тёмного экрана попадал в
+      // «на контрастном фоне» (аудит 2026-09-30).
+      hit(n, "screen-bg", "fill", fill, WHITE);
+      screenBg = composite(fill.color, WHITE);
+      bgFound = true;
+      paint(n, fill, WHITE);
+      next = { ...ctx, surface: screenBg, surfacePaint: fill };
     } else if (ctx.owner) {
       // Внутри кнопки, поля, чипа: текст — подпись (время — метка), мелкая
       // форма — иконка, прочие заливки — детали (таймер в кнопке).
@@ -532,7 +590,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       }
       if (stroke) hit(n, `${key}/stroke`, "stroke", stroke, ctx.surface);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: key, ownerPaint: b?.paint, state: curState };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: key, ownerPaint: b?.paint, ownerStroke: stroke, state: curState };
     } else if (isHeader(n, ctx, W)) {
       hit(n, "header", "fill", fill, ctx.surface);
     } else if (isBubble(n, W)) {
@@ -557,7 +615,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       const c = b?.paint.color;
       const surface = c ? composite(c, ctx.surface) : ctx.surface;
       paint(n, b?.paint, ctx.surface);
-      next = { ...ctx, surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: role, ownerPaint: b?.paint };
+      next = { ...ctx, surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: role, ownerPaint: b?.paint, ownerStroke: stroke };
     } else if (isRow(n, parent, W)) {
       // Строка списка — роль у плашки; тексты внутри — обычная иерархия.
       const b = body(n);
@@ -570,7 +628,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
     } else if (isInput(n, W)) {
       hit(n, "input", "fill", fill, ctx.surface);
       hit(n, "input/stroke", "stroke", stroke, ctx.surface);
-      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, surfacePaint: fill ?? ctx.surfacePaint, owner: "input" };
+      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, surfacePaint: fill ?? ctx.surfacePaint, owner: "input", ownerPaint: fill, ownerStroke: stroke };
     } else if (CONTAINERS.has(n.type) && isFab(n)) {
       const b = body(n);
       hit(n, "action-floating", "fill", b?.paint, ctx.surface, b?.node);
@@ -583,7 +641,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       if (stroke) hit(n, "chip/stroke", "stroke", stroke, ctx.surface);
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "chip", ownerPaint: b?.paint };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "chip", ownerPaint: b?.paint, ownerStroke: stroke };
     } else if (SHAPES.has(n.type) && n.height <= 6 && n.width >= 16 && n.width <= 120 && (n.radius ?? 0) >= 1 && isHandle(n, ctx)) {
       hit(n, "handle", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && ((n.height <= 2 && n.width >= W * 0.3) || (n.width <= 2 && n.height >= 24))) {
@@ -599,7 +657,11 @@ export function detectRoles(screen: NNode): ScreenRoles {
         const h = hit(n, "icon/primary", "icon", fill, ctx.surface);
         if (h) neutral.push({ hit: h, kind: "icon", k: contrast(c, ctx.surface) });
       } else if (c) {
-        hit(n, `icon/${meaningOf(c) === "accent" ? "accent" : `status-${meaningOf(c)}`}`, "icon", fill, ctx.surface);
+        const m = meaningOf(c);
+        const name = tokenName(fill);
+        const decor = name !== undefined && !FG_FAMILY.test(name) && !STATUS_WORDS.test(name);
+        const key = decor ? "decor" : m === "accent" ? "accent" : `status-${m}`;
+        hit(n, `icon/${key}`, "icon", fill, ctx.surface);
       }
       if (stroke) hit(n, "icon/stroke", "stroke", stroke, ctx.surface);
     } else if (SHAPES.has(n.type) && n.children.length === 0 && fill?.color && !(n.width >= W * 0.9 && n.height >= H * 0.8)) {
@@ -614,6 +676,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
       if (full && c.a < 0.85) key = "overlay";
       else if (n.width >= W * 0.95 && n.y + n.height >= H - 4 && n.height < H * 0.97 && n.y >= 24) key = "sheet";
       else if ((overlaySeen || named) && (n.radius ?? 0) >= 12 && n.width >= W * 0.6 && n.width < W * 0.95 && n.children.length > 0) key = "modal";
+      // Карточка, залитая токеном кнопки, — нажимаемая плитка: так решил автор.
+      else if (n.children.length > 0 && (n.radius ?? 0) >= 8 && ACTION_WORDS.test(tokenName(fill) ?? "")) key = "action-tile";
       else if (!isNeutral(c)) key = `card-tint/${meaningOf(c)}`;
       else if (n.children.length > 0 && (n.radius ?? 0) >= 8) key = "card";
       else key = "surface";
@@ -628,7 +692,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
         surface: opaque ? composite(c, ctx.surface) : ctx.surface,
         surfacePaint: opaque ? fill : ctx.surfacePaint,
         base: isBase ? { x: n.x, y: n.y, width: n.width, height: n.height } : ctx.base,
-        place: isBase || key === "card" ? (key as Place) : key.startsWith("card-tint") ? "card" : ctx.place,
+        place: isBase || key === "card" ? (key as Place) : key.startsWith("card-tint") || key === "action-tile" ? "card" : ctx.place,
       };
     } else if (stroke) {
       hit(n, "surface/stroke", "stroke", stroke, ctx.surface);

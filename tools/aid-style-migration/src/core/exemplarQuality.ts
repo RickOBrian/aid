@@ -30,6 +30,8 @@ const EXAMPLES = 3;
 const QUIET_ROLES = /tertiary|\/meta$|\/part$|^decor|disabled|^handle|^divider|stroke$/;
 
 export interface PairObservation {
+  /** Сколько из них — цвет, заданный в компоненте библиотеки. */
+  fromComponent?: number;
   fg: TokenRef;
   bg: TokenRef;
   layer: Layer;
@@ -40,6 +42,8 @@ export interface PairObservation {
 }
 
 export interface TokenUse {
+  /** Сколько из них — цвет, заданный в компоненте библиотеки. */
+  fromComponent?: number;
   layer: Layer;
   token: TokenRef;
   count: number;
@@ -47,6 +51,8 @@ export interface TokenUse {
 }
 
 export interface LowContrast {
+  /** Сколько из них — цвет, заданный в компоненте библиотеки. */
+  fromComponent?: number;
   role: string;
   fg: string;
   bg: string;
@@ -106,6 +112,7 @@ export class QualityCollector {
       const k = `${hit.layer}|${fg.key}`;
       const u = this.uses.get(k) ?? { layer: hit.layer, token: fg, count: 0, examples: [] };
       u.count++;
+      if (hit.origin === "component") u.fromComponent = (u.fromComponent ?? 0) + 1;
       push(u.examples, example);
       this.uses.set(k, u);
     } else if (hit.origin === "free" && hit.paint.color) {
@@ -125,6 +132,7 @@ export class QualityCollector {
       const p = this.pairs.get(k) ?? { fg, bg, layer: hit.layer, role: hit.key, light: 0, dark: 0, examples: [] };
       if (dark) p.dark++;
       else p.light++;
+      if (hit.origin === "component") p.fromComponent = (p.fromComponent ?? 0) + 1;
       push(p.examples, example);
       this.pairs.set(k, p);
     }
@@ -134,6 +142,7 @@ export class QualityCollector {
       const k = `${hit.key}|${fgName}|${bgHex}`;
       const l = this.low.get(k) ?? { role: hit.key, fg: fgName, bg: bgHex, ratio, count: 0, examples: [] };
       l.count++;
+      if (hit.origin === "component") l.fromComponent = (l.fromComponent ?? 0) + 1;
       l.ratio = Math.min(l.ratio, ratio);
       push(l.examples, example);
       this.low.set(k, l);
@@ -157,17 +166,17 @@ export function mergeQuality(list: Array<QualityObservations | undefined>): Qual
     for (const p of q.pairs) {
       const k = `${p.layer}|${p.fg.key}|${p.bg.key}`;
       const into = pairs.get(k);
-      pairs.set(k, into ? { ...into, light: into.light + p.light, dark: into.dark + p.dark, examples: ex(into.examples, p.examples) } : { ...p, examples: [...p.examples] });
+      pairs.set(k, into ? { ...into, light: into.light + p.light, dark: into.dark + p.dark, fromComponent: (into.fromComponent ?? 0) + (p.fromComponent ?? 0), examples: ex(into.examples, p.examples) } : { ...p, examples: [...p.examples] });
     }
     for (const u of q.uses) {
       const k = `${u.layer}|${u.token.key}`;
       const into = uses.get(k);
-      uses.set(k, into ? { ...into, count: into.count + u.count, examples: ex(into.examples, u.examples) } : { ...u, examples: [...u.examples] });
+      uses.set(k, into ? { ...into, count: into.count + u.count, fromComponent: (into.fromComponent ?? 0) + (u.fromComponent ?? 0), examples: ex(into.examples, u.examples) } : { ...u, examples: [...u.examples] });
     }
     for (const l of q.low) {
       const k = `${l.role}|${l.fg}|${l.bg}`;
       const into = low.get(k);
-      low.set(k, into ? { ...into, count: into.count + l.count, ratio: Math.min(into.ratio, l.ratio), examples: ex(into.examples, l.examples) } : { ...l, examples: [...l.examples] });
+      low.set(k, into ? { ...into, count: into.count + l.count, fromComponent: (into.fromComponent ?? 0) + (l.fromComponent ?? 0), ratio: Math.min(into.ratio, l.ratio), examples: ex(into.examples, l.examples) } : { ...l, examples: [...l.examples] });
     }
     for (const r of q.raw) {
       const k = `${r.role}|${r.hex}`;
@@ -191,6 +200,15 @@ export interface QualityIssue {
   lines: string[];
   count: number;
   examples: Example[];
+  /** Так задано в компоненте библиотеки: предложение библиотеке, а не ошибка автора образца. */
+  library?: boolean;
+}
+
+/** Больше половины случаев — из компонента: решение библиотеки. */
+const LIBRARY_LINE = "Так задано в самом компоненте библиотеки — это предложение библиотеке, а не ошибка автора образца; правило продукта берёт как есть.";
+function library<T extends QualityIssue>(issue: T, fromComponent: number | undefined, count: number): T {
+  if ((fromComponent ?? 0) * 2 < count) return issue;
+  return { ...issue, level: "doubt", library: true, title: `${issue.title} (задано в компоненте)`, lines: [...issue.lines, LIBRARY_LINE] };
 }
 
 export interface ThemedToken {
@@ -303,7 +321,7 @@ export function checkExemplars(q: QualityObservations | undefined, tokens: Theme
     if (!drifts && !unreadable) continue;
     const seenDark = p.dark > p.light;
     const other = seenDark ? "светлой" : "тёмной";
-    out.push({
+    out.push(library({
       kind: "other-theme",
       level: unreadable ? "risk" : "doubt",
       title: unreadable
@@ -318,7 +336,7 @@ export function checkExemplars(q: QualityObservations | undefined, tokens: Theme
       ],
       count: p.light + p.dark,
       examples: p.examples,
-    });
+    }, p.fromComponent, p.light + p.dark));
   }
 
   // 2. Чужое семейство: слой почти всегда красят одним семейством, а тут — другим.
@@ -326,7 +344,7 @@ export function checkExemplars(q: QualityObservations | undefined, tokens: Theme
   for (const u of q.uses) {
     const a = alien.get(`${u.layer}|${u.token.name}`);
     if (!a) continue;
-    out.push({
+    out.push(library({
       kind: "family",
       level: "doubt",
       title: `${LAYER_WORD[u.layer]} покрасили ${u.token.name}`,
@@ -336,19 +354,19 @@ export function checkExemplars(q: QualityObservations | undefined, tokens: Theme
       ],
       count: u.count,
       examples: u.examples,
-    });
+    }, u.fromComponent, u.count));
   }
 
   // 3. Низкий контраст прямо в образце.
   for (const l of q.low.sort((a, b) => b.count - a.count).slice(0, 15)) {
-    out.push({
+    out.push(library({
       kind: "low-contrast",
       level: "risk",
       title: `Плохо читается: ${l.fg} на ${l.bg}`,
       lines: [`Контраст ${l.ratio.toFixed(1)} — ${l.count} раз. Ниже ${MIN_CONTRAST} текст и иконки явно не читаются.`],
       count: l.count,
       examples: l.examples,
-    });
+    }, l.fromComponent, l.count));
   }
 
   // 4. Цвет без токена, нарисованный вручную.
