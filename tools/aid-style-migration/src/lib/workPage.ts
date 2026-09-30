@@ -6,6 +6,18 @@
 
 export const WORK_PAGE_NAME = "AID Migration";
 
+/**
+ * Страница анкеты и языка продукта (решение Б, 2026-09-30): канвас
+ * показывает подробно, плагин принимает решения. Как и рабочую страницу,
+ * её не собираем и не изучаем.
+ */
+export const LANGUAGE_PAGE_NAME = "AID · Язык продукта";
+
+/** Служебные страницы плагина — не источники макетов. */
+export function isPluginPage(name: string): boolean {
+  return name === WORK_PAGE_NAME || name === LANGUAGE_PAGE_NAME;
+}
+
 export interface WorkPage {
   page: PageNode;
   /** true — страницу создали сейчас; её можно убрать, если она осталась пустой. */

@@ -11,7 +11,7 @@
 
 import { assemble, disassemble, existingSections } from "./assemble/build";
 import { pairFromSelection, scan, thumbnail } from "./assemble/collect";
-import { WORK_PAGE_NAME } from "./lib/workPage";
+import { isPluginPage } from "./lib/workPage";
 import { applyStyle, removeAfter } from "./map/apply";
 import { buildStyleMap } from "./map/styleMap";
 import type { CodeToUi, UiToCode } from "./messages";
@@ -38,7 +38,7 @@ post({
   type: "init",
   fileName: figma.root.name,
   selectionCount: figma.currentPage.selection.length,
-  pages: figma.root.children.filter((p) => p.name !== WORK_PAGE_NAME).map((p) => ({ id: p.id, name: p.name })),
+  pages: figma.root.children.filter((p) => !isPluginPage(p.name)).map((p) => ({ id: p.id, name: p.name })),
 });
 
 figma.on("selectionchange", () => {
@@ -164,6 +164,13 @@ async function handle(message: UiToCode): Promise<void> {
     }
     case "language-forget":
       post({ type: "profile-state", state: await profiles.forgetLanguageSource(message.fileName) });
+      return;
+    case "language-answer":
+      post({ type: "profile-state", state: await profiles.answer(message.questionId, message.optionId, message.note) });
+      return;
+    case "language-board":
+      await profiles.board(message.questionId, (title) => post({ type: "index-progress", title }));
+      post({ type: "notice", message: "Доска вопросов — на странице «AID · Язык продукта»" });
       return;
     case "language-export": {
       const out = await profiles.exportLanguage();

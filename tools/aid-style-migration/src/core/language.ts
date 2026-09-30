@@ -10,8 +10,10 @@
  * (шаг 5).
  */
 
+import { THEME_ROLES } from "../lib/vocabulary";
 import { toHex } from "../map/color";
-import { walk, type NNode } from "./node";
+import { texts, walk, type NNode } from "./node";
+import type { Decision } from "./questions";
 import { detectRoles, type Layer } from "./roles";
 
 export const LANGUAGE_SCHEMA = "aid-style-language/1";
@@ -23,6 +25,16 @@ export type RuleStatus = "proposed" | "confirmed" | "disputed" | "missing";
 export const DOMINANT_SHARE = 0.8;
 /** Примеров на значение — столько, чтобы показать 📍, не раздувая хранилище. */
 const EXAMPLES_PER_VALUE = 3;
+/** Разных подписей на значение — для объяснения споров: «Принять заказ», «Понятно». */
+const LABELS_PER_VALUE = 6;
+
+/**
+ * Признаки случая — по ним анкета объясняет спор: «зелёная — в шторке,
+ * тёмная — в модалке». Место — контейнер элемента; ширина — у заливок
+ * (во всю ширину экрана или нет); тема — светлый или тёмный экран.
+ */
+export type Feature = "place" | "width" | "theme";
+export const FEATURES: Feature[] = ["place", "width", "theme"];
 
 export interface Example {
   screenId: string;
@@ -50,6 +62,10 @@ export interface RuleValue {
   light: number;
   dark: number;
   examples: Example[];
+  /** Признак → значение признака → сколько раз. */
+  features: Partial<Record<Feature, Record<string, number>>>;
+  /** Подписи на элементе (у кнопок, чипов) или сам текст (у подписей). */
+  labels: string[];
 }
 
 export interface Counted<T> {
@@ -72,6 +88,8 @@ export interface LanguageRule {
   /** Форма — у заливок: радиус и высота. */
   radius: Array<Counted<number>>;
   height: Array<Counted<number>>;
+  /** Решение дизайнера по анкете — есть у `confirmed`. */
+  decision?: Decision;
 }
 
 export interface LanguageSource {
@@ -191,7 +209,7 @@ export class LanguageLearner {
       const vid = valueId({ token, hex });
       let value = rule.values.find((x) => valueId(x) === vid);
       if (!value) {
-        value = { token, hex, count: 0, light: 0, dark: 0, examples: [] };
+        value = { token, hex, count: 0, light: 0, dark: 0, examples: [], features: {}, labels: [] };
         rule.values.push(value);
       }
       value.count++;
@@ -208,6 +226,17 @@ export class LanguageLearner {
 
       const node = byId.get(hit.nodeId);
       if (!node) continue;
+      const feature = (f: Feature, v: string) => {
+        const m = (value.features[f] ??= {});
+        m[v] = (m[v] ?? 0) + 1;
+      };
+      feature("place", hit.place);
+      feature("theme", meta.dark ? THEME_ROLES.dark : THEME_ROLES.light);
+      if (hit.layer === "fill") feature("width", node.width >= screen.width * 0.9 ? "full" : "part");
+      const words = (node.text ? [node.text.characters] : texts(node).map((t) => t.text?.characters ?? ""))
+        .map((x) => x.trim().replace(/\s+/g, " "))
+        .filter((x) => x.length > 0 && x.length <= 40);
+      for (const w of words) if (value.labels.length < LABELS_PER_VALUE && !value.labels.includes(w)) value.labels.push(w);
       if (node.text) {
         if (node.text.styleKey) bumpCounted(rule.textStyles, { key: node.text.styleKey, name: node.text.styleName ?? "" }, eqStyle);
         bumpCounted(rule.textCases, visibleCase(node.text.characters, node.text.textCase), eq);
@@ -283,9 +312,19 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
           found.dark += v.dark;
           found.hexLight ??= v.hexLight;
           found.hexDark ??= v.hexDark;
+          for (const [f, m] of Object.entries(v.features ?? {}) as Array<[Feature, Record<string, number>]>) {
+            const into2 = (found.features[f] ??= {});
+            for (const [k, n] of Object.entries(m)) into2[k] = (into2[k] ?? 0) + n;
+          }
+          for (const w of v.labels ?? []) if (found.labels.length < LABELS_PER_VALUE && !found.labels.includes(w)) found.labels.push(w);
           found.examples = [...found.examples, ...v.examples].slice(0, EXAMPLES_PER_VALUE);
         } else {
-          into.values.push({ ...v, examples: [...v.examples] });
+          into.values.push({
+            ...v,
+            examples: [...v.examples],
+            features: Object.fromEntries(Object.entries(v.features ?? {}).map(([f, m]) => [f, { ...m }])),
+            labels: [...(v.labels ?? [])],
+          });
         }
       }
       mergeCounted(into.textStyles, r.textStyles, eqStyle);

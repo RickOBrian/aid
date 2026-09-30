@@ -35,6 +35,8 @@ export type UiToCode =
   | { type: "language-learn"; scope: ExemplarScope }
   | { type: "language-forget"; fileName: string }
   | { type: "language-export" }
+  | { type: "language-answer"; questionId: string; optionId: string | null; note?: string }
+  | { type: "language-board"; questionId: string | null }
   | { type: "style-map" }
   | { type: "style-apply"; decisions: Decisions }
   | { type: "style-remove" }

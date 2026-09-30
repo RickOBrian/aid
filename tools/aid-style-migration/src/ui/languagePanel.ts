@@ -1,20 +1,23 @@
 /**
- * Карточка «Язык продукта» во вкладке «Продукт» (шаг 4): изучить образцы
- * в открытом файле, посмотреть, что продукт делает с каждой ролью,
- * выгрузить файл языка. Спорное и пробелы решает анкета (шаг 5).
+ * Карточка «Язык продукта» во вкладке «Продукт»: изучить образцы в
+ * открытом файле, ответить на анкету по одному вопросу, посмотреть все
+ * правила, выгрузить файл языка. Подробности вопроса — на доске на
+ * канвасе (решение Б): окно принимает решения, канвас показывает.
  */
 
+import { isOpen, type Question } from "../core/questions";
 import { DOMINANT_SHARE, languageStats, type LanguageRule, type RuleStatus, type RuleValue, type StyleLanguage } from "../core/language";
 import { GROUP_LABELS, GROUP_ORDER, roleGroup, roleLabel } from "../core/roleLabels";
 import type { ProfileState } from "../profile/controller";
 import type { ExemplarScope } from "../profile/usage";
 import { badge, el, h, send } from "./dom";
 
+/** Статусы — действиями, а не оценками (замечание Principal Designer). */
 const STATUS: Record<RuleStatus, [string, "neutral" | "success" | "info" | "warning" | "danger"]> = {
-  proposed: ["найдено", "info"],
-  confirmed: ["подтверждено", "success"],
-  disputed: ["спорно", "warning"],
-  missing: ["нет в образцах", "neutral"],
+  proposed: ["правило есть", "info"],
+  confirmed: ["решено", "success"],
+  disputed: ["нужно ваше решение", "warning"],
+  missing: ["образцов нет", "neutral"],
 };
 
 const CASES: Record<string, string> = { upper: "КАПС", lower: "строчные", title: "Каждое Слово", sentence: "Как в предложении", mixed: "смешанный" };
@@ -23,6 +26,8 @@ type Filter = "all" | "open";
 let filter: Filter = "all";
 let scope: ExemplarScope = "page";
 let lastState: ProfileState | null = null;
+/** Какой вопрос показан: id, чтобы после ответа не терять место. */
+let currentId: string | null = null;
 
 function swatch(hex: string | undefined, title: string): HTMLElement {
   const s = h("span", { className: hex ? "ds-swatch" : "ds-swatch ds-swatch--none" });
@@ -73,7 +78,10 @@ function ruleRow(r: LanguageRule): HTMLElement {
   const [text, tone] = STATUS[r.status];
   const head = h("div", { className: "ds-map-line" }, [h("span", { text: roleLabel(r.role) }), badge(text, tone)]);
   if (r.status === "missing") {
-    return h("div", { className: "ds-lang-row" }, [head, h("div", { className: "ds-screen__meta", text: "Роли нет в изученных образцах — пробел в образцах или в библиотеке" })]);
+    return h("div", { className: "ds-lang-row" }, [head, h("div", { className: "ds-screen__meta", text: "В изученных образцах такого элемента нет — ответьте в анкете, как его оформлять" })]);
+  }
+  if (r.decision) {
+    return h("div", { className: "ds-lang-row" }, [head, h("div", { className: "ds-screen__meta", text: `Решение: ${r.decision.label}` })]);
   }
   const shown = r.status === "disputed" ? r.values.slice(0, 4) : r.values.slice(0, 1);
   const rest = r.values.length - shown.length;
@@ -108,22 +116,99 @@ function sourcesList(lang: StyleLanguage): HTMLElement[] {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Анкета — по одному вопросу
+// ---------------------------------------------------------------------------
+
+const KIND_LABEL: Record<Question["kind"], string> = {
+  contradiction: "в образцах по-разному",
+  gap: "в образцах нет",
+  outlier: "отступления от правила",
+};
+
+function renderQuestion(state: ProfileState): void {
+  const qs = state.questions;
+  const box = el("question-box");
+  box.hidden = qs.length === 0;
+  if (!qs.length) return;
+  let i = qs.findIndex((q) => q.id === currentId);
+  if (i === -1) i = 0;
+  const q = qs[i];
+  currentId = q.id;
+  const open = qs.filter((x) => isOpen(x, state.answers)).length;
+  const answered = !isOpen(q, state.answers);
+  el("q-counter").textContent = `Вопрос ${i + 1} из ${qs.length} · ${KIND_LABEL[q.kind]} · нужно решение: ${open}`;
+  el("q-title").textContent = q.title;
+  el("q-lines").replaceChildren(...q.lines.map((l) => h("div", { text: l })));
+
+  const answer = state.answers[q.id];
+  const options = q.options.map((o) => {
+    const input = h("input");
+    input.type = "radio";
+    input.name = "q-option";
+    input.value = o.id;
+    input.checked = answer?.optionId === o.id;
+    return h("label", {}, [input, h("span", { text: o.label })]);
+  });
+  const own = h("input");
+  own.type = "radio";
+  own.name = "q-option";
+  own.value = "note";
+  own.checked = answer?.optionId === "note";
+  const note = h("textarea", { className: "ds-input" });
+  note.id = "q-note";
+  note.rows = 2;
+  note.placeholder = "Свой вариант — например, «зелёная только для принятия заказа»";
+  note.value = answer?.note ?? "";
+  note.addEventListener("focus", () => (own.checked = true));
+  el("q-options").replaceChildren(...options, h("label", {}, [own, h("span", { text: "Свой вариант" })]), note);
+
+  const btn = el<HTMLButtonElement>("q-answer");
+  btn.textContent = answered ? "Изменить ответ" : "Ответить";
+  el<HTMLButtonElement>("q-prev").disabled = i === 0;
+  el<HTMLButtonElement>("q-next").disabled = i === qs.length - 1;
+}
+
+function step(delta: number): void {
+  const qs = lastState?.questions ?? [];
+  const i = qs.findIndex((q) => q.id === currentId);
+  const next = qs[Math.min(qs.length - 1, Math.max(0, i + delta))];
+  if (next) currentId = next.id;
+  render();
+}
+
+function submit(): void {
+  const q = lastState?.questions.find((x) => x.id === currentId);
+  if (!q) return;
+  const picked = el("q-options").querySelector<HTMLInputElement>('input[name="q-option"]:checked');
+  if (!picked) return;
+  const note = el<HTMLTextAreaElement>("q-note").value.trim();
+  if (picked.value === "note" && !note) return;
+  // Ответили — следующий открытый вопрос, чтобы идти по анкете подряд.
+  const qs = lastState?.questions ?? [];
+  const i = qs.findIndex((x) => x.id === q.id);
+  const nextOpen = qs.slice(i + 1).find((x) => isOpen(x, lastState?.answers ?? {}));
+  send({ type: "language-answer", questionId: q.id, optionId: picked.value, ...(note ? { note } : {}) });
+  if (nextOpen) currentId = nextOpen.id;
+}
+
 function render(): void {
   const state = lastState;
   el("language-card").hidden = !state?.active;
   const lang = state?.language ?? null;
   el<HTMLButtonElement>("language-export").disabled = !lang;
-  el("language-filter").hidden = !lang;
-  if (!lang) {
+  if (!lang || !state) {
     el("language-summary").textContent = "Образцы ещё не изучали.";
     el("language-sources").replaceChildren();
     el("language-rules").replaceChildren();
+    el("question-box").hidden = true;
     return;
   }
   const s = languageStats(lang);
   el("language-summary").textContent =
-    `Найдено правил: ${s.proposed + s.confirmed} · спорных: ${s.disputed} · нет в образцах: ${s.missing}. ` +
-    `Правило однозначное, если одно значение — не меньше ${Math.round(DOMINANT_SHARE * 100)} % случаев.`;
+    `Правило есть: ${s.proposed} · решено: ${s.confirmed} · нужно ваше решение: ${s.disputed} · образцов нет: ${s.missing}. ` +
+    `Правило есть, если один вариант — не меньше ${Math.round(DOMINANT_SHARE * 100)} % случаев; иначе плагин спрашивает.`;
+  renderQuestion(state);
   el("language-sources").replaceChildren(...sourcesList(lang));
 
   const rules = lang.rules.filter((r) => filter === "all" || r.status === "disputed" || r.status === "missing");
@@ -155,6 +240,13 @@ export function initLanguage(status: (text: string) => void): void {
     send({ type: "language-learn", scope });
   });
   el("language-export").addEventListener("click", () => send({ type: "language-export" }));
+  el("q-answer").addEventListener("click", submit);
+  el("q-prev").addEventListener("click", () => step(-1));
+  el("q-next").addEventListener("click", () => step(1));
+  el("q-board").addEventListener("click", () => {
+    status("Собираю доску вопросов…");
+    send({ type: "language-board", questionId: currentId });
+  });
 }
 
 export function renderLanguage(state: ProfileState): void {

@@ -5,7 +5,7 @@
  */
 
 import { hasDarkWord } from "../lib/vocabulary";
-import { WORK_PAGE_NAME } from "../lib/workPage";
+import { isPluginPage } from "../lib/workPage";
 import { findDarkPairs, isDark, relativeLuminance, type ScreenFacts } from "./darkPairs";
 import { classify } from "./screens";
 import type { ScanItem, ScanPage, ScanResult, ScanScope, SkippedItem, ThemeCollectionInfo } from "./types";
@@ -35,7 +35,7 @@ async function collectRoots(scope: ScanScope): Promise<Root[]> {
   }
   for (const id of scope.pageIds) {
     const page = await figma.getNodeByIdAsync(id);
-    if (!page || page.type !== "PAGE" || page.name === WORK_PAGE_NAME) continue;
+    if (!page || page.type !== "PAGE" || isPluginPage(page.name)) continue;
     await page.loadAsync();
     for (const node of page.children) expand(node, page, roots);
   }

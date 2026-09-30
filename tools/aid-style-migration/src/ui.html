@@ -619,6 +619,46 @@
         color: var(--ds-text-secondary);
       }
 
+      .ds-question {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid var(--ds-line-subtle);
+        border-radius: 8px;
+      }
+
+      .ds-question__title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+      }
+
+      .ds-question__lines {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--ds-text-secondary);
+      }
+
+      .ds-question__options {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .ds-question__options label {
+        display: flex;
+        gap: 6px;
+        align-items: flex-start;
+        font-size: 12px;
+        line-height: 16px;
+      }
+
       .ds-lang-row {
         display: flex;
         flex-direction: column;
@@ -760,11 +800,28 @@
           </div>
           <p class="ds-hint" id="language-summary"></p>
           <div id="language-sources"></div>
-          <div class="ds-segment" role="group" aria-label="Показать" id="language-filter" hidden>
-            <button type="button" data-filter="all" aria-pressed="true">Все</button>
-            <button type="button" data-filter="open" aria-pressed="false">Спорное и пробелы</button>
+          <div id="question-box" class="ds-question" hidden>
+            <div class="ds-screen__meta" id="q-counter"></div>
+            <h3 class="ds-question__title" id="q-title"></h3>
+            <div id="q-lines" class="ds-question__lines"></div>
+            <div id="q-options" class="ds-question__options"></div>
+            <div class="ds-actions">
+              <button class="ds-btn ds-btn-primary" id="q-answer" type="button">Ответить</button>
+              <button class="ds-btn" id="q-board" type="button">Показать подробно</button>
+            </div>
+            <div class="ds-actions">
+              <button class="ds-link" id="q-prev" type="button">← предыдущий</button>
+              <button class="ds-link" id="q-next" type="button">следующий →</button>
+            </div>
           </div>
-          <div id="language-rules"></div>
+          <details class="ds-fold" id="language-rules-fold">
+            <summary>Все правила</summary>
+            <div class="ds-segment" role="group" aria-label="Показать" id="language-filter">
+              <button type="button" data-filter="all" aria-pressed="true">Все</button>
+              <button type="button" data-filter="open" aria-pressed="false">Нужно решение и пробелы</button>
+            </div>
+            <div id="language-rules"></div>
+          </details>
         </section>
 
         <section class="ds-card" id="theme-card" aria-labelledby="theme-title" hidden>

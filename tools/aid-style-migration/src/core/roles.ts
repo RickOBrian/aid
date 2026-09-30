@@ -34,7 +34,11 @@ export interface RoleHit {
   paint: NPaint;
   /** Поверхность под элементом (с учётом прозрачности) — для контраста и контекста. */
   surface: Rgba;
+  /** Где лежит: `screen`, `sheet`, `modal`, `card` — признак для объяснения споров. */
+  place: Place;
 }
+
+export type Place = "screen" | "sheet" | "modal" | "card";
 
 export interface ScreenRoles {
   hits: RoleHit[];
@@ -83,6 +87,7 @@ interface Ctx {
   baseBottom: number;
   /** Роль, внутри которой находимся: текст и иконки внутри кнопки — её подпись и иконка. */
   owner: string | null;
+  place: Place;
 }
 
 function labelTexts(n: NNode): NNode[] {
@@ -166,9 +171,10 @@ export function detectRoles(screen: NNode): ScreenRoles {
   /** Нейтральный текст и иконки: уровень считается после обхода — относительно самого контрастного на экране. */
   const neutral: Array<{ hit: RoleHit; kind: "text" | "icon"; k: number }> = [];
 
+  let place: Place = "screen";
   const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba) => {
     if (!paint?.color) return undefined;
-    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface };
+    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place };
     hits.push(h);
     return h;
   };
@@ -205,6 +211,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
     const fill = solidFill(n);
     const stroke = solidStroke(n);
     ctx = { ...ctx, surface: root ? WHITE : surfaceAt(n, ctx.surface) };
+    place = ctx.place;
     let next: Ctx = ctx;
 
     if (root) {
@@ -295,6 +302,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
         ...ctx,
         surface: opaque ? composite(c, ctx.surface) : ctx.surface,
         baseBottom: key === "sheet" || key === "modal" ? n.y + n.height : ctx.baseBottom,
+        place: key === "sheet" || key === "modal" || key === "card" ? key : key.startsWith("card-tint") ? "card" : ctx.place,
       };
     } else if (stroke) {
       hit(n, "surface/stroke", "stroke", stroke, ctx.surface);
@@ -303,7 +311,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
     for (const c of n.children) visit(c, next, false);
   };
 
-  visit(screen, { screen, surface: WHITE, baseBottom: screen.y + screen.height, owner: null }, true);
+  visit(screen, { screen, surface: WHITE, baseBottom: screen.y + screen.height, owner: null, place: "screen" }, true);
 
   // Уровни нейтрального текста и иконок — относительно самого контрастного
   // на экране (в логарифмах): абсолютные пороги у продуктов разные — у

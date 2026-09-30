@@ -17,6 +17,8 @@ import {
 import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { LANGUAGE_SCHEMA, mergeSources, upsertSource, type StyleLanguage } from "../core/language";
 import { learnOpenFile } from "./learn";
+import { applyAnswers, buildQuestions, isOpen, type Answer, type Question, type TokenCandidate } from "../core/questions";
+import { buildBoard } from "../board/questionBoard";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { parseFigmaFileKey } from "../lib/figmaUrl";
 import { fileName } from "./rest";
@@ -35,6 +37,7 @@ import type {
   ProductProfile,
   ThemeRole,
   ThemeSetting,
+  VariableValue,
 } from "./types";
 
 export interface ThemeCandidate {
@@ -58,8 +61,11 @@ export interface ProfileState {
   themeCandidates: ThemeCandidate[];
   missing: Array<{ kind: MaterialKind; impact: string }>;
   libraries: LibraryStatus[];
-  /** Язык продукта — сумма изученных файлов образцов; null — ещё не изучали. */
+  /** Язык продукта — сумма изученных файлов образцов с решениями анкеты; null — ещё не изучали. */
   language: StyleLanguage | null;
+  /** Анкета по языку: открытые — первыми. */
+  questions: Question[];
+  answers: Record<string, Answer>;
 }
 
 const now = () => new Date().toISOString();
@@ -107,23 +113,85 @@ export async function state(): Promise<ProfileState> {
     themeCandidates: active ? await themeCandidates(active) : [],
     missing: active ? missingMaterials(active) : [],
     libraries: active ? await libraryStatus(active) : [],
-    language: active ? await language(active) : null,
+    ...(active ? await languageState(active) : { language: null, questions: [], answers: {} }),
   };
 }
 
-async function language(profile: ProductProfile): Promise<StyleLanguage | null> {
+async function rawLanguage(profile: ProductProfile): Promise<StyleLanguage | null> {
   const sources = await store.getLanguageSources(profile.id);
   return sources.length ? mergeSources({ id: profile.id, name: profile.name }, sources, sources.map((s) => s.learnedAt).sort().reverse()[0] ?? now()) : null;
+}
+
+function hexOf(v: VariableValue | null | undefined): string | undefined {
+  if (!v || v.kind !== "color") return undefined;
+  const h = (x: number) => Math.round(x * 255).toString(16).padStart(2, "0");
+  return `#${h(v.r)}${h(v.g)}${h(v.b)}`;
+}
+
+/** Цветовые токены продукта — кандидаты для пробелов анкеты, с цветом в светлой и тёмной теме. */
+async function tokenCandidates(profile: ProductProfile): Promise<TokenCandidate[]> {
+  const out: TokenCandidate[] = [];
+  const light = profile.theme?.modes.find((m) => m.role === THEME_ROLES.light)?.modeId;
+  const dark = profile.theme?.modes.find((m) => m.role === THEME_ROLES.dark)?.modeId;
+  for (const m of profile.materials.filter((x) => x.kind === "tokens")) {
+    const index = await store.getIndex(profile.id, m.id);
+    if (index?.kind !== "tokens") continue;
+    for (const c of index.data.collections) {
+      if (!c.published) continue;
+      const first = c.modes[0]?.modeId;
+      for (const v of c.variables) {
+        if (!v.published || v.resolvedType !== "COLOR") continue;
+        out.push({
+          key: v.key,
+          name: v.name,
+          collection: c.name,
+          hexLight: hexOf(v.resolvedByMode[light ?? ""] ?? v.resolvedByMode[first]),
+          hexDark: hexOf(v.resolvedByMode[dark ?? ""] ?? v.resolvedByMode[first]),
+        });
+      }
+    }
+  }
+  return out;
+}
+
+async function languageState(profile: ProductProfile): Promise<Pick<ProfileState, "language" | "questions" | "answers">> {
+  const raw = await rawLanguage(profile);
+  if (!raw) return { language: null, questions: [], answers: {} };
+  const answers = await store.getAnswers(profile.id);
+  const questions = buildQuestions(raw, await tokenCandidates(profile));
+  const open = questions.filter((q) => isOpen(q, answers));
+  const closed = questions.filter((q) => !isOpen(q, answers));
+  return { language: applyAnswers(raw, questions, answers), questions: [...open, ...closed], answers };
 }
 
 /** Изучить образцы в открытом файле: вклад этого файла в язык продукта заменяется. */
 export async function learn(scope: ExemplarScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
   const profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
-  const source = await learnOpenFile(scope, (done, total) => report(`экран ${done} из ${total}`));
+  const { source, thumbs } = await learnOpenFile(scope, report);
   if (source.screens === 0) return { state: await state(), screens: 0 };
   await store.saveLanguageSources(profile.id, upsertSource(await store.getLanguageSources(profile.id), source));
+  await store.saveThumbs(profile.id, thumbs);
   return { state: await state(), screens: source.screens };
+}
+
+export async function answer(questionId: string, optionId: string | null, note?: string): Promise<ProfileState> {
+  const profile = await activeProfile();
+  if (!profile) return state();
+  const answers = await store.getAnswers(profile.id);
+  if (optionId === null) delete answers[questionId];
+  else answers[questionId] = { questionId, optionId, ...(note ? { note } : {}), answeredAt: now() };
+  await store.saveAnswers(profile.id, answers);
+  return state();
+}
+
+/** Доска вопросов на канвасе: собрать страницу и показать вопрос. */
+export async function board(questionId: string | null, report: (title: string) => void): Promise<void> {
+  const profile = await activeProfile();
+  if (!profile) throw new Error("Сначала создайте продукт");
+  const { questions, answers } = await languageState(profile);
+  if (!questions.length) throw new Error("Вопросов нет — сначала изучите образцы");
+  await buildBoard(profile.name, questions, answers, (nodeId) => store.getThumb(profile.id, nodeId), questionId, report);
 }
 
 export async function forgetLanguageSource(fileName: string): Promise<ProfileState> {
@@ -139,7 +207,7 @@ export async function forgetLanguageSource(fileName: string): Promise<ProfileSta
 export async function exportLanguage(): Promise<{ fileName: string; text: string } | null> {
   const profile = await activeProfile();
   if (!profile) return null;
-  const lang = await language(profile);
+  const lang = (await languageState(profile)).language;
   if (!lang) return null;
   return { fileName: "style-language.json", text: JSON.stringify({ ...lang, $schema: LANGUAGE_SCHEMA }, null, 2) };
 }

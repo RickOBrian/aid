@@ -15,7 +15,60 @@ import { LanguageLearner, type LanguageSource } from "../core/language";
 import { roots } from "./exemplars";
 import { EXEMPLAR_LIMIT, sample, type ExemplarScope } from "./usage";
 
-export async function learnOpenFile(scope: ExemplarScope, report: (done: number, total: number) => void): Promise<LanguageSource> {
+/** Картинок примеров за одно изучение — хватает на доски вопросов, не раздувая хранилище. */
+const THUMB_LIMIT = 150;
+/** Длинная сторона картинки примера, px. */
+const THUMB_SIZE = 240;
+
+export interface Thumb {
+  nodeId: string;
+  png: Uint8Array;
+}
+
+/**
+ * Что показать как пример: заливку — сам элемент; подпись и иконку —
+ * элемент, которому они принадлежат (кнопку, чип), чтобы было видно
+ * контекст. Поднимаемся не выше трёх уровней и не до экрана.
+ */
+function context(node: SceneNode, screenIds: Set<string>): SceneNode {
+  let n: SceneNode = node;
+  for (let i = 0; i < 3 && (n.type === "TEXT" || n.width < 40 || n.height < 24); i++) {
+    const p = n.parent;
+    if (!p || p.type === "PAGE" || p.type === "DOCUMENT" || p.type === "SECTION" || screenIds.has(p.id)) break;
+    n = p as SceneNode;
+  }
+  return n;
+}
+
+async function thumbs(source: LanguageSource, screenIds: Set<string>, report: (done: number, total: number) => void): Promise<Thumb[]> {
+  const ids: string[] = [];
+  for (const r of source.rules) for (const v of r.values) if (v.examples[0] && !ids.includes(v.examples[0].nodeId)) ids.push(v.examples[0].nodeId);
+  const chosen = ids.slice(0, THUMB_LIMIT);
+  const out: Thumb[] = [];
+  for (let i = 0; i < chosen.length; i++) {
+    const node = await figma.getNodeByIdAsync(chosen[i]);
+    if (node && "exportAsync" in node && node.type !== "PAGE") {
+      const target = context(node as SceneNode, screenIds);
+      const long = Math.max(target.width, target.height);
+      try {
+        const png = await target.exportAsync({
+          format: "PNG",
+          constraint: long > THUMB_SIZE ? { type: target.width >= target.height ? "WIDTH" : "HEIGHT", value: THUMB_SIZE } : { type: "SCALE", value: 1 },
+        });
+        out.push({ nodeId: chosen[i], png });
+      } catch {
+        // Не отрисовалось (пустая группа, огромный узел) — пример останется без картинки.
+      }
+    }
+    report(i + 1, chosen.length);
+  }
+  return out;
+}
+
+export async function learnOpenFile(
+  scope: ExemplarScope,
+  report: (title: string) => void,
+): Promise<{ source: LanguageSource; thumbs: Thumb[] }> {
   const screens: Array<{ node: SceneNode; dark: boolean }> = [];
   for (const { node, page } of roots(scope)) {
     const f = await facts(node, page);
@@ -32,11 +85,13 @@ export async function learnOpenFile(scope: ExemplarScope, report: (done: number,
       const { node, dark } = chosen[i];
       const tree = await reader.read(node);
       if (tree) learner.add(tree, { screenId: node.id, screenName: node.name, dark });
-      report(i + 1, chosen.length);
+      report(`экран ${i + 1} из ${chosen.length}`);
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
   } finally {
     figma.skipInvisibleInstanceChildren = prevSkip;
   }
-  return learner.source(figma.root.name, new Date().toISOString(), screens.length);
+  const source = learner.source(figma.root.name, new Date().toISOString(), screens.length);
+  const screenIds = new Set(chosen.map((c) => c.node.id));
+  return { source, thumbs: await thumbs(source, screenIds, (done, total) => report(`примеры ${done} из ${total}`)) };
 }
