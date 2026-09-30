@@ -39,6 +39,7 @@ post({
   fileName: figma.root.name,
   selectionCount: figma.currentPage.selection.length,
   pages: figma.root.children.filter((p) => !isPluginPage(p.name)).map((p) => ({ id: p.id, name: p.name })),
+  currentPageId: figma.currentPage.id,
 });
 
 figma.on("selectionchange", () => {

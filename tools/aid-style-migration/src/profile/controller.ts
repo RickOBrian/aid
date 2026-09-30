@@ -17,6 +17,7 @@ import {
 import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
 import { LANGUAGE_SCHEMA, mergeSources, upsertSource, type StyleLanguage } from "../core/language";
 import { learnOpenFile } from "./learn";
+import type { ScanScope } from "../assemble/types";
 import { applyAnswers, buildQuestions, isOpen, type Answer, type Question, type TokenCandidate } from "../core/questions";
 import { buildBoard } from "../board/questionBoard";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
@@ -165,7 +166,7 @@ async function languageState(profile: ProductProfile): Promise<Pick<ProfileState
 }
 
 /** Изучить образцы в открытом файле: вклад этого файла в язык продукта заменяется. */
-export async function learn(scope: ExemplarScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
+export async function learn(scope: ScanScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
   const profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
   const { source, thumbs, shots } = await learnOpenFile(scope, report);

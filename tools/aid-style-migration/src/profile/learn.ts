@@ -2,18 +2,25 @@
  * Изучение образцов в открытом файле (шаг 4, Я3): экраны → нормализованные
  * узлы → роли → наблюдения языка продукта. Документ не меняет.
  *
- * Экраны выбираются так же, как для статистики образцов: только экраны,
- * не больше EXEMPLAR_LIMIT, равномерно. В отличие от статистики, внутрь
- * инстансов идём: подпись и иконка кнопки — тоже решения продукта.
+ * Где образцы — выделение или несколько страниц (как в «1 · Собрать»).
+ * Экраны — тем же распознавателем, не больше LEARN_LIMIT, равномерно.
+ * В отличие от статистики образцов, внутрь инстансов идём: подпись и
+ * иконка кнопки — тоже решения продукта.
  */
 
 import { FigmaReader } from "../adapters/figmaNode";
-import { facts } from "../assemble/collect";
 import { isDark } from "../assemble/darkPairs";
 import { classify } from "../assemble/screens";
 import { LanguageLearner, type LanguageSource } from "../core/language";
-import { roots } from "./exemplars";
-import { EXEMPLAR_LIMIT, sample, type ExemplarScope } from "./usage";
+import { collectRoots, facts as screenFacts } from "../assemble/collect";
+import type { ScanScope } from "../assemble/types";
+import { sample } from "./usage";
+
+/**
+ * Экранов за одно изучение. Образцы — несколько страниц флоу; берём
+ * равномерно по всем выбранным страницам, в порядке страниц.
+ */
+const LEARN_LIMIT = 200;
 
 /**
  * Картинки примеров для досок вопросов (замечание Principal Designer:
@@ -122,15 +129,15 @@ async function thumbs(source: LanguageSource, report: (title: string) => void): 
 }
 
 export async function learnOpenFile(
-  scope: ExemplarScope,
+  scope: ScanScope,
   report: (title: string) => void,
 ): Promise<{ source: LanguageSource; thumbs: Thumb[]; shots: Shot[] }> {
   const screens: Array<{ node: SceneNode; dark: boolean }> = [];
-  for (const { node, page } of roots(scope)) {
-    const f = await facts(node, page);
+  for (const { node, page } of await collectRoots(scope)) {
+    const f = await screenFacts(node, page);
     if (classify(f).kind === "screen") screens.push({ node, dark: isDark(f) });
   }
-  const chosen = sample(screens, EXEMPLAR_LIMIT);
+  const chosen = sample(screens, LEARN_LIMIT);
   const learner = new LanguageLearner();
   const reader = new FigmaReader();
 

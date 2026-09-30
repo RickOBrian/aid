@@ -26,7 +26,7 @@ export function expand(node: SceneNode, page: PageNode, out: Root[]): void {
   }
 }
 
-async function collectRoots(scope: ScanScope): Promise<Root[]> {
+export async function collectRoots(scope: ScanScope): Promise<Root[]> {
   const roots: Root[] = [];
   if (scope.kind === "selection") {
     const page = figma.currentPage;

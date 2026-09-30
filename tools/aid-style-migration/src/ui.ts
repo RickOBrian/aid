@@ -9,6 +9,7 @@ import { el } from "./ui/dom";
 import { initProbes, probeHandlers } from "./ui/probesPanel";
 import { initMap, mapHandlers } from "./ui/mapPanel";
 import { initProduct, productHandlers } from "./ui/productPanel";
+import { languageHandlers } from "./ui/languagePanel";
 
 let fileName = "";
 const status = el<HTMLDivElement>("status");
@@ -44,9 +45,11 @@ window.onmessage = (event: MessageEvent) => {
       el("file-name").textContent = message.fileName;
       el("selection-count").textContent = String(message.selectionCount);
       assembleHandlers.pages(message.pages);
+      languageHandlers.pages(message.pages, message.currentPageId, message.selectionCount);
       break;
     case "selection":
       el("selection-count").textContent = String(message.selectionCount);
+      languageHandlers.selection(message.selectionCount);
       break;
     case "scan-result":
       assembleHandlers.scanResult(message.result);

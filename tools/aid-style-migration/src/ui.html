@@ -787,12 +787,20 @@
           <h2 id="language-title">Язык продукта</h2>
           <p class="ds-hint">
             Как продукт оформляет каждый элемент — по образцовым макетам. Откройте файл образцов и
-            выделите экраны или откройте страницу с ними. Повторное изучение файла заменяет его вклад,
+            выберите страницы с ними или выделите экраны. Повторное изучение файла заменяет его вклад,
             другие файлы складываются.
           </p>
           <div class="ds-segment" role="group" aria-label="Где образцы" id="language-scope">
-            <button type="button" data-scope="page" aria-pressed="true">Вся страница</button>
-            <button type="button" data-scope="selection" aria-pressed="false">Выделение</button>
+            <button type="button" data-scope="selection" aria-pressed="false">Выделение · <span id="language-selection-count">0</span></button>
+            <button type="button" data-scope="pages" aria-pressed="true">Страницы</button>
+          </div>
+          <div id="language-pages-box">
+            <input class="ds-input" id="language-page-filter" type="search" placeholder="Фильтр страниц, например ✅" />
+            <div class="ds-actions" style="margin: 6px 0">
+              <button class="ds-link" id="language-pages-all" type="button">все найденные</button>
+              <button class="ds-link" id="language-pages-none" type="button">снять все</button>
+            </div>
+            <div class="ds-checklist" id="language-pages-list"></div>
           </div>
           <div class="ds-actions">
             <button class="ds-btn ds-btn-primary" id="language-learn" type="button">Изучить образцы</button>

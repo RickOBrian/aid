@@ -9,7 +9,8 @@ import { isOpen, type Question } from "../core/questions";
 import { DOMINANT_SHARE, languageStats, type LanguageRule, type RuleStatus, type RuleValue, type StyleLanguage } from "../core/language";
 import { GROUP_LABELS, GROUP_ORDER, roleGroup, roleLabel } from "../core/roleLabels";
 import type { ProfileState } from "../profile/controller";
-import type { ExemplarScope } from "../profile/usage";
+import type { ScanScope } from "../assemble/types";
+import type { PageInfo } from "../messages";
 import { badge, el, h, send } from "./dom";
 
 /** Статусы — действиями, а не оценками (замечание Principal Designer). */
@@ -24,7 +25,10 @@ const CASES: Record<string, string> = { upper: "КАПС", lower: "строчн�
 
 type Filter = "all" | "open";
 let filter: Filter = "all";
-let scope: ExemplarScope = "page";
+let scopeKind: ScanScope["kind"] = "pages";
+let pages: PageInfo[] = [];
+const checkedPages = new Set<string>();
+let selectionCount = 0;
 let lastState: ProfileState | null = null;
 /** Какой вопрос показан: id, чтобы после ответа не терять место. */
 let currentId: string | null = null;
@@ -224,10 +228,19 @@ function render(): void {
 export function initLanguage(status: (text: string) => void): void {
   for (const b of el("language-scope").querySelectorAll<HTMLButtonElement>("button")) {
     b.addEventListener("click", () => {
-      scope = b.dataset.scope as ExemplarScope;
-      for (const x of el("language-scope").querySelectorAll("button")) x.setAttribute("aria-pressed", String(x === b));
+      scopeKind = b.dataset.scope as ScanScope["kind"];
+      renderScope();
     });
   }
+  el("language-page-filter").addEventListener("input", renderPages);
+  el("language-pages-all").addEventListener("click", () => {
+    for (const p of filteredPages()) checkedPages.add(p.id);
+    renderPages();
+  });
+  el("language-pages-none").addEventListener("click", () => {
+    checkedPages.clear();
+    renderPages();
+  });
   for (const b of el("language-filter").querySelectorAll<HTMLButtonElement>("button")) {
     b.addEventListener("click", () => {
       filter = b.dataset.filter as Filter;
@@ -236,7 +249,16 @@ export function initLanguage(status: (text: string) => void): void {
     });
   }
   el("language-learn").addEventListener("click", () => {
+    if (scopeKind === "selection" && selectionCount === 0) {
+      status("Выделите экраны образцов или выберите страницы");
+      return;
+    }
+    if (scopeKind === "pages" && checkedPages.size === 0) {
+      status("Отметьте хотя бы одну страницу с образцами");
+      return;
+    }
     status("Изучаю образцы…");
+    const scope: ScanScope = scopeKind === "selection" ? { kind: "selection" } : { kind: "pages", pageIds: pages.filter((p) => checkedPages.has(p.id)).map((p) => p.id) };
     send({ type: "language-learn", scope });
   });
   el("language-export").addEventListener("click", () => send({ type: "language-export" }));
@@ -248,6 +270,51 @@ export function initLanguage(status: (text: string) => void): void {
     send({ type: "language-board", questionId: currentId });
   });
 }
+
+// ---------------------------------------------------------------------------
+// Где образцы: выделение или несколько страниц
+// ---------------------------------------------------------------------------
+
+function filteredPages(): PageInfo[] {
+  const q = el<HTMLInputElement>("language-page-filter").value.trim().toLowerCase();
+  return q ? pages.filter((p) => p.name.toLowerCase().includes(q)) : pages;
+}
+
+function renderPages(): void {
+  el("language-pages-list").replaceChildren(
+    ...filteredPages().map((p) => {
+      const input = h("input");
+      input.type = "checkbox";
+      input.checked = checkedPages.has(p.id);
+      input.addEventListener("change", () => {
+        if (input.checked) checkedPages.add(p.id);
+        else checkedPages.delete(p.id);
+      });
+      return h("label", { className: "ds-check" }, [input, h("span", { text: p.name })]);
+    }),
+  );
+}
+
+function renderScope(): void {
+  for (const x of el("language-scope").querySelectorAll<HTMLButtonElement>("button")) x.setAttribute("aria-pressed", String(x.dataset.scope === scopeKind));
+  el("language-pages-box").hidden = scopeKind !== "pages";
+}
+
+export const languageHandlers = {
+  /** Страницы файла; текущая отмечена сразу — чаще всего образцы на ней. */
+  pages(list: PageInfo[], currentPageId: string, selected: number): void {
+    pages = list;
+    checkedPages.clear();
+    if (list.some((p) => p.id === currentPageId)) checkedPages.add(currentPageId);
+    languageHandlers.selection(selected);
+    renderPages();
+    renderScope();
+  },
+  selection(count: number): void {
+    selectionCount = count;
+    el("language-selection-count").textContent = String(count);
+  },
+};
 
 export function renderLanguage(state: ProfileState): void {
   lastState = state;

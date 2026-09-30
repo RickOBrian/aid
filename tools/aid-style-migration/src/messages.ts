@@ -32,7 +32,7 @@ export type UiToCode =
   | { type: "profile-import"; text: string }
   | { type: "links-index"; links: LibraryLink[] }
   | { type: "links-refresh" }
-  | { type: "language-learn"; scope: ExemplarScope }
+  | { type: "language-learn"; scope: ScanScope }
   | { type: "language-forget"; fileName: string }
   | { type: "language-export" }
   | { type: "language-answer"; questionId: string; optionId: string | null; note?: string }
@@ -45,7 +45,7 @@ export type UiToCode =
 
 /** Главный поток → UI. */
 export type CodeToUi =
-  | { type: "init"; fileName: string; selectionCount: number; pages: PageInfo[] }
+  | { type: "init"; fileName: string; selectionCount: number; pages: PageInfo[]; currentPageId: string }
   | { type: "selection"; selectionCount: number }
   | { type: "scan-result"; result: ScanResult }
   | { type: "thumb"; id: string; png: string }
