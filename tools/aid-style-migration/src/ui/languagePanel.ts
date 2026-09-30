@@ -99,6 +99,16 @@ function ruleRow(r: LanguageRule): HTMLElement {
       }),
     ]);
   }
+  if (r.byState?.length) {
+    return h("div", { className: "ds-lang-row" }, [
+      head,
+      h("div", { className: "ds-screen__meta", text: "Зависит от состояния — у отмеченного и неотмеченного своё:" }),
+      ...r.byState.map((b) => {
+        const v = r.values[b.value];
+        return h("div", { className: "ds-map-line" }, [swatch(v.hexLight, "светлая"), swatch(v.hexDark, "тёмная"), h("span", { text: `${b.state === "on" ? "отмечен / включён" : "не отмечен / выключен"} — ${v.token?.name ?? v.hex}` })]);
+      }),
+    ]);
+  }
   const shown = r.status === "disputed" ? r.values.slice(0, 4) : r.values.slice(0, 1);
   const rest = r.values.length - shown.length;
   const shape = shapeText(r);

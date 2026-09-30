@@ -21,6 +21,11 @@ const BASE: Record<string, string> = {
   chip: "Чип",
   handle: "Ручка шторки",
   header: "Заголовок",
+  "control/check": "Чекбокс / выбор",
+  "control/switch": "Переключатель",
+  "action-icon": "Кнопка-иконка",
+  tab: "Таб",
+  progress: "Прогресс",
   row: "Строка списка",
   bubble: "Пузырь сообщения",
   badge: "Бейдж-счётчик",
@@ -47,6 +52,7 @@ const PART: Record<string, string> = {
   icon: "иконка",
   part: "деталь",
   meta: "метка (время)",
+  thumb: "бегунок",
   stroke: "обводка",
 };
 
@@ -84,7 +90,7 @@ export function roleLabel(key: string): string {
 }
 
 export function roleGroup(key: string): RoleGroup {
-  if (/^(action-|input|chip|tab\/|link|handle)/.test(key)) return "actions";
+  if (/^(action-|input|chip|tab|link|handle|control\/)/.test(key)) return "actions";
   if (key.startsWith("text/")) return "text";
   if (key.startsWith("icon/")) return "icons";
   if (/^(screen-bg|overlay|sheet|modal|card|surface|divider|header|row)/.test(key)) return "surfaces";

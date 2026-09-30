@@ -102,10 +102,11 @@ const PLACE_WORDS: Record<string, string> = {
 
 const WIDTH_WORDS: Record<string, string> = { full: "во всю ширину", part: "не во всю ширину" };
 
-const FEATURE_NAMES: Record<Feature, string> = { component: "компонента", place: "места", width: "ширины", theme: "темы" };
+const FEATURE_NAMES: Record<Feature, string> = { component: "компонента", state: "состояния", place: "места", width: "ширины", theme: "темы" };
 
 function featureWord(f: Feature, v: string): string {
   if (f === "component") return v === FREE_DRAWN ? "нарисовано вручную" : `в «${v}»`;
+  if (f === "state") return v === "on" ? "отмечен / включён" : "не отмечен / выключен";
   if (f === "place") return PLACE_WORDS[v] ?? v;
   if (f === "width") return WIDTH_WORDS[v] ?? v;
   return v === THEME_ROLES.dark ? "в тёмной теме" : "в светлой теме";

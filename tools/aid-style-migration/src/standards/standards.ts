@@ -78,6 +78,8 @@ const SLOTS: Record<string, Slot> = {
   "action-floating": group("bg-component-floating-*", semantic.bgGroups.component.floating, "§4"),
   input: group("bg-component-form-*", semantic.bgGroups.component.form, "§4"),
   chip: group("bg-component-control-*", semantic.bgGroups.component.control, "§4, по смыслу: чип — контрол"),
+  "control/check": group("bg-component-states-control-*", "переключатели, чекбоксы, радио-кнопки", "§10"),
+  "control/switch": group("bg-component-states-control-*", "переключатели, чекбоксы, радио-кнопки", "§10"),
 };
 
 export function slotFor(role: string): Slot | null {

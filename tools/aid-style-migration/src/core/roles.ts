@@ -15,6 +15,7 @@
 
 import { relativeLuminance } from "../assemble/darkPairs";
 import { isHelperLayerName } from "../lib/annotations";
+import { controlByName, controlState, type ControlKind } from "../lib/controls";
 import { isSystemName } from "../lib/system";
 import { hueFamily, isNeutral, type Rgba } from "../map/color";
 import { solidFill, solidStroke, texts, walk, type NNode, type NPaint } from "./node";
@@ -46,6 +47,8 @@ export interface RoleHit {
   origin: ColorOrigin;
   /** Заливка поверхности под элементом (с токеном, если есть) — для проверки контраста в другой теме. */
   under?: NPaint;
+  /** Состояние элемента управления: отмечен / включён или нет — разные цвета законны. */
+  state?: "on" | "off";
 }
 
 export type Place = "screen" | "sheet" | "modal" | "card";
@@ -151,6 +154,8 @@ interface Ctx {
   place: Place;
   /** Компонент, внутри которого находимся (ближайший крупнее иконки). */
   component: string | null;
+  /** Состояние элемента управления, внутри которого находимся. */
+  state?: "on" | "off";
 }
 
 function labelTexts(n: NNode): NNode[] {
@@ -280,6 +285,43 @@ function hasBoundary(n: NNode, surface: Rgba, onMedia: boolean): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// Элементы управления
+// ---------------------------------------------------------------------------
+
+const CONTROL_KEYS: Record<Exclude<ControlKind, "avatar">, string> = {
+  check: "control/check",
+  switch: "control/switch",
+  "icon-button": "action-icon",
+  tab: "tab",
+  progress: "progress",
+};
+
+/** Переключатель по форме: капсула 16–40 px высотой, шире в 1,4–2,6 раза, с круглым бегунком внутри. */
+function isSwitchShape(n: NNode): boolean {
+  if (!CONTAINERS.has(n.type) || n.height < 16 || n.height > 40) return false;
+  const ratio = n.width / n.height;
+  if (ratio < 1.4 || ratio > 2.6 || labelTexts(n).length > 0) return false;
+  let thumb = false;
+  walk(n, (x, _p, depth) => {
+    if (depth > 0 && (x.type === "ELLIPSE" || (Math.abs(x.width - x.height) <= 2 && (x.radius ?? 0) >= x.width / 2 - 1)) && x.height >= n.height * 0.5 && x.height <= n.height) thumb = true;
+    return undefined;
+  });
+  return thumb && Boolean(body(n));
+}
+
+/** Что за элемент управления: по имени (с разумным размером) или по форме. */
+function controlOf(n: NNode): ControlKind | null {
+  const byName = controlByName(n.name, n.component?.setName ?? "", n.component?.name ?? "");
+  const small = Math.max(n.width, n.height);
+  if (byName === "check" && small <= 40) return "check";
+  if (byName === "switch" && n.height <= 48 && n.width <= 96) return "switch";
+  if (byName === "icon-button" && small <= 48) return "icon-button";
+  if (byName === "avatar" && small <= 96) return "avatar";
+  if ((byName === "tab" || byName === "progress") && CONTAINERS.has(n.type)) return byName;
+  return isSwitchShape(n) ? "switch" : null;
+}
+
+// ---------------------------------------------------------------------------
 // Видимость: перекрытое не читаем
 // ---------------------------------------------------------------------------
 
@@ -347,12 +389,25 @@ export function detectRoles(screen: NNode): ScreenRoles {
   let place: Place = "screen";
   let component: string | null = null;
   let underPaint: NPaint | undefined;
+  let curState: "on" | "off" | undefined;
   /** Над картинкой (карта): не-кнопки не учим. */
   let quiet = false;
   const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba, from: NNode = n) => {
     if (!paint?.color || quiet) return undefined;
     const origin: ColorOrigin = from.colorOverride ? "override" : component ? "component" : "free";
-    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place, component, origin, ...(underPaint ? { under: underPaint } : {}) };
+    const h: RoleHit = {
+      nodeId: n.id,
+      nodeName: n.name,
+      key,
+      layer,
+      paint,
+      surface,
+      place,
+      component,
+      origin,
+      ...(underPaint ? { under: underPaint } : {}),
+      ...(curState ? { state: curState } : {}),
+    };
     hits.push(h);
     return h;
   };
@@ -412,12 +467,20 @@ export function detectRoles(screen: NNode): ScreenRoles {
     place = ctx.place;
     component = ctx.component;
     underPaint = ctx.surfacePaint;
+    curState = ctx.state;
     const wasQuiet = quiet;
     // Над картой учим только кнопки и то, что в них; остальное небольшое —
     // объекты карты (метки, знаки, машина). Крупные панели (шторка) — нет.
     const action = CONTAINERS.has(n.type) && ((isButtonLike(n) && hasBoundary(n, ctx.surface, onMedia)) || isFab(n));
     if (onMedia && !ctx.owner && !action && n.width * n.height < W * H * 0.25) quiet = true;
     let next: Ctx = ctx;
+    const control = root || ctx.owner ? null : controlOf(n);
+    if (control === "avatar") {
+      // Аватар — фото или заглушка, не цвет продукта.
+      skipped.media++;
+      quiet = wasQuiet;
+      return;
+    }
 
     if (root) {
       hit(n, "screen-bg", "fill", fill, WHITE);
@@ -428,9 +491,13 @@ export function detectRoles(screen: NNode): ScreenRoles {
     } else if (ctx.owner) {
       // Внутри кнопки, поля, чипа: текст — подпись (время — метка), мелкая
       // форма — иконка, прочие заливки — детали (таймер в кнопке).
-      if (n.text) hit(n, `${ctx.owner}/${isTimeText(n) ? "meta" : "label"}`, "text", fill, ctx.surface);
-      else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32) hit(n, `${ctx.owner}/icon`, "icon", fill, ctx.surface);
-      else if (fill && n.type !== "TEXT" && !claimed.has(n.id) && !samePaint(fill, ctx.ownerPaint)) hit(n, `${ctx.owner}/part`, "fill", fill, ctx.surface);
+      // Узел, давший фон владельцу (круг чекбокса, кусок кнопки), уже учтён как его заливка.
+      if (!claimed.has(n.id)) {
+        if (n.text) hit(n, `${ctx.owner}/${isTimeText(n) ? "meta" : "label"}`, "text", fill, ctx.surface);
+        else if (n.type === "ELLIPSE" && ctx.owner === "control/switch") hit(n, `${ctx.owner}/thumb`, "fill", fill, ctx.surface);
+        else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32) hit(n, `${ctx.owner}/icon`, "icon", fill, ctx.surface);
+        else if (fill && n.type !== "TEXT" && !samePaint(fill, ctx.ownerPaint)) hit(n, `${ctx.owner}/part`, "fill", fill, ctx.surface);
+      }
     } else if (n.text) {
       const c = fill?.color;
       if (c) {
@@ -448,6 +515,24 @@ export function detectRoles(screen: NNode): ScreenRoles {
           if (h) neutral.push({ hit: h, kind: "text", k: contrast(c, ctx.surface) });
         }
       }
+    } else if (control) {
+      // Элемент управления — по имени и форме (чекбокс, переключатель,
+      // кнопка-иконка, таб, прогресс). Его состояние — из варианта или имени.
+      const b = body(n);
+      // Состояние из варианта или имени; чекбокс без них (отвязанный фрейм) —
+      // по виду: плотная заливка — отмечен, бледная — нет.
+      const named = controlState(n.name, n.component?.setName ?? "", n.component?.name ?? "") ?? undefined;
+      const seen = control === "check" && b?.paint.color ? (contrast(b.paint.color, ctx.surface) >= 3 ? "on" : "off") : undefined;
+      const st = named ?? seen;
+      curState = st ?? ctx.state;
+      const key = CONTROL_KEYS[control];
+      if (b) {
+        hit(n, key, "fill", b.paint, ctx.surface, b.node);
+        claimed.add(b.node.id);
+      }
+      if (stroke) hit(n, `${key}/stroke`, "stroke", stroke, ctx.surface);
+      const c = b?.paint.color;
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: key, ownerPaint: b?.paint, state: curState };
     } else if (isHeader(n, ctx, W)) {
       hit(n, "header", "fill", fill, ctx.surface);
     } else if (isBubble(n, W)) {

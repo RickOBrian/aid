@@ -34,14 +34,14 @@ const LABELS_PER_VALUE = 6;
  * тёмная — в модалке». Место — контейнер элемента; ширина — у заливок
  * (во всю ширину экрана или нет); тема — светлый или тёмный экран.
  */
-export type Feature = "component" | "place" | "width" | "theme";
+export type Feature = "component" | "state" | "place" | "width" | "theme";
 /**
  * Порядок — приоритет объяснения: компонент первым. Разные варианты
  * одного компонента окрашены по-разному законно (замечание Principal
  * Designer: `fab/secondary` белая, `fab/primary` тёмная — не спор).
  * «—» у компонента — нарисовано вручную.
  */
-export const FEATURES: Feature[] = ["component", "place", "width", "theme"];
+export const FEATURES: Feature[] = ["component", "state", "place", "width", "theme"];
 /** Признак разделяет варианты, если объясняет не меньше этой доли случаев. */
 const SPLIT_PURITY = 0.9;
 export const FREE_DRAWN = "—";
@@ -112,6 +112,11 @@ export interface LanguageRule {
    * варианта своё значение. Не спор — правило по компонентам.
    */
   byComponent?: Array<{ component: string; value: number }>;
+  /**
+   * Роль оформлена по-разному, но это объясняет состояние элемента
+   * управления (отмечен / нет, включён / нет): у каждого состояния своё.
+   */
+  byState?: Array<{ state: string; value: number }>;
 }
 
 export interface LanguageSource {
@@ -282,6 +287,7 @@ export class LanguageLearner {
         m[v] = (m[v] ?? 0) + 1;
       };
       feature("component", hit.component ?? FREE_DRAWN);
+      if (hit.state) feature("state", hit.state);
       feature("place", hit.place);
       feature("theme", meta.dark ? THEME_ROLES.dark : THEME_ROLES.light);
       if (hit.layer === "fill") feature("width", node.width >= screen.width * 0.9 ? "full" : "part");
@@ -400,6 +406,7 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
     const share = r.total ? values[0].count / r.total : 0;
     let status: RuleStatus = r.total === 0 ? "missing" : share >= DOMINANT_SHARE ? "proposed" : "disputed";
     let byComponent: LanguageRule["byComponent"];
+    let byState: LanguageRule["byState"];
     if (status === "disputed") {
       const split = findSplit(values.filter((v) => v.count / r.total >= 0.05));
       if (split?.feature === "component") {
@@ -407,12 +414,18 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
         byComponent = Object.entries(split.map)
           .map(([component, value]) => ({ component, value }))
           .sort((a, b) => a.value - b.value);
+      } else if (split?.feature === "state") {
+        status = "proposed";
+        byState = Object.entries(split.map)
+          .map(([state, value]) => ({ state, value }))
+          .sort((a, b) => a.value - b.value);
       }
     }
     return {
       ...r,
       status,
       ...(byComponent ? { byComponent } : { byComponent: undefined }),
+      ...(byState ? { byState } : { byState: undefined }),
       values,
       textStyles: byCount(r.textStyles),
       textCases: byCount(r.textCases),
