@@ -15,6 +15,8 @@ import {
   upsertMaterial,
 } from "./profile";
 import { exemplarStats, indexExemplars, type ExemplarScope } from "./exemplars";
+import { LANGUAGE_SCHEMA, mergeSources, upsertSource, type StyleLanguage } from "../core/language";
+import { learnOpenFile } from "./learn";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { parseFigmaFileKey } from "../lib/figmaUrl";
 import { fileName } from "./rest";
@@ -56,6 +58,8 @@ export interface ProfileState {
   themeCandidates: ThemeCandidate[];
   missing: Array<{ kind: MaterialKind; impact: string }>;
   libraries: LibraryStatus[];
+  /** Язык продукта — сумма изученных файлов образцов; null — ещё не изучали. */
+  language: StyleLanguage | null;
 }
 
 const now = () => new Date().toISOString();
@@ -103,7 +107,41 @@ export async function state(): Promise<ProfileState> {
     themeCandidates: active ? await themeCandidates(active) : [],
     missing: active ? missingMaterials(active) : [],
     libraries: active ? await libraryStatus(active) : [],
+    language: active ? await language(active) : null,
   };
+}
+
+async function language(profile: ProductProfile): Promise<StyleLanguage | null> {
+  const sources = await store.getLanguageSources(profile.id);
+  return sources.length ? mergeSources({ id: profile.id, name: profile.name }, sources, sources.map((s) => s.learnedAt).sort().reverse()[0] ?? now()) : null;
+}
+
+/** Изучить образцы в открытом файле: вклад этого файла в язык продукта заменяется. */
+export async function learn(scope: ExemplarScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
+  const profile = await activeProfile();
+  if (!profile) throw new Error("Сначала создайте продукт");
+  const source = await learnOpenFile(scope, (done, total) => report(`экран ${done} из ${total}`));
+  if (source.screens === 0) return { state: await state(), screens: 0 };
+  await store.saveLanguageSources(profile.id, upsertSource(await store.getLanguageSources(profile.id), source));
+  return { state: await state(), screens: source.screens };
+}
+
+export async function forgetLanguageSource(fileName: string): Promise<ProfileState> {
+  const profile = await activeProfile();
+  if (profile) {
+    const rest = (await store.getLanguageSources(profile.id)).filter((s) => s.fileName !== fileName);
+    await store.saveLanguageSources(profile.id, rest);
+  }
+  return state();
+}
+
+/** Файл для репозитория: `products/<id>/style-language.json` (Я7, после ADR). */
+export async function exportLanguage(): Promise<{ fileName: string; text: string } | null> {
+  const profile = await activeProfile();
+  if (!profile) return null;
+  const lang = await language(profile);
+  if (!lang) return null;
+  return { fileName: "style-language.json", text: JSON.stringify({ ...lang, $schema: LANGUAGE_SCHEMA }, null, 2) };
 }
 
 export async function create(name: string): Promise<ProfileState | { error: string }> {

@@ -7,6 +7,7 @@
  * в одну запись все индексы не поместятся (так же у Token Comparator).
  */
 
+import type { LanguageSource } from "../core/language";
 import type { MaterialIndex, ProductProfile } from "./types";
 
 const KEYS = {
@@ -15,6 +16,8 @@ const KEYS = {
   PAT: "sm_pat",
 } as const;
 const INDEX_PREFIX = "sm_index:";
+/** Наблюдения языка продукта — по источникам, под своим ключом на продукт. */
+const LANGUAGE_PREFIX = "sm_lang:";
 
 function indexKey(profileId: string, materialId: string): string {
   return `${INDEX_PREFIX}${profileId}:${materialId}`;
@@ -38,6 +41,7 @@ export async function deleteProfile(id: string): Promise<ProductProfile[]> {
   const profiles = await getProfiles();
   const target = profiles.find((p) => p.id === id);
   if (target) for (const m of target.materials) await figma.clientStorage.deleteAsync(indexKey(id, m.id));
+  await figma.clientStorage.deleteAsync(`${LANGUAGE_PREFIX}${id}`);
   const rest = profiles.filter((p) => p.id !== id);
   await figma.clientStorage.setAsync(KEYS.PROFILES, rest);
   if ((await getActiveProfileId()) === id) await setActiveProfileId(rest[0]?.id ?? null);
@@ -89,4 +93,14 @@ export async function getPat(): Promise<string> {
 export async function setPat(token: string): Promise<void> {
   if (token) await figma.clientStorage.setAsync(KEYS.PAT, token);
   else await figma.clientStorage.deleteAsync(KEYS.PAT);
+}
+
+export async function getLanguageSources(profileId: string): Promise<LanguageSource[]> {
+  const value = await figma.clientStorage.getAsync(`${LANGUAGE_PREFIX}${profileId}`);
+  return Array.isArray(value) ? (value as LanguageSource[]) : [];
+}
+
+export async function saveLanguageSources(profileId: string, sources: LanguageSource[]): Promise<void> {
+  if (sources.length) await figma.clientStorage.setAsync(`${LANGUAGE_PREFIX}${profileId}`, sources);
+  else await figma.clientStorage.deleteAsync(`${LANGUAGE_PREFIX}${profileId}`);
 }

@@ -17,7 +17,7 @@ import { bump, EXEMPLAR_LIMIT, fieldUse, fillUse, sample, visibleCase, type Exem
 export { EXEMPLAR_LIMIT, type ExemplarScope };
 
 
-function roots(scope: ExemplarScope): Root[] {
+export function roots(scope: ExemplarScope): Root[] {
   const page = figma.currentPage;
   const out: Root[] = [];
   const nodes = scope === "selection" ? page.selection : page.children;

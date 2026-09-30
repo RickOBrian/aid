@@ -619,6 +619,14 @@
         color: var(--ds-text-secondary);
       }
 
+      .ds-lang-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--ds-line-subtle);
+      }
+
       [hidden] {
         display: none !important;
       }
@@ -733,6 +741,30 @@
             </div>
           </div>
           </details>
+        </section>
+
+        <section class="ds-card" id="language-card" aria-labelledby="language-title" hidden>
+          <h2 id="language-title">Язык продукта</h2>
+          <p class="ds-hint">
+            Как продукт оформляет каждый элемент — по образцовым макетам. Откройте файл образцов и
+            выделите экраны или откройте страницу с ними. Повторное изучение файла заменяет его вклад,
+            другие файлы складываются.
+          </p>
+          <div class="ds-segment" role="group" aria-label="Где образцы" id="language-scope">
+            <button type="button" data-scope="page" aria-pressed="true">Вся страница</button>
+            <button type="button" data-scope="selection" aria-pressed="false">Выделение</button>
+          </div>
+          <div class="ds-actions">
+            <button class="ds-btn ds-btn-primary" id="language-learn" type="button">Изучить образцы</button>
+            <button class="ds-btn" id="language-export" type="button" disabled>Выгрузить язык</button>
+          </div>
+          <p class="ds-hint" id="language-summary"></p>
+          <div id="language-sources"></div>
+          <div class="ds-segment" role="group" aria-label="Показать" id="language-filter" hidden>
+            <button type="button" data-filter="all" aria-pressed="true">Все</button>
+            <button type="button" data-filter="open" aria-pressed="false">Спорное и пробелы</button>
+          </div>
+          <div id="language-rules"></div>
         </section>
 
         <section class="ds-card" id="theme-card" aria-labelledby="theme-title" hidden>

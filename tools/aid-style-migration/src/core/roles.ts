@@ -162,6 +162,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
   /** Нарисованное в порядке отрисовки: поверхность под элементом — последнее, что его накрывает. */
   const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba }> = [];
   let overlaySeen = false;
+  let screenBg: Rgba = WHITE;
   /** Нейтральный текст и иконки: уровень считается после обхода — относительно самого контрастного на экране. */
   const neutral: Array<{ hit: RoleHit; kind: "text" | "icon"; k: number }> = [];
 
@@ -205,7 +206,10 @@ export function detectRoles(screen: NNode): ScreenRoles {
 
     if (root) {
       hit(n, "screen-bg", "fill", fill, WHITE);
-      if (fill?.color && fill.color.a > 0.5) next = { ...ctx, surface: composite(fill.color, WHITE) };
+      if (fill?.color && fill.color.a > 0.5) {
+        screenBg = composite(fill.color, WHITE);
+        next = { ...ctx, surface: screenBg };
+      }
     } else if (ctx.owner) {
       // Внутри кнопки, поля, чипа: текст — подпись, мелкая форма — иконка,
       // прочие заливки — детали (таймер в кнопке), чтобы не путать с её заливкой.
@@ -252,7 +256,12 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, "tab/indicator", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && Math.max(n.width, n.height) <= 32 && n.children.length === 0) {
       const c = fill?.color;
-      if (c && isNeutral(c)) {
+      const onColor = !isNeutral(ctx.surface) && contrast(ctx.surface, screenBg) >= 1.8;
+      if (c && isNeutral(c) && onColor) {
+        // Иконка на насыщенном цветном круге — своя роль: её цвет задаёт
+        // круг, а не иерархия иконок экрана.
+        hit(n, "icon/on-color", "icon", fill, ctx.surface);
+      } else if (c && isNeutral(c)) {
         const h = hit(n, "icon/primary", "icon", fill, ctx.surface);
         if (h) neutral.push({ hit: h, kind: "icon", k: contrast(c, ctx.surface) });
       } else if (c) {

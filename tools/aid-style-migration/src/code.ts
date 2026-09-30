@@ -153,6 +153,24 @@ async function handle(message: UiToCode): Promise<void> {
       return;
     }
 
+    case "language-learn": {
+      const { state, screens } = await profiles.learn(message.scope, (title) => post({ type: "index-progress", title: `образцы: ${title}` }));
+      post({ type: "profile-state", state });
+      post({
+        type: "notice",
+        message: screens ? `Изучено экранов: ${screens}. Язык продукта обновлён` : "Экранов не нашлось — выделите экраны образцов или откройте страницу с ними",
+      });
+      return;
+    }
+    case "language-forget":
+      post({ type: "profile-state", state: await profiles.forgetLanguageSource(message.fileName) });
+      return;
+    case "language-export": {
+      const out = await profiles.exportLanguage();
+      if (out) post({ type: "profile-export", ...out });
+      return;
+    }
+
     case "style-map": {
       const map = await buildStyleMap((title) => post({ type: "style-map-progress", title }));
       post({ type: "style-map", map });

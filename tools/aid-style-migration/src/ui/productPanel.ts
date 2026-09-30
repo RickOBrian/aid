@@ -6,6 +6,7 @@ import { EXEMPLAR_LIMIT, type ExemplarScope } from "../profile/usage";
 import type { FileSurvey } from "../profile/indexFile";
 import { MATERIAL_LABELS, type LibraryLink, type LinkKind, type Material, type MaterialKind } from "../profile/types";
 import { badge, el, h, send } from "./dom";
+import { initLanguage, renderLanguage } from "./languagePanel";
 
 const STAT_LABELS: Record<string, string> = {
   collections: "коллекций",
@@ -157,6 +158,7 @@ function render(state: ProfileState): void {
     );
   }
   renderTheme(state);
+  renderLanguage(state);
 }
 
 const LINK_KINDS: Array<[LinkKind, string]> = [
@@ -227,6 +229,7 @@ function renderSurvey(survey: FileSurvey): void {
 
 export function initProduct(status: (text: string) => void): void {
   setStatus = status;
+  initLanguage(status);
 
   el<HTMLSelectElement>("profile-select").addEventListener("change", (e) => {
     send({ type: "profile-select", id: (e.target as HTMLSelectElement).value });
@@ -355,7 +358,7 @@ export const productHandlers = {
     link.download = fileName;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setStatus(`Профиль выгружен: ${fileName}`);
+    setStatus(`Выгружено: ${fileName}`);
   },
   progress(title: string): void {
     setStatus(`Индексирую: ${title}…`);

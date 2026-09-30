@@ -32,6 +32,9 @@ export type UiToCode =
   | { type: "profile-import"; text: string }
   | { type: "links-index"; links: LibraryLink[] }
   | { type: "links-refresh" }
+  | { type: "language-learn"; scope: ExemplarScope }
+  | { type: "language-forget"; fileName: string }
+  | { type: "language-export" }
   | { type: "style-map" }
   | { type: "style-apply"; decisions: Decisions }
   | { type: "style-remove" }
