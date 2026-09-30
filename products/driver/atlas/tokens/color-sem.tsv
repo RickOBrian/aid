@@ -1,14 +1,14 @@
 Bg/Primary|#ffffff|#1f1f23|FRAME_FILL|Основной фон
 Bg/Primary Inverted|#1f1f23|#f5f5f5|FRAME_FILL|
-Bg/Secondary|#f5f5f5|#111113|FRAME_FILL,SHAPE_FILL|Используется для обозначения "нулевого" слоя-подло…
+Bg/Secondary|#f5f5f5|#111113|FRAME_FILL,SHAPE_FILL|Используется для обозначения "нулевого" слоя-подложки.
 Bg/Tertiary|#0000001f|#00000029|FRAME_FILL,SHAPE_FILL|
 Bg/Tertiary Solid|#bdbdbd|#5a5a5a|FRAME_FILL,SHAPE_FILL|
-Bg/Actions|#2d2c2e|#1f1f23|FRAME_FILL|Обычно используется для бэкграундов с действиями — для обосо…
+Bg/Actions|#2d2c2e|#1f1f23|FRAME_FILL|Обычно используется для бэкграундов с действиями — для обособления поля
 Texts/Primary|#000000de|#ffffff|TEXT_FILL|Основной текст
 Texts/Primary Inverted|#ffffff|#000000de|TEXT_FILL|Основной текст для тёмных/светлых областей
 Texts/Secondary|#0000008a|#ffffffb2|TEXT_FILL|Второстепенный текст, подписи, пояснения
 Texts/Secondary Inverted|#ffffff|#0000008a|TEXT_FILL|Второстепенный текст для тёмных/светлых областей
-Texts/Tertiary|#00000061|#ffffff61|TEXT_FILL|Подписи, неактивные состояния в полях, тексты на малозначимы…
+Texts/Tertiary|#00000061|#ffffff61|TEXT_FILL|Подписи, неактивные состояния в полях, тексты на малозначимых элементах интерфейса
 Texts/Disabled|#00000042|#ffffff29|TEXT_FILL|Для текстов в неактивном состоянии
 Texts/Accent|#8526ff|#9966ff|TEXT_FILL|Акцентное состояние для максимального привлечения внимания.
 Texts/Positive|#23ad58|#23ad58|TEXT_FILL|Акцентные тексты и обозначение положительного баланса сумм.
@@ -18,12 +18,12 @@ Texts/Attention|#d49311|#ebb447|TEXT_FILL|
 Texts/Link|#005aff|#0056f5|TEXT_FILL|Для ссылок
 Texts/Primary Dark Ind|#000000de|#000000de|TEXT_FILL|Основной текст. Не зависит от темы.
 Texts/Secondary Dark Ind|#0000008a|#0000008a|TEXT_FILL|Второстепенный текст, подписи, пояснения. Не зависит от темы
-Texts/Accent Light Ind|#9966ff|#9966ff|TEXT_FILL|Акцентное состояние для максимального привлечения внимания.
+Texts/Accent Light Ind|#9966ff|#9966ff|TEXT_FILL|Акцентное состояние для максимального привлечения внимания. Не зависит от темы.
 Texts/Primary Light Ind|#ffffff|#ffffff|TEXT_FILL|Основной текст. Не зависит от темы.
 Texts/Secondary Light Ind|#ffffffb2|#ffffffb2|TEXT_FILL|Второстепенный текст, подписи, пояснения. Не зависит от темы
 Texts/Tertiary Light Ind|#ffffff61|#ffffff61|TEXT_FILL|Подписи, неактивные состояния в полях. Не зависит от темы.
 Texts/Disabled Light Ind|#ffffff29|#ffffff29|TEXT_FILL|Для текстов в неактивном состоянии. Не зависит от темы.
-Icons/Primary|#2d2c2e|#ffffff|SHAPE_FILL|Для важных акцентных состояний. Когда иконка является ключев…
+Icons/Primary|#2d2c2e|#ffffff|SHAPE_FILL|Для важных акцентных состояний. Когда иконка является ключевой составляющей элемента. Например, для иконок в FAB.
 Icons/Primary Inverted|#ffffff|#2d2c2e|SHAPE_FILL|Для важных акцентных состояний на тёмном/светлом фоне
 Icons/Primary Light Ind|#ffffff|#ffffff|SHAPE_FILL|Для важных акцентных состояний. Не зависит от темы.
 Icons/Primary Dark Ind|#2d2c2e|#2d2c2e|SHAPE_FILL|Для важных акцентных состояний. Не зависит от темы.
@@ -38,7 +38,7 @@ Icons/Inactive|#00000042|#ffffff29|SHAPE_FILL|Неактивное состоя�
 Icons/Inactive Light Ind|#ffffff29|#ffffff29|SHAPE_FILL|Неактивное состояние иконок. Не зависит от темы.
 Icons/Variant|#323036|#f6f7f9|SHAPE_FILL|
 Icons/Accent|#8526ff|#884dff|SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
-Icons/Accent Light Ind|#884dff|#884dff|SHAPE_FILL|Акцентное состояние для максимального привлечения внимания.
+Icons/Accent Light Ind|#884dff|#884dff|SHAPE_FILL|Акцентное состояние для максимального привлечения внимания. Не зависит от темы.
 Icons/Positive|#23ad58|#23ad58|SHAPE_FILL|Акцентное состояние кнопок, в кейсе заказов.
 Icons/Warning|#d62347|#f85973|SHAPE_FILL|Для состояния ошибок
 Icons/Attention|#ffaa00|#e6a219|SHAPE_FILL|
@@ -124,8 +124,8 @@ Bg/Special Pale|#0088cc|#0099e5|FRAME_FILL,SHAPE_FILL|
 Strokes/Positive|#23ad58|#23ad58|STROKE_COLOR|
 Texts/Special Pale|#0099e5|#0099e5|TEXT_FILL|
 Bg/Demand|#006c7c|#1d9eb1|FRAME_FILL,SHAPE_FILL|
-Bg/Primary Light Ind|#ffffff|#ffffff|FRAME_FILL,SHAPE_FILL|Фон/поверхность, не меняющаяся между режимами. Для элементов поверх карты, пинов, бейджей, индикаторов, которы…
-Texts/Informative|#00000061|#ffffff61|TEXT_FILL|Вспомогательный информативный текст с пониженным контрастом. Для надписей на клавиатуре, информационных подпис…
-Texts/Variant|#323036|#f6f7f9|TEXT_FILL|Текст особого стиля для специфических контекстов — числовые значения в бустерах, баллы, специальные метки. Не…
-Bg/Positive|#23ad58|#23ad58|FRAME_FILL,SHAPE_FILL|Полноцветный позитивный (зелёный) фон для индикаторов и бейджей статуса. Используется на малых элементах — не…
-Buttons/Warning|#d62347|#f85973|FRAME_FILL,SHAPE_FILL|Фон кнопки деструктивного/предупреждающего действия — отклонить звонок, отменить заказ, прервать. Пара к Butto…
+Bg/Primary Light Ind|#ffffff|#ffffff|FRAME_FILL,SHAPE_FILL|Фон/поверхность, не меняющаяся между режимами. Для элементов поверх карты, пинов, бейджей, индикаторов, которые должны оставаться белыми в night-режиме.
+Texts/Informative|#00000061|#ffffff61|TEXT_FILL|Вспомогательный информативный текст с пониженным контрастом. Для надписей на клавиатуре, информационных подписей и пояснений.
+Texts/Variant|#323036|#f6f7f9|TEXT_FILL|Текст особого стиля для специфических контекстов — числовые значения в бустерах, баллы, специальные метки. Не Primary и не Secondary — отдельный оттенок.
+Bg/Positive|#23ad58|#23ad58|FRAME_FILL,SHAPE_FILL|Полноцветный позитивный (зелёный) фон для индикаторов и бейджей статуса. Используется на малых элементах — не для крупных поверхностей.
+Buttons/Warning|#d62347|#f85973|FRAME_FILL,SHAPE_FILL|Фон кнопки деструктивного/предупреждающего действия — отклонить звонок, отменить заказ, прервать. Пара к Buttons/Positive.

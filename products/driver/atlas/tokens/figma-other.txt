@@ -1,0 +1,39 @@
+# Driver · Tokens & Styles — снимок Figma 2026-09-30 (кроме color-sem): typography-core, typography-sem (алиасы), space, radius, effects, стили
+## space
+space-0 2 4 6 8 10 12 16 20 24 28 32 36 40 48 64 80
+## radius
+radius-flat=0 radius-2 4 6 8 10 12 16 20 24 28 32 radius-pill=9999
+## textStyles (семейство Roboto; значения через typography-sem → typography-core)
+Headlines/Headline 1|Medium 500|44/56|ls 0
+Headlines/Headline 2|Regular 400|44/56|ls 0
+Headlines/Headline 3|Bold 700|30/36|ls 0.15
+Headlines/Headline 4|Medium 500|30/36|ls 0.15
+Headlines/Headline 5|Regular 400|30/36|ls 0.15
+Headlines/Headline 6|Medium 500|22/28|ls 0.3
+Titles/Title 1|SemiBold 600|20/22|ls 0.15
+Titles/Title 1 Tall|Bold 700|20/24|ls 0.15
+Titles/Title Large|Medium 500|24/24|ls 0.15
+Titles/Title Price|Medium 500|62/60|ls 0
+Subtitles/Subtitle 1|Medium 500|18/24|ls 0.15
+Subtitles/Subtitle 1 Bold|Bold 700|18/24|ls 0.15
+Subtitles/Subtitle 2|Medium 500|14/16|ls 0.1
+Subtitles/Subtitle 3 CAP|Bold 700|14/18|ls 0.56|UPPER
+Bodies/Body 1|Regular 400|18/24|ls 0.15
+Bodies/Body 2|Regular 400|16/20|ls 0.15
+Bodies/Body 2 Medium|Medium 500|16/20|ls 0.15
+Bodies/Body 2 Tall|Medium 500|16/24|ls 0.15
+Bodies/Body 3|Regular 400|14/16|ls 0
+Captions/Caption 1|SemiBold 600|12/16|ls 0.24|UPPER
+## effectStyles
+Shadows/Shadow 1|0,1 r2 #0000001f + 0,0 r1 #00000026
+Shadows/Shadow 2|0,2 r12 #0000001f
+Shadows/Shadow 3|0,4 r12 #00000029
+Shadows/Shadow 4|0,4 r12 #0000005c
+Shadows/Shadow 5|0,8 r16 #00000040
+Shadows/Shadow 6|0,3 r5 #00000033 + 0,1 r18 #0000001f + 0,6 r10 #00000024
+Shadows/Shadow 7|0,11 r15 #00000033 + 0,9 r46 #0000001f + 0,24 r38 #00000024
+## paintStyles (градиенты)
+Gradients/Silver|linear #dae5e9@0 #c5d4d9@38 #8c96a3@71 #ccdbe0@100
+Gradients/Gold|linear #f3c668@0 #efb113@38 #b77408@71 #efb113@100
+Gradients/Motivation|linear #7000ff@0 #63ded7@100
+Gradients/Bottom|linear #ffffff00@0 #ffffff@100 (night: #1f1f2300 → #1f1f23)
