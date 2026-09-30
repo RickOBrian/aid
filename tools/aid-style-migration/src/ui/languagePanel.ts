@@ -6,6 +6,7 @@
  */
 
 import { isOpen, type Question } from "../core/questions";
+import { CONCEPT_LABELS } from "../core/tokenTerms";
 import { DOMINANT_SHARE, languageStats, type LanguageRule, type RuleStatus, type RuleValue, type StyleLanguage } from "../core/language";
 import { GROUP_LABELS, GROUP_ORDER, roleGroup, roleLabel } from "../core/roleLabels";
 import type { ProfileState } from "../profile/controller";
@@ -140,6 +141,7 @@ const KIND_LABEL: Record<Question["kind"], string> = {
   gap: "в образцах нет",
   outlier: "отступления от правила",
   thin: "мало образцов",
+  term: "словарь продукта",
 };
 
 function renderQuestion(state: ProfileState): void {
@@ -221,6 +223,26 @@ function findingsList(lang: StyleLanguage): HTMLElement[] {
   return [fold];
 }
 
+/** Словарь продукта: слово → смысл стандарта, подтверждено ли в анкете. */
+function renderTerms(state: ProfileState): void {
+  const terms = state.terms ?? [];
+  el("terms-fold").hidden = terms.length === 0;
+  if (!terms.length) return;
+  const confirmed = (t: string) => state.answers[`term:${t}`]?.optionId;
+  el("terms-summary").textContent = `Словарь продукта: ${terms.filter((t) => t.concept !== "mixed" && t.concept !== "themed").length} слов`;
+  el("terms-list").replaceChildren(
+    ...terms.map((t) => {
+      const answer = confirmed(t.term);
+      const meaning = t.concept === "mixed" ? "ведёт себя по-разному" : CONCEPT_LABELS[t.concept];
+      const status = answer ? badge(answer === `concept:${t.concept}` ? "подтверждено" : "исправлено", "success") : t.concept === "mixed" || t.concept === "themed" ? badge("не модификатор", "neutral") : badge("нужно подтвердить", "warning");
+      return h("div", { className: "ds-lang-row" }, [
+        h("div", { className: "ds-map-line" }, [h("span", { text: `«${t.term}» — ${meaning}` }), status]),
+        h("div", { className: "ds-screen__meta", text: `Пары: ${t.pairs.slice(0, 3).map((p) => `${p.token} к ${p.base}`).join(", ")}${t.pairs.length > 3 ? "…" : ""}` }),
+      ]);
+    }),
+  );
+}
+
 /** Сверка со стандартами: ориентир, не решение; риск — может сломать тёмную тему. */
 function renderStandards(state: ProfileState): void {
   const st = state.standards;
@@ -260,6 +282,7 @@ function render(): void {
     `Правило есть, если один вариант — не меньше ${Math.round(DOMINANT_SHARE * 100)} % случаев; иначе плагин спрашивает.`;
   renderQuestion(state);
   renderStandards(state);
+  renderTerms(state);
   el("language-sources").replaceChildren(...sourcesList(lang), ...findingsList(lang));
 
   const rules = lang.rules.filter((r) => filter === "all" || r.status === "disputed" || r.status === "missing");

@@ -12,6 +12,7 @@ import { THEME_ROLES } from "../lib/vocabulary";
 import { EXPECTED_ROLES, type Feature, findSplit, FREE_DRAWN, type LanguageRule, type RuleValue, type StyleLanguage, type TokenRef } from "./language";
 import { roleGroup, roleLabel } from "./roleLabels";
 import { slotFor } from "../standards/standards";
+import { CONCEPT_LABELS, conceptOf, learnTerms, type ProductTerm, type TermConcept } from "./tokenTerms";
 
 /** Строка-подсказка стандарта: ориентир, не решение. */
 function standardLine(role: string): string {
@@ -21,7 +22,7 @@ function standardLine(role: string): string {
     : "Стандарт ДС эту роль отдельно не описывает.";
 }
 
-export type QuestionKind = "contradiction" | "gap" | "outlier" | "thin";
+export type QuestionKind = "contradiction" | "gap" | "outlier" | "thin" | "term";
 
 /** Меньше стольких случаев — «мало образцов»: правило из одного примера не надёжнее догадки (аудит 2026-09-30). */
 export const MIN_SUPPORT = 3;
@@ -37,7 +38,7 @@ export function isAskable(role: string): boolean {
   return true;
 }
 
-export type OptionKind = "value" | "split" | "not-used" | "new-token";
+export type OptionKind = "value" | "split" | "not-used" | "new-token" | "concept";
 
 export interface QuestionOption {
   /** Стабильный id: переживает повторное изучение, пока варианты те же. */
@@ -48,6 +49,8 @@ export interface QuestionOption {
   value?: Pick<RuleValue, "token" | "hex" | "hexLight" | "hexDark">;
   /** Для `split` — правило с условием: значение признака → значение правила. */
   split?: { feature: Feature; map: Record<string, Pick<RuleValue, "token" | "hex">> };
+  /** Для `concept` — что слово значит по стандарту. */
+  concept?: TermConcept;
 }
 
 export interface Question {
@@ -108,8 +111,21 @@ function featureWord(f: Feature, v: string): string {
   return v === THEME_ROLES.dark ? "в тёмной теме" : "в светлой теме";
 }
 
+/** Словарь продукта на время сборки вопросов — чтобы подписывать токены смыслом стандарта. */
+let TERMS: ProductTerm[] = [];
+
+const SHORT: Record<TermConcept, string> = {
+  static: "≈ static",
+  "static-lm": "≈ static-lm",
+  "static-dm": "≈ static-dm",
+  inverse: "≈ inverse",
+  themed: "",
+};
+
 function valueName(v: Pick<RuleValue, "token" | "hex">): string {
-  return v.token ? v.token.name : `${v.hex} без токена`;
+  if (!v.token) return `${v.hex} без токена`;
+  const c = conceptOf(v.token.name, TERMS);
+  return c && SHORT[c.concept] ? `${v.token.name} (${SHORT[c.concept]})` : v.token.name;
 }
 
 function times(n: number): string {
@@ -336,8 +352,44 @@ function thin(rule: LanguageRule): Question {
   };
 }
 
-/** Все вопросы по языку: сначала споры (по числу элементов), потом отступления, «мало образцов», пробелы. */
+/**
+ * Слово-модификатор в именах токенов продукта: что оно значит по стандарту
+ * — по поведению значений (`tokenTerms.ts`). Подтверждённое слово — словарь
+ * продукта: объяснения, сверка и перевод понимают его синонимы стандарта.
+ */
+function termQuestion(t: ProductTerm): Question {
+  const c = t.concept as TermConcept;
+  const ex = t.pairs.filter((p) => p.concept === c || (c === "static" && p.concept.startsWith("static"))).slice(0, 3);
+  const others: TermConcept[] = (["static", "inverse", "themed"] as TermConcept[]).filter((x) => x !== c && !(c.startsWith("static") && x === "static"));
+  return {
+    id: `term:${t.term}`,
+    kind: "term",
+    role: `term:${t.term}`,
+    layer: "fill",
+    title: `Слово «${t.term}» в именах токенов`,
+    lines: [
+      `Токены со словом «${t.term}» ведут себя одинаково в ${Math.round(t.share * 100)} % пар (${t.pairs.length}): ${ex.map((p) => `${p.token} к ${p.base}`).join(", ")}.`,
+      `По значениям это ${CONCEPT_LABELS[c]}. В стандарте ДС так называется модификатор ${c === "inverse" ? "inverse (§7)" : c === "themed" ? "— такого нет" : `${c.replace("static", "-static")} (§9)`}.`,
+      "Подтвердите — плагин будет понимать это слово как синоним стандарта в объяснениях, сверке и переводе.",
+    ],
+    impact: t.pairs.length,
+    values: [],
+    options: [
+      { id: `concept:${c}`, kind: "concept", concept: c, label: `Да, «${t.term}» — ${CONCEPT_LABELS[c]}` },
+      ...others.map((o): QuestionOption => ({ id: `concept:${o}`, kind: "concept", concept: o, label: `Нет, «${t.term}» — ${CONCEPT_LABELS[o]}` })),
+    ],
+  };
+}
+
+/** Словарь продукта по токенам библиотеки. */
+export function productTerms(tokens: TokenCandidate[]): ProductTerm[] {
+  return learnTerms(tokens);
+}
+
+/** Все вопросы по языку: слова продукта, споры (по числу элементов), отступления, «мало образцов», пробелы. */
 export function buildQuestions(lang: StyleLanguage, tokens: TokenCandidate[] = []): Question[] {
+  TERMS = learnTerms(tokens);
+  const terms = TERMS.filter((t) => t.concept !== "mixed" && t.concept !== "themed").map(termQuestion);
   const expected = new Set(EXPECTED_ROLES.map(([r, l]) => `${r}|${l}`));
   const askable = lang.rules.filter((r) => isAskable(r.role));
   const contradictions = askable.filter((r) => r.status === "disputed").map(contradiction);
@@ -345,7 +397,7 @@ export function buildQuestions(lang: StyleLanguage, tokens: TokenCandidate[] = [
   const thins = askable.filter((r) => r.status === "proposed" && r.total > 0 && r.total < MIN_SUPPORT && !r.byComponent).map(thin);
   const gaps = lang.rules.filter((r) => r.status === "missing" && expected.has(`${r.role}|${r.layer}`)).map((r) => gap(r, tokens));
   const byImpact = (a: Question, b: Question) => b.impact - a.impact;
-  return [...contradictions.sort(byImpact), ...outliers.sort(byImpact), ...thins, ...gaps];
+  return [...terms, ...contradictions.sort(byImpact), ...outliers.sort(byImpact), ...thins, ...gaps];
 }
 
 // ---------------------------------------------------------------------------

@@ -15,6 +15,7 @@ import naming from "../../../../skills/_shared/standards/naming-conventions.json
 import states from "../../../../skills/_shared/standards/component-states.json";
 import type { LanguageRule, StyleLanguage } from "../core/language";
 import { roleLabel } from "../core/roleLabels";
+import { conceptOf, type ProductTerm } from "../core/tokenTerms";
 
 export interface StandardRef {
   id: string;
@@ -121,7 +122,7 @@ function mainToken(r: LanguageRule): string | undefined {
  * - имена семантических токенов не по нотации стандарта — отличие
  *   (naming-conventions: kebab, без цифр и названий цветов).
  */
-export function compareWithStandards(lang: StyleLanguage, tokens: ProductToken[]): StandardFinding[] {
+export function compareWithStandards(lang: StyleLanguage, tokens: ProductToken[], terms: ProductTerm[] = []): StandardFinding[] {
   const out: StandardFinding[] = [];
   const byKey = new Map(tokens.map((t) => [t.key, t]));
 
@@ -135,7 +136,10 @@ export function compareWithStandards(lang: StyleLanguage, tokens: ProductToken[]
       level: "risk",
       title: `«${roleLabel(r.role)}» — токен не меняется с темой`,
       lines: [
-        `В образцах «${roleLabel(r.role)}» — ${t.name}: в светлой и тёмной теме один цвет ${t.hexLight}.`,
+        `В образцах «${roleLabel(r.role)}» — ${t.name}: в светлой и тёмной теме один цвет ${t.hexLight}.${(() => {
+          const c = conceptOf(t.name, terms);
+          return c ? ` В словаре продукта слово «${c.term}» — это ${c.concept}.` : "";
+        })()}`,
         `По стандарту роль соответствует ${slot.slot} (${slot.use}, ${slot.basis}) — он меняется с темой; неизменный цвет — модификатор -static, «когда цвет не должен меняться между режимами».`,
         "Если элемент лежит на обычном фоне, в тёмной теме он может потеряться. Если на цветной плашке — всё верно, это случай -static.",
       ],
