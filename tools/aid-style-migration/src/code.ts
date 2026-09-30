@@ -2,10 +2,10 @@
  * AID Style Migration — главный поток плагина.
  *
  * Этап 1 — сборка: найти экраны в выбранной области, свести тёмные пары,
- * разложить копии на странице «AID Migration» плитками «было».
+ * разложить копии секциями «ДО» на странице «AID Migration».
  * Этап 2 — профиль продукта: материалы (открытый файл и ссылки), тема.
  * Этап 3a — карта стиля: анализ перевода на токены продукта, без изменений.
- * Этап 3b — применение карты к копиям «Стало» (светлая и тёмная).
+ * Этап 3b — применение: зеркальные секции «ПОСЛЕ» и «ПОСЛЕ · тёмная тема».
  * Исходные страницы не меняются. Проверки API этапа 0 — в «Диагностике».
  */
 
@@ -165,8 +165,7 @@ async function handle(message: UiToCode): Promise<void> {
       return;
     }
     case "style-remove": {
-      const rows = await removeAfter((title) => post({ type: "style-map-progress", title }));
-      post({ type: "style-removed", rows });
+      post({ type: "style-removed", rows: await removeAfter() });
       return;
     }
 

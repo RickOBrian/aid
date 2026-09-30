@@ -9,7 +9,8 @@ import type { ApplyResult, Decisions } from "../map/apply";
 import type { Candidate, Confidence, Proposal, StyleMap } from "../map/types";
 import { badge, el, h, send } from "./dom";
 
-type Filter = "all" | "doubt" | "gap";
+/** Что показывать: по умолчанию — только то, что требует решения (принцип «маленькое понятное окно»). */
+type Filter = "decide" | "doubt" | "sure" | "all";
 
 const CONFIDENCE: Record<Confidence, [string, "success" | "warning" | "danger"]> = {
   high: ["уверенно", "success"],
@@ -28,7 +29,7 @@ const USE_TITLE: Record<string, string> = {
 const CASE_LABEL: Record<string, string> = { upper: "капс", title: "С Заглавных", sentence: "с заглавной", lower: "строчные", mixed: "" };
 
 let current: StyleMap | null = null;
-let filter: Filter = "all";
+let filter: Filter = "decide";
 /** Черновой выбор пользователя: источник → ключ токена. */
 const choice = new Map<string, string>();
 let setStatus: (text: string) => void = () => undefined;
@@ -49,9 +50,15 @@ function swatch(c: Rgba | null | undefined, title: string): HTMLElement {
   return s;
 }
 
+/** Нужно решение: неуверенно или нет токена. Такие при применении не привязываются (решение 2026-09-30). */
+function needsDecision(p: Proposal): boolean {
+  return (p.confidence === "low" || p.target === null) && !choice.has(p.sourceId);
+}
+
 function passes(p: Proposal): boolean {
-  if (filter === "doubt") return p.confidence !== "high";
-  if (filter === "gap") return p.target === null;
+  if (filter === "decide") return needsDecision(p);
+  if (filter === "doubt") return p.confidence === "medium" && p.target !== null;
+  if (filter === "sure") return p.confidence === "high";
   return true;
 }
 
@@ -64,7 +71,8 @@ function focusLink(label: string, nodeId: string | undefined): HTMLElement {
 
 function chooser(p: Proposal): HTMLElement | null {
   const options: Candidate[] = [...(p.target ? [p.target] : []), ...p.alternatives];
-  if (options.length < 2) return null;
+  // Для «нужно решение» выбор нужен даже из одного варианта — это и есть подтверждение.
+  if (options.length === 0 || (options.length < 2 && !needsDecision(p))) return null;
   const select = h("select", { className: "ds-input" });
   select.setAttribute("aria-label", "Другой вариант");
   for (const o of options) {
@@ -75,7 +83,8 @@ function chooser(p: Proposal): HTMLElement | null {
   select.value = choice.get(p.sourceId) ?? p.target?.key ?? "";
   select.addEventListener("change", () => {
     choice.set(p.sourceId, select.value);
-    setStatus("Выбор отмечен — нажмите «Применить к «Стало»», чтобы увидеть на макетах");
+    setStatus("Решение принято — будет применено. Смотреть — «Применить → ПОСЛЕ»");
+    renderSummary();
   });
   return select;
 }
@@ -91,26 +100,41 @@ function row(left: HTMLElement[], right: HTMLElement[], p: Proposal): HTMLElemen
   ]);
 }
 
-function section(title: string, rows: HTMLElement[], hint?: string): HTMLElement {
+function section(title: string, rows: HTMLElement[], hint?: string): HTMLElement | null {
+  // Пустые разделы не показываем вовсе — окно маленькое.
+  if (rows.length === 0) return null;
   const box = h("details", { className: "ds-card" });
-  box.open = true;
+  // Раскрыт только первый непустой раздел; остальные — по клику.
+  box.open = !openedOne;
+  openedOne = true;
   box.append(h("summary", { text: `${title} · ${rows.length}` }));
   if (hint) box.append(h("p", { className: "ds-hint", text: hint }));
-  if (rows.length === 0) box.append(h("p", { className: "ds-hint", text: "Нечего показать с этим фильтром" }));
   box.append(...rows);
   return box;
+}
+
+let openedOne = false;
+
+function renderSummary(): void {
+  const map = current;
+  if (!map) return;
+  const all = [...map.colors, ...map.texts, ...map.radii, ...map.spacing].map((x) => x.proposal);
+  const decide = all.filter(needsDecision).length;
+  const doubt = all.filter((p) => p.confidence === "medium" && p.target !== null).length;
+  const sure = all.filter((p) => p.confidence === "high").length;
+  el("map-summary").textContent =
+    `«${map.basis.productName}», экранов ${map.screens}: уверенно ${sure}, спорно ${doubt}, нужно решение ${decide} — они не применятся, пока не выберете.` +
+    (map.basis.exemplars ? "" : " Образцов нет — роли только по именам токенов.");
+  const labels: Record<Filter, string> = { decide: `Нужно решение · ${decide}`, doubt: `Спорно · ${doubt}`, sure: `Уверенно · ${sure}`, all: "Все" };
+  for (const b of el("map-filter").querySelectorAll<HTMLButtonElement>("button")) b.textContent = labels[b.dataset.filter as Filter];
 }
 
 function render(): void {
   const map = current;
   if (!map) return;
-  const all = [...map.colors, ...map.texts, ...map.radii, ...map.spacing].map((x) => x.proposal);
-  const sure = all.filter((p) => p.confidence === "high").length;
-  const gaps = all.filter((p) => !p.target).length;
-  el("map-summary").textContent =
-    `Продукт «${map.basis.productName}», экранов ${map.screens}. Уверенно ${sure} из ${all.length}, спорно ${all.length - sure - gaps}, нет в продукте ${gaps}. ` +
-    `Образцы: ${map.basis.exemplars ? "учтены" : "нет — роли только по именам токенов"}. Улик тёмной темы: ${map.basis.darkEvidence}. ` +
-    `Пропущено: аннотаций ${map.skipped.annotations}, системных элементов ${map.skipped.system}, текстов со смешанным шрифтом ${map.skipped.mixedText}.`;
+  renderSummary();
+  el("map-summary").hidden = false;
+  el("map-options").hidden = false;
   el("map-filter").hidden = false;
 
   // Палитра — по местам в макете.
@@ -160,20 +184,28 @@ function render(): void {
         ),
       );
 
-  el("map-sections").replaceChildren(
-    section("Палитра", colorRows, "Слева — как было (светлая, тёмная), справа — токен продукта в его светлом и тёмном режиме."),
+  openedOne = false;
+  const sections = [
+    section("Палитра", colorRows.filter((r) => !r.classList.contains("ds-map-group")).length ? colorRows : [], "Слева — как было (светлая, тёмная), справа — токен продукта в его светлом и тёмном режиме."),
     section("Текст", textRows, "Уровни исходника → стили продукта по рангу; порядок сохраняется."),
     section("Радиусы", valueRows(map.radii)),
     section("Отступы", valueRows(map.spacing)),
+  ].filter((x): x is HTMLElement => x !== null);
+  el("map-sections").replaceChildren(
+    ...(sections.length ? sections : [h("p", { className: "ds-hint", text: filter === "decide" ? "Всё решено — можно применять" : "Нечего показать с этим фильтром" })]),
   );
 }
 
-/** Решения для применения: предложение карты или ручной выбор; пустые — не трогаем. */
+/**
+ * Решения для применения: ручной выбор или предложение карты, кроме
+ * неуверенных — они остаются как в исходнике до решения («чисто, а не
+ * грубо», 2026-09-30).
+ */
 function decisions(map: StyleMap): Decisions {
   const pick = (items: Array<{ proposal: Proposal }>) =>
     Object.fromEntries(
       items
-        .map(({ proposal }) => [proposal.sourceId, choice.get(proposal.sourceId) ?? proposal.target?.key] as const)
+        .map(({ proposal }) => [proposal.sourceId, choice.get(proposal.sourceId) ?? (needsDecision(proposal) ? undefined : proposal.target?.key)] as const)
         .filter((x): x is readonly [string, string] => Boolean(x[1])),
     );
   return {
@@ -186,7 +218,8 @@ function decisions(map: StyleMap): Decisions {
 }
 
 function busy(on: boolean): void {
-  for (const id of ["map-build", "map-apply", "map-remove"]) el<HTMLButtonElement>(id).disabled = on;
+  for (const id of ["map-build", "map-remove"]) el<HTMLButtonElement>(id).disabled = on;
+  el<HTMLButtonElement>("map-apply").disabled = on || !current;
 }
 
 export function initMap(status: (text: string) => void): void {
@@ -194,12 +227,12 @@ export function initMap(status: (text: string) => void): void {
   el("map-apply").addEventListener("click", () => {
     if (!current) return;
     busy(true);
-    setStatus("Применяю карту к «Стало»…");
+    setStatus("Строю «ПОСЛЕ»…");
     send({ type: "style-apply", decisions: decisions(current) });
   });
   el("map-remove").addEventListener("click", () => {
     busy(true);
-    setStatus("Убираю «Стало»…");
+    setStatus("Убираю «ПОСЛЕ»…");
     send({ type: "style-remove" });
   });
   el("map-build").addEventListener("click", () => {
@@ -222,20 +255,21 @@ export const mapHandlers = {
     choice.clear();
     el<HTMLButtonElement>("map-build").disabled = false;
     render();
-    el("apply-box").hidden = false;
-    el("apply-box").scrollIntoView({ block: "nearest" });
-    setStatus("Карта готова, макеты пока не менялись. Чтобы увидеть на макетах — «Применить к «Стало»» (под кнопкой «Построить карту»)");
+    el<HTMLButtonElement>("map-apply").disabled = false;
+    setStatus("Карта готова, макеты не менялись. Решите отмеченное или сразу «Применить → ПОСЛЕ»");
   },
-  applied(r: ApplyResult): void {
+  applied(r: ApplyResult & { unpairedDark?: number }): void {
     busy(false);
-    const failed = r.failed ? `, не удалось ${r.failed}: ${r.failures.join("; ")}` : "";
+    const undecided = current ? [...current.colors, ...current.texts, ...current.radii, ...current.spacing].filter((x) => needsDecision(x.proposal)).length : 0;
+    const failed = r.failed ? ` Не удалось ${r.failed}: ${r.failures.join("; ")}.` : "";
     setStatus(
-      `Готово за ${(r.ms / 1000).toFixed(1)} с: экранов ${r.screens}, цветов ${r.colors}, текстов ${r.texts}, радиусов ${r.radii}, отступов ${r.spacing}${failed}. Смотрите «AID Migration».`,
+      `«ПОСЛЕ» готово за ${(r.ms / 1000).toFixed(1)} с: экранов ${r.screens}; привязано цветов ${r.colors}, текстов ${r.texts}, радиусов ${r.radii}, отступов ${r.spacing}. ` +
+        `Без решения оставлено ${undecided} — в «ПОСЛЕ» они как в исходнике.${failed}`,
     );
   },
   removed(rows: number): void {
     busy(false);
-    setStatus(rows ? `«Стало» убрано, плиток ${rows}` : "Собранных экранов нет");
+    setStatus(rows ? `«ПОСЛЕ» убрано: секций ${rows}. «ДО» и исходники не тронуты` : "Секций «ПОСЛЕ» нет");
   },
   failed(): void {
     busy(false);

@@ -29,6 +29,7 @@ function showTab(tab: Tab): void {
     el(`tab-${t}`).hidden = t !== tab;
   }
   el("assemble-footer").hidden = tab !== "assemble";
+  el("map-footer").hidden = tab !== "map";
 }
 el("tab-btn-assemble").addEventListener("click", () => showTab("assemble"));
 el("tab-btn-map").addEventListener("click", () => showTab("map"));

@@ -632,42 +632,34 @@
       </header>
 
       <div class="ds-segment" role="tablist" aria-label="Разделы">
-        <button type="button" role="tab" id="tab-btn-assemble" aria-pressed="true">Сборка</button>
-        <button type="button" role="tab" id="tab-btn-map" aria-pressed="false">Карта стиля</button>
-        <button type="button" role="tab" id="tab-btn-product" aria-pressed="false">Продукт</button>
+        <button type="button" role="tab" id="tab-btn-assemble" aria-pressed="true">1 · Собрать</button>
+        <button type="button" role="tab" id="tab-btn-map" aria-pressed="false">2 · Перевести</button>
+        <button type="button" role="tab" id="tab-btn-product" aria-pressed="false" title="Продукт и настройки">⚙ Продукт</button>
       </div>
 
       <div class="ds-scroll" id="tab-map" hidden>
         <section class="ds-card" aria-labelledby="map-title">
-          <h2 id="map-title">Карта стиля</h2>
-          <p class="ds-hint">
-            Только анализ — ничего не меняет. Читает собранное «Было» на странице «AID Migration» и
-            предлагает перевод на токены продукта: по роли, а не по похожему значению.
+          <h2 id="map-title">Перевод на продукт</h2>
+          <p class="ds-hint" id="map-intro">
+            Плагин читает «ДО» и предлагает токены продукта по роли. Смотреть результат — на канвасе после «Применить».
           </p>
           <div class="ds-actions">
-            <button class="ds-btn ds-btn-primary" id="map-build" type="button">Построить карту</button>
+            <button class="ds-btn" id="map-build" type="button">Построить карту</button>
           </div>
-          <div id="apply-box" class="ds-confirm" hidden>
-            <p><b>Следующий шаг — посмотреть на макетах.</b></p>
-            <p class="ds-hint">
-              Применить — в плитках появятся «Стало · светлая» и «Стало · тёмная»: копии, переведённые по
-              карте (с вашими правками в списке). «Было» и исходники не меняются.
-            </p>
+          <p class="ds-hint" id="map-summary" hidden></p>
+          <div class="ds-segment" role="group" aria-label="Показать" id="map-filter" hidden>
+            <button type="button" data-filter="decide" aria-pressed="true">Нужно решение</button>
+            <button type="button" data-filter="doubt" aria-pressed="false">Спорно</button>
+            <button type="button" data-filter="sure" aria-pressed="false">Уверенно</button>
+            <button type="button" data-filter="all" aria-pressed="false">Все</button>
+          </div>
+          <details class="ds-fold" id="map-options" hidden>
+            <summary>Параметры перевода</summary>
             <label class="ds-check">
               <input type="checkbox" id="keep-upper" checked />
               <span>Сохранять капс исходника, если у стиля продукта его нет</span>
             </label>
-            <div class="ds-actions">
-              <button class="ds-btn ds-btn-primary" id="map-apply" type="button">Применить к «Стало»</button>
-              <button class="ds-btn" id="map-remove" type="button">Убрать «Стало»</button>
-            </div>
-          </div>
-          <p class="ds-hint" id="map-summary"></p>
-          <div class="ds-segment" role="group" aria-label="Фильтр" id="map-filter" hidden>
-            <button type="button" data-filter="all" aria-pressed="true">Все</button>
-            <button type="button" data-filter="doubt" aria-pressed="false">Спорные</button>
-            <button type="button" data-filter="gap" aria-pressed="false">Нет в продукте</button>
-          </div>
+          </details>
         </section>
         <div id="map-sections"></div>
       </div>
@@ -754,8 +746,21 @@
             <button class="ds-btn" id="theme-save" type="button">Сохранить тему</button>
           </div>
         </section>
-      </div>
 
+        <details class="ds-card">
+          <summary>Диагностика: проверка API</summary>
+          <p class="ds-hint">
+            Проверки этапа 0. «С записью» — во временном фрейме на странице «AID Migration»,
+            фрейм удаляется в конце.
+          </p>
+          <div class="ds-actions">
+            <button class="ds-btn" id="run-read" type="button">Проверки на чтение</button>
+            <button class="ds-btn" id="run-write" type="button">Проверки с записью</button>
+            <button class="ds-btn" id="copy-report" type="button" disabled>Скопировать отчёт</button>
+          </div>
+          <div class="ds-results" id="results"></div>
+        </details>
+      </div>
       <div class="ds-scroll" id="tab-assemble">
         <section class="ds-card" aria-labelledby="scope-title">
           <h2 id="scope-title">1. Что собираем</h2>
@@ -779,10 +784,6 @@
         <section class="ds-card" id="screens-card" aria-labelledby="screens-title" hidden>
           <h2 id="screens-title">2. Экраны</h2>
           <p class="ds-hint" id="scan-summary"></p>
-          <label class="ds-check" id="theme-option" hidden>
-            <input type="checkbox" id="dark-from-theme" checked />
-            <span id="theme-label"></span>
-          </label>
           <div class="ds-actions">
             <button class="ds-btn" id="pair-selected" type="button">Связать два выделенных в пару</button>
           </div>
@@ -810,22 +811,14 @@
           </div>
         </div>
 
-        <details class="ds-card">
-          <summary>Диагностика: проверка API</summary>
-          <p class="ds-hint">
-            Проверки этапа 0. «С записью» — во временном фрейме на странице «AID Migration»,
-            фрейм удаляется в конце.
-          </p>
-          <div class="ds-actions">
-            <button class="ds-btn" id="run-read" type="button">Проверки на чтение</button>
-            <button class="ds-btn" id="run-write" type="button">Проверки с записью</button>
-            <button class="ds-btn" id="copy-report" type="button" disabled>Скопировать отчёт</button>
-          </div>
-          <div class="ds-results" id="results"></div>
-        </details>
+
       </div>
 
       <div class="ds-status" id="status" role="status" aria-live="polite"></div>
+      <footer class="ds-footer" id="map-footer" hidden>
+        <button class="ds-btn ds-btn-primary" id="map-apply" type="button" disabled>Применить → ПОСЛЕ</button>
+        <button class="ds-btn" id="map-remove" type="button">Убрать ПОСЛЕ</button>
+      </footer>
       <footer class="ds-footer" id="assemble-footer">
         <button class="ds-btn ds-btn-primary" id="assemble" type="button" disabled>Собрать</button>
         <button class="ds-btn" id="disassemble" type="button">Разобрать сборку</button>

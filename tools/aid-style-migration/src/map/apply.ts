@@ -1,22 +1,21 @@
 /**
- * Применение карты стиля (этап 3b): плитки пересобираются с «Стало»,
- * «Стало · светлая» переводится на токены и стили продукта, «Стало ·
- * тёмная» — её копия в тёмном режиме темы продукта.
+ * Применение карты стиля (этап 3b): рядом с каждой секцией «ДО» —
+ * «ПОСЛЕ» (перевод на токены и стили продукта) и «ПОСЛЕ · тёмная тема»
+ * (он же в тёмном режиме продукта), с той же раскладкой.
  *
  * Исходники и «Было» не меняются. Структура макета не меняется: только
  * привязки цвета, стиля текста, радиусов и отступов. Внутри компонентов —
  * оверрайды инстанса, без отвязки (у агента отвязка уничтожила все 599
- * инстансов — спайк, п. 1). Откат — «Убрать «Стало»»: пересборка без него.
+ * инстансов — спайк, п. 1). Откат — «Убрать «ПОСЛЕ»».
  */
 
-import { assemble, KEY_ROLE, KEY_SECTION, plannedFromWorkPage } from "../assemble/build";
+import { afterSections, KEY_AFTER, KEY_AFTER_KIND, KEY_IMAGE, KEY_PAIR, KEY_ROLE, KEY_SOURCE, SECTION_GAP, sectionsOnWorkPage } from "../assemble/build";
 import { isAnnotationName, outside } from "../lib/annotations";
 import { isSystemName } from "../lib/system";
 import { WORK_PAGE_NAME } from "../lib/workPage";
 import * as store from "../profile/storage";
 import { fillUse, visibleCase } from "../profile/usage";
 import { THEME_ROLES } from "../lib/vocabulary";
-import { DEFAULT_LAYOUT } from "../assemble/layout";
 import { colorAtomId, colorKey, textAtomId, valueAtomId } from "./keys";
 
 /** Решения карты: атом исходника → ключ токена или стиля продукта. */
@@ -201,7 +200,7 @@ async function tokenAlpha(): Promise<Map<string, number>> {
   return out;
 }
 
-/** Коллекция темы продукта и её тёмный режим — для «Стало · тёмная». */
+/** Коллекция темы продукта и её тёмный режим — для «ПОСЛЕ · тёмная тема». */
 async function productDarkMode(): Promise<{ collection: VariableCollection; modeId: string } | null> {
   const profiles = await store.getProfiles();
   const activeId = await store.getActiveProfileId();
@@ -222,60 +221,106 @@ async function productDarkMode(): Promise<{ collection: VariableCollection; mode
   return null;
 }
 
-export async function applyStyle(decisions: Decisions, report: (title: string) => void): Promise<ApplyResult> {
-  const t0 = Date.now();
-  const planned = await plannedFromWorkPage();
-  if (planned.pages.length === 0) throw new Error("На «AID Migration» нет собранных экранов — сначала «Собрать»");
+export interface ApplyResultExtra {
+  sections: number;
+  unpairedDark: number;
+}
 
-  report("пересобираю плитки со «Стало»");
-  await assemble({ pages: planned.pages, darkFromTheme: planned.darkFromTheme, onConflict: "replace", withAfter: true }, (d, t) =>
-    report(`плитки ${d} из ${t}`),
-  );
+function mirrorSection(work: PageNode, before: SectionNode, x: number, name: string, kind: string): SectionNode {
+  const section = figma.createSection();
+  section.name = name;
+  work.appendChild(section);
+  section.x = x;
+  section.y = before.y;
+  section.resizeWithoutConstraints(before.width, before.height);
+  section.setPluginData(KEY_AFTER, before.id);
+  section.setPluginData(KEY_AFTER_KIND, kind);
+  return section;
+}
+
+function copyInto(section: SectionNode, source: SceneNode, at: SceneNode): SceneNode {
+  const copy = source.clone();
+  section.appendChild(copy);
+  copy.x = at.x;
+  copy.y = at.y;
+  return copy;
+}
+
+/**
+ * Для каждой секции «ДО» — «ПОСЛЕ» (перевод на продукт) и «ПОСЛЕ · тёмная
+ * тема» (он же в тёмном режиме продукта) справа, с той же раскладкой.
+ * Тёмная пара исходника в «ПОСЛЕ» — это её светлый двойник, переведённый
+ * и показанный в тёмном режиме продукта: место то же, что у неё в «ДО».
+ */
+export async function applyStyle(decisions: Decisions, report: (title: string) => void): Promise<ApplyResult & ApplyResultExtra> {
+  const t0 = Date.now();
+  const work = figma.root.children.find((p) => p.name === WORK_PAGE_NAME);
+  if (!work) throw new Error("Страницы «AID Migration» нет — сначала соберите макеты на шаге «Собрать»");
+  await work.loadAsync();
+  const befores = sectionsOnWorkPage(work);
+  if (befores.length === 0) throw new Error("На «AID Migration» нет секций «ДО» — сначала «Собрать»");
 
   const dark = await productDarkMode();
-  const work = figma.root.children.find((p) => p.name === WORK_PAGE_NAME)!;
-  const cells = work.children
-    .filter((n): n is SectionNode => n.type === "SECTION" && n.getPluginData(KEY_SECTION) !== "")
-    .flatMap((s) => s.children)
-    .filter((n) => n.getPluginData(KEY_ROLE) === "after-light");
-
-  if (cells.length === 0) {
-    // Пересборка прошла, а ячеек «Стало» нет — молча отчитаться «Готово» нельзя.
-    throw new Error(
-      "«Стало» не создано: в собранных плитках нет экранов для перевода (только картинки или пусто). Пересоберите на вкладке «Сборка» и повторите",
-    );
-  }
   const applier = new Applier(decisions, await tokenAlpha());
+  const setDark = (n: SceneNode) => {
+    if (dark) n.setExplicitVariableModeForCollection(dark.collection, dark.modeId);
+  };
+  let screens = 0;
+  let unpairedDark = 0;
+  let first: SectionNode | null = null;
+
   const prevSkip = figma.skipInvisibleInstanceChildren;
   figma.skipInvisibleInstanceChildren = true;
   try {
-    for (const [i, cell] of cells.entries()) {
-      report(`перевожу экран ${i + 1} из ${cells.length}`);
-      await applier.visit(cell, { width: cell.width, height: cell.height, box: cell.absoluteBoundingBox }, false, true);
-      // «Стало · тёмная» — копия переведённой светлой в тёмном режиме темы продукта; руками не правится.
-      const night = cell.clone();
-      cell.parent!.appendChild(night);
-      night.x = cell.x + cell.width + DEFAULT_LAYOUT.cellGap;
-      night.y = cell.y;
-      night.setPluginData(KEY_ROLE, "after-dark");
-      if (dark) night.setExplicitVariableModeForCollection(dark.collection, dark.modeId);
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    for (const before of befores) {
+      for (const old of afterSections(work, before.id)) old.remove();
+      const pageName = before.name.replace(/^ДО · /, "");
+      const after = mirrorSection(work, before, before.x + before.width + SECTION_GAP, `ПОСЛЕ · ${pageName}`, THEME_ROLES.light);
+      const night = mirrorSection(work, before, after.x + after.width + SECTION_GAP, `ПОСЛЕ · тёмная тема · ${pageName}`, THEME_ROLES.dark);
+      first ??= after;
+
+      const cells = before.children.filter((n) => n.getPluginData(KEY_ROLE));
+      const translated = new Map<string, SceneNode>();
+      // Сначала светлые и картинки: тёмные пары ссылаются на переведённого светлого двойника.
+      for (const cell of cells.filter((n) => n.getPluginData(KEY_ROLE) === "before-light")) {
+        report(`перевожу экран ${++screens}`);
+        const copy = copyInto(after, cell, cell);
+        if (!cell.getPluginData(KEY_IMAGE)) await applier.visit(copy, { width: copy.width, height: copy.height, box: copy.absoluteBoundingBox }, false, true);
+        translated.set(cell.getPluginData(KEY_SOURCE), copy);
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+      for (const cell of cells.filter((n) => n.getPluginData(KEY_ROLE) === "before-dark")) {
+        const twin = translated.get(cell.getPluginData(KEY_PAIR));
+        if (twin) {
+          setDark(copyInto(after, twin, cell));
+          continue;
+        }
+        // Тёмный без пары: переводим как есть — его цвета тёмные, в карте их может не быть.
+        report(`перевожу экран ${++screens}`);
+        unpairedDark++;
+        const copy = copyInto(after, cell, cell);
+        await applier.visit(copy, { width: copy.width, height: copy.height, box: copy.absoluteBoundingBox }, false, true);
+        setDark(copy);
+      }
+      // «ПОСЛЕ · тёмная тема» — всё «ПОСЛЕ» в тёмном режиме продукта; руками не правится.
+      for (const n of [...after.children]) setDark(copyInto(night, n, n));
     }
   } finally {
     figma.skipInvisibleInstanceChildren = prevSkip;
   }
-  if (!dark) applier.failures.unshift("у продукта не задан тёмный режим темы — «Стало · тёмная» совпадает со светлой");
-  // Показать результат: первая переведённая плитка.
-  figma.viewport.scrollAndZoomIntoView([cells[0]]);
-  return { screens: cells.length, ...applier.result, failures: applier.failures, ms: Date.now() - t0 };
+
+  if (!dark) applier.failures.unshift("у продукта не задан тёмный режим темы — «ПОСЛЕ · тёмная тема» совпадает со светлой");
+  await figma.setCurrentPageAsync(work);
+  if (first) figma.viewport.scrollAndZoomIntoView([first]);
+  return { screens, ...applier.result, failures: applier.failures, ms: Date.now() - t0, sections: befores.length, unpairedDark };
 }
 
-/** Откат перевода: пересборка без «Стало». «Было» и исходники не трогаются. */
-export async function removeAfter(report: (title: string) => void): Promise<number> {
-  const planned = await plannedFromWorkPage();
-  if (planned.pages.length === 0) return 0;
-  const result = await assemble({ pages: planned.pages, darkFromTheme: planned.darkFromTheme, onConflict: "replace" }, (d, t) =>
-    report(`плитки ${d} из ${t}`),
-  );
-  return result.rows;
+/** Откат перевода: убрать «ПОСЛЕ». «ДО» и исходники не трогаются. */
+export async function removeAfter(): Promise<number> {
+  const work = figma.root.children.find((p) => p.name === WORK_PAGE_NAME);
+  if (!work) return 0;
+  await work.loadAsync();
+  const all = afterSections(work);
+  for (const s of all) s.remove();
+  return all.length;
 }

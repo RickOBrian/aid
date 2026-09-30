@@ -70,7 +70,7 @@ function renderFooter(): void {
   const rows = rowCount(plan());
   const button = el<HTMLButtonElement>("assemble");
   button.disabled = rows === 0;
-  button.textContent = rows ? `Собрать · ${rows} строк` : "Собрать";
+  button.textContent = rows ? `Собрать · ${rows}` : "Собрать";
 }
 
 function thumb(id: string): HTMLImageElement {
@@ -155,12 +155,6 @@ function renderScreens(): void {
     `Экранов: ${screens}, тёмных пар: ${state.pairs.size}, картинок: ${images}. ` +
     "Имя экрана — показать его на канвасе.";
 
-  const theme = scan.themeCollection;
-  el("theme-option").hidden = !theme;
-  if (theme) {
-    el("theme-label").textContent =
-      `Где тёмного макета нет — «Было · тёмная» из темы исходника: ${theme.name} → ${theme.darkMode}`;
-  }
 
   el("skipped-box").hidden = scan.skippedTotal === 0;
   el("skipped-summary").textContent = `Не экраны: ${scan.skippedTotal}`;
@@ -215,7 +209,7 @@ export function initAssemble(status: (text: string) => void): void {
   el("pair-selected").addEventListener("click", () => send({ type: "pair-selected" }));
 
   el("assemble").addEventListener("click", () => {
-    startAssemble({ pages: plan(), darkFromTheme: el<HTMLInputElement>("dark-from-theme").checked && !el("theme-option").hidden });
+    startAssemble({ pages: plan(), darkFromTheme: false });
   });
   el("conflict-replace").addEventListener("click", () => state.pending && startAssemble({ ...state.pending, onConflict: "replace" }));
   el("conflict-add").addEventListener("click", () => state.pending && startAssemble({ ...state.pending, onConflict: "add" }));
@@ -288,7 +282,7 @@ export const assembleHandlers = {
   done(sections: number, rows: number, ms: number): void {
     state.pending = null;
     renderFooter();
-    setStatus(`Готово: ${sections} секц., ${rows} строк за ${(ms / 1000).toFixed(1)} с — страница «AID Migration»`);
+    setStatus(`Собрано: секций «ДО» ${sections}, экранов ${rows} за ${(ms / 1000).toFixed(1)} с. Дальше — шаг «2 · Перевести»`);
   },
   disassembled(removed: number): void {
     setStatus(removed ? `Убрано секций: ${removed}` : "Собранных секций нет");
