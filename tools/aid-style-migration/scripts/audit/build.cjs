@@ -5,6 +5,8 @@ const { buildSync } = require("esbuild");
 const fs = require("fs");
 const path = require("path");
 const page = process.argv[2] || "2430:22084";
+// Второй аргумент — раннер: runner (статусы) или analyze (разбор спорного).
+const tail = process.argv[3] || "runner";
 const out = buildSync({ entryPoints: [path.join(__dirname, "entry.ts")], bundle: true, minify: true, format: "iife", target: "es2019", charset: "utf8", write: false });
-const runner = fs.readFileSync(path.join(__dirname, "runner.js"), "utf8").replace("__PAGE__", page);
+const runner = fs.readFileSync(path.join(__dirname, `${tail}.js`), "utf8").replace("__PAGE__", page);
 process.stdout.write(out.outputFiles[0].text + runner);
