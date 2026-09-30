@@ -115,3 +115,16 @@ describe("ответы", () => {
     expect(isOpen(qs[0], answers)).toBe(true);
   });
 });
+
+describe("было / стало: значение варианта для элемента файла", () => {
+  it("«зависит от места» — по месту элемента; «всегда X» — X", async () => {
+    const { valueFor } = await import("../src/board/questionBoard");
+    const [q] = buildQuestions(lang([rule("action-main", "disputed", [green, dark])]));
+    const hit = { nodeId: "n", screenId: "s", screenName: "Вход", role: "action-main", layer: "fill" as const, place: "modal" as const, full: false };
+    const split = q.options.find((o) => o.kind === "split")!;
+    expect(valueFor(split, hit)?.token?.name).toBe("Buttons/Primary");
+    expect(valueFor(split, { ...hit, place: "sheet" })?.token?.name).toBe("Buttons/Positive");
+    const always = q.options.find((o) => o.id === "value:t:Buttons/Positive")!;
+    expect(valueFor(always, hit)?.token?.name).toBe("Buttons/Positive");
+  });
+});

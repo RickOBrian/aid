@@ -17,6 +17,9 @@ import type { Layer } from "../core/roles";
 import { roleLabel } from "../core/roleLabels";
 import { LANGUAGE_PAGE_NAME } from "../lib/workPage";
 import type { ThemeModes } from "../profile/themeModes";
+import type { SourceHit, SourceIndex } from "./sourceExamples";
+import { THEME_ROLES } from "../lib/vocabulary";
+import type { QuestionOption } from "../core/questions";
 
 const KEY_BOARD = "sm:board";
 const BOARD_WIDTH = 1720;
@@ -46,6 +49,8 @@ interface Shot {
 /** Живой пример: копия окружения и где в ней элемент (в координатах копии). */
 interface Live {
   copy: SceneNode;
+  /** Путь от копии до элемента — индексы детей: копия повторяет структуру. */
+  path: number[];
   box: Box;
   screen: Uint8Array | null;
   screenBox: Box;
@@ -124,7 +129,7 @@ class Camera {
       if (!tb) continue;
       try {
         const copy = target.clone();
-        return { copy, box: rel(own, tb, 1), screen: await this.screen(scr), screenBox: rel(own, sb, SHOT_WIDTH / sb.width) };
+        return { copy, path: pathTo(target, el), box: rel(own, tb, 1), screen: await this.screen(scr), screenBox: rel(own, sb, SHOT_WIDTH / sb.width) };
       } catch {
         // этот слой не копируется — пробуем следующий
       }
@@ -149,6 +154,26 @@ class Camera {
       return null;
     }
   }
+}
+
+/** Индексы детей от предка до узла. */
+function pathTo(ancestor: SceneNode, node: SceneNode): number[] {
+  const path: number[] = [];
+  let n: BaseNode = node;
+  while (n.id !== ancestor.id && n.parent && "children" in n.parent) {
+    path.unshift((n.parent.children as readonly BaseNode[]).indexOf(n));
+    n = n.parent;
+  }
+  return path;
+}
+
+function follow(root: SceneNode, path: number[]): SceneNode | null {
+  let n: SceneNode = root;
+  for (const i of path) {
+    if (!("children" in n) || !n.children[i]) return null;
+    n = n.children[i];
+  }
+  return n;
 }
 
 function rel(inner: Rect, outer: Rect, scale: number): Box {
@@ -395,6 +420,128 @@ async function liveExample(parent: FrameNode, t: Live, v: RuleValue, screenName:
   parent.appendChild(block);
 }
 
+// ---------------------------------------------------------------------------
+// Было / стало на элементах переводимого файла
+// ---------------------------------------------------------------------------
+
+type Target = Pick<RuleValue, "token" | "hex">;
+
+/** Какое значение даёт вариант ответа этому элементу: у «зависит от …» — по его месту или ширине. */
+export function valueFor(o: QuestionOption, hit: SourceHit): Target | null {
+  if (o.kind === "value" && o.value) return o.value;
+  if (o.kind === "split" && o.split) {
+    const f = o.split.feature;
+    const key = f === "place" ? hit.place : f === "width" ? (hit.full ? "full" : "part") : THEME_ROLES.light;
+    return o.split.map[key] ?? Object.values(o.split.map)[0] ?? null;
+  }
+  return null;
+}
+
+class Recolor {
+  private variables = new Map<string, Variable | null>();
+  failed = false;
+
+  private async variable(key: string): Promise<Variable | null> {
+    if (!this.variables.has(key)) {
+      let v: Variable | null = null;
+      try {
+        v = await figma.variables.importVariableByKeyAsync(key);
+      } catch {
+        this.failed = true;
+      }
+      this.variables.set(key, v);
+    }
+    return this.variables.get(key) ?? null;
+  }
+
+  /** Привязать к элементу копии токен варианта (или цвет без токена). Документ — только копия на доске. */
+  async apply(copy: SceneNode, path: number[], layer: Layer, target: Target): Promise<boolean> {
+    const node = follow(copy, path);
+    if (!node) return false;
+    const field = layer === "stroke" ? "strokes" : "fills";
+    if (!(field in node)) return false;
+    const current = (node as GeometryMixin)[field];
+    if (current === figma.mixed || !Array.isArray(current)) return false;
+    if (node.type === "TEXT") {
+      for (const seg of node.getStyledTextSegments(["fontName"])) await figma.loadFontAsync(seg.fontName);
+    }
+    const paints = [...(current as Paint[])];
+    const i = paints.findIndex((p) => p.type === "SOLID" && p.visible !== false);
+    let base: SolidPaint = i >= 0 ? (paints[i] as SolidPaint) : { type: "SOLID", color: { r: 0, g: 0, b: 0 } };
+    if (target.token) {
+      const v = await this.variable(target.token.key);
+      if (!v) return false;
+      base = figma.variables.setBoundVariableForPaint({ ...base, opacity: 1 }, "color", v);
+    } else {
+      const c = rgb(target.hex);
+      if (!c) return false;
+      base = { type: "SOLID", color: c, opacity: alpha(target.hex) };
+    }
+    if (i >= 0) paints[i] = base;
+    else paints.push(base);
+    (node as GeometryMixin)[field] = paints;
+    return true;
+  }
+}
+
+async function beforeAfter(
+  parent: FrameNode,
+  q: Question,
+  source: SourceIndex,
+  camera: Camera,
+  recolor: Recolor,
+  theme: ThemeModes | null,
+  fonts: Fonts,
+): Promise<void> {
+  const inner = BOARD_WIDTH - PAD * 2;
+  const hits = source.byRole.get(`${q.role}|${q.layer}`) ?? [];
+  text(parent, `Было / стало в вашем файле «${source.file}»`, fonts, { size: 18, bold: true, width: inner });
+  if (!hits.length) {
+    text(parent, `В собранных экранах «ДО» элементов «${roleLabel(q.role)}» не нашлось — ответ сработает, когда они встретятся.`, fonts, { size: 14, color: MUTED, width: inner });
+    return;
+  }
+  const options = q.options.filter((o) => o.kind === "value" || o.kind === "split");
+  for (const hit of hits) {
+    const ex = { screenId: hit.screenId, screenName: hit.screenName, nodeId: hit.nodeId, nodeName: "", file: source.file };
+    const before = await camera.live(ex);
+    if (!before) continue;
+    text(parent, `Экран «${hit.screenName}»`, fonts, { size: 14, bold: true, width: inner });
+    // Нетронутая копия — источник для вариантов: «Было» в обёртке может уменьшиться.
+    const pristine = before.copy.clone();
+    const line = row("Было и варианты", 24);
+    const was = column("Было", 8);
+    text(was, "Было", fonts, { size: 13, bold: true });
+    was.appendChild(themed(before.copy, before.box, "как в макете", undefined, null, null, fonts));
+    line.appendChild(was);
+    for (const [n, o] of options.entries()) {
+      const target = valueFor(o, hit);
+      if (!target) continue;
+      const light = pristine.clone();
+      if (!(await recolor.apply(light, before.path, q.layer, target))) {
+        light.remove();
+        continue;
+      }
+      const dark = light.clone();
+      const col = column(`Вариант ${n + 1}`, 8);
+      text(col, `Вариант ${n + 1}: ${target.token?.name ?? target.hex}`, fonts, { size: 13, bold: true, width: COPY_MAX * 2 + 16 });
+      const pair = row("Светлая и тёмная", 16);
+      pair.appendChild(themed(light, before.box, "Стало · светлая", undefined, theme, theme?.lightModeId ?? null, fonts));
+      if (theme?.darkModeId) pair.appendChild(themed(dark, before.box, "Стало · тёмная", undefined, theme, theme.darkModeId, fonts));
+      else dark.remove();
+      col.appendChild(pair);
+      line.appendChild(col);
+    }
+    pristine.remove();
+    parent.appendChild(line);
+    line.layoutSizingHorizontal = "FILL";
+    line.layoutWrap = "WRAP";
+    line.counterAxisSpacing = 24;
+  }
+  const notes = q.options.filter((o) => o.kind === "not-used" || o.kind === "new-token").map((o) => o.label);
+  if (notes.length) text(parent, `Без «стало»: ${notes.join("; ")}.`, fonts, { size: 13, color: MUTED, width: inner });
+  if (recolor.failed) text(parent, "Часть токенов не импортировалась — подключите библиотеку токенов продукта в этом файле.", fonts, { size: 13, color: MUTED, width: inner });
+}
+
 async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, camera: Camera, theme: ThemeModes | null): Promise<FrameNode> {
   const card = column(v.token?.name ?? v.hex, 12, CARD);
   card.paddingTop = card.paddingBottom = card.paddingLeft = card.paddingRight = 16;
@@ -453,6 +600,8 @@ async function questionFrame(
   fonts: Fonts,
   camera: Camera,
   theme: ThemeModes | null,
+  source: SourceIndex | null,
+  recolor: Recolor,
 ): Promise<FrameNode> {
   const f = column(`Вопрос ${n} · ${roleLabel(q.role)}`, 16, { r: 1, g: 1, b: 1 });
   f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = PAD;
@@ -491,6 +640,9 @@ async function questionFrame(
     cards.counterAxisSpacing = 24;
   }
 
+  if (source) await beforeAfter(f, q, source, camera, recolor, theme, fonts);
+  else text(f, "Было / стало на ваших макетах появится, если собрать доску в переводимом файле после «1 · Собрать».", fonts, { size: 14, color: MUTED, width: inner });
+
   text(f, "Варианты ответа", fonts, { size: 18, bold: true, width: inner });
   q.options.forEach((o, i) => text(f, `${i + 1}. ${o.label}`, fonts, { size: 15, width: inner }));
   text(f, "Свой вариант — заметкой. Отвечать — в окне плагина: «⚙ Продукт» → «Язык продукта».", fonts, { size: 13, color: MUTED, width: inner });
@@ -518,10 +670,12 @@ export async function buildBoard(
   answers: Record<string, Answer>,
   focusId: string | null,
   theme: ThemeModes | null,
+  source: SourceIndex | null,
   report: (title: string) => void,
 ): Promise<void> {
   const fonts = await loadFonts();
   const camera = new Camera();
+  const recolor = new Recolor();
   const page = await languagePage();
   for (const n of [...page.children]) if (n.getPluginData(KEY_BOARD)) n.remove();
 
@@ -542,7 +696,7 @@ export async function buildBoard(
     const q = questions[i];
     report(`доска ${i + 1} из ${questions.length}`);
     const isOpenQ = isOpen(q, answers);
-    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, camera, theme);
+    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, camera, theme, source, recolor);
     page.appendChild(f);
     f.x = 0;
     f.y = y;
