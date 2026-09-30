@@ -20,6 +20,7 @@ import { learnOpenFile } from "./learn";
 import type { ScanScope } from "../assemble/types";
 import { applyAnswers, buildQuestions, isOpen, type Answer, type Question, type TokenCandidate } from "../core/questions";
 import { buildBoard } from "../board/questionBoard";
+import { themeModes } from "./themeModes";
 import { componentsStats, indexComponents, indexTokens, tokensStats } from "./indexFile";
 import { parseFigmaFileKey } from "../lib/figmaUrl";
 import { fileName } from "./rest";
@@ -195,7 +196,7 @@ export async function board(questionId: string | null, report: (title: string) =
   if (!profile) throw new Error("Сначала создайте продукт");
   const { questions, answers } = await languageState(profile);
   if (!questions.length) throw new Error("Вопросов нет — сначала изучите образцы");
-  await buildBoard(profile.name, questions, answers, questionId, report);
+  await buildBoard(profile.name, questions, answers, questionId, await themeModes(profile), report);
 }
 
 export async function forgetLanguageSource(fileName: string): Promise<ProfileState> {

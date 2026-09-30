@@ -1,8 +1,10 @@
 /**
  * Доски вопросов на странице «AID · Язык продукта» (решение Б): канвас
  * показывает подробно, плагин принимает решения. На доску — вопрос,
- * объяснение, по каждому варианту — цвет в светлой и тёмной теме, доля,
- * подписи и примеры из образцов крупно.
+ * объяснение, по каждому варианту — доля, подписи и примеры из образцов:
+ * живые копии элемента в окружении в светлой и тёмной теме (тема —
+ * режимом коллекции продукта на обёртке) и мини-экран картинкой.
+ * Копия — не отвязка: инстансы остаются инстансами.
  *
  * Страница пересобирается целиком: доски плагина помечены pluginData и
  * заменяются; всё остальное на странице (комментарии, заметки людей) не
@@ -14,12 +16,15 @@ import type { Example, RuleValue } from "../core/language";
 import type { Layer } from "../core/roles";
 import { roleLabel } from "../core/roleLabels";
 import { LANGUAGE_PAGE_NAME } from "../lib/workPage";
+import type { ThemeModes } from "../profile/themeModes";
 
 const KEY_BOARD = "sm:board";
-const BOARD_WIDTH = 1280;
+const BOARD_WIDTH = 1720;
 const PAD = 40;
 const GAP = 120;
-const CARD_WIDTH = 580;
+const CARD_WIDTH = 800;
+/** Копия примера шире — уменьшаем: две темы рядом в карточке. */
+const COPY_MAX = (CARD_WIDTH - 32 - 16) / 2;
 const IMAGE_WIDTH = CARD_WIDTH - 32;
 const MARK = { r: 1, g: 0.23, b: 0.19 };
 
@@ -33,6 +38,14 @@ interface Box {
 /** Пример, снятый с канваса: элемент в окружении и мини-экран, с рамками. */
 interface Shot {
   png: Uint8Array;
+  box: Box;
+  screen: Uint8Array | null;
+  screenBox: Box;
+}
+
+/** Живой пример: копия окружения и где в ней элемент (в координатах копии). */
+interface Live {
+  copy: SceneNode;
   box: Box;
   screen: Uint8Array | null;
   screenBox: Box;
@@ -76,7 +89,7 @@ class Camera {
     return this.screens.get(node.id) ?? null;
   }
 
-  async take(ex: Example): Promise<Shot | null> {
+  private async find(ex: Example): Promise<{ el: SceneNode; scr: SceneNode } | null> {
     if (ex.file && ex.file !== figma.root.name) {
       this.elsewhere.add(ex.file);
       return null;
@@ -84,8 +97,45 @@ class Camera {
     const node = await figma.getNodeByIdAsync(ex.nodeId);
     const screen = await figma.getNodeByIdAsync(ex.screenId);
     if (!node || !screen || node.type === "PAGE" || node.type === "DOCUMENT" || screen.type === "PAGE" || screen.type === "DOCUMENT") return null;
-    const el = node as SceneNode;
-    const scr = screen as SceneNode;
+    return { el: node as SceneNode, scr: screen as SceneNode };
+  }
+
+  /**
+   * Копия окружения элемента. Слой внутри инстанса копируется как есть
+   * (вложенные инстансы остаются инстансами); не вышло — копируем
+   * ближайший целый инстанс, если он не больше экрана-строки.
+   */
+  async live(ex: Example): Promise<Live | null> {
+    const found = await this.find(ex);
+    if (!found) return null;
+    const { el, scr } = found;
+    const candidates: SceneNode[] = [this.context(el, scr.id)];
+    for (let p = el.parent; p && p.id !== scr.id && p.type !== "PAGE" && p.type !== "DOCUMENT" && p.type !== "SECTION"; p = p.parent) {
+      if (p.type === "INSTANCE" && p.height <= 400) {
+        candidates.push(p);
+        break;
+      }
+    }
+    const own = el.absoluteBoundingBox;
+    const sb = scr.absoluteBoundingBox;
+    if (!own || !sb) return null;
+    for (const target of candidates) {
+      const tb = target.absoluteBoundingBox;
+      if (!tb) continue;
+      try {
+        const copy = target.clone();
+        return { copy, box: rel(own, tb, 1), screen: await this.screen(scr), screenBox: rel(own, sb, SHOT_WIDTH / sb.width) };
+      } catch {
+        // этот слой не копируется — пробуем следующий
+      }
+    }
+    return null;
+  }
+
+  async take(ex: Example): Promise<Shot | null> {
+    const found = await this.find(ex);
+    if (!found) return null;
+    const { el, scr } = found;
     const target = this.context(el, scr.id);
     const bounds = ("absoluteRenderBounds" in target ? target.absoluteRenderBounds : null) ?? target.absoluteBoundingBox;
     const own = el.absoluteBoundingBox;
@@ -273,7 +323,79 @@ async function example(parent: FrameNode, t: Shot, screenName: string, fonts: Fo
   parent.appendChild(line);
 }
 
-async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, camera: Camera): Promise<FrameNode> {
+/** Рамка вокруг элемента поверх копии. */
+function outline(parent: FrameNode, box: Box): void {
+  const r = figma.createRectangle();
+  r.name = "Элемент";
+  const pad = 3;
+  r.x = Math.max(0, box.x - pad);
+  r.y = Math.max(0, box.y - pad);
+  r.resize(Math.max(4, Math.min(parent.width - r.x, box.w + pad * 2)), Math.max(4, Math.min(parent.height - r.y, box.h + pad * 2)));
+  r.fills = [];
+  r.strokes = [{ type: "SOLID", color: MARK }];
+  r.strokeWeight = 2;
+  r.cornerRadius = 4;
+  parent.appendChild(r);
+}
+
+/**
+ * Обёртка темы: копия внутри, режим коллекции темы продукта — на обёртке.
+ * Фон — поверхность, на которой значение чаще всего лежит в этой теме.
+ */
+function themed(copy: SceneNode, box: Box, caption: string, surface: string | undefined, theme: ThemeModes | null, modeId: string | null, fonts: Fonts): FrameNode {
+  const col = column(caption, 6);
+  const wrap = figma.createFrame();
+  wrap.name = caption;
+  wrap.clipsContent = true;
+  wrap.cornerRadius = 8;
+  const bg = surface ? paint(surface) : null;
+  wrap.fills = bg ? [bg] : [];
+  const before = copy.width;
+  const k = Math.min(1, COPY_MAX / copy.width);
+  if (k < 1 && "rescale" in copy) {
+    try {
+      (copy as SceneNode & { rescale(scale: number): void }).rescale(k);
+    } catch {
+      // не масштабируется — обрежется рамкой обёртки
+    }
+  }
+  wrap.resize(Math.max(1, Math.min(COPY_MAX, copy.width)), Math.max(1, copy.height));
+  wrap.appendChild(copy);
+  copy.x = 0;
+  copy.y = 0;
+  const scaled = before > 0 ? copy.width / before : 1;
+  outline(wrap, { x: box.x * scaled, y: box.y * scaled, w: box.w * scaled, h: box.h * scaled });
+  if (theme && modeId) {
+    try {
+      wrap.setExplicitVariableModeForCollection(theme.collection, modeId);
+    } catch {
+      // режим не ставится — останется тема по умолчанию
+    }
+  }
+  col.appendChild(wrap);
+  text(col, caption, fonts, { size: 12, color: MUTED });
+  return col;
+}
+
+async function liveExample(parent: FrameNode, t: Live, v: RuleValue, screenName: string, theme: ThemeModes | null, fonts: Fonts): Promise<void> {
+  const block = column("Пример", 8);
+  const pair = row("Светлая и тёмная", 16);
+  const second = t.copy.clone();
+  pair.appendChild(themed(t.copy, t.box, "Светлая", v.surfaceLight, theme, theme?.lightModeId ?? null, fonts));
+  if (theme?.darkModeId) pair.appendChild(themed(second, t.box, "Тёмная", v.surfaceDark, theme, theme.darkModeId, fonts));
+  else second.remove();
+  block.appendChild(pair);
+  if (t.screen) {
+    const s = await figma.createImage(t.screen).getSizeAsync();
+    const side = row("Экран", 8);
+    side.appendChild(marked("Экран", t.screen, s.width, s.height, t.screenBox));
+    text(side, `Экран: ${screenName}`, fonts, { size: 12, color: MUTED, width: CARD_WIDTH - 32 - s.width - 8 });
+    block.appendChild(side);
+  }
+  parent.appendChild(block);
+}
+
+async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, camera: Camera, theme: ThemeModes | null): Promise<FrameNode> {
   const card = column(v.token?.name ?? v.hex, 12, CARD);
   card.paddingTop = card.paddingBottom = card.paddingLeft = card.paddingRight = 16;
   card.cornerRadius = 12;
@@ -288,19 +410,27 @@ async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts
       .join(", ");
     text(card, `${v.count} из ${total} · ${Math.round((v.count / total) * 100)} %${where ? ` · ${where}` : ""}`, fonts, { size: 13, color: MUTED, width: IMAGE_WIDTH });
   }
-  const sample = v.labels?.[0] ? `«${v.labels[0]}»` : "Пример текста";
-  const specimens = row("Светлая и тёмная", 16);
-  specimen(specimens, layer, v.hexLight, v.surfaceLight, sample, "Светлая", fonts);
-  specimen(specimens, layer, v.hexDark, v.surfaceDark, sample, "Тёмная", fonts);
-  card.appendChild(specimens);
   if (v.labels?.length) text(card, `Подписи: ${v.labels.map((l) => `«${l}»`).join(", ")}`, fonts, { size: 13, width: IMAGE_WIDTH });
   let shown = 0;
   for (const ex of v.examples ?? []) {
-    const t = await camera.take(ex);
-    if (!t) continue;
-    if (!shown) text(card, "Примеры из образцов — элемент в рамке", fonts, { size: 13, bold: true, width: IMAGE_WIDTH });
-    await example(card, t, ex.screenName, fonts);
+    const live = await camera.live(ex);
+    const shot = live ? null : await camera.take(ex);
+    if (!live && !shot) continue;
+    if (!shown) {
+      const how = theme ? "копии из образцов в светлой и тёмной теме" : "копии из образцов (тема продукта не задана — только как в образце)";
+      text(card, `Примеры — ${how}; элемент в рамке`, fonts, { size: 13, bold: true, width: IMAGE_WIDTH });
+    }
+    if (live) await liveExample(card, live, v, ex.screenName, theme, fonts);
+    else if (shot) await example(card, shot, ex.screenName, fonts);
     shown++;
+  }
+  // Нет живых примеров (другой файл, пробел) — хотя бы образец цвета на фоне.
+  if (!shown) {
+    const sample = v.labels?.[0] ? `«${v.labels[0]}»` : "Пример текста";
+    const specimens = row("Светлая и тёмная", 16);
+    specimen(specimens, layer, v.hexLight, v.surfaceLight, sample, "Светлая", fonts);
+    specimen(specimens, layer, v.hexDark, v.surfaceDark, sample, "Тёмная", fonts);
+    card.appendChild(specimens);
   }
   if (!shown && total > 0) {
     const files = [...new Set((v.examples ?? []).map((e) => e.file).filter((f): f is string => Boolean(f && f !== figma.root.name)))];
@@ -322,6 +452,7 @@ async function questionFrame(
   open: boolean,
   fonts: Fonts,
   camera: Camera,
+  theme: ThemeModes | null,
 ): Promise<FrameNode> {
   const f = column(`Вопрос ${n} · ${roleLabel(q.role)}`, 16, { r: 1, g: 1, b: 1 });
   f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = PAD;
@@ -353,7 +484,7 @@ async function questionFrame(
     text(f, q.values.length ? "Как это в образцах" : "Подходящие токены библиотеки", fonts, { size: 18, bold: true, width: inner });
     const cards = row("Варианты", 24);
     const totalCount = q.values.reduce((s, v) => s + v.count, 0);
-    for (const v of values) cards.appendChild(await valueCard(v, totalCount, q.layer, fonts, camera));
+    for (const v of values) cards.appendChild(await valueCard(v, totalCount, q.layer, fonts, camera, theme));
     f.appendChild(cards);
     cards.layoutSizingHorizontal = "FILL";
     cards.layoutWrap = "WRAP";
@@ -386,6 +517,7 @@ export async function buildBoard(
   questions: Question[],
   answers: Record<string, Answer>,
   focusId: string | null,
+  theme: ThemeModes | null,
   report: (title: string) => void,
 ): Promise<void> {
   const fonts = await loadFonts();
@@ -410,7 +542,7 @@ export async function buildBoard(
     const q = questions[i];
     report(`доска ${i + 1} из ${questions.length}`);
     const isOpenQ = isOpen(q, answers);
-    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, camera);
+    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, camera, theme);
     page.appendChild(f);
     f.x = 0;
     f.y = y;
