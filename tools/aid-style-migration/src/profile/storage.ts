@@ -9,7 +9,6 @@
 
 import type { LanguageSource } from "../core/language";
 import type { Answer } from "../core/questions";
-import type { Shot, Thumb } from "./learn";
 import type { MaterialIndex, ProductProfile } from "./types";
 
 const KEYS = {
@@ -22,7 +21,7 @@ const INDEX_PREFIX = "sm_index:";
 const LANGUAGE_PREFIX = "sm_lang:";
 /** Ответы анкеты — по продукту. */
 const ANSWERS_PREFIX = "sm_answers:";
-/** Картинки примеров — по продукту и узлу образца; список ключей — отдельно, чтобы чистить. */
+/** Бывшие картинки примеров — только чтобы вычистить (`purgeLegacyThumbs`). */
 const THUMB_PREFIX = "sm_thumb:";
 
 function indexKey(profileId: string, materialId: string): string {
@@ -49,7 +48,6 @@ export async function deleteProfile(id: string): Promise<ProductProfile[]> {
   if (target) for (const m of target.materials) await figma.clientStorage.deleteAsync(indexKey(id, m.id));
   await figma.clientStorage.deleteAsync(`${LANGUAGE_PREFIX}${id}`);
   await figma.clientStorage.deleteAsync(`${ANSWERS_PREFIX}${id}`);
-  await deleteThumbs(id);
   const rest = profiles.filter((p) => p.id !== id);
   await figma.clientStorage.setAsync(KEYS.PROFILES, rest);
   if ((await getActiveProfileId()) === id) await setActiveProfileId(rest[0]?.id ?? null);
@@ -122,45 +120,13 @@ export async function saveAnswers(profileId: string, answers: Record<string, Ans
   await figma.clientStorage.setAsync(`${ANSWERS_PREFIX}${profileId}`, answers);
 }
 
-async function thumbIds(profileId: string): Promise<string[]> {
-  const value = await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}`);
-  return Array.isArray(value) ? (value as string[]) : [];
-}
-
-/** clientStorage может вернуть байты не как Uint8Array — приводим. */
-function bytes(value: unknown): Uint8Array | null {
-  if (value instanceof Uint8Array) return value;
-  if (Array.isArray(value)) return new Uint8Array(value as number[]);
-  if (value && typeof value === "object") return new Uint8Array(Object.values(value as Record<string, number>));
-  return null;
-}
-
-/** Картинки примеров: ключ — узел примера (`n:`) или экран (`s:`). */
-export async function saveThumbs(profileId: string, thumbs: Thumb[], shots: Shot[]): Promise<void> {
-  const ids = new Set(await thumbIds(profileId));
-  for (const t of thumbs) {
-    await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}:n:${t.nodeId}`, t);
-    ids.add(`n:${t.nodeId}`);
-  }
-  for (const s of shots) {
-    await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}:s:${s.screenId}`, s);
-    ids.add(`s:${s.screenId}`);
-  }
-  await figma.clientStorage.setAsync(`${THUMB_PREFIX}${profileId}`, [...ids]);
-}
-
-export async function getThumb(profileId: string, nodeId: string): Promise<Thumb | null> {
-  const value = (await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}:n:${nodeId}`)) as Thumb | undefined;
-  const png = value ? bytes(value.png) : null;
-  return value && png ? { ...value, png } : null;
-}
-
-export async function getShot(profileId: string, screenId: string): Promise<Uint8Array | null> {
-  const value = (await figma.clientStorage.getAsync(`${THUMB_PREFIX}${profileId}:s:${screenId}`)) as Shot | undefined;
-  return value ? bytes(value.jpg) : null;
-}
-
-async function deleteThumbs(profileId: string): Promise<void> {
-  for (const id of await thumbIds(profileId)) await figma.clientStorage.deleteAsync(`${THUMB_PREFIX}${profileId}:${id}`);
-  await figma.clientStorage.deleteAsync(`${THUMB_PREFIX}${profileId}`);
+/**
+ * Картинки примеров больше не храним: 5 МБ clientStorage на плагин не
+ * хватило (2026-09-30). Снимаем их при сборке доски в файле образцов.
+ * Старые записи убираем — они занимают место индексов.
+ */
+export async function purgeLegacyThumbs(): Promise<number> {
+  const keys = (await figma.clientStorage.keysAsync()).filter((k) => k.startsWith(THUMB_PREFIX));
+  for (const k of keys) await figma.clientStorage.deleteAsync(k);
+  return keys.length;
 }

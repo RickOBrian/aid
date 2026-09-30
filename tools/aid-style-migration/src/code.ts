@@ -42,6 +42,10 @@ post({
   currentPageId: figma.currentPage.id,
 });
 
+// Разовая уборка: картинки примеров раньше лежали в clientStorage и
+// переполняли его (лимит 5 МБ на плагин).
+profiles.purgeLegacy().catch(() => undefined);
+
 figma.on("selectionchange", () => {
   post({ type: "selection", selectionCount: figma.currentPage.selection.length });
 });

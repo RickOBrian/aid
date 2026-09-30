@@ -41,6 +41,8 @@ export interface Example {
   screenName: string;
   nodeId: string;
   nodeName: string;
+  /** Файл образцов: id узлов действуют только в нём — картинку снимаем там же. */
+  file?: string;
 }
 
 export interface TokenRef {
@@ -185,6 +187,7 @@ export interface ScreenMeta {
   screenId: string;
   screenName: string;
   dark: boolean;
+  file?: string;
 }
 
 /** Собирает наблюдения по экранам одного источника. */
@@ -223,7 +226,7 @@ export class LanguageLearner {
       countTally(value, meta.dark ? "hexDark" : "hexLight", hex);
       countTally(value, meta.dark ? "surfaceDark" : "surfaceLight", toHex(hit.surface));
       if (value.examples.length < EXAMPLES_PER_VALUE && !value.examples.some((e) => e.screenId === meta.screenId)) {
-        value.examples.push({ screenId: meta.screenId, screenName: meta.screenName, nodeId: hit.nodeId, nodeName: hit.nodeName });
+        value.examples.push({ screenId: meta.screenId, screenName: meta.screenName, nodeId: hit.nodeId, nodeName: hit.nodeName, ...(meta.file ? { file: meta.file } : {}) });
       }
 
       const node = byId.get(hit.nodeId);

@@ -10,9 +10,8 @@
  */
 
 import { type Answer, isOpen, type Question } from "../core/questions";
-import type { RuleValue } from "../core/language";
+import type { Example, RuleValue } from "../core/language";
 import type { Layer } from "../core/roles";
-import type { Box, Thumb } from "../profile/learn";
 import { roleLabel } from "../core/roleLabels";
 import { LANGUAGE_PAGE_NAME } from "../lib/workPage";
 
@@ -24,9 +23,86 @@ const CARD_WIDTH = 580;
 const IMAGE_WIDTH = CARD_WIDTH - 32;
 const MARK = { r: 1, g: 0.23, b: 0.19 };
 
-export interface BoardImages {
-  thumb: (nodeId: string) => Promise<Thumb | null>;
-  shot: (screenId: string) => Promise<Uint8Array | null>;
+interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** Пример, снятый с канваса: элемент в окружении и мини-экран, с рамками. */
+interface Shot {
+  png: Uint8Array;
+  box: Box;
+  screen: Uint8Array | null;
+  screenBox: Box;
+}
+
+/** Длинная сторона картинки окружения, px; мельче — текст не читается. */
+const CROP_SIZE = 320;
+const SHOT_WIDTH = 120;
+
+/**
+ * Картинки примеров снимаем при сборке доски, а не храним: 5 МБ
+ * clientStorage на плагин не хватило (2026-09-30). Id узлов действуют
+ * только в файле образцов — в другом файле пример не снимается.
+ */
+class Camera {
+  private screens = new Map<string, Uint8Array | null>();
+  /** Файлы образцов, примеры из которых здесь не снять. */
+  readonly elsewhere = new Set<string>();
+
+  /** Окружение: поднимаемся, пока элемент мельче строки или карточки, не выше 5 уровней и не до экрана. */
+  private context(node: SceneNode, screenId: string): SceneNode {
+    let n: SceneNode = node;
+    for (let i = 0; i < 5 && (n.width < 160 || n.height < 48); i++) {
+      const p = n.parent;
+      if (!p || p.type === "PAGE" || p.type === "DOCUMENT" || p.type === "SECTION" || p.id === screenId) break;
+      n = p as SceneNode;
+    }
+    return n;
+  }
+
+  private async screen(node: SceneNode): Promise<Uint8Array | null> {
+    if (!this.screens.has(node.id)) {
+      let jpg: Uint8Array | null = null;
+      try {
+        jpg = await node.exportAsync({ format: "JPG", constraint: { type: "WIDTH", value: SHOT_WIDTH } });
+      } catch {
+        // экран не отрисовался — пример без мини-экрана
+      }
+      this.screens.set(node.id, jpg);
+    }
+    return this.screens.get(node.id) ?? null;
+  }
+
+  async take(ex: Example): Promise<Shot | null> {
+    if (ex.file && ex.file !== figma.root.name) {
+      this.elsewhere.add(ex.file);
+      return null;
+    }
+    const node = await figma.getNodeByIdAsync(ex.nodeId);
+    const screen = await figma.getNodeByIdAsync(ex.screenId);
+    if (!node || !screen || node.type === "PAGE" || node.type === "DOCUMENT" || screen.type === "PAGE" || screen.type === "DOCUMENT") return null;
+    const el = node as SceneNode;
+    const scr = screen as SceneNode;
+    const target = this.context(el, scr.id);
+    const bounds = ("absoluteRenderBounds" in target ? target.absoluteRenderBounds : null) ?? target.absoluteBoundingBox;
+    const own = el.absoluteBoundingBox;
+    const sb = scr.absoluteBoundingBox;
+    if (!bounds || !own || !sb) return null;
+    const scale = Math.min(1.5, CROP_SIZE / Math.max(bounds.width, bounds.height));
+    try {
+      const png = await target.exportAsync({ format: "PNG", constraint: { type: "SCALE", value: scale } });
+      return { png, box: rel(own, bounds, scale), screen: await this.screen(scr), screenBox: rel(own, sb, SHOT_WIDTH / sb.width) };
+    } catch {
+      return null;
+    }
+  }
+}
+
+function rel(inner: Rect, outer: Rect, scale: number): Box {
+  return { x: (inner.x - outer.x) * scale, y: (inner.y - outer.y) * scale, w: inner.width * scale, h: inner.height * scale };
 }
 
 const INK = { r: 0.11, g: 0.11, b: 0.12 };
@@ -181,26 +257,23 @@ function marked(name: string, png: Uint8Array, width: number, height: number, bo
   return f;
 }
 
-async function example(parent: FrameNode, t: Thumb, screenName: string, images: BoardImages, fonts: Fonts): Promise<void> {
+async function example(parent: FrameNode, t: Shot, screenName: string, fonts: Fonts): Promise<void> {
   const line = row("Пример", 16);
-  const img = figma.createImage(t.png);
-  const size = await img.getSizeAsync();
-  const shotWidth = 120;
-  const maxCrop = IMAGE_WIDTH - shotWidth - 16;
+  const size = await figma.createImage(t.png).getSizeAsync();
+  const maxCrop = IMAGE_WIDTH - SHOT_WIDTH - 16;
   const k = Math.min(1, maxCrop / size.width);
   line.appendChild(marked("Элемент в окружении", t.png, size.width * k, size.height * k, { x: t.box.x * k, y: t.box.y * k, w: t.box.w * k, h: t.box.h * k }));
-  const shot = await images.shot(t.screenId);
-  if (shot) {
-    const s = await figma.createImage(shot).getSizeAsync();
+  if (t.screen) {
+    const s = await figma.createImage(t.screen).getSizeAsync();
     const side = column("Экран", 4);
-    side.appendChild(marked("Экран", shot, s.width, s.height, t.screenBox));
-    text(side, screenName, fonts, { size: 11, color: MUTED, width: shotWidth });
+    side.appendChild(marked("Экран", t.screen, s.width, s.height, t.screenBox));
+    text(side, screenName, fonts, { size: 11, color: MUTED, width: SHOT_WIDTH });
     line.appendChild(side);
   }
   parent.appendChild(line);
 }
 
-async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, images: BoardImages): Promise<FrameNode> {
+async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts, camera: Camera): Promise<FrameNode> {
   const card = column(v.token?.name ?? v.hex, 12, CARD);
   card.paddingTop = card.paddingBottom = card.paddingLeft = card.paddingRight = 16;
   card.cornerRadius = 12;
@@ -223,13 +296,19 @@ async function valueCard(v: RuleValue, total: number, layer: Layer, fonts: Fonts
   if (v.labels?.length) text(card, `Подписи: ${v.labels.map((l) => `«${l}»`).join(", ")}`, fonts, { size: 13, width: IMAGE_WIDTH });
   let shown = 0;
   for (const ex of v.examples ?? []) {
-    const t = await images.thumb(ex.nodeId);
+    const t = await camera.take(ex);
     if (!t) continue;
     if (!shown) text(card, "Примеры из образцов — элемент в рамке", fonts, { size: 13, bold: true, width: IMAGE_WIDTH });
-    await example(card, t, ex.screenName, images, fonts);
+    await example(card, t, ex.screenName, fonts);
     shown++;
   }
-  if (!shown && total > 0) text(card, "Картинок примеров нет — изучите образцы заново", fonts, { size: 12, color: MUTED, width: IMAGE_WIDTH });
+  if (!shown && total > 0) {
+    const files = [...new Set((v.examples ?? []).map((e) => e.file).filter((f): f is string => Boolean(f && f !== figma.root.name)))];
+    const why = files.length
+      ? `Примеры — в файле образцов ${files.map((f) => `«${f}»`).join(", ")}: откройте его и нажмите «Показать подробно» там`
+      : "Примеры не найдены — изучите образцы заново";
+    text(card, why, fonts, { size: 12, color: MUTED, width: IMAGE_WIDTH });
+  }
   return card;
 }
 
@@ -242,7 +321,7 @@ async function questionFrame(
   answer: Answer | undefined,
   open: boolean,
   fonts: Fonts,
-  images: BoardImages,
+  camera: Camera,
 ): Promise<FrameNode> {
   const f = column(`Вопрос ${n} · ${roleLabel(q.role)}`, 16, { r: 1, g: 1, b: 1 });
   f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = PAD;
@@ -274,7 +353,7 @@ async function questionFrame(
     text(f, q.values.length ? "Как это в образцах" : "Подходящие токены библиотеки", fonts, { size: 18, bold: true, width: inner });
     const cards = row("Варианты", 24);
     const totalCount = q.values.reduce((s, v) => s + v.count, 0);
-    for (const v of values) cards.appendChild(await valueCard(v, totalCount, q.layer, fonts, images));
+    for (const v of values) cards.appendChild(await valueCard(v, totalCount, q.layer, fonts, camera));
     f.appendChild(cards);
     cards.layoutSizingHorizontal = "FILL";
     cards.layoutWrap = "WRAP";
@@ -306,11 +385,11 @@ export async function buildBoard(
   productName: string,
   questions: Question[],
   answers: Record<string, Answer>,
-  images: BoardImages,
   focusId: string | null,
   report: (title: string) => void,
 ): Promise<void> {
   const fonts = await loadFonts();
+  const camera = new Camera();
   const page = await languagePage();
   for (const n of [...page.children]) if (n.getPluginData(KEY_BOARD)) n.remove();
 
@@ -331,7 +410,7 @@ export async function buildBoard(
     const q = questions[i];
     report(`доска ${i + 1} из ${questions.length}`);
     const isOpenQ = isOpen(q, answers);
-    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, images);
+    const f = await questionFrame(q, i + 1, questions.length, answers[q.id], isOpenQ, fonts, camera);
     page.appendChild(f);
     f.x = 0;
     f.y = y;
