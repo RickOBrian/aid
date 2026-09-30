@@ -14,6 +14,7 @@ import { THEME_ROLES } from "../lib/vocabulary";
 import { toHex } from "../map/color";
 import { texts, walk, type NNode } from "./node";
 import type { Decision } from "./questions";
+import { mergeQuality, QualityCollector, type QualityObservations } from "./exemplarQuality";
 import { detectRoles, type Layer } from "./roles";
 
 export const LANGUAGE_SCHEMA = "aid-style-language/1";
@@ -122,6 +123,8 @@ export interface LanguageSource {
   screensFound: number;
   rules: LanguageRule[];
   findings: LibraryFinding[];
+  /** Наблюдения для поиска ошибок в самих образцах (`exemplarQuality.ts`). */
+  quality?: QualityObservations;
 }
 
 /**
@@ -140,9 +143,10 @@ export interface StyleLanguage {
   $schema: typeof LANGUAGE_SCHEMA;
   product: { id: string; name: string };
   updatedAt: string;
-  sources: Array<Omit<LanguageSource, "rules" | "findings">>;
+  sources: Array<Omit<LanguageSource, "rules" | "findings" | "quality">>;
   rules: LanguageRule[];
   findings: LibraryFinding[];
+  quality?: QualityObservations;
 }
 
 /**
@@ -222,6 +226,7 @@ export interface ScreenMeta {
 export class LanguageLearner {
   private rules = new Map<string, LanguageRule>();
   private findings = new Map<string, LibraryFinding>();
+  private quality = new QualityCollector();
   screens = 0;
   darkScreens = 0;
 
@@ -235,6 +240,7 @@ export class LanguageLearner {
     for (const hit of detectRoles(screen).hits) {
       const color = hit.paint.color;
       if (!color) continue;
+      this.quality.observe(hit, { screenId: meta.screenId, screenName: meta.screenName, nodeId: hit.nodeId, nodeName: hit.nodeName, ...(meta.file ? { file: meta.file } : {}) }, meta.dark);
       if (!hit.paint.variable && hit.component) {
         // Цвет без токена внутри компонента — находка, не правило: задан в
         // компоненте или переопределён в макете. «Переопределён» как признак
@@ -302,6 +308,7 @@ export class LanguageLearner {
       screensFound,
       rules: finish([...this.rules.values()]),
       findings: [...this.findings.values()].sort((a, b) => b.count - a.count),
+      quality: this.quality.result(),
     };
   }
 }
@@ -469,9 +476,10 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
     $schema: LANGUAGE_SCHEMA,
     product,
     updatedAt,
-    sources: sources.map(({ rules: _rules, findings: _findings, ...meta }) => meta),
+    sources: sources.map(({ rules: _rules, findings: _findings, quality: _quality, ...meta }) => meta),
     rules: finish([...rules.values()]),
     findings: mergeFindings(sources.flatMap((s) => s.findings ?? [])),
+    quality: mergeQuality(sources.map((s) => s.quality)),
   };
 }
 

@@ -21,7 +21,7 @@ const driver = [
   ["Icons/Secondary Dark Ind", "#00000054", "#00000054"],
   ["Buttons/Positive", "#23ad58", "#23ad58"],
   ["Buttons/Positive Deep", "#0e8a3d", "#0e8a3d"],
-].map(([name, hexLight, hexDark]) => ({ key: name, name, hexLight, hexDark }));
+].map(([name, hexLight, hexDark]) => ({ key: name, name, collection: "c", hexLight, hexDark }));
 
 describe("словарь продукта", () => {
   const terms = learnTerms(driver);

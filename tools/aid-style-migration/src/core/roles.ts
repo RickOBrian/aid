@@ -44,6 +44,8 @@ export interface RoleHit {
   component: string | null;
   /** Откуда цвет: из компонента, переопределён автором в инстансе, нарисован вручную. */
   origin: ColorOrigin;
+  /** Заливка поверхности под элементом (с токеном, если есть) — для проверки контраста в другой теме. */
+  under?: NPaint;
 }
 
 export type Place = "screen" | "sheet" | "modal" | "card";
@@ -138,6 +140,8 @@ interface Base {
 interface Ctx {
   screen: NNode;
   surface: Rgba;
+  /** Заливка, давшая `surface`, — чтобы знать её токен. */
+  surfacePaint?: NPaint;
   /** Ближайший контейнер-основа (шторка, модалка, экран) — для «главного действия», заголовка и ручки. */
   base: Base;
   /** Роль, внутри которой находимся: текст и иконки внутри кнопки — её подпись и иконка. */
@@ -334,7 +338,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
   const claimed = new Set<string>();
   const hidden = hiddenNodes(screen);
   /** Нарисованное в порядке отрисовки: поверхность под элементом — последнее, что его накрывает. */
-  const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba; media: boolean }> = [];
+  const painted: Array<{ x: number; y: number; w: number; h: number; color: Rgba; media: boolean; paint?: NPaint }> = [];
   let overlaySeen = false;
   let screenBg: Rgba = WHITE;
   /** Нейтральный текст и иконки: уровень считается после обхода — относительно самого контрастного на экране. */
@@ -342,12 +346,13 @@ export function detectRoles(screen: NNode): ScreenRoles {
 
   let place: Place = "screen";
   let component: string | null = null;
+  let underPaint: NPaint | undefined;
   /** Над картинкой (карта): не-кнопки не учим. */
   let quiet = false;
   const hit = (n: NNode, key: string, layer: Layer, paint: NPaint | undefined, surface: Rgba, from: NNode = n) => {
     if (!paint?.color || quiet) return undefined;
     const origin: ColorOrigin = from.colorOverride ? "override" : component ? "component" : "free";
-    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place, component, origin };
+    const h: RoleHit = { nodeId: n.id, nodeName: n.name, key, layer, paint, surface, place, component, origin, ...(underPaint ? { under: underPaint } : {}) };
     hits.push(h);
     return h;
   };
@@ -362,8 +367,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
     return undefined;
   };
 
-  const paint = (n: NNode, color: Rgba | undefined, under: Rgba) => {
-    if (color) painted.push({ x: n.x, y: n.y, w: n.width, h: n.height, color: composite(color, under), media: false });
+  const paint = (n: NNode, p: NPaint | undefined, under: Rgba) => {
+    if (p?.color) painted.push({ x: n.x, y: n.y, w: n.width, h: n.height, color: composite(p.color, under), media: false, paint: p });
   };
 
   /**
@@ -400,12 +405,13 @@ export function detectRoles(screen: NNode): ScreenRoles {
     const stroke = solidStroke(n);
     const top = root ? undefined : topAt(n);
     const onMedia = Boolean(top?.media);
-    ctx = { ...ctx, surface: root ? WHITE : (top?.color ?? ctx.surface) };
+    ctx = { ...ctx, surface: root ? WHITE : (top?.color ?? ctx.surface), surfacePaint: root ? undefined : top ? top.paint : ctx.surfacePaint };
     // Экран-инстанс — не компонент элемента; иконки — тоже (их цвет — переопределение).
     const own = !root && Math.max(n.width, n.height) > 32 ? componentIdentity(n) : null;
     if (own) ctx = { ...ctx, component: own };
     place = ctx.place;
     component = ctx.component;
+    underPaint = ctx.surfacePaint;
     const wasQuiet = quiet;
     // Над картой учим только кнопки и то, что в них; остальное небольшое —
     // объекты карты (метки, знаки, машина). Крупные панели (шторка) — нет.
@@ -417,7 +423,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, "screen-bg", "fill", fill, WHITE);
       if (fill?.color && fill.color.a > 0.5) {
         screenBg = composite(fill.color, WHITE);
-        next = { ...ctx, surface: screenBg };
+        next = { ...ctx, surface: screenBg, surfacePaint: fill };
       }
     } else if (ctx.owner) {
       // Внутри кнопки, поля, чипа: текст — подпись (время — метка), мелкая
@@ -449,12 +455,12 @@ export function detectRoles(screen: NNode): ScreenRoles {
       hit(n, "bubble", "fill", b?.paint, ctx.surface, b?.node);
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "bubble", ownerPaint: b?.paint };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "bubble", ownerPaint: b?.paint };
     } else if (isBadge(n)) {
       const b = body(n);
       hit(n, "badge", "fill", b?.paint, ctx.surface, b?.node);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "badge", ownerPaint: b?.paint };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "badge", ownerPaint: b?.paint };
     } else if (CONTAINERS.has(n.type) && isButtonLike(n) && hasBoundary(n, ctx.surface, onMedia)) {
       // Кнопка над картой — плавающая, какой бы формы ни была.
       const role = onMedia ? "action-floating" : actionRole(n, ctx, W);
@@ -465,8 +471,8 @@ export function detectRoles(screen: NNode): ScreenRoles {
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
       const surface = c ? composite(c, ctx.surface) : ctx.surface;
-      paint(n, c, ctx.surface);
-      next = { ...ctx, surface, owner: role, ownerPaint: b?.paint };
+      paint(n, b?.paint, ctx.surface);
+      next = { ...ctx, surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: role, ownerPaint: b?.paint };
     } else if (isRow(n, parent, W)) {
       // Строка списка — роль у плашки; тексты внутри — обычная иерархия.
       const b = body(n);
@@ -474,25 +480,25 @@ export function detectRoles(screen: NNode): ScreenRoles {
       if (stroke) hit(n, "row/stroke", "stroke", stroke, ctx.surface);
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
-      paint(n, c, ctx.surface);
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface };
+      paint(n, b?.paint, ctx.surface);
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint };
     } else if (isInput(n, W)) {
       hit(n, "input", "fill", fill, ctx.surface);
       hit(n, "input/stroke", "stroke", stroke, ctx.surface);
-      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, owner: "input" };
+      next = { ...ctx, surface: fill?.color ? composite(fill.color, ctx.surface) : ctx.surface, surfacePaint: fill ?? ctx.surfacePaint, owner: "input" };
     } else if (CONTAINERS.has(n.type) && isFab(n)) {
       const b = body(n);
       hit(n, "action-floating", "fill", b?.paint, ctx.surface, b?.node);
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "action-floating", ownerPaint: b?.paint };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "action-floating", ownerPaint: b?.paint };
     } else if (isChip(n, W)) {
       const b = body(n);
       hit(n, "chip", "fill", b?.paint, ctx.surface, b?.node);
       if (stroke) hit(n, "chip/stroke", "stroke", stroke, ctx.surface);
       if (b) claimed.add(b.node.id);
       const c = b?.paint.color;
-      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, owner: "chip", ownerPaint: b?.paint };
+      next = { ...ctx, surface: c ? composite(c, ctx.surface) : ctx.surface, surfacePaint: b?.paint ?? ctx.surfacePaint, owner: "chip", ownerPaint: b?.paint };
     } else if (SHAPES.has(n.type) && n.height <= 6 && n.width >= 16 && n.width <= 120 && (n.radius ?? 0) >= 1 && isHandle(n, ctx)) {
       hit(n, "handle", "fill", fill, ctx.surface);
     } else if (SHAPES.has(n.type) && ((n.height <= 2 && n.width >= W * 0.3) || (n.width <= 2 && n.height >= 24))) {
@@ -514,7 +520,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
     } else if (SHAPES.has(n.type) && n.children.length === 0 && fill?.color && !(n.width >= W * 0.9 && n.height >= H * 0.8)) {
       // Бесформенная крупная фигура — декор: круг под иконкой, стрелка на карте.
       hit(n, `decor/${isNeutral(fill.color) ? "neutral" : meaningOf(fill.color)}`, "fill", fill, ctx.surface);
-      paint(n, fill.color, ctx.surface);
+      paint(n, fill, ctx.surface);
     } else if (fill?.color) {
       const c = fill.color;
       const full = n.width >= W * 0.9 && n.height >= H * 0.8;
@@ -527,7 +533,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       else if (n.children.length > 0 && (n.radius ?? 0) >= 8) key = "card";
       else key = "surface";
       if (key === "overlay") overlaySeen = true;
-      paint(n, c, ctx.surface);
+      paint(n, fill, ctx.surface);
       hit(n, key, "fill", fill, ctx.surface);
       if (stroke) hit(n, `${key}/stroke`, "stroke", stroke, ctx.surface);
       const opaque = c.a > 0.85;
@@ -535,6 +541,7 @@ export function detectRoles(screen: NNode): ScreenRoles {
       next = {
         ...ctx,
         surface: opaque ? composite(c, ctx.surface) : ctx.surface,
+        surfacePaint: opaque ? fill : ctx.surfacePaint,
         base: isBase ? { x: n.x, y: n.y, width: n.width, height: n.height } : ctx.base,
         place: isBase || key === "card" ? (key as Place) : key.startsWith("card-tint") ? "card" : ctx.place,
       };

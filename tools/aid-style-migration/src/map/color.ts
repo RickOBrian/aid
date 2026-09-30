@@ -20,6 +20,14 @@ function srgbToLinear(c: number): number {
 }
 
 /** CIE Lab (D65). L — светлота 0…100, по ней держим порядок «темнее — светлее». */
+/** «#RRGGBB» или «#RRGGBBAA» → цвет; не разобрать — null. */
+export function hexToRgba(hex: string): Rgba | null {
+  const m = /^#?([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(hex.trim());
+  if (!m) return null;
+  const n = parseInt(m[1], 16);
+  return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255, a: m[2] ? parseInt(m[2], 16) / 255 : 1 };
+}
+
 export function toLab(c: Rgba): { L: number; a: number; b: number } {
   const r = srgbToLinear(c.r);
   const g = srgbToLinear(c.g);

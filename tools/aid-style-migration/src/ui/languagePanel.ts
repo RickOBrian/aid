@@ -223,6 +223,29 @@ function findingsList(lang: StyleLanguage): HTMLElement[] {
   return [fold];
 }
 
+/** Ошибки в образцах: риск — ломается тема или контраст; сомнение — токен не того семейства, цвет без токена. */
+function renderIssues(state: ProfileState): void {
+  const issues = state.issues ?? [];
+  el("issues-fold").hidden = !state.language;
+  const risks = issues.filter((i) => i.level === "risk").length;
+  el("issues-summary").textContent = `Ошибки в образцах: рисков ${risks}, сомнений ${issues.length - risks}`;
+  el("issues-list").replaceChildren(
+    ...(issues.length
+      ? issues.slice(0, 40).map((i) =>
+          h("div", { className: "ds-lang-row" }, [
+            h("div", { className: "ds-map-line" }, [h("span", { text: i.title }), badge(i.level === "risk" ? "риск" : "сомнение", i.level === "risk" ? "danger" : "warning")]),
+            ...i.lines.map((l) => h("div", { className: "ds-screen__meta", text: l })),
+            h(
+              "div",
+              { className: "ds-map-line" },
+              i.examples.map((e) => focusLink(`📍 ${e.screenName}`, e.nodeId, e.screenName)),
+            ),
+          ]),
+        )
+      : [h("p", { className: "ds-hint", text: "Ошибок не нашлось — или токены библиотеки не прочитаны (нужны значения в обеих темах)." })]),
+  );
+}
+
 /** Словарь продукта: слово → смысл стандарта, подтверждено ли в анкете. */
 function renderTerms(state: ProfileState): void {
   const terms = state.terms ?? [];
@@ -283,6 +306,7 @@ function render(): void {
   renderQuestion(state);
   renderStandards(state);
   renderTerms(state);
+  renderIssues(state);
   el("language-sources").replaceChildren(...sourcesList(lang), ...findingsList(lang));
 
   const rules = lang.rules.filter((r) => filter === "all" || r.status === "disputed" || r.status === "missing");
