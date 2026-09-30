@@ -12,6 +12,7 @@ import { FigmaReader } from "../adapters/figmaNode";
 import { isDark } from "../assemble/darkPairs";
 import { classify } from "../assemble/screens";
 import { LanguageLearner, type LanguageSource } from "../core/language";
+import type { ThemedToken } from "../core/exemplarQuality";
 import { collectRoots, facts as screenFacts } from "../assemble/collect";
 import type { ScanScope } from "../assemble/types";
 import { sample } from "./usage";
@@ -25,6 +26,8 @@ const LEARN_LIMIT = 200;
 export async function learnOpenFile(
   scope: ScanScope,
   report: (title: string) => void,
+  /** Токены библиотеки со значениями обеих тем — узнать случаи, которые разъедутся в другой теме. */
+  tokens: ThemedToken[] = [],
 ): Promise<{ source: LanguageSource }> {
   const screens: Array<{ node: SceneNode; dark: boolean }> = [];
   for (const { node, page } of await collectRoots(scope)) {
@@ -32,7 +35,7 @@ export async function learnOpenFile(
     if (classify(f).kind === "screen") screens.push({ node, dark: isDark(f) });
   }
   const chosen = sample(screens, LEARN_LIMIT);
-  const learner = new LanguageLearner();
+  const learner = new LanguageLearner(tokens);
   const reader = new FigmaReader();
 
   const prevSkip = figma.skipInvisibleInstanceChildren;

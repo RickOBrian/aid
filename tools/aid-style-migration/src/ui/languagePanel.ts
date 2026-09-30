@@ -79,7 +79,23 @@ function shapeText(r: LanguageRule): string {
   return parts.join(" · ");
 }
 
+/** Похожее на ошибку сборки образца: сколько не учтено и сколько учтено с пометкой. */
+function asideNote(r: LanguageRule): string {
+  const aside = (r.setAside ?? []).reduce((n, v) => n + v.count, 0);
+  const parts: string[] = [];
+  if (aside) parts.push(`не учтено ${aside} — похоже на ошибку в образце`);
+  if (r.suspectKept) parts.push(`${r.suspectKept} похожи на ошибку, но их большинство — учтены`);
+  return parts.length ? `⚠ ${parts.join("; ")} (см. «Ошибки в образцах»)` : "";
+}
+
 function ruleRow(r: LanguageRule): HTMLElement {
+  const row = ruleBody(r);
+  const note = asideNote(r);
+  if (note) row.appendChild(h("div", { className: "ds-screen__meta", text: note }));
+  return row;
+}
+
+function ruleBody(r: LanguageRule): HTMLElement {
   const [text, tone] = STATUS[r.status];
   const head = h("div", { className: "ds-map-line" }, [h("span", { text: roleLabel(r.role) }), badge(text, tone)]);
   if (r.status === "missing") {

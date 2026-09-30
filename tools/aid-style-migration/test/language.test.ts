@@ -105,18 +105,13 @@ describe("цвет темы — самый частый, а не первый в
     fills: [{ kind: "solid", color: { r: 0.12, g: 0.12, b: 0.14, a: 1 } }],
     strokes: [], strokeWeight: 0, radius: null, children,
   });
-  it("на тёмных экранах белый дважды и чёрный один раз — показываем белый", () => {
-    const card: NNode = {
-      id: "card", name: "card", type: "FRAME", x: 0, y: 80, width: 300, height: 80,
-      fills: [{ kind: "solid", color: { r: 1, g: 1, b: 1, a: 1 } }], strokes: [], strokeWeight: 0, radius: 12,
-      children: [text("black", { r: 0, g: 0, b: 0 })],
-    };
+  it("на тёмных экранах белый дважды и серый один раз — показываем белый", () => {
     const learner = new LanguageLearner();
     learner.add(screen("s1", [text("w1", { r: 1, g: 1, b: 1 })]), { screenId: "s1", screenName: "s1", dark: true });
     learner.add(screen("s2", [text("w2", { r: 1, g: 1, b: 1 })]), { screenId: "s2", screenName: "s2", dark: true });
-    // Третий случай — тот же токен, но чёрный (например, на экране с другим режимом).
-    void card;
-    learner.add(screen("s3", [text("black", { r: 0, g: 0, b: 0 })]), { screenId: "s3", screenName: "s3", dark: true });
+    // Третий случай — тот же токен, но другой цвет (например, экран в другом режиме).
+    // Чёрный на тёмном не подходит: нечитаемое откладывается как ошибка образца.
+    learner.add(screen("s3", [text("gray", { r: 0.7, g: 0.7, b: 0.7 })]), { screenId: "s3", screenName: "s3", dark: true });
     const lang = mergeSources({ id: "p", name: "П" }, [learner.source("f", "t", 3)], "t");
     const v = lang.rules.find((r) => r.role === "text/primary")?.values[0];
     expect(v?.count).toBe(3);

@@ -12,6 +12,7 @@ import { THEME_ROLES } from "../lib/vocabulary";
 import { EXPECTED_ROLES, type Feature, findSplit, FREE_DRAWN, type LanguageRule, type RuleValue, type StyleLanguage, type TokenRef } from "./language";
 import { roleGroup, roleLabel } from "./roleLabels";
 import { slotFor } from "../standards/standards";
+import type { SetAsideReason } from "./exemplarQuality";
 import { CONCEPT_LABELS, conceptOf, learnTerms, type ProductTerm, type TermConcept } from "./tokenTerms";
 
 /** Строка-подсказка стандарта: ориентир, не решение. */
@@ -166,6 +167,30 @@ function variantLine(v: RuleValue, total: number): string {
   return tail ? `${head}: ${tail}` : head;
 }
 
+const REASON_WORDS: Record<SetAsideReason, string> = {
+  "low-contrast": "плохо читается прямо в образце",
+  "other-theme": "в другой теме поменяет цвет или перестанет читаться",
+  family: "покрашено токеном чужого семейства",
+};
+
+/**
+ * Что в образцах похоже на ошибку сборки и не взято в правило (или взято,
+ * потому что таких случаев большинство). Пусто — ничего не откладывали.
+ */
+function asideLines(rule: LanguageRule): string[] {
+  const out: string[] = [];
+  const aside = rule.setAside ?? [];
+  if (aside.length) {
+    const n = aside.reduce((s, v) => s + v.count, 0);
+    const parts = aside.slice(0, 3).map((v) => `${valueName(v)} — ${times(v.count)}, ${REASON_WORDS[v.reason]}`);
+    out.push(`Не учтено ${times(n)} — похоже на ошибку сборки образца: ${parts.join("; ")}${aside.length > 3 ? " и др." : ""}. Подробно — «Ошибки в образцах».`);
+  }
+  if (rule.suspectKept) {
+    out.push(`${times(rule.suspectKept)} похоже на ошибку сборки образца, но таких случаев не меньше половины — поэтому они учтены как вариант продукта. Проверьте в «Ошибках в образцах».`);
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 // Разделяющий признак
 // ---------------------------------------------------------------------------
@@ -188,6 +213,7 @@ function contradiction(rule: LanguageRule): Question {
   } else {
     lines.push("Ни место, ни ширина, ни тема не объясняют разницу — возможно, дело в смысле действия или в ошибках образцов.");
   }
+  lines.push(...asideLines(rule));
   lines.push(standardLine(rule.role));
   lines.push(`От ответа зависит, как плагин оформит «${label}» при переводе макетов.`);
 
@@ -245,6 +271,7 @@ function outlier(rule: LanguageRule): Question | null {
       `Почти всегда «${label}» — ${valueName(main)}: ${times(main.count)} из ${rule.total}.`,
       `Иначе — ${times(restCount)}:`,
       ...shown.map((v) => variantLine(v, rule.total)),
+      ...asideLines(rule),
       "Это ошибки в образцах или отдельный случай, который продукту нужен?",
     ],
     impact: restCount,
@@ -304,6 +331,7 @@ function gap(rule: LanguageRule, tokens: TokenCandidate[]): Question {
     title: `«${label}»: в образцах нет`,
     lines: [
       `В изученных образцах нет ни одного элемента «${label}».`,
+      ...asideLines(rule),
       "Если такой элемент встретится в переводимых макетах, плагину не на что опереться — ответ станет правилом.",
       standardLine(rule.role),
       candidates.length ? "Подходящие по имени токены библиотеки — ниже." : "Подходящих по имени токенов в библиотеке не нашлось.",
@@ -337,6 +365,7 @@ function thin(rule: LanguageRule): Question {
     lines: [
       `В образцах «${label}» встречается всего ${times(rule.total)}: ${valueName(v)}${ex ? ` на экране «${ex.screenName}»` : ""}${quoteLabels(v) ? `, ${quoteLabels(v)}` : ""}.`,
       "Правило из одного-двух случаев может оказаться случайностью. Подтвердите его или оставьте вопрос открытым, пока не появятся ещё образцы.",
+      ...asideLines(rule),
       standardLine(rule.role),
     ],
     impact: rule.total,

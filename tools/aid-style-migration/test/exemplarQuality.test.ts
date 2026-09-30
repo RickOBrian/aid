@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import { checkExemplars } from "../src/core/exemplarQuality";
 import { LanguageLearner, mergeSources } from "../src/core/language";
+import { buildQuestions } from "../src/core/questions";
 import type { NNode, NPaint } from "../src/core/node";
 
 const tokens = [
@@ -33,8 +34,8 @@ function screen(label: NPaint, extra: NNode[] = []): NNode {
   return node({ name: "s", width: 360, height: 720, fills: [tok("Bg/Primary", 1, 1, 1)], children: [...extra, button] });
 }
 
-function learn(screens: NNode[]) {
-  const l = new LanguageLearner();
+function learn(screens: NNode[], withTokens = false) {
+  const l = new LanguageLearner(withTokens ? tokens : []);
   screens.forEach((s, i) => l.add(s, { screenId: `s${i}`, screenName: `Экран ${i}`, dark: false }));
   return mergeSources({ id: "p", name: "П" }, [l.source("f", "t", screens.length)], "t");
 }
@@ -94,5 +95,59 @@ describe("тёмное на тёмном", () => {
     l.add(dark, { screenId: "d", screenName: "Тёмный", dark: true });
     const lang = mergeSources({ id: "p", name: "П" }, [l.source("f", "t", 1)], "t");
     expect(checkExemplars(lang.quality, tokens).some((i) => i.kind === "low-contrast" && i.title.startsWith("Плохо читается: Icons/Secondary Dark Ind"))).toBe(true);
+  });
+});
+
+describe("похожее на ошибку — не в правило", () => {
+  const inverted = () => screen(tok("Texts/Primary Inverted", 1, 1, 1));
+  const lightInd = () => screen(tok("Texts/Primary Light Ind", 1, 1, 1));
+
+  it("Inverted на зелёной кнопке в меньшинстве — отложено, правило по остальным, спора нет", () => {
+    const lang = learn([lightInd(), lightInd(), lightInd(), lightInd(), inverted()], true);
+    const rule = lang.rules.find((r) => r.setAside?.length);
+    expect(rule?.values.map((v) => v.token?.name)).toEqual(["Texts/Primary Light Ind"]);
+    expect(rule?.total).toBe(4);
+    expect(rule?.setAside?.[0]).toMatchObject({ reason: "other-theme", count: 1 });
+    expect(rule?.status).toBe("proposed");
+    // Проверка ошибок по-прежнему показывает это место.
+    expect(checkExemplars(lang.quality, tokens).some((i) => i.kind === "other-theme")).toBe(true);
+  });
+
+  it("без токенов библиотеки тему не проверить — случай остаётся в правиле", () => {
+    const lang = learn([lightInd(), lightInd(), lightInd(), lightInd(), inverted()]);
+    expect(lang.rules.some((r) => r.setAside?.length)).toBe(false);
+  });
+
+  it("похожих на ошибку большинство — это вариант продукта: в правиле, анкета просит проверить", () => {
+    const lang = learn([inverted(), inverted(), inverted(), lightInd()], true);
+    const rule = lang.rules.find((r) => r.suspectKept);
+    expect(rule?.suspectKept).toBe(3);
+    expect(rule?.values[0].token?.name).toBe("Texts/Primary Inverted");
+    expect(rule?.setAside).toBeUndefined();
+  });
+
+  it("анкета называет отложенное", () => {
+    // 2 варианта подписи поровну — спор; плюс 1 Inverted — отложен.
+    const darkInd = () => screen(tok("Texts/Primary Dark Ind", 0, 0, 0, 0.87));
+    const lang = learn([lightInd(), lightInd(), lightInd(), darkInd(), darkInd(), darkInd(), inverted()], true);
+    const q = buildQuestions(lang).find((x) => x.kind === "contradiction" && x.role.endsWith("/label"));
+    expect(q?.lines.some((l) => l.startsWith("Не учтено 1 раз — похоже на ошибку сборки образца: Texts/Primary Inverted"))).toBe(true);
+  });
+
+  it("чужое семейство среди обычного текста той же роли — в сторону", () => {
+    const body = Array.from({ length: 25 }, (_, i) => text(`Строка ${i}`, tok("Texts/Primary", 0, 0, 0, 0.87), 16, 60 + i * 20));
+    const odd = text("Строка", tok("Icons/Primary", 0, 0, 0, 0.87), 16, 600);
+    const lang = learn([screen(tok("Texts/Primary Light Ind", 1, 1, 1), [...body, odd])]);
+    const rule = lang.rules.find((r) => r.role === "text/primary")!;
+    expect(rule.values.map((v) => v.token?.name)).toEqual(["Texts/Primary"]);
+    expect(rule.setAside?.[0]).toMatchObject({ reason: "family", count: 1 });
+  });
+
+  it("чужое семейство — единственный способ в своей роли: остаётся, но помечено", () => {
+    const body = Array.from({ length: 25 }, (_, i) => text(`Строка ${i}`, tok("Texts/Primary", 0, 0, 0, 0.87), 16, 60 + i * 20));
+    const odd = text("Отменить", tok("Icons/Warning", 0.84, 0.14, 0.28), 16, 600);
+    const lang = learn([screen(tok("Texts/Primary Light Ind", 1, 1, 1), [...body, odd])]);
+    const rule = lang.rules.find((r) => r.values.some((v) => v.token?.name === "Icons/Warning"));
+    expect(rule?.suspectKept).toBe(1);
   });
 });

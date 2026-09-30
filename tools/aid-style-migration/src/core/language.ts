@@ -14,7 +14,7 @@ import { THEME_ROLES } from "../lib/vocabulary";
 import { toHex } from "../map/color";
 import { texts, walk, type NNode } from "./node";
 import type { Decision } from "./questions";
-import { mergeQuality, QualityCollector, type QualityObservations } from "./exemplarQuality";
+import { alienTokens, mergeQuality, QualityCollector, suspectOf, type QualityObservations, type SetAsideReason, type ThemedToken } from "./exemplarQuality";
 import { detectRoles, type Layer } from "./roles";
 
 export const LANGUAGE_SCHEMA = "aid-style-language/1";
@@ -83,6 +83,13 @@ export interface RuleValue {
   features: Partial<Record<Feature, Record<string, number>>>;
   /** Подписи на элементе (у кнопок, чипов) или сам текст (у подписей). */
   labels: string[];
+  /** Из них похожи на ошибку сборки образца, но оставлены: таких не меньше половины роли. */
+  suspect?: number;
+}
+
+/** Случаи, похожие на ошибку сборки образца: в правило не взяты (`exemplarQuality.ts`). */
+export interface AsideValue extends RuleValue {
+  reason: SetAsideReason;
 }
 
 export interface Counted<T> {
@@ -117,6 +124,17 @@ export interface LanguageRule {
    * управления (отмечен / нет, включён / нет): у каждого состояния своё.
    */
   byState?: Array<{ state: string; value: number }>;
+  /**
+   * Случаи, похожие на ошибку сборки образца, — в правило не взяты
+   * (решение Principal Designer, 2026-09-30). Анкета о них говорит.
+   */
+  setAside?: AsideValue[];
+  /**
+   * Похожих на ошибку случаев не меньше, чем обычных, — это основной вариант
+   * продукта, а не ошибка: оставлены в правиле, анкета просит проверить.
+   * Сумма `suspect` значений — считается заново при каждом итоге.
+   */
+  suspectKept?: number;
 }
 
 export interface LanguageSource {
@@ -200,6 +218,38 @@ function valueId(v: Pick<RuleValue, "token" | "hex">): string {
   return v.token ? `t:${v.token.key}` : `h:${v.hex}`;
 }
 
+function asideId(v: Pick<AsideValue, "token" | "hex" | "reason">): string {
+  return `${valueId(v)}|${v.reason}`;
+}
+
+/** Добавить значение в список: одинаковое (по `key`) складывается. */
+function mergeValue<T extends RuleValue>(list: T[], v: T, key: (x: T) => string): void {
+  const found = list.find((x) => key(x) === key(v));
+  if (!found) {
+    list.push({
+      ...v,
+      examples: [...v.examples],
+      features: Object.fromEntries(Object.entries(v.features ?? {}).map(([f, m]) => [f, { ...m }])),
+      tally: Object.fromEntries(Object.entries(v.tally ?? {}).map(([k, m]) => [k, { ...m }])),
+      labels: [...(v.labels ?? [])],
+    });
+    return;
+  }
+  found.count += v.count;
+  if (v.suspect) found.suspect = (found.suspect ?? 0) + v.suspect;
+  found.light += v.light;
+  found.dark += v.dark;
+  for (const [k, m] of Object.entries(v.tally ?? {}) as Array<[TallyKey, Record<string, number>]>) {
+    for (const [hex, n] of Object.entries(m)) countTally(found, k, hex, n);
+  }
+  for (const [f, m] of Object.entries(v.features ?? {}) as Array<[Feature, Record<string, number>]>) {
+    const into = (found.features[f] ??= {});
+    for (const [k, n] of Object.entries(m)) into[k] = (into[k] ?? 0) + n;
+  }
+  for (const w of v.labels ?? []) if (found.labels.length < LABELS_PER_VALUE && !found.labels.includes(w)) found.labels.push(w);
+  found.examples = [...found.examples, ...v.examples].slice(0, EXAMPLES_PER_VALUE);
+}
+
 function emptyRule(role: string, layer: Layer): LanguageRule {
   return { role, layer, status: "missing", total: 0, values: [], textStyles: [], textCases: [], radius: [], height: [] };
 }
@@ -227,13 +277,22 @@ export interface ScreenMeta {
   file?: string;
 }
 
-/** Собирает наблюдения по экранам одного источника. */
+/**
+ * Собирает наблюдения по экранам одного источника. Токены библиотеки со
+ * значениями обеих тем — чтобы узнать случаи, которые разъедутся в другой
+ * теме, и не брать их в правило; без токенов проверяется только контраст.
+ */
 export class LanguageLearner {
   private rules = new Map<string, LanguageRule>();
   private findings = new Map<string, LibraryFinding>();
   private quality = new QualityCollector();
+  private tokens: Map<string, ThemedToken>;
   screens = 0;
   darkScreens = 0;
+
+  constructor(tokens: ThemedToken[] = []) {
+    this.tokens = new Map(tokens.map((t) => [t.key, t]));
+  }
 
   add(screen: NNode, meta: ScreenMeta): void {
     this.screens++;
@@ -260,16 +319,21 @@ export class LanguageLearner {
       const id = ruleId(hit.key, hit.layer);
       const rule = this.rules.get(id) ?? emptyRule(hit.key, hit.layer);
       this.rules.set(id, rule);
-      rule.total++;
+      const why = suspectOf(hit, this.tokens);
+      if (!why) rule.total++;
 
       const v = hit.paint.variable;
       const token = v ? { key: v.key, name: v.name, collection: v.collection } : null;
       const hex = toHex(color);
-      const vid = valueId({ token, hex });
-      let value = rule.values.find((x) => valueId(x) === vid);
-      if (!value) {
-        value = { token, hex, count: 0, light: 0, dark: 0, examples: [], features: {}, labels: [] };
-        rule.values.push(value);
+      const fresh = (): RuleValue => ({ token, hex, count: 0, light: 0, dark: 0, examples: [], features: {}, labels: [] });
+      let value: RuleValue;
+      if (why) {
+        const aside = (rule.setAside ??= []);
+        const id = asideId({ token, hex, reason: why });
+        value = aside.find((x) => asideId(x) === id) ?? (aside[aside.push({ ...fresh(), reason: why }) - 1] as RuleValue);
+      } else {
+        const vid = valueId({ token, hex });
+        value = rule.values.find((x) => valueId(x) === vid) ?? rule.values[rule.values.push(fresh()) - 1];
       }
       value.count++;
       if (meta.dark) value.dark++;
@@ -295,6 +359,7 @@ export class LanguageLearner {
         .map((x) => x.trim().replace(/\s+/g, " "))
         .filter((x) => x.length > 0 && x.length <= 40);
       for (const w of words) if (value.labels.length < LABELS_PER_VALUE && !value.labels.includes(w)) value.labels.push(w);
+      if (why) continue;
       if (node.text) {
         if (node.text.styleKey) bumpCounted(rule.textStyles, { key: node.text.styleKey, name: node.text.styleName ?? "" }, eqStyle);
         bumpCounted(rule.textCases, visibleCase(node.text.characters, node.text.textCase), eq);
@@ -399,9 +464,39 @@ function byCount<T extends { count: number }>(list: T[]): T[] {
   return [...list].sort((a, b) => b.count - a.count);
 }
 
+/**
+ * Случаи, похожие на ошибку образца: чужое семейство (видно только по
+ * всем правилам) — в сторону; а если похожих на ошибку не меньше, чем
+ * обычных, это основной вариант продукта — возвращаем в правило.
+ */
+function setAside(rules: LanguageRule[]): LanguageRule[] {
+  const alien = alienTokens(rules.flatMap((r) => r.values.filter((v) => v.token).map((v) => ({ layer: r.layer, name: v.token!.name, count: v.count }))));
+  return rules.map((r0) => {
+    const r: LanguageRule = { ...r0, values: [...r0.values], setAside: [...(r0.setAside ?? [])] };
+    for (const v of r0.values) {
+      if (!v.token || !alien.has(`${r.layer}|${v.token.name}`)) continue;
+      r.values = r.values.filter((x) => x !== v);
+      r.total -= v.count;
+      mergeValue<AsideValue>(r.setAside!, { ...v, reason: "family" }, asideId);
+    }
+    const aside = r.setAside!.reduce((n, v) => n + v.count, 0);
+    if (aside > 0 && aside >= r.total) {
+      for (const { reason: _reason, ...v } of r.setAside!) mergeValue(r.values, { ...v, suspect: v.count }, valueId);
+      r.total += aside;
+      r.setAside = [];
+    }
+    const kept = r.values.reduce((n, v) => n + (v.suspect ?? 0), 0);
+    if (kept) r.suspectKept = kept;
+    else delete r.suspectKept;
+    if (!r.setAside!.length) delete r.setAside;
+    else r.setAside = byCount(r.setAside!);
+    return r;
+  });
+}
+
 /** Сортировка, статус и пустые ожидаемые роли. */
 function finish(rules: LanguageRule[]): LanguageRule[] {
-  const out = rules.map((r): LanguageRule => {
+  const out = setAside(rules).map((r): LanguageRule => {
     const values = byCount(r.values);
     const share = r.total ? values[0].count / r.total : 0;
     let status: RuleStatus = r.total === 0 ? "missing" : share >= DOMINANT_SHARE ? "proposed" : "disputed";
@@ -433,7 +528,7 @@ function finish(rules: LanguageRule[]): LanguageRule[] {
       height: byCount(r.height),
     };
   });
-  const seen = out.filter((r) => r.total > 0).map((r) => r.role);
+  const seen = out.filter((r) => r.total > 0 || r.setAside?.length).map((r) => r.role);
   for (const [role, layer] of EXPECTED_ROLES) {
     if (!seen.some((x) => x === role || x.startsWith(`${role}/`))) out.push(emptyRule(role, layer));
   }
@@ -449,36 +544,13 @@ export function mergeSources(product: { id: string; name: string }, sources: Lan
   const rules = new Map<string, LanguageRule>();
   for (const s of sources) {
     for (const r of s.rules) {
-      if (r.total === 0) continue;
+      if (r.total === 0 && !r.setAside?.length) continue;
       const id = ruleId(r.role, r.layer);
       const into = rules.get(id) ?? emptyRule(r.role, r.layer);
       rules.set(id, into);
       into.total += r.total;
-      for (const v of r.values) {
-        const found = into.values.find((x) => valueId(x) === valueId(v));
-        if (found) {
-          found.count += v.count;
-          found.light += v.light;
-          found.dark += v.dark;
-          for (const [k, m] of Object.entries(v.tally ?? {}) as Array<[TallyKey, Record<string, number>]>) {
-            for (const [hex, n] of Object.entries(m)) countTally(found, k, hex, n);
-          }
-          for (const [f, m] of Object.entries(v.features ?? {}) as Array<[Feature, Record<string, number>]>) {
-            const into2 = (found.features[f] ??= {});
-            for (const [k, n] of Object.entries(m)) into2[k] = (into2[k] ?? 0) + n;
-          }
-          for (const w of v.labels ?? []) if (found.labels.length < LABELS_PER_VALUE && !found.labels.includes(w)) found.labels.push(w);
-          found.examples = [...found.examples, ...v.examples].slice(0, EXAMPLES_PER_VALUE);
-        } else {
-          into.values.push({
-            ...v,
-            examples: [...v.examples],
-            features: Object.fromEntries(Object.entries(v.features ?? {}).map(([f, m]) => [f, { ...m }])),
-            tally: Object.fromEntries(Object.entries(v.tally ?? {}).map(([k, m]) => [k, { ...m }])),
-            labels: [...(v.labels ?? [])],
-          });
-        }
-      }
+      for (const v of r.values) mergeValue(into.values, v, valueId);
+      for (const v of r.setAside ?? []) mergeValue((into.setAside ??= []), v, asideId);
       mergeCounted(into.textStyles, r.textStyles, eqStyle);
       mergeCounted(into.textCases, r.textCases, eq);
       mergeCounted(into.radius, r.radius, eq);

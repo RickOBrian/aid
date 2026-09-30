@@ -184,7 +184,7 @@ async function languageState(profile: ProductProfile): Promise<Pick<ProfileState
 export async function learn(scope: ScanScope, report: (title: string) => void): Promise<{ state: ProfileState; screens: number }> {
   const profile = await activeProfile();
   if (!profile) throw new Error("Сначала создайте продукт");
-  const { source } = await learnOpenFile(scope, report);
+  const { source } = await learnOpenFile(scope, report, await tokenCandidates(profile));
   if (source.screens === 0) return { state: await state(), screens: 0 };
   await store.saveLanguageSources(profile.id, upsertSource(await store.getLanguageSources(profile.id), source));
   return { state: await state(), screens: source.screens };

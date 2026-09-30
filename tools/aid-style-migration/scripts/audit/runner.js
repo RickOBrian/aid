@@ -28,10 +28,29 @@ for (const n of roots) {
   if (f&&!dark){ let c=f.color; if(f.boundVariables&&f.boundVariables.color){ const v=await figma.variables.getVariableByIdAsync(f.boundVariables.color.id); const r=v&&v.resolveForConsumer(n).value; if(r&&r.r!==undefined)c=r; } dark = lum(c)<0.2; }
   screens.push({n,dark});
 }
-const reader = new A.FigmaReader(); const learner = new A.LanguageLearner();
-for (const {n,dark} of screens) { const tree = await reader.read(n); if (tree) learner.add(tree,{screenId:n.id,screenName:n.name,dark}); }
+const reader = new A.FigmaReader();
+const trees=[]; for (const {n,dark} of screens) { const tree = await reader.read(n); if (tree) trees.push({n,dark,tree}); }
+// Токены с цветами обеих тем — как tokenCandidates в плагине, но по переменным, которые встретились в образцах.
+const ids=new Set(); const walkT=(x)=>{ for (const p of [...(x.fills||[]),...(x.strokes||[])]) if (p.variable) ids.add(p.variable.id); (x.children||[]).forEach(walkT); };
+trees.forEach(t=>walkT(t.tree));
+const hex=(c)=>"#"+[c.r,c.g,c.b].map(x=>Math.round(x*255).toString(16).padStart(2,"0")).join("")+(c.a!==undefined&&c.a<1?Math.round(c.a*255).toString(16).padStart(2,"0"):"");
+async function valueIn(v, re, depth=0) {
+  const col = await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId);
+  const mode = (col&&col.modes.find(m=>re.test(m.name)))||(col&&col.modes[0]);
+  const val = mode&&v.valuesByMode[mode.modeId];
+  if (val&&val.type==="VARIABLE_ALIAS"&&depth<5) { const t=await figma.variables.getVariableByIdAsync(val.id); return t?valueIn(t,re,depth+1):null; }
+  return val&&val.r!==undefined?hex(val):null;
+}
+const tokens=[];
+for (const id of ids) { const v=await figma.variables.getVariableByIdAsync(id); if(!v||v.resolvedType!=="COLOR") continue;
+  tokens.push({key:v.key,name:v.name,hexLight:await valueIn(v,/day|light|свет|дн/i),hexDark:await valueIn(v,/night|dark|тём|темн|ноч/i)}); }
+const learner = new A.LanguageLearner(tokens);
+for (const {n,dark,tree} of trees) learner.add(tree,{screenId:n.id,screenName:n.name,dark});
 const lang = A.mergeSources({id:"p",name:"P"},[learner.source("f","t",screens.length)],"t");
 const st={}; for(const r of lang.rules){ const k=r.status+(r.byComponent?"+byComp":"")+(r.byState?"+byState":""); st[k]=(st[k]||0)+1; }
-const lines=[`screens=${screens.length} dark=${screens.filter(s=>s.dark).length} statuses=${JSON.stringify(st)} findings=${lang.findings.length}`];
+const issues=A.checkExemplars(lang.quality,tokens);
+const lines=[`screens=${screens.length} dark=${screens.filter(s=>s.dark).length} tokens=${tokens.length} statuses=${JSON.stringify(st)} findings=${lang.findings.length} issues=${issues.length}`];
 for (const r of lang.rules.filter(r=>r.status==="disputed")) lines.push(`D ${r.role}|${r.layer}|${r.total}|`+r.values.slice(0,3).map(v=>`${clean(v.token?v.token.name:v.hex,24)}x${v.count}`).join(", "));
+// Отложено как похожее на ошибку образца и оставлено, потому что таких большинство.
+for (const r of lang.rules.filter(r=>r.setAside||r.suspectKept)) lines.push(`A ${r.role}|${r.layer}|${r.status}|kept=${r.total}|susp=${r.suspectKept||0}|`+(r.setAside||[]).slice(0,3).map(v=>`${v.reason}:${clean(v.token?v.token.name:v.hex,24)}x${v.count}`).join(", "));
 return lines.join("\n");
