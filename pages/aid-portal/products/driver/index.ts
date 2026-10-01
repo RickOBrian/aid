@@ -14,6 +14,7 @@ export { typographySections } from '../../typographyData';
 export { spacingTokens } from '../../spacingData';
 export { radiusTokens } from '../../radiusData';
 export { shadowSections } from '../../shadowsData';
+export { gradientSections } from '../../gradientsData';
 export { iconSections } from '../../iconsData';
 
 import componentRegistryJson from '../../component-registry.json';

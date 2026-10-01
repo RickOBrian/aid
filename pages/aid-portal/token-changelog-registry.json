@@ -96,6 +96,12 @@
       "productId": "driver"
     },
     {
+      "collectionName": "driver-gradients",
+      "artifact": "Gradients",
+      "pageFile": "GradientsPage.tsx",
+      "productId": "driver"
+    },
+    {
       "collectionName": "driver-spacing-sem",
       "artifact": "Spacing/Semantic",
       "pageFile": "SpacingPage.tsx",

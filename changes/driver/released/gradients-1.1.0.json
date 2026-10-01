@@ -1,0 +1,31 @@
+{
+  "id": "gradients-1.1.0",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Gradients",
+  "collectionName": "driver-gradients",
+  "product": "driver",
+  "changeSummary": "Новый раздел Presentbook: градиенты Driver из Figma «🚖 WB AID Driver Tokens & Styles» — 4 стиля (Silver, Gold, Motivation, Bottom) на 12 переменных коллекции gradients, режимы day и night. Changelog перенесён из таблицы Figma (node 352:204): 1.0.0 и 1.1.0. Данные и changelog совпадают с Figma.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Перенесено из changelog Figma: 1.0.0 — коллекция и стили, 1.1.0 — режим night"
+  },
+  "addedTokens": [
+    "Gradients/Silver",
+    "Gradients/Gold",
+    "Gradients/Motivation",
+    "Gradients/Bottom"
+  ],
+  "relatedTokenChanges": [],
+  "reviewRoute": "/tokens/gradients",
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
+  "figmaChangelogSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=352-204",
+  "sourcePath": "pages/aid-portal/gradientsData.ts",
+  "status": "released",
+  "releasedVersion": "1.1.0",
+  "created": "2026-10-01",
+  "released": "2026-10-01",
+  "author": "sergej"
+}
