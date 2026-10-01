@@ -6,17 +6,61 @@
   "purpose": "водитель выполняет принятый заказ: едет к точке, видит маршрут и детали, подтверждает шаги",
   "confidence": "inferred",
   "basis": [
-    { "type": "review", "ref": "02" },
-    { "type": "decision", "ref": "D-12" }
+    {
+      "type": "review",
+      "ref": "02"
+    },
+    {
+      "type": "decision",
+      "ref": "D-12"
+    }
   ],
   "evidence": [
-    { "file": "TLVVI8O6J0FGUcHzxxLq8H", "node": "4102:4467", "name": "Order Page / Full info", "review": "02" }
+    {
+      "file": "TLVVI8O6J0FGUcHzxxLq8H",
+      "node": "4102:4467",
+      "name": "Order Page / Full info",
+      "review": "02"
+    }
   ],
   "layers": [
-    { "order": 1, "role": "карта с маршрутом", "contains": ["линия маршрута (не компонент, токен)", "пин точки (компонент Pins)", "бейдж время-расстояние (компонент ДС)", "машина водителя (иконка)"], "required": null, "confidence": "reference", "note": "состав объектов карты — решение PD (02 П1, урок 2.5)" },
-    { "order": 2, "role": "кнопки карты", "contains": ["Buttons/fab/secondary — назад, моё местоположение, чат с клиентом", "Buttons/fab/primary — «Навигатор»"], "required": null, "confidence": "inferred" },
-    { "order": 3, "role": "шторка заказа", "required": true, "confidence": "inferred" },
-    { "order": 4, "role": "закреплённое действие поверх шторки", "component": "Buttons/slider", "required": true, "confidence": "inferred", "note": "контент шторки прокручивается под ним (урок 1.3)" }
+    {
+      "order": 1,
+      "role": "карта с маршрутом",
+      "contains": [
+        "линия маршрута (не компонент, токен)",
+        "пин точки (компонент Pins)",
+        "бейдж время-расстояние (компонент ДС)",
+        "машина водителя (иконка)"
+      ],
+      "required": null,
+      "confidence": "reference",
+      "note": "состав объектов карты — решение PD (02 П1, R11)"
+    },
+    {
+      "order": 2,
+      "role": "кнопки карты",
+      "contains": [
+        "Buttons/fab/secondary — назад, моё местоположение, чат с клиентом",
+        "Buttons/fab/primary — «Навигатор»"
+      ],
+      "required": null,
+      "confidence": "inferred"
+    },
+    {
+      "order": 3,
+      "role": "шторка заказа",
+      "required": true,
+      "confidence": "inferred"
+    },
+    {
+      "order": 4,
+      "role": "закреплённое действие поверх шторки",
+      "component": "Buttons/slider",
+      "required": true,
+      "confidence": "inferred",
+      "note": "контент шторки прокручивается под ним (R9)"
+    }
   ],
   "container": {
     "role": "шторка заказа",
@@ -25,18 +69,82 @@
     "source": "detached",
     "scroll": true,
     "blocks": [
-      { "order": 1, "role": "шапка: что сейчас происходит и время", "component": "Headers/order", "required": null, "confidence": "inferred" },
-      { "order": 2, "role": "маршрут: точки с подъездом и комментариями", "component": "Rows/adresses/order", "required": null, "confidence": "inferred", "note": "подъезд — Badges/small; комментарий к точке — Widgets/comment, два стиля (02 П5)" },
-      { "order": 3, "role": "общий комментарий к заказу", "component": "Widgets/comment", "variant": { "Type": "General Order" }, "required": null, "confidence": "inferred" },
-      { "order": 4, "role": "клиент и звонок", "component": "Rows/ActiveOrderClientView", "required": null, "confidence": "inferred" },
-      { "order": 5, "role": "тариф и опции", "component": null, "required": null, "confidence": "reference", "note": "как в «Предложении»: один компонент с необязательными частями (01 В3)" },
-      { "order": 6, "role": "цена", "component": "Rows/price", "required": null, "confidence": "inferred" }
+      {
+        "order": 1,
+        "role": "шапка: что сейчас происходит и время",
+        "component": "Headers/order",
+        "required": null,
+        "confidence": "inferred"
+      },
+      {
+        "order": 2,
+        "role": "маршрут: точки с подъездом и комментариями",
+        "component": "Rows/adresses/order",
+        "required": null,
+        "confidence": "inferred",
+        "note": "подъезд — Badges/small; комментарий к точке — Widgets/comment, два стиля (02 П5)"
+      },
+      {
+        "order": 3,
+        "role": "общий комментарий к заказу",
+        "component": "Widgets/comment",
+        "variant": {
+          "Type": "General Order"
+        },
+        "required": null,
+        "confidence": "inferred"
+      },
+      {
+        "order": 4,
+        "role": "клиент и звонок",
+        "component": "Rows/ActiveOrderClientView",
+        "required": null,
+        "confidence": "inferred"
+      },
+      {
+        "order": 5,
+        "role": "тариф и опции",
+        "component": null,
+        "required": null,
+        "confidence": "reference",
+        "note": "как в «Предложении»: один компонент с необязательными частями (01 В3)"
+      },
+      {
+        "order": 6,
+        "role": "цена",
+        "component": "Rows/price",
+        "required": null,
+        "confidence": "inferred"
+      }
     ]
   },
-  "primaryAction": { "placement": "pinned-over-container", "component": "Buttons/slider", "variant": { "Active": "True" } },
+  "primaryAction": {
+    "placement": "pinned-over-container",
+    "component": "Buttons/slider",
+    "variant": {
+      "Active": "True"
+    }
+  },
   "distinguishedFrom": [
-    { "pattern": "order-offer", "by": "главное действие закреплено поверх шторки (слайдер), шторка длинная и прокручивается" }
+    {
+      "pattern": "order-offer",
+      "by": "главное действие закреплено поверх шторки (слайдер), шторка длинная и прокручивается"
+    }
   ],
   "notErrors": [],
-  "findings": ["F02-01", "F02-02", "F02-03", "F02-04", "F02-05", "F02-06", "F02-07", "F02-08", "F02-09", "F02-10", "F02-11", "F02-12", "F02-13"]
+  "findings": [
+    "F02-01",
+    "F02-02",
+    "F02-03",
+    "F02-04",
+    "F02-05",
+    "F02-06",
+    "F02-07",
+    "F02-08",
+    "F02-09",
+    "F02-10",
+    "F02-11",
+    "F02-12",
+    "F02-13"
+  ]
 }

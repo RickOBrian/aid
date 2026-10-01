@@ -52,59 +52,11 @@
 
 ## 2. Правила построения
 
-**R1. Цвет содержимого выбирается по поведению плашки под ним** (вывод,
-держится во всех компонентах):
-
-| Плашка | Текст / иконка на ней | Примеры эталона |
-|---|---|---|
-| меняется как фон | `Texts/Primary`, `Icons/Primary` | `default` Secondary, `fab/secondary`, `floating`, `alert`, чат `Left` |
-| инверсная | `… Inverted` | `default`/`wide`/`big` Primary, `fab/primary`, `Tab` Active, выбранный день/неделя в `selector` |
-| всегда тёмная / цветная | `… Light Ind` | `full` и `slider` (зелёные), `bar/slider` и `bar/button` Balance на `Bg/Actions`, чат `Right` на `Messages/Action`, `push`, `StatusInfo`, аватар-буквы на `Pastels/Azure` |
-| всегда светлая | `… Dark Ind` | общий комментарий на `Pastels/Parchment`, `tag` на `Pastels/Nebula`, тариф в карточке `card`, бустер `Custom` |
-
-Отсюда проверка для макета: **токен содержимого должен соответствовать
-поведению плашки**. Это ровно то, что аудит ловил как «в другой теме
-поменяет цвет, а плашка — нет».
-
-**R2. Состояния** (эталон):
-- Неактивно (`Active=False`): фон `Buttons/Disabled` (у зелёных —
-  `Buttons/Positive Disabled`), текст `Texts/Disabled`, иконка
-  `Icons/Inactive`.
-- Ошибка: всё семейство `Warning` — обводка `Strokes/Warning`, текст и
-  подсказка `Texts/Warning`, иконка `Icons/Warning`, курсор `Icons/Warning`.
-- Фокус поля: обводка `Strokes/Primary`; неактивное поле —
-  `Strokes/Secondary`, заблокированное — `Strokes/Tertiary`.
-- Загрузка: лоадер `Controls/Checked`.
-- Разрушительное действие: у Primary — фон `Buttons/Warning`; у Secondary и
-  Transparent — фон свой, а текст и иконка `Texts/Warning`, `Icons/Warning`.
-
-**R3. Выбор** (эталон): выбранный сегмент, день, неделя —
-`Buttons/Primary` + `Texts/Primary Inverted`; невыбранный —
-`Buttons/Disabled` + `Texts/Primary`. Сегментированные табы — трек
-`Bg/Secondary`, активный сегмент `Buttons/Floating`. Чекбокс и
-переключатель — только `Controls/*`.
-
-**R4. Иконки по смыслу** (эталон + описания токенов):
-- `Icons/Informative` — справочные (подъезд, шеврон в строке, «закрыть» в инструкции);
-- `Icons/Accent` — сёрдж, мотивация, заголовочные иконки;
-- `Icons/Special` — очередь, аэропорт;
-- `Icons/Positive` — «готово», стрелка слайдера, пройденный шаг;
-- **иконки опций** (детское кресло, животные, некурящий, оплата картой,
-  автобусная полоса) — цветные `Pastels/*`, одна пастель на иконке и на
-  обводке бейджа (`medium/color`). Это не статус.
-
-**R5. Бейджи** (эталон):
-- `small` (подъезд) — обводка `Strokes/Secondary`, иконка `Icons/Informative`, текст `Texts/Tertiary`;
-- `reward` (мотивация, сёрдж) — обводка `Strokes/Informative`, иконка `Icons/Accent`, текст `Texts/Primary`;
-- `medium/mono` — `Strokes/Primary`, `Icons/Primary`;
-- `notification`, `Counter`, `mini_notification` — красные (`Icons/Warning`, `Fields/Warning`) с `Light Ind` содержимым.
-
-**R6. Комментарии** (эталон): комментарий к адресу — `Messages/Default` +
-`Texts/Primary`; общий комментарий к заказу — `Pastels/Parchment` +
-`Texts/Primary Dark Ind` (подпись над ним — `Texts/Secondary`).
-
-**R7. Линии** (эталон): разделители — `Strokes/Separator`; линия маршрута
-между адресами — `Strokes/Informative`.
+Перенесены в `rules.json` (R1–R7 и правила паттернов R8–R12): у каждого
+правила там есть отношение к стандарту ДС, уверенность и автор. Здесь
+только оглавление, чтобы не держать текст правила в двух местах:
+R1 — цвет содержимого по поведению плашки; R2 — состояния; R3 — выбор;
+R4 — иконки по смыслу; R5 — бейджи; R6 — комментарии; R7 — линии.
 
 ---
 

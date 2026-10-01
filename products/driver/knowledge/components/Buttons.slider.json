@@ -2,42 +2,161 @@
   "format": "aid-knowledge/0",
   "kind": "component",
   "id": "Buttons/slider",
-  "library": { "file": "o0IUYIS7vadbmXPXd81ql9", "page": "Buttons", "set": "slider", "node": "89:6142" },
-  "purpose": { "interaction": "action", "meaning": "подтвердить шаг заказа смахиванием («На месте»)", "confidence": "inferred" },
+  "library": {
+    "file": "o0IUYIS7vadbmXPXd81ql9",
+    "page": "Buttons",
+    "set": "slider",
+    "node": "89:6142"
+  },
+  "purpose": {
+    "interaction": "action",
+    "meaning": "подтвердить шаг заказа смахиванием («На месте»)",
+    "confidence": "inferred"
+  },
   "notThis": [
-    { "looksLike": "Buttons/full", "is": "другой компонент", "why": "full — нажатие, последний блок шторки предложения; slider — смахивание, закреплён поверх шторки активного заказа", "confidence": "inferred" }
+    {
+      "looksLike": "Buttons/full",
+      "is": "другой компонент",
+      "why": "full — нажатие, последний блок шторки предложения; slider — смахивание, закреплён поверх шторки активного заказа",
+      "confidence": "inferred"
+    }
   ],
   "parts": [
-    { "path": "gradient bg", "slot": null, "optional": false },
-    { "path": "button/Left piece", "slot": null, "optional": false },
-    { "path": "button/Right piece", "slot": null, "optional": false },
-    { "path": "button/content/Left icon box", "slot": "leading", "optional": false, "note": "ручка смахивания со стрелкой" },
-    { "path": "button/content/На месте", "slot": "content", "optional": false },
-    { "path": "button/content/Right icon box", "slot": "trailing", "optional": false, "note": "pin_dot — точка назначения" }
+    {
+      "path": "gradient bg",
+      "slot": null,
+      "optional": false
+    },
+    {
+      "path": "button/Left piece",
+      "slot": null,
+      "optional": false
+    },
+    {
+      "path": "button/Right piece",
+      "slot": null,
+      "optional": false
+    },
+    {
+      "path": "button/content/Left icon box",
+      "slot": "leading",
+      "optional": false,
+      "note": "ручка смахивания со стрелкой"
+    },
+    {
+      "path": "button/content/На месте",
+      "slot": "content",
+      "optional": false
+    },
+    {
+      "path": "button/content/Right icon box",
+      "slot": "trailing",
+      "optional": false,
+      "note": "pin_dot — точка назначения"
+    }
   ],
   "variants": [
-    { "props": { "Active": "True" }, "meaning": "можно подтвердить", "confidence": "reference" },
-    { "props": { "Active": "False" }, "meaning": "недоступно", "confidence": "reference" }
+    {
+      "props": {
+        "Active": "True"
+      },
+      "meaning": "можно подтвердить",
+      "confidence": "reference"
+    },
+    {
+      "props": {
+        "Active": "False"
+      },
+      "meaning": "недоступно",
+      "confidence": "reference"
+    }
   ],
   "states": {
-    "library": ["default", "disabled"],
+    "library": [
+      "default",
+      "disabled"
+    ],
     "note": "Active=False — состояние disabled по стандарту (R2)",
     "missing": []
   },
   "content": [
-    { "rule": "подпись — шаг заказа, который подтверждается («На месте»)", "confidence": "inferred" }
+    {
+      "rule": "подпись — шаг заказа, который подтверждается («На месте»)",
+      "confidence": "inferred"
+    }
   ],
   "style": [
-    { "part": "button/content", "layer": "fill", "tokens": { "Active=True": "Buttons/Positive", "Active=False": "Buttons/Positive Disabled" }, "rule": "R2", "confidence": "reference" },
-    { "part": "button/content/Left icon box/Color background", "layer": "fill", "tokens": { "Active=True": "Icons/Primary Light Ind" }, "rule": "R1", "confidence": "reference" },
-    { "part": "button/content/Left icon box/arrow_right", "layer": "fill", "tokens": { "Active=True": "Icons/Positive", "Active=False": "Icons/Inactive" }, "rule": "R4", "confidence": "reference" },
-    { "part": "button/content/На месте", "layer": "text", "tokens": { "Active=True": "Texts/Primary Light Ind", "Active=False": "Texts/Disabled" }, "rule": "R1", "confidence": "reference", "note": "плашка зелёная в обеих темах → Light Ind" },
-    { "part": "button/content/Right icon box/pin_dot", "layer": "fill", "tokens": { "Active=True": "Icons/Secondary Light Ind", "Active=False": "Icons/Inactive" }, "rule": "R1", "confidence": "reference" },
-    { "part": "gradient bg", "layer": "fill", "tokens": { "*": "градиент (стиль заливки)" }, "rule": null, "confidence": "reference" }
+    {
+      "part": "button/content",
+      "layer": "fill",
+      "tokens": {
+        "Active=True": "Buttons/Positive",
+        "Active=False": "Buttons/Positive Disabled"
+      },
+      "rule": "R2",
+      "confidence": "reference"
+    },
+    {
+      "part": "button/content/Left icon box/Color background",
+      "layer": "fill",
+      "tokens": {
+        "Active=True": "Icons/Primary Light Ind"
+      },
+      "rule": "R1",
+      "confidence": "reference"
+    },
+    {
+      "part": "button/content/Left icon box/arrow_right",
+      "layer": "fill",
+      "tokens": {
+        "Active=True": "Icons/Positive",
+        "Active=False": "Icons/Inactive"
+      },
+      "rule": "R4",
+      "confidence": "reference"
+    },
+    {
+      "part": "button/content/На месте",
+      "layer": "text",
+      "tokens": {
+        "Active=True": "Texts/Primary Light Ind",
+        "Active=False": "Texts/Disabled"
+      },
+      "rule": "R1",
+      "confidence": "reference",
+      "note": "плашка зелёная в обеих темах → Light Ind"
+    },
+    {
+      "part": "button/content/Right icon box/pin_dot",
+      "layer": "fill",
+      "tokens": {
+        "Active=True": "Icons/Secondary Light Ind",
+        "Active=False": "Icons/Inactive"
+      },
+      "rule": "R1",
+      "confidence": "reference"
+    },
+    {
+      "part": "gradient bg",
+      "layer": "fill",
+      "tokens": {
+        "*": "градиент (стиль заливки)"
+      },
+      "rule": null,
+      "confidence": "reference"
+    }
   ],
-  "usedIn": ["active-order"],
+  "usedIn": [
+    "active-order"
+  ],
   "deviations": [
-    { "finding": "F02-12", "summary": "подпись Texts/Primary Inverted вместо Light Ind — ночью тёмная на зелёном" },
-    { "finding": null, "summary": "стрелка Buttons/Positive вместо Icons/Positive — 30 случаев в аудите макетов (logic.md §4)" }
+    {
+      "finding": "F02-12",
+      "summary": "подпись Texts/Primary Inverted вместо Light Ind — ночью тёмная на зелёном"
+    },
+    {
+      "finding": null,
+      "summary": "стрелка Buttons/Positive вместо Icons/Positive — 30 случаев в аудите макетов (logic.md §4)"
+    }
   ]
 }

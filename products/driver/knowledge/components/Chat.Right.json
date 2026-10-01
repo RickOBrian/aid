@@ -2,45 +2,145 @@
   "format": "aid-knowledge/0",
   "kind": "component",
   "id": "Chat/Right",
-  "library": { "file": "o0IUYIS7vadbmXPXd81ql9", "page": "Chat", "set": "Right", "node": "89:4115" },
-  "purpose": { "interaction": "display", "meaning": "своё сообщение в чате с клиентом", "confidence": "inferred" },
+  "library": {
+    "file": "o0IUYIS7vadbmXPXd81ql9",
+    "page": "Chat",
+    "set": "Right",
+    "node": "89:4115"
+  },
+  "purpose": {
+    "interaction": "display",
+    "meaning": "своё сообщение в чате с клиентом",
+    "confidence": "inferred"
+  },
   "notThis": [
-    { "looksLike": "Chat/Left", "is": "другой компонент", "why": "Left — сообщение собеседника: плашка Messages/Default меняется с темой, текст Texts/Primary; Right — своё: Messages/Action, Light Ind", "confidence": "reference" }
+    {
+      "looksLike": "Chat/Left",
+      "is": "другой компонент",
+      "why": "Left — сообщение собеседника: плашка Messages/Default меняется с темой, текст Texts/Primary; Right — своё: Messages/Action, Light Ind",
+      "confidence": "reference"
+    }
   ],
   "parts": [
-    { "path": "bubble", "slot": null, "optional": false },
-    { "path": "bubble/✏️ Text here", "slot": "content", "optional": false },
-    { "path": "bubble/time", "slot": null, "optional": false },
-    { "path": "edit_round", "slot": "leading", "optional": true, "note": "есть только при Side=Top (по анатомии); назначение иконки — проверить" }
+    {
+      "path": "bubble",
+      "slot": null,
+      "optional": false
+    },
+    {
+      "path": "bubble/✏️ Text here",
+      "slot": "content",
+      "optional": false
+    },
+    {
+      "path": "bubble/time",
+      "slot": null,
+      "optional": false
+    },
+    {
+      "path": "edit_round",
+      "slot": "leading",
+      "optional": true,
+      "note": "есть только при Side=Top (по анатомии); назначение иконки — проверить"
+    }
   ],
   "variants": [
-    { "props": { "Side": "Top|Bottom" }, "meaning": "положение в серии сообщений — проверить", "confidence": "verify" },
-    { "props": { "Rows": "Single|Several" }, "meaning": "одна строка или несколько", "confidence": "inferred" },
-    { "props": { "State": "Default" }, "meaning": "единственное значение; у Left в этом свойстве Sent|Printing", "confidence": "reference" }
+    {
+      "props": {
+        "Side": "Top|Bottom"
+      },
+      "meaning": "положение в серии сообщений — проверить",
+      "confidence": "verify"
+    },
+    {
+      "props": {
+        "Rows": "Single|Several"
+      },
+      "meaning": "одна строка или несколько",
+      "confidence": "inferred"
+    },
+    {
+      "props": {
+        "State": "Default"
+      },
+      "meaning": "единственное значение; у Left в этом свойстве Sent|Printing",
+      "confidence": "reference"
+    }
   ],
   "states": {
-    "library": ["default"],
+    "library": [
+      "default"
+    ],
     "missing": [
       {
         "name": "не отправлено",
-        "parts": ["иконка ошибки рядом с пузырём (attention_round, Icons/Warning)", "текст повтора под пузырём (Texts/Warning)"],
+        "parts": [
+          "иконка ошибки рядом с пузырём (attention_round, Icons/Warning)",
+          "текст повтора под пузырём (Texts/Warning)"
+        ],
         "finding": "F03-01",
-        "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "D-13", "text": "нужно отдельное состояние" },
+        "decision": {
+          "by": "Principal Designer",
+          "date": "2026-10-01",
+          "ref": "D-13",
+          "text": "нужно отдельное состояние"
+        },
         "open": "Ф3: по стандарту это значение статуса доставки (как Sent/Printing у Left), а не состояние error"
       }
     ]
   },
   "content": [
-    { "rule": "время сообщения не должно обрезаться краем экрана", "confidence": "inferred", "basis": "03 А1 — пузыри шире экрана" }
+    {
+      "rule": "время сообщения не должно обрезаться краем экрана",
+      "confidence": "inferred",
+      "basis": "03 А1 — пузыри шире экрана"
+    }
   ],
   "style": [
-    { "part": "bubble", "layer": "fill", "tokens": { "*": "Messages/Action" }, "rule": "R1", "confidence": "reference" },
-    { "part": "bubble/✏️ Text here", "layer": "text", "tokens": { "*": "Texts/Primary Light Ind" }, "rule": "R1", "confidence": "reference", "note": "плашка тёмная/цветная в обеих темах" },
-    { "part": "bubble/time", "layer": "text", "tokens": { "*": "Texts/Secondary Light Ind" }, "rule": "R1", "confidence": "reference" },
-    { "part": "edit_round", "layer": "fill", "tokens": { "Side=Top": "Icons/Primary" }, "rule": null, "confidence": "inferred", "note": "индексы анатомии [0,1] сопоставлены с вариантами Side=Top по порядку в наборе" }
+    {
+      "part": "bubble",
+      "layer": "fill",
+      "tokens": {
+        "*": "Messages/Action"
+      },
+      "rule": "R1",
+      "confidence": "reference"
+    },
+    {
+      "part": "bubble/✏️ Text here",
+      "layer": "text",
+      "tokens": {
+        "*": "Texts/Primary Light Ind"
+      },
+      "rule": "R1",
+      "confidence": "reference",
+      "note": "плашка тёмная/цветная в обеих темах"
+    },
+    {
+      "part": "bubble/time",
+      "layer": "text",
+      "tokens": {
+        "*": "Texts/Secondary Light Ind"
+      },
+      "rule": "R1",
+      "confidence": "reference"
+    },
+    {
+      "part": "edit_round",
+      "layer": "fill",
+      "tokens": {
+        "Side=Top": "Icons/Primary"
+      },
+      "rule": null,
+      "confidence": "inferred",
+      "note": "индексы анатомии [0,1] сопоставлены с вариантами Side=Top по порядку в наборе"
+    }
   ],
   "usedIn": [],
   "deviations": [
-    { "finding": "F03-01", "summary": "состояние ошибки отправки собрано подменой иконки и отдельным текстом" }
+    {
+      "finding": "F03-01",
+      "summary": "состояние ошибки отправки собрано подменой иконки и отдельным текстом"
+    }
   ]
 }

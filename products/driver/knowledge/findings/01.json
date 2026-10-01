@@ -2,108 +2,321 @@
   "format": "aid-knowledge/0",
   "kind": "findings",
   "review": "01",
-  "screen": { "file": "TLVVI8O6J0FGUcHzxxLq8H", "node": "4102:3276", "name": "Order offer / Basic" },
-  "boards": { "review": null, "questions": null, "note": "доски разбора 01 удалены по просьбе PD; текст — reviews/01-order-offer-basic.md" },
+  "screen": {
+    "file": "TLVVI8O6J0FGUcHzxxLq8H",
+    "node": "4102:3276",
+    "name": "Order offer / Basic"
+  },
+  "boards": {
+    "review": null,
+    "questions": null,
+    "note": "доски разбора 01 удалены по просьбе PD; текст — reviews/01-order-offer-basic.md"
+  },
   "pattern": "order-offer",
-  "summary": { "compensations": "почти все переопределения цвета — компенсация старой копии библиотеки (урок 5.2), в находки не вынесены" },
+  "summary": {
+    "compensations": "почти все переопределения цвета — компенсация старой копии библиотеки (M5.2), в находки не вынесены"
+  },
   "findings": [
     {
-      "id": "F01-01", "scope": "file", "marker": null,
+      "id": "F01-01",
+      "scope": "file",
+      "marker": null,
       "element": null,
-      "level": "component", "kind": "library-source", "addressee": "aid-owner",
+      "level": "component",
+      "kind": "library-source",
+      "addressee": "aid-owner",
       "what": "все 13 наборов экрана подключены из копии библиотеки: ключи не совпадают с текущей «WB AID Driver Components»",
       "expected": "компоненты текущей библиотеки; локальные компоненты — решить: в библиотеку или оставить локально, оформив по правилам",
-      "rule": ["2.7", "2.8"], "confidence": "reference", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-09-30", "ref": "D-9, D-11", "text": "дизайнеры создают компоненты локально — находить и решать" },
-      "proposal": null, "sameAs": null, "related": [], "priority": "normal",
+      "rule": [
+        "M2.7",
+        "M2.8"
+      ],
+      "confidence": "reference",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-09-30",
+        "ref": "D-9, D-11",
+        "text": "дизайнеры создают компоненты локально — находить и решать"
+      },
+      "proposal": null,
+      "sameAs": null,
+      "related": [],
+      "priority": "normal",
       "formatNote": "вид library-source — кандидат (Ф2)"
     },
     {
-      "id": "F01-02", "marker": "①",
-      "element": { "purpose": "отказаться от заказа, показав потерю очков мотивации", "interaction": "action", "source": "library", "component": "Buttons/floating", "variant": { "Icon": "Yes" } },
-      "level": "style", "kind": "author-question", "addressee": "author",
+      "id": "F01-02",
+      "marker": "①",
+      "element": {
+        "purpose": "отказаться от заказа, показав потерю очков мотивации",
+        "interaction": "action",
+        "source": "library",
+        "component": "Buttons/floating",
+        "variant": {
+          "Icon": "Yes"
+        }
+      },
+      "level": "style",
+      "kind": "author-question",
+      "addressee": "author",
       "what": "мотивация красная: Texts/Warning, Icons/Warning вместо Texts/Primary, Icons/Primary",
       "expected": "спросить автора, зачем красный; если задумано — нужен вариант компонента",
-      "rule": [], "confidence": "verify", "status": "open",
-      "decision": null, "proposal": null, "sameAs": null, "related": ["F01-03"], "priority": "normal"
+      "rule": [],
+      "confidence": "verify",
+      "status": "open",
+      "decision": null,
+      "proposal": null,
+      "sameAs": null,
+      "related": [
+        "F01-03"
+      ],
+      "priority": "normal"
     },
     {
-      "id": "F01-03", "marker": "①",
-      "element": { "purpose": "отказаться от заказа, показав потерю очков мотивации", "interaction": "action", "source": "library", "component": "Buttons/floating", "variant": { "Icon": "Yes" } },
-      "level": "variant", "kind": "library-gap", "addressee": "aid-owner",
+      "id": "F01-03",
+      "marker": "①",
+      "element": {
+        "purpose": "отказаться от заказа, показав потерю очков мотивации",
+        "interaction": "action",
+        "source": "library",
+        "component": "Buttons/floating",
+        "variant": {
+          "Icon": "Yes"
+        }
+      },
+      "level": "variant",
+      "kind": "library-gap",
+      "addressee": "aid-owner",
       "what": "нет красного (негативного) стиля мотивации в floating",
       "expected": "временно добавить красный стиль, окончательно — после ответа автора (F01-02)",
-      "rule": [], "confidence": "reference", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В5, D-11", "text": "вопрос дизайнеру; пока — добавить красный стиль" },
-      "proposal": "добавить в floating вариант негативной мотивации", "sameAs": null, "related": ["F01-02"], "priority": "normal"
+      "rule": [],
+      "confidence": "reference",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В5, D-11",
+        "text": "вопрос дизайнеру; пока — добавить красный стиль"
+      },
+      "proposal": "добавить в floating вариант негативной мотивации",
+      "sameAs": null,
+      "related": [
+        "F01-02"
+      ],
+      "priority": "normal"
     },
     {
-      "id": "F01-04", "marker": "⑤",
-      "element": { "purpose": "контейнер предложения: вмещает факты заказа и главное действие", "interaction": "container", "source": "should-be-component", "component": null, "variant": null },
-      "level": "component", "kind": "designer-error", "addressee": "author",
+      "id": "F01-04",
+      "marker": "⑤",
+      "element": {
+        "purpose": "контейнер предложения: вмещает факты заказа и главное действие",
+        "interaction": "container",
+        "source": "should-be-component",
+        "component": null,
+        "variant": null
+      },
+      "level": "component",
+      "kind": "designer-error",
+      "addressee": "author",
       "what": "шторка нарисована фреймом вручную",
       "expected": "компонент-контейнер со слотами; в библиотеке есть BS-order (виден по отвязке в 02) — подходит ли он предложению, проверить",
-      "rule": ["2.3"], "confidence": "reference", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В1, D-11", "text": "дизайнер не собрал компонентом, на слотах" },
-      "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+      "rule": [
+        "R10"
+      ],
+      "confidence": "reference",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В1, D-11",
+        "text": "дизайнер не собрал компонентом, на слотах"
+      },
+      "proposal": null,
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-05", "marker": "⑧",
-      "element": { "purpose": "одна точка заказа, по нажатию — подробности", "interaction": "action", "source": "should-be-component", "component": null, "variant": null },
-      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "id": "F01-05",
+      "marker": "⑧",
+      "element": {
+        "purpose": "одна точка заказа, по нажатию — подробности",
+        "interaction": "action",
+        "source": "should-be-component",
+        "component": null,
+        "variant": null
+      },
+      "level": "component",
+      "kind": "library-gap",
+      "addressee": "aid-owner",
       "what": "строка адреса с шевроном собрана фреймом; это не Rows/adresses/offer, а другой компонент (одна точка)",
       "expected": "отдельный компонент «точка с переходом»; есть ли он в библиотеке — проверить",
-      "rule": ["2.1"], "confidence": "verify", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В2, D-11", "text": "два разных компонента" },
-      "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+      "rule": [
+        "M2.1"
+      ],
+      "confidence": "verify",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В2, D-11",
+        "text": "два разных компонента"
+      },
+      "proposal": null,
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-06", "marker": "⑧",
-      "element": { "purpose": "одна точка заказа, по нажатию — подробности", "interaction": "action", "source": "should-be-component", "component": null, "variant": null },
-      "level": "style", "kind": "designer-error", "addressee": "author",
+      "id": "F01-06",
+      "marker": "⑧",
+      "element": {
+        "purpose": "одна точка заказа, по нажатию — подробности",
+        "interaction": "action",
+        "source": "should-be-component",
+        "component": null,
+        "variant": null
+      },
+      "level": "style",
+      "kind": "designer-error",
+      "addressee": "author",
       "what": "шеврон Icons/Secondary Dark Ind (не меняется с темой) на Bg/Primary (меняется) — ночью почти не виден",
       "expected": "Icons/Informative (как в Rows/line) или Icons/Primary",
-      "rule": ["R1", "R4", "5.1"], "confidence": "inferred", "status": "open",
-      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+      "rule": [
+        "R1",
+        "R4"
+      ],
+      "confidence": "inferred",
+      "status": "open",
+      "decision": null,
+      "proposal": null,
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-07", "marker": "⑨",
-      "element": { "purpose": "тариф заказа и его опции", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
-      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "id": "F01-07",
+      "marker": "⑨",
+      "element": {
+        "purpose": "тариф заказа и его опции",
+        "interaction": "display",
+        "source": "should-be-component",
+        "component": null,
+        "variant": null
+      },
+      "level": "component",
+      "kind": "library-gap",
+      "addressee": "aid-owner",
       "what": "тариф и опции собраны фреймом из medium/mono и иконок; в библиотеке Rows/tarif и Rows/options раздельно",
       "expected": "один компонент с необязательными частями",
-      "rule": ["2.2"], "confidence": "reference", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В3, D-11", "text": "может быть один компонент с необязательными элементами" },
-      "proposal": "компонент «тариф с опциями»: опции — необязательная часть", "sameAs": null, "related": [], "priority": "normal"
+      "rule": [
+        "M2.2"
+      ],
+      "confidence": "reference",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В3, D-11",
+        "text": "может быть один компонент с необязательными элементами"
+      },
+      "proposal": "компонент «тариф с опциями»: опции — необязательная часть",
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-08", "marker": "⑨",
-      "element": { "purpose": "название тарифа", "interaction": "display", "source": "library", "component": "Badges/medium/mono", "variant": null },
-      "level": "content", "kind": "author-question", "addressee": "author",
+      "id": "F01-08",
+      "marker": "⑨",
+      "element": {
+        "purpose": "название тарифа",
+        "interaction": "display",
+        "source": "library",
+        "component": "Badges/medium/mono",
+        "variant": null
+      },
+      "level": "content",
+      "kind": "author-question",
+      "addressee": "author",
       "what": "рамка «Эконом» спрятана переопределением Strokes/Primary Inverted (днём белая на белом)",
-      "expected": "спросить автора; если рамка не нужна — вариант без рамки (урок 4.1)",
-      "rule": ["4.1"], "confidence": "verify", "status": "deferred",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В6", "text": "вопрос дизайнеру; отложено" },
-      "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+      "expected": "спросить автора; если рамка не нужна — вариант без рамки (M4.1)",
+      "rule": [
+        "M4.1"
+      ],
+      "confidence": "verify",
+      "status": "deferred",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В6",
+        "text": "вопрос дизайнеру; отложено"
+      },
+      "proposal": null,
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-09", "marker": "⑧",
-      "element": { "purpose": "адрес точки", "interaction": "display", "source": "wrong-architecture", "component": "Rows/address", "variant": { "Type": "Order" } },
-      "level": "component", "kind": "component-architecture", "addressee": "aid-owner",
+      "id": "F01-09",
+      "marker": "⑧",
+      "element": {
+        "purpose": "адрес точки",
+        "interaction": "display",
+        "source": "wrong-architecture",
+        "component": "Rows/address",
+        "variant": {
+          "Type": "Order"
+        }
+      },
+      "level": "component",
+      "kind": "component-architecture",
+      "addressee": "aid-owner",
       "what": "адрес заказа и адрес предложения в библиотеке — варианты Type=Order/Offer одного набора",
       "expected": "два разных компонента",
-      "rule": ["2.1"], "confidence": "reference", "status": "answered",
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "01 В4, D-11", "text": "в принципе два разных компонента" },
-      "proposal": "разделить Rows/address на адрес заказа и адрес предложения", "sameAs": null, "related": [], "priority": "normal"
+      "rule": [
+        "M2.1"
+      ],
+      "confidence": "reference",
+      "status": "answered",
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "01 В4, D-11",
+        "text": "в принципе два разных компонента"
+      },
+      "proposal": "разделить Rows/address на адрес заказа и адрес предложения",
+      "sameAs": null,
+      "related": [],
+      "priority": "normal"
     },
     {
-      "id": "F01-10", "marker": "⑪",
-      "element": { "purpose": "нижняя панель главного экрана", "interaction": "action", "source": "library", "component": "Controls/bar/button", "variant": { "Type": "Main" } },
-      "level": "style", "kind": "library-error", "addressee": "aid-owner",
+      "id": "F01-10",
+      "marker": "⑪",
+      "element": {
+        "purpose": "нижняя панель главного экрана",
+        "interaction": "action",
+        "source": "library",
+        "component": "Controls/bar/button",
+        "variant": {
+          "Type": "Main"
+        }
+      },
+      "level": "style",
+      "kind": "library-error",
+      "addressee": "aid-owner",
       "what": "в библиотеке у Type=Main на Bg/Actions (тёмная в обеих темах) текст и иконки Inverted — ночью контраст ≈ 1,2; дизайнер на экране поставил Light Ind и прав",
       "expected": "Light Ind, как у Type=Balance",
-      "rule": ["R1"], "confidence": "inferred", "status": "open",
-      "decision": null, "proposal": "исправить токены bar/button Type=Main (logic.md §3.5)", "sameAs": null, "related": [], "priority": "normal",
+      "rule": [
+        "R1"
+      ],
+      "confidence": "inferred",
+      "status": "open",
+      "decision": null,
+      "proposal": "исправить токены bar/button Type=Main (logic.md §3.5)",
+      "sameAs": null,
+      "related": [],
+      "priority": "normal",
       "formatNote": "вид library-error — кандидат (Ф1)"
     }
   ]

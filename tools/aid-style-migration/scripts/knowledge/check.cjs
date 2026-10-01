@@ -17,6 +17,7 @@ const ENUM = {
   interaction: ["action", "input", "display", "container"],
   status: ["open", "answered", "deferred", "ask-only"],
   placement: ["in-container-last", "pinned-over-container", "on-map"],
+  relation: ["matches", "deviates", "product-only", "unknown"],
 };
 const LIBRARY_PAGES = ["Badges", "Buttons", "Cards", "Chat", "Controls", "Dialogues", "Fields", "Headers", "Layers", "Pins", "Rows", "System", "Tabs", "Widgets"];
 
@@ -40,6 +41,25 @@ const componentRef = (file, ref) => {
   const page = ref.split("/")[0];
   if (!LIBRARY_PAGES.includes(page)) err(file, `ссылка на компонент «${ref}»: нет страницы библиотеки «${page}»`);
 };
+
+// Номера правил: метод (M…, MR… в method.md) и продукт (rules.json).
+const methodFile = path.resolve(__dirname, "../../docs/method.md");
+const ruleIds = new Set([...fs.readFileSync(methodFile, "utf8").matchAll(/\*\*(M[\w.]+)\b/g)].map((m) => m[1]));
+const rulesPath = path.join(root, "rules.json");
+if (fs.existsSync(rulesPath)) {
+  const rules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
+  for (const r of rules.rules || []) {
+    const at = `rules.json ${r.id}`;
+    if (ruleIds.has(r.id)) err(at, "повтор номера");
+    ruleIds.add(r.id);
+    inEnum(at, "level", r.level);
+    inEnum(at, "confidence", r.confidence);
+    inEnum(at, "relation", r.standard && r.standard.relation);
+    if (!r.author) err(at, "author: пусто");
+    if (r.decision && !r.decision.by) err(at, "decision без by");
+  }
+} else err("rules.json", "нет файла");
+const checkRuleRef = (file, id) => { if (id && !ruleIds.has(id)) err(file, `нет правила ${id}`); };
 
 const patterns = read("patterns");
 const components = read("components");
@@ -68,6 +88,7 @@ for (const { rel, data } of findingFiles) {
       }
     }
     if (f.status === "answered" && !f.decision && !f.sameAs) err(at, "answered без decision");
+    (f.rule || []).forEach((r) => checkRuleRef(at, r));
   }
 }
 
@@ -97,7 +118,7 @@ for (const { rel, data } of components) {
   componentRef(rel, data.id);
   if (data.purpose) { inEnum(rel, "interaction", data.purpose.interaction); inEnum(rel, "confidence", data.purpose.confidence); }
   (data.variants || []).forEach((v) => inEnum(rel, "confidence", v.confidence));
-  (data.style || []).forEach((s) => inEnum(rel, "confidence", s.confidence));
+  (data.style || []).forEach((s) => { inEnum(rel, "confidence", s.confidence); checkRuleRef(rel, s.rule); });
   (data.notThis || []).forEach((n) => componentRef(rel, n.looksLike));
   (data.states?.missing || []).forEach((m) => checkFindingRef(rel, m.finding));
   (data.deviations || []).forEach((d) => checkFindingRef(rel, d.finding));
@@ -110,7 +131,7 @@ for (const f of findingIds.values()) {
   byKind[f.kind] = (byKind[f.kind] || 0) + 1;
   byAddressee[f.addressee] = (byAddressee[f.addressee] || 0) + 1;
 }
-console.log(`${product}: паттернов ${patterns.length}, компонентов ${components.length}, находок ${findingIds.size}`);
+console.log(`${product}: правил ${ruleIds.size} (метод + продукт), паттернов ${patterns.length}, компонентов ${components.length}, находок ${findingIds.size}`);
 console.log("по виду:", byKind);
 console.log("по адресату:", byAddressee);
 if (errors.length) { console.log(`\nОшибок: ${errors.length}`); errors.forEach((e) => console.log(" - " + e)); process.exit(1); }
