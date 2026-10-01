@@ -6,15 +6,9 @@
   "collectionName": "driver-colors-semantic",
   "product": "driver",
   "changeSummary": "Добавлены 34 цветовых токена, которые есть в Figma (коллекция color-sem) и отсутствовали в Presentbook. Значения day/night сверены с файлом 2026-10-01 построчно. Переименования (39 токенов под старыми именами) и изменившиеся значения (17) в это изменение не входят — отдельный шаг, MAJOR.",
-  "proposedSemVerImpact": "minor",
-  "proposedVersion": "1.3.0",
-  "proposedChangelogEntries": [
-    {
-      "version": "1.3.0",
-      "kind": "added",
-      "description": "Добавлены 34 токена из Figma: группа Boosters (8), Bg (11), Texts (4), Icons (4), Strokes (3), Pastels — Rose, Blush, Charcoal, Buttons — Warning"
-    }
-  ],
+  "proposedSemVerImpact": "none",
+  "proposedVersion": null,
+  "proposedChangelogEntries": [],
   "addedTokens": [
     "Bg · Primary Inverted",
     "Bg · Tertiary",
@@ -53,8 +47,9 @@
   ],
   "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
   "sourcePath": "pages/aid-portal/data.ts",
-  "openQuestion": "Pastels · Rose, Blush, Charcoal в Figma несут прежние значения Lips, Shame, Morion, а сами Lips, Shame, Morion получили новые. Перенесено как в Figma; уточнить у дизайна.",
+  "openQuestion": "Решено changelog Figma 1.5.1 и 1.7.0: Lips/Shame/Morion переименованы в Rose/Blush/Charcoal, затем Lips/Shame/Morion добавлены заново с новыми значениями. Перенос верный.",
   "status": "pending",
   "created": "2026-10-01",
-  "author": "sergej"
+  "author": "sergej",
+  "changelogNote": "Отдельной версии не нужно: changelog Colors/Semantic синхронизирован с таблицей Figma (node 45:905) до 1.10.0, и эти 34 токена уже описаны в её версиях 1.3.0–1.9.0. Запись закрывается переносом в released, когда данные Presentbook догонят 1.10.0: переименования 1.5.1/1.6.1 и изменённые значения 1.5.0–1.10.0."
 }
