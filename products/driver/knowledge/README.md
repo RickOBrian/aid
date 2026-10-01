@@ -22,6 +22,7 @@ Presentbook; знание о продукте — его содержание. �
 - `sources.json` — файлы Figma, откуда выгружено.
 - `tokens/color-sem.tsv` — все 131 цветовых токена: имя | day | night | области применения | описание.
 - `components/*.anatomy.txt` — эталон компонентов: каждая часть и её токен по вариантам.
+- `patterns/`, `components/*.json`, `findings/` — пробное заполнение по черновику формата (`tools/aid-style-migration/docs/knowledge-format.md`).
 - `logic.md` — логика построения, выведенная из эталона, сверка со стандартом, находки для библиотеки.
 
 ## Как обновить

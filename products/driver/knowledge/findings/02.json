@@ -1,0 +1,136 @@
+{
+  "format": "aid-knowledge/0",
+  "kind": "findings",
+  "review": "02",
+  "screen": { "file": "TLVVI8O6J0FGUcHzxxLq8H", "node": "4102:4467", "name": "Order Page / Full info" },
+  "boards": { "review": "6781:22262", "questions": "6782:22438" },
+  "pattern": "active-order",
+  "findings": [
+    {
+      "id": "F02-01", "marker": "②",
+      "element": { "purpose": "маршрут до точки подачи на карте", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
+      "level": "component", "kind": "designer-error", "addressee": "author",
+      "what": "объекты карты нарисованы вручную: векторы, растровая машина, подпись «5 мин | 4 км»",
+      "expected": "пин — компонент Pins; машина — иконка (поворот на макете); бейдж время-расстояние — компонент ДС; линия маршрута — не компонент, только токен",
+      "rule": ["2.5"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П1, D-12", "text": "пин — компонент, линия — токен, машина — иконка, бейдж — компонент ДС" },
+      "proposal": null, "sameAs": null, "related": ["F02-02"], "priority": "normal"
+    },
+    {
+      "id": "F02-02", "marker": "②",
+      "element": { "purpose": "маршрут до точки подачи на карте", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
+      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "в библиотеке нет нужного пина в этом стиле, одной иконки машины и бейджа время-расстояние в ДС",
+      "expected": "добавить",
+      "rule": ["2.5"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П1, D-12", "text": "нет в таком стиле — добавить" },
+      "proposal": "пин точки, иконка машины водителя, бейдж время-расстояние", "sameAs": null, "related": ["F02-01"], "priority": "normal"
+    },
+    {
+      "id": "F02-03", "marker": "③",
+      "element": { "purpose": "открыть чат с клиентом, показать непрочитанные", "interaction": "action", "source": "should-be-component", "component": "Buttons/fab/secondary", "variant": null },
+      "level": "component", "kind": "designer-error", "addressee": "author",
+      "what": "кнопка чата собрана кругом из эллипса Buttons/Floating, иконки и Counter",
+      "expected": "компонент ДС fab по форме библиотеки",
+      "rule": ["2.6"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П2, D-12", "text": "ошибка дизайнера: кнопка как в ДС, не кругом" },
+      "proposal": null, "sameAs": null, "related": ["F02-04"], "priority": "normal"
+    },
+    {
+      "id": "F02-04", "marker": "③",
+      "element": { "purpose": "открыть чат с клиентом, показать непрочитанные", "interaction": "action", "source": "should-be-component", "component": "Buttons/fab/secondary", "variant": null },
+      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "у fab нет счётчика непрочитанных",
+      "expected": "Counter — необязательная часть fab",
+      "rule": ["2.2"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П2, D-12", "text": "счётчик — необязательная часть компонента ДС" },
+      "proposal": "добавить в fab необязательную часть Counter", "sameAs": null, "related": ["F02-03"], "priority": "normal"
+    },
+    {
+      "id": "F02-05", "marker": "⑤⑦⑧⑨",
+      "element": { "purpose": "шторка заказа, маршрут, адреса, комментарии", "interaction": "container", "source": "detached", "component": "BS-order, Rows/adresses/order, Rows/address, Widgets/comment", "variant": null },
+      "level": "variant", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "8 фреймов отвязаны от библиотечных компонентов: у комментария нет варианта, где слева продолжается линия маршрута",
+      "expected": "компонент или группа компонентов с нужным вариантом",
+      "rule": ["2.4"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П3, D-12", "text": "должно быть компонентом (группой); отвязали, т.к. нет варианта" },
+      "proposal": "вариант комментария к точке с продолжением линии маршрута", "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F02-06", "marker": "⑥",
+      "element": { "purpose": "что сейчас происходит и время", "interaction": "display", "source": "library", "component": "Headers/order", "variant": { "State": "Default" } },
+      "level": "content", "kind": "designer-error", "addressee": "author",
+      "what": "время «01:32» спрятано перекраской в цвет фона",
+      "expected": "вариант шапки без времени (Headers/small Time=No или аналог)",
+      "rule": ["4.1"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 А1, D-12", "text": "ошибка дизайнера — подсвечивать" },
+      "proposal": null, "sameAs": null, "related": ["F02-07"], "priority": "normal"
+    },
+    {
+      "id": "F02-07", "marker": "⑥",
+      "element": { "purpose": "что сейчас происходит и время", "interaction": "display", "source": "library", "component": "Headers/order", "variant": { "State": "Default" } },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "на тексте времени чужой токен Backgrounds/Primary - Elevated (коллекция «Colors», не Driver), к тому же фоновый",
+      "expected": "токен текста из color-sem Driver",
+      "rule": ["5.3"], "confidence": "reference", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": ["F02-06"], "priority": "normal"
+    },
+    {
+      "id": "F02-08", "marker": "⑧⑨",
+      "element": { "purpose": "комментарий к точке и общий комментарий к заказу", "interaction": "display", "source": "detached", "component": "Widgets/comment", "variant": null },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "плашки комментариев — #f6eedf и #ebedf0 без токенов",
+      "expected": "Pastels/Parchment и Messages/Default (R6)",
+      "rule": ["R6"], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": ["F02-09"], "priority": "normal"
+    },
+    {
+      "id": "F02-09", "marker": "⑧",
+      "element": { "purpose": "комментарий к точке", "interaction": "display", "source": "detached", "component": "Widgets/comment", "variant": { "Type": "Address" } },
+      "level": "variant", "kind": "author-question", "addressee": "author",
+      "what": "у двух точек комментарии разного стиля: жёлтый (как общий) и серый",
+      "expected": "это два стиля одного компонента для разных случаев; какой случай какой — уточнить",
+      "rule": ["3.2"], "confidence": "verify", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П5, D-12", "text": "два стиля одного компонента — жёлтый и серый для разных случаев" },
+      "proposal": null, "sameAs": null, "related": ["F02-08"], "priority": "normal",
+      "formatNote": "адресат и вид — моё предположение: решение PD есть, а в каких случаях какой стиль — знает автор"
+    },
+    {
+      "id": "F02-10", "marker": "⑩",
+      "element": { "purpose": "подъезд у точки", "interaction": "display", "source": "library", "component": "Badges/small", "variant": null },
+      "level": "style", "kind": "author-question", "addressee": "author",
+      "what": "обводка Strokes/Tertiary вместо Strokes/Secondary; в файле два вида чипа (×75 и ×41), оба не как в библиотеке",
+      "expected": "спросить автора: два задуманных вида или ошибка",
+      "rule": ["Р3", "R5"], "confidence": "verify", "status": "ask-only",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "02 П4", "text": "вопрос подсвечен верно — задавать автору; отвечать сейчас не нужно" },
+      "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F02-11", "marker": "⑫",
+      "element": { "purpose": "тариф заказа и его опции", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
+      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "тариф и опции снова собраны фреймом; рамка «Эконом» снова спрятана",
+      "expected": "см. F01-07 и F01-08",
+      "rule": ["2.2"], "confidence": "reference", "status": "answered",
+      "decision": null, "proposal": null, "sameAs": "F01-07", "related": ["F01-08"], "priority": "normal"
+    },
+    {
+      "id": "F02-12", "marker": "⑭",
+      "element": { "purpose": "подтвердить прибытие смахиванием", "interaction": "action", "source": "library", "component": "Buttons/slider", "variant": { "Active": "True" } },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "подпись Texts/Primary Inverted — ночью станет тёмной на зелёном",
+      "expected": "Texts/Primary Light Ind, как в библиотеке",
+      "rule": ["R1", "5.1"], "confidence": "reference", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F02-13", "marker": "⑮",
+      "element": { "purpose": "отступы между блоками шторки", "interaction": null, "source": "none", "component": null, "variant": null },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "распорки пустыми фреймами empty вместо отступов раскладки",
+      "expected": "отступы auto layout",
+      "rule": ["5.4"], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+    }
+  ]
+}

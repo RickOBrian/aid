@@ -1,0 +1,105 @@
+{
+  "format": "aid-knowledge/0",
+  "kind": "findings",
+  "review": "03",
+  "screen": { "file": "TLVVI8O6J0FGUcHzxxLq8H", "node": "4102:5378", "name": "Chat with client / Error" },
+  "boards": { "review": "6848:22263", "questions": "6851:22498" },
+  "pattern": null,
+  "patternNote": "«Чат поверх заказа» в пробное заполнение не входит",
+  "findings": [
+    {
+      "id": "F03-01", "marker": "③④",
+      "element": { "purpose": "своё сообщение, которое не удалось отправить; нажать — повторить", "interaction": "display", "source": "library", "component": "Chat/Right", "variant": { "State": "Default" } },
+      "level": "variant", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "у Right только State=Default: ошибку собрали подменой иконки на attention_round и отдельным текстом под пузырём",
+      "expected": "отдельное состояние сообщения: иконка ошибки + текст повтора внутри компонента",
+      "rule": ["3.3"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "03 П1, D-13", "text": "нужно отдельное состояние" },
+      "proposal": "в Chat/Right добавить «не отправлено» (Ф3: значение статуса доставки рядом с Sent/Printing)", "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F03-02", "marker": "⑥",
+      "element": { "purpose": "отправить готовую фразу одним нажатием", "interaction": "action", "source": "library", "component": "Buttons/default", "variant": { "Type": "Secondary" } },
+      "level": "variant", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "быстрые ответы — кнопки default Secondary, перекрашенные: фон Bg/Primary, обводка",
+      "expected": "вариант кнопки с обводкой",
+      "rule": ["2.1а"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "03 П2, D-13", "text": "вариант кнопки" },
+      "proposal": "вариант Buttons/default для быстрого ответа", "sameAs": null, "related": ["F03-03"], "priority": "normal"
+    },
+    {
+      "id": "F03-03", "marker": "⑥",
+      "element": { "purpose": "отправить готовую фразу одним нажатием", "interaction": "action", "source": "library", "component": "Buttons/default", "variant": { "Type": "Secondary" } },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "обводка быстрых ответов #ebedf0 без токена",
+      "expected": "токен из Strokes/*",
+      "rule": [], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": ["F03-02"], "priority": "normal"
+    },
+    {
+      "id": "F03-04", "marker": "⑤",
+      "element": { "purpose": "позвонить клиенту", "interaction": "action", "source": "should-be-component", "component": "Headers/center", "variant": null },
+      "level": "component", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "иконка звонка положена поверх шапки вручную — у Headers/center нет места для действия справа",
+      "expected": "слот действия справа (trailing / action по стандарту)",
+      "rule": ["3.4"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "03 П3, D-13", "text": "да, нужно" },
+      "proposal": "слот действия справа у Headers/center", "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F03-05", "marker": "⑦",
+      "element": { "purpose": "ввести сообщение или надиктовать", "interaction": "input", "source": "should-be-component", "component": null, "variant": null },
+      "level": "variant", "kind": "library-gap", "addressee": "aid-owner",
+      "what": "поле сообщения собрано прямоугольником, линией, плейсхолдером и иконкой; поля чата в библиотеке нет",
+      "expected": "вариант поля (Fields/textfield или Fields/search), не новый компонент",
+      "rule": ["2.1а"], "confidence": "reference", "status": "answered",
+      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "03 П4, D-13", "text": "вариант" },
+      "proposal": "вариант поля для сообщения", "sameAs": null, "related": ["F03-06"], "priority": "normal"
+    },
+    {
+      "id": "F03-06", "marker": "⑦",
+      "element": { "purpose": "ввести сообщение или надиктовать", "interaction": "input", "source": "should-be-component", "component": null, "variant": null },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "линия поля #ebedf0 без токена",
+      "expected": "токен из Strokes/*",
+      "rule": [], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": ["F03-05"], "priority": "normal"
+    },
+    {
+      "id": "F03-07", "marker": "①",
+      "element": { "purpose": "шторка чата", "interaction": "container", "source": "should-be-component", "component": null, "variant": null },
+      "level": "component", "kind": "build-debris", "addressee": "author",
+      "what": "две ручки шторки в одном месте: своя (#ebedf0 без токена) и в шапке (Buttons/Secondary)",
+      "expected": "спросить автора, какая нужна",
+      "rule": ["Р4"], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F03-08", "marker": "⑪",
+      "element": { "purpose": "вторая шторка с перепиской", "interaction": "container", "source": "should-be-component", "component": null, "variant": null },
+      "level": "pattern", "kind": "build-debris", "addressee": "author",
+      "what": "под верхней шторкой лежит вторая с перепиской, полностью закрыта; в ней время сообщений обрезано правым краем («23:5»)",
+      "expected": "спросить автора: остаток или при ошибке история должна оставаться видимой",
+      "rule": ["Р4", "Р5"], "confidence": "verify", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "normal"
+    },
+    {
+      "id": "F03-09", "marker": "⑩",
+      "element": { "purpose": "превью нового сообщения на карте", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "фон пузыря превью — Icons/Primary, иконочный токен на фоне",
+      "expected": "фоновый токен семейства Messages/* или Bg/*",
+      "rule": ["R1"], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": null, "related": [], "priority": "low"
+    },
+    {
+      "id": "F03-10", "marker": "⑨",
+      "element": { "purpose": "маршрут на карте под затемнением", "interaction": "display", "source": "should-be-component", "component": null, "variant": null },
+      "level": "style", "kind": "designer-error", "addressee": "author",
+      "what": "маршрут и подпись — сырые цвета (#7000ff, #ffffff, #2d2b2cb2)",
+      "expected": "как в F02-01: линия — токен, подпись — компонент ДС",
+      "rule": ["2.5"], "confidence": "inferred", "status": "open",
+      "decision": null, "proposal": null, "sameAs": "F02-01", "related": [], "priority": "low"
+    }
+  ]
+}

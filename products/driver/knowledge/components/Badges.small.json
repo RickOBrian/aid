@@ -1,0 +1,28 @@
+{
+  "format": "aid-knowledge/0",
+  "kind": "component",
+  "id": "Badges/small",
+  "library": { "file": "o0IUYIS7vadbmXPXd81ql9", "page": "Badges", "set": "small", "node": "89:4201", "note": "одиночный компонент без вариантов; не путать с Headers/small" },
+  "purpose": { "interaction": "display", "meaning": "подъезд у точки маршрута", "confidence": "inferred" },
+  "notThis": [
+    { "looksLike": "Badges/reward", "is": "другой компонент", "why": "reward — мотивация и сёрдж (Icons/Accent, Strokes/Informative), small — справочный факт (R5)", "confidence": "reference" }
+  ],
+  "parts": [
+    { "path": "door", "slot": "leading", "optional": false },
+    { "path": "Text/✏️ Text here", "slot": "content", "optional": false }
+  ],
+  "variants": [],
+  "states": { "library": ["default"], "missing": [] },
+  "content": [
+    { "rule": "номер или название подъезда", "confidence": "inferred" }
+  ],
+  "style": [
+    { "part": "·", "layer": "stroke", "tokens": { "*": "Strokes/Secondary" }, "rule": "R5", "confidence": "reference" },
+    { "part": "door", "layer": "fill", "tokens": { "*": "Icons/Informative" }, "rule": "R4", "confidence": "reference", "note": "справочная иконка" },
+    { "part": "Text/✏️ Text here", "layer": "text", "tokens": { "*": "Texts/Tertiary" }, "rule": "R5", "confidence": "reference" }
+  ],
+  "usedIn": ["active-order"],
+  "deviations": [
+    { "finding": "F02-10", "summary": "в файле два вида, оба не как в библиотеке: Icons/Secondary + Strokes/Secondary (×75) и Icons/Informative + Strokes/Tertiary (×41) — спросить автора" }
+  ]
+}

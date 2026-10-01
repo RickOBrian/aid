@@ -1,0 +1,43 @@
+{
+  "format": "aid-knowledge/0",
+  "kind": "pattern",
+  "id": "order-offer",
+  "name": "Предложение заказа",
+  "purpose": "водитель решает, брать ли предложенный заказ",
+  "confidence": "inferred",
+  "basis": [
+    { "type": "review", "ref": "01" },
+    { "type": "decision", "ref": "D-9" },
+    { "type": "decision", "ref": "D-11" }
+  ],
+  "evidence": [
+    { "file": "TLVVI8O6J0FGUcHzxxLq8H", "node": "4102:3276", "name": "Order offer / Basic", "review": "01", "note": "тот же порядок в 20+ экранах Order offer / Basic" }
+  ],
+  "layers": [
+    { "order": 1, "role": "карта", "contains": ["машина водителя", "знак скорости"], "required": null, "confidence": "inferred" },
+    { "order": 2, "role": "нижняя панель", "component": "Controls/bar/button", "required": null, "confidence": "reference", "note": "лежит под шторкой — перекрытие слоёв нормально (D-9)" },
+    { "order": 3, "role": "плавающие элементы карты по краям", "contains": ["Buttons/floating — отказ с мотивацией", "Buttons/fab/secondary", "Buttons/fab/zoom"], "required": null, "confidence": "inferred" },
+    { "order": 4, "role": "шторка предложения", "required": true, "confidence": "inferred" }
+  ],
+  "container": {
+    "role": "шторка предложения",
+    "component": null,
+    "source": "should-be-component",
+    "scroll": false,
+    "note": "контейнер со слотами (урок 2.3, D-11); в макете — фрейм вручную",
+    "blocks": [
+      { "order": 1, "role": "время и расстояние до подачи", "component": "Rows/time-distance", "required": null, "content": "главный факт предложения — первым и крупно", "confidence": "inferred" },
+      { "order": 2, "role": "вознаграждение", "component": null, "required": null, "confidence": "inferred", "note": "компонент блока не определён в разборе 01 — проверить" },
+      { "order": 3, "role": "адрес", "component": "Rows/adresses/offer", "required": null, "confidence": "verify", "note": "в макете собрано вручную с шевроном; одна точка с шевроном — другой компонент (01 В2)" },
+      { "order": 4, "role": "тариф и опции", "component": null, "required": null, "confidence": "reference", "note": "один компонент с необязательными частями (01 В3); в библиотеке пока Rows/tarif и Rows/options отдельно" },
+      { "order": 5, "role": "главное действие", "component": "Buttons/full", "required": true, "content": "таймер — время на принятие заказа", "confidence": "inferred" }
+    ]
+  },
+  "primaryAction": { "placement": "in-container-last", "component": "Buttons/full", "variant": { "Active": "True", "Timer": "On" } },
+  "secondaryAction": { "placement": "on-map", "component": "Buttons/floating", "content": "«Отказаться −12» — отказ вторичен, вынесен на карту; минус — потеря очков мотивации" },
+  "distinguishedFrom": [
+    { "pattern": "active-order", "by": "главное действие — в шторке последним, шторка короткая и не прокручивается" }
+  ],
+  "notErrors": [ "нижняя панель bar/button под шторкой — физически есть в интерфейсе, шторка её перекрывает (D-9)" ],
+  "findings": ["F01-01", "F01-02", "F01-03", "F01-04", "F01-05", "F01-06", "F01-07", "F01-08", "F01-09", "F01-10"]
+}
