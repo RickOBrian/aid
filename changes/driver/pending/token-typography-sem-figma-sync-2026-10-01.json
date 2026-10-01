@@ -1,0 +1,29 @@
+{
+  "id": "token-typography-sem-figma-sync-2026-10-01",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Typography/Semantic",
+  "collectionName": "driver-typography-sem",
+  "product": "driver",
+  "changeSummary": "Добавлены 4 стиля, которые есть в Figma (typography-sem, текстовые стили) и отсутствовали в Presentbook. Значения сверены с файлом 2026-10-01.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.2.0",
+  "proposedChangelogEntries": [
+    {
+      "version": "1.2.0",
+      "kind": "added",
+      "description": "Добавлены стили title 1 tall, title large, title price, subtitle 3 cap"
+    }
+  ],
+  "addedTokens": [
+    "title 1 tall",
+    "title large",
+    "title price",
+    "subtitle 3 cap"
+  ],
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
+  "sourcePath": "pages/aid-portal/typographyData.ts",
+  "status": "pending",
+  "created": "2026-10-01",
+  "author": "sergej"
+}

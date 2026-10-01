@@ -67,6 +67,9 @@ export const typographySections: TypographySection[] = [
     title: 'Title',
     items: [
       style('title-1', 'title 1', 600, 'Semi Bold (600)', 20, 22, 0.15),
+      style('title-1-tall', 'title 1 tall', 700, 'Bold (700)', 20, 24, 0.15),
+      style('title-large', 'title large', 500, 'Medium (500)', 24, 24, 0.15),
+      style('title-price', 'title price', 500, 'Medium (500)', 62, 60, 0),
     ],
   },
   {
@@ -76,6 +79,9 @@ export const typographySections: TypographySection[] = [
       style('subtitle-1', 'subtitle 1', 500, 'Medium (500)', 18, 24, 0.15),
       style('subtitle-1-bold', 'subtitle 1 bold', 700, 'Bold (700)', 18, 24, 0.15),
       style('subtitle-2', 'subtitle 2', 500, 'Medium (500)', 14, 16, 0.1),
+      style('subtitle-3-cap', 'subtitle 3 cap', 700, 'Bold (700)', 14, 18, 0.56, {
+        textTransform: 'uppercase',
+      }),
     ],
   },
   {
