@@ -18,6 +18,10 @@ const ENUM = {
   status: ["open", "answered", "deferred", "ask-only"],
   placement: ["in-container-last", "pinned-over-container", "on-map"],
   relation: ["matches", "deviates", "product-only", "unknown"],
+  ruleStatus: ["active", "dispute", "retired"],
+  target: ["method", "product", "standard"],
+  lessonType: ["new-rule", "change-rule", "mistake", "case", "dispute"],
+  lessonStatus: ["proposed", "accepted", "rejected", "dispute"],
 };
 const LIBRARY_PAGES = ["Badges", "Buttons", "Cards", "Chat", "Controls", "Dialogues", "Fields", "Headers", "Layers", "Pins", "Rows", "System", "Tabs", "Widgets"];
 
@@ -57,6 +61,8 @@ if (fs.existsSync(rulesPath)) {
     inEnum(at, "relation", r.standard && r.standard.relation);
     if (!r.author) err(at, "author: пусто");
     if (r.decision && !r.decision.by) err(at, "decision без by");
+    inEnum(at, "ruleStatus", r.status || "active");
+    if (r.status === "dispute" && !r.dispute) err(at, "спор без ссылки на урок (dispute)");
   }
 } else err("rules.json", "нет файла");
 const checkRuleRef = (file, id) => { if (id && !ruleIds.has(id)) err(file, `нет правила ${id}`); };
@@ -125,6 +131,44 @@ for (const { rel, data } of components) {
   (data.usedIn || []).forEach((p) => { if (!patternIds.has(p)) err(rel, `нет паттерна ${p}`); });
 }
 
+// Уроки (inbox) и список учителей.
+const toolRoot = path.resolve(__dirname, "../..");
+const teachers = JSON.parse(fs.readFileSync(path.join(toolRoot, "teachers.json"), "utf8"));
+const teacherIds = new Set([teachers.principal.id, teachers.claude.id, ...(teachers.engineers || []).map((e) => e.id)]);
+const inboxDir = path.join(toolRoot, "inbox");
+const lessons = fs.existsSync(inboxDir) ? fs.readdirSync(inboxDir).filter((f) => f.endsWith(".json")) : [];
+const lessonIds = new Set(lessons.map((f) => f.replace(/\.json$/, "")));
+const queue = [];
+for (const f of lessons) {
+  const at = `inbox/${f}`;
+  let l;
+  try { l = JSON.parse(fs.readFileSync(path.join(inboxDir, f), "utf8")); } catch (e) { err(at, `не JSON: ${e.message}`); continue; }
+  if (l.product && l.product !== product) continue;
+  if (l.format !== "aid-lesson/0") err(at, "format");
+  if (l.id !== f.replace(/\.json$/, "")) err(at, "id ≠ имени файла");
+  if (!teacherIds.has(l.author)) err(at, `автора «${l.author}» нет в teachers.json`);
+  inEnum(at, "target", l.target);
+  inEnum(at, "lessonType", l.type);
+  inEnum(at, "lessonStatus", l.status);
+  if (!l.proposal) err(at, "proposal: пусто");
+  if (["change-rule", "dispute"].includes(l.type) || l.status === "dispute") { if (!l.ruleRef) err(at, "нужен ruleRef"); }
+  if (l.ruleRef) checkRuleRef(at, l.ruleRef);
+  if (l.status === "dispute" && (l.positions || []).length < 2) err(at, "спор: нужны минимум две позиции");
+  if (["accepted", "rejected"].includes(l.status)) {
+    if (!l.decision) err(at, "решение не записано");
+    else if (l.decision.by !== teachers.principal.id) err(at, "решение принимает только главный инженер");
+  }
+  if (l.status === "accepted" && !(l.appliedIn || []).length) err(at, "accepted, но не перенесён в канон (appliedIn)");
+  if (l.type === "mistake" && !(l.mistake && l.mistake.what && l.mistake.correct)) err(at, "mistake: нужны what и correct");
+  if (["proposed", "dispute"].includes(l.status)) queue.push(`${l.status === "dispute" ? "спор" : "урок"} ${l.id} (${l.author}): ${l.proposal.slice(0, 90)}`);
+}
+if (fs.existsSync(rulesPath)) {
+  for (const r of JSON.parse(fs.readFileSync(rulesPath, "utf8")).rules || []) {
+    if (r.dispute && !lessonIds.has(r.dispute)) err(`rules.json ${r.id}`, `нет урока ${r.dispute}`);
+    (r.lessons || []).forEach((id) => { if (!lessonIds.has(id)) err(`rules.json ${r.id}`, `нет урока ${id}`); });
+  }
+}
+
 const byKind = {};
 const byAddressee = {};
 for (const f of findingIds.values()) {
@@ -134,5 +178,7 @@ for (const f of findingIds.values()) {
 console.log(`${product}: правил ${ruleIds.size} (метод + продукт), паттернов ${patterns.length}, компонентов ${components.length}, находок ${findingIds.size}`);
 console.log("по виду:", byKind);
 console.log("по адресату:", byAddressee);
+console.log(`уроков ${lessons.length}; очередь главного инженера: ${queue.length}`);
+queue.forEach((q) => console.log(" · " + q));
 if (errors.length) { console.log(`\nОшибок: ${errors.length}`); errors.forEach((e) => console.log(" - " + e)); process.exit(1); }
 console.log("ошибок нет");

@@ -1,0 +1,18 @@
+{
+  "format": "aid-lesson/0",
+  "id": "2026-10-01-principal-standards-vs-products",
+  "date": "2026-10-01",
+  "author": "principal",
+  "target": "method",
+  "product": null,
+  "type": "new-rule",
+  "ruleRef": "MR6",
+  "proposal": "Не путать стандарты ДС (общий эталон для любого продукта, к нему продукты стремятся) и сами продукты (Driver, Rider…). Отступление продукта от стандарта — находка, не ошибка.",
+  "basis": [ { "type": "decision", "ref": "D-15" } ],
+  "case": null,
+  "mistake": null,
+  "status": "accepted",
+  "positions": [],
+  "decision": { "by": "principal", "date": "2026-10-01", "ref": "D-15", "text": "да" },
+  "appliedIn": ["tools/aid-style-migration/docs/method.md MR6", "products/driver/knowledge/rules.json standard.relation"]
+}

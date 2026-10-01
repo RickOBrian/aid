@@ -5,112 +5,292 @@
   "note": "Правила продукта Driver. Не стандарт ДС: каждое правило ссылается на стандарт и отмечает отношение к нему. Метод разбора — tools/aid-style-migration/docs/method.md.",
   "rules": [
     {
-      "id": "R1", "level": "style",
+      "id": "R1",
+      "level": "style",
       "text": "Цвет содержимого (текст, иконка) выбирается по поведению плашки под ним",
       "table": [
-        { "plate": "меняется как фон", "content": "Texts/Primary, Icons/Primary (без модификатора)", "examples": "default Secondary, fab/secondary, floating, alert, чат Left" },
-        { "plate": "инверсная (тёмная днём, светлая ночью)", "content": "… Inverted", "examples": "default/wide/big Primary, fab/primary, Tab Active, выбранный день в selector" },
-        { "plate": "всегда тёмная или цветная", "content": "… Light Ind", "examples": "full и slider (зелёные), bar/slider, bar/button Balance, чат Right, push, StatusInfo" },
-        { "plate": "всегда светлая (пастели)", "content": "… Dark Ind", "examples": "общий комментарий на Pastels/Parchment, tag на Pastels/Nebula, бустер Custom" }
+        {
+          "plate": "меняется как фон",
+          "content": "Texts/Primary, Icons/Primary (без модификатора)",
+          "examples": "default Secondary, fab/secondary, floating, alert, чат Left"
+        },
+        {
+          "plate": "инверсная (тёмная днём, светлая ночью)",
+          "content": "… Inverted",
+          "examples": "default/wide/big Primary, fab/primary, Tab Active, выбранный день в selector"
+        },
+        {
+          "plate": "всегда тёмная или цветная",
+          "content": "… Light Ind",
+          "examples": "full и slider (зелёные), bar/slider, bar/button Balance, чат Right, push, StatusInfo"
+        },
+        {
+          "plate": "всегда светлая (пастели)",
+          "content": "… Dark Ind",
+          "examples": "общий комментарий на Pastels/Parchment, tag на Pastels/Nebula, бустер Custom"
+        }
       ],
-      "standard": { "ref": "semantic-color-tokens.json §7 inverse, §9 static", "relation": "matches", "note": "словарь Driver: Inverted = inverse, Light/Dark Ind = static (по смыслу static-dm / static-lm)" },
-      "confidence": "inferred",
-      "basis": [ { "type": "library", "ref": "components/*.anatomy.txt" }, { "type": "review", "ref": "01, 02" } ],
-      "decision": null,
+      "standard": {
+        "ref": "semantic-color-tokens.json §7 inverse, §9 static",
+        "relation": "matches",
+        "note": "словарь Driver: Inverted = inverse, Light/Dark Ind = static (по смыслу static-dm / static-lm)"
+      },
+      "confidence": "reference",
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/*.anatomy.txt"
+        },
+        {
+          "type": "review",
+          "ref": "01, 02"
+        }
+      ],
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "D-15",
+        "text": "да"
+      },
       "author": "Claude (вывод из библиотеки)",
-      "note": "держится во всех компонентах; явного «да» главного инженера на само правило нет"
+      "note": "держится во всех компонентах библиотеки; утверждено D-15",
+      "status": "active"
     },
     {
-      "id": "R2", "level": "variant",
+      "id": "R2",
+      "level": "variant",
       "text": "Состояния: неактивно — Buttons/Disabled (у зелёных Buttons/Positive Disabled), Texts/Disabled, Icons/Inactive; ошибка — семейство Warning; фокус поля — Strokes/Primary, неактивное поле — Strokes/Secondary, заблокированное — Strokes/Tertiary; загрузка — Controls/Checked; разрушительное действие — у Primary фон Buttons/Warning, у Secondary и Transparent — текст и иконка Warning",
-      "standard": { "ref": "component-states.json", "relation": "matches" },
+      "standard": {
+        "ref": "component-states.json",
+        "relation": "matches"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/*.anatomy.txt" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/*.anatomy.txt"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R3", "level": "variant",
+      "id": "R3",
+      "level": "variant",
       "text": "Выбор: выбранный сегмент, день, неделя — Buttons/Primary + Texts/Primary Inverted; невыбранный — Buttons/Disabled + Texts/Primary; сегментированные табы — трек Bg/Secondary, активный сегмент Buttons/Floating; чекбокс и переключатель — только Controls/*",
-      "standard": { "ref": "component-states.json selected", "relation": "deviates", "note": "Buttons/Disabled как фон невыбранного — по смыслу «не выбрано», а не «недоступно» (logic.md §3.3)" },
+      "standard": {
+        "ref": "component-states.json selected",
+        "relation": "deviates",
+        "note": "Buttons/Disabled как фон невыбранного — по смыслу «не выбрано», а не «недоступно» (logic.md §3.3)"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/*.anatomy.txt" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/*.anatomy.txt"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R4", "level": "style",
+      "id": "R4",
+      "level": "style",
       "text": "Иконки по смыслу: Icons/Informative — справочные (подъезд, шеврон в строке); Icons/Accent — сёрдж, мотивация, заголовочные; Icons/Special — очередь, аэропорт; Icons/Positive — «готово», стрелка слайдера, пройденный шаг; иконки опций — цветные Pastels/*, одна пастель на иконке и обводке бейджа, это не статус",
-      "standard": { "ref": "semantic-color-tokens.json icon-*", "relation": "unknown", "note": "соответствие ролям icon-* стандарта не сверено" },
+      "standard": {
+        "ref": "semantic-color-tokens.json icon-*",
+        "relation": "unknown",
+        "note": "соответствие ролям icon-* стандарта не сверено"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/*.anatomy.txt" }, { "type": "library", "ref": "tokens/color-sem.tsv (описания)" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/*.anatomy.txt"
+        },
+        {
+          "type": "library",
+          "ref": "tokens/color-sem.tsv (описания)"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R5", "level": "style",
+      "id": "R5",
+      "level": "style",
       "text": "Бейджи: small (подъезд) — Strokes/Secondary, Icons/Informative, Texts/Tertiary; reward — Strokes/Informative, Icons/Accent, Texts/Primary; medium/mono — Strokes/Primary, Icons/Primary; notification, Counter, mini_notification — красные (Icons/Warning, Fields/Warning) с Light Ind содержимым",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/Badges.anatomy.txt" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/Badges.anatomy.txt"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R6", "level": "style",
+      "id": "R6",
+      "level": "style",
       "text": "Комментарии: к адресу — Messages/Default + Texts/Primary; общий к заказу — Pastels/Parchment + Texts/Primary Dark Ind (подпись над ним — Texts/Secondary)",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/Widgets.anatomy.txt" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/Widgets.anatomy.txt"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R7", "level": "style",
+      "id": "R7",
+      "level": "style",
       "text": "Линии: разделители — Strokes/Separator; линия маршрута между адресами — Strokes/Informative",
-      "standard": { "ref": "semantic-color-tokens.json §3 line", "relation": "matches", "note": "Strokes/* = line-*" },
+      "standard": {
+        "ref": "semantic-color-tokens.json §3 line",
+        "relation": "matches",
+        "note": "Strokes/* = line-*"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "library", "ref": "components/Rows.anatomy.txt" } ],
-      "decision": null, "author": "Claude (из библиотеки)"
+      "basis": [
+        {
+          "type": "library",
+          "ref": "components/Rows.anatomy.txt"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (из библиотеки)",
+      "status": "active"
     },
     {
-      "id": "R8", "level": "pattern",
+      "id": "R8",
+      "level": "pattern",
       "text": "Экран с картой — слои снизу вверх: карта → объекты карты → плавающие элементы по краям → шторка → действия; нижняя панель может лежать под шторкой",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "inferred",
-      "basis": [ { "type": "review", "ref": "01, 02, 03" } ],
-      "decision": { "by": "Principal Designer", "date": "2026-09-30", "ref": "D-9", "text": "bar/button под шторкой — не ошибка" },
-      "author": "Claude (вывод из разборов)"
+      "basis": [
+        {
+          "type": "review",
+          "ref": "01, 02, 03"
+        }
+      ],
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-09-30",
+        "ref": "D-9",
+        "text": "bar/button под шторкой — не ошибка"
+      },
+      "author": "Claude (вывод из разборов)",
+      "status": "active"
     },
     {
-      "id": "R9", "level": "pattern",
+      "id": "R9",
+      "level": "pattern",
       "text": "Главное действие закреплено поверх прокручиваемой шторки — признак «Активного заказа»; в «Предложении» оно последнее внутри короткой шторки",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "inferred",
-      "basis": [ { "type": "review", "ref": "01, 02" } ],
-      "decision": null, "author": "Claude (вывод из разборов)"
+      "basis": [
+        {
+          "type": "review",
+          "ref": "01, 02"
+        }
+      ],
+      "decision": null,
+      "author": "Claude (вывод из разборов)",
+      "status": "active"
     },
     {
-      "id": "R10", "level": "component",
+      "id": "R10",
+      "level": "component",
       "text": "Шторка — компонент-контейнер со слотами, а не фрейм вручную",
-      "standard": { "ref": "component-architecture.json slots", "relation": "matches" },
+      "standard": {
+        "ref": "component-architecture.json slots",
+        "relation": "matches"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "review", "ref": "01 В1" } ],
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "D-11", "text": "шторка — пропущенный компонент, контейнер со слотами" },
-      "author": "Principal Designer"
+      "basis": [
+        {
+          "type": "review",
+          "ref": "01 В1"
+        }
+      ],
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "D-11",
+        "text": "шторка — пропущенный компонент, контейнер со слотами"
+      },
+      "author": "Principal Designer",
+      "status": "active"
     },
     {
-      "id": "R11", "level": "component",
+      "id": "R11",
+      "level": "component",
       "text": "Объекты карты: пин точки — компонент; линия маршрута — не компонент, только токен; машина водителя — одна иконка, поворот на макете; бейдж время-расстояние — компонент ДС",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "review", "ref": "02 П1" } ],
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "D-12", "text": "ответ на П1" },
-      "author": "Principal Designer"
+      "basis": [
+        {
+          "type": "review",
+          "ref": "02 П1"
+        }
+      ],
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "D-12",
+        "text": "ответ на П1"
+      },
+      "author": "Principal Designer",
+      "status": "active"
     },
     {
-      "id": "R12", "level": "variant",
+      "id": "R12",
+      "level": "variant",
       "text": "Комментарий к точке имеет два стиля для разных случаев — жёлтый и серый; какой случай какой — уточнить у автора",
-      "standard": { "ref": null, "relation": "product-only" },
+      "standard": {
+        "ref": null,
+        "relation": "product-only"
+      },
       "confidence": "reference",
-      "basis": [ { "type": "review", "ref": "02 П5" } ],
-      "decision": { "by": "Principal Designer", "date": "2026-10-01", "ref": "D-12", "text": "два стиля одного компонента" },
-      "author": "Principal Designer"
+      "basis": [
+        {
+          "type": "review",
+          "ref": "02 П5"
+        }
+      ],
+      "decision": {
+        "by": "Principal Designer",
+        "date": "2026-10-01",
+        "ref": "D-12",
+        "text": "два стиля одного компонента"
+      },
+      "author": "Principal Designer",
+      "status": "active"
     }
   ]
 }
