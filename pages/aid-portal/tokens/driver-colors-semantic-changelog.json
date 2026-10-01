@@ -1,9 +1,9 @@
 {
   "artifact": "Colors/Semantic",
-  "currentVersion": "1.10.0",
+  "currentVersion": "1.12.0",
   "entries": [
     {
-      "version": "1.10.0",
+      "version": "1.12.0",
       "date": "2026-09-24",
       "author": "Артур",
       "type": "minor",
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "version": "1.9.0",
+      "version": "1.11.0",
       "date": "2026-09-17",
       "author": "Артур",
       "type": "minor",
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "version": "1.8.0",
+      "version": "1.10.0",
       "date": "2026-09-09",
       "author": "Артур",
       "type": "minor",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "version": "1.7.0",
+      "version": "1.9.0",
       "date": "2026-09-08",
       "author": "Артур",
       "type": "minor",
@@ -65,10 +65,10 @@
       ]
     },
     {
-      "version": "1.6.1",
+      "version": "1.8.0",
       "date": "2026-09-07",
       "author": "Артур",
-      "type": "patch",
+      "type": "minor",
       "changes": [
         {
           "kind": "changed",
@@ -78,7 +78,7 @@
       ]
     },
     {
-      "version": "1.6.0",
+      "version": "1.7.0",
       "date": "2026-09-07",
       "author": "Артур",
       "type": "minor",
@@ -96,10 +96,10 @@
       ]
     },
     {
-      "version": "1.5.1",
+      "version": "1.6.0",
       "date": "2026-09-07",
       "author": "Артур",
-      "type": "patch",
+      "type": "minor",
       "changes": [
         {
           "kind": "changed",

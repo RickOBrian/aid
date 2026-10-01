@@ -57,7 +57,7 @@ export const switchApiSpec: ComponentApiSpec = {
   tokens: [
     { name: 'Controls · Checked', reference: '--ds-switch-checked', kind: 'semantic-token' },
     { name: 'Controls · Unchecked', reference: '--ds-switch-unchecked', kind: 'semantic-token' },
-    { name: 'Controls · Key', reference: '--ds-switch-key', kind: 'semantic-token' },
+    { name: 'Controls · Accent', reference: '--ds-switch-key', kind: 'semantic-token' },
     { name: 'Strokes · Primary', reference: '--ds-switch-stroke', kind: 'semantic-token' },
     { name: 'track / thumb geometry', reference: '32×20px / 16×16px', kind: 'raw-value' },
     { name: 'touch target', reference: '44×44px', kind: 'platform-convention' },
@@ -156,7 +156,7 @@ function buildSwiftUISnippet(selection: SwitchSelection): string {
     '    }',
     '}',
     '',
-    '// DSTokens extension (Controls · Checked/Unchecked/Key, Strokes · Primary)',
+    '// DSTokens extension (Controls · Checked/Unchecked/Accent, Strokes · Primary)',
     'extension DSTokens {',
     '    struct Switch {',
     '        static let trackBackgroundChecked = Color("controls.checked")',
