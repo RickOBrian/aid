@@ -11,7 +11,8 @@ import { BADGE_COUNT_TOKEN_STYLE, BADGE_COUNT_TYPOGRAPHY_CSS } from './badgeCoun
  * component.
  *
  * Tokens: Fields · Warning (background), Texts · Primary Light Ind (text
- * color) — both theme-independent (`pages/aid-portal/data.ts`).
+ * color) (`pages/aid-portal/data.ts`). Text is theme-independent; the
+ * background has its own Night value (Fields · Warning, colors 1.7.0).
  * Geometry: radius-12, space-6 / space-2 padding, shadow-1, typography
  * subtitle-2 (Roboto Medium 14/16, tracking 0.1) — all semantic tokens,
  * referenced directly, not duplicated as component-level tokens.

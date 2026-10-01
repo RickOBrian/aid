@@ -25,19 +25,19 @@ const bgRows: SemanticColorRow[] = [
   {
     name: 'Primary',
     day: { hex: '#FFFFFF', opacity: 100 },
-    night: { hex: '#2D2C2E', opacity: 100 },
+    night: { hex: '#1F1F23', opacity: 100 },
     description: 'Основной фон',
   },
   {
     name: 'Secondary',
     day: { hex: '#F5F5F5', opacity: 100 },
-    night: { hex: '#202021', opacity: 100 },
+    night: { hex: '#111113', opacity: 100 },
     description: 'Используется для обозначения "нулевого" слоя-подложки.',
   },
   {
     name: 'Actions',
     day: { hex: '#2D2C2E', opacity: 100 },
-    night: { hex: '#000000', opacity: 100 },
+    night: { hex: '#1F1F23', opacity: 100 },
     description: 'Обычно используется для бэкграундов с действиями — для обособления поля',
   },
   {
@@ -178,7 +178,7 @@ const textsRows: SemanticColorRow[] = [
   {
     name: 'Warning',
     day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#F85973', opacity: 100 },
     description: 'Для состояния ошибок',
   },
   {
@@ -307,7 +307,7 @@ const iconsRows: SemanticColorRow[] = [
   {
     name: 'Warning',
     day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#F85973', opacity: 100 },
     description: 'Для состояния ошибок',
   },
   {
@@ -424,7 +424,7 @@ const strokesRows: SemanticColorRow[] = [
   {
     name: 'Warning',
     day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#F85973', opacity: 100 },
     description: 'Для состояния ошибок',
   },
   {
@@ -462,8 +462,8 @@ const pastelsRows: SemanticColorRow[] = [
   },
   {
     name: 'Lips',
-    day: { hex: '#CC5A87', opacity: 100 },
-    night: { hex: '#BD4B78', opacity: 100 },
+    day: { hex: '#CF6F96', opacity: 100 },
+    night: { hex: '#C76B90', opacity: 100 },
     description: '—',
   },
   {
@@ -475,7 +475,7 @@ const pastelsRows: SemanticColorRow[] = [
   {
     name: 'Shame',
     day: { hex: '#EB676B', opacity: 100 },
-    night: { hex: '#CC5255', opacity: 100 },
+    night: { hex: '#E54C59', opacity: 100 },
     description: '—',
   },
   {
@@ -517,7 +517,7 @@ const pastelsRows: SemanticColorRow[] = [
   {
     name: 'Parchment',
     day: { hex: '#F6EEDF', opacity: 100 },
-    night: { hex: '#5C564C', opacity: 100 },
+    night: { hex: '#433E3D', opacity: 100 },
     description: '—',
   },
   {
@@ -594,8 +594,8 @@ const pastelsRows: SemanticColorRow[] = [
   },
   {
     name: 'Morion',
-    day: { hex: '#4D4D5C', opacity: 100 },
-    night: { hex: '#818199', opacity: 100 },
+    day: { hex: '#605E5E', opacity: 100 },
+    night: { hex: '#403E3E', opacity: 100 },
     description: '—',
   },
   {
@@ -628,19 +628,19 @@ const buttonsRows: SemanticColorRow[] = [
   {
     name: 'Primary',
     day: { hex: '#2D2C2E', opacity: 100 },
-    night: { hex: '#CBCACC', opacity: 100 },
+    night: { hex: '#EBEDF0', opacity: 100 },
     description: 'Для кнопок, выполняющих главное или рекомендуемое действие.',
   },
   {
     name: 'Secondary',
     day: { hex: '#EBEDF0', opacity: 100 },
-    night: { hex: '#504F52', opacity: 100 },
+    night: { hex: '#333234', opacity: 100 },
     description: 'Для кнопок, выполняющих второстепенное действие',
   },
   {
     name: 'Disabled',
     day: { hex: '#F5F5F5', opacity: 100 },
-    night: { hex: '#373638', opacity: 100 },
+    night: { hex: '#2E2D2F', opacity: 100 },
     description: 'Неактивное состояние кнопок.',
   },
   {
@@ -676,7 +676,7 @@ const buttonsRows: SemanticColorRow[] = [
   {
     name: 'Floating',
     day: { hex: '#FFFFFF', opacity: 100 },
-    night: { hex: '#504F52', opacity: 100 },
+    night: { hex: '#1F1F23', opacity: 100 },
     description: 'Для навигационных FAB. Например, на карте.',
   },
   {
@@ -742,7 +742,7 @@ const fieldsRows: SemanticColorRow[] = [
   {
     name: 'Warning',
     day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#F85973', opacity: 100 },
     description: 'Для текстовых полей в состоянии ошибки',
   },
 ];
@@ -751,13 +751,13 @@ const messagesRows: SemanticColorRow[] = [
   {
     name: 'Default',
     day: { hex: '#EBEDF0', opacity: 100 },
-    night: { hex: '#202021', opacity: 100 },
+    night: { hex: '#2D2C2E', opacity: 100 },
     description: 'Для отображения комментариев и для сообщений от собеседника',
   },
   {
     name: 'Push',
     day: { hex: '#2D2C2E', opacity: 100 },
-    night: { hex: '#FFFFFF', opacity: 100 },
+    night: { hex: '#38373A', opacity: 100 },
     description: 'Для отображения комментариев и для сообщений от собеседника',
   },
   {
@@ -781,7 +781,7 @@ const messagesRows: SemanticColorRow[] = [
   {
     name: 'Warning',
     day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    night: { hex: '#F85973', opacity: 100 },
     description: 'Для состояния ошибок и предупреждений',
   },
 ];

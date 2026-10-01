@@ -4,8 +4,8 @@
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *
- * Both tokens used here are "Light Ind" / theme-independent rows — day and
- * night resolve to the same value (see
+ * Texts · Primary Light Ind is a "Light Ind" / theme-independent row — day
+ * and night resolve to the same value (see
  * `skills/_shared/protocols/gates/token-integrity.md` §7 Driver color
  * mode resolution: "Light Ind"/"Dark Ind" are semantic color roles, not
  * theme labels). No raw hex is authored here: every value is read from the
@@ -91,7 +91,8 @@ function cssVarBlock(vars: BadgeCountColorVars): string {
  * Scoped (non-global) CSS custom properties for `.ds-badge-count-root`.
  * Day values are the default; `[data-theme="night"]` overrides them —
  * matches the ambient theming convention from `skills/_shared/standards/platforms.md`.
- * Both blocks resolve to the same colors here (theme-independent tokens).
+ * Only the background differs between them: Fields · Warning has its own
+ * Night value; the text token is theme-independent.
  */
 /**
  * Непветовые токены компонента: радиус, отступы, тень и типографика.
