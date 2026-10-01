@@ -1,14 +1,16 @@
-# Новый Figma-плагин — чат исследования
+# MCP Figma-плагин — чат исследования
 
-Рабочее имя. Настоящее имя, папка и ветка переименовываются, когда станет
-ясно, что это за инструмент. Корневой `CLAUDE.md` действует тоже —
+Имя `mcp` дано Principal Designer 2026-10-01. Что именно оно означает —
+связь с MCP (Model Context Protocol), например с Figma MCP, или что-то
+другое, — уточнить у Principal Designer первым же вопросом, не додумывать.
+Корневой `CLAUDE.md` действует тоже —
 особенно разделы «Три продукта — три чата», «Стыки между продуктами» и
 «Git-полномочия».
 
 ## Где работаю
 
-- Папка чата — `~/Projects/aid-new-plugin` (git worktree), ветка
-  `research/new-figma-plugin`. Правлю только `tools/new-figma-plugin/`.
+- Папка чата — `~/Projects/aid-mcp-plugin` (git worktree), ветка
+  `research/mcp-figma-plugin`. Правлю только `tools/mcp-figma-plugin/`.
   Всё остальное — чужие продукты: см. «Стыки» в корневом `CLAUDE.md`.
 - Код Token Comparator (`tools/figma-token-comparator/`) и AID Style
   Migration (`tools/aid-style-migration/`) можно читать как образец
@@ -28,7 +30,7 @@
 
 ### Что должно получиться
 
-Один документ `tools/new-figma-plugin/docs/research.md`:
+Один документ `tools/mcp-figma-plugin/docs/research.md`:
 
 1. **Эталон** — что делает, для кого, какие сценарии; что видно снаружи
    об устройстве. Источники — со ссылками.
