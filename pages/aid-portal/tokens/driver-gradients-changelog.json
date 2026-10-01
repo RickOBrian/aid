@@ -1,0 +1,32 @@
+{
+  "artifact": "Gradients",
+  "currentVersion": "1.1.0",
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-31",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Добавлен режим night в коллекцию gradients. Для группы Bottom в ночном режиме цвет FFFFFF заменён на 1F1F23",
+          "details": "Режим Mode 1 переименован → day\nДобавлен режим: night\nBottom/Step 1: day — FFFFFF (0%), night — 1F1F23 (0%)\nBottom/Step 2: day — FFFFFF (100%), night — 1F1F23 (100%)\nОстальные переменные: night = day (без изменений)"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-25",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена коллекция переменных gradients и группа стилей Gradients",
+          "details": "Коллекция: gradients (публикация отключена)\nПеременные: Silver/Step 1, Silver/Step 2, Silver/Step 2-3, Silver/Step 3\nПеременные: Gold/Step 1, Gold/Step 2, Gold/Step 2-3, Gold/Step 3\nПеременные: Motivation/Step 1, Motivation/Step 2\nПеременные: Bottom/Step 1, Bottom/Step 2\nСтили: Gradients/Silver, Gradients/Gold, Gradients/Motivation, Gradients/Bottom"
+        }
+      ]
+    }
+  ]
+}

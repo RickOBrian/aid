@@ -40,6 +40,7 @@ export const HUB_ROUTES = {
   typography: '/tokens/typography',
   shadows: '/tokens/shadows',
   glass: '/tokens/glass',
+  gradients: '/tokens/gradients',
   radius: '/tokens/radius',
   spacing: '/tokens/spacing',
   components: '/components',
@@ -101,6 +102,14 @@ export const HUB_SECTIONS: HubSection[] = [
         icon: '◌',
         href: HUB_ROUTES.glass,
         productIds: ['rider'],
+      },
+      {
+        id: 'gradients',
+        title: 'Gradients',
+        description: 'Линейные градиенты, Day и Night',
+        icon: '◐',
+        href: HUB_ROUTES.gradients,
+        productIds: ['driver'],
       },
       {
         id: 'icons',
