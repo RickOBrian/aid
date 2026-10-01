@@ -7,7 +7,7 @@ import { BADGE_DOT_TOKEN_STYLE } from './badgeDotTokens';
  * "mini_notification" in Figma; canonical name `BadgeDot` per Role+Entity).
  * Alias `MiniNotification` kept for lookup, not a separate component.
  *
- * Tokens: Icons · Warning (fill) — theme-independent
+ * Tokens: Icons · Warning (fill) — own Day and Night values
  * (`pages/aid-portal/data.ts`). Geometry: space-8 (8×8px),
  * border-radius 50% (radius-4 equivalent on a circle).
  *

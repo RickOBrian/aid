@@ -20,6 +20,17 @@ const COUNT_VALUES = [
 
 afterEach(cleanup);
 
+/**
+ * Временное исключение (changes/driver/pending/component-deviation-badge-count-night-contrast.json).
+ * Night: белый текст на Fields · Warning #F85973 — 3,2:1, ниже AA 4,5:1.
+ * В библиотеке Figma Counter на тех же токенах. Тест ждёт ровно это нарушение:
+ * когда дизайн исправит токен, ожидание сломается и напомнит снять исключение.
+ */
+const KNOWN_VIOLATIONS: Record<string, string[]> = {
+  'badge-count-night-2-digits': ['color-contrast (serious): Elements must meet minimum color contrast ratio thresholds'],
+  'badge-count-night-overflow': ['color-contrast (serious): Elements must meet minimum color contrast ratio thresholds'],
+};
+
 describe('BadgeCount — матрица', () => {
   for (const mode of MODES) {
     for (const { label, value } of COUNT_VALUES) {
@@ -32,7 +43,9 @@ describe('BadgeCount — матрица', () => {
           </MatrixCell>,
         );
         await expect.element(page.getByTestId('cell')).toMatchScreenshot(name);
-        expect(await blockingAxeViolations(page.getByTestId('cell').element())).toEqual([]);
+        expect(await blockingAxeViolations(page.getByTestId('cell').element())).toEqual(
+          KNOWN_VIOLATIONS[name] ?? [],
+        );
       });
     }
   }

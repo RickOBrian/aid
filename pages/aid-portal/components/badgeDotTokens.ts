@@ -4,8 +4,8 @@
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *
- * Figma variable `Icons/Warning` maps to `Icons · Warning` — theme-independent
- * (#D62347 in Day and Night). No raw hex is authored here.
+ * Figma variable `Icons/Warning` maps to `Icons · Warning`; Day and Night
+ * differ since colors 1.7.0. No raw hex is authored here.
  */
 import { semanticColorSections, type ColorModeValue } from '../data';
 import { spacing } from './productTokens';

@@ -55,8 +55,8 @@ export const badgeCountApiSpec: ComponentApiSpec = {
     },
   ],
   modes: [
-    { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },
-    { name: 'Night', maps: 'dark · row.night (theme-independent — same as Day)' },
+    { name: 'Day', maps: 'light · row.day' },
+    { name: 'Night', maps: 'dark · row.night (background differs, text is theme-independent)' },
   ],
   slots: [],
   tokens: [
@@ -95,7 +95,7 @@ function buildReactSnippet(selection: BadgeCountSelection): string {
 function buildSwiftUISnippet(selection: BadgeCountSelection): string {
   const isNight = selection.mode === 'night';
   const nightNote = isNight
-    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — background/text tokens are theme-independent here']
+    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — the background (Fields · Warning) takes its Night value']
     : [];
 
   return [
@@ -164,7 +164,7 @@ function buildComposeSnippet(selection: BadgeCountSelection): string {
     '    )',
     '}',
     '',
-    `// isNightMode = ${isNight ? 'true' : 'false'} (theme-independent tokens — same output)`,
+    `// isNightMode = ${isNight ? 'true' : 'false'} (background: Fields · Warning Night value; text: theme-independent)`,
     '',
     '// Usage:',
     `BadgeCount(value = ${selection.value})`,

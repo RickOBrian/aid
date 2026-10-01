@@ -28,8 +28,8 @@ export const badgeDotApiSpec: ComponentApiSpec = {
     { name: 'error', supported: false, note: 'form controls only' },
   ],
   modes: [
-    { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },
-    { name: 'Night', maps: 'dark · row.night (theme-independent — same as Day)' },
+    { name: 'Day', maps: 'light · row.day' },
+    { name: 'Night', maps: 'dark · row.night' },
   ],
   slots: [],
   tokens: [
@@ -69,7 +69,7 @@ function buildReactSnippet(selection: BadgeDotSelection): string {
 function buildSwiftUISnippet(selection: BadgeDotSelection): string {
   const isNight = selection.mode === 'night';
   const nightNote = isNight
-    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — fill token is theme-independent here']
+    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — the fill (Icons · Warning) takes its Night value']
     : [];
 
   return [
@@ -123,7 +123,7 @@ function buildComposeSnippet(selection: BadgeDotSelection): string {
     '    }',
     '}',
     '',
-    `// isNightMode = ${isNight ? 'true' : 'false'} (theme-independent token — same output)`,
+    `// isNightMode = ${isNight ? 'true' : 'false'} (fill: Icons · Warning Night value)`,
     '',
     '// Usage:',
     'BadgeDot(contentDescription = "Есть непрочитанные уведомления")',
