@@ -70,7 +70,7 @@ export const badgeCountAnatomySchema: AnatomySchema = {
         {
           property: 'Color',
           kind: 'semantic-token',
-          tokenRef: 'Texts · Primary light ind',
+          tokenRef: 'Texts · Primary Light Ind',
           source: 'components/badgeCountTokens.ts → --ds-badge-count-text',
           note: 'Theme-independent token — same value in Day and Night.',
         },

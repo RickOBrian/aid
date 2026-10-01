@@ -4,10 +4,10 @@
  * Day → light mode (`row.day`), Night → dark mode (`row.night`) —
  * see `products/driver/product.json` → `colorModeMapping`.
  *
- * Both tokens used here are "light ind" / theme-independent rows — day and
+ * Both tokens used here are "Light Ind" / theme-independent rows — day and
  * night resolve to the same value (see
  * `skills/_shared/protocols/gates/token-integrity.md` §7 Driver color
- * mode resolution: "light ind"/"dark ind" are semantic color roles, not
+ * mode resolution: "Light Ind"/"Dark Ind" are semantic color roles, not
  * theme labels). No raw hex is authored here: every value is read from the
  * canonical token rows.
  */
@@ -41,7 +41,7 @@ function findRow(sectionTitle: string, rowName: string) {
 }
 
 const backgroundRow = findRow('Fields', 'Warning');
-const textRow = findRow('Texts', 'Primary light ind');
+const textRow = findRow('Texts', 'Primary Light Ind');
 
 export interface BadgeCountColorVars {
   '--ds-badge-count-bg': string;
@@ -63,7 +63,7 @@ export const badgeCountTokenSources: BadgeCountTokenSource[] = [
     night: backgroundRow.night,
   },
   {
-    name: 'Texts · Primary light ind',
+    name: 'Texts · Primary Light Ind',
     cssVar: '--ds-badge-count-text',
     day: textRow.day,
     night: textRow.night,

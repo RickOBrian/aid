@@ -657,7 +657,7 @@ export function BadgeCountPage() {
                     («99+»), не обрезается визуально — читается скринридером буквально.
                   </li>
                   <li>
-                    Контраст: белый текст (Texts · Primary light ind, 100%) на Fields · Warning
+                    Контраст: белый текст (Texts · Primary Light Ind, 100%) на Fields · Warning
                     (#D62347) — токен подобран как theme-independent именно для стабильного
                     контраста в Day и Night.
                   </li>
