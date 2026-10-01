@@ -16,6 +16,7 @@ export type HubSectionKey =
   | 'radius'
   | 'shadows'
   | 'glass'
+  | 'gradients'
   | 'icons'
   | 'components';
 
@@ -26,6 +27,7 @@ interface ProductContentModule {
   radiusTokens?: unknown[];
   shadowSections?: unknown[];
   glassSections?: unknown[];
+  gradientSections?: unknown[];
   iconSections?: unknown[];
   components?: unknown[];
 }
@@ -37,6 +39,7 @@ const KEY_TO_EXPORT: Record<HubSectionKey, keyof ProductContentModule> = {
   radius: 'radiusTokens',
   shadows: 'shadowSections',
   glass: 'glassSections',
+  gradients: 'gradientSections',
   icons: 'iconSections',
   components: 'components',
 };

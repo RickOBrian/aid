@@ -1,0 +1,18 @@
+{
+  "id": "component-deviation-badge-count-night-contrast",
+  "type": "component",
+  "exceptionType": "accessibility",
+  "artifact": "badge-count",
+  "product": "driver",
+  "standard": "skills/_shared/standards/accessibility.md — контраст текста не ниже 4,5:1 (WCAG AA); testing-strategy.md — axe: 0 critical, 0 serious",
+  "actual": "Night: белый текст (Texts · Primary Light Ind) на Fields · Warning #F85973 — 3,2:1. Day: #D62347 — 5,0:1.",
+  "reason": "Значение Fields · Warning Night пришло из Figma (colors 1.7.0, бывш. 1.6.0) при синхронизации 2026-10-01. Компонент Counter в библиотеке Figma (WB AID Driver Components, node 89:4214) собран на тех же токенах — дефект в дизайне, не в переносе.",
+  "recommendation": "Дизайну: выбрать для фона счётчика в Night токен с контрастом ≥ 4,5:1 к белому (или затемнить Fields · Warning Night). После правки в Figma — перенести значение, снять KNOWN_VIOLATIONS в components/Badges.browser.test.tsx и закрыть эту запись.",
+  "guard": "pages/aid-portal/components/Badges.browser.test.tsx — KNOWN_VIOLATIONS: тест ждёт ровно это нарушение и упадёт, когда его не станет",
+  "status": "temporary",
+  "reviewAt": "release",
+  "pendingRef": "changes/driver/pending/component-deviation-badge-count-night-contrast.json",
+  "decidedBy": "Principal Designer, 2026-10-01",
+  "created": "2026-10-01",
+  "author": "sergej"
+}

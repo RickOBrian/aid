@@ -7,6 +7,7 @@ import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
 import { ShadowsPage } from './ShadowsPage';
 import { GlassPage } from './GlassPage';
+import { GradientsPage } from './GradientsPage';
 import { ComponentsHubPage } from './ComponentsHubPage';
 import { SwitchPage } from './SwitchPage';
 import { BadgeCountPage } from './BadgeCountPage';
@@ -53,6 +54,10 @@ function resolveSectionKey(remainder: string) {
 
   if (path === HUB_ROUTES.glass) {
     return 'glass' as const;
+  }
+
+  if (path === HUB_ROUTES.gradients) {
+    return 'gradients' as const;
   }
 
   if (path === HUB_ROUTES.radius) {
@@ -161,6 +166,8 @@ export function App() {
     content = <ShadowsPage productId={productId} />;
   } else if (page === 'glass' && hasProductContent(productId, 'glass')) {
     content = <GlassPage />;
+  } else if (page === 'gradients' && hasProductContent(productId, 'gradients')) {
+    content = <GradientsPage />;
   } else if (page === 'spacing' && hasProductContent(productId, 'spacing')) {
     content = <SpacingPage productId={productId} />;
   } else if (page === 'radius' && hasProductContent(productId, 'radius')) {

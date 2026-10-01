@@ -11,7 +11,7 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * (устоявшиеся имена)»). `Toggle` is a recognized alias, not a separate
  * component.
  *
- * Tokens: Controls · Checked / Unchecked / Key, Strokes · Primary
+ * Tokens: Controls · Checked / Unchecked / Accent, Strokes · Primary
  * (`pages/aid-portal/data.ts`). Day → light mode, Night → dark mode
  * (`products/driver/product.json` → `colorModeMapping`).
  *

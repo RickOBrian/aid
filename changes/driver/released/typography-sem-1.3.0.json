@@ -1,0 +1,31 @@
+{
+  "id": "typography-sem-1.3.0",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Typography/Semantic",
+  "collectionName": "driver-typography-sem",
+  "product": "driver",
+  "changeSummary": "Синхронизация с Figma «🚖 WB AID Driver Tokens & Styles»: добавлены title 1 tall, title large, title price, subtitle 3 cap — все 20 стилей совпадают с Figma. Changelog перенесён из таблицы Figma (node 49:13) до 1.3.0: версии 1.2.0 и 1.3.0 описывают эти стили.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.3.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "description": "Перенесено из changelog Figma: 1.2.0 — Title Price, Title Large, Subtitle 3 CAP; 1.3.0 — Title 1 Tall"
+  },
+  "addedTokens": [
+    "title 1 tall",
+    "title large",
+    "title price",
+    "subtitle 3 cap"
+  ],
+  "relatedTokenChanges": [],
+  "reviewRoute": "/tokens/typography",
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
+  "figmaChangelogSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles?node-id=49-13",
+  "sourcePath": "pages/aid-portal/typographyData.ts",
+  "status": "released",
+  "releasedVersion": "1.3.0",
+  "created": "2026-10-01",
+  "released": "2026-10-01",
+  "author": "sergej"
+}

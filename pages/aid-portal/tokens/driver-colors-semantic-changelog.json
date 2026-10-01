@@ -1,7 +1,162 @@
 {
   "artifact": "Colors/Semantic",
-  "currentVersion": "1.2.0",
+  "currentVersion": "1.12.0",
   "entries": [
+    {
+      "version": "1.12.0",
+      "date": "2026-09-24",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Изменена непрозрачность цвета Bg/Search Area в светлом режиме (day).",
+          "details": "Bg/Search Area (day)\n#0056F5 20% → #0056F5 12%"
+        }
+      ]
+    },
+    {
+      "version": "1.11.0",
+      "date": "2026-09-17",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены 5 новых COLOR-переменных в коллекцию color-sem: фоновые, текстовые и кнопочные токены.",
+          "details": "Bg/Primary Light Ind (scope: Frame, Shape)\n#FFFFFF / 100% (Day)\n#FFFFFF / 100% (Night)\n\nTexts/Informative (scope: Text)\n#000000 / 38% (Day)\n#FFFFFF / 38% (Night)\n\nTexts/Variant (scope: Text)\n#323036 / 100% (Day)\n#F6F7F9 / 100% (Night)\n\nBg/Positive (scope: Frame, Shape)\n#23AD58 / 100% (Day)\n#23AD58 / 100% (Night)\n\nButtons/Warning (scope: Frame, Shape)\n#D62347 / 100% (Day)\n#F85973 / 100% (Night)"
+        },
+        {
+          "kind": "changed",
+          "description": "Обновлены значения цветовых токенов для ночной темы: фоновый и кнопочный.",
+          "details": "Buttons/Disabled (night)\n#373638 → #2E2D2F\n\nBg/Secondary (night)\n#202021 → #111113"
+        }
+      ]
+    },
+    {
+      "version": "1.10.0",
+      "date": "2026-09-09",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Bg/Tertiary Solid и Bg/Demand в коллекцию color-sem.",
+          "details": "Bg/Tertiary Solid (scope: Frame, Shape)\n#BDBDBD (Day)\n#5A5A5A (Night)\n\nBg/Demand (scope: Frame, Shape)\n#006C7C (Day)\n#1D9EB1 (Night)"
+        }
+      ]
+    },
+    {
+      "version": "1.9.0",
+      "date": "2026-09-08",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые переменные: Icons/Tertiary, Icons/Variant, Bg/Fade, Pastels/Morion, Pastels/Lips, Pastels/Shame, Icons/Special Pale, Bg/Special Pale, Strokes/Positive, Texts/Special Pale, Bg/Tertiary.",
+          "details": "Icons/Tertiary (scope: Shape)\n#000000 38% (Day)\n#F6F7F9 38% (Night)\n\nIcons/Variant (scope: Shape)\n#323036 (Day)\n#F6F7F9 (Night)\n\nBg/Fade (scope: Frame)\n#FFFFFF (Day)\n#252428 (Night)\n\nPastels/Morion (scope: Frame, Shape)\n#605E5E (Day)\n#403E3E (Night)\n\nPastels/Lips (scope: Frame, Shape)\n#CF6F96 (Day)\n#C76B90 (Night)\n\nPastels/Shame (scope: Frame, Shape)\n#EB676B (Day)\n#E54C59 (Night)\n\nIcons/Special Pale (scope: Shape)\n#0099E5 (Day)\n#0099E5 (Night)\n\nBg/Special Pale (scope: Frame, Shape)\n#0088CC (Day)\n#0099E5 (Night)\n\nStrokes/Positive (scope: Stroke)\n#23AD58 (Day)\n#23AD58 (Night)\n\nTexts/Special Pale (scope: Text)\n#0099E5 (Day)\n#0099E5 (Night)\n\nBg/Tertiary (scope: Frame, Shape)\n#000000 12% (Day)\n#000000 16% (Night)"
+        },
+        {
+          "kind": "changed",
+          "description": "Обновлены значения Night для Bg/Primary, Bg/Actions и Buttons/Floating и Messages/Default, Buttons/Primary, Buttons/Secondary и Pastels/Parchment. Скоупы обновлены на Frame Fill.",
+          "details": "Bg/Primary (Night): #2D2C2E → #1F1F23\nscope: Frame Fill + Shape Fill → Frame Fill\n\nBg/Actions (Night): #000000 → #1F1F23\nscope: Frame Fill + Shape Fill → Frame Fill\n\nButtons/Floating (Night): #504F52 → #1F1F23\nscope: Frame Fill + Shape Fill → Frame Fill\n\nMessages/Default (Night): #202021 → #2D2C2E\n\nButtons/Primary (Night): #CBCACC → #EBEDF0\n\nButtons/Secondary (Night): #504F52 → #333234\n\nPastels/Parchment (Night): #5C564C → #433E3D"
+        }
+      ]
+    },
+    {
+      "version": "1.8.0",
+      "date": "2026-09-07",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Переименованы переменные в группе Buttons: Pressed → Deep.",
+          "details": "Buttons/Positive Pressed → Buttons/Positive Deep\nButtons/Accent Pressed → Buttons/Accent Deep"
+        }
+      ]
+    },
+    {
+      "version": "1.7.0",
+      "date": "2026-09-07",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Обновлено значение переменной Messages/Push для режима Night в коллекции color-sem.",
+          "details": "Messages/Push (Night)\nТекущее значение: #38373A"
+        },
+        {
+          "kind": "changed",
+          "description": "Обновлены значения Night для переменных Warning в группах Texts, Icons, Strokes, Fields, Messages.",
+          "details": "Texts/Warning: #D62347 → #F85973\nIcons/Warning: #D62347 → #F85973\nStrokes/Warning: #D62347 → #F85973\nFields/Warning: #D62347 → #F85973\nMessages/Warning: #D62347 → #F85973"
+        }
+      ]
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-09-07",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Переименованы 43 переменные в коллекции color-sem: убраны цифры из названий, стандартизированы сокращения, обновлены субъективные имена Pastels и Boosters.",
+          "details": "Texts: Primary 1 → Primary, Primary 2 → Primary Inverted, Secondary 1 → Secondary, Secondary 2 → Secondary Inverted, Primary dark ind → Primary Dark Ind, Secondary dark ind → Secondary Dark Ind, Accent light ind → Accent Light Ind, Primary light ind → Primary Light Ind, Secondary light ind → Secondary Light Ind, Tertiary light ind → Tertiary Light Ind, Disabled light ind → Disabled Light Ind\n\nIcons: Primary 1 → Primary, Primary 2 → Primary Inverted, Secondary 1 → Secondary, Secondary 2 → Secondary Inverted, Primary dark ind → Primary Dark Ind, Secondary dark ind → Secondary Dark Ind, Accent light ind → Accent Light Ind, Primary light ind → Primary Light Ind, Secondary light ind → Secondary Light Ind, Informative light ind → Informative Light Ind, Inactive light ind → Inactive Light Ind\n\nFields: Primary 1 → Primary, Primary 2 → Primary Inverted, Secondary 1 → Secondary, Secondary 2 → Secondary Inverted\n\nStrokes: Primary Opposite → Primary Inverted, Informative light ind → Informative Light Ind\n\nButtons: Positive deep → Positive Pressed, Positive disabled → Positive Disabled, Accent deep → Accent Pressed, Fab → Floating\n\nPastels: Lips → Rose, Shame → Blush, Skin → Sand, Wealth → Emerald, Sign → Cobalt, Pigeon → Slate, Vk → Azure, Ghost → Mist, Morion → Charcoal\n\nBoosters: Salat → Lime\n\nControls: Key → Accent"
+        }
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-09-03",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Separator в коллекцию color-sem в группах Bg и Strokes.",
+          "details": "Bg/Separator\n#C4C4D4 (Day)\n#5F5F6D (Night)\n\nStrokes/Separator\n#C4C4D4 (Day)\n#5F5F6D (Night)"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Bg/Primary inverted в коллекцию color-sem.",
+          "details": "Bg/Primary inverted\n#1F1F23 (Day)\n#F5F5F5 (Night)"
+        },
+        {
+          "kind": "changed",
+          "description": "Обновлены значения цветов Attention в группах Bg, Texts, Icons и Strokes.",
+          "details": "Bg / Attention\n#F24F18 → #FFAA00 (Day)\n#F24F18 → #E6A219 (Night)\n\nTexts / Attention\n#F24F18 → #D49311 (Day)\n#F24F18 → #EBB447 (Night)\n\nIcons / Attention\n#F24F18 → #FFAA00 (Day)\n#F24F18 → #E6A219 (Night)\n\nStrokes / Attention\n#F24F18 → #FFAA00 (Day)\n#F24F18 → #E6A219 (Night)"
+        }
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "date": "2026-08-31",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена группа цветовых переменных Boosters (8 цветов) в коллекцию color-sem с режимами Day и Night",
+          "details": "Boosters / Blue\n#CBE7F6 (Day)\n#4587C9 (Night)\n\nBoosters / Green\n#DAF6CB (Day)\n#50A550 (Night)\n\nBoosters / Red\n#F6CBCB (Day)\n#CB4D4D (Night)\n\nBoosters / Bronze\n#F5DAA3 (Day)\n#C37D4B (Night)\n\nBoosters / Pink\n#F6CBE6 (Day)\n#C0599D (Night)\n\nBoosters / Lime\n#CBF6E7 (Day)\n#3999AC (Night)\n\nBoosters / Purple\n#E1CBF6 (Day)\n#8960C3 (Night)\n\nBoosters / Custom\n#F5F589 (Day)\n#F1F17E (Night)"
+        }
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-08-27",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлен цвет Attention в группы Bg, Texts, Icons и Strokes. Добавлен Bg/Search Area",
+          "details": "Texts / Attention\n#F24F18 (Day)\n#F24F18 (Night)\n\nBg / Attention\n#F24F18 (Day)\n#F24F18 (Night)\n\nIcons / Attention\n#F24F18 (Day)\n#F24F18 (Night)\n\nStrokes / Attention\n#F24F18 (Day)\n#F24F18 (Night)\n\nBg / Search Area\n#0056F5 20% (Day)\n#0056F5 20% (Night)"
+        }
+      ]
+    },
     {
       "version": "1.2.0",
       "date": "2026-08-25",
@@ -11,7 +166,7 @@
         {
           "kind": "added",
           "description": "Добавлены переменные фона и обводки",
-          "details": "Bg / Warning\n#F9ECEE (Day)\n#A22C3E 30% (Night)\n\nBg / Overlay\n#000000 40% (Day)\n#000000 40% (Night)\n\nBg / Accent\n#8526FF (Day)\n#9966FF (Night)\n\nStrokes / Primary Opposite\n#FFFFFF (Day)\n#2D2C2E (Night)"
+          "details": "Bg / Warning\n#F9ECEE (Day)\n#A22C3E 30% (Night)\n\nBg / Overlay\n#000000 40% (Day)\n#000000 40% (Night)\n\nBg / Accent\n#8526FF (Day)\n#9966FF (Night)\n\nStrokes / Primary Inverted\n#FFFFFF (Day)\n#2D2C2E (Night)"
         }
       ]
     },

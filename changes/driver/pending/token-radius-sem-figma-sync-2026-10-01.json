@@ -1,0 +1,28 @@
+{
+  "id": "token-radius-sem-figma-sync-2026-10-01",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Radius/Semantic",
+  "collectionName": "driver-radius-sem",
+  "product": "driver",
+  "changeSummary": "Добавлены 3 шага, которые есть в Figma (коллекция radius) и отсутствовали в Presentbook.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntries": [
+    {
+      "version": "1.1.0",
+      "kind": "added",
+      "description": "Добавлены radius-2, radius-6, radius-10"
+    }
+  ],
+  "addedTokens": [
+    "radius-2",
+    "radius-6",
+    "radius-10"
+  ],
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
+  "sourcePath": "pages/aid-portal/radiusData.ts",
+  "status": "pending",
+  "created": "2026-10-01",
+  "author": "sergej"
+}

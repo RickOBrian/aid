@@ -1,7 +1,33 @@
 {
   "artifact": "Typography/Semantic",
-  "currentVersion": "1.1.0",
+  "currentVersion": "1.3.0",
   "entries": [
+    {
+      "version": "1.3.0",
+      "date": "2026-09-07",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлен новый текстовый стиль и семантические переменные: Title 1 Tall.",
+          "details": "Стиль: Titles/Title 1 Tall (Roboto Bold, 20/24px, ls 0.15px)\nПеременные (typography-sem):\ntitle 1 tall/font-family → ff-Roboto\ntitle 1 tall/font-weight → fw-700\ntitle 1 tall/font-size → fs-20\ntitle 1 tall/line-height → lh-24\ntitle 1 tall/letter-spacing → ls-015"
+        }
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-09-03",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые текстовые стили и семантические переменные: Title Price, Title Large, Subtitle 3 CAP. Созданы новые core-переменные.",
+          "details": "Стиль: Titles/Title Price (Roboto Medium, 62/60px, ls 0px)\nПеременные (typography-sem):\ntitle price/font-family → ff-Roboto\ntitle price/font-weight → fw-500\ntitle price/font-size → fs-62\ntitle price/line-height → lh-60\ntitle price/letter-spacing → ls-000\n\nСтиль: Titles/Title Large (Roboto Medium, 24/24px, ls 0.15px)\nПеременные (typography-sem):\ntitle large/font-family → ff-Roboto\ntitle large/font-weight → fw-500\ntitle large/font-size → fs-24\ntitle large/line-height → lh-24\ntitle large/letter-spacing → ls-015\n\nСтиль: Subtitles/Subtitle 3 CAP (Roboto Bold, 14/18px, ls 0.56px, UPPERCASE)\nПеременные (typography-sem):\nsubtitle 3 cap/font-family → ff-Roboto\nsubtitle 3 cap/font-weight → fw-700\nsubtitle 3 cap/font-size → fs-14\nsubtitle 3 cap/line-height → lh-18\nsubtitle 3 cap/letter-spacing → ls-056\n\nНовые core-переменные (typography-core):\nfs-24 (24)\nfs-62 (62)\nlh-60 (60)\nlh-18 (18)\nls-056 (0.56)"
+        }
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-08-18",
@@ -24,7 +50,7 @@
         {
           "kind": "added",
           "description": "Создана система типографических токенов и текстовых стилей.",
-          "details": "Коллекция typography-core (20 переменных):\nFont Family: ff-Roboto\nFont Weight: fw-400, fw-500, fw-700\nFont Size: fs-14, fs-16, fs-18, fs-22, fs-30, fs-44\nLine Height: lh-16, lh-20, lh-24, lh-28, lh-36, lh-56\nLetter Spacing: ls-000, ls-010, ls-015, ls-030\n\nКоллекция typography-sem (65 переменных):\n13 стилей с алиасами на core-переменные\n\nСтили типографики:\nHeadlines: Headline 1–6\nSubtitles: Subtitle 1–2\nBodies: Body 1, Body 2, Body 2 Medium, Body 2 Tall, Body 3"
+          "details": "Коллекция typography-core (30 переменных):\nFont Family: ff-Roboto\nFont Weight: fw-400, fw-500, fw-600, fw-700\nFont Size: fs-12, fs-14, fs-16, fs-18, fs-20, fs-22, fs-24, fs-30, fs-44, fs-62\nLine Height: lh-16, lh-18, lh-20, lh-22, lh-24, lh-28, lh-36, lh-56, lh-60\nLetter Spacing: ls-000, ls-010, ls-015, ls-024, ls-030, ls-056\n\nКоллекция typography-sem (95 переменных):\n19 стилей с алиасами на core-переменные\n\nСтили типографики:\nHeadlines: Headline 1–6\nTitles: Title 1, Title Price, Title Large\nSubtitles: Subtitle 1, Subtitle 1 Bold, Subtitle 2, Subtitle 3 CAP\nBodies: Body 1, Body 2, Body 2 Medium, Body 2 Tall, Body 3\nCaptions: Caption 1"
         }
       ]
     }

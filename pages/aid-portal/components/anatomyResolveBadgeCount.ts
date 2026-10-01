@@ -13,7 +13,7 @@ function findBadgeCountTokenValue(tokenRef: string, mode: ProductColorMode) {
 /**
  * Resolves an anatomy property to its display value.
  *
- * Only color tokens (Fields · Warning, Texts · Primary light ind) are looked
+ * Only color tokens (Fields · Warning, Texts · Primary Light Ind) are looked
  * up dynamically by mode via `badgeCountTokenSources`. Non-color semantic
  * tokens (radius-12, space-6, space-2, shadow-1, subtitle-2) are marked
  * `kind: 'semantic-token'` in the schema but resolve through `staticValue` —

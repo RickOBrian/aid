@@ -97,7 +97,7 @@ export const switchAnatomySchema: AnatomySchema = {
         {
           property: 'Background',
           kind: 'semantic-token',
-          tokenRef: 'Controls · Key',
+          tokenRef: 'Controls · Accent',
           source: 'components/switchTokens.ts → --ds-switch-key',
         },
         {

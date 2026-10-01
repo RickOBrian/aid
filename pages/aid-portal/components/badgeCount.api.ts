@@ -55,13 +55,13 @@ export const badgeCountApiSpec: ComponentApiSpec = {
     },
   ],
   modes: [
-    { name: 'Day', maps: 'light · row.day (theme-independent — same as Night)' },
-    { name: 'Night', maps: 'dark · row.night (theme-independent — same as Day)' },
+    { name: 'Day', maps: 'light · row.day' },
+    { name: 'Night', maps: 'dark · row.night (background differs, text is theme-independent)' },
   ],
   slots: [],
   tokens: [
     { name: 'Fields · Warning', reference: '--ds-badge-count-bg', kind: 'semantic-token' },
-    { name: 'Texts · Primary light ind', reference: '--ds-badge-count-text', kind: 'semantic-token' },
+    { name: 'Texts · Primary Light Ind', reference: '--ds-badge-count-text', kind: 'semantic-token' },
     { name: 'radius-12', reference: '12px', kind: 'semantic-token' },
     { name: 'space-2 / space-6', reference: '2px / 6px padding', kind: 'semantic-token' },
     { name: 'shadow-1', reference: 'elevation', kind: 'semantic-token' },
@@ -82,7 +82,7 @@ function buildReactSnippet(selection: BadgeCountSelection): string {
     "import { BadgeCount } from './components/BadgeCount';",
     '',
     '// Colors resolve from semantic tokens via CSS vars on .ds-badge-count-root:',
-    '// --ds-badge-count-bg (Fields · Warning) / --ds-badge-count-text (Texts · Primary light ind)',
+    '// --ds-badge-count-bg (Fields · Warning) / --ds-badge-count-text (Texts · Primary Light Ind)',
   ];
 
   const body = isNight
@@ -95,7 +95,7 @@ function buildReactSnippet(selection: BadgeCountSelection): string {
 function buildSwiftUISnippet(selection: BadgeCountSelection): string {
   const isNight = selection.mode === 'night';
   const nightNote = isNight
-    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — background/text tokens are theme-independent here']
+    ? ['// Night: apply .preferredColorScheme(.dark) on ancestor — the background (Fields · Warning) takes its Night value']
     : [];
 
   return [
@@ -123,7 +123,7 @@ function buildSwiftUISnippet(selection: BadgeCountSelection): string {
     '    }',
     '}',
     '',
-    '// DSTokens extension (Fields · Warning, Texts · Primary light ind)',
+    '// DSTokens extension (Fields · Warning, Texts · Primary Light Ind)',
     'extension DSTokens {',
     '    struct BadgeCount {',
     '        static let background = Color("fields.warning")',
@@ -164,7 +164,7 @@ function buildComposeSnippet(selection: BadgeCountSelection): string {
     '    )',
     '}',
     '',
-    `// isNightMode = ${isNight ? 'true' : 'false'} (theme-independent tokens — same output)`,
+    `// isNightMode = ${isNight ? 'true' : 'false'} (background: Fields · Warning Night value; text: theme-independent)`,
     '',
     '// Usage:',
     `BadgeCount(value = ${selection.value})`,

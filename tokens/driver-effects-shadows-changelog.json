@@ -4,13 +4,14 @@
   "entries": [
     {
       "version": "1.0.0",
-      "date": "2026-08-15",
-      "author": "sergej",
+      "date": "2026-08-13",
+      "author": "Артур",
       "type": "minor",
       "changes": [
         {
           "kind": "added",
-          "description": "Страница Shadows: shadow 1–7 (effects · Shadows) из Figma с preview и таблицей параметров"
+          "description": "Создана система токенов для теней в коллекции effects и стили эффектов Shadows",
+          "details": "Коллекция effects, группа Shadows:\n48 переменных для 7 теней (offset-x, offset-y, blur, color)\nShadow 1 — 2 уровня (Elevation 1)\nShadow 2 — 1 уровень (Nine-patch)\nShadow 3 — 1 уровень (Nine-patch)\nShadow 4 — 1 уровень (Nine-patch)\nShadow 5 — 1 уровень (Nine-patch)\nShadow 6 — 3 уровня (Elevation 6)\nShadow 7 — 3 уровня (Elevation 24)\n\nСтили эффектов:\nShadows/Shadow 1 — Shadows/Shadow 7\nКаждый стиль привязан к переменным из коллекции effects\n\nСкоупинг переменных:\noffset-x, offset-y, blur → EFFECT_FLOAT\ncolor → EFFECT_COLOR"
         }
       ]
     }
