@@ -83,6 +83,7 @@ Presentbook.
 | Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
 | AID Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
 | AID Bot | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
+| MCP Figma-плагин | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
 
 Правила для всех чатов:
 
