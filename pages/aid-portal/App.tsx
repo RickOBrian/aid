@@ -22,6 +22,7 @@ import { HUB_ROUTES } from './hubData';
 import { hasProductContent } from './productContent';
 import { ProductAccentScope } from './ProductAccentScope';
 import { DEFAULT_PRODUCT_ID, getProductLabel, resolveProductRoute } from './productRegistry';
+import { currentAppPath, withBase } from './base';
 
 /**
  * Route table is unprefixed (`/tokens/colors`, `/components/switch`, …) —
@@ -124,7 +125,7 @@ function NotFoundPage() {
     >
       <div>
         <p style={{ margin: '0 0 12px', fontSize: 18 }}>Страница не найдена</p>
-        <a href={HUB_ROUTES.hub} style={{ color: '#2d2c2e' }}>
+        <a href={withBase(HUB_ROUTES.hub)} style={{ color: '#2d2c2e' }}>
           Перейти на главную
         </a>
       </div>
@@ -136,11 +137,11 @@ export function App() {
   // `/login` is product-agnostic (the session cookie from middleware.ts guards
   // every product) — handled before product-prefix resolution so it never
   // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
-  if (window.location.pathname === '/login') {
+  if (currentAppPath() === '/login') {
     return <LoginPage />;
   }
 
-  const { productId, remainder } = resolveProductRoute(window.location.pathname);
+  const { productId, remainder } = resolveProductRoute(currentAppPath());
   const page = resolveSectionKey(remainder);
 
   useEffect(() => {

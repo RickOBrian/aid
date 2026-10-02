@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { withBase } from './base';
 
 const LOGIN_PAGE_STYLE = `
 .dslp,
@@ -135,7 +136,7 @@ export function LoginPage() {
       if (response.ok) {
         // Full reload (not client-side navigate) — middleware must see the
         // freshly set `session` cookie on the very next request to `/`.
-        window.location.href = '/';
+        window.location.href = withBase('/');
         return;
       }
 
