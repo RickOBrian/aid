@@ -63,8 +63,8 @@ Figma-плагин для Presentbook. Отдельный продукт: с Tok
 - Папка чата — `~/Projects/aid-style-migration` (git worktree). Правлю
   только `tools/aid-style-migration/`. Всё остальное — чужие продукты: см.
   «Стыки» в корневом `CLAUDE.md`. Исключение по решению Principal
-  Designer (2026-09-30): `products/<id>/knowledge/` — данные знания о
-  продукте; закрепить в чате стандартов (владелец `products/`) через ADR.
+  Designer (2026-09-30), закреплено ADR-039: `products/<id>/knowledge/` —
+  данные знания о продукте.
 - Инженер программы AID работает в своём worktree и своей ветке от
   `feat/style-migration-spike`; уроки — файлами в `inbox/`.
 - Новую ветку — от свежего `origin/main`:
@@ -155,7 +155,8 @@ Figma-плагин для Presentbook. Отдельный продукт: с Tok
   `docs/knowledge-format.md`, источник правды — репозиторий; эталон —
   библиотека и стандарты, а не статистика макетов. Плагин читает,
   изменения предлагает уроком. Проект ADR `docs/adr-draft-product-language.md`
-  (`style-language.json`) устарел — переписать под знание о продукте.
+  принят в редакции «Знание о продукте» как ADR-039; `style-language.json`
+  не заводится.
   База знаний общая с Token Comparator, код раздельный.
 - **Под капотом — модули, в интерфейсе — одно окно:** движок (роли,
   сопоставление) без Figma API, адаптеры Plugin API и REST; изучение
