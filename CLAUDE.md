@@ -82,6 +82,7 @@ Presentbook.
 | Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
 | Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
 | AID Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
+| AID Bot | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
 
 Правила для всех чатов:
 
