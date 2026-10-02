@@ -114,6 +114,8 @@ Presentbook.
 | Гайды в Presentbook: `pages/aid-portal/guide-registry.json` → `sourcePath` в `skills/_shared/` | Стандарты — текст, Presentbook — показ | Текст гайда правится только в `skills/_shared/`, не в `generated/` и не в `public/guides/`. Переименование или перенос файла-источника — вместе с правкой `guide-registry.json`, то есть через оба чата. |
 | Токены и changelog продуктов: `tokens/`, `components/*-changelog.json` | Стандарты | Presentbook их читает при сборке; формат меняется только согласованно. |
 | Очередь предложений `registry/propose-*` | Token Comparator — код, Стандарты — решения | Разбор предложений (мерж или закрытие с причиной) — решение Principal Designer в чате стандартов, ADR-035. |
+| Знание о продукте: `products/<id>/knowledge/` (ADR-039) | Стандарты — папка `products/` и согласование формата; AID Style Migration — содержание и формат `aid-knowledge` | Канон меняется только PR с решением Principal Designer; предложения — уроками в `tools/aid-style-migration/inbox/`; инструменты читают версию из `main`; формат меняется согласованно |
+| Показ знания о продукте в Presentbook | Presentbook — показ; AID Style Migration — данные | Presentbook читает `products/<id>/knowledge/`, не правит |
 | GitHub Releases репозитория: метка **Latest** | Token Comparator | Кнопка Presentbook ведёт на `releases/latest/download/token-comparator.zip`, поэтому Latest должен оставаться за релизом Token Comparator. Релизы других продуктов (AID Style Migration) публикуются **без** Latest, со своим префиксом тега; собственную кнопку скачивания такой продукт получает через чат Presentbook. |
 
 Удалённые легаси-продукты не возвращаются и не упоминаются ни в одном
