@@ -88,5 +88,10 @@ export async function route(request: Request): Promise<Response> {
 }
 
 export async function handler(event: YcHttpEvent) {
+  // Заглушка вместо токена хуже, чем его отсутствие: GitHub ответит 401.
+  // `delete` переменной окружения в Cloud Functions не срабатывает — пустая строка.
+  if (process.env.GITHUB_RELEASES_TOKEN === PLACEHOLDER) {
+    process.env.GITHUB_RELEASES_TOKEN = '';
+  }
   return fromResponse(await route(toRequest(event)));
 }
