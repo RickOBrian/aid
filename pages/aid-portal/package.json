@@ -20,6 +20,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@fontsource/google-sans": "5.3.1",
     "@fontsource/roboto": "5.3.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
