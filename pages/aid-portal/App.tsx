@@ -21,7 +21,7 @@ import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
 import { hasProductContent } from './productContent';
 import { ProductAccentScope } from './ProductAccentScope';
-import { DEFAULT_PRODUCT_ID, getProductLabel, resolveProductRoute } from './productRegistry';
+import { DEFAULT_PRODUCT_ID, getProductLabel, productHubPath, resolveProductId, resolveProductRoute } from './productRegistry';
 import { currentAppPath, withBase } from './base';
 
 /**
@@ -125,7 +125,7 @@ function NotFoundPage() {
     >
       <div>
         <p style={{ margin: '0 0 12px', fontSize: 18 }}>Страница не найдена</p>
-        <a href={withBase(HUB_ROUTES.hub)} style={{ color: '#2d2c2e' }}>
+        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: '#2d2c2e' }}>
           Перейти на главную
         </a>
       </div>

@@ -35,7 +35,10 @@
 
 - Vite + React, маршруты в `App.tsx` без префикса продукта; `/driver/…`
   и `/rider/…` снимаются в `resolveProductRoute` (`productRegistry.ts`).
-  Корень `/` — продукт `driver` по умолчанию (решение 2026-09-22).
+  Хаб продукта — `/<продукт>` (`aidteam.pro/driver`). Старые адреса (`/`,
+  `/tokens/colors`, `/driver/design-system`) при загрузке переписываются на
+  канонические (`canonicalAppPath`, по умолчанию `driver`); внутренние ссылки
+  строятся сразу канонически через `productPath`.
 - Вход на сайт: `AuthGate.tsx` спрашивает `GET /api/session` и без сессии
   показывает форму; `api/login.ts` ставит подписанную cookie. Статика открыта,
   закрыт интерфейс (вариант 1а ADR-038). На запасном Vercel страницы закрывает

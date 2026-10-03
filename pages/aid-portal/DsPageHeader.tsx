@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { productHubPath, resolveProductId } from './productRegistry';
+import { productPath, resolveProductId } from './productRegistry';
 import { ProductSwitcher, PRODUCT_SWITCHER_STYLE } from './ProductSwitcher';
 import { currentAppPath, withBase } from './base';
 
@@ -166,7 +166,7 @@ export function DsPageHeader({
   showSearch = true,
 }: DsPageHeaderProps) {
   const currentProductId = resolveProductId(currentAppPath());
-  const resolvedBackHref = backHref ?? productHubPath(currentProductId);
+  const resolvedBackHref = productPath(currentProductId, backHref ?? '/');
 
   return (
     <>
