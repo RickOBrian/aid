@@ -109,6 +109,9 @@ jobs:
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
           export PATH="$HOME/yc/bin:$PATH"
           printf '%s' "$YC_KEY" > "$RUNNER_TEMP/key.json"
+          # Свежий yc без профиля не знает адрес API: без этого serverless-команды
+          # падают с «endpoint should be set» (первая выкладка, run 37113551002).
+          yc config set endpoint api.cloud.yandex.net:443
           yc config set service-account-key "$RUNNER_TEMP/key.json"
           yc config set folder-id "${{ vars.YC_FOLDER_ID }}"
           rm -f "$RUNNER_TEMP/key.json"
