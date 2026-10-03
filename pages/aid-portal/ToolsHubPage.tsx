@@ -4,7 +4,8 @@ import { DS_PORTAL_LAYOUT_TOKENS } from './dsChangelogTable';
 import { DS_INTERACTIVE_CARD_CLASS, DS_INTERACTIVE_CARD_STYLE } from './dsInteractiveCard';
 import { HUB_ROUTES } from './hubData';
 import toolsRegistry from './tools-registry.json';
-import { withBase } from './base';
+import { currentAppPath, withBase } from './base';
+import { productPath, resolveProductId } from './productRegistry';
 
 const T = DS_PORTAL_LAYOUT_TOKENS;
 
@@ -197,7 +198,7 @@ export function ToolsHubPage() {
                     <a
                       key={plugin.pluginId}
                       className={`dsth-item ${DS_INTERACTIVE_CARD_CLASS}`}
-                      href={withBase(plugin.reviewRoute)}
+                      href={withBase(productPath(resolveProductId(currentAppPath()), plugin.reviewRoute))}
                     >
                       <div className="dsth-item-preview" aria-hidden="true">
                         <span className="dsth-item-icon">⎘</span>

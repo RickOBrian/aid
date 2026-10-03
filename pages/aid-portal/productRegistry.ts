@@ -6,10 +6,13 @@
  * third product means adding it to that registry (status `active` or
  * `onboarding`); this file and `ProductSwitcher` pick it up automatically.
  *
- * URL scheme: `/[product]/...` (e.g. `/rider/tokens/colors`). Paths without
- * a recognized product prefix (`/tokens/colors`, `/design-system`, `/`) fall
- * back to `DEFAULT_PRODUCT_ID` (`driver`) — this is the back-compat path so
- * existing Driver links keep working without a redirect.
+ * URL scheme: `/[product]/...` (e.g. `/rider/tokens/colors`); the product hub
+ * is the bare `/[product]` (`aidteam.pro/driver`). Old addresses — without a
+ * product (`/tokens/colors`, `/`) or with the former hub segment
+ * (`/driver/design-system`, `/design-system`) — are rewritten to the
+ * canonical one on load (`canonicalAppPath`), with `driver` as the default
+ * product. The gateway serves `index.html` for any path, so the redirect is
+ * client-side (`history.replaceState`), without a reload.
  */
 
 export interface ProductRegistryEntry {
@@ -67,8 +70,51 @@ export function getProductLabelParts(id: string): { prefix: string; name: string
 }
 
 /** Every product's presentbook hub lives at this fixed suffix. */
+/** Former hub segment: `/driver/design-system` → `/driver`. */
+const LEGACY_HUB_SEGMENT = 'design-system';
+
+/** Paths outside product routing — kept as they are. */
+const PRODUCT_AGNOSTIC_PATHS = new Set(['/login']);
+
 export function productHubPath(id: string): string {
-  return `/${id}/design-system`;
+  return `/${id}`;
+}
+
+/**
+ * A route of the app (`/tokens/colors`, `/`, `/design-system`, or already
+ * prefixed `/rider/tokens/colors`) as a link inside product `id`.
+ */
+export function productPath(id: string, route: string): string {
+  const normalized = normalizePathname(route);
+  const [first, ...rest] = normalized.split('/').filter(Boolean);
+  if (first && isSwitchableProductId(first)) {
+    return canonicalAppPath(normalized) ?? normalized;
+  }
+  if (!first || (first === LEGACY_HUB_SEGMENT && rest.length === 0)) {
+    return productHubPath(id);
+  }
+  return `/${id}${normalized}`;
+}
+
+/**
+ * Canonical address for `pathname`, or `null` if it is already canonical.
+ * `/` and `/design-system` → `/driver`; `/tokens/colors` →
+ * `/driver/tokens/colors`; `/rider/design-system` → `/rider`; trailing slash
+ * dropped.
+ */
+export function canonicalAppPath(pathname: string): string | null {
+  const normalized = normalizePathname(pathname);
+  if (PRODUCT_AGNOSTIC_PATHS.has(normalized)) {
+    return null;
+  }
+  const [first, ...rest] = normalized.split('/').filter(Boolean);
+  let canonical: string;
+  if (first && isSwitchableProductId(first)) {
+    canonical = rest.length === 1 && rest[0] === LEGACY_HUB_SEGMENT ? productHubPath(first) : normalized;
+  } else {
+    canonical = productPath(DEFAULT_PRODUCT_ID, normalized);
+  }
+  return canonical === pathname ? null : canonical;
 }
 
 export function normalizePathname(pathname: string): string {
