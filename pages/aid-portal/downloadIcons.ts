@@ -2,6 +2,7 @@ import { iconAssetPath, type IconItem, type IconSection } from './iconsData';
 import { productIconAssetPath } from './productIconData';
 import { parseSvgDimensions } from './parseSvgDimensions';
 import { sanitizeIconSvg } from './sanitizeIconSvg';
+import { withBase } from './base';
 
 export type IconDownloadFormat = 'svg' | 'pdf' | 'png1' | 'png2' | 'png3';
 
@@ -167,7 +168,7 @@ function createZip(files: { name: string; data: Uint8Array }[]): Blob {
 }
 
 async function fetchSvgText(assetUrl: string, iconId: string): Promise<string> {
-  const response = await fetch(assetUrl);
+  const response = await fetch(withBase(assetUrl));
   if (!response.ok) {
     throw new Error(`Не удалось загрузить ${assetUrl}`);
   }

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { DsPageHeader } from './DsPageHeader';
 import { DS_CHANGELOG_TABLE_STYLE, DS_PORTAL_LAYOUT_TOKENS as T } from './dsChangelogTable';
 import { HUB_ROUTES } from './hubData';
+import { withBase } from './base';
 
 /**
  * Страница гайда.
@@ -200,7 +201,7 @@ export function GuidePage({ guideId }: { guideId: string }) {
                 {meta.sourceDownloadUrl ? (
                   <>
                     {' · '}
-                    <a className="dsgp-link" href={meta.sourceDownloadUrl} download>
+                    <a className="dsgp-link" href={withBase(meta.sourceDownloadUrl)} download>
                       скачать .md
                     </a>
                   </>

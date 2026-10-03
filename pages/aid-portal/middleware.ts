@@ -28,7 +28,8 @@ async function hasValidSession(request: Request): Promise<boolean> {
 export default async function middleware(request: Request): Promise<Response | undefined> {
   const { pathname } = new URL(request.url);
 
-  if (pathname === '/api/login') {
+  // /api/session сам отвечает 401 без сессии — клиентский вход (AuthGate, ADR-038).
+  if (pathname === '/api/login' || pathname === '/api/session') {
     return;
   }
 

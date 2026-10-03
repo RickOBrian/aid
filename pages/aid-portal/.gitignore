@@ -5,3 +5,4 @@ scripts/icons-manifest.json
 .env.local
 .env*.local
 .vitest
+deploy/yc/dist

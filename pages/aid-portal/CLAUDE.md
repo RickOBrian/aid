@@ -13,6 +13,11 @@
 - Сайт — https://aid-ds.vercel.app, Vercel-проект `aid-ds`, Root Directory —
   `pages/aid-portal`. Мерж в `main` сразу становится production (Q-11).
   Push в ветку даёт Preview.
+- Переезд в Яндекс Облако (ADR-038): `deploy/yc/` и
+  `.github/workflows/presentbook-yc.yml`. До переключения домена работает и
+  Vercel. Ссылки и адрес страницы — только через `withBase()` и
+  `currentAppPath()` (`base.ts`): превью живёт в `/pr-N/`, страж в
+  `components/base.test.ts` не даст пропустить базу.
 - Новую ветку — от свежего `origin/main`:
   `git fetch && git switch -c <ветка> origin/main`.
 

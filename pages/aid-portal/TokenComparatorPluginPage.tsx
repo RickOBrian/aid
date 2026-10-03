@@ -7,6 +7,7 @@ import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
 import { formatReleaseDate, usePluginRelease } from './pluginRelease';
 import { parseReleaseNotes, type NoteInline } from './releaseNotes';
+import { currentAppPath } from './base';
 
 interface RegistryPlugin {
   pluginId: string;
@@ -266,7 +267,7 @@ function ReleaseNotes({ markdown }: { markdown: string }) {
 }
 
 export function TokenComparatorPluginPage() {
-  const productId = resolveProductId(window.location.pathname);
+  const productId = resolveProductId(currentAppPath());
   const backHref = `/${productId}${HUB_ROUTES.tools}`;
   const release = usePluginRelease();
   const version = release?.version ?? null;

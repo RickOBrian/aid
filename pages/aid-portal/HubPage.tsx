@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { buildHubSections, type HubSection } from './hubData';
 import { DEFAULT_PRODUCT_ID, getProductLabel, getProductLabelParts } from './productRegistry';
 import { ProductSwitcher, PRODUCT_SWITCHER_STYLE, ProductSwitcherNameTrigger } from './ProductSwitcher';
+import { withBase } from './base';
 
 const PAGE_STYLE = `
 ${PRODUCT_SWITCHER_STYLE}
@@ -170,7 +171,7 @@ function HubItemCard({ item }: { item: HubSection['items'][number] }) {
 
   if (item.href !== null) {
     return (
-      <a className="dsh-item dsh-item--link" href={item.href}>
+      <a className="dsh-item dsh-item--link" href={withBase(item.href)}>
         {content}
       </a>
     );

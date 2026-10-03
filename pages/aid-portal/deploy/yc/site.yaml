@@ -1,0 +1,38 @@
+# Шлюз presentbook-site — aidteam.pro (ADR-038). Подстановки: ${FUNCTION_ID},
+# ${GATEWAY_SA_ID}, ${SITE_BUCKET}. Применяет deploy/yc/apply-gateways.sh.
+#
+# Статика (/assets, /icons, /guides) — http-прокси в бакет: интеграция
+# object_storage отдаёт всё, кроме HTML, как text/plain (прототип 2026-10-02),
+# а модульный JS с таким типом браузер не запустит. HTML и маршруты SPA —
+# object_storage с error_object: index.html, статус 200.
+openapi: 3.0.0
+info: { title: presentbook-site, version: 1.0.0 }
+paths:
+  /api/login:
+    post:
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+  /api/session:
+    get:
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+  /api/plugin-version:
+    get:
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+  /assets/{path+}:
+    get:
+      parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
+      x-yc-apigateway-integration: { type: http, url: 'https://storage.yandexcloud.net/${SITE_BUCKET}/assets/{path}', method: GET }
+  /icons/{path+}:
+    get:
+      parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
+      x-yc-apigateway-integration: { type: http, url: 'https://storage.yandexcloud.net/${SITE_BUCKET}/icons/{path}', method: GET }
+  /guides/{path+}:
+    get:
+      parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
+      x-yc-apigateway-integration: { type: http, url: 'https://storage.yandexcloud.net/${SITE_BUCKET}/guides/{path}', method: GET }
+  /:
+    get:
+      x-yc-apigateway-integration: { type: object_storage, bucket: '${SITE_BUCKET}', object: index.html, service_account_id: '${GATEWAY_SA_ID}' }
+  /{path+}:
+    get:
+      parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
+      x-yc-apigateway-integration: { type: object_storage, bucket: '${SITE_BUCKET}', object: '{path}', error_object: index.html, service_account_id: '${GATEWAY_SA_ID}' }
