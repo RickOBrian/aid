@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { DsPageHeader } from './DsPageHeader';
 import { DS_INTERACTIVE_CARD_CLASS, DS_INTERACTIVE_CARD_STYLE } from './dsInteractiveCard';
 import guideRegistry from './guide-registry.json';
-import { withBase } from './base';
+import { currentAppPath, withBase } from './base';
+import { productPath, resolveProductId } from './productRegistry';
 
 /**
  * Guides showcase — catalog of DS governance/standards documents, mirroring
@@ -212,7 +213,7 @@ export function GuidesHubPage() {
                     <a
                       key={guide.guideId}
                       className={`dsgh-item ${DS_INTERACTIVE_CARD_CLASS}`}
-                      href={withBase(guide.reviewRoute)}
+                      href={withBase(productPath(resolveProductId(currentAppPath()), guide.reviewRoute))}
                     >
                       <div className="dsgh-item-preview" aria-hidden="true">
                         <span className="dsgh-item-icon">▤</span>
