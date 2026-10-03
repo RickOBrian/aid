@@ -61,8 +61,7 @@ Vercel-проект `aid-ds` — запасной до ~2026-10-17 из того
 | `presentbook-ci` | `storage.editor` | каталог — выкладка и удаление превью |
 | `presentbook-ci` | `functions.editor` | каталог — новая версия функции |
 | `presentbook-ci` | `iam.serviceAccounts.user` | аккаунт `presentbook-runtime` — функция работает от его имени |
-| `presentbook-ci` | `lockbox.viewer` | секреты `presentbook-auth`, `presentbook-github` — `yc` без `version-id` сам находит текущую версию секрета; без роли «flag --secret Permission denied» (первая выкладка, 2026-10-03) |
-| `presentbook-ci` | `lockbox.payloadViewer` | те же секреты — выдана вместе с `lockbox.viewer`; нужна ли на самом деле, не проверено, решение PD |
+| `presentbook-ci` | `lockbox.viewer` | секреты `presentbook-auth`, `presentbook-github` — `yc` без `version-id` сам находит текущую версию секрета; без роли «flag --secret Permission denied» (первая выкладка, 2026-10-03). `lockbox.payloadViewer` CI не нужна: снята 2026-10-03, выкладка проходит с одной `lockbox.viewer` |
 
 После смены значений в Lockbox нужна новая версия функции: она привязывает
 версию секрета на момент выкладки. Её делает следующий push в `main`.

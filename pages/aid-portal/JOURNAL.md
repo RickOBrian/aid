@@ -32,7 +32,7 @@
 | Развилка продуктов на корне `/` вместо driver по умолчанию | когда-нибудь, решение 2026-09-22 |
 | `space-96`/`space-128` есть только в Presentbook (в Figma нет). 3 значения цветов расходятся с Figma на 1/255 прозрачности — Presentbook хранит целый процент | сверка с Figma 2026-10-01 |
 | BadgeCount в Night: контраст 3,2:1 (белый на Fields · Warning #F85973) — временное исключение, ждём правку токена в Figma | `changes/driver/pending/component-deviation-badge-count-night-contrast.json` |
-| Vercel `aid-ds` — запасной до ~2026-10-17; потом отключение — решение PD. Нужна ли CI роль `lockbox.payloadViewer` — не проверено | `deploy/yc/README.md` |
+| Vercel `aid-ds` — запасной до ~2026-10-17; потом отключение — решение PD | `deploy/yc/README.md` |
 
 ## История
 
