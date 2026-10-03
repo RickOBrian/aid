@@ -50,6 +50,37 @@ export async function previewStatic(pathname: string, storageUrl: string, fetchI
 const PLACEHOLDER = 'CHANGE_ME';
 
 /**
+ * Перед функцией в Облаке нет CDN, который на Vercel держал ответ
+ * `/api/plugin-version` 10 минут (`s-maxage`). Без кэша каждый заход на
+ * страницу плагина шёл бы в GitHub. Экземпляр функции хранит ответ сам:
+ * удачный — 10 минут, неудачный — минуту, как и `s-maxage` в заголовках.
+ */
+const PLUGIN_VERSION_TTL_MS = { ok: 10 * 60_000, empty: 60_000 };
+let pluginVersionCache: { body: string; headers: [string, string][]; expiresAt: number } | null = null;
+
+export async function cachedPluginVersion(
+  load: () => Promise<Response> = pluginVersion,
+  now: () => number = Date.now,
+): Promise<Response> {
+  if (pluginVersionCache && pluginVersionCache.expiresAt > now()) {
+    return new Response(pluginVersionCache.body, { status: 200, headers: pluginVersionCache.headers });
+  }
+  const response = await load();
+  const body = await response.text();
+  const hasRelease = response.ok && !body.includes('"release":null');
+  pluginVersionCache = {
+    body,
+    headers: [...response.headers.entries()],
+    expiresAt: now() + (hasRelease ? PLUGIN_VERSION_TTL_MS.ok : PLUGIN_VERSION_TTL_MS.empty),
+  };
+  return new Response(body, { status: response.status, headers: response.headers });
+}
+
+export function resetPluginVersionCache(): void {
+  pluginVersionCache = null;
+}
+
+/**
  * Секреты Lockbox заводятся с временным значением, настоящие вносит PD.
  * Пока хоть один секрет входа — заглушка, вход закрыт: иначе логин
  * `CHANGE_ME` пустил бы любого, а cookie можно было бы подделать.
@@ -78,7 +109,7 @@ export async function route(request: Request): Promise<Response> {
     return session(request);
   }
   if (pathname === '/api/plugin-version') {
-    return pluginVersion();
+    return cachedPluginVersion();
   }
   const storageUrl = process.env.PREVIEW_STORAGE_URL;
   if (storageUrl && request.method === 'GET') {

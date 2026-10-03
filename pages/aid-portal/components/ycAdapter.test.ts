@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fromResponse, toRequest } from '../deploy/yc/adapter';
-import { authConfigured, previewStatic, route } from '../deploy/yc/handler';
+import { authConfigured, cachedPluginVersion, previewStatic, resetPluginVersionCache, route } from '../deploy/yc/handler';
 
 /**
  * Функция presentbook-api в Яндекс Облаке (ADR-038): адаптер событие ↔ Web API
@@ -91,5 +91,33 @@ describe('authConfigured', () => {
     expect(authConfigured(real)).toBe(true);
     expect(authConfigured({ ...real, AUTH_COOKIE_SECRET: 'CHANGE_ME' })).toBe(false);
     expect(authConfigured({ ...real, BASIC_AUTH_PASSWORD: '' })).toBe(false);
+  });
+});
+
+describe('cachedPluginVersion', () => {
+  const ok = () => new Response('{"release":{"version":"v1.6.0"}}', { headers: { 'Content-Type': 'application/json' } });
+  const empty = () => new Response('{"release":null}', { headers: { 'Content-Type': 'application/json' } });
+
+  it('удачный ответ держит 10 минут — GitHub не дёргается на каждый заход', async () => {
+    resetPluginVersionCache();
+    const load = vi.fn(async () => ok());
+    let t = 0;
+    await cachedPluginVersion(load, () => t);
+    t = 9 * 60_000;
+    expect(await (await cachedPluginVersion(load, () => t)).text()).toContain('v1.6.0');
+    expect(load).toHaveBeenCalledTimes(1);
+    t = 11 * 60_000;
+    await cachedPluginVersion(load, () => t);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it('пустой ответ держит только минуту', async () => {
+    resetPluginVersionCache();
+    const load = vi.fn(async () => empty());
+    let t = 0;
+    await cachedPluginVersion(load, () => t);
+    t = 61_000;
+    await cachedPluginVersion(load, () => t);
+    expect(load).toHaveBeenCalledTimes(2);
   });
 });
