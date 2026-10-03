@@ -29,6 +29,15 @@ else
   echo "FAIL в index.html не найден скрипт из assets/"; fail=1
 fi
 check "$base/assets/does-not-exist.js" 404 ''
+# Шрифты — локально (fonts.ts): файл из CSS-бандла должен отдаваться.
+css=$(printf '%s' "$index" | grep -o '/[^"]*assets/[^"]*\.css' | head -1)
+font=$([ -n "$css" ] && curl -s --retry 3 "$origin$css" | grep -o '[^()"]*\.woff2' | head -1)
+if [ -n "$font" ]; then
+  case "$font" in /*) font_url="$origin$font" ;; *) font_url="$origin${css%/*}/$font" ;; esac
+  check "$font_url" 200 ''
+else
+  echo "FAIL в CSS-бандле не найден шрифт woff2"; fail=1
+fi
 check "$origin/api/session" 401 application/json
 check "$origin/api/plugin-version" 200 application/json
 
