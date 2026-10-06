@@ -11,7 +11,7 @@
   "additionalProperties": false,
   "properties": {
     "format": {
-      "const": 2
+      "const": 3
     },
     "people": {
       "type": "array",
@@ -26,7 +26,6 @@
       "required": [
         "first_name",
         "github",
-        "role",
         "consent"
       ],
       "additionalProperties": false,
@@ -42,22 +41,18 @@
         },
         "github": {
           "type": "string",
-          "description": "Публичный GitHub-логин. Обязательно. Для владельцев продуктов совпадает с docs/hub/owners.json — источник правды для Штабов там."
+          "description": "Публичный GitHub-логин. Обязательно. Ключ карточки: человек и всё, что к нему относится (сервисные аккаунты, ключи), определяются по нему, а не по роли."
         },
         "telegram": {
           "type": "string",
           "description": "Telegram-ник без @. Необязательно; по нему тоже можно найти человека."
-        },
-        "role": {
-          "type": "string",
-          "description": "Роль из docs/hub/owners.json: pd, bot-engineer, lu-engineer, engineer-4…"
         },
         "products": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Продукты, которыми владеет, — метки to:<продукт> без префикса."
+          "description": "Продукты, которыми владеет человек, — метки to:<продукт> без префикса. Пусто — продукт не назначен."
         },
         "consent": {
           "type": "object",
