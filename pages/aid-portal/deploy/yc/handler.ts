@@ -66,7 +66,8 @@ export async function cachedPluginVersion(
   }
   const response = await load();
   const body = await response.text();
-  const hasRelease = response.ok && !body.includes('"release":null');
+  // Полный ответ — есть релиз и история; без истории (GitHub не успел) — коротко.
+  const hasRelease = response.ok && !body.includes('"release":null') && !body.includes('"history":[]');
   pluginVersionCache = {
     body,
     headers: [...response.headers.entries()],
@@ -155,7 +156,7 @@ export async function invokePreviewVersion(
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...event, [PROXIED_MARK]: true }),
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(13000),
       },
     );
     if (!response.ok) {

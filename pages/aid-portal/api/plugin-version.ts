@@ -43,10 +43,12 @@ export async function GET(): Promise<Response> {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const get = async (path: string): Promise<unknown> => {
+  // Список всех релизов отвечает заметно дольше последнего: из Облака до
+  // GitHub 5 секунд не хватало (2026-10-06), поэтому у него свой таймаут.
+  const get = async (path: string, timeoutMs: number): Promise<unknown> => {
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/${path}`, {
       headers,
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     if (!response.ok) {
       // Только путь и статус: причину (лимит, токен) видно в журнале функции.
@@ -57,7 +59,13 @@ export async function GET(): Promise<Response> {
   };
 
   try {
-    const [latest, all] = await Promise.all([get('releases/latest'), get('releases?per_page=100').catch(() => null)]);
+    const [latest, all] = await Promise.all([
+      get('releases/latest', 5000),
+      get('releases?per_page=100', 9000).catch((error: unknown) => {
+        console.warn(`[plugin-version] GitHub releases: ${error instanceof Error ? error.name : 'error'}`);
+        return null;
+      }),
+    ]);
     const release = latest ? releaseInfo(latest, PLUGIN_RELEASE) : null;
     return json(release, releaseHistory(all), release ? FRESH : RETRY_SOON);
   } catch {
