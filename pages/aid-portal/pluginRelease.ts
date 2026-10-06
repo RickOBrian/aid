@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { PluginReleaseInfo } from './api/_lib/pluginRelease';
+import type { PluginReleaseInfo, PluginReleaseSummary } from './api/_lib/pluginRelease';
 
 /**
  * Последний релиз плагина для страницы Token Comparator — от
@@ -25,16 +25,34 @@ function isReleaseInfo(value: unknown): value is PluginReleaseInfo {
   );
 }
 
-export function usePluginRelease(): PluginReleaseInfo | null {
-  const [release, setRelease] = useState<PluginReleaseInfo | null>(null);
+function isReleaseSummary(value: unknown): value is PluginReleaseSummary {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const record = value as Record<string, unknown>;
+  return ['version', 'date', 'author', 'notes'].every((key) => typeof record[key] === 'string');
+}
+
+export interface PluginReleaseState {
+  /** Последний релиз — для кнопки и «Что нового». */
+  release: PluginReleaseInfo | null;
+  /** Все релизы плагина — для changelog внизу страницы. */
+  history: PluginReleaseSummary[];
+}
+
+export function usePluginRelease(): PluginReleaseState {
+  const [state, setState] = useState<PluginReleaseState>({ release: null, history: [] });
 
   useEffect(() => {
     const controller = new AbortController();
 
     fetch('/api/plugin-version', { signal: controller.signal })
       .then((response) => (response.ok ? response.json() : null))
-      .then((body: { release?: unknown } | null) => {
-        setRelease(isReleaseInfo(body?.release) ? body.release : null);
+      .then((body: { release?: unknown; history?: unknown } | null) => {
+        setState({
+          release: isReleaseInfo(body?.release) ? body.release : null,
+          history: Array.isArray(body?.history) ? body.history.filter(isReleaseSummary) : [],
+        });
       })
       .catch(() => {
         // Сеть, не-JSON (dev-сервер отдал index.html), отмена — без релиза.
@@ -43,7 +61,7 @@ export function usePluginRelease(): PluginReleaseInfo | null {
     return () => controller.abort();
   }, []);
 
-  return release;
+  return state;
 }
 
 /** «26 сентября 2026 г.» — как даты в таблицах changelog (`ChangelogTable.tsx`). */
