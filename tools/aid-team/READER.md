@@ -13,23 +13,25 @@ Claude в вашем аккаунте находит любого человек
 
 - База — файл `people.json` в бакете `aidteam-team-data` (Яндекс Облако,
   каталог `team-data`). Схема — `schema/people.schema.json`.
-- У каждого инженера свой сервисный аккаунт `reader-<роль>` — только
-  чтение этого бакета (ACL бакета). Записать или удалить он не может:
+- У каждого инженера свой сервисный аккаунт `reader-<github-логин>` —
+  только чтение этого бакета (ACL бакета). Аккаунты называются по
+  обязательному полю карточки — по умолчанию GitHub-логину, не по роли:
+  роль может смениться, человек остаётся тем же (решение PD 2026-10-06). Записать или удалить он не может:
   пишет только PD (`STORAGE.md`).
 - Ключ личный: один инженер — один ключ. Потерян или ушёл в чат — PD
   отзывает его и выдаёт новый, остальных это не задевает.
 
 ## Получить ключ — делает PD
 
-В своём Терминале, под админским входом, для роли инженера (`bot-engineer`,
-`lu-engineer`, `engineer-4`):
+В своём Терминале, под админским входом; `<логин>` — GitHub-логин
+инженера из его карточки:
 
 ```bash
-yc iam key create --service-account-name reader-<роль> --folder-name team-data --output ~/reader-<роль>.json
+yc iam key create --service-account-name reader-<логин> --folder-name team-data --output ~/reader-<логин>.json
 ```
 
 Файл передать инженеру закрытым каналом (личное сообщение, менеджер
-паролей), затем удалить у себя: `rm ~/reader-<роль>.json`.
+паролей), затем удалить у себя: `rm ~/reader-<логин>.json`.
 
 ## Подключить — делает инженер, один раз
 
@@ -42,12 +44,12 @@ yc iam key create --service-account-name reader-<роль> --folder-name team-da
    ваш):
    ```bash
    yc config profile create aidteam-reader
-   yc config set service-account-key ~/reader-<роль>.json
+   yc config set service-account-key ~/reader-<логин>.json
    yc config set endpoint api.cloud.yandex.net:443
    ```
 3. Удалить файл ключа: он уже внутри профиля.
    ```bash
-   rm ~/reader-<роль>.json
+   rm ~/reader-<логин>.json
    ```
 4. Проверка — команда выводит число людей в базе, не их данные:
    ```bash
