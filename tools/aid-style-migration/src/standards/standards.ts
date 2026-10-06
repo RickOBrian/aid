@@ -51,6 +51,12 @@ function group(slot: string, use: string, basis: string): Slot {
 
 const disabled = states.tokenMapping.disabled.token;
 
+/** Назначение подгруппы фонов компонента из §4 (`bgGroups.groups` → component → children). */
+function componentGroupUse(id: string): string {
+  const component = semantic.bgGroups.groups.find((g) => g.id === "component");
+  return component?.children?.find((c) => c.id === id)?.use ?? "";
+}
+
 /** Роль плагина → слот стандарта. Нет в таблице — стандарт роль не описывает. */
 const SLOTS: Record<string, Slot> = {
   "screen-bg": token("bg-base-main", "§6"),
@@ -75,9 +81,9 @@ const SLOTS: Record<string, Slot> = {
   "action-main": { ...token("bg-accent-main", "§1, по смыслу: пример компонента на акцентном фоне"), use: "Основной акцентный фон" },
   "action-primary": { ...token("bg-accent-main", "§1, по смыслу: пример компонента на акцентном фоне"), use: "Основной акцентный фон" },
   "action-disabled": group(disabled, "Состояние «недоступен»", "§9 и component-states.json"),
-  "action-floating": group("bg-component-floating-*", semantic.bgGroups.component.floating, "§4"),
-  input: group("bg-component-form-*", semantic.bgGroups.component.form, "§4"),
-  chip: group("bg-component-control-*", semantic.bgGroups.component.control, "§4, по смыслу: чип — контрол"),
+  "action-floating": group("bg-component-floating-*", componentGroupUse("floating"), "§4"),
+  input: group("bg-component-form-*", componentGroupUse("form"), "§4"),
+  chip: group("bg-component-control-*", componentGroupUse("control"), "§4, по смыслу: чип — контрол"),
   "control/check": group("bg-component-states-control-*", "переключатели, чекбоксы, радио-кнопки", "§10"),
   "control/switch": group("bg-component-states-control-*", "переключатели, чекбоксы, радио-кнопки", "§10"),
 };

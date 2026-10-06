@@ -30,27 +30,39 @@
   },
   "bgGroups": {
     "source": "§4",
-    "base": "базовые фоны экрана",
-    "card": "фоны карточек",
-    "overlay": "полупрозрачные оверлеи",
-    "modal": "фоны модальных окон",
-    "accent": {
-      "main/fade/ghost": "акцентные фоны",
-      "states": "состояния компонентов",
-      "product": "продуктовые цвета",
-      "status": "статусы (attention, success, warning, error)",
-      "additional": "доп. цвета (чарты, кастомные)"
-    },
-    "component": {
-      "form": "контролы форм",
-      "control": "прочие контролы",
-      "floating": "плавающие элементы",
-      "skeleton": "заглушки при загрузке",
-      "states": "form-focused и др."
-    }
+    "groups": [
+      { "id": "base", "use": "базовые фоны экрана" },
+      { "id": "card", "use": "фоны карточек" },
+      { "id": "overlay", "use": "полупрозрачные оверлеи" },
+      { "id": "modal", "use": "фоны модальных окон" },
+      {
+        "id": "accent",
+        "use": "акцентные фоны",
+        "variants": ["main", "fade", "ghost"],
+        "children": [
+          { "id": "states", "use": "состояния компонентов" },
+          { "id": "product", "use": "продуктовые цвета" },
+          { "id": "status", "use": "статусы (attention, success, warning, error)" },
+          { "id": "additional", "use": "доп. цвета (чарты, кастомные)" }
+        ]
+      },
+      {
+        "id": "component",
+        "use": "фоны компонентов",
+        "children": [
+          { "id": "form", "use": "контролы форм" },
+          { "id": "control", "use": "прочие контролы" },
+          { "id": "floating", "use": "плавающие элементы" },
+          { "id": "skeleton", "use": "заглушки при загрузке" },
+          { "id": "states", "use": "form-focused и др." }
+        ]
+      }
+    ]
   },
   "tokens": {
     "source": "§5–§7",
+    "exhaustive": false,
+    "note": "Выборка примеров из гайда, а не полный набор. Существование имени по этим спискам не проверяется: имя проверяется по нотации — nameStructure и naming-conventions.json → tokens.semantic.pattern.",
     "text": [
       { "name": "text-primary", "use": "Основной текст", "example": "rgba(3, 3, 6, 0.88)" },
       { "name": "text-secondary", "use": "Второстепенный текст", "example": "rgba(4, 4, 19, 0.55)" },
@@ -107,20 +119,9 @@
     "android": { "suffix": "-android", "rule": "Только Android; web не использует" }
   },
   "states": {
-    "source": "§9, §10; подробно — component-states.json",
-    "accent": {
-      "hovered": { "web": "bg-accent-states-hover" },
-      "pressed": { "web": "bg-accent-states-pressed", "ios": "bg-accent-states-pressed", "android": "bg-accent-states-pressed" },
-      "selected": { "web": "bg-accent-states-active", "ios": "bg-accent-states-active", "android": "bg-accent-states-active" },
-      "disabled": { "web": "bg-accent-states-disable", "ios": "bg-accent-states-disable", "android": "bg-accent-states-disable" },
-      "focused": { "web": "bg-accent-states-focused", "ios": "bg-accent-states-focused-ios" },
-      "ripple": { "android": "bg-accent-states-ripple-android" }
-    },
-    "component": {
-      "rule": "bg-component-states-* — состояния специфичных контролов, не дубль bg-accent-states-*",
-      "groups": { "control": "переключатели, чекбоксы, радио-кнопки", "form": "поля ввода, дропдауны" },
-      "examples": ["bg-component-states-control-accent-active", "bg-component-states-form-focused", "bg-component-states-form-error"]
-    }
+    "source": "§9, §10",
+    "ref": "component-states.json → tokenMapping",
+    "note": "Маппинг состояний на токены ведётся только в component-states.json (ADR-024, ADR-025); здесь ссылка, а не копия."
   },
   "skeleton": {
     "source": "§11",
