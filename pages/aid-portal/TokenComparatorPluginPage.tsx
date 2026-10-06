@@ -1,10 +1,13 @@
 import { DsPageHeader } from './DsPageHeader';
-import { DS_PORTAL_LAYOUT_TOKENS } from './dsChangelogTable';
+import { useMemo } from 'react';
+import { ChangelogTable } from './ChangelogTable';
+import { DS_CHANGELOG_TABLE_STYLE, DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
 import { ProductAccentScope } from './ProductAccentScope';
 import { HUB_ROUTES } from './hubData';
 import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
+import { pluginChangelog } from './pluginChangelog';
 import { formatReleaseDate, usePluginRelease } from './pluginRelease';
 import { parseReleaseNotes, type NoteInline } from './releaseNotes';
 import { currentAppPath } from './base';
@@ -65,6 +68,8 @@ const T = DS_PORTAL_LAYOUT_TOKENS;
 
 const PAGE_STYLE = `
 ${DS_PRODUCT_ACCENT_STYLE}
+${DS_CHANGELOG_TABLE_STYLE}
+${DS_TOKEN_TABLE_STYLE}
 .dstp,
 .dstp *,
 .dstp *::before,
@@ -269,7 +274,9 @@ function ReleaseNotes({ markdown }: { markdown: string }) {
 export function TokenComparatorPluginPage() {
   const productId = resolveProductId(currentAppPath());
   const backHref = `/${productId}${HUB_ROUTES.tools}`;
-  const release = usePluginRelease();
+  const { release, history } = usePluginRelease();
+  // Все версии и что в них менялось — таблицей changelog, как у токенов портала.
+  const changelog = useMemo(() => pluginChangelog(history), [history]);
   const version = release?.version ?? null;
 
   return (
@@ -320,18 +327,17 @@ export function TokenComparatorPluginPage() {
                     Что нового в {release.version}
                   </h2>
                   {release.notes.trim() && <ReleaseNotes markdown={release.notes} />}
-                  <p className="dstp-links">
-                    {release.releaseUrl && (
+                  {release.releaseUrl && (
+                    <p className="dstp-links">
                       <a href={release.releaseUrl} target="_blank" rel="noreferrer noopener">
                         Релиз {release.version} на GitHub
                       </a>
-                    )}
-                    <a href={release.releasesUrl} target="_blank" rel="noreferrer noopener">
-                      Все версии и что в них менялось
-                    </a>
-                  </p>
+                    </p>
+                  )}
                 </section>
               )}
+
+              {changelog && <ChangelogTable data={changelog} />}
             </>
           ) : (
             <section className="dstp-unavailable" aria-labelledby="dstp-unavailable-heading">

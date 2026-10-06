@@ -68,6 +68,52 @@ function httpsGithubUrl(value: unknown): string | null {
   }
 }
 
+/** Один релиз плагина для changelog на странице. */
+export interface PluginReleaseSummary {
+  /** `1.6.0` — без `v`, как версии в changelog портала. */
+  version: string;
+  /** `YYYY-MM-DD` */
+  date: string;
+  /** Логин автора релиза на GitHub. */
+  author: string;
+  /** Описание релиза как есть (Markdown), обрезанное до `NOTES_LIMIT`. */
+  notes: string;
+}
+
+/**
+ * Релизы плагина из ответа `releases` — для changelog на странице.
+ *
+ * Берутся только теги `vX.Y.Z` (или `X.Y.Z`): релизы других продуктов
+ * публикуются со своим префиксом тега (корневой `CLAUDE.md`, стык
+ * «GitHub Releases»). Черновики и пререлизы пропускаются. Новые сверху.
+ */
+export function releaseHistory(releases: unknown): PluginReleaseSummary[] {
+  if (!Array.isArray(releases)) {
+    return [];
+  }
+  const history: PluginReleaseSummary[] = [];
+  for (const item of releases) {
+    if (!item || typeof item !== 'object') {
+      continue;
+    }
+    const record = item as Record<string, unknown>;
+    const tag = typeof record.tag_name === 'string' ? record.tag_name.trim() : '';
+    const version = /^v?(\d+\.\d+\.\d+)$/.exec(tag)?.[1];
+    const published = typeof record.published_at === 'string' ? record.published_at : '';
+    if (!version || record.draft === true || record.prerelease === true || Number.isNaN(Date.parse(published))) {
+      continue;
+    }
+    const author = (record.author as { login?: unknown } | null)?.login;
+    history.push({
+      version,
+      date: published.slice(0, 10),
+      author: typeof author === 'string' ? author : '',
+      notes: typeof record.body === 'string' ? record.body.slice(0, NOTES_LIMIT) : '',
+    });
+  }
+  return history;
+}
+
 /** Всё, что нужно странице плагина, из ответа `releases/latest`. */
 export function releaseInfo(release: unknown, target: LatestDownload): PluginReleaseInfo | null {
   const version = releaseVersion(release, target.asset);

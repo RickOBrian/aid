@@ -48,7 +48,7 @@ describe('страж: пути в коде портала учитывают б�
   });
 
   // Внешние адреса: Figma, GitHub Releases. Всё остальное — через withBase().
-  const EXTERNAL_HREFS = new Set(['figma.url', 'pluginMeta.downloadUrl', 'release.releaseUrl', 'release.releasesUrl']);
+  const EXTERNAL_HREFS = new Set(['figma.url', 'pluginMeta.downloadUrl', 'release.releaseUrl']);
 
   it('внутренние href оборачиваются в withBase()', () => {
     const offenders: string[] = [];

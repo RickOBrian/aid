@@ -125,7 +125,7 @@ jobs:
           runtime="${{ vars.YC_RUNTIME_SA_ID }}"
           function_id=$(yc serverless function get --name presentbook-api --format json | jq -r .id)
           version_id=$(yc serverless function version create --function-name presentbook-api --format json \
-            --runtime nodejs22 --entrypoint index.handler --memory 128m --execution-timeout 10s \
+            --runtime nodejs22 --entrypoint index.handler --memory 256m --execution-timeout 15s \
             --source-path deploy/yc/dist/presentbook-api.zip --service-account-id "$runtime" \
             --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id \
             --secret environment-variable=BASIC_AUTH_USER,id=$auth,key=BASIC_AUTH_USER \

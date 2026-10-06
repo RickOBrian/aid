@@ -111,6 +111,16 @@ describe('cachedPluginVersion', () => {
     expect(load).toHaveBeenCalledTimes(2);
   });
 
+  it('ответ без истории (GitHub не успел) держит только минуту', async () => {
+    resetPluginVersionCache();
+    const load = vi.fn(async () => new Response('{"release":{"version":"v1.6.0"},"history":[]}'));
+    let t = 0;
+    await cachedPluginVersion(load, () => t);
+    t = 61_000;
+    await cachedPluginVersion(load, () => t);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
   it('пустой ответ держит только минуту', async () => {
     resetPluginVersionCache();
     const load = vi.fn(async () => empty());
