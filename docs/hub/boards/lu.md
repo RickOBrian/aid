@@ -36,7 +36,8 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-LU-1 | Все | Переход на оркестрацию: имена, группа, работа из своей папки | в работе |
-| AID-LU-2 | Hub | Library Updater — продукт AID: строка в таблицах чатов и владельцев, метка `to:plugin-library-updater`, роль в `owners.json` | ждёт PD |
+| AID-LU-2 | Hub | Library Updater — продукт AID: строка в таблицах чатов и владельцев, метка `to:plugin-library-updater`, роль в `owners.json` — [#93](https://github.com/RickOBrian/aid/issues/93) | ждёт PD |
+| AID-LU-3 | Hub | Проверки для PR из форка, мерж #92 и как Штаб LU обновляет свою доску: PR из форка каждый раз или доступ на запись — [#94](https://github.com/RickOBrian/aid/issues/94) | ждёт PD |
 
 ## Вопросы инженера
 
