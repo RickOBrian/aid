@@ -38,6 +38,7 @@ import {
 } from './iconSelection';
 import { loadTokenChangelog } from './loadTokenChangelog';
 import { filterIconSections } from './searchIcons';
+import { withBase } from './base';
 
 const LONG_PRESS_MS = 500;
 
@@ -433,7 +434,7 @@ function IconCell({
   onToggle: () => void;
   onOpenContextMenu: (coords: { x: number; y: number }) => void;
 }) {
-  const src = productIconAssetPath(productId, sectionId, item.id);
+  const src = withBase(productIconAssetPath(productId, sectionId, item.id));
   const dimensions = getIconDimensions(sectionId, item.id, productId);
   const longPressTimerRef = useRef<number | null>(null);
   const longPressTriggeredRef = useRef(false);

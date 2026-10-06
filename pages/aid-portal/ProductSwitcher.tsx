@@ -7,6 +7,7 @@ import {
   DS_DROPDOWN_TRIGGER_CHEVRON_OPEN_CLASS,
 } from './dsDropdownButton';
 import { SWITCHABLE_PRODUCTS, getProductSwitcherLabel, productHubPath } from './productRegistry';
+import { withBase } from './base';
 
 /**
  * Product switcher — chevron next to the product title, opens a menu listing
@@ -359,7 +360,7 @@ export function ProductSwitcher({
                         role="menuitem"
                         className="ds-product-switcher__item"
                         aria-current={isCurrent}
-                        href={productHubPath(product.id)}
+                        href={withBase(productHubPath(product.id))}
                         onClick={() => setOpen(false)}
                       >
                         <span className="ds-product-switcher__check" aria-hidden="true">

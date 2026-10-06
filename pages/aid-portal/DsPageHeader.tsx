@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { productHubPath, resolveProductId } from './productRegistry';
+import { productPath, resolveProductId } from './productRegistry';
 import { ProductSwitcher, PRODUCT_SWITCHER_STYLE } from './ProductSwitcher';
+import { currentAppPath, withBase } from './base';
 
 /**
  * Стандартная шапка разделов DS-портала (Colors, Icons, …).
@@ -164,8 +165,8 @@ export function DsPageHeader({
   actions,
   showSearch = true,
 }: DsPageHeaderProps) {
-  const currentProductId = resolveProductId(window.location.pathname);
-  const resolvedBackHref = backHref ?? productHubPath(currentProductId);
+  const currentProductId = resolveProductId(currentAppPath());
+  const resolvedBackHref = productPath(currentProductId, backHref ?? '/');
 
   return (
     <>
@@ -173,7 +174,7 @@ export function DsPageHeader({
       <style>{PRODUCT_SWITCHER_STYLE}</style>
       <header className="ds-page-header">
       <div className="ds-page-header__lead">
-        <a className="ds-page-header__back" href={resolvedBackHref} aria-label={backAriaLabel}>
+        <a className="ds-page-header__back" href={withBase(resolvedBackHref)} aria-label={backAriaLabel}>
           <BackArrowIcon />
         </a>
         <ProductSwitcher currentProductId={currentProductId} size="header">

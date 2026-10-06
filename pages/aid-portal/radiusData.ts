@@ -15,8 +15,11 @@ export const radiusCollection = {
 /** Radius tokens — значения из Figma (radius table). */
 export const radiusTokens: RadiusToken[] = [
   { id: 'radius-flat', name: 'radius-flat', valueLabel: '0', borderTopRightRadius: '0' },
+  { id: 'radius-2', name: 'radius-2', valueLabel: '2', borderTopRightRadius: '2px' },
   { id: 'radius-4', name: 'radius-4', valueLabel: '4', borderTopRightRadius: '4px' },
+  { id: 'radius-6', name: 'radius-6', valueLabel: '6', borderTopRightRadius: '6px' },
   { id: 'radius-8', name: 'radius-8', valueLabel: '8', borderTopRightRadius: '8px' },
+  { id: 'radius-10', name: 'radius-10', valueLabel: '10', borderTopRightRadius: '10px' },
   { id: 'radius-12', name: 'radius-12', valueLabel: '12', borderTopRightRadius: '12px' },
   { id: 'radius-16', name: 'radius-16', valueLabel: '16', borderTopRightRadius: '16px' },
   { id: 'radius-20', name: 'radius-20', valueLabel: '20', borderTopRightRadius: '20px' },

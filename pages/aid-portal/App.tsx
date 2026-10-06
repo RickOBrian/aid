@@ -7,6 +7,7 @@ import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
 import { ShadowsPage } from './ShadowsPage';
 import { GlassPage } from './GlassPage';
+import { GradientsPage } from './GradientsPage';
 import { ComponentsHubPage } from './ComponentsHubPage';
 import { SwitchPage } from './SwitchPage';
 import { BadgeCountPage } from './BadgeCountPage';
@@ -20,7 +21,8 @@ import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
 import { hasProductContent } from './productContent';
 import { ProductAccentScope } from './ProductAccentScope';
-import { DEFAULT_PRODUCT_ID, getProductLabel, resolveProductRoute } from './productRegistry';
+import { DEFAULT_PRODUCT_ID, getProductLabel, productHubPath, resolveProductId, resolveProductRoute } from './productRegistry';
+import { currentAppPath, withBase } from './base';
 
 /**
  * Route table is unprefixed (`/tokens/colors`, `/components/switch`, …) —
@@ -53,6 +55,10 @@ function resolveSectionKey(remainder: string) {
 
   if (path === HUB_ROUTES.glass) {
     return 'glass' as const;
+  }
+
+  if (path === HUB_ROUTES.gradients) {
+    return 'gradients' as const;
   }
 
   if (path === HUB_ROUTES.radius) {
@@ -119,7 +125,7 @@ function NotFoundPage() {
     >
       <div>
         <p style={{ margin: '0 0 12px', fontSize: 18 }}>Страница не найдена</p>
-        <a href={HUB_ROUTES.hub} style={{ color: '#2d2c2e' }}>
+        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: '#2d2c2e' }}>
           Перейти на главную
         </a>
       </div>
@@ -128,14 +134,14 @@ function NotFoundPage() {
 }
 
 export function App() {
-  // `/login` is product-agnostic (the session cookie from middleware.ts guards
-  // every product) — handled before product-prefix resolution so it never
+  // `/login` is product-agnostic (one session cookie, checked by AuthGate,
+  // covers every product) — handled before product-prefix resolution so it never
   // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
-  if (window.location.pathname === '/login') {
+  if (currentAppPath() === '/login') {
     return <LoginPage />;
   }
 
-  const { productId, remainder } = resolveProductRoute(window.location.pathname);
+  const { productId, remainder } = resolveProductRoute(currentAppPath());
   const page = resolveSectionKey(remainder);
 
   useEffect(() => {
@@ -161,6 +167,8 @@ export function App() {
     content = <ShadowsPage productId={productId} />;
   } else if (page === 'glass' && hasProductContent(productId, 'glass')) {
     content = <GlassPage />;
+  } else if (page === 'gradients' && hasProductContent(productId, 'gradients')) {
+    content = <GradientsPage />;
   } else if (page === 'spacing' && hasProductContent(productId, 'spacing')) {
     content = <SpacingPage productId={productId} />;
   } else if (page === 'radius' && hasProductContent(productId, 'radius')) {

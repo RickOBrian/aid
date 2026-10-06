@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { apiUrl, withBase } from './base';
 
 const LOGIN_PAGE_STYLE = `
 .dslp,
@@ -125,7 +126,7 @@ export function LoginPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(apiUrl('/api/login'), {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -133,9 +134,9 @@ export function LoginPage() {
       });
 
       if (response.ok) {
-        // Full reload (not client-side navigate) — middleware must see the
-        // freshly set `session` cookie on the very next request to `/`.
-        window.location.href = '/';
+        // Full reload (not client-side navigate) — AuthGate asks /api/session
+        // again on load and must see the freshly set `session` cookie.
+        window.location.href = withBase('/');
         return;
       }
 

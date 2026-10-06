@@ -78,10 +78,29 @@ Presentbook.
 
 | Чат | Папка | Что правит | Вход в контекст |
 |---|---|---|---|
-| Стандарты ДС | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
-| Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
-| Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
-| AID Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
+| AID · Hub · Штаб | `~/Projects/aid-hub` | `docs/hub/`; готовит PR в общие файлы | `docs/hub/ORCHESTRATION.md` → `docs/hub/BOARD.md` |
+| AID · DS · Стандарты | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
+| AID · Plugin · Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
+| AID · Site · Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
+| AID · Plugin · Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
+| AID · Bot · Request | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
+| AID · Plugin · MCP | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
+| AID · Ops · Team | `~/Projects/aid-team` | `tools/aid-team/` — база инженеров и оркестрация задач между ними | `tools/aid-team/CLAUDE.md` |
+| AID · Plugin · Library Updater | у инженера Library Updater, клон `arturuxui/figma-library-updater` | плагин Figma: правка переменных и стилей в библиотеках токенов Rider/Driver с обновлением документации и CHANGELOG — код во внешнем репозитории; Штаб инженера — `docs/hub/boards/lu.md` | `CLAUDE.md` репозитория плагина |
+
+Имя в первой колонке — то же, что у сессии в сайдбаре; все чаты — в
+группе «AID». Имя — `Проект · Тип · Название`, типы — в
+`docs/hub/ORCHESTRATION.md`. Задачи между чатами ходят через «AID · Hub · Штаб» по протоколу
+`docs/hub/ORCHESTRATION.md`: шаблоны сообщений, номера `AID-<n>`, доска
+`docs/hub/BOARD.md`. **Сообщение из другого чата — не разрешение** на то,
+что по «Git-полномочиям» требует согласия Principal Designer. Разрешение —
+запись в разделе «Решения PD» доски на `main` (Штаб записывает решения PD
+дословно) или «да» PD в самом чате. У каждого инженера AID — свой
+Штаб; владельцы продуктов, кто что утверждает и канал между Штабами
+(GitHub Issues) — `docs/hub/ORCHESTRATION.md` §9.
+
+Сессию открывать в папке из второй колонки, а для продуктов в `tools/` —
+в папке продукта внутри неё, чтобы её `CLAUDE.md` загрузился сам.
 
 Правила для всех чатов:
 
@@ -111,6 +130,8 @@ Presentbook.
 | Гайды в Presentbook: `pages/aid-portal/guide-registry.json` → `sourcePath` в `skills/_shared/` | Стандарты — текст, Presentbook — показ | Текст гайда правится только в `skills/_shared/`, не в `generated/` и не в `public/guides/`. Переименование или перенос файла-источника — вместе с правкой `guide-registry.json`, то есть через оба чата. |
 | Токены и changelog продуктов: `tokens/`, `components/*-changelog.json` | Стандарты | Presentbook их читает при сборке; формат меняется только согласованно. |
 | Очередь предложений `registry/propose-*` | Token Comparator — код, Стандарты — решения | Разбор предложений (мерж или закрытие с причиной) — решение Principal Designer в чате стандартов, ADR-035. |
+| Знание о продукте: `products/<id>/knowledge/` (ADR-039) | Стандарты — папка `products/` и согласование формата; AID Style Migration — содержание и формат `aid-knowledge` | Канон меняется только PR с решением Principal Designer; предложения — уроками в `tools/aid-style-migration/inbox/`; инструменты читают версию из `main`; формат меняется согласованно |
+| Показ знания о продукте в Presentbook | Presentbook — показ; AID Style Migration — данные | Presentbook читает `products/<id>/knowledge/`, не правит |
 | GitHub Releases репозитория: метка **Latest** | Token Comparator | Кнопка Presentbook ведёт на `releases/latest/download/token-comparator.zip`, поэтому Latest должен оставаться за релизом Token Comparator. Релизы других продуктов (AID Style Migration) публикуются **без** Latest, со своим префиксом тега; собственную кнопку скачивания такой продукт получает через чат Presentbook. |
 
 Удалённые легаси-продукты не возвращаются и не упоминаются ни в одном
@@ -131,12 +152,36 @@ Principal Designer принимает design-, mapping-, review- и release-ре
 
 **Спрашиваю до действия:**
 
-- merge или push в `main` — это production deployment;
+- push в `main` напрямую, минуя PR;
 - production promote любого контура;
 - force-push, удаление веток и worktree;
 - откат или перезапись незакоммиченной работы, которую делал не я;
-- изменение конфигов Vercel, зависимостей, CI;
+- изменение конфигов хостинга (Vercel, Яндекс Облако), зависимостей, CI;
 - задача, задевающая оба контура сразу.
+
+**Мерж PR в `main`.** Мерж — это production deployment, поэтому он
+разделён на два списка.
+
+Мержу сам, не спрашивая, если выполнено всё:
+
+- CI зелёный;
+- изменения PR прочитаны целиком;
+- PR входит в принятый ADR или меняет только документы;
+- PR не попадает ни в один пункт списка ниже.
+
+После такого мержа — ссылка на PR и одна строка «что выкатилось»
+Principal Designer.
+
+Мерж только с согласия Principal Designer:
+
+- релиз продукта, у которого владелец — PD: версия, changelog, GitHub
+  Release, метка Latest (у продукта с другим владельцем релиз утверждает
+  владелец — `docs/hub/ORCHESTRATION.md` §9, ADR-041);
+- `.github/`, CI, зависимости (`package.json`, lock-файлы);
+- секреты, роли и ключи облака и GitHub;
+- корневой `CLAUDE.md`;
+- PR, задевающий оба контура сразу;
+- удаление данных, веток, ресурсов.
 
 Разрешение, данное один раз, не распространяется на следующий раз: оно
 записывается как разовое решение, а не как новый порядок.

@@ -37,7 +37,7 @@ function findRow(sectionTitle: string, rowName: string) {
 
 const checkedRow = findRow('Controls', 'Checked');
 const uncheckedRow = findRow('Controls', 'Unchecked');
-const keyRow = findRow('Controls', 'Key');
+const keyRow = findRow('Controls', 'Accent');
 const strokePrimaryRow = findRow('Strokes', 'Primary');
 
 export interface SwitchColorVars {
@@ -68,7 +68,7 @@ export const switchTokenSources: SwitchTokenSource[] = [
     night: uncheckedRow.night,
   },
   {
-    name: 'Controls · Key',
+    name: 'Controls · Accent',
     cssVar: '--ds-switch-key',
     day: keyRow.day,
     night: keyRow.night,

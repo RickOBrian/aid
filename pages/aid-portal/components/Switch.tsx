@@ -11,7 +11,7 @@ import { SWITCH_TOKEN_STYLE } from './switchTokens';
  * (устоявшиеся имена)»). `Toggle` is a recognized alias, not a separate
  * component.
  *
- * Tokens: Controls · Checked / Unchecked / Key, Strokes · Primary
+ * Tokens: Controls · Checked / Unchecked / Accent, Strokes · Primary
  * (`pages/aid-portal/data.ts`). Day → light mode, Night → dark mode
  * (`products/driver/product.json` → `colorModeMapping`).
  *
@@ -80,9 +80,12 @@ ${SWITCH_TOKEN_STYLE}
     box-shadow: 0 0 0 2px var(--ds-switch-stroke);
   }
 }
+/* The ring lives on the track; the browser outline on the button would be a second one. */
+.ds-switch-root:focus-visible {
+  outline: none;
+}
 .ds-switch-root:focus-visible .ds-switch__track {
   box-shadow: 0 0 0 2px var(--ds-switch-stroke);
-  outline: none;
 }
 .ds-switch__knob {
   position: absolute;

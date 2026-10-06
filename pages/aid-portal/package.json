@@ -12,13 +12,15 @@
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.api.json",
     "typecheck:api": "tsc -p tsconfig.api.json",
     "test:browser": "vitest run --project browser",
-    "test:browser:update": "vitest run --project browser --update"
+    "test:browser:update": "vitest run --project browser --update",
+    "build:yc-function": "node deploy/yc/build-function.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@fontsource/google-sans": "5.3.1",
     "@fontsource/roboto": "5.3.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -27,6 +29,7 @@
     "@types/react-dom": "^18.3.5",
     "@vitest/browser-playwright": "5.0.1",
     "axe-core": "4.13.0",
+    "esbuild": "0.25.12",
     "jsdom": "^30.1.0",
     "marked": "^18.0.13",
     "playwright": "1.63.0",

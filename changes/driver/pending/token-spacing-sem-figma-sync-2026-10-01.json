@@ -1,0 +1,27 @@
+{
+  "id": "token-spacing-sem-figma-sync-2026-10-01",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Spacing/Semantic",
+  "collectionName": "driver-spacing-sem",
+  "product": "driver",
+  "changeSummary": "Добавлены 2 шага шкалы, которые есть в Figma (коллекция space) и отсутствовали в Presentbook. space-96 и space-128 есть только в Presentbook — не тронуты, отдельный вопрос.",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": "1.1.0",
+  "proposedChangelogEntries": [
+    {
+      "version": "1.1.0",
+      "kind": "added",
+      "description": "Добавлены space-28, space-36"
+    }
+  ],
+  "addedTokens": [
+    "space-28",
+    "space-36"
+  ],
+  "figmaTokenSource": "https://www.figma.com/design/ouP1hUC4YjVRpfgdvzy3FA/WB-AID-Driver-Tokens---Styles",
+  "sourcePath": "pages/aid-portal/spacingData.ts",
+  "status": "pending",
+  "created": "2026-10-01",
+  "author": "sergej"
+}

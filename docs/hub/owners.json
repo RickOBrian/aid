@@ -1,0 +1,50 @@
+{
+  "format": "aid-hub-owners/2",
+  "note": "Люди по логину GitHub (обязательное поле, ключ) — для проверки авторов issues, комментариев и PR досок между Штабами (ORCHESTRATION.md §9). Решения PD 2026-10-06: «1а 2а 3б» (список в репозитории) и «а» (ключ — логин, не роль). Только публичные логины GitHub; имена, контакты, Telegram — в базе AID · Ops · Team. title — описание, не идентификатор. Меняется решением PD. manager: true — менеджер команды: ставит задачи PD (`/task`), не утверждает ничего (ORCHESTRATION.md §9 «Менеджер команды»). tool (claude | cursor) — в чём работает человек; у cursor нет Штаба-чата Claude, SendMessage, доски и набора kit — связь только через issues.",
+  "people": [
+    {
+      "github": "RickOBrian",
+      "title": "Principal Designer",
+      "owns": [
+        "hub",
+        "ds-standards",
+        "site-presentbook",
+        "plugin-token-comparator",
+        "plugin-style-migration",
+        "plugin-mcp",
+        "ops-team"
+      ],
+      "decides": [
+        "system"
+      ],
+      "tool": "claude"
+    },
+    {
+      "github": "effects121-lang",
+      "title": "Инженер бота",
+      "owns": [
+        "bot-request"
+      ],
+      "decides": [],
+      "tool": "claude"
+    },
+    {
+      "github": "arturuxui",
+      "title": "Инженер Library Updater",
+      "board": "docs/hub/boards/lu.md",
+      "owns": [
+        "plugin-library-updater"
+      ],
+      "decides": [],
+      "tool": "claude"
+    },
+    {
+      "github": "tarlarion",
+      "title": "Менеджер команды",
+      "owns": [],
+      "decides": [],
+      "manager": true,
+      "tool": "cursor"
+    }
+  ]
+}

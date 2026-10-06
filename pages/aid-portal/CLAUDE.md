@@ -10,9 +10,14 @@
 - Папка чата — `~/Projects/aid-presentbook` (git worktree). Правлю только
   `pages/aid-portal/`. Всё остальное — чужие продукты: см. «Стыки» в
   корневом `CLAUDE.md`.
-- Сайт — https://aid-ds.vercel.app, Vercel-проект `aid-ds`, Root Directory —
-  `pages/aid-portal`. Мерж в `main` сразу становится production (Q-11).
-  Push в ветку даёт Preview.
+- Сайт — https://aidteam.pro, Яндекс Облако, каталог `presentbook` (ADR-038).
+  Мерж в `main` выкладывает production: `.github/workflows/presentbook-yc.yml`.
+  Каждый PR получает превью https://preview.aidteam.pro/pr-N/ (ссылка —
+  комментарием в PR), при закрытии PR оно удаляется. Устройство, ресурсы и
+  роли — `deploy/yc/README.md`.
+- Ссылки и адрес страницы — только через `withBase()` и `currentAppPath()`
+  (`base.ts`): превью живёт в `/pr-N/`, страж в `components/base.test.ts` не
+  даст пропустить базу.
 - Новую ветку — от свежего `origin/main`:
   `git fetch && git switch -c <ветка> origin/main`.
 
@@ -28,11 +33,16 @@
 
 - Vite + React, маршруты в `App.tsx` без префикса продукта; `/driver/…`
   и `/rider/…` снимаются в `resolveProductRoute` (`productRegistry.ts`).
-  Корень `/` — продукт `driver` по умолчанию (решение 2026-09-22).
-- Вход на сайт: `middleware.ts` (Vercel Edge, cookie-сессия) и
-  `api/login.ts`. Секреты `BASIC_AUTH_*`, `AUTH_COOKIE_SECRET` — только в
-  переменных Vercel; не читать, не печатать, не коммитить. Локальный
-  `npm run dev` middleware не выполняет.
+  Хаб продукта — `/<продукт>` (`aidteam.pro/driver`). Старые адреса (`/`,
+  `/tokens/colors`, `/driver/design-system`) при загрузке переписываются на
+  канонические (`canonicalAppPath`, по умолчанию `driver`); внутренние ссылки
+  строятся сразу канонически через `productPath`.
+- Вход на сайт: `AuthGate.tsx` спрашивает `GET /api/session` и без сессии
+  показывает форму; `api/login.ts` ставит подписанную cookie. Статика открыта,
+  закрыт интерфейс (вариант 1а ADR-038). Секреты `BASIC_AUTH_*`,
+  `AUTH_COOKIE_SECRET` — в Lockbox (`presentbook-auth`); не читать, не печатать,
+  не коммитить. Локальный `npm run dev` функций не выполняет — вход там
+  пропускается.
 - Гайды: `guide-registry.json` → `sourcePath` в `skills/_shared/`;
   `scripts/build-guides.mjs` собирает их при `dev` и `prebuild`.
   `generated/` — производное, в git не хранится.
@@ -41,18 +51,19 @@
 - Инструменты: `tools-registry.json`, страницы `ToolsHubPage.tsx` и
   `TokenComparatorPluginPage.tsx`.
 - Версия, дата и «Что нового» на странице плагина — `api/plugin-version.ts`:
-  спрашивает GitHub `releases/latest` и кэширует ответ на CDN 10 минут.
+  спрашивает GitHub `releases/latest`; ответ 10 минут держит экземпляр функции
+  (`cachedPluginVersion` в `deploy/yc/handler.ts` — CDN перед функцией нет).
   Меняются сами при публикации плагина, без пересборки портала. Описание
   релиза разбирает `releaseNotes.ts` — без HTML, раздел «Установка»
-  пропускается (у страницы свои шаги). Необязательная переменная
-  Vercel `GITHUB_RELEASES_TOKEN` (read-only) — без неё лимит GitHub на общих
-  IP Vercel может кончиться, и кнопка покажется без номера. Локальный
+  пропускается (у страницы свои шаги). Read-only `GITHUB_RELEASES_TOKEN` — в
+  Lockbox `presentbook-github`: без него лимит GitHub на общих IP Облака может
+  кончиться, и кнопка покажется без номера. Локальный
   `npm run dev` функций не выполняет — там кнопка всегда без номера.
-- Когда Vercel пересобирает портал — `ignoreCommand` в `vercel.json`: при
-  изменении `pages/aid-portal/` и всего, что сборка читает снаружи
+- Когда портал пересобирается — `paths` в `.github/workflows/presentbook-yc.yml`:
+  при изменении `pages/aid-portal/` и всего, что сборка читает снаружи
   (`skills/_shared/`, `tokens/`, `components/`, `changes/driver/pending/`,
-  `products/registry.json`). Новый вход сборки вне портала — добавить и туда,
-  иначе его правки не дойдут до сайта.
+  `products/registry.json`). Новый вход сборки вне портала — добавить туда
+  (файл общий, через PD), иначе его правки не дойдут до сайта.
 
 ## Стыки — что здесь чужое
 

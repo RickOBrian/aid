@@ -1,0 +1,89 @@
+name: registry-api deploy
+
+# aid-registry-api в Яндекс Облако (ADR-038, этап 6). Production — с main и
+# только при изменениях в папке сервера; фильтр путей заменяет ignoreCommand
+# Vercel. Vercel-версия работает параллельно, пока PD не подтвердит, что все
+# дизайнеры переимпортировали плагин.
+#
+# Секрет репозитория:
+#   YC_REGISTRY_API_CI_KEY — авторизованный ключ (JSON) сервисного аккаунта
+#                            registry-api-ci
+# Переменные репозитория (не секретные):
+#   YC_REGISTRY_API_FOLDER_ID     — каталог registry-api
+#   YC_REGISTRY_API_RUNTIME_SA_ID — registry-api-fn: от него работает функция
+#                                   и его шлюз использует для вызова
+#   YC_REGISTRY_API_LOCKBOX_ID    — секрет Lockbox с GITHUB_TOKEN и
+#                                   PLUGIN_SHARED_SECRET
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/figma-token-comparator/server/**
+      - .github/workflows/registry-api-deploy.yml
+  workflow_dispatch:
+
+concurrency:
+  group: registry-api-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Функция и шлюз
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/figma-token-comparator/server
+    env:
+      YC_FOLDER_ID: ${{ vars.YC_REGISTRY_API_FOLDER_ID }}
+      RUNTIME_SA_ID: ${{ vars.YC_REGISTRY_API_RUNTIME_SA_ID }}
+      LOCKBOX_ID: ${{ vars.YC_REGISTRY_API_LOCKBOX_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/figma-token-comparator/server/package-lock.json
+      - run: npm ci
+      # Деплой не обходит проверки: то же, что гоняет задача «Плагин» в checks.yml.
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build:cloud
+      - run: cd dist-cloud && zip -q registry-api.zip index.js package.json
+
+      - name: Установить yc
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
+          echo "$HOME/yc/bin" >> "$GITHUB_PATH"
+
+      - name: Войти в Облако
+        env:
+          YC_KEY: ${{ secrets.YC_REGISTRY_API_CI_KEY }}
+        run: |
+          printf '%s' "$YC_KEY" > "$RUNNER_TEMP/yc-key.json"
+          yc config profile create ci >/dev/null
+          yc config set service-account-key "$RUNNER_TEMP/yc-key.json"
+          yc config set folder-id "$YC_FOLDER_ID"
+          yc config set endpoint api.cloud.yandex.net:443
+          rm "$RUNNER_TEMP/yc-key.json"
+
+      - name: Новая версия функции
+        run: |
+          yc serverless function version create \
+            --function-name registry-api \
+            --runtime nodejs22 \
+            --entrypoint index.handler \
+            --memory 256m \
+            --execution-timeout 30s \
+            --service-account-id "$RUNTIME_SA_ID" \
+            --secret environment-variable=GITHUB_TOKEN,id="$LOCKBOX_ID",key=GITHUB_TOKEN \
+            --secret environment-variable=PLUGIN_SHARED_SECRET,id="$LOCKBOX_ID",key=PLUGIN_SHARED_SECRET \
+            --source-path dist-cloud/registry-api.zip
+
+      - name: Спецификация шлюза
+        run: |
+          export FUNCTION_ID="$(yc serverless function get --name registry-api --format json | jq -r .id)"
+          export GATEWAY_SA_ID="$RUNTIME_SA_ID"
+          envsubst '${FUNCTION_ID} ${GATEWAY_SA_ID}' < cloud/gateway.yaml > "$RUNNER_TEMP/gateway.yaml"
+          yc serverless api-gateway update --name registry-api --spec "$RUNNER_TEMP/gateway.yaml"

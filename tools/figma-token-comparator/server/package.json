@@ -6,10 +6,12 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "build:cloud": "esbuild cloud/handler.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist-cloud/index.js --log-level=warning && node -e \"require('fs').writeFileSync('dist-cloud/package.json', '{\\\"type\\\":\\\"commonjs\\\"}\\\\n')\""
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
+    "esbuild": "^0.28.2",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }

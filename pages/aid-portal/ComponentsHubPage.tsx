@@ -4,6 +4,8 @@ import { DsPageHeader } from './DsPageHeader';
 import { DS_INTERACTIVE_CARD_CLASS, DS_INTERACTIVE_CARD_STYLE } from './dsInteractiveCard';
 import { HUB_ROUTES } from './hubData';
 import componentRegistry from './component-registry.json';
+import { currentAppPath, withBase } from './base';
+import { productPath, resolveProductId } from './productRegistry';
 
 const PAGE_STYLE = `
 ${DS_INTERACTIVE_CARD_STYLE}
@@ -193,7 +195,7 @@ export function ComponentsHubPage() {
                     <a
                       key={component.componentId}
                       className={`dsch-item ${DS_INTERACTIVE_CARD_CLASS}`}
-                      href={component.reviewRoute}
+                      href={withBase(productPath(resolveProductId(currentAppPath()), component.reviewRoute))}
                     >
                       <div className="dsch-item-preview" aria-hidden="true">
                         <ComponentPreview componentId={component.componentId} />

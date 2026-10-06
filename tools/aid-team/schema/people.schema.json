@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aid-team/people.schema.json",
+  "title": "База инженеров AID Team",
+  "description": "Схема файла people.json в бакете aidteam-team-data (Яндекс Облако, каталог team-data). Сами данные в репозиторий не попадают — он публичный.",
+  "type": "object",
+  "required": [
+    "format",
+    "people"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": 4
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/person"
+      }
+    }
+  },
+  "$defs": {
+    "person": {
+      "type": "object",
+      "required": [
+        "first_name",
+        "github",
+        "tool",
+        "consent"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Имя. Обязательно: по нему Claude находит человека («передай Пете»)."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Фамилия. Необязательно; помогает различить тёзок."
+        },
+        "github": {
+          "type": "string",
+          "description": "Публичный GitHub-логин. Обязательно. Ключ карточки: человек и всё, что к нему относится (сервисные аккаунты, ключи), определяются по нему, а не по роли."
+        },
+        "telegram": {
+          "type": "string",
+          "description": "Telegram-ник без @. Необязательно; по нему тоже можно найти человека."
+        },
+        "tool": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "cursor"
+          ],
+          "description": "Инструмент, в котором человек работает с агентом: claude — Claude Code, cursor — Cursor. По нему выбираются инструкции, скиллы и способ связи. Новый инструмент — добавить в enum."
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Продукты, которыми владеет человек, — метки to:<продукт> без префикса. Пусто — продукт не назначен."
+        },
+        "consent": {
+          "type": "object",
+          "required": [
+            "date"
+          ],
+          "additionalProperties": false,
+          "description": "Человек лично подтвердил PD согласие на хранение этих данных. Без отметки карточка не используется.",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      }
+    }
+  }
+}
