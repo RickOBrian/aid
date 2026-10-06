@@ -24,12 +24,14 @@
 
 **Ответ PD:** четыре человека.
 
-| Роль | Продукты, которыми владеет |
-|---|---|
-| PD | Token Comparator, MCP, Style Migration, Presentbook (и системный уровень) |
-| Инженер Library Updater | Library Updater |
-| Инженер бота | Bot · Request |
-| Инженер без продукта | продукты назначит PD позже |
+| Роль | Продукты, которыми владеет | Инструмент |
+|---|---|---|
+| PD | Token Comparator, MCP, Style Migration, Presentbook (и системный уровень) | Claude |
+| Инженер Library Updater | Library Updater | Claude |
+| Инженер бота | Bot · Request | Claude |
+| Инженер без продукта (менеджер команды) | продукты назначит PD позже | Cursor |
+
+Колонка «Инструмент» — решение PD 2026-10-06; в карточке — поле `tool`.
 
 Совпадает с `docs/hub/owners.json` для первых трёх ролей. Четвёртая роль
 попадёт в `owners.json`, когда PD назначит ей продукт (решение PD, Штаб).
