@@ -7,7 +7,7 @@
 
 Claude в вашем аккаунте находит любого человека команды по имени,
 фамилии, Telegram или GitHub-логину: «передай задачу Сергею» →
-роль и логин → issue по `docs/hub/ORCHESTRATION.md` §9.
+его GitHub-логин и продукты → issue по `docs/hub/ORCHESTRATION.md` §9.
 
 ## Как устроен доступ
 
@@ -70,5 +70,5 @@ yc iam key create --service-account-name reader-<логин> --folder-name team-
 - Не выводить `yc config list`, `yc config profile get` и содержимое
   `~/.config/yandex-cloud/`: закрытый ключ хранится в профиле.
 - Не копировать данные о людях в репозиторий, issues, доски и память
-  чата — только роль и GitHub-логин, как в `docs/hub/owners.json`.
+  чата — только GitHub-логин, как в `docs/hub/owners.json`.
 - Карточка без `consent.date` не используется.
