@@ -41,7 +41,7 @@ PD; правки в нём — через PR PD, инженер бота — р�
 |---|---|---|---|
 | AID-BOT-1 | Все | Переход на оркестрацию: имена, группа, работа из своей папки | в работе |
 | AID-BOT-2 | Hub | Путь к этой доске в поле `board` роли `bot-engineer` в `owners.json` — [#99](https://github.com/RickOBrian/aid/issues/99) | ждёт PD |
-| AID-BOT-3 | Bot | Ответ Штабу LU по этапу 7 плагина: уведомления о предложениях и паблише через бота, где живёт бэкенд предложений — [#98](https://github.com/RickOBrian/aid/issues/98) | ждёт инженера |
+| AID-BOT-4 | Bot | Опрос бэкенда предложений LU и уведомления в Telegram — по решению в [#98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6016709105) | ждёт Штаб LU (endpoint, схема, ключ) |
 
 ## Вопросы инженера
 
@@ -56,8 +56,10 @@ _Пока списков нет._
 
 | Дата | Задача | Кому | Решение (дословно) |
 |---|---|---|---|
+| 2026-10-06 | AID-BOT-3 | Штаб LU, [#98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6016709105) | «Бэкенд у LU, бот опрашивает» |
 
 ## Закрыто
 
 | ID | Чат | Что | Итог |
 |---|---|---|---|
+| AID-BOT-3 | Bot | Ответ Штабу LU по этапу 7 плагина | решение в [#98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6016709105) |
