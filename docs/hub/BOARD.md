@@ -12,23 +12,25 @@
 
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
-| AID-1 | Все | Переход на оркестрацию: имя `AID · <Тип> · <Название>`, группа «AID», работа из своей папки. Ждут смены папки: Token Comparator, Style Migration, Bot; не открыт чат «AID · DS · Стандарты» | в работе |
+| AID-1 | Все | Переход на оркестрацию: имя `AID · <Тип> · <Название>`, группа «AID», работа из своей папки. Ждёт смены папки: Style Migration; не открыт чат «AID · DS · Стандарты» | в работе |
 | AID-2 | Стандарты | PATCH гайда цветов: противоречия в §1, §2, §5, §7, §8 `semantic-color-tokens-guide.md` | в очереди |
 | AID-3 | Стандарты ← Style Migration | Приёмка `semantic-color-tokens.json`: пометка «примеры», состояния ссылкой на `component-states.json`, структура групп `bg`, статус `draft` | ждёт PD: сейчас или вместе с задачами плагина (Style Migration спросила 2026-10-06) |
 | AID-4 | Style Migration | Убрать правку корневого `CLAUDE.md` из `feat/style-migration-spike` (строки стыков уже на `main`, ADR-039) | ждёт PD: чат уберёт по «да» в своём чате |
 | AID-5 | Presentbook | ADR-038, часть Presentbook: этапы 4–5 закрыты (#75–#77, #80; `aidteam.pro` переключён 2026-10-03, смоук 7/7). Этап 7: Vercel `aid-ds` запасной до ~2026-10-17, затем отключение и PR без `middleware.ts`/`vercel.json` | ждёт PD (этап 7 после 2026-10-17) |
-| AID-10 | Token Comparator | ADR-038, этап 6: #78 смержен, `api.aidteam.pro` работает (сертификат, CORS, неверный ключ → 401). Тестовая сборка плагина передана PD, но в журнале функции после 2026-10-03 11:30 нет ни одного POST и `registry/propose-*` не появился — проверка с настоящим ключом не прошла. Дальше: успешный тест → закрыть тестовый PR → релиз плагина на новый адрес (согласие PD) → PD раздаёт новый ключ → переимпорт → отключить Vercel `aid-registry-api` | ждёт PD: повторить тест плагина |
+| AID-10 | Token Comparator | ADR-038, этап 6: #78 смержен, `api.aidteam.pro` работает (сертификат до 2027-01-01, CORS, неверный ключ → 401), новый `PLUGIN_SHARED_SECRET` в Lockbox. Тестовая сборка (`~/Downloads/token-comparator-test-api-aidteam.zip`, отдельный id) передана PD, но в журнале функции после 2026-10-03 11:30 нет ни одного POST и новых `registry/propose-*` нет — проверку в Figma, похоже, не делали. Дальше: успешный тест → закрыть тестовый PR → релиз плагина на новый адрес (согласие PD) → PD раздаёт новый ключ → переимпорт → отключить Vercel `aid-registry-api` | ждёт PD: повторить тест плагина |
 | AID-11 | Штаб → Стандарты | После этапа 7 ADR-038: корневой `CLAUDE.md` (контуры, «Ветки и деплой», Vercel в полномочиях) — Штаб через PD; `github-sync-architecture.md` §3a и адрес `aid-ds.vercel.app` — Стандарты | ждёт AID-5, AID-10 |
-| AID-6 | Bot | PR #71 — контракт пилота «плагин в боте всегда актуальный» | сверить |
+| AID-6 | Bot | PR #71 — контракт пилота `tools/aid-bot/contracts/plugin-release.md` v0.1.0: CI зелёный, ревью нет. После Approve чат мержит сам (только документы). PD — передать автору бота ссылку на #71, если уведомление не дошло | ждёт ревью автора бота |
 | AID-7 | MCP | Исследование: `docs/research.md` не начат. Эталон: у коллег свой Figma-плагин, эмулирующий MCP (локальный сервер + плагин через Plugin API), чтобы не тратить кредиты и лимиты официального Figma MCP. Вопросы к PD: во что упёрлись лимиты, план Figma, можно ли спросить коллег, согласие изучать только опубликованное | в работе — ждёт ответов PD |
 | AID-8 | Team | База инженеров и передача задач по имени. Хранилище решено: Яндекс Облако, каталог `team-data` (ADR-038), создан и пуст; в репозитории — только протокол и схема. От AID-8 зависят вход в Presentbook через Яндекс ID и Q-04 AID Bot | в работе — план |
-| AID-9 | Штаб | Хвосты, решить с PD: worktree `aid-claude-test` (4 незакоммиченных файла), `aid-governance`, `aid-presentbook-tools`, `aid-token-comparator-v0.1.0`; локальные ветки без upstream `archive/main-wip-pre-cleanup-20260909`, `feat/icons-spike`, `presentbook/icons`, `test/api-aidteam-pro`; три stash (`cursor/*`) | ждёт PD |
+| AID-9 | Штаб | Хвосты, решить с PD: worktree `aid-claude-test` (4 незакоммиченных файла), `aid-governance`, `aid-presentbook-tools`, `aid-token-comparator-v0.1.0`; локальные ветки без upstream `archive/main-wip-pre-cleanup-20260909`, `feat/icons-spike`, `presentbook/icons`; `test/api-aidteam-pro` — Token Comparator удалит сам после теста; смерженная `feat/aid-bot` (#67, #70); три stash (`cursor/*`) | ждёт PD |
 
 ## Закрыто
 
 | ID | Чат | Что | Итог |
 |---|---|---|---|
 | AID-1 · Presentbook | Presentbook | Оркестрация: имя, папка | 2026-10-06: папка верная, detached HEAD на `origin/main` намеренно, ничего не висит |
+| AID-1 · Bot | Bot | Оркестрация: имя, папка | 2026-10-06: папка сменена; в `aid-presentbook` ничего не делал |
+| AID-1 · Token Comparator | Token Comparator | Оркестрация: имя, папка | 2026-10-06: папка сменена; `~/Downloads/CLAUDE.md` для него не действует |
 | AID-1 · MCP | MCP | Оркестрация: имя, папка | 2026-10-06: папка сменена; в `aid-presentbook` ничего не делал; PR #75 привязан к сессии из-за папки, работа Presentbook |
 | AID-1 · Team | Team | Оркестрация: имя, папка, протокол | 2026-10-06: папка сменена, в `aid-presentbook` ничего не оставлено; три поправки протокола внесены (SendMessage — одна машина, публичный репозиторий, секреты) |
 | AID-1 · Style Migration | Style Migration | Оркестрация: имя, протокол | 2026-10-06: принято; смена папки — у PD в чате |
