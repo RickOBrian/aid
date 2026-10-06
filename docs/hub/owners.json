@@ -1,0 +1,20 @@
+{
+  "format": "aid-hub-owners/1",
+  "note": "Роль → GitHub-логин для проверки авторов issues и комментариев между Штабами (ORCHESTRATION.md §9, решение PD 2026-10-06 «1а 2а 3б»). Только публичные логины GitHub — без имён, контактов, Telegram; они в базе AID · Ops · Team. Меняется решением PD.",
+  "roles": [
+    {
+      "role": "pd",
+      "title": "Principal Designer",
+      "github": "RickOBrian",
+      "owns": ["hub", "ds-standards", "site-presentbook", "plugin-token-comparator", "plugin-style-migration", "plugin-mcp", "ops-team"],
+      "decides": ["system"]
+    },
+    {
+      "role": "bot-engineer",
+      "title": "Инженер бота",
+      "github": "effects121-lang",
+      "owns": ["bot-request"],
+      "decides": []
+    }
+  ]
+}
