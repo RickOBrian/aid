@@ -198,6 +198,10 @@ PD даёт решения в Штабе, а не обходит чаты. Со�
 | Plugin · MCP | PD | `to:plugin-mcp` |
 | Bot · Request | инженер бота | `to:bot-request` |
 | Plugin · Library Updater | инженер Library Updater | `to:plugin-library-updater` |
+
+Роль без продукта (`owns: []` в `owners.json`) — инженер со своим Штабом и
+доской: его запросы засчитываются, утверждать он ничего не может, пока PD
+не назначит ему продукт. Сейчас — `engineer-4`, доска `docs/hub/boards/e4.md`.
 | Ops · Team | PD | `to:ops-team` |
 
 ### Кто что утверждает
