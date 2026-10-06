@@ -101,10 +101,13 @@ jobs:
           $S3 sync dist "$dest" --exclude 'assets/*' --exclude 'index.html' --cache-control 'public, max-age=300'
           $S3 cp dist/index.html "$dest/index.html" --content-type 'text/html; charset=utf-8' --cache-control 'no-cache'
 
+      # Функция: из main — версия с меткой prod (её вызывают шлюзы), из PR —
+      # версия с меткой pr-N (её вызывает только превью этого PR через
+      # /pr-N/api/...). Так изменения в api/ видны на превью до мержа.
       - name: Функция presentbook-api
-        if: github.event_name == 'push'
         env:
           YC_KEY: ${{ secrets.YC_CI_SA_KEY_JSON }}
+          TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'prod' }}
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
           export PATH="$HOME/yc/bin:$PATH"
@@ -120,14 +123,19 @@ jobs:
           auth="${{ vars.YC_LOCKBOX_AUTH_ID }}"
           gh_token="${{ vars.YC_LOCKBOX_GITHUB_ID }}"
           runtime="${{ vars.YC_RUNTIME_SA_ID }}"
-          yc serverless function version create --function-name presentbook-api \
+          function_id=$(yc serverless function get --name presentbook-api --format json | jq -r .id)
+          version_id=$(yc serverless function version create --function-name presentbook-api --format json \
             --runtime nodejs22 --entrypoint index.handler --memory 128m --execution-timeout 10s \
             --source-path deploy/yc/dist/presentbook-api.zip --service-account-id "$runtime" \
-            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview \
+            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id \
             --secret environment-variable=BASIC_AUTH_USER,id=$auth,key=BASIC_AUTH_USER \
             --secret environment-variable=BASIC_AUTH_PASSWORD,id=$auth,key=BASIC_AUTH_PASSWORD \
             --secret environment-variable=AUTH_COOKIE_SECRET,id=$auth,key=AUTH_COOKIE_SECRET \
-            --secret environment-variable=GITHUB_RELEASES_TOKEN,id=$gh_token,key=GITHUB_RELEASES_TOKEN
+            --secret environment-variable=GITHUB_RELEASES_TOKEN,id=$gh_token,key=GITHUB_RELEASES_TOKEN \
+            | jq -r .id)
+          # Метка переезжает на новую версию; $latest шлюзы не используют.
+          yc serverless function version set-tag --id "$version_id" --tag "$TAG"
+          echo "presentbook-api: версия $version_id, метка $TAG"
 
       # Смоук-тест: схема шлюза опирается на поведение, которое не описано в
       # документации YC (типы, разбор маршрутов) — проверяем после каждой выкладки.
@@ -156,3 +164,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: $S3 rm "s3://presentbook-preview/pr-${{ github.event.pull_request.number }}" --recursive
+      - name: Снять метку pr-N с версии функции
+        env:
+          YC_KEY: ${{ secrets.YC_CI_SA_KEY_JSON }}
+          TAG: pr-${{ github.event.pull_request.number }}
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
+          export PATH="$HOME/yc/bin:$PATH"
+          printf '%s' "$YC_KEY" > "$RUNNER_TEMP/key.json"
+          yc config set endpoint api.cloud.yandex.net:443
+          yc config set service-account-key "$RUNNER_TEMP/key.json"
+          yc config set folder-id "${{ vars.YC_FOLDER_ID }}"
+          rm -f "$RUNNER_TEMP/key.json"
+          version_id=$(yc serverless function version get-by-tag --function-name presentbook-api --tag "$TAG" --format json 2>/dev/null | jq -r '.id // empty')
+          if [ -n "$version_id" ]; then
+            yc serverless function version remove-tag --id "$version_id" --tag "$TAG"
+          fi
