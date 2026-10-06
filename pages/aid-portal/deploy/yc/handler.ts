@@ -2,7 +2,7 @@
  * Функция `presentbook-api` в Яндекс Облаке (ADR-038).
  *
  * За основным шлюзом: `/api/login`, `/api/session`, `/api/plugin-version` —
- * те же обработчики, что на Vercel. За шлюзом превью ещё и раздача файлов
+ * обработчики `api/*.ts` без правок. За шлюзом превью ещё и раздача файлов
  * `pr-N/...` из бакета: интеграция object_storage отдаёт JS как text/plain,
  * а маршрут «параметр–литерал» (`/{pr}/assets/{path+}`) шлюз разбирает
  * неверно — так показал прототип 2026-10-02.
@@ -50,9 +50,8 @@ export async function previewStatic(pathname: string, storageUrl: string, fetchI
 const PLACEHOLDER = 'CHANGE_ME';
 
 /**
- * Перед функцией в Облаке нет CDN, который на Vercel держал ответ
- * `/api/plugin-version` 10 минут (`s-maxage`). Без кэша каждый заход на
- * страницу плагина шёл бы в GitHub. Экземпляр функции хранит ответ сам:
+ * Перед функцией нет CDN, и без кэша каждый заход на страницу плагина шёл бы
+ * в GitHub. Экземпляр функции хранит ответ `/api/plugin-version` сам:
  * удачный — 10 минут, неудачный — минуту, как и `s-maxage` в заголовках.
  */
 const PLUGIN_VERSION_TTL_MS = { ok: 10 * 60_000, empty: 60_000 };

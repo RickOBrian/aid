@@ -18,8 +18,6 @@
 - Ссылки и адрес страницы — только через `withBase()` и `currentAppPath()`
   (`base.ts`): превью живёт в `/pr-N/`, страж в `components/base.test.ts` не
   даст пропустить базу.
-- Vercel-проект `aid-ds` (https://aid-ds.vercel.app) — запасной до ~2026-10-17:
-  ничего в нём не трогать. `middleware.ts` и `vercel.json` нужны только ему.
 - Новую ветку — от свежего `origin/main`:
   `git fetch && git switch -c <ветка> origin/main`.
 
@@ -41,9 +39,8 @@
   строятся сразу канонически через `productPath`.
 - Вход на сайт: `AuthGate.tsx` спрашивает `GET /api/session` и без сессии
   показывает форму; `api/login.ts` ставит подписанную cookie. Статика открыта,
-  закрыт интерфейс (вариант 1а ADR-038). На запасном Vercel страницы закрывает
-  ещё и `middleware.ts`. Секреты `BASIC_AUTH_*`, `AUTH_COOKIE_SECRET` — в Lockbox
-  (`presentbook-auth`) и в переменных запасного Vercel; не читать, не печатать,
+  закрыт интерфейс (вариант 1а ADR-038). Секреты `BASIC_AUTH_*`,
+  `AUTH_COOKIE_SECRET` — в Lockbox (`presentbook-auth`); не читать, не печатать,
   не коммитить. Локальный `npm run dev` функций не выполняет — вход там
   пропускается.
 - Гайды: `guide-registry.json` → `sourcePath` в `skills/_shared/`;
@@ -66,8 +63,7 @@
   при изменении `pages/aid-portal/` и всего, что сборка читает снаружи
   (`skills/_shared/`, `tokens/`, `components/`, `changes/driver/pending/`,
   `products/registry.json`). Новый вход сборки вне портала — добавить туда
-  (файл общий, через PD), иначе его правки не дойдут до сайта. Тот же список —
-  в `ignoreCommand` запасного Vercel.
+  (файл общий, через PD), иначе его правки не дойдут до сайта.
 
 ## Стыки — что здесь чужое
 

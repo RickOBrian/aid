@@ -9,7 +9,7 @@ interface LoginRequestBody {
   password?: string;
 }
 
-/** Vercel Web API — named HTTP method export (default export ignores returned Response). */
+/** Web API handler (Request → Response); runs in Cloud Functions via `deploy/yc/adapter.ts`. */
 export async function POST(request: Request): Promise<Response> {
   const expectedUser = process.env.BASIC_AUTH_USER;
   const expectedPassword = process.env.BASIC_AUTH_PASSWORD;

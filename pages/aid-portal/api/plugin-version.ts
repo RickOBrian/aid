@@ -6,9 +6,8 @@ import { PLUGIN_RELEASE, releaseInfo, type PluginReleaseInfo } from './_lib/plug
  *
  * Зачем прослойка, а не запрос к GitHub из браузера: без авторизации GitHub
  * даёт 60 запросов в час на IP, и офис за одним IP выбирает их быстро —
- * версия на кнопке то появлялась бы, то пропадала. В Яндекс Облаке ответ
- * 10 минут держит экземпляр функции (`deploy/yc/handler.ts`), на запасном
- * Vercel — CDN по `s-maxage`.
+ * версия на кнопке то появлялась бы, то пропадала. Ответ 10 минут держит
+ * экземпляр функции (`cachedPluginVersion` в `deploy/yc/handler.ts`).
  *
  * `GITHUB_RELEASES_TOKEN` — read-only токен (Lockbox `presentbook-github`):
  * исходящие IP общие, и без токена лимит на них может выбрать кто-то чужой.

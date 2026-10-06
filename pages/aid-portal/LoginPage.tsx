@@ -134,8 +134,8 @@ export function LoginPage() {
       });
 
       if (response.ok) {
-        // Full reload (not client-side navigate) — middleware must see the
-        // freshly set `session` cookie on the very next request to `/`.
+        // Full reload (not client-side navigate) — AuthGate asks /api/session
+        // again on load and must see the freshly set `session` cookie.
         window.location.href = withBase('/');
         return;
       }

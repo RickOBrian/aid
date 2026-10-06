@@ -2,8 +2,8 @@
 
 Решение — ADR-038. Каталог `presentbook`. Сайт — https://aidteam.pro
 (переключён 2026-10-03), превью — https://preview.aidteam.pro/pr-N/.
-Vercel-проект `aid-ds` — запасной до ~2026-10-17 из того же кода:
-`middleware.ts` и `vercel.json` нужны только ему.
+Vercel больше не используется: резерв `aid-ds` снят решением PD 2026-10-06,
+`middleware.ts` и `vercel.json` удалены (этап 7).
 
 ## Как устроено
 
