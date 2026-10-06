@@ -6,14 +6,37 @@
       "role": "pd",
       "title": "Principal Designer",
       "github": "RickOBrian",
-      "owns": ["hub", "ds-standards", "site-presentbook", "plugin-token-comparator", "plugin-style-migration", "plugin-mcp", "ops-team"],
-      "decides": ["system"]
+      "owns": [
+        "hub",
+        "ds-standards",
+        "site-presentbook",
+        "plugin-token-comparator",
+        "plugin-style-migration",
+        "plugin-mcp",
+        "ops-team"
+      ],
+      "decides": [
+        "system"
+      ]
     },
     {
       "role": "bot-engineer",
       "title": "Инженер бота",
       "github": "effects121-lang",
-      "owns": ["bot-request"],
+      "owns": [
+        "bot-request"
+      ],
+      "decides": [],
+      "board": null
+    },
+    {
+      "role": "lu-engineer",
+      "title": "Инженер Library Updater",
+      "github": "arturuxui",
+      "board": "docs/hub/boards/lu.md",
+      "owns": [
+        "plugin-library-updater"
+      ],
       "decides": []
     }
   ]
