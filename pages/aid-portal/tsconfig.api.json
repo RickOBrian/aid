@@ -16,7 +16,6 @@
     "api/session.ts",
     "api/_lib/session.ts",
     "api/_lib/pluginRelease.ts",
-    "middleware.ts",
     "deploy/yc/adapter.ts",
     "deploy/yc/handler.ts"
   ]

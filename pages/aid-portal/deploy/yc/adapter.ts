@@ -1,7 +1,7 @@
 /**
  * Адаптер Yandex Cloud Functions (HTTP-вызов из API Gateway) ↔ Web API.
  *
- * Обработчики портала написаны как Vercel Web API: `Request → Response`
+ * Обработчики портала написаны как Web API: `Request → Response`
  * (`api/*.ts`). Здесь событие функции превращается в `Request`, а `Response` —
  * в ответ функции. Сами обработчики не знают, где работают (ADR-038).
  */

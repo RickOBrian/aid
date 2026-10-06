@@ -134,8 +134,8 @@ function NotFoundPage() {
 }
 
 export function App() {
-  // `/login` is product-agnostic (the session cookie from middleware.ts guards
-  // every product) — handled before product-prefix resolution so it never
+  // `/login` is product-agnostic (one session cookie, checked by AuthGate,
+  // covers every product) — handled before product-prefix resolution so it never
   // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
   if (currentAppPath() === '/login') {
     return <LoginPage />;
