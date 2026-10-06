@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aid-team/people.schema.json",
+  "title": "База инженеров AID Team",
+  "description": "Схема файла people.json в бакете aidteam-team-data (Яндекс Облако, каталог team-data). Сами данные в репозиторий не попадают — он публичный.",
+  "type": "object",
+  "required": ["format", "people"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": 1 },
+    "people": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/person" }
+    }
+  },
+  "$defs": {
+    "person": {
+      "type": "object",
+      "required": ["name", "github", "role", "consent"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Как обращаться: по этому имени Claude находит человека («передай Пете»)."
+        },
+        "github": {
+          "type": "string",
+          "description": "Публичный GitHub-логин. Для владельцев продуктов совпадает с docs/hub/owners.json — источник правды для Штабов там."
+        },
+        "role": {
+          "type": "string",
+          "description": "Роль из docs/hub/owners.json (pd, bot-engineer, lu-engineer…) или «engineer», пока продукт не назначен."
+        },
+        "products": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Продукты, которыми владеет, — метки to:<продукт> без префикса."
+        },
+        "telegram": {
+          "type": "string",
+          "description": "Канал связи. Необязательно."
+        },
+        "consent": {
+          "type": "object",
+          "required": ["date"],
+          "additionalProperties": false,
+          "description": "Человек лично подтвердил PD согласие на хранение этих данных. Без отметки карточка не используется.",
+          "properties": {
+            "date": { "type": "string", "format": "date" }
+          }
+        }
+      }
+    }
+  }
+}
