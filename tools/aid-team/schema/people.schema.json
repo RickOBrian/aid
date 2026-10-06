@@ -4,49 +4,73 @@
   "title": "База инженеров AID Team",
   "description": "Схема файла people.json в бакете aidteam-team-data (Яндекс Облако, каталог team-data). Сами данные в репозиторий не попадают — он публичный.",
   "type": "object",
-  "required": ["format", "people"],
+  "required": [
+    "format",
+    "people"
+  ],
   "additionalProperties": false,
   "properties": {
-    "format": { "const": 1 },
+    "format": {
+      "const": 2
+    },
     "people": {
       "type": "array",
-      "items": { "$ref": "#/$defs/person" }
+      "items": {
+        "$ref": "#/$defs/person"
+      }
     }
   },
   "$defs": {
     "person": {
       "type": "object",
-      "required": ["name", "github", "role", "consent"],
+      "required": [
+        "first_name",
+        "github",
+        "role",
+        "consent"
+      ],
       "additionalProperties": false,
       "properties": {
-        "name": {
+        "first_name": {
           "type": "string",
-          "description": "Как обращаться: по этому имени Claude находит человека («передай Пете»)."
+          "minLength": 1,
+          "description": "Имя. Обязательно: по нему Claude находит человека («передай Пете»)."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Фамилия. Необязательно; помогает различить тёзок."
         },
         "github": {
           "type": "string",
-          "description": "Публичный GitHub-логин. Для владельцев продуктов совпадает с docs/hub/owners.json — источник правды для Штабов там."
-        },
-        "role": {
-          "type": "string",
-          "description": "Роль из docs/hub/owners.json (pd, bot-engineer, lu-engineer…) или «engineer», пока продукт не назначен."
-        },
-        "products": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Продукты, которыми владеет, — метки to:<продукт> без префикса."
+          "description": "Публичный GitHub-логин. Обязательно. Для владельцев продуктов совпадает с docs/hub/owners.json — источник правды для Штабов там."
         },
         "telegram": {
           "type": "string",
-          "description": "Канал связи. Необязательно."
+          "description": "Telegram-ник без @. Необязательно; по нему тоже можно найти человека."
+        },
+        "role": {
+          "type": "string",
+          "description": "Роль из docs/hub/owners.json: pd, bot-engineer, lu-engineer, engineer-4…"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Продукты, которыми владеет, — метки to:<продукт> без префикса."
         },
         "consent": {
           "type": "object",
-          "required": ["date"],
+          "required": [
+            "date"
+          ],
           "additionalProperties": false,
           "description": "Человек лично подтвердил PD согласие на хранение этих данных. Без отметки карточка не используется.",
           "properties": {
-            "date": { "type": "string", "format": "date" }
+            "date": {
+              "type": "string",
+              "format": "date"
+            }
           }
         }
       }
