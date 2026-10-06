@@ -38,6 +38,14 @@
         "plugin-library-updater"
       ],
       "decides": []
+    },
+    {
+      "role": "engineer-4",
+      "title": "Инженер (продукт не назначен)",
+      "github": "tarlarion",
+      "board": "docs/hub/boards/e4.md",
+      "owns": [],
+      "decides": []
     }
   ]
 }
