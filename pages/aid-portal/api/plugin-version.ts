@@ -48,7 +48,12 @@ export async function GET(): Promise<Response> {
       headers,
       signal: AbortSignal.timeout(5000),
     });
-    return response.ok ? response.json() : null;
+    if (!response.ok) {
+      // Только путь и статус: причину (лимит, токен) видно в журнале функции.
+      console.warn(`[plugin-version] GitHub ${path}: ${response.status}`);
+      return null;
+    }
+    return response.json();
   };
 
   try {
