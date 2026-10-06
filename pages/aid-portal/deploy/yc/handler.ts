@@ -13,7 +13,7 @@
 import { POST as login } from '../../api/login';
 import { GET as pluginVersion } from '../../api/plugin-version';
 import { GET as session } from '../../api/session';
-import { fromResponse, toRequest, type YcHttpEvent } from './adapter';
+import { fromResponse, toRequest, type YcHttpEvent, type YcHttpResult } from './adapter';
 
 const NOT_FOUND = () =>
   new Response(JSON.stringify({ error: 'not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
@@ -117,11 +117,78 @@ export async function route(request: Request): Promise<Response> {
   return NOT_FOUND();
 }
 
-export async function handler(event: YcHttpEvent) {
+/**
+ * Превью PR с изменениями в `api/`. Каждый PR выкатывает версию этой функции
+ * с меткой `pr-N`, а шлюзы ходят в версию с меткой `prod`. Превью шлёт
+ * запросы в `/pr-N/api/...`; версия `prod` переадресует их в версию `pr-N`
+ * (вызов функции по метке, событие целиком в теле, `integration=raw`). Нет
+ * версии `pr-N` — запрос обрабатывает сама `prod`, как раньше.
+ */
+const PREVIEW_API_PATH = /^\/(pr-\d+)(\/api\/.*)$/;
+const PROXIED_MARK = '__presentbookPreviewProxied';
+
+type ProxiedEvent = YcHttpEvent & { [PROXIED_MARK]?: true };
+
+export interface YcContext {
+  token?: string | { access_token?: string };
+}
+
+function isHttpResult(value: unknown): value is YcHttpResult {
+  return Boolean(value) && typeof (value as YcHttpResult).statusCode === 'number';
+}
+
+export async function invokePreviewVersion(
+  tag: string,
+  event: YcHttpEvent,
+  context: YcContext | undefined,
+  fetchImpl: typeof fetch = fetch,
+): Promise<YcHttpResult | null> {
+  const functionId = process.env.FUNCTION_ID;
+  const token = typeof context?.token === 'string' ? context.token : context?.token?.access_token;
+  if (!functionId || !token) {
+    return null;
+  }
+  try {
+    const response = await fetchImpl(
+      `https://functions.yandexcloud.net/${functionId}?tag=${encodeURIComponent(tag)}&integration=raw`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...event, [PROXIED_MARK]: true }),
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    if (!response.ok) {
+      return null; // нет версии с такой меткой — отвечает prod
+    }
+    const result: unknown = await response.json();
+    return isHttpResult(result) ? result : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function handler(rawEvent: YcHttpEvent | string, context?: YcContext) {
   // Заглушка вместо токена хуже, чем его отсутствие: GitHub ответит 401.
   // `delete` переменной окружения в Cloud Functions не срабатывает — пустая строка.
   if (process.env.GITHUB_RELEASES_TOKEN === PLACEHOLDER) {
     process.env.GITHUB_RELEASES_TOKEN = '';
   }
-  return fromResponse(await route(toRequest(event)));
+  // При вызове с `integration=raw` событие приходит строкой — телом запроса.
+  const event: ProxiedEvent = typeof rawEvent === 'string' ? JSON.parse(rawEvent) : rawEvent;
+  const request = toRequest(event);
+  const url = new URL(request.url);
+  const preview = PREVIEW_API_PATH.exec(url.pathname);
+  if (preview) {
+    const [, tag, apiPath] = preview;
+    const apiEvent: ProxiedEvent = { ...event, url: `${apiPath}${url.search}`, path: apiPath };
+    if (!event[PROXIED_MARK]) {
+      const remote = await invokePreviewVersion(tag, apiEvent, context);
+      if (remote) {
+        return remote;
+      }
+    }
+    return fromResponse(await route(toRequest(apiEvent)));
+  }
+  return fromResponse(await route(request));
 }

@@ -38,7 +38,8 @@ if [ -n "$font" ]; then
 else
   echo "FAIL в CSS-бандле не найден шрифт woff2"; fail=1
 fi
-check "$origin/api/session" 401 application/json
-check "$origin/api/plugin-version" 200 application/json
+# API — через базу: на превью /pr-N/api/... идёт в версию функции этого PR.
+check "$base/api/session" 401 application/json
+check "$base/api/plugin-version" 200 application/json
 
 exit $fail

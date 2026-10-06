@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { withBase } from './base';
+import { apiUrl, withBase } from './base';
 
 const LOGIN_PAGE_STYLE = `
 .dslp,
@@ -126,7 +126,7 @@ export function LoginPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(apiUrl('/api/login'), {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

@@ -5,18 +5,21 @@
 # object_storage отдаёт всё, кроме HTML, как text/plain (прототип 2026-10-02),
 # а модульный JS с таким типом браузер не запустит. HTML и маршруты SPA —
 # object_storage с error_object: index.html, статус 200.
+#
+# Функция вызывается по метке prod: её ставит только выкладка из main. Версии
+# с PR (метка pr-N) сайт не видит.
 openapi: 3.0.0
 info: { title: presentbook-site, version: 1.0.0 }
 paths:
   /api/login:
     post:
-      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
   /api/session:
     get:
-      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
   /api/plugin-version:
     get:
-      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', service_account_id: '${GATEWAY_SA_ID}' }
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
   /assets/{path+}:
     get:
       parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]

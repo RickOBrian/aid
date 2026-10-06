@@ -11,7 +11,8 @@ Vercel больше не используется: резерв `aid-ds` сня�
 |---|---|---|
 | `aidteam.pro/` и маршруты SPA | `presentbook-site` | `index.html` из бакета `presentbook-site` (object_storage, `error_object`) |
 | `aidteam.pro/assets|icons|guides/...` | `presentbook-site` | файлы бакета через http-прокси — с их настоящим типом |
-| `aidteam.pro/api/login|session|plugin-version` | оба | функция `presentbook-api` |
+| `aidteam.pro/api/login|session|plugin-version` | оба | функция `presentbook-api`, версия с меткой `prod` |
+| `preview.aidteam.pro/pr-N/api/...` | `presentbook-preview` | версия `prod` переадресует в версию с меткой `pr-N` — код `api/` из этого PR; нет такой версии — отвечает сама |
 | `preview.aidteam.pro/pr-N/...` | `presentbook-preview` | функция `presentbook-api` раздаёт `pr-N/...` из бакета `presentbook-preview`, маршрут без файла → `pr-N/index.html` |
 
 Почему так, а не проще, — прототип 2026-10-02:
@@ -65,3 +66,20 @@ Vercel больше не используется: резерв `aid-ds` сня�
 
 После смены значений в Lockbox нужна новая версия функции: она привязывает
 версию секрета на момент выкладки. Её делает следующий push в `main`.
+
+## Версии функции: `prod` и `pr-N`
+
+Шлюзы вызывают функцию по метке `prod`, не `$latest`. Метку `prod` ставит
+только выкладка из `main`. Каждый PR выкатывает свою версию с меткой `pr-N`;
+сайт её не видит, а превью этого PR шлёт API-запросы в `/pr-N/api/...`
+(`apiUrl` в `base.ts`), и версия `prod` переадресует их в `pr-N` — вызов
+функции по метке с `integration=raw` и IAM-токеном своего сервисного
+аккаунта (`invokePreviewVersion` в `handler.ts`). При закрытии PR метка
+`pr-N` снимается.
+
+Версии PR работают с теми же секретами Lockbox, что и `prod`: превью
+собираются только для PR из этого репозитория, не из форков.
+
+Откат функции — перенести метку `prod` на прошлую версию:
+`yc serverless function version set-tag --id <версия> --tag prod`.
+

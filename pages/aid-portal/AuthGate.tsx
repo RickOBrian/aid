@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { LoginPage } from './LoginPage';
+import { apiUrl } from './base';
 
 /**
  * Клиентский вход (ADR-038, вариант 1а): интерфейс показывается только после
@@ -18,7 +19,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
       return;
     }
     const controller = new AbortController();
-    fetch('/api/session', { credentials: 'include', signal: controller.signal })
+    fetch(apiUrl('/api/session'), { credentials: 'include', signal: controller.signal })
       .then((response) => setState(response.ok ? 'open' : 'login'))
       .catch(() => {
         if (!controller.signal.aborted) {
