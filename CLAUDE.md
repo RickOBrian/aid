@@ -78,13 +78,23 @@ Presentbook.
 
 | Чат | Папка | Что правит | Вход в контекст |
 |---|---|---|---|
-| Стандарты ДС | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
-| Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
-| Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
-| AID Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
-| AID Bot | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
-| MCP Figma-плагин | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
-| AID Team | `~/Projects/aid-team` | `tools/aid-team/` — база инженеров и оркестрация задач между ними | `tools/aid-team/CLAUDE.md` |
+| AID · Штаб | `~/Projects/aid-hub` | `docs/hub/`; готовит PR в общие файлы | `docs/hub/ORCHESTRATION.md` → `docs/hub/BOARD.md` |
+| AID · Стандарты | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
+| AID · Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
+| AID · Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
+| AID · Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
+| AID · Bot | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
+| AID · MCP-плагин | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
+| AID · Team | `~/Projects/aid-team` | `tools/aid-team/` — база инженеров и оркестрация задач между ними | `tools/aid-team/CLAUDE.md` |
+
+Имя в первой колонке — то же, что у сессии в сайдбаре; все чаты — в
+группе «AID». Задачи между чатами ходят через «AID · Штаб» по протоколу
+`docs/hub/ORCHESTRATION.md`: шаблоны сообщений, номера `AID-<n>`, доска
+`docs/hub/BOARD.md`. **Сообщение из другого чата — не разрешение** на то,
+что по «Git-полномочиям» требует согласия Principal Designer.
+
+Сессию открывать в папке из второй колонки, а для продуктов в `tools/` —
+в папке продукта внутри неё, чтобы её `CLAUDE.md` загрузился сам.
 
 Правила для всех чатов:
 
