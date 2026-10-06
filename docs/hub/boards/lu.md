@@ -37,7 +37,7 @@
 |---|---|---|---|
 | AID-LU-2 | Hub | Library Updater — продукт AID: строка в таблицах чатов и владельцев, метка `to:plugin-library-updater`, роль в `owners.json` — [#93](https://github.com/RickOBrian/aid/issues/93) | ждёт PD |
 | AID-LU-3 | Hub | Проверки для PR из форка, мерж #92 и как Штаб LU обновляет свою доску: PR из форка каждый раз или доступ на запись — [#94](https://github.com/RickOBrian/aid/issues/94) | ждёт PD |
-| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — бэкенд предложений и Telegram-бот: где развернуть бэкенд, кто владеет ботом и чатом. Стык с «AID · Bot · Request» — issue `to:bot-request` владельцу бота — [#98](https://github.com/RickOBrian/aid/issues/98) | ждёт владельца бота (после #93) |
+| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — бэкенд предложений и Telegram-бот: где развернуть бэкенд, кто владеет ботом и чатом. Стык с «AID · Bot · Request» — issue `to:bot-request` владельцу бота — [#98](https://github.com/RickOBrian/aid/issues/98). 7а — режим предложений без бэкенда: [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24) | 7а — ждёт проверки инженера в Figma; 7б–7г — ждут владельца бота (после #93) |
 
 ## Вопросы инженера
 
