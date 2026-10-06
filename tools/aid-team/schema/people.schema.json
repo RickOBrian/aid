@@ -11,7 +11,7 @@
   "additionalProperties": false,
   "properties": {
     "format": {
-      "const": 3
+      "const": 4
     },
     "people": {
       "type": "array",
@@ -26,6 +26,7 @@
       "required": [
         "first_name",
         "github",
+        "tool",
         "consent"
       ],
       "additionalProperties": false,
@@ -46,6 +47,14 @@
         "telegram": {
           "type": "string",
           "description": "Telegram-ник без @. Необязательно; по нему тоже можно найти человека."
+        },
+        "tool": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "cursor"
+          ],
+          "description": "Инструмент, в котором человек работает с агентом: claude — Claude Code, cursor — Cursor. По нему выбираются инструкции, скиллы и способ связи. Новый инструмент — добавить в enum."
         },
         "products": {
           "type": "array",
