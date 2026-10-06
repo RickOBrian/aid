@@ -5,7 +5,8 @@
 чатами — `docs/hub/ORCHESTRATION.md`, его ведёт «AID · Hub · Штаб».
 
 Вход в контекст: этот файл → `PLAN.md` → `OPEN-QUESTIONS.md`. Хранилище и
-порядок правок — `STORAGE.md`.
+порядок правок — `STORAGE.md`; чтение у инженеров — `READER.md`; роль
+менеджера и скиллы `skills/` — `MANAGER.md` (устанавливает их Штаб).
 
 ## Где работаю
 
