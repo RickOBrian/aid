@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fromResponse, toRequest } from '../deploy/yc/adapter';
-import { authConfigured, cachedPluginVersion, previewStatic, resetPluginVersionCache, route } from '../deploy/yc/handler';
+import { authConfigured, cachedPluginVersion, handler, invokePreviewVersion, previewStatic, resetPluginVersionCache, route } from '../deploy/yc/handler';
 
 /**
  * Функция presentbook-api в Яндекс Облаке (ADR-038): адаптер событие ↔ Web API
@@ -119,5 +119,45 @@ describe('cachedPluginVersion', () => {
     t = 61_000;
     await cachedPluginVersion(load, () => t);
     expect(load).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('превью API: /pr-N/api/... в версию функции этого PR', () => {
+  const event = (url: string, extra: Record<string, unknown> = {}) => ({ httpMethod: 'GET', url, headers: { Host: 'preview.aidteam.pro' }, ...extra });
+
+  it('вызывает версию с меткой pr-N по API функций, событие — без префикса', async () => {
+    process.env.FUNCTION_ID = 'fn-test';
+    const fakeFetch = vi.fn(async () => new Response(JSON.stringify({ statusCode: 200, headers: {}, multiValueHeaders: {}, body: '{"from":"pr-7"}', isBase64Encoded: false })));
+    const result = await invokePreviewVersion('pr-7', event('/api/plugin-version'), { token: { access_token: 'iam' } }, fakeFetch as unknown as typeof fetch);
+    expect(result?.body).toBe('{"from":"pr-7"}');
+    const [url, init] = fakeFetch.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe('https://functions.yandexcloud.net/fn-test?tag=pr-7&integration=raw');
+    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer iam');
+    expect(JSON.parse(String(init.body))).toMatchObject({ url: '/api/plugin-version', __presentbookPreviewProxied: true });
+    delete process.env.FUNCTION_ID;
+  });
+
+  it('нет версии pr-N (404) или токена — null, отвечает prod', async () => {
+    process.env.FUNCTION_ID = 'fn-test';
+    const notFound = vi.fn(async () => new Response('', { status: 404 }));
+    expect(await invokePreviewVersion('pr-7', event('/api/x'), { token: 'iam' }, notFound as unknown as typeof fetch)).toBeNull();
+    expect(await invokePreviewVersion('pr-7', event('/api/x'), undefined, notFound as unknown as typeof fetch)).toBeNull();
+    delete process.env.FUNCTION_ID;
+  });
+
+  it('без версии PR /pr-N/api/... обрабатывает сам, как /api/...', async () => {
+    const result = await handler(event('/pr-7/api/login'));
+    expect(result.statusCode).toBe(404); // GET на /api/login — 404, то есть маршрут API, а не раздача превью
+  });
+
+  it('переадресованное событие (строкой, с меткой) не уходит дальше по кругу', async () => {
+    const fakeFetch = vi.fn();
+    vi.stubGlobal('fetch', fakeFetch);
+    process.env.FUNCTION_ID = 'fn-test';
+    const result = await handler(JSON.stringify(event('/pr-7/api/login', { __presentbookPreviewProxied: true })), { token: 'iam' });
+    expect(result.statusCode).toBe(404);
+    expect(fakeFetch).not.toHaveBeenCalled();
+    delete process.env.FUNCTION_ID;
+    vi.unstubAllGlobals();
   });
 });

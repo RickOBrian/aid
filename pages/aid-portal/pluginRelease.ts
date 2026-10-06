@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { PluginReleaseInfo } from './api/_lib/pluginRelease';
+import { apiUrl } from './base';
 
 /**
  * Последний релиз плагина для страницы Token Comparator — от
@@ -31,7 +32,7 @@ export function usePluginRelease(): PluginReleaseInfo | null {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch('/api/plugin-version', { signal: controller.signal })
+    fetch(apiUrl('/api/plugin-version'), { signal: controller.signal })
       .then((response) => (response.ok ? response.json() : null))
       .then((body: { release?: unknown } | null) => {
         setRelease(isReleaseInfo(body?.release) ? body.release : null);

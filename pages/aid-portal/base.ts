@@ -5,7 +5,8 @@
  * папке (`/pr-12/`, ADR-038). Ссылки и маршруты в коде пишутся от корня
  * приложения (`/driver/tokens/colors`): `withBase` добавляет базу при отрисовке
  * ссылки и запросе файла, `stripBase` снимает её с адреса перед разбором
- * маршрута. API (`/api/...`) от базы не зависит — он всегда в корне домена.
+ * маршрута. API тоже идёт через базу (`apiUrl`): на превью `/pr-N/api/...`
+ * попадает в версию функции из этого PR (`deploy/yc/handler.ts`).
  */
 
 function normalizeBase(base: string): string {
@@ -44,6 +45,11 @@ const appBase = createBase(import.meta.env.BASE_URL ?? '/');
 export const APP_BASE = appBase.base;
 export const withBase = appBase.withBase;
 export const stripBase = appBase.stripBase;
+
+/** Адрес API: на сайте `/api/...`, на превью `/pr-N/api/...` — код API из PR. */
+export function apiUrl(path: string): string {
+  return withBase(path);
+}
 
 /** Текущий маршрут приложения без базы — его разбирает `resolveProductRoute`. */
 export function currentAppPath(): string {
