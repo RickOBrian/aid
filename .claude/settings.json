@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/check-docs.mjs)",
+      "Bash(npm test)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run typecheck:api)",
+      "mcp__ccd_pr__get_status",
+      "mcp__ccd_session_mgmt__list_sessions",
+      "mcp__ccd_session_mgmt__get_session",
+      "mcp__ccd_session_mgmt__list_events",
+      "mcp__ccd_sidebar__list_groups",
+      "mcp__terminal__read_terminal",
+      "mcp__Claude_Browser__find",
+      "mcp__Claude_Browser__read_page",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__Claude_Browser__read_console_messages",
+      "mcp__Claude_Browser__read_network_requests",
+      "mcp__Claude_Browser__tabs_context",
+      "mcp__Claude_Browser__preview_list",
+      "mcp__Claude_Browser__preview_logs",
+      "mcp__14ebfd14-8015-4d4c-acda-e669a22d2373__get_screenshot",
+      "mcp__14ebfd14-8015-4d4c-acda-e669a22d2373__get_metadata",
+      "mcp__14ebfd14-8015-4d4c-acda-e669a22d2373__get_variable_defs",
+      "mcp__14ebfd14-8015-4d4c-acda-e669a22d2373__get_design_context"
+    ]
+  }
+}
