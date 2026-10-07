@@ -1,0 +1,141 @@
+{
+  "id": "semantic-color-tokens-guide",
+  "version": "1.5.3",
+  "status": "draft",
+  "humanFile": "semantic-color-tokens-guide.md",
+  "note": "Машинный слой карты semantic-цветов. Перенесён 1:1 из semantic-color-tokens-guide.md v1.5.3 (AID Style Migration, 2026-09-30), принят чатом стандартов 2026-10-07 (AID-3). Источник истины — humanFile; при расхождении прав гайд. Значения hex — иллюстрации из гайда, не значения продукта.",
+  "principle": {
+    "source": "§1",
+    "rule": "Semantic-токен ссылается на Core Color Token, не хранит HEX напрямую; компоненты ссылаются только на semantic, никогда на Core.",
+    "semanticNamedBy": "назначение (brand, status, product)",
+    "coreNamedBy": "цвет (jasper, citrine)"
+  },
+  "nameStructure": {
+    "source": "§2",
+    "order": ["category", "group", "subgroup", "variant", "modifier"],
+    "example": "bg-accent-product-marketplace-main-secondary-static",
+    "forbidsDigits": true,
+    "forbidsColorNames": true
+  },
+  "categories": {
+    "source": "§3",
+    "items": [
+      { "id": "bg", "use": "Фоны — экраны, зоны, компоненты" },
+      { "id": "text", "use": "Цвет текста" },
+      { "id": "icon", "use": "Цвет иконок" },
+      { "id": "line", "use": "Разделители и бордеры" }
+    ],
+    "parallel": [["text", "icon"]],
+    "lineIsSeparateBranch": true
+  },
+  "bgGroups": {
+    "source": "§4",
+    "groups": [
+      { "id": "base", "use": "базовые фоны экрана" },
+      { "id": "card", "use": "фоны карточек" },
+      { "id": "overlay", "use": "полупрозрачные оверлеи" },
+      { "id": "modal", "use": "фоны модальных окон" },
+      {
+        "id": "accent",
+        "use": "акцентные фоны",
+        "variants": ["main", "fade", "ghost"],
+        "children": [
+          { "id": "states", "use": "состояния компонентов" },
+          { "id": "product", "use": "продуктовые цвета" },
+          { "id": "status", "use": "статусы (attention, success, warning, error)" },
+          { "id": "additional", "use": "доп. цвета (чарты, кастомные)" }
+        ]
+      },
+      {
+        "id": "component",
+        "use": "фоны компонентов",
+        "children": [
+          { "id": "form", "use": "контролы форм" },
+          { "id": "control", "use": "прочие контролы" },
+          { "id": "floating", "use": "плавающие элементы" },
+          { "id": "skeleton", "use": "заглушки при загрузке" },
+          { "id": "states", "use": "form-focused и др." }
+        ]
+      }
+    ]
+  },
+  "tokens": {
+    "source": "§5–§7",
+    "exhaustive": false,
+    "note": "Выборка примеров из гайда, а не полный набор. Существование имени по этим спискам не проверяется: имя проверяется по нотации — nameStructure и naming-conventions.json → tokens.semantic.pattern.",
+    "text": [
+      { "name": "text-primary", "use": "Основной текст", "example": "rgba(3, 3, 6, 0.88)" },
+      { "name": "text-secondary", "use": "Второстепенный текст", "example": "rgba(4, 4, 19, 0.55)" },
+      { "name": "text-disabled", "use": "Неактивный текст", "example": "rgba(5, 11, 44, 0.18)" },
+      { "name": "text-inverse", "use": "Текст на акцентном фоне", "example": "#ffffff" },
+      { "name": "text-accent", "use": "Акцентный текст и ссылки", "example": "#ef3124" },
+      { "name": "text-error", "use": "Текст ошибки", "example": "#ec2d20" },
+      { "name": "text-success", "use": "Текст успеха", "example": "#0d9336" }
+    ],
+    "icon": [
+      { "name": "icon-primary", "use": "Основная иконка", "example": "#212124" },
+      { "name": "icon-secondary", "use": "Второстепенная иконка", "example": "#898991" },
+      { "name": "icon-accent", "use": "Акцентная иконка", "example": "#ef3124" },
+      { "name": "icon-inverse", "use": "Иконка на акцентном фоне", "example": "#ffffff" },
+      { "name": "icon-disabled", "use": "Неактивная иконка", "example": "#d2d3d9" }
+    ],
+    "line": [
+      { "name": "line-default", "use": "Стандартный разделитель и бордер", "example": "#e7e8eb" },
+      { "name": "line-strong", "use": "Усиленный разделитель", "example": "#d2d3d9" },
+      { "name": "line-accent", "use": "Акцентный бордер (фокус, активное поле)", "example": "#ef3124" }
+    ],
+    "bg": [
+      { "name": "bg-base-main", "use": "Основной фон экрана", "example": "#ffffff" },
+      { "name": "bg-base-main-secondary", "use": "Вторичный фон экрана", "example": "#f2f3f5" },
+      { "name": "bg-card-main", "use": "Фон карточки", "example": "#ffffff" },
+      { "name": "bg-card-main-secondary", "use": "Вторичный фон карточки", "example": "#edeef0" },
+      { "name": "bg-overlay-main", "use": "Оверлей (полупрозрачный)", "example": "rgba(0, 0, 0, 0.60)" },
+      { "name": "bg-modal-main", "use": "Фон модального окна", "example": "#ffffff" },
+      { "name": "bg-modal-main-secondary", "use": "Вторичный фон модального окна", "example": "#f2f3f5" },
+      { "name": "bg-accent-main", "use": "Основной акцентный фон", "example": "#ef3124" },
+      { "name": "bg-accent-fade", "use": "Приглушённый акцент (main с alpha)", "example": "#ffdfdf" },
+      { "name": "bg-accent-ghost", "use": "Еле заметный акцент (тише fade)", "example": "#ffebeb" },
+      { "name": "bg-accent-inverse", "use": "Инверсный фон (текст поверх — инверсный)", "example": "#121213" },
+      { "name": "bg-component-skeleton-default", "use": "Базовый фон заглушки", "example": "#f2f3f5" },
+      { "name": "bg-component-skeleton-shimmer", "use": "Светлая волна поверх default", "example": "#ffffff" }
+    ]
+  },
+  "inverse": {
+    "source": "§7",
+    "rule": "inverse — фон, на котором используется text-inverse или icon-inverse; нужен, когда элемент отображается на акцентном фоне."
+  },
+  "hierarchy": {
+    "source": "§8",
+    "suffixes": ["-primary", "-secondary", "-tertiary"],
+    "rule": "Суффиксы — иерархия внутри группы. bg-base-main — первый уровень; -secondary и -tertiary — вложенные уровни; -primary не дублирует main."
+  },
+  "modifiers": {
+    "source": "§9",
+    "static": { "suffix": "-static", "rule": "Одинаковый в light и dark mode", "use": "когда цвет не должен меняться между режимами" },
+    "staticwm": { "suffix": "-staticwm", "rule": "Зафиксирован для WM (отдельный визуальный режим поверх light/dark), независимо от light/dark" },
+    "staticLm": { "suffix": "-static-lm", "rule": "Зафиксирован в light mode" },
+    "staticDm": { "suffix": "-static-dm", "rule": "Зафиксирован в dark mode" },
+    "ios": { "suffix": "-ios", "rule": "Только iOS-реализация; web не использует" },
+    "android": { "suffix": "-android", "rule": "Только Android; web не использует" }
+  },
+  "states": {
+    "source": "§9, §10",
+    "ref": "component-states.json → tokenMapping",
+    "note": "Маппинг состояний на токены ведётся только в component-states.json (ADR-024, ADR-025); здесь ссылка, а не копия."
+  },
+  "skeleton": {
+    "source": "§11",
+    "rules": [
+      "bg-component-skeleton-default — фон всей области-заглушки",
+      "bg-component-skeleton-shimmer — движущаяся полоса поверх default",
+      "Оба токена адаптируются к light/dark mode",
+      "Не использовать bg-base-* для скелетонов"
+    ]
+  },
+  "additional": {
+    "source": "§6, §12",
+    "product": { "use": "Продуктовые цвета: marketplace, loyalty, premium", "examples": ["bg-accent-product-loyalty-main", "bg-accent-product-insurance-fade", "bg-accent-product-marketplace-main"] },
+    "additional": { "use": "Кастомные цвета: чарты, специальные; используются точечно", "examples": ["bg-accent-additional-chart-a-main", "bg-accent-additional-chart-b-main", "bg-accent-additional-chart-c-fade"] },
+    "status": { "use": "Статусы: attention, success, warning, error" }
+  }
+}
