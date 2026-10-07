@@ -36,6 +36,7 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`) |
+| AID-LU-8 | Plugin · Library Updater | Подсказки токенов в полях текстовых стилей (просьба инженера): список токенов свойства со значениями, поиск по значению — [arturuxui/figma-library-updater#31](https://github.com/arturuxui/figma-library-updater/pull/31). Вопрос: нужно ли то же для теней и градиентов (у них свои переменные со значениями, не ссылки на общие токены) | ждёт инженера: проверка и мерж #31, ответ по теням и градиентам |
 
 ## Вопросы инженера
 
