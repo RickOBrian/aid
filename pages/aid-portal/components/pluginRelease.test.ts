@@ -113,6 +113,20 @@ describe('GET /api/plugin-version', () => {
     expect(body.history).toEqual([{ version: '1.6.0', date: '2026-09-26', author: 'RickOBrian', notes: '### Новое' }]);
   });
 
+  it('в Облаке историю берёт из файла бакета, а не из GitHub', async () => {
+    process.env.PLUGIN_HISTORY_URL = 'https://storage.test/presentbook-site/data/plugin-history.json';
+    const fakeFetch = vi.fn(async (url: string | URL | Request) =>
+      String(url).startsWith('https://storage.test/')
+        ? new Response(JSON.stringify([{ version: '1.6.0', date: '2026-09-26', author: 'RickOBrian', notes: '' }, { bad: true }]))
+        : new Response(JSON.stringify({ tag_name: 'v1.6.0', assets: [{ name: 'token-comparator.zip' }] })),
+    );
+    vi.stubGlobal('fetch', fakeFetch);
+    const body = await (await GET()).json();
+    expect(body.history).toEqual([{ version: '1.6.0', date: '2026-09-26', author: 'RickOBrian', notes: '' }]);
+    expect(fakeFetch.mock.calls.map(([url]) => String(url)).some((url) => url.includes('/releases?'))).toBe(false);
+    delete process.env.PLUGIN_HISTORY_URL;
+  });
+
   it('на обрыве сети не падает', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new Error('offline'))));
     const response = await GET();
