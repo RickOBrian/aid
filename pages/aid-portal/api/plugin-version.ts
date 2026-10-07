@@ -43,8 +43,6 @@ export async function GET(): Promise<Response> {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  // Список всех релизов отвечает заметно дольше последнего: из Облака до
-  // GitHub 5 секунд не хватало (2026-10-06), поэтому у него свой таймаут.
   const get = async (path: string, timeoutMs: number): Promise<unknown> => {
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/${path}`, {
       headers,
@@ -59,16 +57,40 @@ export async function GET(): Promise<Response> {
   };
 
   try {
-    const [latest, all] = await Promise.all([
-      get('releases/latest', 5000),
-      get('releases?per_page=100', 9000).catch((error: unknown) => {
-        console.warn(`[plugin-version] GitHub releases: ${error instanceof Error ? error.name : 'error'}`);
-        return null;
-      }),
-    ]);
+    const [latest, history] = await Promise.all([get('releases/latest', 5000), loadHistory(get)]);
     const release = latest ? releaseInfo(latest, PLUGIN_RELEASE) : null;
-    return json(release, releaseHistory(all), release ? FRESH : RETRY_SOON);
+    return json(release, history, release ? FRESH : RETRY_SOON);
   } catch {
     return json(null, [], RETRY_SOON);
+  }
+}
+
+function isSummary(value: unknown): value is PluginReleaseSummary {
+  const record = value as Record<string, unknown> | null;
+  return Boolean(record) && ['version', 'date', 'author', 'notes'].every((key) => typeof record![key] === 'string');
+}
+
+/**
+ * История релизов для changelog. В Облаке — готовый файл из бакета сайта
+ * (`PLUGIN_HISTORY_URL`): его собирает CI (`deploy/yc/plugin-history.ts`),
+ * потому что список релизов GitHub тянется в Облако дольше 9 секунд
+ * (2026-10-06). Без переменной — прямо из GitHub, как локально.
+ */
+async function loadHistory(get: (path: string, timeoutMs: number) => Promise<unknown>): Promise<PluginReleaseSummary[]> {
+  const historyUrl = process.env.PLUGIN_HISTORY_URL;
+  try {
+    if (historyUrl) {
+      const response = await fetch(historyUrl, { signal: AbortSignal.timeout(3000) });
+      if (!response.ok) {
+        console.warn(`[plugin-version] history file: ${response.status}`);
+        return [];
+      }
+      const data: unknown = await response.json();
+      return Array.isArray(data) ? data.filter(isSummary) : [];
+    }
+    return releaseHistory(await get('releases?per_page=100', 9000));
+  } catch (error) {
+    console.warn(`[plugin-version] history: ${error instanceof Error ? error.name : 'error'}`);
+    return [];
   }
 }
