@@ -3,7 +3,7 @@
   "bundleVersion": "0.1.0-alpha",
   "bundleStatus": "alpha",
   "canonicalRoot": "skills/_shared",
-  "updated": "2026-09-21",
+  "updated": "2026-09-30",
   "note": "Реестр стандартов дизайн-системы. Каждый стандарт версионируется самостоятельно по semver-guide; bundleVersion — версия публикуемого набора целиком. Машинный слой (machineFile) читают инструменты: аудит, линтер, плагины, распознавание компонентов.",
   "statuses": [
     "draft",
@@ -279,7 +279,7 @@
       "title": "Semantic color tokens guide",
       "kind": "standard",
       "humanFile": "skills/_shared/standards/semantic-color-tokens-guide.md",
-      "machineFile": null,
+      "machineFile": "semantic-color-tokens.json",
       "version": "1.5.3",
       "status": "draft",
       "wave": null,
