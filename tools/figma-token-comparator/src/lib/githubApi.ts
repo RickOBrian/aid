@@ -50,15 +50,13 @@ export function parseRegistryEntry(raw: unknown, index: number): RegistryEntry {
   if (typeof decision !== "string") {
     throw new GitHubRestApiError(`Некорректная запись реестра (#${index + 1}): отсутствует decision.`);
   }
-  if (typeof status !== "string") {
-    throw new GitHubRestApiError(`Некорректная запись реестра (#${index + 1}): отсутствует status.`);
-  }
-
   const entry: RegistryEntry = {
     signature,
     decision: decision as RegistryEntry["decision"],
-    status: status as RegistryEntry["status"],
   };
+  // Сервер status не пишет: согласовано то, что лежит в main. Обязательным
+  // он был только в парсере — и с 2026-09-07 ронял чтение всего реестра.
+  if (status === "approved" || status === "stale") entry.status = status;
 
   if (typeof raw.targetVariableId === "string") entry.targetVariableId = raw.targetVariableId;
   if (typeof raw.targetVariableName === "string") entry.targetVariableName = raw.targetVariableName;

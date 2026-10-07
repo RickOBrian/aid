@@ -162,3 +162,40 @@ describe("fetchProposalStatuses", () => {
     await assertion;
   });
 });
+
+describe("разбор реестра — записи в том виде, в каком их пишет сервер", () => {
+  // Сервер не пишет status (согласовано = лежит в main), а парсер с 4 сентября
+  // его требовал: с первого смёрженного запроса 2026-09-07 реестр не читался ни
+  // одной версией плагина — «Не удалось загрузить реестр решений».
+  const SERVER_SHAPED = {
+    schemaVersion: "1.0",
+    registryVersion: 2,
+    updatedAt: "2026-09-08T10:10:54.185Z",
+    entries: [
+      {
+        signature: "4qlpbs",
+        decision: "mapped",
+        targetVariableId: "VariableID:23:13",
+        targetVariableName: "Text/Secondary Opposite",
+        proposedBy: "Sergey AI",
+        proposedAt: "2026-09-07T13:43:06.000Z",
+      },
+    ],
+  };
+
+  it("запись без status читается", async () => {
+    fetchMock.mockResolvedValue(json(200, { exists: true, registry: SERVER_SHAPED, sha: "s" }));
+    const result = await readRegistry();
+    expect(result).toMatchObject({ registryVersion: 2 });
+    expect("entries" in result && result.entries[0]).toMatchObject({
+      signature: "4qlpbs",
+      targetVariableId: "VariableID:23:13",
+    });
+  });
+
+  it("status из реестра сохраняется, если он есть", async () => {
+    fetchMock.mockResolvedValue(json(200, { exists: true, registry: REGISTRY, sha: "s" }));
+    const result = await readRegistry();
+    expect("entries" in result && result.entries[0].status).toBe("approved");
+  });
+});
