@@ -33,29 +33,55 @@ describe('handleGetRegistry', () => {
     vi.unstubAllEnvs();
   });
 
-  it('returns 401 when X-Plugin-Secret is missing', async () => {
+  function registryOnMain(): void {
+    fetchMock.mockImplementation(async (input, init) => {
+      const url = String(input);
+      const method = init?.method ?? 'GET';
+      if (url.includes('/contents/decisions-registry.json?ref=main') && method === 'GET') {
+        return encodeRegistry({
+          schemaVersion: '1.0',
+          registryVersion: 2,
+          updatedAt: '2026-09-08T00:00:00.000Z',
+          entries: [],
+        });
+      }
+      throw new Error(`Unexpected fetch call: ${method} ${url}`);
+    });
+  }
+
+  // Реестр публичный (находка №22): ключ его не защищал, а плагину нужен до
+  // того, как дизайнер получит ключ. Сервер читает GitHub своим токеном —
+  // это обход GitHub из сетей, где raw.githubusercontent.com недоступен.
+  it('отдаёт реестр без ключа', async () => {
+    registryOnMain();
     const response = await handleGetRegistry(
       new Request('https://example.com/api/registry', { method: 'GET' }),
       { fetchImpl: fetchMock },
     );
-
-    expect(response.status).toBe(401);
-    expect(await response.json()).toEqual({ error: 'unauthorized' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect((await response.json()).exists).toBe(true);
   });
 
-  it('returns 401 for invalid X-Plugin-Secret', async () => {
+  it('ключ в заголовке не мешает — старые клиенты его присылают', async () => {
+    registryOnMain();
     const response = await handleGetRegistry(
       new Request('https://example.com/api/registry', {
         method: 'GET',
-        headers: { 'X-Plugin-Secret': 'wrong-secret' },
+        headers: { 'X-Plugin-Secret': 'any-old-secret' },
       }),
       { fetchImpl: fetchMock },
     );
+    expect(response.status).toBe(200);
+  });
 
-    expect(response.status).toBe(401);
-    expect(await response.json()).toEqual({ error: 'unauthorized' });
-    expect(fetchMock).not.toHaveBeenCalled();
+  it('без PLUGIN_SHARED_SECRET на сервере реестр всё равно читается', async () => {
+    vi.stubEnv('PLUGIN_SHARED_SECRET', '');
+    registryOnMain();
+    const response = await handleGetRegistry(
+      new Request('https://example.com/api/registry', { method: 'GET' }),
+      { fetchImpl: fetchMock },
+    );
+    expect(response.status).toBe(200);
   });
 
   it('returns exists:false when registry file is missing on main (404)', async () => {

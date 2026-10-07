@@ -25,10 +25,12 @@ const KEYS = {
   LIBRARY_TEXT_STYLES_CACHE: "tc_library_text_styles_cache",
   MAPPING_HISTORY: "tc_mapping_history",
   WINDOW_SIZE: "tc_window_size",
+  /** Только для очистки: админ-панель до 1.7.0 (forgetRegistryAdminSettings). */
   GITHUB_TOKEN: "tc_github_token",
   GITHUB_REPO: "tc_github_repo",
   GITHUB_REGISTRY_PATH: "tc_github_registry_path",
   REGISTRY_CACHE: "tc_registry_cache",
+  /** Только для очистки, см. выше. */
   ADMIN_MODE: "tc_admin_mode",
   REGISTRY_SECRET: "tc_registry_secret",
   SUBMITTED_SIGNATURES: "tc_submitted_signatures",
@@ -325,31 +327,17 @@ export interface RegistryCache {
   path: string;
 }
 
-export async function getGitHubToken(): Promise<string | null> {
-  const value = await figma.clientStorage.getAsync(KEYS.GITHUB_TOKEN);
-  return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-export async function setGitHubToken(token: string): Promise<void> {
-  await figma.clientStorage.setAsync(KEYS.GITHUB_TOKEN, token);
-}
-
-export async function getGitHubRepo(): Promise<string | null> {
-  const value = await figma.clientStorage.getAsync(KEYS.GITHUB_REPO);
-  return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-export async function setGitHubRepo(repo: string): Promise<void> {
-  await figma.clientStorage.setAsync(KEYS.GITHUB_REPO, repo);
-}
-
-export async function getGitHubRegistryPath(): Promise<string | null> {
-  const value = await figma.clientStorage.getAsync(KEYS.GITHUB_REGISTRY_PATH);
-  return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-export async function setGitHubRegistryPath(path: string): Promise<void> {
-  await figma.clientStorage.setAsync(KEYS.GITHUB_REGISTRY_PATH, path);
+/**
+ * Настройки админ-панели ручной загрузки реестра с GitHub (до 1.7.0): токен,
+ * репозиторий, путь и сам режим админа. Панель убрана — реестр загружается
+ * сам; сохранённый токен GitHub в настройках Figma лежать не должен.
+ */
+export async function forgetRegistryAdminSettings(): Promise<void> {
+  await Promise.all(
+    [KEYS.GITHUB_TOKEN, KEYS.GITHUB_REPO, KEYS.GITHUB_REGISTRY_PATH, KEYS.ADMIN_MODE].map((key) =>
+      figma.clientStorage.deleteAsync(key)
+    )
+  );
 }
 
 export async function getRegistryCache(): Promise<RegistryCache | null> {
@@ -376,15 +364,6 @@ export async function getRegistrySecret(): Promise<string | null> {
 
 export async function setRegistrySecret(secret: string): Promise<void> {
   await figma.clientStorage.setAsync(KEYS.REGISTRY_SECRET, secret);
-}
-
-export async function getAdminMode(): Promise<boolean> {
-  const value = await figma.clientStorage.getAsync(KEYS.ADMIN_MODE);
-  return value === true;
-}
-
-export async function setAdminMode(enabled: boolean): Promise<void> {
-  await figma.clientStorage.setAsync(KEYS.ADMIN_MODE, enabled);
 }
 
 export async function getSubmittedSignatures(): Promise<Set<string>> {
