@@ -33,6 +33,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     version: "1.7.0",
+    date: "2026-10-08",
     summary: "Новый сервер реестра решений: реестр загружается надёжнее, а ошибки отправки объясняют причину.",
     actions: [
       "Импортируйте плагин заново: Plugins → Development → Import plugin from manifest… — обновлением файлов не обойтись.",
