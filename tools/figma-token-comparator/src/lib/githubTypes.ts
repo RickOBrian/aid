@@ -36,7 +36,8 @@ export interface RegistryEntry {
   targetLibraryFileKey?: string;
   proposedBy?: string;
   proposedAt?: string;
-  status: RegistryEntryStatus;
+  /** Сервер его не пишет: согласованность — это сам факт записи в main. */
+  status?: RegistryEntryStatus;
   approvedBy?: string;
   approvedAt?: string;
 }
