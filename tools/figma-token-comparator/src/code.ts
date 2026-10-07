@@ -36,7 +36,8 @@ import type { IconRecord } from "./lib/iconScanner";
 import { scanIcons } from "./lib/scanner";
 import { iconPlacement, isMonochromeIcon, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
 import { formatLibraryIconName } from "./lib/figmaComponentsRestApi";
-import { GitHubRestApiError, fetchPublicRegistry, fetchRegistry } from "./lib/githubApi";
+import { GitHubRestApiError, fetchRegistry } from "./lib/githubApi";
+import { readRegistry } from "./lib/registryRead";
 import {
   DEFAULT_REGISTRY_PATH,
   createEmptyRegistryContent,
@@ -387,7 +388,8 @@ async function handleClearPendingProposals(category: TokenCategory): Promise<voi
 }
 
 /**
- * Читает реестр решений напрямую из публичного репозитория, без ключа.
+ * Читает реестр решений без ключа: с сервера реестра, запасной путь —
+ * напрямую из публичного репозитория (lib/registryRead.ts).
  *
  * Ключ нужен только чтобы ОТПРАВЛЯТЬ решения: там бэкенд создаёт pull request
  * серверным токеном GitHub. На чтении он не защищал ничего — файл открыт
@@ -396,11 +398,7 @@ async function handleClearPendingProposals(category: TokenCategory): Promise<voi
 async function loadRegistry(): Promise<void> {
   send({ type: "registry-loading" });
   try {
-    const result = await fetchPublicRegistry(
-      DEFAULT_REGISTRY_OWNER,
-      DEFAULT_REGISTRY_REPO,
-      DEFAULT_REGISTRY_PATH
-    );
+    const result = await readRegistry();
     const fetchedAt = new Date().toISOString();
     const exists = !isRegistryNotFound(result);
     // RegistryFile расширяет содержимое реестра и добавляет sha — поля лежат
@@ -610,8 +608,11 @@ async function handleProposeDecisions(recordIds: string[]): Promise<void> {
   } catch (error) {
     if (!(error instanceof RegistryBackendError)) {
       console.error("[registry-backend] Unexpected propose error");
+      send({ type: "decisions-submit-failed" });
+      return;
     }
-    send({ type: "decisions-submit-failed" });
+    const reason = error.code === "registry_unavailable" ? "submit_failed" : error.code;
+    send({ type: "decisions-submit-failed", payload: { reason } });
   }
 }
 

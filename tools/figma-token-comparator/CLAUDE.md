@@ -10,9 +10,13 @@ Figma-плагин: сканирует макет, сравнивает цвет
 - Папка чата — `~/Projects/aid-plugin` (git worktree). Правлю только
   `tools/figma-token-comparator/`. Всё остальное — чужие продукты: см.
   «Стыки» в корневом `CLAUDE.md`.
-- Сервер плагина — `server/`, Vercel-проект `aid-registry-api`,
-  https://aid-registry-api.vercel.app. Мерж в `main` выкатывает его в
-  production.
+- Сервер плагина — `server/`, https://api.aidteam.pro: Яндекс Облако,
+  каталог `registry-api` (ADR-038). Мерж в `main` с правкой `server/`
+  выкатывает его workflow `registry-api-deploy`. Прежний адрес
+  https://aid-registry-api.vercel.app работает для старых установок до
+  этапа 7 ADR-038 и деплоится оттуда же.
+- Облако — только под профилем `yc --profile registry-api`; правила для
+  секретов и профилей — `docs/hub/ORCHESTRATION.md` §4 «Секреты».
 - Новую ветку — от свежего `origin/main`:
   `git fetch && git switch -c <ветка> origin/main`.
 

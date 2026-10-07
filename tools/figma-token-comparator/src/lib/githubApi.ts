@@ -16,6 +16,7 @@ import type {
   RegistryFile,
   RegistryFileContent,
 } from "./githubTypes";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
 const API_BASE = "https://api.github.com";
 const RAW_BASE = "https://raw.githubusercontent.com";
@@ -142,7 +143,7 @@ export function parseRegistryEntry(raw: unknown, index: number): RegistryEntry {
   return entry;
 }
 
-function parseRegistryJson(text: string, sha: string): RegistryFile {
+export function parseRegistryJson(text: string, sha: string): RegistryFile {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
@@ -222,7 +223,7 @@ async function assertRepoAccessible(token: string, owner: string, repo: string):
 
   let response: Response;
   try {
-    response = await fetch(url, {
+    response = await fetchWithTimeout(url, {
       method: "GET",
       headers: gitHubAuthHeaders(token),
     });
@@ -289,7 +290,7 @@ export async function fetchPublicRegistry(
 
   let response: Response;
   try {
-    response = await fetch(url, { method: "GET" });
+    response = await fetchWithTimeout(url, { method: "GET" });
   } catch {
     throw new GitHubRestApiError(
       "Не удалось связаться с raw.githubusercontent.com. Проверьте подключение к сети."
@@ -346,7 +347,7 @@ export async function fetchRegistry(
 
   let response: Response;
   try {
-    response = await fetch(url, {
+    response = await fetchWithTimeout(url, {
       method: "GET",
       headers: gitHubAuthHeaders(token),
     });

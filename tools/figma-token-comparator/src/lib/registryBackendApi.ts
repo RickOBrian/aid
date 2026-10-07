@@ -1,15 +1,15 @@
 /**
  * Клиент aid-registry-api — отправка решений на согласование и их статусы.
  *
- * Чтение реестра сюда больше не ходит: файл лежит в публичном репозитории и
- * читается напрямую, без ключа (см. githubApi.fetchPublicRegistry). Ключ
- * защищает то, что действительно требует защиты, — создание pull request
- * серверным токеном GitHub.
+ * Чтение реестра — в lib/registryRead.ts, без ключа. Ключ защищает то, что
+ * действительно требует защиты, — создание pull request серверным токеном
+ * GitHub.
  *
  * Используется только из code.ts (главный поток). Ключ не логировать.
  */
 
 import type { RegistryDecision, TokenCategory } from "./githubTypes";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 import { REGISTRY_PROPOSAL_STATUS_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
 import type { ProposalStatusInfo } from "./proposalLifecycle";
 
@@ -54,9 +54,17 @@ export interface ProposeDecisionsPayload {
   entries: ProposeDecisionEntryPayload[];
 }
 
-/** Internal failure marker — map to neutral UI copy in code.ts. */
+/**
+ * Почему не получилось — UI показывает по коду своё сообщение.
+ * - `invalid_key` — сервер не принял ключ (401);
+ * - `network` — нет связи с сервером или он не ответил за отведённое время;
+ * - `submit_failed` — сервер ответил, но запрос не создал;
+ * - `registry_unavailable` — статусы не получены (их сбой молчаливый).
+ */
+export type RegistryBackendErrorCode = "registry_unavailable" | "submit_failed" | "invalid_key" | "network";
+
 export class RegistryBackendError extends Error {
-  constructor(readonly code: "registry_unavailable" | "submit_failed") {
+  constructor(readonly code: RegistryBackendErrorCode) {
     super(code);
     this.name = "RegistryBackendError";
   }
@@ -80,12 +88,12 @@ export async function proposeDecisionsOnBackend(
   sharedSecret: string
 ): Promise<ProposeDecisionsResult> {
   if (!sharedSecret) {
-    throw new RegistryBackendError("submit_failed");
+    throw new RegistryBackendError("invalid_key");
   }
 
   let response: Response;
   try {
-    response = await fetch(REGISTRY_PROPOSE_URL, {
+    response = await fetchWithTimeout(REGISTRY_PROPOSE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -95,11 +103,11 @@ export async function proposeDecisionsOnBackend(
       }),
     });
   } catch {
-    throw new RegistryBackendError("submit_failed");
+    throw new RegistryBackendError("network");
   }
 
   if (response.status === 401) {
-    throw new RegistryBackendError("submit_failed");
+    throw new RegistryBackendError("invalid_key");
   }
 
   let body: { success?: boolean; unchanged?: boolean; reason?: string } | null = null;
@@ -142,7 +150,7 @@ export async function fetchProposalStatuses(
 ): Promise<Record<string, ProposalStatusInfo>> {
   let response: Response;
   try {
-    response = await fetch(REGISTRY_PROPOSAL_STATUS_URL, {
+    response = await fetchWithTimeout(REGISTRY_PROPOSAL_STATUS_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sharedSecret, signatures }),

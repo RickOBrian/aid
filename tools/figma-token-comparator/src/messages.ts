@@ -493,6 +493,8 @@ export interface DecisionsSubmittedMessage {
 
 export interface DecisionsSubmitFailedMessage {
   type: "decisions-submit-failed";
+  /** Почему: от неё зависит, что сказать дизайнеру. Нет — общая формулировка. */
+  payload?: { reason: "invalid_key" | "network" | "submit_failed" };
 }
 
 export interface RegistryUnavailableMessage {

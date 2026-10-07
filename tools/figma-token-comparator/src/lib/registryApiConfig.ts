@@ -8,12 +8,20 @@
  * конкретного пользователя (см. storage.getRegistrySecret).
  */
 
-export const REGISTRY_PROPOSE_URL =
-  "https://aid-registry-api.vercel.app/api/registry/propose-decision";
+/**
+ * Сервер реестра — Яндекс Облако (ADR-038). До 1.7.0 плагин ходил на
+ * aid-registry-api.vercel.app; тот адрес работает для старых установок, пока
+ * все не переимпортируют плагин, и остаётся в manifest.json до этапа 7.
+ */
+export const REGISTRY_API_BASE = "https://api.aidteam.pro";
+
+/** Реестр решений из main, без ключа. */
+export const REGISTRY_READ_URL = `${REGISTRY_API_BASE}/api/registry`;
+
+export const REGISTRY_PROPOSE_URL = `${REGISTRY_API_BASE}/api/registry/propose-decision`;
 
 /** Статусы отправленных решений: на согласовании или отклонено. */
-export const REGISTRY_PROPOSAL_STATUS_URL =
-  "https://aid-registry-api.vercel.app/api/registry/proposal-status";
+export const REGISTRY_PROPOSAL_STATUS_URL = `${REGISTRY_API_BASE}/api/registry/proposal-status`;
 
 export const DEFAULT_REGISTRY_OWNER = "RickOBrian";
 export const DEFAULT_REGISTRY_REPO = "aid";

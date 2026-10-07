@@ -104,6 +104,12 @@ const PROPOSE_SUCCESS = "Отправлено — ждёт согласован�
 const PROPOSE_ALREADY_IN_REGISTRY = "Эти решения уже записаны в реестре — отправлять было нечего.";
 const PROPOSE_ALREADY_PROPOSED = "Эти решения уже отправлены и ждут согласования.";
 const PROPOSE_FAILURE = "Не удалось отправить. Попробуйте ещё раз.";
+/** Причина сбоя отправки — у каждой своё действие для дизайнера. */
+const PROPOSE_FAILURE_BY_REASON: Record<"invalid_key" | "network" | "submit_failed", string> = {
+  invalid_key: "Сервер не принял ключ для отправки решений. Проверьте его в «Настройках».",
+  network: "Нет связи с сервером реестра. Проверьте подключение и попробуйте ещё раз.",
+  submit_failed: "Сервер реестра не смог создать запрос. Попробуйте позже.",
+};
 
 /**
  * Единственная формулировка про недоступные стили текста: используется и в
@@ -4390,7 +4396,9 @@ window.onmessage = (event: MessageEvent) => {
       renderProposeStatus(proposeStatusText(message.payload));
       break;
     case "decisions-submit-failed":
-      renderProposeStatus(PROPOSE_FAILURE);
+      renderProposeStatus(
+        message.payload ? PROPOSE_FAILURE_BY_REASON[message.payload.reason] : PROPOSE_FAILURE
+      );
       syncProposeButton();
       break;
     case "registry-unavailable":
