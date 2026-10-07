@@ -35,7 +35,7 @@
 
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
-| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично | ждёт владельца бота: AID-BOT-4 |
+| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`) |
 
 ## Вопросы инженера
 
@@ -55,6 +55,7 @@ _Пока списков нет._
 | 2026-10-06 | AID-LU-6 | Hub | «второй вариант, покажи текст issue»; «да, отправляй» — issue #98 |
 | 2026-10-06 | AID-LU-6 | Hub | «Да» — уточнённый план комментарием к #98 |
 | 2026-10-07 | AID-LU-6 | Hub | «Уже смержил сам, комментарий да» — endpoint комментарием к #98 |
+| 2026-10-07 | AID-LU-6 | Hub | «да» — `proposal.withdrawn` комментарием к #98 |
 
 ## Закрыто
 
