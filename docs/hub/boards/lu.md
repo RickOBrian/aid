@@ -36,6 +36,7 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`) |
+| AID-LU-7 | Plugin · Library Updater | Полировка интерфейса: подсказки с образцами, поиск замены, тёмная тема — [arturuxui/figma-library-updater#27](https://github.com/arturuxui/figma-library-updater/pull/27) (смержен); следующий шаг — группы в списке переменных | в работе |
 
 ## Вопросы инженера
 
@@ -46,9 +47,9 @@ P0–P3, источник. Пункт закрывается ссылкой на
 
 | # | P | Задача | Вопрос | Источник | Статус |
 |---|---|---|---|---|---|
-| 1 | P2 | #132 | Форк обновлён, `upstream` есть, скиллы загружены — ответить в #132 «Готово»? да / нет | [#132](https://github.com/RickOBrian/aid/issues/132) | открыт |
-| 2 | P2 | AID-LU-7 | Полировка интерфейса: #27 смержен; следующий шаг — группы в списке переменных: а — начинать, б — сначала проверка #27 в Figma, в — позже | чат «AID · Plugin · Library Updater», [arturuxui/figma-library-updater#27](https://github.com/arturuxui/figma-library-updater/pull/27) | открыт |
-| 3 | P3 | Hub | Запушить мерж `upstream/main` в ветку PR #126? да / нет | `git status` в `aid-hub` | открыт |
+| 1 | P2 | #132 | Форк обновлён, `upstream` есть, скиллы загружены — ответить в #132 «Готово»? да / нет | [#132](https://github.com/RickOBrian/aid/issues/132) | закрыт — «Решения», PLAN-2026-10-07 п.1 |
+| 2 | P2 | AID-LU-7 | Полировка интерфейса: #27 смержен; следующий шаг — группы в списке переменных: а — начинать, б — сначала проверка #27 в Figma, в — позже | чат «AID · Plugin · Library Updater», [arturuxui/figma-library-updater#27](https://github.com/arturuxui/figma-library-updater/pull/27) | закрыт — «Решения», PLAN-2026-10-07 п.2 |
+| 3 | P3 | Hub | Запушить мерж `upstream/main` в ветку PR #126? да / нет | `git status` в `aid-hub` | закрыт — «Решения», PLAN-2026-10-07 п.3 |
 
 ## Решения инженера
 
@@ -62,6 +63,9 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 2026-10-06 | AID-LU-6 | Hub | «Да» — уточнённый план комментарием к #98 |
 | 2026-10-07 | AID-LU-6 | Hub | «Уже смержил сам, комментарий да» — endpoint комментарием к #98 |
 | 2026-10-07 | AID-LU-6 | Hub | «да» — `proposal.withdrawn` комментарием к #98 |
+| 2026-10-07 | #132 | Hub | PLAN-2026-10-07 п.1: «Да» — ответить «Готово» в #132 |
+| 2026-10-07 | AID-LU-7 | Plugin · Library Updater | PLAN-2026-10-07 п.2: «Уже приступил к следующему шагу» — группы в списке переменных в работе |
+| 2026-10-07 | Hub | Hub | PLAN-2026-10-07 п.3: «Да» — мерж `upstream/main` в ветку PR #126 |
 
 ## Закрыто
 
