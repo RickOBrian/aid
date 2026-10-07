@@ -36,13 +36,11 @@ import type { IconRecord } from "./lib/iconScanner";
 import { scanIcons } from "./lib/scanner";
 import { iconPlacement, isMonochromeIcon, pickIconPaint, recolorPlan, unionBox } from "./lib/iconSwap";
 import { formatLibraryIconName } from "./lib/figmaComponentsRestApi";
-import { GitHubRestApiError, fetchRegistry } from "./lib/githubApi";
 import { readRegistry } from "./lib/registryRead";
 import {
   DEFAULT_REGISTRY_PATH,
   createEmptyRegistryContent,
   isRegistryNotFound,
-  parseGitHubRepo,
   type RegistryDecision,
   type RegistryFileContent,
 } from "./lib/githubTypes";
@@ -207,25 +205,6 @@ async function resolvePersonalAccessToken(tokenFromUi: string): Promise<string |
   return storage.getPersonalAccessToken();
 }
 
-async function resolveGitHubToken(tokenFromUi: string): Promise<string | null> {
-  const trimmed = tokenFromUi.trim();
-  if (trimmed) return trimmed;
-  return storage.getGitHubToken();
-}
-
-async function resolveGitHubRepo(repoFromUi: string): Promise<string | null> {
-  const trimmed = repoFromUi.trim();
-  if (trimmed) return trimmed;
-  return storage.getGitHubRepo();
-}
-
-async function resolveGitHubRegistryPath(pathFromUi: string): Promise<string> {
-  const trimmed = pathFromUi.trim();
-  if (trimmed) return trimmed;
-  const stored = await storage.getGitHubRegistryPath();
-  return stored ?? DEFAULT_REGISTRY_PATH;
-}
-
 async function resolveLibraryDisplayName(
   fileKey: string,
   token: string,
@@ -247,21 +226,13 @@ async function handleUiReady(): Promise<void> {
   ]);
   await activateLibrary(storedActiveKey ?? libraries[0]?.fileKey ?? null);
 
-  const [
-    token,
-    githubToken,
-    githubRepo,
-    githubRegistryPath,
-    registryCache,
-    adminMode,
-    mappingHistory,
-  ] = await Promise.all([
+  // До 1.7.0 была админ-панель ручной загрузки реестра с GitHub: токен,
+  // репозиторий, путь. Панели нет — сохранённый токен в настройках не нужен.
+  await storage.forgetRegistryAdminSettings();
+
+  const [token, registryCache, mappingHistory] = await Promise.all([
     storage.getPersonalAccessToken(),
-    storage.getGitHubToken(),
-    storage.getGitHubRepo(),
-    storage.getGitHubRegistryPath(),
     storage.getRegistryCache(),
-    storage.getAdminMode(),
     storage.getMappingHistory(),
   ]);
 
@@ -281,9 +252,6 @@ async function handleUiReady(): Promise<void> {
       textStylesAvailable: Boolean(activeLibraryKey) && typographyLibraryLoadError === null,
       icons: lastLibraryIcons.map(toLibraryIconSummary),
       iconsAvailable: Boolean(activeLibraryKey) && lastLibraryIcons.length > 0,
-      hasGitHubToken: Boolean(githubToken),
-      githubRepo,
-      githubRegistryPath: githubRegistryPath ?? DEFAULT_REGISTRY_PATH,
       registryCache: registryCache
         ? {
             registryVersion: registryCache.registry.registryVersion,
@@ -292,7 +260,6 @@ async function handleUiReady(): Promise<void> {
             localOnly: !registryCache.sha,
           }
         : null,
-      adminMode,
       pendingProposeCount,
       pendingProposeCountByCategory,
     },
@@ -508,12 +475,6 @@ function buildProposeEntry(recordId: string, stored: StoredDecision): ProposeDec
   };
 }
 
-async function handleToggleAdminMode(): Promise<void> {
-  const enabled = !(await storage.getAdminMode());
-  await storage.setAdminMode(enabled);
-  send({ type: "admin-mode-changed", payload: { enabled } });
-}
-
 /** Записи из mappingHistory, ещё не отправленные на согласование (не в submittedSignatures). */
 async function getPendingProposeEntries(
   category?: TokenCategory
@@ -634,148 +595,6 @@ async function handleSaveSettings(tokenFromUi: string, registrySecret: string): 
   ]);
 
   send({ type: "settings-saved", payload: {} });
-}
-
-async function handleSaveGitHubSettings(
-  tokenFromUi: string,
-  repoInput: string,
-  registryPathInput: string
-): Promise<void> {
-  const token = await resolveGitHubToken(tokenFromUi);
-  if (!token) {
-    send({
-      type: "error",
-      payload: {
-        message: "Укажите токен доступа GitHub или сохраните его кнопкой «Сохранить настройки».",
-      },
-    });
-    return;
-  }
-
-  const parsedRepo = parseGitHubRepo(repoInput);
-  if (!parsedRepo) {
-    send({
-      type: "error",
-      payload: { message: "Укажите репозиторий в формате owner/repo или URL github.com/owner/repo." },
-    });
-    return;
-  }
-
-  const repo = `${parsedRepo.owner}/${parsedRepo.repo}`;
-  const registryPath = registryPathInput.trim() || DEFAULT_REGISTRY_PATH;
-
-  await Promise.all([
-    storage.setGitHubToken(token),
-    storage.setGitHubRepo(repo),
-    storage.setGitHubRegistryPath(registryPath),
-  ]);
-
-  send({ type: "github-settings-saved", payload: { repo, registryPath } });
-}
-
-async function handleLoadRegistry(
-  tokenFromUi: string,
-  repoInput: string,
-  registryPathInput: string
-): Promise<void> {
-  const token = await resolveGitHubToken(tokenFromUi);
-  if (!token) {
-    send({
-      type: "error",
-      payload: {
-        message:
-          "Перед загрузкой реестра укажите токен доступа GitHub в поле выше или сохраните его.",
-      },
-    });
-    return;
-  }
-
-  const repoStored = await resolveGitHubRepo(repoInput);
-  const parsedRepo = parseGitHubRepo(repoStored ?? repoInput);
-  if (!parsedRepo) {
-    send({
-      type: "error",
-      payload: { message: "Укажите репозиторий в формате owner/repo или URL github.com/owner/repo." },
-    });
-    return;
-  }
-
-  const registryPath = await resolveGitHubRegistryPath(registryPathInput);
-  const repo = `${parsedRepo.owner}/${parsedRepo.repo}`;
-
-  send({ type: "registry-loading" });
-  try {
-    const result = await fetchRegistry(token, parsedRepo.owner, parsedRepo.repo, registryPath);
-
-    if (isRegistryNotFound(result)) {
-      send({ type: "registry-not-found", payload: { repo, registryPath } });
-      return;
-    }
-
-    const fetchedAt = new Date().toISOString();
-    await storage.setRegistryCache({
-      registry: {
-        schemaVersion: result.schemaVersion,
-        registryVersion: result.registryVersion,
-        updatedAt: result.updatedAt,
-        entries: result.entries,
-      },
-      sha: result.sha,
-      fetchedAt,
-      owner: parsedRepo.owner,
-      repo: parsedRepo.repo,
-      path: registryPath,
-    });
-
-    send({
-      type: "registry-loaded",
-      payload: {
-        registryVersion: result.registryVersion,
-        entryCount: result.entries.length,
-        updatedAt: result.updatedAt,
-        fetchedAt,
-        localOnly: false,
-      },
-    });
-  } catch (error) {
-    const message =
-      error instanceof GitHubRestApiError
-        ? error.message
-        : "Не удалось загрузить реестр. Попробуйте ещё раз.";
-    send({ type: "error", payload: { message } });
-  }
-}
-
-async function handleInitEmptyRegistry(repoInput: string, registryPathInput: string): Promise<void> {
-  const parsedRepo = parseGitHubRepo(repoInput);
-  if (!parsedRepo) {
-    send({
-      type: "error",
-      payload: { message: "Укажите репозиторий в формате owner/repo перед инициализацией реестра." },
-    });
-    return;
-  }
-
-  const registryPath = await resolveGitHubRegistryPath(registryPathInput);
-  const registry = createEmptyRegistryContent();
-  const fetchedAt = new Date().toISOString();
-
-  await storage.setRegistryCache({
-    registry,
-    fetchedAt,
-    owner: parsedRepo.owner,
-    repo: parsedRepo.repo,
-    path: registryPath,
-  });
-
-  send({
-    type: "registry-initialized",
-    payload: {
-      registryVersion: registry.registryVersion,
-      entryCount: registry.entries.length,
-      updatedAt: registry.updatedAt,
-    },
-  });
 }
 
 async function handleLoadLibrary(libraryInput: string, tokenFromUi: string): Promise<void> {
@@ -2397,19 +2216,6 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
       case "save-settings":
         await handleSaveSettings(message.payload.token, message.payload.registrySecret);
         break;
-      case "save-github-settings":
-        await handleSaveGitHubSettings(
-          message.payload.token,
-          message.payload.repo,
-          message.payload.registryPath
-        );
-        break;
-      case "load-registry":
-        await handleLoadRegistry(message.payload.token, message.payload.repo, message.payload.registryPath);
-        break;
-      case "init-empty-registry":
-        await handleInitEmptyRegistry(message.payload.repo, message.payload.registryPath);
-        break;
       case "load-library":
         await handleLoadLibrary(message.payload.libraryInput, message.payload.token);
         break;
@@ -2483,9 +2289,6 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         if (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(message.payload.url)) {
           figma.openExternal(message.payload.url);
         }
-        break;
-      case "toggle-admin-mode":
-        await handleToggleAdminMode();
         break;
       case "request-propose-preview":
         await handleRequestProposePreview(message.payload?.category ?? "colors");

@@ -14,7 +14,10 @@ import {
   setLibraryTextStylesCache,
   countPendingProposals,
   countPendingProposalsByCategory,
+  forgetRegistryAdminSettings,
   getMappingHistory,
+  getRegistrySecret,
+  setRegistrySecret,
   getSubmittedSignatures,
   markSignaturesSubmitted,
   setMappingHistoryEntry,
@@ -176,5 +179,22 @@ describe("кэш стилей текста", () => {
 
   it("пустого кэша не бывает ошибкой", async () => {
     expect(await getLibraryTextStylesCache()).toBeNull();
+  });
+});
+
+describe("админ-панель до 1.7.0", () => {
+  it("забывает её токен GitHub, репозиторий, путь и режим, но не ключ отправки", async () => {
+    await figma.clientStorage.setAsync("tc_github_token", "github_pat_old");
+    await figma.clientStorage.setAsync("tc_github_repo", "RickOBrian/aid");
+    await figma.clientStorage.setAsync("tc_github_registry_path", "nonexistent-file.json");
+    await figma.clientStorage.setAsync("tc_admin_mode", true);
+    await setRegistrySecret("backend-key");
+
+    await forgetRegistryAdminSettings();
+
+    for (const key of ["tc_github_token", "tc_github_repo", "tc_github_registry_path", "tc_admin_mode"]) {
+      expect(await figma.clientStorage.getAsync(key)).toBeUndefined();
+    }
+    expect(await getRegistrySecret()).toBe("backend-key");
   });
 });
