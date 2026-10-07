@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
-  "registryVersion": 2,
-  "updatedAt": "2026-09-08T10:10:54.185Z",
+  "registryVersion": 3,
+  "updatedAt": "2026-10-07T21:47:25.880Z",
   "entries": [
     {
       "signature": "4qlpbs",
@@ -26,6 +26,14 @@
       "targetVariableName": "Text/Primary",
       "proposedBy": "Sergey AI",
       "proposedAt": "2026-09-08T10:10:54.185Z"
+    },
+    {
+      "signature": "ht2i1z",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "test",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-07T21:47:25.880Z"
     }
   ]
 }
