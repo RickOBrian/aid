@@ -3,7 +3,7 @@
   "version": "1.5.3",
   "status": "draft",
   "humanFile": "semantic-color-tokens-guide.md",
-  "note": "Машинный слой карты semantic-цветов. ЧЕРНОВИК: перенесён 1:1 из semantic-color-tokens-guide.md v1.5.3 чатом AID Style Migration по решению Principal Designer (2026-09-30) и ждёт приёмки чатом стандартов. Источник истины — humanFile; при расхождении прав гайд. Значения hex — иллюстрации из гайда, не значения продукта.",
+  "note": "Машинный слой карты semantic-цветов. Перенесён 1:1 из semantic-color-tokens-guide.md v1.5.3 (AID Style Migration, 2026-09-30), принят чатом стандартов 2026-10-07 (AID-3). Источник истины — humanFile; при расхождении прав гайд. Значения hex — иллюстрации из гайда, не значения продукта.",
   "principle": {
     "source": "§1",
     "rule": "Semantic-токен ссылается на Core Color Token, не хранит HEX напрямую; компоненты ссылаются только на semantic, никогда на Core.",

@@ -86,7 +86,6 @@ let selectedRecordId: string | null = null;
  * «Применить решение» применяет к каждой её собственное действие.
  */
 let selectedRecordIds = new Set<string>();
-let adminModeEnabled = false;
 let pendingProposeCount = 0;
 let pendingProposeCountByCategory: Record<TokenCategory, number> = {
   colors: 0,
@@ -104,6 +103,12 @@ const PROPOSE_SUCCESS = "Отправлено — ждёт согласован�
 const PROPOSE_ALREADY_IN_REGISTRY = "Эти решения уже записаны в реестре — отправлять было нечего.";
 const PROPOSE_ALREADY_PROPOSED = "Эти решения уже отправлены и ждут согласования.";
 const PROPOSE_FAILURE = "Не удалось отправить. Попробуйте ещё раз.";
+/** Причина сбоя отправки — у каждой своё действие для дизайнера. */
+const PROPOSE_FAILURE_BY_REASON: Record<"invalid_key" | "network" | "submit_failed", string> = {
+  invalid_key: "Сервер не принял ключ для отправки решений. Проверьте его в «Настройках».",
+  network: "Нет связи с сервером реестра. Проверьте подключение и попробуйте ещё раз.",
+  submit_failed: "Сервер реестра не смог создать запрос. Попробуйте позже.",
+};
 
 /**
  * Единственная формулировка про недоступные стили текста: используется и в
@@ -879,18 +884,8 @@ function renderLibraryStatus(text: string): void {
   $("tc-library-status").textContent = text;
 }
 
-function renderRegistryStatus(text: string): void {
-  $("tc-registry-status").textContent = text;
-}
-
 function renderProdRegistryStatus(text: string): void {
   $<HTMLElement>("tc-prod-registry-status").textContent = text;
-}
-
-function applyAdminMode(adminMode: boolean): void {
-  adminModeEnabled = adminMode;
-  $<HTMLElement>("tc-admin-github-panel").hidden = !adminMode;
-  $<HTMLElement>("tc-admin-badge").hidden = !adminMode;
 }
 
 /**
@@ -961,24 +956,6 @@ function applyProdRegistryLoaded(localOnly: boolean, entryCount: number): void {
     return;
   }
   renderProdRegistryStatus(PROD_REGISTRY_READY);
-}
-
-const ADMIN_UNLOCK_CLICKS = 5;
-const ADMIN_UNLOCK_WINDOW_MS = 2000;
-let adminUnlockClickTimestamps: number[] = [];
-
-function initAdminUnlock(): void {
-  $<HTMLElement>("tc-plugin-title").addEventListener("click", () => {
-    const now = Date.now();
-    adminUnlockClickTimestamps = adminUnlockClickTimestamps.filter(
-      (timestamp) => now - timestamp <= ADMIN_UNLOCK_WINDOW_MS
-    );
-    adminUnlockClickTimestamps.push(now);
-    if (adminUnlockClickTimestamps.length >= ADMIN_UNLOCK_CLICKS) {
-      adminUnlockClickTimestamps = [];
-      post({ type: "toggle-admin-mode" });
-    }
-  });
 }
 
 function initProposePanel(): void {
@@ -1273,76 +1250,6 @@ function initProposeConfirmModal(): void {
     const nodeIds = resolveProposeEntryNodeIds(entry);
     if (nodeIds.length === 0) return;
     post({ type: "select-nodes", payload: { nodeIds } });
-  });
-}
-
-function hideRegistryNotFoundPrompt(): void {
-  $("tc-registry-not-found").hidden = true;
-}
-
-function showRegistryNotFoundPrompt(repo: string, registryPath: string): void {
-  const block = $<HTMLElement>("tc-registry-not-found");
-  $<HTMLElement>("tc-registry-not-found-text").textContent =
-    `Реестр ещё не создан в репозитории ${repo} (${registryPath}). Начать с пустого реестра?`;
-  block.hidden = false;
-}
-
-function initGitHubSettingsPanel(): void {
-  const tokenInput = $<HTMLInputElement>("tc-github-token-input");
-  const repoInput = $<HTMLInputElement>("tc-github-repo-input");
-  const pathInput = $<HTMLInputElement>("tc-github-registry-path-input");
-  const saveBtn = $<HTMLButtonElement>("tc-save-github-settings-btn");
-  const loadBtn = $<HTMLButtonElement>("tc-load-registry-btn");
-  const initEmptyBtn = $<HTMLButtonElement>("tc-init-empty-registry-btn");
-
-  saveBtn.addEventListener("click", () => {
-    const repo = repoInput.value.trim();
-    if (!repo) {
-      showError("Укажите репозиторий в формате owner/repo.");
-      return;
-    }
-    post({
-      type: "save-github-settings",
-      payload: {
-        token: tokenInput.value.trim(),
-        repo,
-        registryPath: pathInput.value.trim() || "decisions-registry.json",
-      },
-    });
-  });
-
-  loadBtn.addEventListener("click", () => {
-    const repo = repoInput.value.trim();
-    if (!repo) {
-      showError("Укажите репозиторий в формате owner/repo.");
-      return;
-    }
-    hideRegistryNotFoundPrompt();
-    loadBtn.disabled = true;
-    post({
-      type: "load-registry",
-      payload: {
-        token: tokenInput.value.trim(),
-        repo,
-        registryPath: pathInput.value.trim() || "decisions-registry.json",
-      },
-    });
-  });
-
-  initEmptyBtn.addEventListener("click", () => {
-    const repo = repoInput.value.trim();
-    if (!repo) {
-      showError("Укажите репозиторий в формате owner/repo.");
-      return;
-    }
-    hideRegistryNotFoundPrompt();
-    post({
-      type: "init-empty-registry",
-      payload: {
-        repo,
-        registryPath: pathInput.value.trim() || "decisions-registry.json",
-      },
-    });
   });
 }
 
@@ -4325,11 +4232,7 @@ window.onmessage = (event: MessageEvent) => {
         activeLibraryKey: initialActiveLibraryKey,
         tokens,
         textStyles,
-        hasGitHubToken,
-        githubRepo,
-        githubRegistryPath,
         registryCache,
-        adminMode,
         pendingProposeCount: initialPendingCount,
         pendingProposeCountByCategory: initialPendingByCategory,
         textStylesAvailable: initialTextStylesAvailable,
@@ -4349,37 +4252,14 @@ window.onmessage = (event: MessageEvent) => {
         : "Нужен только для отправки решений";
       renderLibraryStatus(libraries.length === 0 ? "Библиотек пока нет — добавьте первую." : "");
 
-      if (githubRepo) $<HTMLInputElement>("tc-github-repo-input").value = githubRepo;
-      if (githubRegistryPath) $<HTMLInputElement>("tc-github-registry-path-input").value = githubRegistryPath;
-      $<HTMLInputElement>("tc-github-token-input").placeholder = hasGitHubToken
-        ? "•••••••• (сохранён)"
-        : "github_pat_...";
-      if (adminMode) {
-        renderRegistryStatus(
-          registryCache
-            ? registryCache.localOnly
-              ? `Пустой реестр создан на этом компьютере: записей ${registryCache.entryCount}, ${new Date(
-                  registryCache.fetchedAt
-                ).toLocaleString("ru-RU")}.`
-              : `Реестр загружен: версия ${registryCache.registryVersion}, ${registryCache.entryCount} записей, обновлён ${new Date(
-                  registryCache.fetchedAt
-                ).toLocaleString("ru-RU")}.`
-            : "Реестр ещё не загружен."
-        );
-      }
-      applyAdminMode(adminMode === true);
       updateProposeButton(initialPendingCount, initialPendingByCategory);
       if (registryCache) {
         applyProdRegistryLoaded(registryCache.localOnly, registryCache.entryCount);
       } else {
         renderProdRegistryStatus(PROD_REGISTRY_LOADING);
       }
-      hideRegistryNotFoundPrompt();
       break;
     }
-    case "admin-mode-changed":
-      applyAdminMode(message.payload.enabled === true);
-      break;
     case "pending-propose-count":
       updateProposeButton(message.payload.count, message.payload.byCategory);
       break;
@@ -4390,60 +4270,22 @@ window.onmessage = (event: MessageEvent) => {
       renderProposeStatus(proposeStatusText(message.payload));
       break;
     case "decisions-submit-failed":
-      renderProposeStatus(PROPOSE_FAILURE);
+      renderProposeStatus(
+        message.payload ? PROPOSE_FAILURE_BY_REASON[message.payload.reason] : PROPOSE_FAILURE
+      );
       syncProposeButton();
       break;
     case "registry-unavailable":
       renderProdRegistryStatus(PROD_REGISTRY_UNAVAILABLE);
-      $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       break;
     case "settings-saved":
       renderLibraryStatus("Настройки сохранены.");
       break;
-    case "github-settings-saved":
-      $<HTMLInputElement>("tc-github-repo-input").value = message.payload.repo;
-      $<HTMLInputElement>("tc-github-registry-path-input").value = message.payload.registryPath;
-      renderRegistryStatus("Настройки GitHub сохранены.");
-      break;
     case "registry-loading":
       renderProdRegistryStatus(PROD_REGISTRY_LOADING);
-      if (adminModeEnabled) {
-        renderRegistryStatus("Загрузка реестра...");
-      }
-      hideRegistryNotFoundPrompt();
       break;
-    case "registry-loaded": {
-      $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
+    case "registry-loaded":
       applyProdRegistryLoaded(message.payload.localOnly, message.payload.entryCount);
-      if (adminModeEnabled) {
-        renderRegistryStatus(
-          message.payload.localOnly
-            ? `Пустой реестр создан на этом компьютере: записей ${message.payload.entryCount}.`
-            : `Реестр загружен: версия ${message.payload.registryVersion}, ${message.payload.entryCount} записей, обновлён ${new Date(
-                message.payload.updatedAt
-              ).toLocaleString("ru-RU")}.`
-        );
-      }
-      hideRegistryNotFoundPrompt();
-      break;
-    }
-    case "registry-not-found": {
-      $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
-      renderProdRegistryStatus(PROD_REGISTRY_EMPTY);
-      if (adminModeEnabled) {
-        renderRegistryStatus("Файл реестра ещё не создан в репозитории.");
-        showRegistryNotFoundPrompt(message.payload.repo, message.payload.registryPath);
-      }
-      break;
-    }
-    case "registry-initialized":
-      renderProdRegistryStatus(PROD_REGISTRY_EMPTY);
-      if (adminModeEnabled) {
-        renderRegistryStatus(
-          `Пустой реестр создан: записей ${message.payload.entryCount}.`
-        );
-      }
-      hideRegistryNotFoundPrompt();
       break;
     case "library-loading":
       renderLibraryStatus("Загрузка библиотеки...");
@@ -4673,8 +4515,6 @@ initGuideAccordion();
 initScopeSegment();
 initCategorySegment();
 initSettingsPanel();
-initGitHubSettingsPanel();
-initAdminUnlock();
 initProposePanel();
 initScanPanel();
 initStatusFilterMenu();
@@ -4687,5 +4527,4 @@ initApplyToLayoutModal();
 initProposeConfirmModal();
 initWindowResize();
 renderResultsTable();
-applyAdminMode(false);
 post({ type: "ui-ready" });

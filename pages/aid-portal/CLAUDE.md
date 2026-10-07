@@ -20,6 +20,13 @@
   даст пропустить базу.
 - Новую ветку — от свежего `origin/main`:
   `git fetch && git switch -c <ветка> origin/main`.
+- Облако — только через `yc --profile presentbook`. Не выполнять
+  `yc config list`, `yc config profile get`, `yc config get service-account-key`
+  и не читать `~/.config/yandex-cloud/` — ни целиком, ни через `cut`/`grep`:
+  закрытый ключ лежит в профиле многострочно. Если ключ всё же вывелся —
+  сразу написать в Штаб. Секреты не выводить и не коммитить.
+- Откат функции: `yc --profile presentbook serverless function version set-tag
+  --id <версия> --tag prod` (метки `prod` и `pr-N` — `deploy/yc/README.md`).
 
 ## Вход в контекст
 
@@ -51,14 +58,16 @@
 - Инструменты: `tools-registry.json`, страницы `ToolsHubPage.tsx` и
   `TokenComparatorPluginPage.tsx`.
 - Версия, дата и «Что нового» на странице плагина — `api/plugin-version.ts`:
-  спрашивает GitHub `releases/latest`; ответ 10 минут держит экземпляр функции
-  (`cachedPluginVersion` в `deploy/yc/handler.ts` — CDN перед функцией нет).
-  Меняются сами при публикации плагина, без пересборки портала. Описание
-  релиза разбирает `releaseNotes.ts` — без HTML, раздел «Установка»
-  пропускается (у страницы свои шаги). Read-only `GITHUB_RELEASES_TOKEN` — в
-  Lockbox `presentbook-github`: без него лимит GitHub на общих IP Облака может
-  кончиться, и кнопка покажется без номера. Локальный
-  `npm run dev` функций не выполняет — там кнопка всегда без номера.
+  последний релиз спрашивает у GitHub `releases/latest`, историю всех версий
+  читает из `data/plugin-history.json` в бакете (`PLUGIN_HISTORY_URL`) — её
+  собирает CI (`deploy/yc/plugin-history.ts`, задача «Changelog плагина»):
+  из Облака список релизов GitHub шёл дольше 9 с. Ответ 10 минут держит
+  экземпляр функции (`cachedPluginVersion` в `deploy/yc/handler.ts`; неполный
+  ответ — 1 минуту, CDN перед функцией нет). Changelog внизу страницы строит
+  `pluginChangelog.ts`, описание релиза разбирает `releaseNotes.ts` — без HTML,
+  раздел «Установка» пропускается. Read-only `GITHUB_RELEASES_TOKEN` — в
+  Lockbox `presentbook-github`. Локальный `npm run dev` функций не выполняет —
+  там кнопка без номера и без changelog.
 - Когда портал пересобирается — `paths` в `.github/workflows/presentbook-yc.yml`:
   при изменении `pages/aid-portal/` и всего, что сборка читает снаружи
   (`skills/_shared/`, `tokens/`, `components/`, `changes/driver/pending/`,
@@ -86,6 +95,6 @@ npm run typecheck && npm test && npm run build
 
 Для изменений компонентов — ещё `npm run test:browser`: снимки матрицы
 вариант × состояние и axe в Chromium (первый раз —
-`npx playwright install chromium`). В CI его пока нет, запуск руками.
+`npx playwright install chromium`). В CI — на каждом PR, эталоны macOS и Linux.
 Изменился вид намеренно — `npm run test:browser:update`, и новые снимки
 смотрятся глазами до коммита.

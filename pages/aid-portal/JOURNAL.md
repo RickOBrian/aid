@@ -4,7 +4,7 @@
 открыто. Обновляется в том же PR, что и сама работа. Решения по стандартам
 живут в `docs/standards-alpha/DECISIONS.md`; здесь — только портал.
 
-## Сейчас — 2026-10-03
+## Сейчас — 2026-10-07
 
 - Сайт https://aidteam.pro (Яндекс Облако, ADR-038), вход по логину. Превью каждого
   PR — https://preview.aidteam.pro/pr-N/. Vercel не используется (резерв снят 2026-10-06).
@@ -14,8 +14,8 @@
 - Компоненты: Switch, BadgeCount, BadgeDot.
 - Гайды: шесть — пять стандартов ядра и версионирование, из `skills/_shared/` (`guide-registry.json`).
 - Инструменты: Token Comparator, кнопка отдаёт последний релиз (сейчас 1.6.0) и
-  показывает номер, дату и «Что нового»; внизу — changelog всех версий из релизов
-  GitHub (`pluginChangelog.ts`) — `api/plugin-version`.
+  показывает номер, дату и «Что нового»; внизу — changelog всех версий
+  (`pluginChangelog.ts`), историю релизов собирает CI — `api/plugin-version`.
 - CI: задача «Портал» — типы, 31 тест, сборка на каждом PR.
 - Браузерные тесты (`npm run test:browser`): снимки матрицы вариант × состояние
   в обеих темах и axe (0 critical, 0 serious) — Switch, BadgeCount, BadgeDot,
@@ -28,13 +28,11 @@
 | Promote в production — договорённость или настройка | Q-11, `docs/standards-alpha/OPEN-QUESTIONS.md` |
 | `src/pages/FigmaStyles/` остался без просмотрщика | Q-14 |
 | Стандарты ссылаются на скрипты в `docs/storybook/`, не подключённые к порталу | Q-15 |
-| Браузерные тесты в CI: шаг установки Chromium в `checks.yml` и эталоны для Linux | через Principal Designer — `.github/` общий |
 | Switch: фокус в day-on слабый — обводка Strokes · Primary днём того же цвета, что Controls · Checked, и кольцо читается только как утолщение трека на 2px. Раньше это маскировал браузерный outline | решение дизайна фокуса, найдено при правке двойного кольца 2026-09-27 |
 | Запись о правке фокуса Switch в `changes/driver/pending/` | чат «Стандарты ДС» |
 | Развилка продуктов на корне `/` вместо driver по умолчанию | когда-нибудь, решение 2026-09-22 |
 | `space-96`/`space-128` есть только в Presentbook (в Figma нет). 3 значения цветов расходятся с Figma на 1/255 прозрачности — Presentbook хранит целый процент | сверка с Figma 2026-10-01 |
 | BadgeCount в Night: контраст 3,2:1 (белый на Fields · Warning #F85973) — временное исключение, ждём правку токена в Figma | `changes/driver/pending/component-deviation-badge-count-night-contrast.json` |
-| Проект `aid-ds` в Vercel — отключить от Git и удалить (действие PD в консоли Vercel) | AID-5 |
 
 ## История
 
@@ -63,3 +61,5 @@
 | 2026-10-06 | Этап 7 ADR-038: резерв Vercel снят решением PD — удалены `middleware.ts`, `vercel.json`, `.env.local.example`, Vercel-упоминания в портале | — |
 | 2026-10-06 | Превью PR видит и изменения `api/`: версия функции с меткой `pr-N`, сайт — на метке `prod` | #121 |
 | 2026-10-06 | Страница плагина: все версии — таблицей changelog внизу, как у токенов, вместо ссылки на GitHub | — |
+| 2026-10-07 | Changelog плагина: историю релизов собирает CI в `data/plugin-history.json` — из Облака GitHub отдавал список дольше 9 с | — |
+| 2026-10-07 | Правило работы с `yc` (профиль `presentbook`, запрет на чтение ключа) и откат функции записаны в `CLAUDE.md` портала; проект `aid-ds` в Vercel удалён PD, браузерные тесты уже в CI — строки сняты из «Открыто» | — |

@@ -1,23 +1,18 @@
 /**
- * Обёртка над GitHub REST API для чтения decisions-registry.json.
+ * Чтение decisions-registry.json с GitHub без авторизации — запасной путь
+ * (основной — сервер реестра, lib/registryRead.ts), и разбор файла реестра.
  *
- * 1. GET https://api.github.com/repos/{owner}/{repo} — проверка доступа к репозиторию
- * 2. GET https://api.github.com/repos/{owner}/{repo}/contents/{path} — чтение файла
- *
- * Выполняется из главного потока плагина (code.ts) — manifest.json должен
- * разрешать api.github.com в networkAccess.allowedDomains.
- *
- * Этап 1: только чтение (GET). Запись, ветки и PR — следующие этапы.
+ * До 1.7.0 здесь же было чтение через GitHub REST API с личным токеном для
+ * админ-панели; панель убрана вместе с ним.
  */
-
 import type {
   FetchRegistryResult,
   RegistryEntry,
   RegistryFile,
   RegistryFileContent,
 } from "./githubTypes";
+import { fetchWithTimeout } from "./fetchWithTimeout";
 
-const API_BASE = "https://api.github.com";
 const RAW_BASE = "https://raw.githubusercontent.com";
 
 /** Ошибка запроса к GitHub REST API с понятным для пользователя сообщением. */
@@ -28,65 +23,12 @@ export class GitHubRestApiError extends Error {
   }
 }
 
-interface GitHubApiResponseBody {
-  message?: string;
-}
-
-interface GitHubContentsResponse extends GitHubApiResponseBody {
-  name?: string;
-  path?: string;
-  sha?: string;
-  content?: string;
-  encoding?: string;
-}
-
-function gitHubAuthHeaders(token: string): Record<string, string> {
-  return {
-    Authorization: `Bearer ${token.trim()}`,
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-}
-
-function rateLimitMessage(rateLimitRemaining: string | null): string | null {
-  if (rateLimitRemaining === "0") {
-    return "Превышен лимит запросов GitHub API, попробуйте позже.";
-  }
-  return null;
-}
-
-function getRateLimitRemaining(response: Response): string | null {
-  return response.headers?.get("X-RateLimit-Remaining") ?? null;
-}
-
-function buildRepoAccessErrorMessage(status: number, rateLimitRemaining: string | null): string {
-  if (status === 401) {
-    return "Неверный GitHub-токен.";
-  }
-  if (status === 403) {
-    const rateLimit = rateLimitMessage(rateLimitRemaining);
-    if (rateLimit) return rateLimit;
-  }
-  if (status === 403 || status === 404) {
-    return "Репозиторий не найден или токен не имеет к нему доступа.";
-  }
-  return `Ошибка запроса к GitHub REST API (${status}).`;
-}
-
 function encodeContentPath(path: string): string {
   return path
     .split("/")
     .filter((segment) => segment.length > 0)
     .map(encodeURIComponent)
     .join("/");
-}
-
-function decodeBase64Content(content: string): string {
-  const normalized = content.replace(/\s/g, "");
-  if (typeof atob === "function") {
-    return atob(normalized);
-  }
-  throw new GitHubRestApiError("Декодирование base64 недоступно в этой среде.");
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -142,7 +84,7 @@ export function parseRegistryEntry(raw: unknown, index: number): RegistryEntry {
   return entry;
 }
 
-function parseRegistryJson(text: string, sha: string): RegistryFile {
+export function parseRegistryJson(text: string, sha: string): RegistryFile {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
@@ -182,89 +124,6 @@ function parseRegistryJson(text: string, sha: string): RegistryFile {
   return { ...content, sha };
 }
 
-function buildContentsErrorMessage(
-  status: number,
-  body: GitHubApiResponseBody,
-  rateLimitRemaining: string | null
-): string {
-  if (status === 401) {
-    return "Неверный GitHub-токен.";
-  }
-  if (status === 403) {
-    const rateLimit = rateLimitMessage(rateLimitRemaining);
-    if (rateLimit) return rateLimit;
-    return "Токен не имеет прав на чтение файлов в этом репозитории.";
-  }
-  const detail = body.message?.trim();
-  return detail
-    ? `Ошибка запроса к GitHub REST API (${status}): ${detail}`
-    : `Ошибка запроса к GitHub REST API (${status}).`;
-}
-
-async function parseGitHubJsonResponse<T extends GitHubApiResponseBody>(
-  response: Response
-): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    if (!response.ok) {
-      throw new GitHubRestApiError(
-        `Ошибка запроса к GitHub REST API (${response.status}).`,
-        response.status
-      );
-    }
-    throw new GitHubRestApiError("Ответ GitHub REST API не является валидным JSON.");
-  }
-}
-
-async function assertRepoAccessible(token: string, owner: string, repo: string): Promise<void> {
-  const url = `${API_BASE}/repos/${encodeURIComponent(owner.trim())}/${encodeURIComponent(repo.trim())}`;
-
-  let response: Response;
-  try {
-    response = await fetch(url, {
-      method: "GET",
-      headers: gitHubAuthHeaders(token),
-    });
-  } catch {
-    throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
-  }
-
-  const rateLimitRemaining = getRateLimitRemaining(response);
-
-  if (response.status === 401) {
-    throw new GitHubRestApiError(
-      buildRepoAccessErrorMessage(response.status, rateLimitRemaining),
-      response.status
-    );
-  }
-
-  if (response.status === 403 || response.status === 404) {
-    throw new GitHubRestApiError(
-      buildRepoAccessErrorMessage(response.status, rateLimitRemaining),
-      response.status
-    );
-  }
-
-  if (!response.ok) {
-    const body = await parseGitHubJsonResponse<GitHubApiResponseBody>(response);
-    const detail = body.message?.trim();
-    throw new GitHubRestApiError(
-      detail
-        ? `Ошибка запроса к GitHub REST API (${response.status}): ${detail}`
-        : `Ошибка запроса к GitHub REST API (${response.status}).`,
-      response.status
-    );
-  }
-}
-
-/**
- * Загружает decisions-registry.json из репозитория GitHub.
- *
- * Сначала проверяет доступ к репозиторию (GET /repos/{owner}/{repo}).
- * 404 на Contents API при доступном репозитории — не исключение: возвращает
- * `{ notFound: true }`, чтобы UI мог предложить локальную инициализацию пустого реестра.
- */
 /**
  * Чтение реестра решений из ПУБЛИЧНОГО репозитория, без авторизации.
  *
@@ -289,7 +148,7 @@ export async function fetchPublicRegistry(
 
   let response: Response;
   try {
-    response = await fetch(url, { method: "GET" });
+    response = await fetchWithTimeout(url, { method: "GET" });
   } catch {
     throw new GitHubRestApiError(
       "Не удалось связаться с raw.githubusercontent.com. Проверьте подключение к сети."
@@ -318,63 +177,4 @@ export async function fetchPublicRegistry(
   // по наличию которой отличают настоящий реестр от локального пустого.
   const version = response.headers?.get("etag") ?? `fetched-${Date.now()}`;
   return parseRegistryJson(text, version);
-}
-
-export async function fetchRegistry(
-  token: string,
-  owner: string,
-  repo: string,
-  path: string
-): Promise<FetchRegistryResult> {
-  if (!token.trim()) {
-    throw new GitHubRestApiError("Не указан GitHub Personal Access Token.");
-  }
-  if (!owner.trim() || !repo.trim()) {
-    throw new GitHubRestApiError("Укажите репозиторий в формате owner/repo.");
-  }
-  if (!path.trim()) {
-    throw new GitHubRestApiError("Укажите путь к файлу реестра.");
-  }
-
-  const trimmedOwner = owner.trim();
-  const trimmedRepo = repo.trim();
-
-  await assertRepoAccessible(token, trimmedOwner, trimmedRepo);
-
-  const encodedPath = encodeContentPath(path.trim());
-  const url = `${API_BASE}/repos/${encodeURIComponent(trimmedOwner)}/${encodeURIComponent(trimmedRepo)}/contents/${encodedPath}`;
-
-  let response: Response;
-  try {
-    response = await fetch(url, {
-      method: "GET",
-      headers: gitHubAuthHeaders(token),
-    });
-  } catch {
-    throw new GitHubRestApiError("Не удалось связаться с api.github.com. Проверьте подключение к сети.");
-  }
-
-  const rateLimitRemaining = getRateLimitRemaining(response);
-  const body = await parseGitHubJsonResponse<GitHubContentsResponse>(response);
-
-  if (response.status === 404) {
-    return { notFound: true };
-  }
-
-  if (!response.ok) {
-    throw new GitHubRestApiError(
-      buildContentsErrorMessage(response.status, body, rateLimitRemaining),
-      response.status
-    );
-  }
-
-  if (!body.content || body.encoding !== "base64") {
-    throw new GitHubRestApiError("GitHub вернул файл без base64-содержимого.");
-  }
-  if (!body.sha) {
-    throw new GitHubRestApiError("GitHub не вернул sha файла реестра.");
-  }
-
-  const decoded = decodeBase64Content(body.content);
-  return parseRegistryJson(decoded, body.sha);
 }

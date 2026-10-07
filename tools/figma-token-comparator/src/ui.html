@@ -195,17 +195,6 @@
         }
       }
 
-      /* Тот же примитив, что и бейдж статуса: геометрия в .ds-badge,
-         тональность — модификатором в разметке. */
-      .ds-admin-badge {
-        flex-shrink: 0;
-      }
-
-      .ds-admin-badge[hidden],
-      #tc-admin-github-panel[hidden] {
-        display: none !important;
-      }
-
       /* Tabs — SwitchPage .dsw-tabs + dsProductAccent .ds-accent-tab */
       .ds-tabs {
         display: flex;
@@ -756,56 +745,6 @@
       .ds-status-line {
         font-size: 13px;
         line-height: 20px;
-        color: var(--ds-text-secondary);
-      }
-
-      .ds-settings-divider {
-        margin: 0;
-        border: none;
-        border-top: 1px solid var(--ds-border);
-      }
-
-      .ds-settings-subtitle {
-        margin: 0 0 8px;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 20px;
-        color: var(--ds-text);
-      }
-
-      /* Admin GitHub block — вложен в .ds-panel, поэтому gap панели не распространяется на поля */
-      #tc-admin-github-panel {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-top: 24px;
-      }
-
-      #tc-admin-github-panel > .ds-settings-divider {
-        margin: 0;
-      }
-
-      /* Заголовок админской панели теперь лежит внутри .ds-field__head — рядом
-         с кнопкой подсказки, — поэтому селектор по прямому потомку не подходит. */
-      #tc-admin-github-panel .ds-settings-subtitle {
-        margin: 0;
-      }
-
-      #tc-admin-github-panel > .ds-registry-not-found {
-        margin-top: 0;
-      }
-
-      .ds-registry-not-found {
-        margin-top: 10px;
-        padding: 12px;
-        border-radius: var(--ds-radius);
-        background: var(--ds-surface-muted);
-      }
-
-      .ds-registry-not-found__text {
-        margin: 0 0 10px;
-        font-size: 13px;
-        line-height: 18px;
         color: var(--ds-text-secondary);
       }
 
@@ -2221,7 +2160,6 @@
       <header class="ds-page-header">
         <div class="ds-page-header__lead">
           <h1 id="tc-plugin-title">Token Comparator</h1>
-          <span class="ds-badge ds-badge--warning ds-admin-badge" id="tc-admin-badge" hidden>Режим админа</span>
         </div>
       </header>
 
@@ -2316,44 +2254,6 @@
 
         <div class="ds-status-line" id="tc-prod-registry-status">Загрузка реестра решений...</div>
 
-        <div id="tc-admin-github-panel" hidden>
-          <hr class="ds-settings-divider" />
-          <div class="ds-field__head">
-            <h3 class="ds-settings-subtitle">Реестр решений на GitHub</h3>
-            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
-            <span class="ds-hint-text">
-              Плагин читает реестр решений из ветки main. Нужен токен GitHub с доступом на чтение
-              содержимого репозитория. Если файла реестра ещё нет — можно начать с пустого.
-            </span>
-          </div>
-        <div class="ds-field">
-          <label for="tc-github-token-input">Токен доступа GitHub</label>
-          <input id="tc-github-token-input" type="password" placeholder="github_pat_..." autocomplete="off" />
-        </div>
-        <div class="ds-field">
-          <label for="tc-github-repo-input">Репозиторий</label>
-          <input id="tc-github-repo-input" type="text" placeholder="owner/repo или https://github.com/owner/repo" autocomplete="off" />
-        </div>
-        <div class="ds-field">
-          <label for="tc-github-registry-path-input">Путь к файлу реестра</label>
-          <input
-            id="tc-github-registry-path-input"
-            type="text"
-            placeholder="decisions-registry.json"
-            value="decisions-registry.json"
-            autocomplete="off"
-          />
-        </div>
-        <div class="ds-row">
-          <button class="ds-btn" id="tc-save-github-settings-btn">Сохранить настройки</button>
-          <button class="ds-btn ds-btn-primary" id="tc-load-registry-btn">Загрузить реестр</button>
-        </div>
-        <div class="ds-status-line" id="tc-registry-status">Реестр ещё не загружен.</div>
-        <div class="ds-registry-not-found" id="tc-registry-not-found" hidden>
-          <p class="ds-registry-not-found__text" id="tc-registry-not-found-text"></p>
-          <button type="button" class="ds-btn" id="tc-init-empty-registry-btn">Начать с пустого реестра</button>
-        </div>
-        </div>
       </section>
 
       <section class="ds-panel" id="tc-panel-scan" role="tabpanel" aria-hidden="true">

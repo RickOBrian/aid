@@ -41,9 +41,17 @@ on:
       - 'changes/driver/pending/**'
       - 'products/registry.json'
       - '.github/workflows/presentbook-yc.yml'
+  # История релизов плагина для changelog на странице Token Comparator:
+  # сразу при публикации релиза и раз в 15 минут на всякий случай.
+  release:
+    types: [published]
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 concurrency:
-  group: presentbook-yc-${{ github.event.pull_request.number || 'main' }}
+  # Отдельные группы: запуск по расписанию не отменяет выкладку из main.
+  group: presentbook-yc-${{ github.event.pull_request.number || github.event_name }}
   cancel-in-progress: true
 
 permissions:
@@ -127,7 +135,7 @@ jobs:
           version_id=$(yc serverless function version create --function-name presentbook-api --format json \
             --runtime nodejs22 --entrypoint index.handler --memory 256m --execution-timeout 15s \
             --source-path deploy/yc/dist/presentbook-api.zip --service-account-id "$runtime" \
-            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id \
+            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id,PLUGIN_HISTORY_URL=https://storage.yandexcloud.net/presentbook-site/data/plugin-history.json \
             --secret environment-variable=BASIC_AUTH_USER,id=$auth,key=BASIC_AUTH_USER \
             --secret environment-variable=BASIC_AUTH_PASSWORD,id=$auth,key=BASIC_AUTH_PASSWORD \
             --secret environment-variable=AUTH_COOKIE_SECRET,id=$auth,key=AUTH_COOKIE_SECRET \
@@ -157,6 +165,31 @@ jobs:
           else
             gh pr comment ${{ github.event.pull_request.number }} --body "$body"
           fi
+
+  # Список релизов GitHub тянется в Яндекс Облако дольше 9 секунд, а на
+  # раннере GitHub — за секунду. Поэтому историю собирает CI и кладёт в бакет
+  # сайта, функция читает готовый файл (PLUGIN_HISTORY_URL).
+  history:
+    name: Changelog плагина
+    if: contains(fromJSON('["push", "schedule", "release", "workflow_dispatch"]'), github.event_name)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pages/aid-portal/api/_lib
+            pages/aid-portal/deploy/yc
+            pages/aid-portal/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Собрать и выложить plugin-history.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node pages/aid-portal/deploy/yc/plugin-history.ts > "$RUNNER_TEMP/plugin-history.json"
+          $S3 cp "$RUNNER_TEMP/plugin-history.json" s3://presentbook-site/data/plugin-history.json \
+            --content-type 'application/json; charset=utf-8' --cache-control 'no-cache'
 
   cleanup:
     name: Удаление превью
