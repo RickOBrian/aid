@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: semantic-color-tokens-guide
 metadata:
-  version: "1.5.3"
+  version: "1.5.4"
   machineFile: semantic-color-tokens.json
   kind: standard
   platforms: [web, ios, android]
@@ -18,7 +18,7 @@ description: >
 
 # Semantic Color Tokens
 
-> Статус: Draft · v1.5.3 · обновлено 2026-09-20
+> Статус: Draft · v1.5.4 · обновлено 2026-10-08
 
 <style>
 /* ================================================================
@@ -176,7 +176,7 @@ Semantic-токен ссылается на Core Color Token — не храни
 </div>
 
 Core → Semantic. Semantic → Core HEX.
-Core-токены называются по цвету (jasper, citrine); semantic — по назначению (brand, status, product).
+Core-токены называются по цвету (jasper, citrine); semantic — по назначению (accent, status, product).
 
 ### Figma-реализация
 
@@ -193,7 +193,11 @@ Semantic-токены — это Figma Variables.
 bg - accent - product - marketplace - main - secondary - static
 ```
 
-Имя читается слева направо: категория → группа → подгруппа → вариант → модификатор.
+Имя читается слева направо: категория → группа → подгруппа → имя → вариант → уровень → модификатор.
+В примере: `bg` — категория, `accent` — группа, `product` — подгруппа, `marketplace` — имя
+внутри подгруппы, `main` — вариант, `secondary` — уровень иерархии (раздел 8), `static` —
+модификатор (раздел 9). Подгруппа, имя, уровень и модификатор есть не у каждого токена:
+`bg-base-main` — категория, группа и вариант.
 Semantic-токены не содержат числа и не называются цветами.
 Semantic — это назначение, не цвет.
 Core-токены называются по цвету (jasper, citrine).
@@ -240,13 +244,13 @@ bg
 ## 5. text, icon, line
 
 <div class="token-text-demo">
-  <span class="token-text-demo__item" data-value="#111111"   style="color:var(--text-primary)">text-primary</span>
-  <span class="token-text-demo__item" data-value="#6E6E73"   style="color:var(--text-secondary)">text-secondary</span>
-  <span class="token-text-demo__item" data-value="#AEAEB2"   style="color:var(--text-disabled)">text-disabled</span>
-  <span class="token-text-demo__item token-text-demo__item--on-accent" data-value="#FFFFFF" style="color:var(--text-inverse)">text-inverse</span>
-  <span class="token-text-demo__item" data-value="#0057FF"   style="color:var(--text-accent)">text-accent</span>
-  <span class="token-text-demo__item" data-value="#D93025"   style="color:var(--text-error)">text-error</span>
-  <span class="token-text-demo__item" data-value="#1A7F4B"   style="color:var(--text-success)">text-success</span>
+  <span class="token-text-demo__item" data-value="rgba(3, 3, 6, 0.88)" style="color:var(--text-primary)">text-primary</span>
+  <span class="token-text-demo__item" data-value="rgba(4, 4, 19, 0.55)" style="color:var(--text-secondary)">text-secondary</span>
+  <span class="token-text-demo__item" data-value="rgba(5, 11, 44, 0.18)" style="color:var(--text-disabled)">text-disabled</span>
+  <span class="token-text-demo__item token-text-demo__item--on-accent" data-value="#ffffff" style="color:var(--text-inverse)">text-inverse</span>
+  <span class="token-text-demo__item" data-value="#ef3124" style="color:var(--text-accent)">text-accent</span>
+  <span class="token-text-demo__item" data-value="#ec2d20" style="color:var(--text-error)">text-error</span>
+  <span class="token-text-demo__item" data-value="#0d9336" style="color:var(--text-success)">text-success</span>
 </div>
 
 ```token-color
@@ -315,7 +319,7 @@ bg-accent-inverse | #121213 | Инверсный фон (текст поверх
 ```
 
 `fade` и `ghost` — это `main` с уменьшенной прозрачностью через Core alpha-нотацию.
-`inverse` — фон, на котором используется `color-text-inverse` или `color-icon-inverse`.
+`inverse` — фон, на котором используется `text-inverse` или `icon-inverse`.
 
 ### Inverse
 
@@ -323,7 +327,7 @@ bg-accent-inverse | #121213 | Инверсный фон (текст поверх
 
 ```
 Core: jasper-0, jasper-60
-Semantic: brand-main → jasper-60, brand-inverse → jasper-0
+Semantic: bg-accent-main → jasper-60, text-inverse → jasper-0
 ```
 
 Core white и black — это Core `0` и `100`, не отдельные токены.
@@ -335,7 +339,8 @@ Core white и black — это Core `0` и `100`, не отдельные ток
 Суффиксы `-primary`, `-secondary`, `-tertiary` обозначают иерархию внутри группы.
 Не путать с `bg-base-main` — это не primary.
 `bg-base-main` — первый уровень. `bg-base-main-secondary` и `bg-base-main-tertiary` — вложенные уровни.
-`-primary` не дублирует `main`; `-primary` — это иерархия внутри secondary-уровня.
+`-primary` не дублирует `main`: в группах с вариантом `main` первый уровень — сам `main`, без суффикса.
+`-primary` — первый уровень там, где варианта `main` нет: `text-primary`, `icon-primary`.
 
 ---
 
@@ -469,6 +474,13 @@ bg-accent-product-marketplace-main
 
 ## 14. Changelog
 
+- **1.5.4** — 2026-10-08. Устранены противоречия (AID-2): §1 — пример назначения
+  `brand` заменён на существующую группу `accent`; §2 — в порядок частей имени
+  добавлены имя внутри подгруппы и уровень иерархии, которые уже были в примере;
+  §5 — значения в демо-блоке совпадают с блоком `token-color`; §7 — `color-text-inverse`
+  → `text-inverse`, пример Inverse без несуществующей группы `brand-*`; §8 — убрана
+  фраза, противоречившая соседней, определено, где первый уровень `-primary`.
+  Машинный слой: `nameStructure.order` и тексты правил приведены к гайду.
 - **1.5.3** — 2026-09-20. guide-lint: нормализация формы.
 - **1.5.2** — Illustrations: тени заменены на `line-default` / `line-accent` borders (arch-diagram, token-text-demo).
 - **1.5.1** — Visual Language applied to existing illustrations (arch-diagram §1, token-text-demo §5):

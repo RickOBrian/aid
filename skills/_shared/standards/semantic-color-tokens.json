@@ -1,18 +1,18 @@
 {
   "id": "semantic-color-tokens-guide",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "status": "draft",
   "humanFile": "semantic-color-tokens-guide.md",
   "note": "Машинный слой карты semantic-цветов. Перенесён 1:1 из semantic-color-tokens-guide.md v1.5.3 (AID Style Migration, 2026-09-30), принят чатом стандартов 2026-10-07 (AID-3). Источник истины — humanFile; при расхождении прав гайд. Значения hex — иллюстрации из гайда, не значения продукта.",
   "principle": {
     "source": "§1",
     "rule": "Semantic-токен ссылается на Core Color Token, не хранит HEX напрямую; компоненты ссылаются только на semantic, никогда на Core.",
-    "semanticNamedBy": "назначение (brand, status, product)",
+    "semanticNamedBy": "назначение (accent, status, product)",
     "coreNamedBy": "цвет (jasper, citrine)"
   },
   "nameStructure": {
     "source": "§2",
-    "order": ["category", "group", "subgroup", "variant", "modifier"],
+    "order": ["category", "group", "subgroup", "name", "variant", "level", "modifier"],
     "example": "bg-accent-product-marketplace-main-secondary-static",
     "forbidsDigits": true,
     "forbidsColorNames": true
@@ -107,7 +107,7 @@
   "hierarchy": {
     "source": "§8",
     "suffixes": ["-primary", "-secondary", "-tertiary"],
-    "rule": "Суффиксы — иерархия внутри группы. bg-base-main — первый уровень; -secondary и -tertiary — вложенные уровни; -primary не дублирует main."
+    "rule": "Суффиксы — иерархия внутри группы. bg-base-main — первый уровень; -secondary и -tertiary — вложенные уровни; -primary не дублирует main: первый уровень — сам main, а -primary — там, где варианта main нет (text-primary, icon-primary)."
   },
   "modifiers": {
     "source": "§9",
