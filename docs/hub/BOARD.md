@@ -13,8 +13,7 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-1 | Все | Переход на оркестрацию: имя `AID · <Тип> · <Название>`, группа «AID», работа из своей папки. Ждёт смены папки: Style Migration; не открыт чат «AID · DS · Стандарты» | в работе |
-| AID-2 | Стандарты | PATCH гайда цветов: противоречия в §1, §2, §5, §7, §8 `semantic-color-tokens-guide.md` | в очереди |
-| AID-3 | Стандарты ← Style Migration | Приёмка `semantic-color-tokens.json`: Style Migration внесла все 4 правки (`47a1d1e` в `feat/style-migration-spike`; PD там: «реши сам», D-17); Штаб сверил — замечания закрыты. Нужна приёмка Стандартами отдельным PR и строка стыка «Машинный слой стандартов» | ждёт чат «AID · DS · Стандарты» (не открыт) |
+| AID-2 | Стандарты | PATCH гайда цветов до 1.5.4: противоречия в §1, §2, §5, §7, §8 `semantic-color-tokens-guide.md` вместе с `nameStructure.order` в JSON; затем PR со строкой стыка «Машинный слой стандартов» в корневом `CLAUDE.md` (мерж PD) | в работе |
 | AID-10 | Token Comparator | ADR-038, этап 6: #78 смержен, `api.aidteam.pro` работает (сертификат до 2027-01-01, CORS, неверный ключ → 401), новый `PLUGIN_SHARED_SECRET` в Lockbox. Тестовая сборка (`~/Downloads/token-comparator-test-api-aidteam.zip`, отдельный id) передана PD, но в журнале функции после 2026-10-03 11:30 нет ни одного POST и новых `registry/propose-*` нет — проверку в Figma, похоже, не делали. Дальше: успешный тест → закрыть тестовый PR → релиз плагина на новый адрес (согласие PD) → PD раздаёт новый ключ → переимпорт → отключить Vercel `aid-registry-api` | ждёт PD: повторить тест плагина |
 | AID-11 | Штаб → Стандарты | После этапа 7 ADR-038: корневой `CLAUDE.md` (контуры, «Ветки и деплой», Vercel в полномочиях) — Штаб через PD; `github-sync-architecture.md` §3a и адрес `aid-ds.vercel.app` — Стандарты. Часть Presentbook можно делать уже сейчас (AID-5 закрыт) | ждёт AID-10 (для части Token Comparator) |
 | AID-12 | Bot, Team, Штаб | Задачи любой → любому и уведомления в Telegram (ADR-042): Team — скиллы готовы (#138); ключ бота — отдельный файл «логин → Telegram» с ключом только на чтение (решение PD); бот (`effects121-lang`) — webhook, правила, `/start`, chat id в базе бота; PD — webhook в настройках репозитория, попросить всех `/start` | в работе |
@@ -74,6 +73,7 @@
 |---|---|---|---|
 | AID-5 | Presentbook | ADR-038, часть Presentbook | 2026-10-06: Presentbook в Яндекс Облаке (#75–#77, #80), `vercel.json`/`middleware.ts` убраны (#110), проекты Vercel `aid-ds`, `dist`, `server` удалены PD. Остался только `aid-registry-api` — AID-10 |
 | AID-4 | Style Migration | Убрать правку корневого `CLAUDE.md` из `feat/style-migration-spike` | 2026-10-06: `16c9c9d`, дифф ветки по `CLAUDE.md` пустой (проверено Штабом) |
+| AID-3 | Стандарты ← Style Migration | Приёмка `semantic-color-tokens.json` | 2026-10-08: #131 смержен (`8d6c5d3`), три файла 1:1 из ветки Style Migration, правка только `note`; Style Migration вливает `main` в свою ветку |
 | AID-1 · Presentbook | Presentbook | Оркестрация: имя, папка | 2026-10-06: папка верная, detached HEAD на `origin/main` намеренно, ничего не висит |
 | AID-1 · Bot | Bot | Оркестрация: имя, папка | 2026-10-06: папка сменена; в `aid-presentbook` ничего не делал |
 | AID-1 · Token Comparator | Token Comparator | Оркестрация: имя, папка | 2026-10-06: папка сменена; `~/Downloads/CLAUDE.md` для него не действует |
