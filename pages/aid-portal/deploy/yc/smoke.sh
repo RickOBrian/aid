@@ -41,5 +41,12 @@ fi
 # API — через базу: на превью /pr-N/api/... идёт в версию функции этого PR.
 check "$base/api/session" 401 application/json
 check "$base/api/plugin-version" 200 application/json
+# Данные страницы /ttm закрытые (AID-13): без сессии — 401, на превью — 404
+# даже с сессией. Сама страница — обычный маршрут SPA.
+check "$base/ttm" 200 text/html
+case "$base" in
+  */pr-[0-9]*) check "$base/api/ttm" 404 application/json ;;
+  *) check "$base/api/ttm" 401 application/json ;;
+esac
 
 exit $fail

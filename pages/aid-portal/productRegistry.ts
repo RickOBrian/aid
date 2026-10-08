@@ -74,7 +74,7 @@ export function getProductLabelParts(id: string): { prefix: string; name: string
 const LEGACY_HUB_SEGMENT = 'design-system';
 
 /** Paths outside product routing — kept as they are. */
-const PRODUCT_AGNOSTIC_PATHS = new Set(['/login']);
+const PRODUCT_AGNOSTIC_PATHS = new Set(['/login', '/ttm']);
 
 export function productHubPath(id: string): string {
   return `/${id}`;

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { DriverColorTokensPage } from './DriverColorTokensPage';
 import { HubPage } from './HubPage';
 import { LoginPage } from './LoginPage';
+import { TtmPage } from './TtmPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -139,6 +140,10 @@ export function App() {
   // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
   if (currentAppPath() === '/login') {
     return <LoginPage />;
+  }
+  // `/ttm` — КПД команды AID (AID-13): без продукта и без ссылок из меню.
+  if (currentAppPath() === '/ttm') {
+    return <TtmPage />;
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());
