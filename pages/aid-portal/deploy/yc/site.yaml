@@ -20,6 +20,10 @@ paths:
   /api/plugin-version:
     get:
       x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
+  # Данные страницы /ttm (AID-13) — только с сессией, проверяет функция.
+  /api/ttm:
+    get:
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
   /assets/{path+}:
     get:
       parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]

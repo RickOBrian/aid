@@ -49,7 +49,7 @@ Vercel больше не используется: резерв `aid-ds` сня�
 | Функция | `presentbook-api` |
 | Шлюзы | `presentbook-site`, `presentbook-preview` |
 | Сервисные аккаунты | `presentbook-runtime` — функция и шлюзы; `presentbook-ci` — GitHub Actions |
-| Lockbox | `presentbook-auth`: `BASIC_AUTH_USER`, `BASIC_AUTH_PASSWORD`, `AUTH_COOKIE_SECRET`; `presentbook-github`: `GITHUB_RELEASES_TOKEN` |
+| Lockbox | `presentbook-auth`: `BASIC_AUTH_USER`, `BASIC_AUTH_PASSWORD`, `AUTH_COOKIE_SECRET`; `presentbook-github`: `GITHUB_RELEASES_TOKEN`; `presentbook-ttm`: `TTM_DATA` — данные страницы `/ttm` |
 | Сертификаты | `presentbook-aidteam-pro`, `presentbook-preview-aidteam-pro` |
 
 Роли назначает PD (у рабочего аккаунта роль `editor`, назначать роли он не может):
@@ -58,7 +58,7 @@ Vercel больше не используется: резерв `aid-ds` сня�
 |---|---|---|
 | `presentbook-runtime` | `storage.viewer` | каталог — шлюз читает `index.html` |
 | `presentbook-runtime` | `functions.functionInvoker` | каталог — шлюз вызывает функцию |
-| `presentbook-runtime` | `lockbox.payloadViewer` | секреты `presentbook-auth`, `presentbook-github` |
+| `presentbook-runtime` | `lockbox.payloadViewer` | секреты `presentbook-auth`, `presentbook-github`, `presentbook-ttm` |
 | `presentbook-ci` | `storage.editor` | каталог — выкладка и удаление превью |
 | `presentbook-ci` | `functions.editor` | каталог — новая версия функции |
 | `presentbook-ci` | `iam.serviceAccounts.user` | аккаунт `presentbook-runtime` — функция работает от его имени |
@@ -82,6 +82,37 @@ Vercel больше не используется: резерв `aid-ds` сня�
 
 Откат функции — перенести метку `prod` на прошлую версию:
 `yc serverless function version set-tag --id <версия> --tag prod`.
+
+## Страница КПД команды: `/ttm` (AID-13)
+
+Данные страницы закрытые (решение PD «1 а»): репозиторий публичный, и в
+коде только вёрстка (`TtmPage.tsx`) и формулы (`ttmModel.ts`). Данные — JSON
+в секрете Lockbox `presentbook-ttm`, ключ `TTM_DATA`; форма —
+`api/_lib/ttm.ts`.
+
+- `GET /api/ttm` отдаёт JSON только с валидной сессией, без неё — 401.
+- Функция читает секрет при запросе, через Lockbox Payload API с IAM-токеном
+  своего сервисного аккаунта, а не переменной окружения: у функции на все
+  переменные 4 КБ, а JSON — около 11 КБ. Ответ экземпляр держит 5 минут,
+  поэтому новая версия функции после правки данных не нужна.
+- В CI секрет не читается: в функцию передаётся только его id
+  (`TTM_SECRET_ID` из переменной репозитория `YC_LOCKBOX_TTM_ID`; пусто —
+  `none`, и `/api/ttm` с сессией отвечает 503).
+- Превью данные не получает: `/pr-N/api/ttm` — 404 даже с сессией. Это
+  ограничение в коде: версия `pr-N` работает с той же ролью, что и `prod`, и
+  PR, меняющий `api/ttm.ts` или `handler.ts`, нужно читать с этим в голове.
+- Ошибки чтения пишутся в журнал только статусом, без тела и данных.
+- Ссылок на страницу в меню и на других страницах портала нет (решение PD).
+
+Правка данных — новая версия секрета:
+
+```bash
+jq -n --rawfile v aid-ttm-data.json '[{key: "TTM_DATA", text_value: $v}]' \
+  | yc --profile presentbook lockbox secret add-version --name presentbook-ttm --payload -
+```
+
+Локально `npm run dev` берёт данные из `ttm-data.local.json` рядом с
+порталом, если он есть (в `.gitignore`).
 
 ## История релизов плагина
 
