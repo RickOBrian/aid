@@ -5,6 +5,7 @@ import { GET, resetTtmCache } from '../api/ttm';
 import { isTtmData, loadTtmFromLockbox, type TtmData } from '../api/_lib/ttm';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { handler } from '../deploy/yc/handler';
+import { TTM_COLORS } from '../ttmColors';
 import { calcTotals, chainHours, leversFromData } from '../ttmModel';
 
 /**
@@ -23,9 +24,9 @@ const SAMPLE: TtmData = {
   defaults: { designers: 2, developers: 3, engineers: 1, products: 2, rate: 1000, load: 100 },
   pilotsLabel: 'p',
   tools: [
-    { id: 'x', owner: 'a', name: 'X', type: 'Plugin', status: 'прод', job: 'j', ops: [{ label: 'o', role: 'designer', before: 60, after: 6, perMonth: 5 }] },
-    { id: 'y', owner: 'b', name: 'Y', type: 'Bot', status: 'пилот', pilot: true, job: 'j', ops: [{ label: 'o', role: 'product', before: 120, after: 30, perMonth: 1 }] },
-    { id: 'z', owner: 'a', name: 'Z', type: 'Hub', status: 'прод', job: 'j', ops: [{ label: 'o', role: 'team', before: 30, after: 0, perMonth: 4 }] },
+    { id: 'x', owner: 'a', name: 'X', type: 'Plugin', status: 'прод', job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'designer', before: 60, after: 6, perMonth: 5 }] },
+    { id: 'y', owner: 'b', name: 'Y', type: 'Bot', status: 'пилот', pilot: true, job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'product', before: 120, after: 30, perMonth: 1 }] },
+    { id: 'z', owner: 'a', name: 'Z', type: 'Hub', status: 'прод', job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'team', before: 30, after: 0, perMonth: 4 }] },
   ],
   chain: { intro: 'c', before: [{ label: 's', hours: 8 }, { label: 'w', hours: 16, wait: true }], after: [{ label: 's', hours: 0.5 }] },
   facts: { eyebrow: 'f', items: [{ value: '10', label: 'l' }] },
@@ -61,10 +62,19 @@ describe('формулы КПД', () => {
   });
 });
 
+describe('цвета страницы', () => {
+  it('берутся из семантических токенов Driver', () => {
+    expect(TTM_COLORS.after).toMatch(/^#[0-9A-F]{6}$/i);
+    expect(TTM_COLORS.before).toMatch(/^#[0-9A-F]{6}$/i);
+    expect(TTM_COLORS.after).not.toBe(TTM_COLORS.before);
+  });
+});
+
 describe('проверка формы данных', () => {
   it('принимает полный набор и отклоняет сломанный', () => {
     expect(isTtmData(SAMPLE)).toBe(true);
     expect(isTtmData({ ...SAMPLE, owners: 'a' })).toBe(false);
+    expect(isTtmData({ ...SAMPLE, tools: [{ ...SAMPLE.tools[0], was: undefined }] })).toBe(false);
     expect(isTtmData({ ...SAMPLE, tools: [{ ...SAMPLE.tools[0], ops: [] }] })).toBe(false);
     expect(isTtmData({ ...SAMPLE, tools: [{ ...SAMPLE.tools[0], ops: [{ ...SAMPLE.tools[0].ops[0], role: 'boss' }] }] })).toBe(false);
     expect(isTtmData({ ...SAMPLE, defaults: { ...SAMPLE.defaults, rate: -1 } })).toBe(false);

@@ -27,7 +27,12 @@ export interface TtmTool {
   type: string;
   status: string;
   pilot?: boolean;
+  /** Для чего инструмент и кого ускоряет — человеческим языком. */
   job: string;
+  /** Как было до инструмента. */
+  was: string;
+  /** Как стало с ним. */
+  now: string;
   ops: TtmOperation[];
 }
 
@@ -84,7 +89,7 @@ function isOperation(value: unknown): value is TtmOperation {
 function isTool(value: unknown): value is TtmTool {
   return (
     isRecord(value) &&
-    ['id', 'owner', 'name', 'type', 'status', 'job'].every((key) => isString(value[key])) &&
+    ['id', 'owner', 'name', 'type', 'status', 'job', 'was', 'now'].every((key) => isString(value[key])) &&
     (value.pilot === undefined || typeof value.pilot === 'boolean') &&
     isArrayOf(value.ops, isOperation) &&
     value.ops.length > 0
