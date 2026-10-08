@@ -35,7 +35,7 @@
 
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
-| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`); ключ передаёт инженер, 2026-10-08 |
+| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`); ключ передан владельцу бота 2026-10-08 |
 
 ## Вопросы инженера
 
@@ -74,6 +74,7 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 2026-10-07 | Hub | Hub | PLAN-2026-10-07 п.3: «Да» — мерж `upstream/main` в ветку PR #126 |
 | 2026-10-08 | AID-LU-6 | Hub | PLAN-2026-10-08 п.1: «Да, 1б, 2б» → «1б» — ключ ещё не передан, инженер передаёт владельцу бота сам сегодня |
 | 2026-10-08 | Hub | Hub | PLAN-2026-10-08 п.2: «Да, 1б, 2б» → «2б» — напомнить Штабу PD в #133 |
+| 2026-10-08 | AID-LU-6 | Hub | «Ключ передал, так что теперь мяч на их стороне» |
 
 ## Закрыто
 
