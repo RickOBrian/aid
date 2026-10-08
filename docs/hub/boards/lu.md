@@ -19,6 +19,7 @@
 |---|---|---|---|
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
 | AID · Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
+| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; репозиторий — после плана | весь продукт | первое сообщение чата → его план |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 
@@ -36,6 +37,7 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`); ключ передан владельцу бота 2026-10-08 |
+| AID-LU-9 | Plugin · Components Swapper | Новый продукт: плагин Figma, заменяющий компоненты и иконки из чужих библиотек на наши с сохранением контента; дальше — структурное сопоставление, визуальная схожесть иконок, предложения новых компонентов и доработок. Пересечение с Style Migration (PD), скиллом `wb-aid-migration` и `iconSwap` Token Comparator — вопрос PD после плана | планирование в чате продукта |
 
 ## Вопросы инженера
 
