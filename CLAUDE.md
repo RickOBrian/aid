@@ -79,7 +79,7 @@ Presentbook.
 | Чат | Папка | Что правит | Вход в контекст |
 |---|---|---|---|
 | AID · Hub · Штаб | `~/Projects/aid-hub` | `docs/hub/`; готовит PR в общие файлы | `docs/hub/ORCHESTRATION.md` → `docs/hub/BOARD.md` |
-| AID · DS · Стандарты | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
+| AID · Standards · Стандарты | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
 | AID · Plugin · Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
 | AID · Site · Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
 | AID · Plugin · Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
