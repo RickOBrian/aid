@@ -140,6 +140,19 @@ describe("proposeDecisionsOnBackend — причина сбоя", () => {
     expect(await pending).toBe("network");
   });
 
+  it("отправка ждёт дольше чтения: на 20-й секунде ответ ещё принимается", async () => {
+    // Сервер создаёт ветку, коммит и PR — с холодным стартом функции это
+    // дольше 15 с. 2026-10-08 плагин сообщил «нет связи», а запрос #154 был
+    // создан.
+    vi.useFakeTimers();
+    let respond: (response: Response) => void = () => {};
+    fetchMock.mockImplementation(() => new Promise<Response>((resolve) => (respond = resolve)));
+    const pending = codeOf(proposeDecisionsOnBackend(payload, "k"));
+    await vi.advanceTimersByTimeAsync(20_000);
+    respond(json(200, { success: true }));
+    expect(await pending).toBe("ok");
+  });
+
   it("ошибка сервера — submit_failed", async () => {
     fetchMock.mockResolvedValue(json(502, { success: false }));
     expect(await codeOf(proposeDecisionsOnBackend(payload, "k"))).toBe("submit_failed");

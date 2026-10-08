@@ -9,7 +9,7 @@
  */
 
 import type { RegistryDecision, TokenCategory } from "./githubTypes";
-import { fetchWithTimeout } from "./fetchWithTimeout";
+import { REGISTRY_PROPOSE_TIMEOUT_MS, fetchWithTimeout } from "./fetchWithTimeout";
 import { REGISTRY_PROPOSAL_STATUS_URL, REGISTRY_PROPOSE_URL } from "./registryApiConfig";
 import type { ProposalStatusInfo } from "./proposalLifecycle";
 
@@ -93,15 +93,19 @@ export async function proposeDecisionsOnBackend(
 
   let response: Response;
   try {
-    response = await fetchWithTimeout(REGISTRY_PROPOSE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sharedSecret,
-        proposedBy: payload.proposedBy,
-        entries: payload.entries,
-      }),
-    });
+    response = await fetchWithTimeout(
+      REGISTRY_PROPOSE_URL,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sharedSecret,
+          proposedBy: payload.proposedBy,
+          entries: payload.entries,
+        }),
+      },
+      REGISTRY_PROPOSE_TIMEOUT_MS
+    );
   } catch {
     throw new RegistryBackendError("network");
   }
