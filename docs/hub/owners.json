@@ -34,7 +34,8 @@
       "title": "Инженер Library Updater",
       "board": "docs/hub/boards/lu.md",
       "owns": [
-        "plugin-library-updater"
+        "plugin-library-updater",
+        "plugin-components-swapper"
       ],
       "decides": [],
       "tool": "claude"
