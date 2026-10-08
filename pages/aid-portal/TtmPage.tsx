@@ -38,7 +38,7 @@ ${DS_TOKEN_TABLE_STYLE}
 .ttm, .ttm *, .ttm *::before, .ttm *::after { box-sizing: border-box; }
 .ttm {
   --ttm-before: ${TTM_COLORS.before};
-  --ttm-after: ${TTM_COLORS.after};
+  --ttm-after: var(--ds-accent);
   font-family: ${T.fontFamily};
   color: ${T.textPrimary};
   background: ${T.surface};
@@ -73,16 +73,16 @@ ${DS_TOKEN_TABLE_STYLE}
 .ttm-kpi-value { font-size: 36px; line-height: 44px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .ttm-kpi-value small { font-size: 15px; font-weight: 400; color: ${T.textSecondary}; margin-left: 4px; }
 .ttm-kpi-note { font-size: 13px; line-height: 18px; color: ${T.textSecondary}; }
-.ttm-kpi-lead { background: var(--ttm-after); border-color: var(--ttm-after); }
-.ttm-kpi-lead, .ttm-kpi-lead .ttm-eyebrow, .ttm-kpi-lead .ttm-kpi-note, .ttm-kpi-lead .ttm-kpi-value small { color: ${TTM_COLORS.onAfter}; }
+.ttm-kpi-lead { background: var(--ds-accent-bg); border-color: var(--ds-accent-bg); }
+.ttm-kpi-lead .ttm-kpi-value { color: var(--ds-accent); }
 .ttm-levers { display: grid; gap: 16px; }
 .ttm-levers-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px 24px; }
 .ttm-lever { display: grid; gap: 6px; min-width: 0; }
 .ttm-lever label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: ${T.textSecondary}; }
 .ttm-lever output { color: ${T.textPrimary}; font-variant-numeric: tabular-nums; font-weight: 500; }
-.ttm input[type='range'] { width: 100%; accent-color: var(--ttm-after); }
+.ttm input[type='range'] { width: 100%; accent-color: var(--ds-accent); }
 .ttm-check { display: flex; gap: 8px; align-items: center; font-size: 13px; color: ${T.textSecondary}; }
-.ttm-check input { accent-color: var(--ttm-after); }
+.ttm-check input { accent-color: var(--ds-accent); }
 .ttm-legend { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: ${T.textSecondary}; }
 .ttm-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .ttm-before { background: var(--ttm-before); }
@@ -122,7 +122,7 @@ ${DS_TOKEN_TABLE_STYLE}
   font-size: 11px; line-height: 16px; font-weight: 500; vertical-align: 2px;
 }
 .ttm-tool-factor { text-align: right; }
-.ttm-tool-factor b { display: block; font-size: 22px; line-height: 28px; font-weight: 500; color: ${T.textPrimary}; font-variant-numeric: tabular-nums; }
+.ttm-tool-factor b { display: block; font-size: 22px; line-height: 28px; font-weight: 500; color: var(--ds-accent); font-variant-numeric: tabular-nums; }
 .ttm-tool-factor span { font-size: 12px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
 .ttm-ops { display: grid; gap: 12px; }
 .ttm-op { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr); gap: 6px 16px; align-items: center; }

@@ -63,10 +63,8 @@ describe('формулы КПД', () => {
 });
 
 describe('цвета страницы', () => {
-  it('берутся из семантических токенов Driver', () => {
-    expect(TTM_COLORS.after).toMatch(/^#[0-9A-F]{6}$/i);
+  it('«вручную» — семантический токен Driver, не литерал в коде', () => {
     expect(TTM_COLORS.before).toMatch(/^#[0-9A-F]{6}$/i);
-    expect(TTM_COLORS.after).not.toBe(TTM_COLORS.before);
   });
 });
 
