@@ -6,7 +6,7 @@ import { isTtmData, loadTtmFromLockbox, type TtmData } from '../api/_lib/ttm';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { handler } from '../deploy/yc/handler';
 import { TTM_COLORS } from '../ttmColors';
-import { calcTotals, chainHours, leversFromData, platformShare } from '../ttmModel';
+import { calcProducts, calcTotals, chainFor, chainHours, leversFromData, productShare, specialistSplit } from '../ttmModel';
 
 /**
  * Страница «КПД команды AID» (`/ttm`, AID-13). Данные закрытые — в тестах
@@ -21,14 +21,18 @@ const SAMPLE: TtmData = {
     { id: 'a', name: 'Владелец A' },
     { id: 'b', name: 'Владелец B' },
   ],
-  defaults: { designers: 2, developers: 3, engineers: 1, products: 2, rate: 1000, load: 100 },
+  defaults: { designers: 2, developers: 3, pms: 1, engineers: 1, rate: 1000, load: 100 },
+  products: [
+    { id: 'p1', name: 'Продукт 1', screens: 300 },
+    { id: 'p2', name: 'Продукт 2', screens: 100 },
+  ],
   pilotsLabel: 'p',
   tools: [
     { id: 'x', owner: 'a', name: 'X', type: 'Plugin', status: 'прод', job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'designer', before: 60, after: 6, perMonth: 5 }] },
     { id: 'y', owner: 'b', name: 'Y', type: 'Bot', status: 'пилот', pilot: true, job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'product', before: 120, after: 30, perMonth: 1 }] },
     { id: 'z', owner: 'a', name: 'Z', type: 'Hub', status: 'прод', job: 'j', was: 'w', now: 'n', ops: [{ label: 'o', role: 'team', before: 30, after: 0, perMonth: 4 }] },
   ],
-  chain: { intro: 'c', before: [{ label: 's', hours: 8 }, { label: 'w', hours: 16, wait: true }], after: [{ label: 's', hours: 0.5 }] },
+  chain: { intro: 'c', before: [{ label: 's', hours: 8, perScreen: true }, { label: 'w', hours: 16, wait: true }], after: [{ label: 's', hours: 0.5 }] },
   facts: { eyebrow: 'f', items: [{ value: '10', label: 'l' }] },
   method: [{ title: 'm', text: 't' }],
 };
@@ -57,25 +61,48 @@ describe('формулы КПД', () => {
     expect(calcTotals(only, leversFromData(only)).factor).toBe(0);
   });
 
-  it('платформа: по умолчанию iOS и Android поровну — часы делятся, КПД тот же', () => {
-    const all = calcTotals(SAMPLE, leversFromData(SAMPLE));
-    const ios = calcTotals(SAMPLE, { ...leversFromData(SAMPLE), platform: 'ios' });
-    const android = calcTotals(SAMPLE, { ...leversFromData(SAMPLE), platform: 'android' });
-    expect(ios.before).toBeCloseTo(all.before / 2);
-    expect(ios.saved + android.saved).toBeCloseTo(all.saved);
-    expect(ios.factor).toBeCloseTo(all.factor);
-    // Бот (Y) не отдельная платформа: его часы есть и в iOS, и в Android.
-    expect(ios.rows.map((row) => row.tool.id)).toEqual(['x', 'y', 'z']);
+  it('продукт: часы делятся по экранам, правка библиотеки — поровну', () => {
+    const levers = leversFromData(SAMPLE);
+    const all = calcTotals(SAMPLE, levers);
+    const p1 = calcTotals(SAMPLE, { ...levers, product: 'p1' });
+    const p2 = calcTotals(SAMPLE, { ...levers, product: 'p2' });
+    // X и Z — по экранам (300 из 400), Y (`product`) — половина.
+    expect(p1.before).toBeCloseTo((600 * 0.75 + 240 * 0.5 + 120 * 0.75) / 60);
+    expect(p1.saved + p2.saved).toBeCloseTo(all.saved);
+    expect(productShare(SAMPLE.tools[1].ops[0], SAMPLE.products, 'p2')).toBe(0.5);
+    expect(productShare(SAMPLE.tools[0].ops[0], SAMPLE.products, 'p2')).toBe(0.25);
+    expect(productShare(SAMPLE.tools[0].ops[0], SAMPLE.products, 'нет такого')).toBe(0);
   });
 
-  it('платформа: доли из данных нормируются, нет доли — ноль', () => {
-    const tool = { ...SAMPLE.tools[0], platforms: { ios: 3, android: 1 } };
-    expect(platformShare(tool, 'ios')).toBeCloseTo(0.75);
-    expect(platformShare(tool, 'android')).toBeCloseTo(0.25);
-    expect(platformShare({ ...tool, platforms: { ios: 1 } }, 'android')).toBe(0);
-    expect(platformShare(SAMPLE.tools[0], 'all')).toBe(1);
-    expect(isTtmData({ ...SAMPLE, tools: [tool] })).toBe(true);
-    expect(isTtmData({ ...SAMPLE, tools: [{ ...tool, platforms: { telegram: 1 } }] })).toBe(false);
+  it('специалисты: по роли, `team` — поровну дизайнеры, разработчики, продакты', () => {
+    const { bySpecialist } = calcTotals(SAMPLE, leversFromData(SAMPLE));
+    expect(bySpecialist.designer.before).toBeCloseTo(10 + 4 + 2 / 3);
+    expect(bySpecialist.developer.before).toBeCloseTo(2 / 3);
+    expect(bySpecialist.pm.before).toBeCloseTo(2 / 3);
+    expect(bySpecialist.engineer.before).toBe(0);
+    const total = Object.values(bySpecialist).reduce((sum, hours) => sum + hours.before, 0);
+    expect(total).toBeCloseTo(16);
+  });
+
+  it('специалисты: доли из данных нормируются', () => {
+    const split = specialistSplit({ label: 'o', role: 'team', before: 1, after: 0, perMonth: 1, split: { developer: 3, pm: 1 } });
+    expect(split).toEqual({ designer: 0, developer: 0.75, pm: 0.25, engineer: 0 });
+  });
+
+  it('TTM: шаги `perScreen` растут с экранами продукта, «все» — средний продукт', () => {
+    expect(chainHours(chainFor(SAMPLE.chain.before, SAMPLE.products, 'p1'))).toBeCloseTo(8 * 1.5 + 16);
+    expect(chainHours(chainFor(SAMPLE.chain.before, SAMPLE.products, 'p2'))).toBeCloseTo(8 * 0.5 + 16);
+    expect(chainHours(chainFor(SAMPLE.chain.before, SAMPLE.products, 'all'))).toBeCloseTo(24);
+    const results = calcProducts(SAMPLE, leversFromData(SAMPLE));
+    expect(results.map((result) => result.product.id)).toEqual(['p1', 'p2']);
+    expect(results[0].ttmBefore).toBeGreaterThan(results[1].ttmBefore);
+  });
+
+  it('форма: продукты обязательны, экранов больше нуля, доли — только известным специалистам', () => {
+    expect(isTtmData({ ...SAMPLE, products: [] })).toBe(false);
+    expect(isTtmData({ ...SAMPLE, products: [{ id: 'p', name: 'P', screens: 0 }] })).toBe(false);
+    const op = { ...SAMPLE.tools[0].ops[0], split: { boss: 1 } };
+    expect(isTtmData({ ...SAMPLE, tools: [{ ...SAMPLE.tools[0], ops: [op] }] })).toBe(false);
   });
 
   it('путь изменения — сумма часов шагов', () => {
