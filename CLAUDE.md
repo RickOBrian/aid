@@ -87,6 +87,7 @@ Presentbook.
 | AID · Plugin · MCP | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
 | AID · Ops · Team | `~/Projects/aid-team` | `tools/aid-team/` — база инженеров и оркестрация задач между ними | `tools/aid-team/CLAUDE.md` |
 | AID · Plugin · Library Updater | у инженера Library Updater, клон `arturuxui/figma-library-updater` | плагин Figma: правка переменных и стилей в библиотеках токенов Rider/Driver с обновлением документации и CHANGELOG — код во внешнем репозитории; Штаб инженера — `docs/hub/boards/lu.md` | `CLAUDE.md` репозитория плагина |
+| AID · Plugin · Components Swapper | у инженера Library Updater, отдельный репозиторий плагина | плагин Figma: замена компонентов и иконок не из библиотек AID на наши с сохранением контента — код во внешнем репозитории; Штаб инженера — `docs/hub/boards/lu.md` | `CLAUDE.md` репозитория плагина |
 
 Имя в первой колонке — то же, что у сессии в сайдбаре; все чаты — в
 группе «AID». Имя — `Проект · Тип · Название`, типы — в

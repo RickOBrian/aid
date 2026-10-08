@@ -212,6 +212,7 @@ Vercel и из корневого `CLAUDE.md`.
 | Plugin · MCP | PD | `to:plugin-mcp` |
 | Bot · Request | `effects121-lang` | `to:bot-request` |
 | Plugin · Library Updater | `arturuxui` | `to:plugin-library-updater` |
+| Plugin · Components Swapper | `arturuxui` | `to:plugin-components-swapper` |
 | Ops · Team | PD | `to:ops-team` |
 
 Остальные продукты — PD. У каждого в `owners.json` — `tool`: `claude`
