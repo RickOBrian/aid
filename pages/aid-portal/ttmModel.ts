@@ -1,4 +1,4 @@
-import type { TtmChainStep, TtmData, TtmOperation, TtmRole, TtmTool } from './api/_lib/ttm';
+import type { TtmChainStep, TtmData, TtmOperation, TtmPlatform, TtmRole, TtmTool } from './api/_lib/ttm';
 
 /**
  * Формулы страницы «КПД команды AID» (`/ttm`). Данные — закрытые, из
@@ -7,6 +7,10 @@ import type { TtmChainStep, TtmData, TtmOperation, TtmRole, TtmTool } from './ap
  * Для каждой операции: минуты вручную и с инструментом × сколько раз в месяц
  * её делают × сколько людей × загрузка. Сумма по операциям — часы
  * инструмента. КПД = часы без решений ÷ часы с решениями.
+ *
+ * Фильтр платформы берёт долю каждого инструмента на iOS или Android
+ * (`platformShare`); по умолчанию поровну, поэтому КПД («во сколько раз»)
+ * от фильтра не меняется, а часы и рубли — делятся.
  */
 
 export interface TtmLevers {
@@ -18,6 +22,24 @@ export interface TtmLevers {
   /** Доля: 1 = 100 %. */
   load: number;
   pilots: boolean;
+  /** `all` — обе платформы. */
+  platform: TtmPlatform | 'all';
+}
+
+export const TTM_PLATFORMS: { id: TtmPlatform; label: string }[] = [
+  { id: 'ios', label: 'iOS' },
+  { id: 'android', label: 'Android' },
+];
+
+/** Доля инструмента на платформе: из данных или поровну между iOS и Android. */
+export function platformShare(tool: TtmTool, platform: TtmLevers['platform']): number {
+  if (platform === 'all') {
+    return 1;
+  }
+  const shares = TTM_PLATFORMS.map(({ id }) => tool.platforms?.[id] ?? (tool.platforms ? 0 : 1));
+  const total = shares.reduce((sum, share) => sum + share, 0);
+  const index = TTM_PLATFORMS.findIndex(({ id }) => id === platform);
+  return total > 0 ? shares[index] / total : 0;
 }
 
 export interface TtmOperationResult extends TtmOperation {
@@ -57,7 +79,7 @@ export const HOURS_PER_DAY = 8;
 
 export function leversFromData(data: TtmData): TtmLevers {
   const { designers, developers, engineers, products, rate, load } = data.defaults;
-  return { designers, developers, engineers, products, rate, load: load / 100, pilots: true };
+  return { designers, developers, engineers, products, rate, load: load / 100, pilots: true, platform: 'all' };
 }
 
 export function peopleFor(role: TtmRole, levers: TtmLevers): number {
@@ -82,8 +104,9 @@ export function ratio(before: number, after: number): number {
 export function calcTool(tool: TtmTool, levers: TtmLevers): TtmToolResult {
   let before = 0;
   let after = 0;
+  const share = platformShare(tool, levers.platform);
   const ops = tool.ops.map((op) => {
-    const timesPerMonth = op.perMonth * levers.load;
+    const timesPerMonth = op.perMonth * levers.load * share;
     const times = peopleFor(op.role, levers) * timesPerMonth;
     const hoursBefore = (op.before * times) / 60;
     const hoursAfter = (op.after * times) / 60;
