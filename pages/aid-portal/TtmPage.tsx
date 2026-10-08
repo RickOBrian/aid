@@ -79,14 +79,12 @@ ${DS_PRODUCT_ACCENT_STYLE}
 .ttm-kpi-lead { background: var(--ds-accent-bg); border-color: var(--ds-accent-bg); }
 .ttm-kpi-lead .ttm-kpi-value { color: var(--ds-accent); }
 .ttm-platform { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
-.ttm-platform-label { font-size: 13px; color: ${T.textSecondary}; }
 .ttm-segment { display: inline-flex; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; overflow: hidden; }
 .ttm-segment button {
   min-height: 36px; padding: 6px 14px; border: none; border-right: 1px solid ${T.border};
   background: ${T.surface}; color: ${T.textSecondary}; font: inherit; font-size: 13px; cursor: pointer;
 }
 .ttm-segment button:last-child { border-right: none; }
-.ttm-platform-note { font-size: 12px; line-height: 18px; color: ${T.textSecondary}; }
 .ttm-levers { display: grid; gap: 16px; }
 .ttm-levers-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px 24px; }
 .ttm-lever { display: grid; gap: 6px; min-width: 0; }
@@ -677,19 +675,13 @@ const PLATFORM_OPTIONS: { id: TtmLevers['platform']; label: string }[] = [{ id: 
 function PlatformFilter({ value, onChange }: { value: TtmLevers['platform']; onChange: (next: TtmLevers['platform']) => void }) {
   return (
     <div className="ttm-platform">
-      <span className="ttm-platform-label" id="ttm-platform-label">
-        Платформа
-      </span>
-      <div className="ttm-segment ds-accent-segment" role="group" aria-labelledby="ttm-platform-label">
+      <div className="ttm-segment ds-accent-segment" role="group" aria-label="Платформа">
         {PLATFORM_OPTIONS.map((option) => (
           <button key={option.id} type="button" aria-pressed={value === option.id} onClick={() => onChange(option.id)}>
             {option.label}
           </button>
         ))}
       </div>
-      <span className="ttm-platform-note">
-        iOS и Android пока считаются поровну. Бот в Telegram — часть инструментов обеих платформ.
-      </span>
     </div>
   );
 }
