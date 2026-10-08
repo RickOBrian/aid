@@ -7,16 +7,19 @@ import { ProductAccentScope } from './ProductAccentScope';
 import { TTM_COLORS } from './ttmColors';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import {
-  HOURS_PER_DAY,
   HOURS_PER_FTE,
   ROLE_LABEL,
-  TTM_PLATFORMS,
+  SPECIALISTS,
+  calcProducts,
   calcTotals,
+  chainFor,
   chainHours,
+  formatDuration,
   formatNumber,
   formatStepHours,
   leversFromData,
   ratio,
+  specialistSplit,
   type TtmLevers,
 } from './ttmModel';
 
@@ -51,6 +54,7 @@ ${DS_PRODUCT_ACCENT_STYLE}
   line-height: 22px;
 }
 .ttm-shell { max-width: 1080px; margin: 0 auto; display: grid; gap: 56px; }
+.ttm-shell > *, .ttm-header > *, .ttm-section > * { min-width: 0; }
 .ttm h1, .ttm h2, .ttm h3 { margin: 0; font-weight: 500; text-wrap: balance; }
 .ttm h1 { font-size: 36px; line-height: 44px; }
 .ttm h2 { font-size: 22px; line-height: 28px; }
@@ -78,15 +82,25 @@ ${DS_PRODUCT_ACCENT_STYLE}
 .ttm-kpi-note { font-size: 13px; line-height: 18px; color: ${T.textSecondary}; }
 .ttm-kpi-lead { background: var(--ds-accent-bg); border-color: var(--ds-accent-bg); }
 .ttm-kpi-lead .ttm-kpi-value { color: var(--ds-accent); }
-.ttm-platform { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
-.ttm-platform-label { font-size: 13px; color: ${T.textSecondary}; }
-.ttm-segment { display: inline-flex; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; overflow: hidden; }
+.ttm-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
+.ttm-segment { display: inline-flex; max-width: 100%; min-width: 0; overflow-x: auto; scrollbar-width: none; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; }
 .ttm-segment button {
   min-height: 36px; padding: 6px 14px; border: none; border-right: 1px solid ${T.border};
-  background: ${T.surface}; color: ${T.textSecondary}; font: inherit; font-size: 13px; cursor: pointer;
+  background: ${T.surface}; color: ${T.textSecondary}; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; flex: 0 0 auto;
 }
 .ttm-segment button:last-child { border-right: none; }
-.ttm-platform-note { font-size: 12px; line-height: 18px; color: ${T.textSecondary}; }
+.ttm-rows { display: grid; gap: 4px; }
+.ttm-row {
+  display: grid; grid-template-columns: minmax(120px, 0.9fr) minmax(0, 2fr) minmax(110px, 0.7fr);
+  gap: 8px 20px; align-items: center; padding: 12px; border-radius: ${T.tableWrapRadius};
+}
+.ttm-row-selected { background: var(--ds-accent-bg); }
+.ttm-row-name b { display: block; font-weight: 500; }
+.ttm-row-name small { display: block; font-size: 12px; line-height: 16px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.ttm-row-meta { text-align: right; }
+.ttm-row-meta b { display: block; font-size: 18px; line-height: 24px; font-weight: 500; color: var(--ds-accent); font-variant-numeric: tabular-nums; }
+.ttm-row-meta span { display: block; font-size: 12px; line-height: 16px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.ttm-pair-row.ttm-wide { grid-template-columns: minmax(0, 1fr) 72px; }
 .ttm-levers { display: grid; gap: 16px; }
 .ttm-levers-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px 24px; }
 .ttm-lever { display: grid; gap: 6px; min-width: 0; }
@@ -165,6 +179,8 @@ ${DS_PRODUCT_ACCENT_STYLE}
   .ttm { padding: ${T.pagePaddingMobile}; }
   .ttm h1 { font-size: 28px; line-height: 36px; }
   .ttm-op, .ttm-steps { grid-template-columns: 1fr; }
+  .ttm-row { grid-template-columns: 1fr auto; }
+  .ttm-row .ttm-pair { grid-column: 1 / -1; grid-row: 2; }
   .ttm-track { grid-template-columns: 56px minmax(0, 1fr) 64px; }
 }
 `;
@@ -244,6 +260,9 @@ function countUpText(text: string, t: number): string {
   return `${formatNumber(Number(number.replace(',', '.')) * t, digits)}${rest}`;
 }
 
+/** Прогресс третьей плитки (TTM) — та же лесенка, что у остальных плиток. */
+const at0 = (progress: number) => staggered(progress, 2, 4);
+
 // ── Данные ──────────────────────────────────────────────────────────
 
 type LoadState =
@@ -298,8 +317,11 @@ function useTtmData(): LoadState {
 function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
   const [ref, progress] = useReveal<HTMLDivElement>();
   const totals = calcTotals(data, levers);
-  const before = chainHours(data.chain.before);
-  const after = chainHours(data.chain.after);
+  const before = chainHours(chainFor(data.chain.before, data.products, levers.product));
+  const after = chainHours(chainFor(data.chain.after, data.products, levers.product));
+  const productName = data.products.find((product) => product.id === levers.product)?.name;
+  const ttmBefore = formatDuration(before * at0(progress));
+  const ttmAfter = formatDuration(after * at0(progress));
   const at = (index: number) => staggered(progress, index, 4);
 
   return (
@@ -326,11 +348,13 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
       <div className="ttm-card ttm-kpi">
         <span className="ttm-eyebrow">TTM изменения токена</span>
         <span className="ttm-kpi-value">
-          {formatNumber((before / HOURS_PER_DAY) * at(2), 1)}
-          <small>дн →</small> {formatNumber(after * at(2), 1)}
-          <small>ч</small>
+          {ttmBefore.value}
+          <small>{ttmBefore.unit} →</small> {ttmAfter.value}
+          <small>{ttmAfter.unit}</small>
         </span>
-        <span className="ttm-kpi-note">от решения до кода у разработчика</span>
+        <span className="ttm-kpi-note">
+          от решения до кода у разработчика · {productName ?? 'средний продукт'}
+        </span>
       </div>
       <div className="ttm-card ttm-kpi">
         <span className="ttm-eyebrow">В деньгах, в месяц</span>
@@ -347,7 +371,7 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
 }
 
 interface LeverSpec {
-  key: Exclude<keyof TtmLevers, 'pilots' | 'load' | 'platform'> | 'loadPercent';
+  key: Exclude<keyof TtmLevers, 'pilots' | 'load' | 'product'> | 'loadPercent';
   label: string;
   min: number;
   max: number;
@@ -358,7 +382,7 @@ const LEVERS: LeverSpec[] = [
   { key: 'designers', label: 'Дизайнеров', min: 1, max: 40 },
   { key: 'developers', label: 'Разработчиков', min: 1, max: 60 },
   { key: 'engineers', label: 'Инженеров AID', min: 1, max: 10 },
-  { key: 'products', label: 'Продуктов', min: 1, max: 8 },
+  { key: 'pms', label: 'Продактов', min: 1, max: 40 },
   { key: 'rate', label: 'Стоимость часа, ₽', min: 1000, max: 6000, step: 250 },
   { key: 'loadPercent', label: 'Загрузка операциями', min: 50, max: 150, step: 10 },
 ];
@@ -437,10 +461,12 @@ function StepList({ steps }: { steps: TtmChainStep[] }) {
   );
 }
 
-function Chain({ data }: { data: TtmData }) {
+function Chain({ data, filter }: { data: TtmData; filter: TtmLevers['product'] }) {
   const [ref, progress] = useReveal<HTMLDivElement>();
-  const before = chainHours(data.chain.before);
-  const after = chainHours(data.chain.after);
+  const stepsBefore = chainFor(data.chain.before, data.products, filter);
+  const stepsAfter = chainFor(data.chain.after, data.products, filter);
+  const before = chainHours(stepsBefore);
+  const after = chainHours(stepsAfter);
   const max = Math.max(before, after);
   const eased = easeOut(progress);
 
@@ -449,22 +475,22 @@ function Chain({ data }: { data: TtmData }) {
       <Legend before="Без инструментов AID" after="С ними" />
       <div className="ttm-track">
         <span className="ttm-muted">Было</span>
-        <ChainBar steps={data.chain.before} max={max} kind="before" progress={progress} />
+        <ChainBar steps={stepsBefore} max={max} kind="before" progress={progress} />
         <span className="ttm-track-total">{formatNumber(before * eased, 1)} ч</span>
       </div>
       <div className="ttm-track">
         <span className="ttm-muted">Стало</span>
-        <ChainBar steps={data.chain.after} max={max} kind="after" progress={progress} />
+        <ChainBar steps={stepsAfter} max={max} kind="after" progress={progress} />
         <span className="ttm-track-total">{formatNumber(after * eased, 1)} ч</span>
       </div>
       <div className="ttm-steps">
         <div>
           <h3>Было</h3>
-          <StepList steps={data.chain.before} />
+          <StepList steps={stepsBefore} />
         </div>
         <div>
           <h3>Стало</h3>
-          <StepList steps={data.chain.after} />
+          <StepList steps={stepsAfter} />
         </div>
       </div>
     </div>
@@ -637,6 +663,7 @@ function OperationsTable({ data }: { data: TtmData }) {
           <tr>
             <th>Операция</th>
             <th>Кто</th>
+            <th>Чьё время</th>
             <th className="ttm-n">Вручную, мин</th>
             <th className="ttm-n">С инструментом, мин</th>
             <th className="ttm-n">Раз в месяц</th>
@@ -650,6 +677,7 @@ function OperationsTable({ data }: { data: TtmData }) {
                   {tool.name}: {op.label}
                 </td>
                 <td>{ROLE_LABEL[op.role]}</td>
+                <td>{splitText(op)}</td>
                 <td className="ttm-n">{op.before}</td>
                 <td className="ttm-n">{op.after}</td>
                 <td className="ttm-n">{formatNumber(op.perMonth, op.perMonth % 1 ? 1 : 0)}</td>
@@ -672,24 +700,119 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow?: strin
   );
 }
 
-const PLATFORM_OPTIONS: { id: TtmLevers['platform']; label: string }[] = [{ id: 'all', label: 'Все платформы' }, ...TTM_PLATFORMS];
+function splitText(op: Parameters<typeof specialistSplit>[0]): string {
+  const split = specialistSplit(op);
+  const parts = SPECIALISTS.filter(({ id }) => split[id] > 0);
+  return parts.length === 1 ? parts[0].label : parts.map(({ id, label }) => `${label.toLowerCase()} ${Math.round(split[id] * 100)} %`).join(', ');
+}
 
-function PlatformFilter({ value, onChange }: { value: TtmLevers['platform']; onChange: (next: TtmLevers['platform']) => void }) {
+function ProductFilter({ data, value, onChange }: { data: TtmData; value: TtmLevers['product']; onChange: (next: TtmLevers['product']) => void }) {
+  const options = [{ id: 'all', name: 'Все продукты' }, ...data.products];
   return (
-    <div className="ttm-platform">
-      <span className="ttm-platform-label" id="ttm-platform-label">
-        Платформа
-      </span>
-      <div className="ttm-segment ds-accent-segment" role="group" aria-labelledby="ttm-platform-label">
-        {PLATFORM_OPTIONS.map((option) => (
+    <div className="ttm-filter">
+      <div className="ttm-segment ds-accent-segment" role="group" aria-label="Продукт">
+        {options.map((option) => (
           <button key={option.id} type="button" aria-pressed={value === option.id} onClick={() => onChange(option.id)}>
-            {option.label}
+            {option.name}
           </button>
         ))}
       </div>
-      <span className="ttm-platform-note">
-        iOS и Android пока считаются поровну. Бот в Telegram — часть инструментов обеих платформ.
-      </span>
+    </div>
+  );
+}
+
+function PairBars({ before, after, max, t, beforeLabel, afterLabel, title }: { before: number; after: number; max: number; t: number; beforeLabel: string; afterLabel: string; title: string }) {
+  return (
+    <div className="ttm-pair" title={title}>
+      <div className="ttm-pair-row ttm-wide">
+        <div className="ttm-fill ttm-before" style={{ width: `${(before / max) * 100 * t}%` }} />
+        <span>{beforeLabel}</span>
+      </div>
+      <div className="ttm-pair-row ttm-wide">
+        <div className="ttm-fill ttm-after" style={{ width: `${(after / max) * 100 * t}%` }} />
+        <span>{afterLabel}</span>
+      </div>
+    </div>
+  );
+}
+
+function durationText(hours: number): string {
+  const { value, unit } = formatDuration(hours);
+  return `${value} ${unit}`;
+}
+
+function ProductsTtm({ data, levers }: { data: TtmData; levers: TtmLevers }) {
+  const [ref, progress] = useReveal<HTMLDivElement>();
+  const results = calcProducts(data, levers);
+  const max = Math.max(1e-9, ...results.map((result) => result.ttmBefore));
+  const eased = easeOut(progress);
+  return (
+    <div className={`ttm-card ttm-rows${progress >= 1 ? ' ttm-settled' : ''}`} ref={ref}>
+      <Legend before="TTM без инструментов AID" after="С ними" />
+      {results.map((result, index) => {
+        const t = staggered(progress, index, results.length);
+        return (
+          <div className={`ttm-row${levers.product === result.product.id ? ' ttm-row-selected' : ''}`} key={result.product.id}>
+            <div className="ttm-row-name">
+              <b>{result.product.name}</b>
+              <small>{formatNumber(result.product.screens)} экранов</small>
+            </div>
+            <PairBars
+              before={result.ttmBefore}
+              after={result.ttmAfter}
+              max={max}
+              t={t}
+              beforeLabel={durationText(result.ttmBefore)}
+              afterLabel={durationText(result.ttmAfter)}
+              title={`${result.product.name}: изменение токена ${durationText(result.ttmBefore)} → ${durationText(result.ttmAfter)}`}
+            />
+            <div className="ttm-row-meta">
+              <b>×{formatNumber(ratio(result.ttmBefore, result.ttmAfter) * eased, 1)}</b>
+              <span>быстрее до кода</span>
+              <span>−{formatNumber(result.totals.saved * eased)} ч/мес команды</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Specialists({ data, levers }: { data: TtmData; levers: TtmLevers }) {
+  const [ref, progress] = useReveal<HTMLDivElement>();
+  const totals = calcTotals(data, levers);
+  const max = Math.max(1e-9, ...SPECIALISTS.map(({ id }) => totals.bySpecialist[id].before));
+  const eased = easeOut(progress);
+  return (
+    <div className={`ttm-card ttm-rows${progress >= 1 ? ' ttm-settled' : ''}`} ref={ref}>
+      <Legend before="Часов в месяц вручную" after="С инструментами" />
+      {SPECIALISTS.map((specialist, index) => {
+        const hours = totals.bySpecialist[specialist.id];
+        const people = levers[specialist.lever];
+        const saved = hours.before - hours.after;
+        return (
+          <div className="ttm-row" key={specialist.id}>
+            <div className="ttm-row-name">
+              <b>{specialist.label}</b>
+              <small>{formatNumber(people)} чел.</small>
+            </div>
+            <PairBars
+              before={hours.before}
+              after={hours.after}
+              max={max}
+              t={staggered(progress, index, SPECIALISTS.length)}
+              beforeLabel={`${formatNumber(hours.before)} ч`}
+              afterLabel={`${formatNumber(hours.after)} ч`}
+              title={`${specialist.label}: ${formatNumber(hours.before)} → ${formatNumber(hours.after)} ч в месяц`}
+            />
+            <div className="ttm-row-meta">
+              <b>−{formatNumber(saved * eased)} ч</b>
+              <span>в месяц</span>
+              <span>≈ {formatNumber(people > 0 ? saved / people : 0, 1)} ч на человека</span>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -703,7 +826,7 @@ function Report({ data }: { data: TtmData }) {
         <div className="ttm-eyebrow">{data.eyebrow}</div>
         <h1>{data.title}</h1>
         <p className="ttm-muted">{data.intro}</p>
-        <PlatformFilter value={levers.platform} onChange={(platform) => setLevers({ ...levers, platform })} />
+        <ProductFilter data={data} value={levers.product} onChange={(product) => setLevers({ ...levers, product })} />
         <Kpis data={data} levers={levers} />
       </header>
 
@@ -711,9 +834,21 @@ function Report({ data }: { data: TtmData }) {
         <Levers levers={levers} pilotsLabel={data.pilotsLabel} onChange={setLevers} />
       </Section>
 
+      <Section id="ttm-products" eyebrow="Time to market" title="TTM по продуктам">
+        <p className="ttm-muted">
+          Сколько рабочего времени проходит от решения дизайнера до кода у разработчика при изменении токена в каждом
+          продукте. Аудит макетов растёт с числом экранов, поэтому большие продукты выигрывают больше.
+        </p>
+        <ProductsTtm data={data} levers={levers} />
+      </Section>
+
       <Section id="ttm-chain" eyebrow="Time to market" title="Путь одного изменения токена">
         <p className="ttm-muted">{data.chain.intro}</p>
-        <Chain data={data} />
+        <Chain data={data} filter={levers.product} />
+      </Section>
+
+      <Section id="ttm-specialists" eyebrow="По специалистам" title="Чьё время возвращается">
+        <Specialists data={data} levers={levers} />
       </Section>
 
       <Section id="ttm-owners" eyebrow="По владельцам" title="Инструменты и операции">

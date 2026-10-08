@@ -7,7 +7,10 @@
  * `TTM_DATA`) и отдаются `api/ttm.ts` только с валидной сессией.
  */
 
-export type TtmRole = 'designer' | 'developer' | 'engineer' | 'team' | 'product';
+export type TtmRole = 'designer' | 'developer' | 'pm' | 'engineer' | 'team' | 'product';
+
+/** Чьё время считаем: дизайнеры, разработчики, продакты, инженеры AID. */
+export type TtmSpecialist = 'designer' | 'developer' | 'pm' | 'engineer';
 
 export interface TtmOperation {
   label: string;
@@ -18,10 +21,21 @@ export interface TtmOperation {
   after: number;
   /** Раз в месяц на одного человека роли (`team` — на всю команду, `product` — на продукт). */
   perMonth: number;
+  /**
+   * Чьё время экономит операция, доли: `{ designer: 0.5, developer: 0.3, pm: 0.2 }`.
+   * Нет поля — по роли (`product` — дизайнеры, ведущие библиотеку; `team` —
+   * поровну дизайнеры, разработчики и продакты).
+   */
+  split?: Partial<Record<TtmSpecialist, number>>;
 }
 
-/** Платформы фильтра страницы. Telegram — не платформа: бот считается частью инструментов iOS и Android. */
-export type TtmPlatform = 'ios' | 'android';
+/** Продукт с объёмом макетов: часы операций делятся между продуктами по экранам. */
+export interface TtmProduct {
+  id: string;
+  name: string;
+  /** Мобильных экранов в макетах. */
+  screens: number;
+}
 
 export interface TtmTool {
   id: string;
@@ -36,12 +50,6 @@ export interface TtmTool {
   was: string;
   /** Как стало с ним. */
   now: string;
-  /**
-   * Доли эффекта по платформам, например `{ ios: 0.6, android: 0.4 }`.
-   * Нет поля — поровну (решение PD 2026-10-08: пока iOS и Android в
-   * одинаковых пропорциях).
-   */
-  platforms?: Partial<Record<TtmPlatform, number>>;
   ops: TtmOperation[];
 }
 
@@ -50,13 +58,16 @@ export interface TtmChainStep {
   hours: number;
   /** Ожидание ответа другого человека — штриховка. */
   wait?: boolean;
+  /** Часы даны для продукта среднего размера и растут с числом экранов (аудит макетов). */
+  perScreen?: boolean;
 }
 
 export interface TtmDefaults {
   designers: number;
   developers: number;
   engineers: number;
-  products: number;
+  /** Продактов. */
+  pms: number;
   rate: number;
   /** Загрузка операциями, проценты. */
   load: number;
@@ -68,6 +79,7 @@ export interface TtmData {
   intro: string;
   owners: { id: string; name: string }[];
   defaults: TtmDefaults;
+  products: TtmProduct[];
   pilotsLabel: string;
   tools: TtmTool[];
   chain: { intro: string; before: TtmChainStep[]; after: TtmChainStep[] };
@@ -75,7 +87,8 @@ export interface TtmData {
   method: { title: string; text: string }[];
 }
 
-const ROLES = new Set<TtmRole>(['designer', 'developer', 'engineer', 'team', 'product']);
+const ROLES = new Set<TtmRole>(['designer', 'developer', 'pm', 'engineer', 'team', 'product']);
+const SPECIALISTS = new Set<string>(['designer', 'developer', 'pm', 'engineer']);
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -91,7 +104,9 @@ function isOperation(value: unknown): value is TtmOperation {
     ROLES.has(value.role as TtmRole) &&
     isNumber(value.before) &&
     isNumber(value.after) &&
-    isNumber(value.perMonth)
+    isNumber(value.perMonth) &&
+    (value.split === undefined ||
+      (isRecord(value.split) && Object.entries(value.split).every(([key, share]) => SPECIALISTS.has(key) && isNumber(share))))
   );
 }
 
@@ -100,15 +115,23 @@ function isTool(value: unknown): value is TtmTool {
     isRecord(value) &&
     ['id', 'owner', 'name', 'type', 'status', 'job', 'was', 'now'].every((key) => isString(value[key])) &&
     (value.pilot === undefined || typeof value.pilot === 'boolean') &&
-    (value.platforms === undefined ||
-      (isRecord(value.platforms) && Object.entries(value.platforms).every(([key, share]) => (key === 'ios' || key === 'android') && isNumber(share)))) &&
     isArrayOf(value.ops, isOperation) &&
     value.ops.length > 0
   );
 }
 
 function isChainStep(value: unknown): value is TtmChainStep {
-  return isRecord(value) && isString(value.label) && isNumber(value.hours) && (value.wait === undefined || typeof value.wait === 'boolean');
+  return (
+    isRecord(value) &&
+    isString(value.label) &&
+    isNumber(value.hours) &&
+    (value.wait === undefined || typeof value.wait === 'boolean') &&
+    (value.perScreen === undefined || typeof value.perScreen === 'boolean')
+  );
+}
+
+function isProduct(value: unknown): value is TtmProduct {
+  return isRecord(value) && isString(value.id) && isString(value.name) && isNumber(value.screens) && value.screens > 0;
 }
 
 function isTitled(value: unknown): value is { title: string; text: string } {
@@ -133,7 +156,9 @@ export function isTtmData(value: unknown): value is TtmData {
     ['eyebrow', 'title', 'intro', 'pilotsLabel'].every((key) => isString(value[key])) &&
     isArrayOf(value.owners, isOwner) &&
     isRecord(defaults) &&
-    ['designers', 'developers', 'engineers', 'products', 'rate', 'load'].every((key) => isNumber(defaults[key])) &&
+    ['designers', 'developers', 'engineers', 'pms', 'rate', 'load'].every((key) => isNumber(defaults[key])) &&
+    isArrayOf(value.products, isProduct) &&
+    value.products.length > 0 &&
     isArrayOf(value.tools, isTool) &&
     isRecord(chain) &&
     isString(chain.intro) &&
