@@ -170,6 +170,13 @@ describe('функция: /api/ttm на превью', () => {
     expect(result.statusCode).toBe(404);
   });
 
+  it('версия pr-N: переадресованное событие с /api/ttm — 404 даже с сессией', async () => {
+    const cookie = `${SESSION_COOKIE_NAME}=${await signSessionCookie(createSessionPayload(), SECRET)}`;
+    const proxied = { ...event('/api/ttm', cookie), __presentbookPreviewProxied: true };
+    expect((await handler(proxied as never, { token: 't' })).statusCode).toBe(404);
+    expect((await handler(JSON.stringify(proxied), { token: 't' })).statusCode).toBe(404);
+  });
+
   it('/api/ttm на сайте без сессии — 401', async () => {
     const result = await handler(event('/api/ttm') as never, { token: 't' });
     expect(result.statusCode).toBe(401);

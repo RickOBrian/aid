@@ -215,5 +215,7 @@ export async function handler(rawEvent: YcHttpEvent | string, context?: YcContex
     }
     return fromResponse(await route(toRequest(apiEvent), { preview: true }));
   }
-  return fromResponse(await route(request, { token: contextToken(context) }));
+  // Переадресованное из `prod` событие — это превью, хотя путь в нём уже
+  // без `/pr-N` (так его отдаёт `invokePreviewVersion`).
+  return fromResponse(await route(request, { token: contextToken(context), preview: Boolean(event[PROXIED_MARK]) }));
 }
