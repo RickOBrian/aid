@@ -135,7 +135,7 @@ jobs:
           version_id=$(yc serverless function version create --function-name presentbook-api --format json \
             --runtime nodejs22 --entrypoint index.handler --memory 256m --execution-timeout 15s \
             --source-path deploy/yc/dist/presentbook-api.zip --service-account-id "$runtime" \
-            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id,PLUGIN_HISTORY_URL=https://storage.yandexcloud.net/presentbook-site/data/plugin-history.json \
+            --environment PREVIEW_STORAGE_URL=https://storage.yandexcloud.net/presentbook-preview,FUNCTION_ID=$function_id,PLUGIN_HISTORY_URL=https://storage.yandexcloud.net/presentbook-site/data/plugin-history.json,TTM_SECRET_ID=${{ vars.YC_LOCKBOX_TTM_ID || 'none' }} \
             --secret environment-variable=BASIC_AUTH_USER,id=$auth,key=BASIC_AUTH_USER \
             --secret environment-variable=BASIC_AUTH_PASSWORD,id=$auth,key=BASIC_AUTH_PASSWORD \
             --secret environment-variable=AUTH_COOKIE_SECRET,id=$auth,key=AUTH_COOKIE_SECRET \
