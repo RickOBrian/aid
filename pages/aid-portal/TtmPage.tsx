@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } 
 import { isTtmData, type TtmChainStep, type TtmData } from './api/_lib/ttm';
 import { apiUrl, withBase } from './base';
 import { DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
+import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
 import { ProductAccentScope } from './ProductAccentScope';
 import { TTM_COLORS } from './ttmColors';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
@@ -9,6 +10,7 @@ import {
   HOURS_PER_DAY,
   HOURS_PER_FTE,
   ROLE_LABEL,
+  TTM_PLATFORMS,
   calcTotals,
   chainHours,
   formatNumber,
@@ -35,6 +37,7 @@ const T = DS_PORTAL_LAYOUT_TOKENS;
 
 const PAGE_STYLE = `
 ${DS_TOKEN_TABLE_STYLE}
+${DS_PRODUCT_ACCENT_STYLE}
 .ttm, .ttm *, .ttm *::before, .ttm *::after { box-sizing: border-box; }
 .ttm {
   --ttm-before: ${TTM_COLORS.before};
@@ -75,6 +78,15 @@ ${DS_TOKEN_TABLE_STYLE}
 .ttm-kpi-note { font-size: 13px; line-height: 18px; color: ${T.textSecondary}; }
 .ttm-kpi-lead { background: var(--ds-accent-bg); border-color: var(--ds-accent-bg); }
 .ttm-kpi-lead .ttm-kpi-value { color: var(--ds-accent); }
+.ttm-platform { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
+.ttm-platform-label { font-size: 13px; color: ${T.textSecondary}; }
+.ttm-segment { display: inline-flex; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; overflow: hidden; }
+.ttm-segment button {
+  min-height: 36px; padding: 6px 14px; border: none; border-right: 1px solid ${T.border};
+  background: ${T.surface}; color: ${T.textSecondary}; font: inherit; font-size: 13px; cursor: pointer;
+}
+.ttm-segment button:last-child { border-right: none; }
+.ttm-platform-note { font-size: 12px; line-height: 18px; color: ${T.textSecondary}; }
 .ttm-levers { display: grid; gap: 16px; }
 .ttm-levers-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px 24px; }
 .ttm-lever { display: grid; gap: 6px; min-width: 0; }
@@ -335,7 +347,7 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
 }
 
 interface LeverSpec {
-  key: Exclude<keyof TtmLevers, 'pilots' | 'load'> | 'loadPercent';
+  key: Exclude<keyof TtmLevers, 'pilots' | 'load' | 'platform'> | 'loadPercent';
   label: string;
   min: number;
   max: number;
@@ -660,6 +672,28 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow?: strin
   );
 }
 
+const PLATFORM_OPTIONS: { id: TtmLevers['platform']; label: string }[] = [{ id: 'all', label: 'Все платформы' }, ...TTM_PLATFORMS];
+
+function PlatformFilter({ value, onChange }: { value: TtmLevers['platform']; onChange: (next: TtmLevers['platform']) => void }) {
+  return (
+    <div className="ttm-platform">
+      <span className="ttm-platform-label" id="ttm-platform-label">
+        Платформа
+      </span>
+      <div className="ttm-segment ds-accent-segment" role="group" aria-labelledby="ttm-platform-label">
+        {PLATFORM_OPTIONS.map((option) => (
+          <button key={option.id} type="button" aria-pressed={value === option.id} onClick={() => onChange(option.id)}>
+            {option.label}
+          </button>
+        ))}
+      </div>
+      <span className="ttm-platform-note">
+        iOS и Android пока считаются поровну. Бот в Telegram — часть инструментов обеих платформ.
+      </span>
+    </div>
+  );
+}
+
 function Report({ data }: { data: TtmData }) {
   const [levers, setLevers] = useState<TtmLevers>(() => leversFromData(data));
 
@@ -669,6 +703,7 @@ function Report({ data }: { data: TtmData }) {
         <div className="ttm-eyebrow">{data.eyebrow}</div>
         <h1>{data.title}</h1>
         <p className="ttm-muted">{data.intro}</p>
+        <PlatformFilter value={levers.platform} onChange={(platform) => setLevers({ ...levers, platform })} />
         <Kpis data={data} levers={levers} />
       </header>
 

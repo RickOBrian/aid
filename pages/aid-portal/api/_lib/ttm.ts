@@ -20,6 +20,9 @@ export interface TtmOperation {
   perMonth: number;
 }
 
+/** Платформы фильтра страницы. Telegram — не платформа: бот считается частью инструментов iOS и Android. */
+export type TtmPlatform = 'ios' | 'android';
+
 export interface TtmTool {
   id: string;
   owner: string;
@@ -33,6 +36,12 @@ export interface TtmTool {
   was: string;
   /** Как стало с ним. */
   now: string;
+  /**
+   * Доли эффекта по платформам, например `{ ios: 0.6, android: 0.4 }`.
+   * Нет поля — поровну (решение PD 2026-10-08: пока iOS и Android в
+   * одинаковых пропорциях).
+   */
+  platforms?: Partial<Record<TtmPlatform, number>>;
   ops: TtmOperation[];
 }
 
@@ -91,6 +100,8 @@ function isTool(value: unknown): value is TtmTool {
     isRecord(value) &&
     ['id', 'owner', 'name', 'type', 'status', 'job', 'was', 'now'].every((key) => isString(value[key])) &&
     (value.pilot === undefined || typeof value.pilot === 'boolean') &&
+    (value.platforms === undefined ||
+      (isRecord(value.platforms) && Object.entries(value.platforms).every(([key, share]) => (key === 'ios' || key === 'android') && isNumber(share)))) &&
     isArrayOf(value.ops, isOperation) &&
     value.ops.length > 0
   );

@@ -6,7 +6,7 @@ import { isTtmData, loadTtmFromLockbox, type TtmData } from '../api/_lib/ttm';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { handler } from '../deploy/yc/handler';
 import { TTM_COLORS } from '../ttmColors';
-import { calcTotals, chainHours, leversFromData } from '../ttmModel';
+import { calcTotals, chainHours, leversFromData, platformShare } from '../ttmModel';
 
 /**
  * Страница «КПД команды AID» (`/ttm`, AID-13). Данные закрытые — в тестах
@@ -55,6 +55,27 @@ describe('формулы КПД', () => {
   it('ноль часов «стало» — КПД 0, а не бесконечность', () => {
     const only: TtmData = { ...SAMPLE, tools: [SAMPLE.tools[2]] };
     expect(calcTotals(only, leversFromData(only)).factor).toBe(0);
+  });
+
+  it('платформа: по умолчанию iOS и Android поровну — часы делятся, КПД тот же', () => {
+    const all = calcTotals(SAMPLE, leversFromData(SAMPLE));
+    const ios = calcTotals(SAMPLE, { ...leversFromData(SAMPLE), platform: 'ios' });
+    const android = calcTotals(SAMPLE, { ...leversFromData(SAMPLE), platform: 'android' });
+    expect(ios.before).toBeCloseTo(all.before / 2);
+    expect(ios.saved + android.saved).toBeCloseTo(all.saved);
+    expect(ios.factor).toBeCloseTo(all.factor);
+    // Бот (Y) не отдельная платформа: его часы есть и в iOS, и в Android.
+    expect(ios.rows.map((row) => row.tool.id)).toEqual(['x', 'y', 'z']);
+  });
+
+  it('платформа: доли из данных нормируются, нет доли — ноль', () => {
+    const tool = { ...SAMPLE.tools[0], platforms: { ios: 3, android: 1 } };
+    expect(platformShare(tool, 'ios')).toBeCloseTo(0.75);
+    expect(platformShare(tool, 'android')).toBeCloseTo(0.25);
+    expect(platformShare({ ...tool, platforms: { ios: 1 } }, 'android')).toBe(0);
+    expect(platformShare(SAMPLE.tools[0], 'all')).toBe(1);
+    expect(isTtmData({ ...SAMPLE, tools: [tool] })).toBe(true);
+    expect(isTtmData({ ...SAMPLE, tools: [{ ...tool, platforms: { telegram: 1 } }] })).toBe(false);
   });
 
   it('путь изменения — сумма часов шагов', () => {
