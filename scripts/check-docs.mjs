@@ -180,6 +180,45 @@ for (const file of files) {
   if (ceremonial && sections.length && numbered !== sections.length)
     warn(file, 'numbering', `разделы пронумерованы частично (${numbered}/${sections.length})`);
 
+  /* Подразделы и ссылки на разделы. В 3.0.0 component-standards разделы
+     перенумеровали, а подразделы и ссылки внутри — нет: под «## 7» лежали
+     «### 6.1…6.7». Нумерация ### должна идти от своего ##, а ссылка
+     «раздел N» / «§N» без имени другого файла в строке — вести на
+     существующий раздел этого документа. */
+  if (ceremonial) {
+    const body = src.replace(/^```[\s\S]*?^```/gm, (m) => m.replace(/[^\n]/g, ''));
+    const lines = body.split('\n');
+    const known = new Set();
+    let parent = null;
+    let expected = 1;
+    for (const line of lines) {
+      const h2 = line.match(/^## (\d+)\./);
+      if (h2) { parent = h2[1]; expected = 1; known.add(parent); continue; }
+      if (/^## /.test(line)) { parent = null; continue; }
+      const h3 = line.match(/^### (\d+)\.(\d+)\.?\s/);
+      if (!h3) continue;
+      known.add(`${h3[1]}.${h3[2]}`);
+      if (parent === null) continue;
+      if (h3[1] !== parent)
+        err(file, 'subsection-numbering', `«### ${h3[1]}.${h3[2]}» под «## ${parent}.»`);
+      else if (Number(h3[2]) !== expected)
+        err(file, 'subsection-numbering', `«### ${h3[1]}.${h3[2]}» — ожидался ${parent}.${expected}`);
+      expected = Number(h3[2]) + 1;
+    }
+    if (known.size) {
+      const refRe = /(?:раздел[а-я]*|§)\s*(\d+(?:\.\d+)?)/gi;
+      for (const line of lines) {
+        if (/^#/.test(line)) continue;
+        if (/\.md\b|\.json\b|-guide\b|-standard\b|ADR-\d|\bQ-\d/.test(line)) continue;
+        for (const m of line.matchAll(refRe)) {
+          const n = m[1];
+          if (!known.has(n))
+            warn(file, 'section-ref', `ссылка «${m[0].trim()}» — такого раздела в документе нет`);
+        }
+      }
+    }
+  }
+
   /* машинный слой */
   if (fm.machineFile && fm.machineFile !== 'null') {
     const mf = join(dirname(file), fm.machineFile);
