@@ -129,7 +129,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 Витрина токенов и компонентов — Presentbook (`pages/aid-portal/`), он
 читает данные продукта при сборке. Показ нового продукта или новой
 коллекции — задача чата Presentbook (стык «Токены и changelog продуктов»
-в корневом `CLAUDE.md`). Легаси-портал `docs/storybook/` удалён (ADR-044).
+в корневом `CLAUDE.md`). Легаси-портал `docs/storybook/` легаси и удаляется (ADR-044).
 
 ---
 

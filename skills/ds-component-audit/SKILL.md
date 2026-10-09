@@ -461,7 +461,7 @@ Designer, не за skill.
 
 ### Changelog
 
-- **1.3.1** — 2026-10-09. База известных компонентов — Presentbook вместо удалённых `docs/storybook/components/*.html` (ADR-044).
+- **1.3.1** — 2026-10-09. База известных компонентов — Presentbook вместо легаси `docs/storybook/components/*.html` (ADR-044).
 - **1.3.0** — 2026-07-03. Added Decomposition Check step before verdict;
   moved clarifying questions to precede verdict instead of following it.
   Новый Шаг 3.5 (Decomposition Check) — проверка повторяющихся структурных

@@ -346,7 +346,7 @@ Hub (/design-system)
 | Build | `npm run build:driver-colors` |
 | routeBase | `/design-system` |
 
-Легаси-портал `docs/storybook/` удалён (ADR-044): Presentbook — единственная
+Легаси-портал `docs/storybook/` легаси и удаляется (ADR-044): Presentbook — единственная
 среда показа стандартов, токенов и компонентов.
 
 ---

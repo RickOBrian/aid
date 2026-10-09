@@ -170,7 +170,7 @@ explicitly requested product release boundary.
 
 ## 9. Changelog
 
-- **1.1.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
+- **1.1.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.1.0** — 2026-09-21. Disposition находки выводится из уровня правила
   (`conformance-levels.md`); отчёт показывает профиль соответствия вместо
   списка нарушений.

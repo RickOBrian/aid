@@ -541,7 +541,7 @@ Pilot, где показываются 1–2 сокращённых before/after
 
 ### Changelog
 
-- **1.2.2** — 2026-10-09. Примеры скоупа и follow-up — Presentbook вместо удалённого `docs/storybook/` (ADR-044).
+- **1.2.2** — 2026-10-09. Примеры скоупа и follow-up — Presentbook вместо легаси `docs/storybook/` (ADR-044).
 - **1.2.1** — добавлено терминальное значение `rollout.status: completed`
   (полное, не `_partial`, завершение — все файлы скоупа мигрированы,
   `cleanup.follow_up` пуст). Уточнено соотношение с `phase: closed`:

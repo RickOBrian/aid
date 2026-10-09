@@ -442,6 +442,6 @@ Bump rule: `1.0.0` → `1.1.0` (MINOR: new token).
 
 ## 11. Changelog
 
-- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
+- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: SemVer для tokens/components/skills, deprecation policy, release trains, cross-platform versioning, examples.

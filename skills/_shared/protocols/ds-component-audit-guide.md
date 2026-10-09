@@ -349,7 +349,7 @@ git push
 
 ## 11. Changelog
 
-- **1.0.2** — 2026-10-09. База для сравнения — страницы компонентов в Presentbook вместо удалённых `docs/storybook/components/*.html` (ADR-044).
+- **1.0.2** — 2026-10-09. База для сравнения — страницы компонентов в Presentbook вместо легаси `docs/storybook/components/*.html` (ADR-044).
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — первая версия. Собрана по `ds-component-audit/SKILL.md`
   v1.3.0: назначение, разграничение с spec/migration, входы, фазы

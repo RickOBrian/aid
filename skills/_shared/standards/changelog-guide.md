@@ -291,5 +291,5 @@ Sets `currentVersion: "1.0.0"` — unreleased components keep `currentVersion: n
 
 ## 10. Changelog
 
-- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
+- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.0.1** — предыдущие версии до введения раздела; история — в git.

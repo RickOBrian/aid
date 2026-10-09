@@ -183,7 +183,7 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 ## 9. Changelog
 
-- **1.0.3** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
+- **1.0.3** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.0.2** — 2026-09-20. guide-lint: нормализация формы — строка
   статуса, нумерация разделов, раздел Changelog.
 - **1.0.1** — предыдущие версии до введения раздела; история — в git.
