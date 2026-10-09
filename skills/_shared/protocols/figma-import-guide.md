@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/protocols/
 name: figma-import-guide
 metadata:
-  version: "1.0.2"
+  version: "1.0.3"
   kind: protocol
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Figma Import Guide
 
-> Статус: Draft · v1.0.2 · обновлено 2026-09-20
+> Статус: Draft · v1.0.3 · обновлено 2026-10-09
 
 ---
 
@@ -45,7 +45,6 @@ metadata:
 |---|---|
 | **Product token data** (`pages/aid-portal/*Data.ts` для Driver) | Canonical token values |
 | **Figma file (design)** | Design intent, variants, modes — источник для import/discovery |
-| **`src/pages/FigmaStyles/`** | Reference-only dump; **не** source of truth |
 | **`tokens/*-changelog.json`** | Version history; не источник значений |
 
 ### Когда Figma приоритетна
@@ -58,7 +57,6 @@ metadata:
 
 - Token уже существует в `*Data.ts` / `data.ts` — reuse, не перезапись.
 - Release boundary — changelog фиксирует implementation, не Figma draft.
-- `FigmaStyles` dump — только reference для сравнения.
 
 ---
 
@@ -175,7 +173,6 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 |---|---|
 | Import в wrong product scope | Product Context Gate first |
 | Hardcode Figma hex в component | Token Integrity Gate |
-| `FigmaStyles` как source of truth | Только reference; canonical — `*Data.ts` |
 | Создание `colorData.ts` вместо `data.ts` | Ориентироваться на фактический naming Driver |
 | Import skills вне `skills/_shared/` | Skills Import Gate + user confirmation |
 | Immediate changelog bump | Pending → Release Gate |
@@ -186,6 +183,7 @@ Figma component variants (`Primary`, `Secondary`) — это **component props**
 
 ## 9. Changelog
 
+- **1.0.3** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.0.2** — 2026-09-20. guide-lint: нормализация формы — строка
   статуса, нумерация разделов, раздел Changelog.
 - **1.0.1** — предыдущие версии до введения раздела; история — в git.
