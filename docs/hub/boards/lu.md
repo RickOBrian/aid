@@ -20,7 +20,7 @@
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
 | AID · Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
 | AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; клон `arturuxui/figma-components-swapper` | весь продукт | первое сообщение чата → его план |
-| AID · Guide · Git for Beginners | `<рабочая папка>/Guide - Git for Beginners`; репозиторий `arturuxui/aid-git-guide` — после решения PD | весь продукт | первое сообщение чата → его план |
+| AID · Guide · Git for Beginners | клон `arturuxui/aid-git-guide` | весь репозиторий гайда | его `CLAUDE.md` → `docs/PLAN.md` |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 
@@ -39,7 +39,7 @@
 |---|---|---|---|
 | AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота ([#98](https://github.com/RickOBrian/aid/issues/98)). 7а–7в готовы (#24–#26); бот подключён к серверу LU — AID-BOT-4 готово 2026-10-08. #98 открыт, Штаб LU ведёт там 7г . Проверка на живом сервере 2026-10-09: бот забрал тестовое `proposal.created` за 28 с, сообщение в Telegram пришло; тестовые записи удалены . 7г — «Подключить Telegram» — [#35](https://github.com/arturuxui/figma-library-updater/pull/35) (`6cb6e9c`), проверено `arturuxui` на живом сервере 2026-10-09: `/link`, `proposal.created`, `proposal.resolved` доходят. Релиз [v1.1.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.1.0) | этап 7 со стороны LU готов; ждёт @username бота для кнопки «Открыть бота» ([вопрос в #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6077785298)) |
 | AID-LU-9 | Plugin · Components Swapper | Новый продукт: замена компонентов и иконок из чужих библиотек на наши с сохранением контента. Решение PD в [#156](https://github.com/RickOBrian/aid/issues/156): «а» — отдельный продукт, владелец — инженер LU; регистрация — RickOBrian/aid#159. PD планирует позже объединить плагины — замену держать отдельным модулем (`src/core` без UI). Репозиторий [arturuxui/figma-components-swapper](https://github.com/arturuxui/figma-components-swapper); этап 0 — каркас, индекс, скан, библиотеки Rider и спайк API — #1, #2 (смержены); этап 1 — замена по имени с отменой и вложенными, #3, #5, #6 (смержены; на ✅ Driver App • Order 229/229 уверенных пар + 52 вложенных, 0 потерянных текстов); «Растянут» — [#7](https://github.com/arturuxui/figma-components-swapper/pull/7); этап 2а — отвязанные фреймы → наши экземпляры — [#8](https://github.com/arturuxui/figma-components-swapper/pull/8) (поверх #7) | этап 2а — ждёт проверки `arturuxui` в Figma, мерж #7 → #8; дальше 2б — ручные фреймы |
-| AID-LU-11 | Guide · Git for Beginners | Новый продукт: гайд по git для новичков — интерактивная веб-версия (симулятор веток, PR и merge, сценарии, глоссарий, «что делать, если…») и PDF из одного источника; учим через веб GitHub и Claude Code на правилах AID. План готов, кода нет. Решения `arturuxui` 2026-10-09: «1 веб+Claude, 2 да, 3 отдельный репо, 4 продвинутое». Вопросы PD: тип чата, доставка в Presentbook, оформление, видимость, сверка с правилами; найдено расхождение `git-workflow.md` §6 с «Git-полномочиями» | issue к PD — ждёт «да» `arturuxui` в Штабе |
+| AID-LU-11 | Guide · Git for Beginners | Новый продукт: гайд по git для новичков — интерактивная веб-версия (симулятор веток, PR и merge, сценарии, глоссарий, «что делать, если…») и PDF из одного источника; учим через веб GitHub и Claude Code на правилах AID. План готов, репозиторий [arturuxui/aid-git-guide](https://github.com/arturuxui/aid-git-guide) заведён до решения PD (позже возможен перенос к PD), кода нет. Решения `arturuxui` 2026-10-09: «1 веб+Claude, 2 да, 3 отдельный репо, 4 продвинутое». Вопросы PD: тип чата, доставка в Presentbook, оформление, видимость, сверка с правилами; найдено расхождение `git-workflow.md` §6 с «Git-полномочиями» | issue к PD — ждёт «да» `arturuxui` в Штабе |
 
 ## Вопросы инженера
 
@@ -97,6 +97,8 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 2026-10-09 | AID-LU-9 | Plugin · Components Swapper | «3а» — передать решение PD и начинать работу по плану |
 | 2026-10-09 | AID-LU-10 | Plugin · Library Updater | «4 да» — версия 1.0.0 в `package.json` отдельным PR |
 | 2026-10-09 | Hub | Hub | «5 да» — обновить доску одним PR |
+| 2026-10-09 | AID-LU-11 | Guide · Git for Beginners | «1 веб+Claude, 2 да, 3 отдельный репо, 4 продвинутое» (в чате продукта) |
+| 2026-10-09 | AID-LU-11 | Guide · Git for Beginners | «Тестовым новичком буду я сам — буду просто смотреть, что получается»; «гит используем пока мой, после можно будет влить в PD»; «планы запиши уже сейчас, чтобы ничего не потерялось» (в чате продукта) |
 
 ## Закрыто
 
