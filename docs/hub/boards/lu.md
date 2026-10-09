@@ -19,7 +19,7 @@
 |---|---|---|---|
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
 | AID · Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
-| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; репозиторий — `arturuxui/figma-components-swapper`, заводится по «да» инженера | весь продукт | первое сообщение чата → его план |
+| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; клон `arturuxui/figma-components-swapper` | весь продукт | первое сообщение чата → его план |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 
@@ -37,7 +37,7 @@
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота ([#98](https://github.com/RickOBrian/aid/issues/98)). 7а–7в готовы (#24–#26); бот подключён к серверу LU — AID-BOT-4 готово 2026-10-08. #98 открыт, Штаб LU ведёт там 7г | проверка уведомления на живом сервере, затем 7г — в работе |
-| AID-LU-9 | Plugin · Components Swapper | Новый продукт: замена компонентов и иконок из чужих библиотек на наши с сохранением контента. Решение PD в [#156](https://github.com/RickOBrian/aid/issues/156): «а» — отдельный продукт, владелец — инженер LU; регистрация — RickOBrian/aid#159. PD планирует позже объединить плагины — замену держать отдельным модулем | в работе по плану |
+| AID-LU-9 | Plugin · Components Swapper | Новый продукт: замена компонентов и иконок из чужих библиотек на наши с сохранением контента. Решение PD в [#156](https://github.com/RickOBrian/aid/issues/156): «а» — отдельный продукт, владелец — инженер LU; регистрация — RickOBrian/aid#159. PD планирует позже объединить плагины — замену держать отдельным модулем (`src/core` без UI). Репозиторий [arturuxui/figma-components-swapper](https://github.com/arturuxui/figma-components-swapper); этап 0 — каркас, индекс библиотеки, скан макета — [#1](https://github.com/arturuxui/figma-components-swapper/pull/1) | этап 0 — ждёт проверки инженером в Figma (Driver); от инженера — ссылки на Rider и тестовые макеты |
 | AID-LU-10 | Plugin · Library Updater | `version` в `package.json` → 1.0.0, как у релиза [v1.0.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.0.0) | в работе |
 
 ## Вопросы инженера
