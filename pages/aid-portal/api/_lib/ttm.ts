@@ -62,6 +62,26 @@ export interface TtmChainStep {
   perScreen?: boolean;
 }
 
+/** Уровень сложности задачи (AID-14). */
+export interface TtmComplexityTier {
+  label: string;
+  /** Доля задач этого уровня в месяце. */
+  share: number;
+  /** Множитель времени вручную и с инструментом относительно обычной задачи. */
+  before: number;
+  after: number;
+}
+
+export interface TtmComplexity {
+  /** Плашка у графика: откуда цифры. */
+  badge: string;
+  tiers: TtmComplexityTier[];
+  /** Разброс: быстрый и долгий случай, множители `[lo, hi]`. */
+  spread: { before: [number, number]; after: [number, number] };
+  /** Операция графика по умолчанию. */
+  defaultOp?: { tool: string; op: number };
+}
+
 export interface TtmDefaults {
   designers: number;
   developers: number;
@@ -85,6 +105,8 @@ export interface TtmData {
   chain: { intro: string; before: TtmChainStep[]; after: TtmChainStep[] };
   facts: { eyebrow: string; items: { value: string; label: string }[] };
   method: { title: string; text: string }[];
+  /** Сложность и разброс (AID-14). Нет блока — без графика и диапазонов. */
+  complexity?: TtmComplexity;
 }
 
 const ROLES = new Set<TtmRole>(['designer', 'developer', 'pm', 'engineer', 'team', 'product']);
@@ -130,6 +152,29 @@ function isChainStep(value: unknown): value is TtmChainStep {
   );
 }
 
+const isPair = (value: unknown): value is [number, number] =>
+  Array.isArray(value) && value.length === 2 && value.every(isNumber) && value[0] <= value[1];
+
+function isTier(value: unknown): value is TtmComplexityTier {
+  return isRecord(value) && isString(value.label) && isNumber(value.share) && isNumber(value.before) && isNumber(value.after);
+}
+
+function isComplexity(value: unknown): value is TtmComplexity {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const { spread, defaultOp } = value;
+  return (
+    isString(value.badge) &&
+    isArrayOf(value.tiers, isTier) &&
+    value.tiers.length >= 2 &&
+    isRecord(spread) &&
+    isPair(spread.before) &&
+    isPair(spread.after) &&
+    (defaultOp === undefined || (isRecord(defaultOp) && isString(defaultOp.tool) && isNumber(defaultOp.op)))
+  );
+}
+
 function isProduct(value: unknown): value is TtmProduct {
   return isRecord(value) && isString(value.id) && isString(value.name) && isNumber(value.screens) && value.screens > 0;
 }
@@ -167,7 +212,8 @@ export function isTtmData(value: unknown): value is TtmData {
     isRecord(facts) &&
     isString(facts.eyebrow) &&
     isArrayOf(facts.items, isFact) &&
-    isArrayOf(value.method, isTitled)
+    isArrayOf(value.method, isTitled) &&
+    (value.complexity === undefined || isComplexity(value.complexity))
   );
 }
 

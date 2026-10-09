@@ -6,7 +6,19 @@ import { isTtmData, loadTtmFromLockbox, type TtmData } from '../api/_lib/ttm';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { handler } from '../deploy/yc/handler';
 import { TTM_COLORS } from '../ttmColors';
-import { calcProducts, calcTotals, chainFor, chainHours, leversFromData, productShare, specialistSplit } from '../ttmModel';
+import {
+  calcProducts,
+  calcTotals,
+  chainFor,
+  chainHours,
+  complexityPoints,
+  formatMinutes,
+  leversFromData,
+  niceMax,
+  productShare,
+  specialistSplit,
+  spreadRange,
+} from '../ttmModel';
 
 /**
  * Страница «КПД команды AID» (`/ttm`, AID-13). Данные закрытые — в тестах
@@ -107,6 +119,46 @@ describe('формулы КПД', () => {
 
   it('путь изменения — сумма часов шагов', () => {
     expect(chainHours(SAMPLE.chain.before)).toBe(24);
+  });
+});
+
+describe('сложность и разброс (AID-14)', () => {
+  const complexity = {
+    badge: 'b',
+    tiers: [
+      { label: 'Простая', share: 0.5, before: 0.5, after: 1 },
+      { label: 'Сложная', share: 0.5, before: 2, after: 1.2 },
+    ],
+    spread: { before: [0.8, 1.3] as [number, number], after: [0.9, 1.15] as [number, number] },
+  };
+
+  it('диапазон: худший КПД — быстрый «вручную» против долгого «с инструментом»', () => {
+    const range = spreadRange(100, 10, complexity.spread);
+    expect(range.factorLow).toBeCloseTo(80 / 11.5);
+    expect(range.factorHigh).toBeCloseTo(130 / 9);
+    expect(range.savedLow).toBeCloseTo(80 - 11.5);
+    expect(range.savedHigh).toBeCloseTo(130 - 9);
+  });
+
+  it('точки графика: минуты × множитель уровня, полоса — разброс', () => {
+    const [simple, hard] = complexityPoints({ label: 'o', role: 'designer', before: 60, after: 10, perMonth: 1 }, complexity);
+    expect(simple.before).toBe(30);
+    expect(hard.before).toBe(120);
+    expect(hard.beforeHigh).toBeCloseTo(156);
+    expect(hard.afterLow).toBeCloseTo(10.8);
+  });
+
+  it('ось и подписи: круглая граница, от 90 минут — часы', () => {
+    expect(niceMax(170)).toBe(200);
+    expect(niceMax(0)).toBe(1);
+    expect(formatMinutes(45)).toBe('45 мин');
+    expect(formatMinutes(120)).toBe('2,0 ч');
+  });
+
+  it('форма: блок необязателен, а если есть — проверяется', () => {
+    expect(isTtmData({ ...SAMPLE, complexity })).toBe(true);
+    expect(isTtmData({ ...SAMPLE, complexity: { ...complexity, spread: { before: [1.3, 0.8], after: [0.9, 1.15] } } })).toBe(false);
+    expect(isTtmData({ ...SAMPLE, complexity: { ...complexity, tiers: [complexity.tiers[0]] } })).toBe(false);
   });
 });
 
