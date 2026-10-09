@@ -1,4 +1,4 @@
-import type { TtmChainStep, TtmData, TtmOperation, TtmProduct, TtmRole, TtmSpecialist, TtmTool } from './api/_lib/ttm';
+import type { TtmChainStep, TtmComplexity, TtmData, TtmOperation, TtmProduct, TtmRole, TtmSpecialist, TtmTool } from './api/_lib/ttm';
 
 /**
  * Формулы страницы «КПД команды AID» (`/ttm`). Данные — закрытые, из
@@ -17,6 +17,10 @@ import type { TtmChainStep, TtmData, TtmOperation, TtmProduct, TtmRole, TtmSpeci
  *
  * TTM. Путь одного изменения токена — сумма шагов; шаги `perScreen` (аудит
  * макетов) даны для продукта среднего размера и растут с числом экранов.
+ *
+ * Разброс (AID-14). Итог — обычный случай; быстрый и долгий — множители
+ * `spread`: часы вручную B·[lo, hi], с инструментом A·[lo, hi]. Худший КПД —
+ * быстрый «вручную» против долгого «с инструментом», лучший — наоборот.
  */
 
 export type TtmProductFilter = 'all' | string;
@@ -217,6 +221,62 @@ export function calcProducts(data: TtmData, levers: TtmLevers): TtmProductResult
     ttmAfter: chainHours(chainFor(data.chain.after, data.products, product.id)),
     totals: calcTotals(data, { ...levers, product: product.id }),
   }));
+}
+
+export interface TtmRange {
+  factorLow: number;
+  factorHigh: number;
+  savedLow: number;
+  savedHigh: number;
+}
+
+export function spreadRange(before: number, after: number, spread: TtmComplexity['spread']): TtmRange {
+  const [beforeLow, beforeHigh] = spread.before.map((k) => before * k);
+  const [afterLow, afterHigh] = spread.after.map((k) => after * k);
+  return {
+    factorLow: ratio(beforeLow, afterHigh),
+    factorHigh: ratio(beforeHigh, afterLow),
+    savedLow: beforeLow - afterHigh,
+    savedHigh: beforeHigh - afterLow,
+  };
+}
+
+export interface TtmComplexityPoint {
+  label: string;
+  share: number;
+  /** Минуты на одну операцию: обычный, быстрый и долгий случай. */
+  before: number;
+  beforeLow: number;
+  beforeHigh: number;
+  after: number;
+  afterLow: number;
+  afterHigh: number;
+}
+
+/** Время операции по уровням сложности, в минутах. */
+export function complexityPoints(op: TtmOperation, complexity: TtmComplexity): TtmComplexityPoint[] {
+  const [bl, bh] = complexity.spread.before;
+  const [al, ah] = complexity.spread.after;
+  return complexity.tiers.map((tier) => {
+    const before = op.before * tier.before;
+    const after = op.after * tier.after;
+    return { label: tier.label, share: tier.share, before, beforeLow: before * bl, beforeHigh: before * bh, after, afterLow: after * al, afterHigh: after * ah };
+  });
+}
+
+/** «Круглая» верхняя граница оси: 1,5 · 2 · 3 · 5 · 10 × 10ⁿ. */
+export function niceMax(value: number): number {
+  if (value <= 0) {
+    return 1;
+  }
+  const exponent = 10 ** Math.floor(Math.log10(value));
+  const n = value / exponent;
+  return (n <= 1.5 ? 1.5 : n <= 2 ? 2 : n <= 3 ? 3 : n <= 5 ? 5 : 10) * exponent;
+}
+
+/** Минуты: от 90 — в часах. */
+export function formatMinutes(minutes: number): string {
+  return minutes >= 90 ? `${formatNumber(minutes / 60, minutes >= 600 ? 0 : 1)} ч` : `${formatNumber(minutes)} мин`;
 }
 
 const numberFormats = new Map<number, Intl.NumberFormat>();

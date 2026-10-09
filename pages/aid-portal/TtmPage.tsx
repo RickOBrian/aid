@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { isTtmData, type TtmChainStep, type TtmData } from './api/_lib/ttm';
+import { isTtmData, type TtmChainStep, type TtmComplexity, type TtmData } from './api/_lib/ttm';
 import { apiUrl, withBase } from './base';
 import { DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
@@ -11,6 +11,10 @@ import {
   ROLE_LABEL,
   SPECIALISTS,
   calcProducts,
+  complexityPoints,
+  formatMinutes,
+  niceMax,
+  spreadRange,
   calcTotals,
   chainFor,
   chainHours,
@@ -90,6 +94,37 @@ ${DS_PRODUCT_ACCENT_STYLE}
 }
 .ttm-segment button:last-child { border-right: none; }
 .ttm-rows { display: grid; gap: 4px; }
+.ttm-cx { display: grid; gap: 16px; }
+.ttm-cx > * { min-width: 0; }
+.ttm-cx-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.ttm-cx-top label { font-size: 13px; color: ${T.textSecondary}; }
+.ttm-cx select {
+  flex: 1 1 260px; min-width: 0; width: 100%; min-height: 36px; padding: 6px 10px; font: inherit; font-size: 14px; text-overflow: ellipsis;
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+}
+.ttm-badge {
+  padding: 3px 8px; border: 1px dashed ${T.textSecondary}; border-radius: 4px;
+  font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: ${T.tableHeadLetterSpacing}; color: ${T.textSecondary};
+}
+.ttm-cx svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ttm-cx .ttm-cx-grid { stroke: ${T.border}; stroke-dasharray: 2 4; }
+.ttm-cx .ttm-cx-axis { stroke: ${T.border}; }
+.ttm-cx text { fill: ${T.textSecondary}; font-family: ${T.fontFamily}; font-size: 12px; }
+.ttm-cx .ttm-cx-value { fill: ${T.textPrimary}; font-weight: 500; }
+.ttm-cx .ttm-cx-band-before { fill: var(--ttm-before); fill-opacity: 0.18; }
+.ttm-cx .ttm-cx-band-after { fill: var(--ttm-after); fill-opacity: 0.16; }
+.ttm-cx .ttm-cx-line { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.ttm-cx .ttm-cx-line-before { stroke: var(--ttm-before); }
+.ttm-cx .ttm-cx-line-after { stroke: var(--ttm-after); }
+.ttm-cx .ttm-cx-point { stroke: ${T.surface}; stroke-width: 2; }
+.ttm-cx .ttm-cx-point-before { fill: var(--ttm-before); }
+.ttm-cx .ttm-cx-point-after { fill: var(--ttm-after); }
+.ttm-cx .ttm-cx-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ttm-draw 1.1s ease-out forwards; }
+@keyframes ttm-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .ttm-cx .ttm-cx-draw { animation: none; stroke-dashoffset: 0; } }
+.ttm-mix { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px 12px; }
+.ttm-mix div { display: grid; gap: 4px; font-size: 13px; color: ${T.textSecondary}; }
+.ttm-mix i { display: block; height: 6px; border-radius: 3px; background: ${T.textMuted}; }
 .ttm-row {
   display: grid; grid-template-columns: minmax(120px, 0.9fr) minmax(0, 2fr) minmax(110px, 0.7fr);
   gap: 8px 20px; align-items: center; padding: 12px; border-radius: ${T.tableWrapRadius};
@@ -181,6 +216,8 @@ ${DS_PRODUCT_ACCENT_STYLE}
   .ttm-op, .ttm-steps { grid-template-columns: 1fr; }
   .ttm-row { grid-template-columns: 1fr auto; }
   .ttm-row .ttm-pair { grid-column: 1 / -1; grid-row: 2; }
+  /* График сжимается вдвое — подписи в единицах viewBox крупнее. */
+  .ttm-cx text { font-size: 18px; }
   .ttm-track { grid-template-columns: 56px minmax(0, 1fr) 64px; }
 }
 `;
@@ -320,6 +357,7 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
   const before = chainHours(chainFor(data.chain.before, data.products, levers.product));
   const after = chainHours(chainFor(data.chain.after, data.products, levers.product));
   const productName = data.products.find((product) => product.id === levers.product)?.name;
+  const range = data.complexity ? spreadRange(totals.before, totals.after, data.complexity.spread) : null;
   const ttmBefore = formatDuration(before * at0(progress));
   const ttmAfter = formatDuration(after * at0(progress));
   const at = (index: number) => staggered(progress, index, 4);
@@ -332,7 +370,11 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
           {formatNumber(totals.factor * at(0), 1)}
           <small>×</small>
         </span>
-        <span className="ttm-kpi-note">во столько раз быстрее те же операции</span>
+        <span className="ttm-kpi-note">
+          {range
+            ? `обычно; диапазон ×${formatNumber(range.factorLow, 1)}–${formatNumber(range.factorHigh, 1)} от быстрого случая до долгого`
+            : 'во столько раз быстрее те же операции'}
+        </span>
       </div>
       <div className="ttm-card ttm-kpi">
         <span className="ttm-eyebrow">Возвращено в месяц</span>
@@ -341,8 +383,9 @@ function Kpis({ data, levers }: { data: TtmData; levers: TtmLevers }) {
           <small>ч</small>
         </span>
         <span className="ttm-kpi-note">
-          ≈ {formatNumber(totals.saved / HOURS_PER_FTE, 1)} ставки сотрудника · было {formatNumber(totals.before)} ч,
-          стало {formatNumber(totals.after)} ч
+          {range && `от ${formatNumber(range.savedLow)} до ${formatNumber(range.savedHigh)} ч · `}≈{' '}
+          {formatNumber(totals.saved / HOURS_PER_FTE, 1)} ставки сотрудника · было {formatNumber(totals.before)} ч, стало{' '}
+          {formatNumber(totals.after)} ч
         </span>
       </div>
       <div className="ttm-card ttm-kpi">
@@ -706,6 +749,127 @@ function splitText(op: Parameters<typeof specialistSplit>[0]): string {
   return parts.length === 1 ? parts[0].label : parts.map(({ id, label }) => `${label.toLowerCase()} ${Math.round(split[id] * 100)} %`).join(', ');
 }
 
+interface OperationRef {
+  key: string;
+  label: string;
+  op: TtmData['tools'][number]['ops'][number];
+}
+
+function operationRefs(data: TtmData): OperationRef[] {
+  return data.tools.flatMap((tool) => tool.ops.map((op, index) => ({ key: `${tool.id}:${index}`, label: `${tool.name} — ${op.label}`, op })));
+}
+
+const CX = { width: 640, height: 300, left: 64, right: 16, top: 20, bottom: 44 };
+
+function ComplexityChart({ data, complexity }: { data: TtmData; complexity: TtmComplexity }) {
+  const [ref, progress] = useReveal<HTMLDivElement>();
+  const refs = useMemo(() => operationRefs(data), [data]);
+  const defaultKey = complexity.defaultOp ? `${complexity.defaultOp.tool}:${complexity.defaultOp.op}` : refs[0]?.key;
+  const [selected, setSelected] = useState(() => (refs.some((item) => item.key === defaultKey) ? defaultKey : refs[0]?.key));
+  const current = refs.find((item) => item.key === selected) ?? refs[0];
+  if (!current) {
+    return null;
+  }
+  const points = complexityPoints(current.op, complexity);
+  const top = niceMax(Math.max(1, ...points.map((point) => point.beforeHigh)) * 1.08);
+  const innerWidth = CX.width - CX.left - CX.right;
+  const innerHeight = CX.height - CX.top - CX.bottom;
+  const x = (index: number) => CX.left + innerWidth * (index / Math.max(1, points.length - 1));
+  const y = (minutes: number) => CX.top + innerHeight * (1 - minutes / top);
+  const line = (key: 'before' | 'after') => `M${points.map((point, index) => `${x(index)},${y(point[key])}`).join('L')}`;
+  const band = (low: 'beforeLow' | 'afterLow', high: 'beforeHigh' | 'afterHigh') =>
+    `M${points.map((point, index) => `${x(index)},${y(point[high])}`).join('L')}L${points
+      .map((point, index) => [index, point] as const)
+      .reverse()
+      .map(([index, point]) => `${x(index)},${y(point[low])}`)
+      .join('L')}Z`;
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((k) => top * k);
+  const last = points[points.length - 1];
+  const lastX = x(points.length - 1);
+  const maxShare = Math.max(...complexity.tiers.map((tier) => tier.share));
+  const drawing = progress > 0 ? ' ttm-cx-draw' : '';
+
+  return (
+    <div className="ttm-card ttm-cx" ref={ref}>
+      <div className="ttm-cx-top">
+        <label htmlFor="ttm-cx-op">Операция</label>
+        <select id="ttm-cx-op" value={current.key} onChange={(event) => setSelected(event.target.value)}>
+          {refs.map((item) => (
+            <option key={item.key} value={item.key}>
+              {item.label}
+            </option>
+          ))}
+        </select>
+        <span className="ttm-badge">{complexity.badge}</span>
+      </div>
+      <Legend before="Вручную" after="С инструментом" />
+      <svg
+        viewBox={`0 0 ${CX.width} ${CX.height}`}
+        role="img"
+        aria-label={`${current.label}: время по уровням сложности. ${points
+          .map((point) => `${point.label} — вручную ${formatMinutes(point.before)}, с инструментом ${formatMinutes(point.after)}`)
+          .join('; ')}`}
+      >
+        {ticks.map((tick) => (
+          <g key={tick}>
+            <line className="ttm-cx-grid" x1={CX.left} x2={CX.width - CX.right} y1={y(tick)} y2={y(tick)} />
+            <text x={CX.left - 8} y={y(tick) + 4} textAnchor="end">
+              {formatMinutes(tick)}
+            </text>
+          </g>
+        ))}
+        <line className="ttm-cx-axis" x1={CX.left} x2={CX.width - CX.right} y1={y(0)} y2={y(0)} />
+        {points.map((point, index) => (
+          <text
+            key={point.label}
+            x={index === 0 ? CX.left : index === points.length - 1 ? CX.width - CX.right : x(index)}
+            y={CX.height - 14}
+            textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}
+          >
+            {point.label}
+          </text>
+        ))}
+        <path className="ttm-cx-band-before" d={band('beforeLow', 'beforeHigh')} />
+        <path className="ttm-cx-band-after" d={band('afterLow', 'afterHigh')} />
+        {/* key — по операции: смена операции заново прорисовывает линии */}
+        <path key={`b-${current.key}`} className={`ttm-cx-line ttm-cx-line-before${drawing}`} pathLength={1} d={line('before')} />
+        <path key={`a-${current.key}`} className={`ttm-cx-line ttm-cx-line-after${drawing}`} pathLength={1} d={line('after')} />
+        {points.map((point, index) => (
+          <g key={point.label}>
+            <circle className="ttm-cx-point ttm-cx-point-before" cx={x(index)} cy={y(point.before)} r={5}>
+              <title>{`${point.label}: вручную ${formatMinutes(point.before)} (от ${formatMinutes(point.beforeLow)} до ${formatMinutes(point.beforeHigh)})`}</title>
+            </circle>
+            <circle className="ttm-cx-point ttm-cx-point-after" cx={x(index)} cy={y(point.after)} r={5}>
+              <title>{`${point.label}: с инструментом ${formatMinutes(point.after)} (от ${formatMinutes(point.afterLow)} до ${formatMinutes(point.afterHigh)})`}</title>
+            </circle>
+          </g>
+        ))}
+        <text className="ttm-cx-value" x={lastX - 10} y={y(last.before) - 10} textAnchor="end">
+          {formatMinutes(last.before)}
+        </text>
+        <text className="ttm-cx-value" x={lastX - 10} y={y(last.after) - 10} textAnchor="end">
+          {formatMinutes(last.after)}
+        </text>
+      </svg>
+      <div>
+        <div className="ttm-eyebrow" style={{ marginBottom: 8 }}>
+          Сколько задач какой сложности в месяц
+        </div>
+        <div className="ttm-mix">
+          {complexity.tiers.map((tier) => (
+            <div key={tier.label}>
+              <i style={{ width: `${(tier.share / maxShare) * 100}%` }} aria-hidden="true" />
+              <span>
+                {tier.label} · {Math.round(tier.share * 100)} %
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProductFilter({ data, value, onChange }: { data: TtmData; value: TtmLevers['product']; onChange: (next: TtmLevers['product']) => void }) {
   const options = [{ id: 'all', name: 'Все продукты' }, ...data.products];
   return (
@@ -841,6 +1005,17 @@ function Report({ data }: { data: TtmData }) {
         </p>
         <ProductsTtm data={data} levers={levers} />
       </Section>
+
+      {data.complexity && (
+        <Section id="ttm-complexity" eyebrow="Сложность" title="Время от сложности задачи">
+          <p className="ttm-muted">
+            Вручную время растёт со сложностью: большой экран или правка сразу в нескольких местах занимает в разы дольше
+            простой. С инструментом рутину делает машина, и время почти не зависит от сложности. Полоса вокруг линии —
+            разброс: от быстрого случая до долгого.
+          </p>
+          <ComplexityChart data={data} complexity={data.complexity} />
+        </Section>
+      )}
 
       <Section id="ttm-chain" eyebrow="Time to market" title="Путь одного изменения токена">
         <p className="ttm-muted">{data.chain.intro}</p>
