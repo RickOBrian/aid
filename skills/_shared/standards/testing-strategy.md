@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: testing-strategy
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Testing Strategy
 
-> Статус: Draft · v1.1.0 · обновлено 2026-09-21
+> Статус: Draft · v1.1.1 · обновлено 2026-10-09
 
 ---
 
@@ -306,7 +306,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 | **A11y manual** | Keyboard, NVDA/VO | VoiceOver | TalkBack | — |
 | **E2E** | Playwright, Cypress | XCUITest | Espresso / Compose UI | — |
 | **Audit / drift** | Audit Gate report | Audit Gate report | Audit Gate report | Figma vs `*Data.ts` |
-| **Documentation** | Storybook | SwiftUI Previews | @Preview | Driver portal pages |
+| **Documentation** | Presentbook | SwiftUI Previews | @Preview | Presentbook |
 
 ---
 
@@ -316,10 +316,9 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 |---|---|---|
 | Tests before Component Gate | Testing wrong API | Gate → implement → test |
 | Snapshot-only, no behavior tests | Miss logic regressions | Add RTL unit tests |
-| Single default story only | Variants/states untested | Full matrix in Storybook |
+| Single default story only | Variants/states untested | Full matrix on the Presentbook page |
 | Approve visual diff without design review | Silent visual drift | Require DS/design OK |
 | axe pass = a11y done | SR/keyboard gaps remain | Manual checklist |
-| Testing `FigmaStyles` as source | Reference-only | Test `*Data.ts` / components |
 | 100% coverage goal on presentational code | Low value, high cost | Matrix coverage |
 | Flaky E2E without retry discipline | CI noise | Stable selectors, wait strategies |
 | Skip dark mode in visual tests | Mode regressions | Separate baselines |
@@ -331,6 +330,7 @@ Target line coverage (если CI настроен): **≥ 80%** on component lo
 
 ## 11. Changelog
 
+- **1.1.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044). Документация компонентов — Presentbook, не Storybook.
 - **1.1.0** — 2026-09-21. Ссылки на удалённый Storybook заменены на страницы ревью портала
   и действующий скрипт сборки.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.

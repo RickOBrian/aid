@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: ds-component-audit-guide
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   kind: protocol
   owner: design-system-team
   platforms: [web, ios, android]
@@ -17,7 +17,7 @@ description: >
 
 # Component Audit — Guide — v1.0.0
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.0.2 · обновлено 2026-10-09
 
 ---
 
@@ -65,7 +65,7 @@ migration выводит неоднозначные вне-скоуп случа
 | Вход | Источник |
 |---|---|
 | **Screenshot или Figma-ссылка** (обязателен) | вложение к команде `/audit_component`; для Figma дополнительно `source_type: frame \| component_instance` |
-| **Существующие компоненты** | `docs/storybook/components/*.html` — база для сравнения на Шаге 4 |
+| **Существующие компоненты** | страницы компонентов в Presentbook (`pages/aid-portal/`) и `components/*-changelog.json` — база для сравнения на Шаге 4 |
 | **Существующие спеки** | `memory/ds-component-spec/log.*.json` — cross-check на Шаге 7 (открытые вопросы по тому же компоненту) |
 | **Прошлые аудиты** | `memory/ds-component-audit/log.*.json` — проверка повторного входа на Шаге 8 (`proposed` / `approved` / `rejected`) |
 | **Категории компонентов** | `skills/_shared/standards/component-categories-guide.md` — только имя категории, не влияет на вердикт уровня |
@@ -150,7 +150,7 @@ migration выводит неоднозначные вне-скоуп случа
 ### Mapping — Match / New / Ambiguous (Шаг 4–8)
 
 Основной вердикт сравнивает вход по роли и составу (не только по
-внешнему виду) с `docs/storybook/components/*.html` и записями памяти.
+внешнему виду) со страницами компонентов в Presentbook и записями памяти.
 Порог для **New** — высокий, при сомнении дефолт — **Ambiguous**.
 Дополнительные проверки внутри этой стадии:
 - **Naming collision** (Шаг 5, только при New) — конфликт имени со
@@ -349,6 +349,7 @@ git push
 
 ## 11. Changelog
 
+- **1.0.2** — 2026-10-09. База для сравнения — страницы компонентов в Presentbook вместо удалённых `docs/storybook/components/*.html` (ADR-044).
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — первая версия. Собрана по `ds-component-audit/SKILL.md`
   v1.3.0: назначение, разграничение с spec/migration, входы, фазы

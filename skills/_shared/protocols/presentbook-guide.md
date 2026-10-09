@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/protocols/
 name: presentbook-guide
 metadata:
-  version: "1.1.2"
+  version: "1.1.3"
   kind: protocol
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Presentbook Guide
 
-> Статус: Draft · v1.1.2 · обновлено 2026-09-21
+> Статус: Draft · v1.1.3 · обновлено 2026-10-09
 
 ---
 
@@ -294,8 +294,6 @@ bg-accent-main …             …              ✓
 4. Findings → Audit Gate report или pending items
 5. После approval — merge to canonical page + release
 
-**Не** использовать `src/pages/FigmaStyles/` как review source — reference-only.
-
 ---
 
 ## 7. Portal structure
@@ -348,8 +346,8 @@ Hub (/design-system)
 | Build | `npm run build:driver-colors` |
 | routeBase | `/design-system` |
 
-Исторический product portal (`docs/storybook/`) — reference architecture,
-**не** template для нового Presentbook-работы без явного запроса.
+Легаси-портал `docs/storybook/` удалён (ADR-044): Presentbook — единственная
+среда показа стандартов, токенов и компонентов.
 
 ---
 
@@ -370,7 +368,6 @@ Hub (/design-system)
 - Hardcoded token values только для portal demo (блокер по token-rules)
 - Changelog edits inline on page
 - Mixed product token values on one page
-- `FigmaStyles` dump as displayed values
 - Component-level token names in tables (semantic only)
 - Release SemVer bumps during page implementation
 
@@ -413,6 +410,7 @@ Hub (/design-system)
 
 ## 10. Changelog
 
+- **1.1.3** — 2026-10-09. Убраны ссылки на дамп `FigmaStyles` и легаси-портал `docs/storybook/` как на reference architecture (ADR-044).
 - **1.1.2** — 2026-09-21. Убрана ссылка на порталы удалённых продуктов.
 - **1.1.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.0** — 2026-08-18. Добавлена секция «Критерий содержания component

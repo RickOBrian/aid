@@ -2,15 +2,21 @@
 destination: skills/_shared/standards/
 name: radius-preview-standard
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
+  status: deprecated
   kind: standard
 ---
 
 # Стандарт radius-preview (Guide Page «Скругления»)
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Deprecated · v1.0.2 · обновлено 2026-10-09
 
 ---
+
+> **Устарел (ADR-044).** Документ описывает реализацию легаси-портала
+> `docs/storybook/`, который удалён: Presentbook — единственная среда показа.
+> В Presentbook секции превью радиусов нет; если она появится, требования
+> к ней формулируются заново, а не переносятся отсюда.
 
 Не относится к anatomy halo/anchor/callout (см.
 anatomy-annotation-standard.md — тот файл ограничен строго
@@ -250,6 +256,7 @@ anatomy-annotation-standard.md — тот файл ограничен строг
 
 ## 5. Changelog
 
+- **1.0.2** — 2026-10-09. Помечен устаревшим (ADR-044): описывает функции `guide-page.js` и `measure-agents.js` удалённого легаси-портала; в Presentbook такой секции нет.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
   статуса, нумерация разделов, раздел Changelog.
 - **1.0.0** — предыдущие версии до введения раздела; история — в git.

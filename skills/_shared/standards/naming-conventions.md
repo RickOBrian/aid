@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   status: alpha
   lastReviewed: "2026-09-20"
   machineFile: naming-conventions.json
@@ -16,7 +16,7 @@ metadata:
 
 # Правила именования
 
-> Статус: Alpha · v1.3.0 · обновлено 2026-09-21
+> Статус: Alpha · v1.3.1 · обновлено 2026-10-09
 
 ---
 
@@ -313,12 +313,12 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 | Figma variant → token name 1:1 | Variants ≠ tokens | Prop + semantic category |
 | Product-scoped skill path без OK | Нарушает Skills Import Gate | Default: `skills/_shared/` |
 | Rename без MAJOR changelog | Breaking change скрыт | `removed` + `added` или MAJOR bump — см. `changelog-guide.md` |
-| `FigmaStyles` как naming source | Reference-only | Canonical: `*Data.ts` / `data.ts` |
 
 ---
 
 ## 8. Changelog
 
+- **1.3.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
 - **1.3.0** — 2026-09-21. Уровни соответствия вместо «блокера»; дубль `name` назван
   ошибкой корпуса, а не расхождением артефакта — это разные вещи.
 - **1.2.0** — 2026-09-20. Префикс продукта в имени changelog-файла и в

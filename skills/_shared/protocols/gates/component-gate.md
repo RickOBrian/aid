@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: component-gate
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Component Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.0.1 · обновлено 2026-10-09
 
 ---
 
@@ -64,9 +64,6 @@ For Driver:
 
 - `componentsRoot` is `null` in `products/driver/product.json`;
 - there is no canonical component directory yet;
-- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
-  `relatedPrototypes`. It is not a component source and must not be used as a
-  primary source of truth.
 
 Do not use component definitions from any other file or product.
 
@@ -316,4 +313,5 @@ Component review/sandbox pages must include:
 
 ## 15. Changelog
 
+- **1.0.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/component-gate.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.

@@ -1,7 +1,7 @@
 ---
 name: ds-component-migration
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -165,7 +165,7 @@ legacy-версию `[ComponentName]`, а выглядит как отдельн
 - `legacy_markers` — список маркеров для поиска: CSS-классы, HTML-теги,
   старые имена компонентов/функций (обязательно; если не передан —
   спроси одним вопросом, не угадывай маркеры)
-- `scope` — пути поиска (например `docs/`, `storybook/`, `src/`); если не
+- `scope` — пути поиска (например `pages/aid-portal/`, `docs/`); если не
   передан — предложи разумный дефолт для репозитория и подтверди одной
   строкой
 
@@ -297,7 +297,7 @@ Rollout, но не выполнять автоматически без отве
      неоднозначные случаи, `deferred` JS-generated группы)
    - что требует ручного UI-review (файлы, помеченные в Phase 3/4 как
      рискованные)
-   - какие storybook/docs примеры ещё нужно добавить для покрытия
+   - какие примеры в Presentbook/docs ещё нужно добавить для покрытия
      мигрированных случаев
 3. **Закрытие сессии.** Если после проверки остатков `legacy_markers`
    ничего не найдено **и** follow-up список пуст → присвой одновременно
@@ -389,7 +389,7 @@ mandatory; if empty, write «нет», don't omit it.
 
     ## Follow-up
     - Manual review: [список / нет]
-    - Storybook/docs примеры к добавлению: [список / нет]
+    - Примеры в Presentbook/docs к добавлению: [список / нет]
     - Не мигрировано (причина): [список / нет]
 
     ## Статус сессии
@@ -410,18 +410,18 @@ mandatory; if empty, write «нет», don't omit it.
   "component": "TableRow",
   "related_components": ["Table"],
   "legacy_markers": [".table-wrap", ".old-table-row"],
-  "scope": ["docs/storybook/"],
-  "scope_signature": "table-wrap|old-table-row::docs/storybook/",
+  "scope": ["pages/aid-portal/"],
+  "scope_signature": "table-wrap|old-table-row::pages/aid-portal/",
   "phase": "pilot",
   "discovery": {
     "date": "2026-07-04",
     "files_found": 14,
     "groups": {
-      "exact_match": ["docs/storybook/components.html"],
+      "exact_match": ["pages/aid-portal/ComponentsHubPage.tsx"],
       "similar_pattern": [],
       "ambiguous": []
     },
-    "pilot_candidates": ["docs/storybook/components.html"]
+    "pilot_candidates": ["pages/aid-portal/ComponentsHubPage.tsx"]
   },
   "mapping": {
     "status": "confirmed",
@@ -432,7 +432,7 @@ mandatory; if empty, write «нет», don't omit it.
   },
   "pilot": {
     "status": "approved",
-    "files": ["docs/storybook/components.html"],
+    "files": ["pages/aid-portal/ComponentsHubPage.tsx"],
     "manual_review_flagged": []
   },
   "rollout": {
@@ -541,6 +541,7 @@ Pilot, где показываются 1–2 сокращённых before/after
 
 ### Changelog
 
+- **1.2.2** — 2026-10-09. Примеры скоупа и follow-up — Presentbook вместо удалённого `docs/storybook/` (ADR-044).
 - **1.2.1** — добавлено терминальное значение `rollout.status: completed`
   (полное, не `_partial`, завершение — все файлы скоупа мигрированы,
   `cleanup.follow_up` пуст). Уточнено соотношение с `phase: closed`:

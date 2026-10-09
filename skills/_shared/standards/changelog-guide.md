@@ -5,14 +5,14 @@ description: >
 destination: skills/_shared/standards/
 name: changelog-guide
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   kind: standard
   owner: design-system-team
 ---
 
 # Changelog Guide
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.0.2 · обновлено 2026-10-09
 
 ---
 
@@ -285,5 +285,11 @@ Sets `currentVersion: "1.0.0"` — unreleased components keep `currentVersion: n
 | Mixed product entries in one changelog | Product isolation violation |
 | `kind: changed` для breaking rename | Должен быть `removed` + `added` или MAJOR `changed` |
 | Changelog в commit с unrelated files | Один artifact — один commit |
-| Using `FigmaStyles` values in changelog | Reference-only source |
 | Abstract names (color-changelog.json) | Use actual names (`driver-colors-semantic-changelog.json`) |
+
+---
+
+## 10. Changelog
+
+- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
+- **1.0.1** — предыдущие версии до введения раздела; история — в git.

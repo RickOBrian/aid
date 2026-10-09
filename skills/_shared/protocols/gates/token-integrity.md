@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: token-integrity
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Token Integrity Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.0.1 · обновлено 2026-10-09
 
 ---
 
@@ -55,9 +55,6 @@ For Driver:
 - `tokens/*-changelog.json` are canonical collection changelogs;
 - `pages/aid-portal/token-changelog-registry.json` indexes
   collection changelogs;
-- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
-  `relatedPrototypes`. It is not a token source and must not be used as a
-  primary source of truth.
 
 Do not use token values from any other file or product.
 
@@ -249,4 +246,5 @@ requires a separate user task.
 
 ## 13. Changelog
 
+- **1.0.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт Storybook удалён (ADR-044).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/token-integrity.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.
