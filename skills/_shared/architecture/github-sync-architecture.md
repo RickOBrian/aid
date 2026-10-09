@@ -2,11 +2,11 @@
 destination: skills/_shared/architecture/
 name: github-sync-architecture
 metadata:
-  version: "1.5.2"
+  version: "1.6.0"
   kind: architecture
   owner: design-system-team
   status: stable
-  updated: "2026-09-18"
+  updated: "2026-10-09"
 description: >
   Каноническая архитектура синхронизации реестра решений Token Comparator
   через GitHub: production submit-flow, review projection в Pull Request,
@@ -17,20 +17,26 @@ description: >
 
 # Архитектура: синхронизация реестра решений через GitHub
 
-> Статус: Stable · v1.5.2 · обновлено 2026-09-21
+> Статус: Stable · v1.6.0 · обновлено 2026-10-09
 
 ---
 
 > **Статус: active · production E2E validated · 2026-09-08**
 >
 > Token Comparator (`tools/figma-token-comparator/`) отправляет решения из Figma
-> через standalone backend `aid-registry-api` в GitHub Pull Request. Канонический
+> через standalone backend `aid-registry-api` (`https://api.aidteam.pro`,
+> Яндекс Облако) в GitHub Pull Request. Канонический
 > реестр — `decisions-registry.json`; GitHub PR body — отдельная
 > человекочитаемая review-проекция. Presentbook (`pages/aid-portal/`)
 > с 2026-09-08 полностью восстановлен в `main` после структурного инцидента.
 > Этот файл — источник правды для последующих промтов, реализации и аудитов
 > по registry proposal pipeline и по Presentbook git/deploy workflow.
 > Перечитывать целиком перед началом нового изменения этого контура.
+>
+> **С 2026-10-09 Vercel не используется** (ADR-038, этап 7; решение PD:
+> «верселя больше нет и не будет»). Оба контура — в Яндекс Облаке,
+> выкладка — GitHub Actions. Разделы 11, 12 и 16 — история и описывают
+> Vercel как тогдашнюю среду.
 
 ---
 
@@ -38,22 +44,26 @@ description: >
 
 ### Два независимых продукта
 
-| Продукт | Назначение | Расположение | Vercel-проект |
+| Продукт | Назначение | Расположение | Хостинг |
 |---|---|---|---|
-| **Token Comparator** | Figma-плагин для scan, comparison, решения и proposal в общий registry | `tools/figma-token-comparator/` | `aid-registry-api` для backend |
-| **Presentbook** | Web-витрина и review-среда токенов/компонентов | `pages/aid-portal/` | `aid-ds` |
+| **Token Comparator** | Figma-плагин для scan, comparison, решения и proposal в общий registry | `tools/figma-token-comparator/` | backend `aid-registry-api` — Яндекс Облако, каталог `registry-api`, `https://api.aidteam.pro` |
+| **Presentbook** | Web-витрина и review-среда токенов/компонентов | `pages/aid-portal/` | Яндекс Облако, каталог `presentbook`, `https://aidteam.pro` |
 
 Backend Token Comparator физически и инфраструктурно отделён от Presentbook:
 
 ```text
 Token Comparator
   └── tools/figma-token-comparator/server/
-        └── standalone Vercel project: aid-registry-api
+        └── каталог Облака registry-api: Cloud Function + API Gateway
+            выкладка — .github/workflows/registry-api-deploy.yml
 
 Presentbook
   └── pages/aid-portal/
-        └── separate Vercel project: aid-ds
+        └── каталог Облака presentbook: Object Storage + Cloud Function + API Gateway
+            выкладка — .github/workflows/presentbook-yc.yml
 ```
+
+У каждого каталога свой сервисный аккаунт с правами только в нём (ADR-038).
 
 **Граница обязательна:** изменения Token Comparator и `aid-registry-api` не
 должны требовать инфраструктуру Presentbook и не должны иметь возможность
@@ -61,10 +71,11 @@ Presentbook
 
 ### Роли
 
-- **Principal Designer** принимает design-, mapping-, review-, merge- и
-  release-решения, включая merge и production promote для Presentbook.
-- **Cursor** исследует репозиторий, реализует согласованные изменения,
-  выполняет локальные проверки и git-операции только по явной команде.
+- **Principal Designer** принимает design-, mapping-, review- и
+  release-решения; какие мержи PR делает сам чат — корневой `CLAUDE.md`,
+  «Git-полномочия».
+- **Claude** (чат продукта) исследует репозиторий, реализует согласованные изменения,
+  выполняет локальные проверки и git-операции в пределах «Git-полномочий».
 - **Backend** технически создаёт proposal branch, commit и Pull Request, но
   никогда не принимает design-решение вместо Principal Designer.
 
@@ -79,7 +90,7 @@ Presentbook
 | GitHub Pull Request body | Human-readable review projection конкретного proposal batch | Source of truth или input для approve/runtime flow |
 | Figma файл и Token Comparator | Input для Scan / Compare / Apply и источник review context | Canonical источник принятых registry decisions |
 | `figma.clientStorage` | Локальный draft/history и submitted tracking | Надёжный источник GitHub lifecycle status |
-| `main` (ветка) | Source of truth для Presentbook frontend + products/ | Автоматически равный production deployment |
+| `main` (ветка) | Source of truth для Presentbook frontend + products/; мерж в `main` выкладывает production | Доказательство, что production уже обновлён: выкладка — отдельный запуск workflow |
 
 ### Ключевая граница данных
 
@@ -99,8 +110,8 @@ registry-loader'ом. Изменение форматирования PR body н
 корректность canonical registry.
 
 **Дополнительно с 2026-09-08:** `main` является source of truth и для
-Presentbook (frontend + `products/`), но это не означает автоматическое
-равенство с production. См. §3a про разделение merge и promote.
+Presentbook (frontend + `products/`). Мерж в `main` запускает выкладку
+production; готовность — по успешному запуску workflow, см. §3a.
 
 ---
 
@@ -110,53 +121,48 @@ Presentbook (frontend + `products/`), но это не означает авто
 
 | Параметр | Значение |
 |---|---|
-| Vercel project | `aid-registry-api` |
-| Project ID | `prj_CREfn3wIRq2Qsk2SeuxSBfnhwcZH` |
-| Root Directory | `tools/figma-token-comparator/server` |
-| Production URL | `https://aid-registry-api.vercel.app` |
-| Production Branch | `main` |
-| Production domain assignment | Auto-assign Custom Production Domains: enabled |
+| Хостинг | Яндекс Облако, каталог `registry-api` |
+| Код | `tools/figma-token-comparator/server` |
+| Production URL | `https://api.aidteam.pro` |
+| Выкладка | `.github/workflows/registry-api-deploy.yml`: push в `main` с изменениями в `tools/figma-token-comparator/server/**` → новая версия функции и спецификация шлюза |
+| Секреты | Lockbox, переменная репозитория `YC_REGISTRY_API_LOCKBOX_ID`: `GITHUB_TOKEN`, `PLUGIN_SHARED_SECRET` |
+| Превью | Нет: backend выкладывается только с `main` |
 
 ### Правило веток
 
 ```text
 Push в feature branch
-  → Vercel Preview deployment
-  → production alias не меняется
+  → CI (checks.yml): typecheck, тесты, сборка
+  → production не меняется
 
-Merge / push в main
-  → Vercel Production deployment
-  → aid-registry-api.vercel.app обновляется после Ready deployment
+Merge в main с изменениями в server/
+  → registry-api-deploy: новая версия функции
+  → api.aidteam.pro отвечает новой версией после успешного запуска
 ```
 
-Локальная сборка плагина и production deployment backend — разные операции:
+Локальная сборка плагина и выкладка backend — разные операции:
 
 ```text
 npm run build
   → обновляет локальные dist/code.js, dist/ui.bundle.js, dist/ui.html
   → Figma Desktop может использовать новый клиентский код
-  → НЕ обновляет backend на Vercel
+  → НЕ обновляет backend в Облаке
 
-push + merge в main + Ready Production deployment
+merge в main + успешный запуск registry-api-deploy
   → обновляет server-side API
   → меняет код, который создаёт GitHub PR body
 ```
 
 Не считать новый локальный `dist/` доказательством того, что production backend
-работает на тех же изменениях. Для server-side фич обязателен отдельный
-production deployment check.
+работает на тех же изменениях. Для server-side фич обязательна отдельная
+проверка выкладки.
 
-### Sparse proposal branches и Vercel checks
+### Sparse proposal branches
 
 Proposal branches `registry/propose-*` намеренно содержат только файл
-`decisions-registry.json`. Поэтому Vercel checks для проектов с Root Directory
-`tools/figma-token-comparator/server` или `pages/aid-portal` могут
-показывать Error: этих директорий в sparse proposal branch нет.
-
-Это не является ошибкой registry submission и не блокирует review предложений.
-Однако такой шум ухудшает читаемость PR и остаётся P1 инфраструктурной задачей:
-нужна безопасная стратегия ignored-build/deployment для sparse proposal branches
-без ослабления настоящих production checks.
+`decisions-registry.json`. Выкладка обоих контуров отбирает запуски по путям,
+поэтому такие ветки её не запускают и ложных ошибок выкладки не дают.
+Ветки смерженных и закрытых предложений удаляются.
 
 ---
 
@@ -165,51 +171,34 @@ Proposal branches `registry/propose-*` намеренно содержат то�
 > Добавлено 2026-09-08 после структурного инцидента (см. §9a). Обязательно к
 > прочтению перед любой работой над `pages/aid-portal/`.
 
-### `aid-ds`
+### Presentbook в Облаке
 
 | Параметр | Значение |
 |---|---|
-| Vercel project | `aid-ds` |
-| Root Directory | `pages/aid-portal` |
-| Production URL | `https://aid-ds.vercel.app` |
-| Production Branch | `main` |
-| Production promote | **Ручной, отдельное явное решение** — не auto-promote при каждом merge |
+| Хостинг | Яндекс Облако, каталог `presentbook` |
+| Код | `pages/aid-portal` |
+| Production URL | `https://aidteam.pro` |
+| Превью | `https://preview.aidteam.pro/pr-N/` на каждый PR, ссылка — комментарием в PR; при закрытии PR удаляется |
+| Выкладка | `.github/workflows/presentbook-yc.yml`: production — push в `main`, превью — `pull_request`; фильтр путей включает `pages/aid-portal/**`, `skills/_shared/**`, `tokens/**`, `components/**` |
+| Устройство и роли | `pages/aid-portal/deploy/yc/README.md` |
 
-> **Переименование 2026-09-20.** Директория переехала
-> `pages/driver-color-tokens` → `pages/aid-portal`: driver — один из
-> продуктов, а портал обслуживает все. Root Directory в настройках проекта
-> `aid-ds` живёт **в Vercel, а не в репозитории**, и меняется вручную.
-> Пока значения расходятся, сборки падают: в git новый путь, в настройке
-> старый. Обоснование — ADR-020, порядок операций — `docs/standards-alpha/
-> PLAN.md`, Волна 3.5.
+### Принцип: merge = production
 
-> **Наблюдение 2026-09-20.** Деплой с `main` после merge PR #28 забрал
-> production-алиас сам, без отдельного promote. То есть принцип ниже
-> описывает договорённость команды, а не настройку проекта. Расхождение
-> открыто как Q-11 в `docs/standards-alpha/OPEN-QUESTIONS.md`: либо
-> включить ручной promote в настройках Vercel, либо переписать раздел под
-> фактическое поведение.
+Отдельного шага promote нет: мерж в `main` выкладывает production. Это
+снимает расхождение, открытое как Q-11 (2026-09-20 деплой с `main`
+забирал production-алиас сам, а документ описывал ручной promote).
 
-### Принцип: merge ≠ promote
-
-`main` может быть обновлён и рабочим, а production — сознательно оставаться на
-предыдущем deployment, пока Principal Designer явно не решит promote. Это два
-разных, независимых решения:
+Защита production — до мержа, а не после:
 
 ```text
-PR → Preview deployment → ручная проверка → merge в main
-                                                  │
-                                                  ▼
-                                    main обновлён, собирается
-                                                  │
-                                                  ▼
-                          отдельное явное решение: promote → production
+PR → CI (checks.yml) + превью pr-N → проверка превью → merge в main
+                                                         │
+                                                         ▼
+                                       presentbook-yc выкладывает production
 ```
 
-Auto-promote с `main` не включён намеренно. Причина: production должен
-оставаться стабильным до тех пор, пока Principal Designer не подтвердит на
-Preview, что login flow, HubPage, Product Switcher (driver+rider) и все token
-pages работают корректно.
+Откат — перевод метки `prod` на прежнюю версию функции
+(`pages/aid-portal/CLAUDE.md`).
 
 ### Обязательный цикл для каждой задачи
 
@@ -220,11 +209,11 @@ pages работают корректно.
 4. Pre-push gate: npm run build && npm run typecheck:api — обязательны
    до commit. Если build падает локально — не продолжать.
 5. Commit (логические, не смешанные) + push feature branch
-6. PR в main → Vercel Preview deployment
-7. Ручная проверка Preview: login flow, HubPage, Product Switcher
+6. PR в main → CI и превью `preview.aidteam.pro/pr-N/`
+7. Проверка превью: login flow, HubPage, Product Switcher
    (driver+rider), все token pages (200, без console errors)
-8. Merge — явное решение Principal Designer, только после проверки Preview
-9. Promote production — отдельное явное решение, отдельно от merge
+8. Merge — по «Git-полномочиям» корневого `CLAUDE.md`, после проверки
+   превью; мерж выкладывает production
 ```
 
 ### Критичные файлы (pre-flight check)
@@ -254,11 +243,11 @@ Product Switcher пустой, `/rider/*` routing не распознаётся.
 | Скилл | Триггер | Делает | Не делает |
 |---|---|---|---|
 | `start-presentbook` | «старт презентбук» | sync main → новая ветка `presentbook/<task>` → pre-flight check критичных файлов → `npm install && npm run dev` | commit, push, PR, deploy |
-| `push-presentbook` | «push presentbook» | pre-push verification gate (критичные файлы + `npm run build` + `npm run typecheck`) → commit → push → PR в main | merge, promote production |
-| `push-token-comparator` | «push Token Comparator» | typecheck/build плагина и сервера → commit → push feature branch → PR в main | merge, promote production, трогает Presentbook |
+| `push-presentbook` | «push presentbook» | pre-push verification gate (критичные файлы + `npm run build` + `npm run typecheck`) → commit → push → PR в main | merge |
+| `push-token-comparator` | «push Token Comparator» | typecheck/build плагина и сервера → commit → push feature branch → PR в main | merge, трогает Presentbook |
 
-Merge и promote остаются вне скиллов — это осознанные разовые решения
-Principal Designer, а не часть автоматизированного потока.
+Merge остаётся вне скиллов: это решение по «Git-полномочиям», а не часть
+автоматизированного потока.
 
 ---
 
@@ -291,7 +280,7 @@ Scan in Figma
 4. Плагин сохраняет решение в `figma.clientStorage` как `StoredDecision`.
 5. Пользователь нажимает «Отправить N решений на согласование».
 6. Плагин отправляет proposal batch в production endpoint:
-   `POST https://aid-registry-api.vercel.app/api/registry/propose-decision`.
+   `POST https://api.aidteam.pro/api/registry/propose-decision`.
 7. Backend валидирует request, читает актуальный registry из `main`, создаёт
    уникальную `registry/propose-{timestamp}-{hash}` branch, коммитит canonical
    registry file и открывает GitHub PR в `main`.
@@ -517,7 +506,7 @@ technical details. Это подтверждает, что review projection ч�
 ### Endpoint
 
 ```text
-POST https://aid-registry-api.vercel.app/api/registry/propose-decision
+POST https://api.aidteam.pro/api/registry/propose-decision
 ```
 
 Базовый request contract:
@@ -555,7 +544,7 @@ Review metadata передаётся дополнительными optional п�
 
 - `PLUGIN_SHARED_SECRET` используется для plugin → backend request и
   сравнивается constant-time до доступа к GitHub.
-- `GITHUB_TOKEN` существует только в Vercel env `aid-registry-api` и имеет
+- `GITHUB_TOKEN` существует только в Lockbox каталога `registry-api` и имеет
   минимум `Contents: Read and write` + `Pull requests: Read and write` на
   `RickOBrian/aid`.
 - Не передавать GitHub PAT в обычный UI плагина.
@@ -563,13 +552,13 @@ Review metadata передаётся дополнительными optional п�
   docs или ошибки: `PLUGIN_SHARED_SECRET`, `GITHUB_TOKEN`, Figma PAT,
   Authorization values, env values, Figma file keys, node IDs или raw
   Variables API payloads.
-- Secret-type values Vercel write-only: нельзя безопасно получить их обратно
-  через dashboard или CLI. При замене: delete + re-create из доверенного
-  первоисточника, затем новый deployment.
-- `aid-ds` (Presentbook) хранит только auth-secrets: `BASIC_AUTH_USER`,
-  `BASIC_AUTH_PASSWORD`, `AUTH_COOKIE_SECRET`. Registry-related env
-  (`PLUGIN_SHARED_SECRET`, `GITHUB_TOKEN`, `REGISTRY_*`) — только в
-  `aid-registry-api`, не должны присутствовать в `aid-ds` (см. §9a).
+- Секреты не выводятся в терминал, отчёт или PR. После смены значения в
+  Lockbox нужна новая версия функции. Правила работы с ключами и профилями
+  `yc` — `docs/hub/ORCHESTRATION.md` §4 «Секреты».
+- Presentbook хранит только свои секреты (Lockbox `presentbook-auth`,
+  `presentbook-github`, `presentbook-ttm`). Registry-related секреты
+  (`PLUGIN_SHARED_SECRET`, `GITHUB_TOKEN`) — только в каталоге
+  `registry-api`, в каталоге `presentbook` их быть не должно (см. §9a).
 
 ### CORS
 
@@ -800,7 +789,8 @@ deployment до отдельного явного решения Principal Desig
 - `npm run build` обязателен локально до commit — тот же класс ошибки
   (`MODULE_NOT_FOUND`) обнаруживается за секунды локально вместо падения
   деплоя.
-- Merge и production promote — два независимых явных решения, не одно.
+- ~~Merge и production promote — два независимых явных решения, не одно.~~
+  Снято в 1.6.0: мерж выкладывает production, защита — превью до мержа (§3a).
 - При структурных merge между сильно разошедшимися ветками — обязательна
   явная классификация каждого staged deletion вне ожидаемого scope
   (осознанное cleanup-решение vs побочный эффект расхождения истории)
@@ -824,15 +814,13 @@ deployment до отдельного явного решения Principal Desig
 | Presentbook в `main` | Восстановлен полностью via PR #13 (2026-09-08) |
 | Legacy co-located registry API | Удалён (PR #13) |
 | `.claude/` / `perplexity-skills/` | Удалены, консолидированы в `skills/_shared/` (space-context.md сохранён) |
-| Production `aid-ds.vercel.app` | На прежнем deployment; promote — открытое отдельное решение |
+| Хостинг обоих контуров | Яндекс Облако с 2026-10-09; Vercel не используется (ADR-038, этап 7) |
 | `cursor/propose-decision-endpoint` | Preserved after merge; do not delete without explicit decision |
 
 ### Открытое операционное решение
 
-Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после PR #13.
-Следующий шаг — по готовности Principal Designer: проверить, что автодеплой
-`main` → Vercel Preview/Production candidate теперь проходит успешно (main
-содержит полный Presentbook), затем принять отдельное решение о promote.
+Нет. Решение о promote Presentbook снято: мерж в `main` выкладывает
+production (§3a), Q-11 закрыт.
 
 ---
 
@@ -877,19 +865,15 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
    Не создавать второй `registry/propose-*` PR для той же signature, пока
    существует предыдущий open proposal.
 
-6. **Vercel checks для sparse proposal branches.**
-   Настроить ignored-build/deployment strategy для `registry/propose-*`, чтобы
-   не получать ожидаемые Error checks из-за отсутствующих Root Directory, не
-   ослабляя реальные production checks.
+6. ~~**Checks для sparse proposal branches.**~~ Закрыто: выкладка в Облако
+   отбирает запуски по путям (§3).
 
 7. **Rate limiting.**
    Endpoint защищён shared secret, но отдельное rate limiting пока не
    реализовано. Определить подход до расширения числа пользователей плагина.
 
-8. **Production promote для Presentbook.**
-   После PR #13 `main` полностью восстановлен, но `aid-ds.vercel.app` не
-   promoted. Требуется: (a) подтвердить, что автодеплой `main` теперь
-   успешен; (b) отдельное явное решение Principal Designer о promote.
+8. ~~**Production promote для Presentbook.**~~ Закрыто: мерж в `main`
+   выкладывает production (§3a).
 
 ### P2 — policy и test completeness
 
@@ -938,10 +922,8 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
 - Pre-flight: проверить наличие критичных файлов (§3a) перед началом работы.
 - `npm run build && npm run typecheck:api` обязательны локально до commit.
 - Push только через `push-presentbook` (включает pre-push verification gate).
-- Merge — только после ручной проверки Vercel Preview (login, HubPage,
-  Product Switcher driver+rider, все token pages).
-- Promote production — отдельное явное решение, никогда не автоматическое
-  следствие merge.
+- Merge — только после проверки превью `pr-N` (login, HubPage,
+  Product Switcher driver+rider, все token pages): мерж выкладывает production.
 
 ### Перед commit/push/merge
 
@@ -951,8 +933,8 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
   отсутствие unrelated/untracked noise.
 - Для mixed staging использовать `git add -p` и, при высокой цене ошибки,
   isolated snapshot из `git write-tree` + `git archive`.
-- Push, merge, close PR и branch deletion — только после явного решения
-  Principal Designer.
+- Merge, close PR и branch deletion — по «Git-полномочиям» корневого
+  `CLAUDE.md`.
 - Для структурных merge между разошедшимися ветками: явно классифицировать
   каждое staged deletion вне ожидаемого scope (осознанное cleanup vs
   побочный эффект расхождения истории) перед commit — см. §9a.
@@ -967,11 +949,9 @@ Production Presentbook (`aid-ds.vercel.app`) не promoted с `main` после 
 
 ### Для инфраструктурных PR (Presentbook merge, structural changes)
 
-- Проверять все Vercel Preview checks (aid-ds, aid-registry-api, dist, server)
-  зелёные.
-- Обязательна ручная проверка живого Preview URL — зелёные automated checks
+- Проверять зелёные проверки GitHub Actions и запуск выкладки превью.
+- Обязательна ручная проверка живого превью — зелёные automated checks
   подтверждают только сборку, не поведение auth/routing.
-- Не promote production автоматически после merge.
 
 ---
 
@@ -1002,7 +982,7 @@ endpoint` (API-only с нуля) и ручных production deploys с
 контролируемый structural merge (PR #13) с явной классификацией каждого
 staged deletion. Извлечённые правила зафиксированы в §3a и §12.
 
-### Vercel Secret handling
+### Vercel Secret handling (история, до 2026-10-09)
 
 Secret-type Vercel values нельзя прочитать обратно. Перенос/замена secret
 выполняется только из доверенного первоисточника через delete + re-create, после
@@ -1012,6 +992,13 @@ terminal/report/PR.
 ---
 
 ## 17. Changelog
+
+- **1.6.0** — 2026-10-09. Vercel выведен (ADR-038, этап 7): оба контура
+  описаны в Яндекс Облаке — `api.aidteam.pro` и `aidteam.pro`, выкладка
+  GitHub Actions, секреты в Lockbox, превью `pr-N`. §3a: вместо «merge ≠
+  promote» — мерж в `main` выкладывает production; Q-11 закрыт. Пункты
+  бэклога 6 и 8 закрыты. Роль «Cursor» заменена на чат Claude, мержи —
+  по «Git-полномочиям». Разделы 11, 12, 16 оставлены историей.
 
 - **1.5.2** — 2026-09-21. Отмечено расхождение §3a с фактическим
   поведением promote (Q-11): деплой с `main` забирает production-алиас сам.
