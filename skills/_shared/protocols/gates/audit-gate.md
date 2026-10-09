@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: audit-gate
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Audit Gate
 
-> Статус: Stable · v1.1.0 · обновлено 2026-09-21
+> Статус: Stable · v1.1.1 · обновлено 2026-10-09
 
 ---
 
@@ -55,9 +55,6 @@ For Driver:
   products and must not be used as Driver audit sources;
 - `pages/aid-portal/token-changelog-registry.json` indexes collection
   changelogs and can be used as a reference;
-- `src/pages/FigmaStyles/` is a reference-only Figma style dump listed in
-  `relatedPrototypes`. It can be used as a Figma reference, but not as a
-  canonical token or component source.
 
 Do not audit tokens or components across multiple products in a single run
 unless the user explicitly asks for a cross-product audit.
@@ -173,6 +170,7 @@ explicitly requested product release boundary.
 
 ## 9. Changelog
 
+- **1.1.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.1.0** — 2026-09-21. Disposition находки выводится из уровня правила
   (`conformance-levels.md`); отчёт показывает профиль соответствия вместо
   списка нарушений.

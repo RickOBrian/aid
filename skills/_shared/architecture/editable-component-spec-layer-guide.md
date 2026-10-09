@@ -2,7 +2,8 @@
 destination: skills/_shared/architecture/
 name: editable-component-spec-layer-guide
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
+  status: deprecated
   kind: architecture
   owner: design-system-team
   platforms: [web]
@@ -17,7 +18,10 @@ description: >
 
 # Editable Component Spec Layer — Guide — v1.0.0
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Deprecated · v1.0.2 · обновлено 2026-10-09
+
+> **Устарел (ADR-044).** Документ описывает реализацию легаси-портала
+> `docs/storybook/`, который удаляется: Presentbook — единственная среда показа.
 
 Гайд фиксирует статус и границы editable-слоя для component spec pages:
 что уже гарантируется, что осознанно не гарантируется, и какие шаги
@@ -108,6 +112,7 @@ Web-специфика. Точечные улучшения реализации
 
 ## 2. Changelog
 
+- **1.0.2** — 2026-10-09. Помечен устаревшим (ADR-044): описывает `spec-editor.js` и `spec-inspector.js` легаси легаси-портала.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы — строка
   статуса, нумерация разделов, раздел Changelog.
 - **1.0.0** — предыдущие версии до введения раздела; история — в git.
