@@ -19,7 +19,7 @@
 |---|---|---|---|
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
 | AID · Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
-| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; репозиторий — после плана | весь продукт | первое сообщение чата → его план |
+| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; репозиторий — `arturuxui/figma-components-swapper`, заводится по «да» инженера | весь продукт | первое сообщение чата → его план |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 
@@ -36,8 +36,9 @@
 
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
-| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота. Решение владельца бота в [#98](https://github.com/RickOBrian/aid/issues/98): «Бэкенд у LU, бот опрашивает». 7а — режим предложений без бэкенда, [arturuxui/figma-library-updater#24](https://github.com/arturuxui/figma-library-updater/pull/24); бэкенд и endpoint для бота — [#25](https://github.com/arturuxui/figma-library-updater/pull/25), передано в [комментарии к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6032675668); ключ инженер передаёт лично. 7в — рассмотрение предложений владельцем, [#26](https://github.com/arturuxui/figma-library-updater/pull/26); новое событие `proposal.withdrawn` — [комментарий к #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6033648175). 7г (Telegram у дизайнера) — по решению инженера после AID-BOT-4 | ждёт владельца бота: AID-BOT-4 (события и `POST /bot/link`); ключ передан владельцу бота 2026-10-08 |
-| AID-LU-9 | Plugin · Components Swapper | Новый продукт: плагин Figma, заменяющий компоненты и иконки из чужих библиотек на наши с сохранением контента; дальше — структурное сопоставление, визуальная схожесть иконок, предложения новых компонентов и доработок. Пересечение с Style Migration (PD), скиллом `wb-aid-migration` и `iconSwap` Token Comparator — вопрос PD: [#156](https://github.com/RickOBrian/aid/issues/156) (а — Components Swapper, б — Style Migration, в — другое). План готов, кода нет | ждёт PD |
+| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота ([#98](https://github.com/RickOBrian/aid/issues/98)). 7а–7в готовы (#24–#26); бот подключён к серверу LU — AID-BOT-4 готово 2026-10-08. #98 открыт, Штаб LU ведёт там 7г | проверка уведомления на живом сервере, затем 7г — в работе |
+| AID-LU-9 | Plugin · Components Swapper | Новый продукт: замена компонентов и иконок из чужих библиотек на наши с сохранением контента. Решение PD в [#156](https://github.com/RickOBrian/aid/issues/156): «а» — отдельный продукт, владелец — инженер LU; регистрация — RickOBrian/aid#159. PD планирует позже объединить плагины — замену держать отдельным модулем | в работе по плану |
+| AID-LU-10 | Plugin · Library Updater | `version` в `package.json` → 1.0.0, как у релиза [v1.0.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.0.0) | в работе |
 
 ## Вопросы инженера
 
@@ -59,6 +60,18 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 1 | P2 | AID-LU-6 | Ключ к бэкенду LU для бота: а — передал, б — ещё не передал, передам сегодня, в — передал, напомнить в #98 | [#98](https://github.com/RickOBrian/aid/issues/98), утренний сбор | закрыт — «Решения», PLAN-2026-10-08 п.1 |
 | 2 | P3 | Hub | PR доски #133 ждёт мержа Штабом PD: а — подождать, б — напомнить в #133 | [#133](https://github.com/RickOBrian/aid/pull/133), утренний сбор | закрыт — «Решения», PLAN-2026-10-08 п.2 |
 
+### PLAN-2026-10-09
+
+Собран утренней задачей.
+
+| # | P | Задача | Вопрос | Статус |
+|---|---|---|---|---|
+| 1 | P1 | AID-LU-6 | Бот подключён: а — 7г сейчас, б — сначала проверка уведомления на живом сервере, в — позже | закрыт — «Решения» |
+| 2 | P2 | AID-LU-6 | #98: а — оставить открытым под 7г, б — закрыть | закрыт — «Решения» |
+| 3 | P2 | AID-LU-9 | Решение PD «а» в #156: а — передать и начинать, б — начать позже | закрыт — «Решения» |
+| 4 | P3 | AID-LU-10 | Версия в `package.json` 0.1.0 при релизе v1.0.0 — поправить? да / нет | закрыт — «Решения» |
+| 5 | P3 | Hub | Обновить доску одним PR из форка? да / нет | закрыт — «Решения» |
+
 ## Решения инженера
 
 Формулировка — дословно. Запись на `main` — разрешение начать работу.
@@ -78,6 +91,11 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 2026-10-08 | Hub | Hub | PLAN-2026-10-08 п.2: «Да, 1б, 2б» → «2б» — напомнить Штабу PD в #133 |
 | 2026-10-08 | AID-LU-6 | Hub | «Ключ передал, так что теперь мяч на их стороне» |
 | 2026-10-08 | AID-LU-9 | Hub | «Да» — issue #156 к PD по тексту чата продукта |
+| 2026-10-09 | AID-LU-6 | Plugin · Library Updater | PLAN-2026-10-09: «1б, 2а, 3а, 4 да, 5 да» → «1б» — проверить уведомление на живом сервере, затем 7г |
+| 2026-10-09 | AID-LU-6 | Hub | «2а» — #98 открыт, Штаб LU ведёт там 7г ([комментарий](https://github.com/RickOBrian/aid/issues/98#issuecomment-6074776340)) |
+| 2026-10-09 | AID-LU-9 | Plugin · Components Swapper | «3а» — передать решение PD и начинать работу по плану |
+| 2026-10-09 | AID-LU-10 | Plugin · Library Updater | «4 да» — версия 1.0.0 в `package.json` отдельным PR |
+| 2026-10-09 | Hub | Hub | «5 да» — обновить доску одним PR |
 
 ## Закрыто
 
