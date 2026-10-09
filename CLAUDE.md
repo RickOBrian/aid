@@ -36,16 +36,18 @@
 ## Два контура репозитория
 
 В репозитории два независимых деплой-контура. Не смешивай их код, ветки,
-зависимости и деплой.
+зависимости и деплой. Оба живут в Яндекс Облаке (ADR-038), облако
+`aidteam`, у каждого свой каталог и свой сервисный аккаунт.
 
-| Контур | Назначение | Расположение | Vercel-проект |
-|---|---|---|---|
-| Token Comparator | Плагин Figma: scan, сравнение, решения, proposal в общий реестр | `tools/figma-token-comparator/` | `aid-registry-api` (Root Directory — `tools/figma-token-comparator/server`) |
-| Presentbook | Витрина и среда ревью токенов и компонентов | `pages/aid-portal/` | `aid-ds` (Root Directory — `pages/aid-portal`) |
+| Контур | Назначение | Расположение | Облако: каталог · адрес | Выкладка |
+|---|---|---|---|---|
+| Token Comparator | Плагин Figma: scan, сравнение, решения, proposal в общий реестр | `tools/figma-token-comparator/` (сервер — `server/`) | `registry-api` · `api.aidteam.pro` | `.github/workflows/registry-api-deploy.yml` |
+| Presentbook | Витрина и среда ревью токенов и компонентов | `pages/aid-portal/` | `presentbook` · `aidteam.pro` | `.github/workflows/presentbook-yc.yml` |
 
 Изменение в одном контуре не должно требовать инфраструктуру другого и не
 должно иметь возможности случайно сломать его production. Контуры разделены
-физически и инфраструктурно.
+физически и инфраструктурно: с Облаком каждый чат работает только под
+профилем своего контура (`docs/hub/ORCHESTRATION.md` §4 «Секреты»).
 
 **Контур — не то же, что продукт дизайн-системы.** Гейты выше говорят о
 продуктах (`driver`, `rider`) — это UI Kit'ы. Здесь речь о единицах
@@ -53,19 +55,20 @@
 лежать в контуре Presentbook.
 
 Перед изменением подтвердить: какой контур затрагивается, какая ветка,
-какой Vercel-проект. Задача, задевающая оба контура, — повод остановиться
+какой каталог Облака. Задача, задевающая оба контура, — повод остановиться
 и спросить.
 
 ### Ветки и деплой
 
-- push в feature-ветку → Preview deployment, production не затрагивается;
-- merge в `main` → production deployment;
+- PR → проверки GitHub Actions (`checks.yml`); для Presentbook ещё и
+  превью `preview.aidteam.pro/pr-N/`, production не затрагивается;
+- merge в `main` → production deployment сразу, отдельного promote нет:
+  поэтому мерж и разделён на самостоятельный и согласуемый («Git-полномочия»);
 - `npm run build` обновляет локальный `dist/` и **не** равен деплою бэкенда.
 
-Наблюдение 2026-09-20: деплой с `main` забирает production-алиас сам, без
-отдельного действия. Это расходится с формулировкой «ручной promote» в
-`architecture/github-sync-architecture.md` §3a — расхождение открыто как
-Q-11 в `docs/standards-alpha/OPEN-QUESTIONS.md`.
+Vercel больше не используется (ADR-038; Q-11 закрыт). Последний проект —
+`aid-registry-api` — PD удаляет на этапе 7 (AID-15); до удаления его проверки
+в PR не учитываются.
 
 ---
 
@@ -158,7 +161,7 @@ Principal Designer принимает design-, mapping-, review- и release-ре
 - production promote любого контура;
 - force-push, удаление веток и worktree;
 - откат или перезапись незакоммиченной работы, которую делал не я;
-- изменение конфигов хостинга (Vercel, Яндекс Облако), зависимостей, CI;
+- изменение конфигов хостинга (Яндекс Облако), зависимостей, CI;
 - задача, задевающая оба контура сразу.
 
 **Мерж PR в `main`.** Мерж — это production deployment, поэтому он
