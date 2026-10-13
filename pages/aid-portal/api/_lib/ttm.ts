@@ -7,7 +7,10 @@
  * `TTM_DATA`) и отдаются `api/ttm.ts` только с валидной сессией.
  */
 
-export type TtmRole = 'designer' | 'developer' | 'engineer' | 'team' | 'product';
+export type TtmRole = 'designer' | 'developer' | 'pm' | 'engineer' | 'team' | 'product';
+
+/** Чьё время считаем: дизайнеры, разработчики, продакты, инженеры AID. */
+export type TtmSpecialist = 'designer' | 'developer' | 'pm' | 'engineer';
 
 export interface TtmOperation {
   label: string;
@@ -18,6 +21,20 @@ export interface TtmOperation {
   after: number;
   /** Раз в месяц на одного человека роли (`team` — на всю команду, `product` — на продукт). */
   perMonth: number;
+  /**
+   * Чьё время экономит операция, доли: `{ designer: 0.5, developer: 0.3, pm: 0.2 }`.
+   * Нет поля — по роли (`product` — дизайнеры, ведущие библиотеку; `team` —
+   * поровну дизайнеры, разработчики и продакты).
+   */
+  split?: Partial<Record<TtmSpecialist, number>>;
+}
+
+/** Продукт с объёмом макетов: часы операций делятся между продуктами по экранам. */
+export interface TtmProduct {
+  id: string;
+  name: string;
+  /** Мобильных экранов в макетах. */
+  screens: number;
 }
 
 export interface TtmTool {
@@ -41,13 +58,36 @@ export interface TtmChainStep {
   hours: number;
   /** Ожидание ответа другого человека — штриховка. */
   wait?: boolean;
+  /** Часы даны для продукта среднего размера и растут с числом экранов (аудит макетов). */
+  perScreen?: boolean;
+}
+
+/** Уровень сложности задачи (AID-14). */
+export interface TtmComplexityTier {
+  label: string;
+  /** Доля задач этого уровня в месяце. */
+  share: number;
+  /** Множитель времени вручную и с инструментом относительно обычной задачи. */
+  before: number;
+  after: number;
+}
+
+export interface TtmComplexity {
+  /** Плашка у графика: откуда цифры. */
+  badge: string;
+  tiers: TtmComplexityTier[];
+  /** Разброс: быстрый и долгий случай, множители `[lo, hi]`. */
+  spread: { before: [number, number]; after: [number, number] };
+  /** Операция графика по умолчанию. */
+  defaultOp?: { tool: string; op: number };
 }
 
 export interface TtmDefaults {
   designers: number;
   developers: number;
   engineers: number;
-  products: number;
+  /** Продактов. */
+  pms: number;
   rate: number;
   /** Загрузка операциями, проценты. */
   load: number;
@@ -59,14 +99,18 @@ export interface TtmData {
   intro: string;
   owners: { id: string; name: string }[];
   defaults: TtmDefaults;
+  products: TtmProduct[];
   pilotsLabel: string;
   tools: TtmTool[];
   chain: { intro: string; before: TtmChainStep[]; after: TtmChainStep[] };
   facts: { eyebrow: string; items: { value: string; label: string }[] };
   method: { title: string; text: string }[];
+  /** Сложность и разброс (AID-14). Нет блока — без графика и диапазонов. */
+  complexity?: TtmComplexity;
 }
 
-const ROLES = new Set<TtmRole>(['designer', 'developer', 'engineer', 'team', 'product']);
+const ROLES = new Set<TtmRole>(['designer', 'developer', 'pm', 'engineer', 'team', 'product']);
+const SPECIALISTS = new Set<string>(['designer', 'developer', 'pm', 'engineer']);
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -82,7 +126,9 @@ function isOperation(value: unknown): value is TtmOperation {
     ROLES.has(value.role as TtmRole) &&
     isNumber(value.before) &&
     isNumber(value.after) &&
-    isNumber(value.perMonth)
+    isNumber(value.perMonth) &&
+    (value.split === undefined ||
+      (isRecord(value.split) && Object.entries(value.split).every(([key, share]) => SPECIALISTS.has(key) && isNumber(share))))
   );
 }
 
@@ -97,7 +143,40 @@ function isTool(value: unknown): value is TtmTool {
 }
 
 function isChainStep(value: unknown): value is TtmChainStep {
-  return isRecord(value) && isString(value.label) && isNumber(value.hours) && (value.wait === undefined || typeof value.wait === 'boolean');
+  return (
+    isRecord(value) &&
+    isString(value.label) &&
+    isNumber(value.hours) &&
+    (value.wait === undefined || typeof value.wait === 'boolean') &&
+    (value.perScreen === undefined || typeof value.perScreen === 'boolean')
+  );
+}
+
+const isPair = (value: unknown): value is [number, number] =>
+  Array.isArray(value) && value.length === 2 && value.every(isNumber) && value[0] <= value[1];
+
+function isTier(value: unknown): value is TtmComplexityTier {
+  return isRecord(value) && isString(value.label) && isNumber(value.share) && isNumber(value.before) && isNumber(value.after);
+}
+
+function isComplexity(value: unknown): value is TtmComplexity {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const { spread, defaultOp } = value;
+  return (
+    isString(value.badge) &&
+    isArrayOf(value.tiers, isTier) &&
+    value.tiers.length >= 2 &&
+    isRecord(spread) &&
+    isPair(spread.before) &&
+    isPair(spread.after) &&
+    (defaultOp === undefined || (isRecord(defaultOp) && isString(defaultOp.tool) && isNumber(defaultOp.op)))
+  );
+}
+
+function isProduct(value: unknown): value is TtmProduct {
+  return isRecord(value) && isString(value.id) && isString(value.name) && isNumber(value.screens) && value.screens > 0;
 }
 
 function isTitled(value: unknown): value is { title: string; text: string } {
@@ -122,7 +201,9 @@ export function isTtmData(value: unknown): value is TtmData {
     ['eyebrow', 'title', 'intro', 'pilotsLabel'].every((key) => isString(value[key])) &&
     isArrayOf(value.owners, isOwner) &&
     isRecord(defaults) &&
-    ['designers', 'developers', 'engineers', 'products', 'rate', 'load'].every((key) => isNumber(defaults[key])) &&
+    ['designers', 'developers', 'engineers', 'pms', 'rate', 'load'].every((key) => isNumber(defaults[key])) &&
+    isArrayOf(value.products, isProduct) &&
+    value.products.length > 0 &&
     isArrayOf(value.tools, isTool) &&
     isRecord(chain) &&
     isString(chain.intro) &&
@@ -131,7 +212,8 @@ export function isTtmData(value: unknown): value is TtmData {
     isRecord(facts) &&
     isString(facts.eyebrow) &&
     isArrayOf(facts.items, isFact) &&
-    isArrayOf(value.method, isTitled)
+    isArrayOf(value.method, isTitled) &&
+    (value.complexity === undefined || isComplexity(value.complexity))
   );
 }
 
