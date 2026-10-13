@@ -40,9 +40,8 @@ PD; правки в нём — через PR PD, инженер бота — р�
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
 | AID-BOT-5 | Bot | AID-12 Штаба PD — уведомления в Telegram о задачах между Штабами (ADR-042, `../ORCHESTRATION.md` §9): опрос GitHub вместо webhook ([#136](https://github.com/RickOBrian/aid/issues/136)), контракт уведомлений [#137](https://github.com/RickOBrian/aid/pull/137) v0.2.0, срок 15.10. 2026-10-08: Request changes в #137 — R3 при закрытии issue, R7 в задачах без метки `hub`, ответ `/start` посторонним, разбор комментариев через issue | ждёт PD: v0.3.0 по ревью #137 |
-| AID-BOT-6 | Bot | AID-6 Штаба PD — пилот «плагин в боте всегда актуальный»: контракт `tools/aid-bot/contracts/plugin-release.md` ([#71](https://github.com/RickOBrian/aid/pull/71)). Код в `main` бота: PR #4 (2026-10-09) и #5 — анонс не теряется из-за разметки | ждёт инженера: проверка §8 на сервере, затем отчёт в #71 |
+| AID-BOT-6 | Bot | AID-6 Штаба PD — пилот «плагин в боте всегда актуальный»: контракт `tools/aid-bot/contracts/plugin-release.md` ([#71](https://github.com/RickOBrian/aid/pull/71)). Код в `main` бота (PR #4, #5, #6), на сервере с 2026-10-13. Проверка §8: п. 2 подтверждён (первый запуск сохранил v1.7.0 без анонса), п. 1 пропущен (канал при деплое не выключали) | ждёт инженера: §8 п. 3–4, затем отчёт в #71 |
 | AID-BOT-7 | Hub | Контракт `plugin-release.md` v0.2.0 по ревью чата Bot · Request — PD выпустил [#170](https://github.com/RickOBrian/aid/pull/170), сверен с кодом бота: совпадает | ждёт инженера: Approve #170 |
-| AID-BOT-8 | Bot | Follow-up ревью #4 от чата Bot · Request: обрезка заметок и повтор анонса — закрыты в #5 (чат бота); таймаут скачивания и `Accept` — PR #6 (Штаб); откат и возврат Latest дают повторный анонс — в контракт | ждёт инженера: мерж PR #6 |
 
 ## Вопросы инженера
 
@@ -68,3 +67,5 @@ _Пока списков нет._
 | AID-BOT-1 | Все | Переход на оркестрацию: имена, группа, работа из своей папки | 2026-10-06: папка сменена (`BOARD.md`, AID-1 · Bot) |
 | AID-BOT-2 | Hub | Путь к доске в `owners.json` → `board` ([#99](https://github.com/RickOBrian/aid/issues/99)) | 2026-10-08: [#100](https://github.com/RickOBrian/aid/pull/100) смержен, путь вписан в `owners.json` |
 | AID-BOT-4 | Bot | Опрос бэкенда предложений LU и уведомления в Telegram — по решению в [#98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6016709105) | 2026-10-08: реализовано в репозитории бота, PR #2 «События Library Updater в Telegram и /link» смержен |
+| AID-BOT-8 | Bot | Follow-up ревью #4: таймаут скачивания и `Accept` | 2026-10-13: PR #6 смержен и на сервере; пункты 1–2 — PR #5 |
+| AID-BOT-9 | Bot | Исходящие через GitHub: issue с меткой `bot:send` в репозитории бота → сообщение в Telegram (PR #7) — Штаб пишет через бота | 2026-10-13: включено на сервере, `GH_TOKEN` (только репозиторий бота, Issues: read and write); первая отправка доставлена, бот ответил в issue и закрыл её |
