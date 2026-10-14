@@ -1,0 +1,15 @@
+{
+  "name": "aid-team-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Сервис задач команды AID — team.aidteam.pro (ADR-046)",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "ydb-sdk": "5.11.1"
+  }
+}

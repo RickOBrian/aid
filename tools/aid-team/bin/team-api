@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+"""Запрос к сервису задач AID с личным ключом этой машины.
+
+  team-api GET  '/v1/tasks?assignee=<логин>'
+  team-api POST /v1/tasks '{"product":"team","title":"…","assignees":["<логин>"]}'
+  team-api PATCH /v1/tasks/team-1 '{"status":"in_progress"}'
+
+Ключ берётся из связки ключей macOS или ~/.config/aidteam/team-key (его
+кладёт team-key) и подставляется в заголовок; в аргументы, вывод и
+историю терминала не попадает. Чтение работает и без ключа. Ответ — JSON
+в stdout; код выхода 1 при ответе 4xx/5xx.
+"""
+
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+
+import importlib.machinery  # noqa: E402
+import importlib.util  # noqa: E402
+
+_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "team-key")
+_loader = importlib.machinery.SourceFileLoader("team_key", _path)
+_spec = importlib.util.spec_from_loader("team_key", _loader)
+tk = importlib.util.module_from_spec(_spec)
+_loader.exec_module(tk)
+
+
+def main():
+    if len(sys.argv) < 3:
+        sys.exit(__doc__)
+    method, path = sys.argv[1].upper(), sys.argv[2]
+    body = json.loads(sys.argv[3]) if len(sys.argv) > 3 else None
+    key = tk.load()
+    if method != "GET" and not key:
+        sys.exit("Нужен личный ключ — запусти /team-key.")
+    status, data = tk.api(method, path, key=key, body=body)
+    print(json.dumps(data, ensure_ascii=False, indent=2))
+    if status >= 400:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

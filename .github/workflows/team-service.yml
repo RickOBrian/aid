@@ -1,0 +1,113 @@
+name: team-service
+
+# Сервис задач AID — team.aidteam.pro (tools/aid-team/SERVICE.md, ADR-046).
+# На PR — тесты; с main — новая версия функции, спецификация шлюза и
+# смоук-тест. Только при изменениях в папке сервиса.
+#
+# Секрет репозитория:
+#   YC_TEAM_TASKS_CI_KEY — авторизованный ключ (JSON) аккаунта team-tasks-ci
+# Переменные репозитория (не секретные):
+#   YC_TEAM_TASKS_FOLDER_ID     — каталог team-tasks
+#   YC_TEAM_TASKS_RUNTIME_SA_ID — team-tasks-runtime: от него работает функция
+#                                 и его шлюз использует для вызова
+#   YC_TEAM_TASKS_LOCKBOX_ID    — team-tasks-secrets (KEY_PEPPER)
+#   YC_TEAM_TASKS_YDB_DATABASE  — путь базы YDB team-tasks
+
+on:
+  pull_request:
+    paths:
+      - tools/aid-team/service/**
+      - .github/workflows/team-service.yml
+  push:
+    branches: [main]
+    paths:
+      - tools/aid-team/service/**
+      - .github/workflows/team-service.yml
+  workflow_dispatch:
+
+concurrency:
+  group: team-service-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Тесты сервиса задач
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/aid-team/service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/aid-team/service/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  deploy:
+    name: Выкладка сервиса задач
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/aid-team/service
+    env:
+      YC_FOLDER_ID: ${{ vars.YC_TEAM_TASKS_FOLDER_ID }}
+      RUNTIME_SA_ID: ${{ vars.YC_TEAM_TASKS_RUNTIME_SA_ID }}
+      LOCKBOX_ID: ${{ vars.YC_TEAM_TASKS_LOCKBOX_ID }}
+      YDB_DATABASE: ${{ vars.YC_TEAM_TASKS_YDB_DATABASE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Архив функции
+        run: zip -q -r "$RUNNER_TEMP/team-tasks.zip" package.json package-lock.json src
+
+      - name: Установить yc
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
+          echo "$HOME/yc/bin" >> "$GITHUB_PATH"
+
+      - name: Войти в Облако
+        env:
+          YC_KEY: ${{ secrets.YC_TEAM_TASKS_CI_KEY }}
+        run: |
+          printf '%s' "$YC_KEY" > "$RUNNER_TEMP/yc-key.json"
+          yc config profile create ci >/dev/null
+          yc config set service-account-key "$RUNNER_TEMP/yc-key.json"
+          yc config set folder-id "$YC_FOLDER_ID"
+          yc config set endpoint api.cloud.yandex.net:443
+          rm "$RUNNER_TEMP/yc-key.json"
+
+      - name: Новая версия функции
+        run: |
+          yc serverless function version create \
+            --function-name team-tasks \
+            --runtime nodejs22 \
+            --entrypoint src/index.handler \
+            --memory 256m \
+            --execution-timeout 15s \
+            --service-account-id "$RUNTIME_SA_ID" \
+            --environment "YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135,YDB_DATABASE=$YDB_DATABASE,YDB_METADATA_CREDENTIALS=1" \
+            --secret environment-variable=KEY_PEPPER,id="$LOCKBOX_ID",key=KEY_PEPPER \
+            --source-path "$RUNNER_TEMP/team-tasks.zip"
+
+      - name: Спецификация шлюза
+        run: |
+          export FUNCTION_ID="$(yc serverless function get --name team-tasks --format json | jq -r .id)"
+          export GATEWAY_SA_ID="$RUNTIME_SA_ID"
+          envsubst '${FUNCTION_ID} ${GATEWAY_SA_ID}' < cloud/gateway.yaml > "$RUNNER_TEMP/gateway.yaml"
+          yc serverless api-gateway update --name team-tasks --spec "$RUNNER_TEMP/gateway.yaml"
+
+      - name: Смоук-тест
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://team.aidteam.pro/v1/health) && [ "$code" = 200 ] && break
+            sleep 10
+          done
+          [ "$code" = 200 ] || { echo "health: $code"; exit 1; }
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://team.aidteam.pro/v1/tasks)" = 200
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST https://team.aidteam.pro/v1/tasks)" = 401
+          echo "ok"
