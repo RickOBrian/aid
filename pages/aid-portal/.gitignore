@@ -7,3 +7,6 @@ scripts/icons-manifest.json
 deploy/yc/dist
 # Данные страницы /ttm для npm run dev — закрытые, в git не попадают (AID-13)
 ttm-data.local.json
+
+# Временное зеркало (AID-18)
+deploy/node/dist

@@ -1,0 +1,20 @@
+# Временный Node-сервер API Presentbook (AID-18).
+# Файл окружения /etc/presentbook/api.env (права 600, владелец root) — его
+# заполняет PD на сервере: BASIC_AUTH_USER, BASIC_AUTH_PASSWORD,
+# AUTH_COOKIE_SECRET. В репозиторий и чаты значения не попадают.
+[Unit]
+Description=Presentbook API (temporary mirror)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /opt/presentbook/server.cjs
+EnvironmentFile=/etc/presentbook/api.env
+Environment=PORT=8787
+DynamicUser=yes
+Restart=on-failure
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
