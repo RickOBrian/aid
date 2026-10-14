@@ -16,7 +16,10 @@ const prefix = process.env.TABLE_PREFIX;
 if (!prefix) throw new Error('нужен TABLE_PREFIX — рабочие таблицы этой проверкой не трогаются');
 
 const store = createYdbStore({ endpoint: process.env.YDB_ENDPOINT, database: process.env.YDB_DATABASE, prefix });
-const OWNERS = parseOwners({ people: [{ github: 'pd-login', decides: ['system'] }, { github: 'eng-a' }, { github: 'eng-b' }] });
+const OWNERS = parseOwners({
+  people: [{ github: 'pd-login', decides: ['system'] }, { github: 'eng-a' }, { github: 'eng-b' }],
+  agents: [{ id: 'ai-team', kind: 'ai', curator: 'pd-login' }],
+});
 const app = createApp({
   store,
   owners: async () => OWNERS,
@@ -29,7 +32,7 @@ const call = async (method, path, key, body) => app(new Request(`https://x${path
   headers: { ...(key ? { Authorization: `Bearer ${key}` } : {}), 'Content-Type': 'application/json' },
   body: body ? JSON.stringify(body) : undefined,
 }));
-const keyFor = async (t) => (await (await call('POST', '/v1/keys', null, { githubToken: t })).json()).key;
+const keyFor = async (t, agent) => (await (await call('POST', '/v1/keys', null, agent ? { githubToken: t, agent } : { githubToken: t })).json()).key;
 
 test.after(() => store.driver.destroy());
 
@@ -85,6 +88,19 @@ test('полный цикл на YDB', async () => {
     store.updateTask(stale, { title: 'Устаревшая' }, [], new Date().toISOString()),
     (e) => e.status === 409,
   );
+
+  // AI-инженер (ADR-047): ключ выдаёт хозяин машины, в истории — by и via
+  const ai = await keyFor('tok-b', 'ai-team');
+  assert.match(ai, /^aida_/);
+  assert.equal((await (await call('GET', '/v1/me', ai)).json()).agent, 'ai-team');
+  r = await call('POST', '/v1/tasks', ai, { product: 'hub', title: 'От AI', assignees: ['eng-a'] });
+  assert.equal(r.status, 201, await r.clone().text());
+  const aiTask = (await r.json()).task;
+  assert.equal(aiTask.author, 'ai-team');
+  r = await call('PATCH', `/v1/tasks/${aiTask.id}`, ai, { title: 'От AI, правка' });
+  assert.equal(r.status, 200, await r.clone().text());
+  const aiHist = (await (await call('GET', `/v1/tasks/${aiTask.id}`)).json()).task.history;
+  assert.deepEqual(aiHist.map((h) => [h.field, h.by, h.via]), [['created', 'ai-team', 'eng-b'], ['title', 'ai-team', 'eng-b']]);
 
   assert.equal((await call('DELETE', '/v1/keys/current', a)).status, 200);
   assert.equal((await call('GET', '/v1/me', a)).status, 401);

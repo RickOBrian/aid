@@ -56,7 +56,7 @@
 | `GET /v1/events?after=` | нет | лента событий для бота |
 | `POST /v1/tasks` | личный | новая задача → id |
 | `PATCH /v1/tasks/{id}` | личный | статус, «ждёт», исполнители, ссылки, описание |
-| `POST /v1/keys` | вход GitHub | выдача личного ключа (`/team-key`) |
+| `POST /v1/keys` | вход GitHub | выдача личного ключа (`/team-key`); с `agent` — ключа AI-инженера |
 | `DELETE /v1/keys/current` | личный | отзыв своего ключа |
 | `GET /v1/me` | личный | чей ключ |
 
@@ -77,6 +77,25 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
    add-generic-password -s team.aidteam.pro -a <логин>`), на Linux — файл
    с правами 0600; на экран и в чат не выводится. Работает одинаково в
    Claude Code и Cursor.
+
+### Ключ AI-инженера — `team-key --agent ai-<роль>`
+
+ADR-047. Тот же вход GitHub, в `POST /v1/keys` уходит ещё `agent`. Выдаёт
+хозяин машины — человек из `people[]` `owners.json`; `agent` — id из
+`agents[]` там же. В таблице `keys`: `kind: "agent"`, `login` — хозяин
+машины, `name` — id AI. Ключ `aida_…` лежит отдельно от личного: в связке
+сервис `team.aidteam.pro/agent/<id>`, на Linux —
+`~/.config/aidteam/agent-<id>`. Запросы — `team-api --agent <id> …`.
+
+- Правка ключом AI в истории и ленте: `by: "ai-team"`, `via: "<логин>"`
+  → «ai-team (у @логин)». Колонка `events.via` (`init-db` дописывает
+  недостающие колонки в существующие таблицы).
+- Права AI — свои, не хозяина: правит задачи, где он автор или
+  исполнитель; AI на машине PD не получает прав PD.
+- Ключ перестаёт работать (403), когда AI или хозяина машины убрали из
+  `owners.json`; отзыв — `team-key --agent <id> --revoke`.
+- `owners.json` format 2 тоже читается: без `agents[]` ключи AI не
+  выдаются.
 
 ## Код
 
@@ -133,7 +152,7 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
 1. **`owners.json` format 3** — `people[]` (`kind: "human"`) и `agents[]`
    (`kind: "ai"`, `id: "ai-<роль>"`, `card`, `curator`). Ключи по
    `/team-key` — только `kind: "human"`.
-2. **Ключи AI-инженеров** — вид `agent`: id роли + логин хозяина машины;
+2. **Ключи AI-инженеров** — сделано, см. «Ключ AI-инженера». Вид `agent`: id роли + логин хозяина машины;
    выдаёт хозяин машины `team-key --agent <id>`. В истории: `by: "ai-team"`,
    `via: "<логин>"` → «ai-team (у @логин)».
 3. **Куратор** — поле `curator` (логин человека); обязателен, если среди
@@ -176,3 +195,7 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
   `team-tasks` создана, первая версия выложена вручную. Шлюз и домен — после
   сбоя Облака 2026-10-14 (API Gateway недоступен) и выпуска сертификата.
   Ждут PD: ключ CI в GitHub Secrets (этап 2); имена в открытом чтении.
+- 2026-10-14 — ADR-047, шаг «ключи AI-инженеров»: код, тесты в памяти и
+  проверка на YDB в `test/` (добавление колонки `via` к старой схеме,
+  ключ AI, `by`/`via` в истории). Рабочей базе нужен запуск `init-db`
+  при выкладке — делает DevOps · Team Service.

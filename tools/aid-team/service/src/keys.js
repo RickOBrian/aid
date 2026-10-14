@@ -5,7 +5,9 @@
 
 const crypto = require('node:crypto');
 
-const PREFIX = { personal: 'aidt_', service: 'aids_' };
+// personal — человек; agent — AI-инженер на машине человека (ADR-047);
+// service — сервисы вроде Presentbook и бота.
+const PREFIX = { personal: 'aidt_', agent: 'aida_', service: 'aids_' };
 
 function generateKey(kind) {
   const prefix = PREFIX[kind];
