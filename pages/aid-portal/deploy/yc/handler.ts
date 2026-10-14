@@ -10,11 +10,13 @@
  * Переменные: AUTH_COOKIE_SECRET, BASIC_AUTH_USER, BASIC_AUTH_PASSWORD,
  * GITHUB_RELEASES_TOKEN (Lockbox), PREVIEW_STORAGE_URL (адрес бакета превью),
  * TTM_SECRET_ID (id секрета Lockbox с данными страницы `/ttm`; сами данные
- * функция читает при запросе — `api/_lib/ttm.ts`).
+ * функция читает при запросе — `api/_lib/ttm.ts`), TEAM_SECRET_ID и
+ * TEAM_API_URL (сервис задач Team для `/manage/tasks`, `api/tasks.ts`).
  */
 import { POST as login } from '../../api/login';
 import { GET as pluginVersion } from '../../api/plugin-version';
 import { GET as session } from '../../api/session';
+import { GET as tasks } from '../../api/tasks';
 import { GET as ttm } from '../../api/ttm';
 import { fromResponse, toRequest, type YcHttpEvent, type YcHttpResult } from './adapter';
 
@@ -129,6 +131,12 @@ export async function route(request: Request, options: RouteOptions = {}): Promi
     }
     return authConfigured()
       ? ttm(request, { token: options.token })
+      : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  }
+  if (pathname === '/api/tasks') {
+    // Задачи команды (AID-16): только с сессией; превью — примерные задачи.
+    return authConfigured()
+      ? tasks(request, { token: options.token, preview: options.preview })
       : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
   const storageUrl = process.env.PREVIEW_STORAGE_URL;
