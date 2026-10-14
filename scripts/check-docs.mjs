@@ -235,8 +235,12 @@ for (const file of files) {
   for (const ref of new Set(legacy))
     err(file, 'legacy-ref', `ссылка на легаси-путь Cursor: ${ref} — правило переехало, см. GATES-MIGRATION.md`);
 
-  /* ссылки на файлы */
-  const refs = new Set([...src.matchAll(/`([A-Za-z0-9_./-]+\.(?:md|mdc|json|ts|tsx|mjs|js))`/g)].map((m) => m[1]));
+  /* ссылки на файлы. Changelog — история и вправе называть удалённое;
+     устаревший документ (status: deprecated) описывает то, чего уже нет. */
+  const live = src.split(/^## (?:\d+\. )?Changelog\s*$/m)[0];
+  const refs = fm.status === 'deprecated'
+    ? new Set()
+    : new Set([...live.matchAll(/`([A-Za-z0-9_./-]+\.(?:md|mdc|json|ts|tsx|mjs|js))`/g)].map((m) => m[1]));
   for (const ref of refs) {
     if (existsSync(join(repoRoot, ref))) continue;
     const hits = index.get(basename(ref));
