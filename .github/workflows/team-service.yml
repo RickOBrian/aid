@@ -90,7 +90,7 @@ jobs:
             --memory 256m \
             --execution-timeout 15s \
             --service-account-id "$RUNTIME_SA_ID" \
-            --environment "YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135,YDB_DATABASE=$YDB_DATABASE,YDB_METADATA_CREDENTIALS=1" \
+            --environment "YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135,YDB_DATABASE=$YDB_DATABASE" \
             --secret environment-variable=KEY_PEPPER,id="$LOCKBOX_ID",key=KEY_PEPPER \
             --source-path "$RUNNER_TEMP/team-tasks.zip"
 

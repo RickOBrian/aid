@@ -176,3 +176,8 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
   `team-tasks` создана, первая версия выложена вручную. Шлюз и домен — после
   сбоя Облака 2026-10-14 (API Gateway недоступен) и выпуска сертификата.
   Ждут PD: ключ CI в GitHub Secrets (этап 2); имена в открытом чтении.
+- 2026-10-14, вечер — после сбоя: шлюз `team-tasks` создан (временный адрес
+  `d5db0pgp8s9h07kv61dp.l5v6loqa.apigw.yandexcloud.net`), API отвечает. Вход
+  функции в YDB переведён на IAM-токен из context вызова: MetadataAuthService
+  ydb-sdk требует ещё `@yandex-cloud/nodejs-sdk`. Сертификат
+  `team.aidteam.pro` всё ещё на проверке — домен подключится после выпуска.
