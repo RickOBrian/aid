@@ -21,6 +21,8 @@ const TABLES = {
       new Column('title', U()), new Column('description', U()), new Column('author', U()),
       new Column('assignees', U()), new Column('related_products', U()), new Column('status', U()),
       new Column('waiting_on', U()), new Column('links', U()), new Column('created_at', U()), new Column('updated_at', U()),
+      // ADR-047: куратор — логин человека; обязателен при AI-исполнителе.
+      new Column('curator', U()),
     )
     .withPrimaryKey('id'),
   events: new TableDescription()
