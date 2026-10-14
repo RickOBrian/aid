@@ -43,7 +43,7 @@
 |---|---|---|---|---|
 | Token Comparator | Плагин Figma: scan, сравнение, решения, proposal в общий реестр | `tools/figma-token-comparator/` (сервер — `server/`) | `registry-api` · `api.aidteam.pro` | `.github/workflows/registry-api-deploy.yml` |
 | Presentbook | Витрина и среда ревью токенов и компонентов | `pages/aid-portal/` | `presentbook` · `aidteam.pro` | `.github/workflows/presentbook-yc.yml` |
-| Team | Сервис задач команды и база людей (ADR-046) | `tools/aid-team/` | `team-data` · `team.aidteam.pro` | в разработке — описывает Team |
+| Team | Сервис задач команды и база людей (ADR-046) | `tools/aid-team/` | `team-tasks` · `team.aidteam.pro` (база людей — `team-data`) | в разработке — описывает Team |
 
 Изменение в одном контуре не должно требовать инфраструктуру другого и не
 должно иметь возможности случайно сломать его production. Контуры разделены
