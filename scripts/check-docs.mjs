@@ -173,7 +173,10 @@ for (const file of files) {
      строку статуса. Требовать её от заметки — плодить церемонию там, где
      документ по определению не дописан. Frontmatter проверяется у всех. */
   const ceremonial = fm.kind !== 'notes';
-  const sections = [...src.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+  /* Заголовки внутри блоков кода — пример, а не раздел: так в semver-guide
+     пример changelog получил номера 10 и 11 (AID-20). */
+  const prose = src.replace(/^```[\s\S]*?^```/gm, (m) => m.replace(/[^\n]/g, ''));
+  const sections = [...prose.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
   if (ceremonial && sections.length && !sections.some((s) => /Changelog/i.test(s)))
     warn(file, 'changelog', 'нет раздела Changelog');
   const numbered = sections.filter((s) => /^\d+\./.test(s)).length;
