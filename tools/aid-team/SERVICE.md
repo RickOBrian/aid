@@ -21,6 +21,7 @@
 | API | Cloud Function за API Gateway, `https://team.aidteam.pro/v1/…` |
 | Сертификат | Certificate Manager `team-aidteam-pro`, Let's Encrypt, проверка CNAME в зоне `aidteam.pro` |
 | Секреты | Lockbox `team-tasks-secrets`: `KEY_PEPPER` (хэширование личных ключей) |
+| Вход GitHub | OAuth App «AID Team», Device Flow, Client ID `Ov23litYvK5To9WhHv6Z` (не секрет; секрет приложения не создан и не нужен) |
 | Код | `tools/aid-team/service/` (этап 2) |
 | Деплой | GitHub Actions, workflow — этап 2 (мерж PD: `.github/`) |
 
@@ -81,4 +82,5 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
 
 - 2026-10-14 — этап 1: каталог, YDB, сервисные аккаунты, Lockbox,
   профиль `team-tasks`, запрос сертификата и CNAME для его проверки.
-  Ждут PD: GitHub OAuth App, ключ CI в GitHub Secrets (этап 2).
+  GitHub OAuth App «AID Team» зарегистрирован PD, Device Flow проверен.
+  Ждут PD: ключ CI в GitHub Secrets (этап 2); имена в открытом чтении.
