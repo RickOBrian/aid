@@ -42,6 +42,8 @@ export interface Task {
   status: TaskStatus;
   /** Логин, `pd` — решение Principal Designer, или `null`. */
   waitingOn: string | null;
+  /** Живой куратор задачи — логин (team-2, сервис #223). Без «да» куратора задача не мержится. */
+  curator?: string | null;
   links: TaskLink[];
   history?: TaskHistoryEntry[];
   createdAt: string;
@@ -79,6 +81,7 @@ export function isTask(value: unknown): value is Task {
     isStringArray(value.relatedProducts) &&
     STATUS_SET.has(value.status as string) &&
     (value.waitingOn === null || isString(value.waitingOn)) &&
+    (value.curator === undefined || value.curator === null || isString(value.curator)) &&
     Array.isArray(value.links) &&
     value.links.every(isLink) &&
     (value.history === undefined || (Array.isArray(value.history) && value.history.every(isHistoryEntry)))

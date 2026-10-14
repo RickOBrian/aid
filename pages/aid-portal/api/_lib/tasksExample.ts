@@ -16,6 +16,7 @@ function task(partial: Partial<Task> & Pick<Task, 'product' | 'number' | 'title'
     assignees: ['engineer-2'],
     relatedProducts: [],
     waitingOn: null,
+    curator: 'engineer-1',
     links: [],
     createdAt: at(1),
     updatedAt: at(5),
