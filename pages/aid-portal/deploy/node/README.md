@@ -15,32 +15,37 @@
   «данные недоступны».
 - Cookie входа с флагом `Secure` — нужен HTTPS (certbot).
 
-## Сборка (локально или на сервере, из `pages/aid-portal`)
+## Установка одной командой (Ubuntu 22.04/24.04, Debian 12)
+
+PD заходит на сервер по SSH сам и запускает под root:
 
 ```bash
-npm ci
-npm run build -- --base=/
-node deploy/node/build.mjs
+curl -fsSLO https://raw.githubusercontent.com/RickOBrian/aid/infra/selectel-mirror/pages/aid-portal/deploy/node/install.sh
+sudo bash install.sh
 ```
 
-На сервер: содержимое `dist/` → папка статики, `deploy/node/dist/server.cjs`
-→ `/opt/presentbook/server.cjs`.
+Скрипт:
 
-## Сервер (Node 22, nginx)
+1. ставит nginx, certbot, git и Node 22;
+2. берёт код из ветки `infra/selectel-mirror`;
+3. собирает статику (`npm run build -- --base=/`) и `server.cjs`;
+4. спрашивает текущие логин и пароль входа со скрытым вводом, а ключ
+   cookie генерирует заново (`openssl rand -base64 32`). Всё уходит в
+   `/etc/presentbook/api.env` с правами 600 и на экран не выводится;
+5. включает сервис `presentbook-api`;
+6. настраивает nginx на `<IP>.sslip.io`;
+7. выпускает сертификат: certbot спросит почту и согласие с условиями;
 
-1. `/etc/presentbook/api.env` (права 600) — PD сам вписывает
-   `BASIC_AUTH_USER`, `BASIC_AUTH_PASSWORD`, `AUTH_COOKIE_SECRET`.
-2. `presentbook-api.service` → `/etc/systemd/system/`, затем
-   `systemctl daemon-reload && systemctl enable --now presentbook-api`.
-3. `nginx.conf` → `/etc/nginx/sites-available/presentbook` с подстановкой
-   домена и папки, ссылка в `sites-enabled`, `nginx -t && systemctl reload nginx`.
-4. `certbot --nginx -d <домен>`.
+и в конце проверяет адреса. Повторный запуск обновляет сборку и файл
+секретов не трогает.
 
 ## Проверка
 
 - `https://<домен>/` — форма входа; после входа — страницы портала.
 - `https://<домен>/api/session` без cookie → 401.
 - `https://<домен>/api/plugin-version` → 200.
+- `https://<домен>/api/ttm`: без входа → 401, после входа → 503 — так и
+  задумано: закрытые данные КПД лежат в Lockbox, копия их не отдаёт.
 
 ## Когда Облако поднимется
 
