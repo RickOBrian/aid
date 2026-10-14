@@ -2,19 +2,23 @@
 
 // Вход Cloud Function: событие API Gateway → Request → маршруты → ответ.
 // Переменные окружения версии функции (задаёт workflow):
-//   YDB_ENDPOINT, YDB_DATABASE, YDB_METADATA_CREDENTIALS=1 — база от имени
-//   сервисного аккаунта функции; KEY_PEPPER — из Lockbox team-tasks-secrets.
+//   YDB_ENDPOINT, YDB_DATABASE; KEY_PEPPER — из Lockbox team-tasks-secrets.
+// В базу — IAM-токеном сервисного аккаунта функции, который Облако передаёт
+// в context каждого вызова (MetadataAuthService ydb-sdk требует ещё
+// @yandex-cloud/nodejs-sdk — не тянем).
 
+const { TokenAuthService } = require('ydb-sdk');
 const { createApp } = require('./app');
 const { createYdbStore } = require('./ydb-store');
 const { ownersSource, githubLogin, namesSource } = require('./sources');
 
 let app = null;
 let iamToken = null;
+const ydbAuth = new TokenAuthService('');
 
 function getApp() {
   if (app) return app;
-  const store = createYdbStore({ endpoint: process.env.YDB_ENDPOINT, database: process.env.YDB_DATABASE });
+  const store = createYdbStore({ endpoint: process.env.YDB_ENDPOINT, database: process.env.YDB_DATABASE, authService: ydbAuth });
   app = createApp({
     store,
     owners: ownersSource(),
@@ -54,6 +58,7 @@ async function fromResponse(res) {
 module.exports.handler = async (event, context) => {
   // IAM-токен сервисного аккаунта функции — для чтения файла имён в Object Storage.
   iamToken = context && context.token ? context.token.access_token : null;
+  if (iamToken) ydbAuth.token = iamToken;
   return fromResponse(await getApp()(toRequest(event)));
 };
 
