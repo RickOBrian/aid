@@ -2,31 +2,32 @@
 destination: skills/_shared/standards/
 name: anatomy-annotation-standard
 metadata:
-  version: "1.0.3"
+  version: "1.0.4"
   kind: standard
 ---
 
 # Стандарт аннотации anatomy (halo / anchor / callout)
 
-> Статус: Draft · v1.0.3 · обновлено 2026-10-09
+> Статус: Draft · v1.0.4 · обновлено 2026-10-09
 
 ---
 
 Этот файл — единственный источник правды для логики отрисовки 
 элементов аннотации (anchor-точка, halo, линии, номера) в 
-presentbook. Любое изменение measure-agents.js, anatomy-конфигов 
-в *.html файлах компонентов ОБЯЗАНО начинаться с чтения этого 
-файла и заканчиваться проверкой на соответствие ему.
+Presentbook. Любое изменение реализации анатомии (общий механизм 
+отрисовки и конфиги анатомии компонентов) ОБЯЗАНО начинаться с 
+чтения этого файла и заканчиваться проверкой на соответствие ему. 
+Стандарт описывает поведение; где лежит реализация — раздел 7.
 
 ## 1. Порядок работы при любой правке этой зоны
 
 1. Прочитать этот файл полностью.
 2. Сформулировать диагноз (root cause), не чинить симптом.
 3. git commit текущего состояния перед изменением.
-4. Внести изменение в measure-agents.js (общая функция), 
+4. Внести изменение в общий механизм отрисовки, 
    никогда — точечный патч под один компонент/файл.
 5. Прогнать полную регрессию по ВСЕМ presentbook-файлам 
-   (список — см. раздел 5), не только по файлу, где был 
+   (список — см. раздел 7), не только по файлу, где был 
    замечен баг.
 6. Явно указать в отчёте: что было причиной, что изменено, 
    что проверено.
@@ -42,7 +43,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
 Если потребуется изменить размер (например до 8px по запросу 
 дизайна) — это функциональное изменение, требующее полного 
 цикла из п. 0: commit → правка CALLOUT_DOT_RADIUS в общей 
-функции → регрессия по всем файлам раздела 5.
+функции → регрессия по всем файлам раздела 7.
 
 ## 3. Halo (обводка)
 - Только border/outline, background ВСЕГДА transparent. 
@@ -88,7 +89,7 @@ presentbook. Любое изменение measure-agents.js, anatomy-конфи
   страницы (например «Варианты», «Appearance», где 
   множественность инстансов уместна и ожидаема) — #spec-sample 
   НЕ трогать; вместо этого завести отдельный guide.anatomyPreview 
-  (см. resolveAnatomySample() в guide-page.js) с минимальным 
+  с минимальным 
   набором инстансов специально для anatomy-стейджа.
 
 ## 6. Multi-size анатомия (per-size состав элементов)
@@ -99,7 +100,7 @@ icon (optional) + text; tiny — text + chevron, icon отсутствует
 в разметке вовсе). Один статичный сэмпл в таком случае физически 
 не может показать анатомию остальных размеров.
 
-Механизм (общий, в guide-page.js — не под конкретный компонент):
+Механизм (общий, не под конкретный компонент):
 
 1. **`guide.sizeSamples: [{ id, label, sample }]`** — один 
    упорядоченный реестр реальной разметки по размерам на всю 
@@ -123,7 +124,7 @@ icon (optional) + text; tiny — text + chevron, icon отсутствует
    `guide.anatomyDefaultSize`.
 5. Геометрия/anchor/halo НЕ дублируются под размеры: при смене 
    размера стейдж перемонтируется тем же 
-   `agents.mountAnatomyCallouts()` по реальному 
+   общим механизмом отрисовки по реальному 
    `getBoundingClientRect()` нового инстанса (пп. 1–2 этого 
    файла остаются единственным источником правды).
 
@@ -138,39 +139,34 @@ Tiny-сэмпле ButtonText возник именно из копировани
 
 ## 7. Список файлов для регрессии
 
-Полный список presentbook-страниц, рендерящих anatomy-стейдж 
-(`DSGuidePage.render()` / `mountAnatomyCallouts()`) — прогонять 
+Страницы Presentbook с anatomy-стейджем и общий механизм — прогонять 
 ВСЕ при любой правке этой зоны, не только страницу с багом. 
 Дополнять при добавлении новых компонентов.
 
-- `docs/storybook/components/badge.html`
-- `docs/storybook/components/button-icon.html`
-- `docs/storybook/components/card.html`
-- `docs/storybook/components/chip.html`
-- `docs/storybook/components/chip-select.html`
-- `docs/storybook/components/color-swatch.html`
-- `docs/storybook/components/search.html`
-- `docs/storybook/components/storybook-button.html`
-- `docs/storybook/components/switch.html`
-- `docs/storybook/components/table.html`
-- `pages/aid-portal/components/AnatomyInspector.tsx` — действующая реализация
+- `pages/aid-portal/components/AnatomyInspector.tsx` — общий механизм
+- `pages/aid-portal/SwitchPage.tsx` — `switch.anatomy.ts`
+- `pages/aid-portal/BadgeDotPage.tsx` — `badgeDot.anatomy.ts`
+- `pages/aid-portal/BadgeCountPage.tsx` — `badgeCount.anatomy.ts`
 
-Известное baseline-состояние (не регрессия, проверять на 
-изменение, а не на отсутствие): `color-swatch.html` — 0 
-callout'ов (части без selector'ов); `card.html`, 
-`color-swatch.html` — 0 radius-арок.
+Страницы легаси-портала `docs/storybook/` легаси и удаляются (ADR-044) и в 
+регрессию не входят.
 
 ## 8. Запрещено
 - Менять production-разметку компонентов ради аннотационного 
   слоя (никаких новых wrapper-span и т.п.).
 - Точечные фиксы под один файл без применения в общей функции.
 - Считать регрессию пройденной без буквальной проверки каждого 
-  файла из раздела 5.
+  файла из раздела 7.
 
 ---
 
 ## 9. Changelog
 
+- **1.0.4** — 2026-10-09. Стандарт отвязан от легаси-портала (ADR-044):
+  убраны `measure-agents.js`, `guide-page.js` и страницы
+  `docs/storybook/components/`; регрессия — страницы Presentbook с
+  anatomy-стейджем. Ссылки «раздел 5» на список файлов исправлены на
+  раздел 7.
 - **1.0.3** — 2026-10-09. Нумерация: подраздел «Минимальность набора
   инстансов» — 5.1 (был 4.1 под разделом 5), из заголовка раздела 6 убран
   лишний номер «2.». Нашла новая проверка `check-docs`.

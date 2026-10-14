@@ -2,19 +2,25 @@
 
 > Файл собирается `node scripts/build-structure.mjs`. Руками не править:
 > дерево строится из репозитория, таблица назначений — из PURPOSE в скрипте.
-> Снимок: 2026-09-21
+> Снимок: 2026-10-09
 
 ```
 aid/
 ├── .claude/
+│   └── skills/
+│       ├── delegate/  (1)
+│       ├── plan/  (1)
+│       ├── task/  (1)
+│       └── team/  (1)
 ├── .cursor/
 │   └── rules/
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
 │   └── workflows/
 ├── changes/
 │   ├── driver/
-│   │   ├── pending/  (13)
-│   │   └── released/  (2)
+│   │   ├── pending/  (16)
+│   │   └── released/  (5)
 │   └── rider/
 │       ├── pending/  (9)
 │       └── released/  (1)
@@ -25,14 +31,13 @@ aid/
 │   ├── design-system/
 │   │   └── typography/  (3)
 │   ├── guides/
+│   ├── hub/
+│   │   ├── boards/  (3)
+│   │   └── kit/  (5)
 │   ├── prototypes/
 │   │   ├── assets/  (8)
 │   │   └── export/  (2)
-│   ├── specs/
 │   ├── standards-alpha/
-│   ├── storybook/
-│   │   ├── _known-issues/  (3)
-│   │   └── components/  (10)
 │   └── tokens/
 ├── memory/
 │   ├── ds-component-audit/
@@ -40,12 +45,13 @@ aid/
 │   └── ds-component-spec/
 ├── pages/
 │   └── aid-portal/
-│       ├── api/  (2)
-│       ├── components/  (24)
+│       ├── api/  (5)
+│       ├── components/  (38)
+│       ├── deploy/  (1)
 │       ├── products/  (2)
 │       ├── public/  (2)
 │       ├── scripts/  (14)
-│       └── tokens/  (14)
+│       └── tokens/  (15)
 ├── products/
 │   ├── driver/
 │   └── rider/
@@ -55,7 +61,7 @@ aid/
 │   │   ├── architecture/  (5)
 │   │   ├── notes/  (2)
 │   │   ├── protocols/  (14)
-│   │   └── standards/  (27)
+│   │   └── standards/  (28)
 │   ├── ds-component-audit/
 │   │   └── references/  (1)
 │   ├── ds-component-build/
@@ -67,16 +73,20 @@ aid/
 │   ├── ds-ui-review/
 │   └── guide-lint/
 ├── src/
-│   └── pages/
-│       └── FigmaStyles/  (2)
 ├── tokens/
 ├── tools/
-│   └── figma-token-comparator/
-│       ├── docs/  (3)
-│       ├── scripts/  (2)
-│       ├── server/  (9)
-│       ├── src/  (6)
-│       └── test/  (26)
+│   ├── aid-bot/
+│   │   └── contracts/  (1)
+│   ├── aid-style-migration/
+│   ├── aid-team/
+│   │   └── schema/  (1)
+│   ├── figma-token-comparator/
+│   │   ├── docs/  (3)
+│   │   ├── scripts/  (2)
+│   │   ├── server/  (10)
+│   │   ├── src/  (6)
+│   │   └── test/  (27)
+│   └── mcp-figma-plugin/
 ├── .cursorrules
 ├── .env.local
 ├── .gitignore
@@ -85,8 +95,6 @@ aid/
 ├── CLAUDE.local.md
 ├── CLAUDE.md
 ├── decisions-registry.json
-├── guide-page-pass.md
-├── measure-presentation-pass.md
 ├── package-lock.json
 ├── package.json
 ├── PROJECT_STRUCTURE.md

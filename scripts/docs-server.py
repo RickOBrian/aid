@@ -148,9 +148,7 @@ class ReusableServer(http.server.HTTPServer):
 
 if __name__ == '__main__':
     url = f'http://localhost:{PORT}/docs/index.html'
-    storybook = f'http://localhost:{PORT}/docs/storybook/typography.html'
     print(f'\n  DS Docs      →  {url}')
-    print(f'  Storybook    →  {storybook}')
     print(f'  Token save   →  POST /docs/tokens/save-tokens')
     print(f'  Root         →  {ROOT}')
     print(f'  Ctrl+C to stop\n')

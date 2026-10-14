@@ -33,19 +33,22 @@
 Форма документа: `skills/_shared/protocols/guide-template.md`.
 Проверка корпуса: `node scripts/check-docs.mjs`.
 
-## Два контура репозитория
+## Контуры репозитория
 
-В репозитории два независимых деплой-контура. Не смешивай их код, ветки,
-зависимости и деплой.
+В репозитории три независимых деплой-контура. Не смешивай их код, ветки,
+зависимости и деплой. Все живут в Яндекс Облаке (ADR-038), облако
+`aidteam`, у каждого свой каталог и свой сервисный аккаунт.
 
-| Контур | Назначение | Расположение | Vercel-проект |
-|---|---|---|---|
-| Token Comparator | Плагин Figma: scan, сравнение, решения, proposal в общий реестр | `tools/figma-token-comparator/` | `aid-registry-api` (Root Directory — `tools/figma-token-comparator/server`) |
-| Presentbook | Витрина и среда ревью токенов и компонентов | `pages/aid-portal/` | `aid-ds` (Root Directory — `pages/aid-portal`) |
+| Контур | Назначение | Расположение | Облако: каталог · адрес | Выкладка |
+|---|---|---|---|---|
+| Token Comparator | Плагин Figma: scan, сравнение, решения, proposal в общий реестр | `tools/figma-token-comparator/` (сервер — `server/`) | `registry-api` · `api.aidteam.pro` | `.github/workflows/registry-api-deploy.yml` |
+| Presentbook | Витрина и среда ревью токенов и компонентов | `pages/aid-portal/` | `presentbook` · `aidteam.pro` | `.github/workflows/presentbook-yc.yml` |
+| Team | Сервис задач команды и база людей (ADR-046) | `tools/aid-team/` | `team-tasks` · `team.aidteam.pro` (база людей — `team-data`) | в разработке — описывает Team |
 
 Изменение в одном контуре не должно требовать инфраструктуру другого и не
 должно иметь возможности случайно сломать его production. Контуры разделены
-физически и инфраструктурно.
+физически и инфраструктурно: с Облаком каждый чат работает только под
+профилем своего контура (`docs/hub/ORCHESTRATION.md` §4 «Секреты»).
 
 **Контур — не то же, что продукт дизайн-системы.** Гейты выше говорят о
 продуктах (`driver`, `rider`) — это UI Kit'ы. Здесь речь о единицах
@@ -53,19 +56,20 @@
 лежать в контуре Presentbook.
 
 Перед изменением подтвердить: какой контур затрагивается, какая ветка,
-какой Vercel-проект. Задача, задевающая оба контура, — повод остановиться
+какой каталог Облака. Задача, задевающая оба контура, — повод остановиться
 и спросить.
 
 ### Ветки и деплой
 
-- push в feature-ветку → Preview deployment, production не затрагивается;
-- merge в `main` → production deployment;
+- PR → проверки GitHub Actions (`checks.yml`); для Presentbook ещё и
+  превью `preview.aidteam.pro/pr-N/`, production не затрагивается;
+- merge в `main` → production deployment сразу, отдельного promote нет:
+  поэтому мерж и разделён на самостоятельный и согласуемый («Git-полномочия»);
 - `npm run build` обновляет локальный `dist/` и **не** равен деплою бэкенда.
 
-Наблюдение 2026-09-20: деплой с `main` забирает production-алиас сам, без
-отдельного действия. Это расходится с формулировкой «ручной promote» в
-`architecture/github-sync-architecture.md` §3a — расхождение открыто как
-Q-11 в `docs/standards-alpha/OPEN-QUESTIONS.md`.
+Vercel больше не используется (ADR-038; Q-11 закрыт). Последний проект —
+`aid-registry-api` — PD удаляет на этапе 7 (AID-15); до удаления его проверки
+в PR не учитываются.
 
 ---
 
@@ -134,6 +138,7 @@ Presentbook.
 | Знание о продукте: `products/<id>/knowledge/` (ADR-039) | Стандарты — папка `products/` и согласование формата; AID Style Migration — содержание и формат `aid-knowledge` | Канон меняется только PR с решением Principal Designer; предложения — уроками в `tools/aid-style-migration/inbox/`; инструменты читают версию из `main`; формат меняется согласованно |
 | Показ знания о продукте в Presentbook | Presentbook — показ; AID Style Migration — данные | Presentbook читает `products/<id>/knowledge/`, не правит |
 | Машинный слой стандартов: `skills/_shared/standards/*.json` (`machineFile` в `standards-registry.json`) | Стандарты | Источник истины — гайд (`humanFile`), JSON правится вместе с ним. Инструменты (AID Style Migration и другие) читают версию из `main` и не правят файлы у себя в ветке — нужна правка, это запрос в чат стандартов. Структура полей, которые читает инструмент, меняется только согласованно с его чатом через Штаб; текст правил и примеры — решение стандартов |
+| Задачи команды: сервис `team.aidteam.pro` (ADR-046) | Team — сервис, данные, API и ключи; Presentbook — показ в «Управление → Задачи» | Presentbook читает задачи только своей серверной функцией с отдельным ключом на чтение, клиенту — после проверки сессии; формат API меняется согласованно через Штаб; в сервис пишут только Штабы с личными ключами |
 | GitHub Releases репозитория: метка **Latest** | Token Comparator | Кнопка Presentbook ведёт на `releases/latest/download/token-comparator.zip`, поэтому Latest должен оставаться за релизом Token Comparator. Релизы других продуктов (AID Style Migration) публикуются **без** Latest, со своим префиксом тега; собственную кнопку скачивания такой продукт получает через чат Presentbook. |
 
 Удалённые легаси-продукты не возвращаются и не упоминаются ни в одном
@@ -158,7 +163,7 @@ Principal Designer принимает design-, mapping-, review- и release-ре
 - production promote любого контура;
 - force-push, удаление веток и worktree;
 - откат или перезапись незакоммиченной работы, которую делал не я;
-- изменение конфигов хостинга (Vercel, Яндекс Облако), зависимостей, CI;
+- изменение конфигов хостинга (Яндекс Облако), зависимостей, CI;
 - задача, задевающая оба контура сразу.
 
 **Мерж PR в `main`.** Мерж — это production deployment, поэтому он

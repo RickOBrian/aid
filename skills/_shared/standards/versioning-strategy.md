@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: versioning-strategy
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ metadata:
 
 # Versioning Strategy
 
-> Статус: Draft · v1.0.1 · обновлено 2026-09-20
+> Статус: Draft · v1.0.2 · обновлено 2026-10-09
 
 ---
 
@@ -437,11 +437,11 @@ Bump rule: `1.0.0` → `1.1.0` (MINOR: new token).
 | Deprecation without replacement | Blocks migration |
 | Immediate removal without window | Breaks consumers without notice |
 | Changelog without pending item | No audit trail |
-| `FigmaStyles` as version source | Reference-only |
 
 ---
 
 ## 11. Changelog
 
+- **1.0.2** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — 2026-08-15. Первая версия: SemVer для tokens/components/skills, deprecation policy, release trains, cross-platform versioning, examples.
