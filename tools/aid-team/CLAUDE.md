@@ -19,6 +19,13 @@
   `git fetch && git switch -c <ветка> origin/main`.
 - Мерж: по «Git-полномочиям» корневого `CLAUDE.md`; проверки Vercel не
   учитываются — `docs/hub/ORCHESTRATION.md` §4 (решение PD 2026-10-06).
+- Роли по ADR-048 (`docs/hub/agents/team.md`): этот чат — люди, AI-инженеры,
+  `docs/hub/owners.json`, ключи, база `team-data`, перенос задач. Код
+  сервиса задач ведёт «AID · Developer · Team Service» (`aid-team-service`),
+  выкладку и ресурсы каталога `team-tasks` — «AID · DevOps · Team Service»
+  (`aid-devops-team`, профиль `team-tasks`). В каталог `team-tasks` этот чат
+  не ходит; задачи переименованы: AID-8 → team-1, AID-16 → team-2, AID-23 →
+  team-3.
 - Координацию между чатами ведёт Штаб, не этот чат. Здесь — база
   инженеров и передача задач между людьми (разные аккаунты Claude, разные
   машины): `SendMessage` между ними не работает, это и решает продукт.
@@ -87,5 +94,6 @@
   содержимое `~/.config/yandex-cloud/` и файлы ключей — ни целиком, ни
   через фильтры: ключ сервисного аккаунта хранится в профиле многострочно.
   Нужна настройка — `yc config get <имя>` по одной. Утечка — сразу PD,
-  ключ заменить. Профиль `default` — админский вход PD; у этого чата —
-  профиль `team-tasks` (editor только в каталоге `team-tasks`).
+  ключ заменить. Профиль `default` — админский вход PD (нужен этому чату
+  для `team-data`, только по просьбе PD); профиль `team-tasks` передан
+  «AID · DevOps · Team Service» (ADR-048).
