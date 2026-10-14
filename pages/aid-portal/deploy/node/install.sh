@@ -59,9 +59,13 @@ fi
 echo "== 1/7 Пакеты: nginx, certbot, git, Node 22"
 apt-get update -qq
 apt-get install -y -qq nginx certbot python3-certbot-nginx git curl ca-certificates openssl >/dev/null
-if ! node --version 2>/dev/null | grep -q '^v22\.'; then
+# Нужен Node 22 или новее. Системный Node не меняем, если он уже подходит:
+# на сервере могут жить другие сайты.
+node_major=$(node --version 2>/dev/null | sed -E 's/^v([0-9]+).*/\1/' || true)
+if [ -z "$node_major" ] || [ "$node_major" -lt 22 ]; then
   curl -fsSL https://deb.nodesource.com/setup_22.x | bash - >/dev/null
   apt-get install -y -qq nodejs >/dev/null
+  node_major=22
 fi
 echo "   node $(node --version), nginx $(nginx -v 2>&1 | cut -d/ -f2)"
 
@@ -79,6 +83,11 @@ echo "   main: $(git -C "$SRC" log --oneline -1 HEAD)"
 
 echo "== 3/7 Сборка сайта и сервера API"
 cd "$SRC/pages/aid-portal"
+# Скрипты сборки импортируют .ts напрямую: в CI это Node 24, на Node 22
+# нужен флаг (сбой на сервере PD 2026-10-14).
+if [ "$node_major" -lt 23 ]; then
+  export NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning ${NODE_OPTIONS:-}"
+fi
 npm ci --no-audit --no-fund --loglevel=error
 npm run build --silent -- --base=/ >/dev/null
 node deploy/node/build.mjs >/dev/null

@@ -30,7 +30,8 @@ sudo ADAPTER_REF=<sha> bash install.sh
 
 0. останавливается, если :80 занят не nginx; спрашивает, если в nginx уже
    есть другие сайты; при памяти меньше 1,8 ГБ без swap предлагает swap 2 ГБ;
-1. ставит nginx, certbot, git и Node 22;
+1. ставит nginx, certbot, git и Node 22, если Node 22+ ещё нет (системный Node
+   не меняет); на Node 22 сборка идёт с `--experimental-strip-types`;
 2. берёт свежий `main`, а из ветки `infra/selectel-mirror` — только папку `deploy/node`;
 3. собирает статику (`npm run build -- --base=/`) и `server.cjs`;
 4. спрашивает текущие логин и пароль входа со скрытым вводом, а ключ
