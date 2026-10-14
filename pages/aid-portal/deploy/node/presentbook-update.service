@@ -1,0 +1,11 @@
+# Обновление копии Presentbook со свежего main (AID-18). Запускает таймер.
+[Unit]
+Description=Presentbook mirror update from main
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/presentbook/update.sh
+Nice=10
+TimeoutStartSec=20min

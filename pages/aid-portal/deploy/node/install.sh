@@ -3,8 +3,9 @@
 # Ubuntu 22.04/24.04 или Debian 12. Запуск на сервере под root:
 #   sudo bash install.sh
 # Сайт собирается со свежего main; из ветки infra/selectel-mirror берётся
-# только эта папка (адаптер), в main она не мержится. Повторный запуск
-# обновляет сборку и не трогает файл секретов.
+# только эта папка (адаптер), в main она не мержится. После установки
+# таймер раз в 2 минуты пересобирает копию при новом коммите в main
+# (update.sh). Повторный запуск установщика не трогает секреты и HTTPS.
 #
 # Секреты: логин и пароль входа вводятся со скрытым вводом, ключ cookie
 # генерируется здесь же. Всё пишется в /etc/presentbook/api.env (права 600)
@@ -69,52 +70,23 @@ if [ -z "$node_major" ] || [ "$node_major" -lt 22 ]; then
 fi
 echo "   node $(node --version), nginx $(nginx -v 2>&1 | cut -d/ -f2)"
 
-echo "== 2/7 Код: $BRANCH + адаптер $ADAPTER_REF"
-if [ -d "$SRC/.git" ]; then
-  git -C "$SRC" fetch -q --depth 1 origin "$BRANCH"
-  git -C "$SRC" reset -q --hard FETCH_HEAD
-else
-  mkdir -p "$(dirname "$SRC")"
-  git clone -q --depth 1 --branch "$BRANCH" "$REPO" "$SRC"
-fi
-git -C "$SRC" fetch -q --depth 1 origin "$ADAPTER_REF"
-git -C "$SRC" checkout -q FETCH_HEAD -- pages/aid-portal/deploy/node
-echo "   main: $(git -C "$SRC" log --oneline -1 HEAD)"
+echo "== 2/7 Сборщик и файлы копии (адаптер $ADAPTER_REF)"
+# Сборка идёт под непривилегированным пользователем pbbuild (update.sh).
+id pbbuild >/dev/null 2>&1 || useradd --system --home-dir /var/lib/pbbuild --create-home --shell /usr/sbin/nologin pbbuild
+mkdir -p /opt/presentbook /etc/presentbook
+printf '%s\n' "$ADAPTER_REF" > /etc/presentbook/adapter-ref
+# Первая установка собирала под root — исходники переходят к pbbuild.
+[ -d "$SRC" ] && chown -R pbbuild:pbbuild "$SRC"
+# update.sh, юниты и nginx.conf — ровно из закреплённого коммита адаптера.
+FILES=$(mktemp -d)
+raw=https://raw.githubusercontent.com/RickOBrian/aid/$ADAPTER_REF/pages/aid-portal/deploy/node
+for f in update.sh presentbook-api.service presentbook-update.service presentbook-update.timer nginx.conf; do
+  curl -fsS -o "$FILES/$f" "$raw/$f"
+done
+install -m 755 "$FILES/update.sh" /opt/presentbook/update.sh
 
-echo "== 3/7 Сборка сайта и сервера API"
-cd "$SRC/pages/aid-portal"
-# Скрипты сборки импортируют .ts напрямую (в CI — Node 24). Node для
-# сборки выбирается по поддержке TypeScript, а не по номеру версии: пакет
-# Ubuntu nodejs собран без неё (ERR_NO_TYPESCRIPT, сервер PD 2026-10-14).
-# Системный Node не меняем — сервис работает на нём, а сборке при
-# необходимости ставим свой Node 24 в /opt/presentbook/node.
-ts_support() { "$@" -p 'process.features.typescript || ""' 2>/dev/null | grep -Eq '^(strip|transform)$'; }
-if ts_support node; then
-  :
-elif ts_support node --experimental-strip-types; then
-  export NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning ${NODE_OPTIONS:-}"
-else
-  if ! { [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
-    case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "Неизвестная архитектура $(uname -m)" >&2; exit 1 ;; esac
-    base=https://nodejs.org/dist/latest-v24.x
-    sums=$(curl -fsS "$base/SHASUMS256.txt")
-    file=$(printf '%s\n' "$sums" | awk -v a="linux-$arch.tar.xz" '$2 ~ a"$" {print $2}' | head -1)
-    tmp=$(mktemp -d)
-    curl -fsS -o "$tmp/$file" "$base/$file"
-    (cd "$tmp" && printf '%s\n' "$sums" | grep " $file\$" | sha256sum -c --quiet)
-    rm -rf /opt/presentbook/node && mkdir -p /opt/presentbook/node
-    tar -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
-    rm -rf "$tmp"
-  fi
-  export PATH="/opt/presentbook/node/bin:$PATH"
-fi
-echo "   сборка на node $(node --version)"
-npm ci --no-audit --no-fund --loglevel=error
-npm run build --silent -- --base=/ >/dev/null
-node deploy/node/build.mjs >/dev/null
-mkdir -p "$WWW" /opt/presentbook
-rm -rf "$WWW.new" && cp -r dist "$WWW.new" && rm -rf "$WWW" && mv "$WWW.new" "$WWW"
-install -m 644 deploy/node/dist/server.cjs /opt/presentbook/server.cjs
+echo "== 3/7 Сборка со свежего main"
+/opt/presentbook/update.sh --force
 
 echo "== 4/7 Секреты входа ($ENV_FILE)"
 if [ -f "$ENV_FILE" ]; then
@@ -135,7 +107,7 @@ else
 fi
 
 echo "== 5/7 Сервис API"
-install -m 644 deploy/node/presentbook-api.service /etc/systemd/system/presentbook-api.service
+install -m 644 "$FILES/presentbook-api.service" /etc/systemd/system/presentbook-api.service
 systemctl daemon-reload
 systemctl enable -q presentbook-api
 systemctl restart presentbook-api
@@ -143,7 +115,13 @@ sleep 1
 systemctl is-active --quiet presentbook-api && echo "   presentbook-api работает"
 
 echo "== 6/7 nginx"
-sed -e "s|__DOMAIN__|$DOMAIN|g" -e "s|__ROOT__|$WWW|g" deploy/node/nginx.conf > /etc/nginx/sites-available/presentbook
+# Конфиг сайта пишется только при первой установке: потом в нём HTTPS,
+# который добавил certbot, и перезапись его бы стёрла.
+if [ ! -f /etc/nginx/sites-available/presentbook ]; then
+  sed -e "s|__DOMAIN__|$DOMAIN|g" -e "s|__ROOT__|$WWW|g" "$FILES/nginx.conf" > /etc/nginx/sites-available/presentbook
+else
+  echo "   конфиг сайта уже есть — не трогаю"
+fi
 ln -sf /etc/nginx/sites-available/presentbook /etc/nginx/sites-enabled/presentbook
 nginx -t -q
 systemctl reload nginx
@@ -156,6 +134,14 @@ else
   echo "   сертификат уже есть"
 fi
 
+echo "== 8/8 Автообновление: таймер раз в 2 минуты сверяет main"
+install -m 644 "$FILES/presentbook-update.service" /etc/systemd/system/presentbook-update.service
+install -m 644 "$FILES/presentbook-update.timer" /etc/systemd/system/presentbook-update.timer
+systemctl daemon-reload
+systemctl enable -q --now presentbook-update.timer
+rm -rf "$FILES"
+echo "   включено; журнал: journalctl -u presentbook-update"
+
 echo "== Проверка"
 check() { printf '   %-28s %s (ждали %s)\n' "$1" "$(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN$1")" "$2"; }
 check / 200
@@ -163,4 +149,5 @@ check /driver/tokens/colors 200
 check /api/session 401
 check /api/plugin-version 200
 check /api/ttm 401
+check /version.json 200
 echo "Готово: https://$DOMAIN — войдите текущим логином и паролем."

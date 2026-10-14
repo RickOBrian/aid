@@ -1,0 +1,10 @@
+# Раз в 2 минуты проверять main и пересобирать копию при новом коммите.
+[Unit]
+Description=Presentbook mirror update every 2 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=2min
+
+[Install]
+WantedBy=timers.target
