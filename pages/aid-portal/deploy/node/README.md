@@ -17,17 +17,21 @@
 
 ## Установка одной командой (Ubuntu 22.04/24.04, Debian 12)
 
-PD заходит на сервер по SSH сам и запускает под root:
+PD заходит на сервер по SSH сам и запускает под root. `<sha>` — коммит
+ветки `infra/selectel-mirror`, который Presentbook присылает вместе с
+командами: скрипт и адаптер берутся ровно с него.
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/RickOBrian/aid/infra/selectel-mirror/pages/aid-portal/deploy/node/install.sh
-sudo bash install.sh
+curl -fsSLO https://raw.githubusercontent.com/RickOBrian/aid/<sha>/pages/aid-portal/deploy/node/install.sh
+sudo ADAPTER_REF=<sha> bash install.sh
 ```
 
 Скрипт:
 
+0. останавливается, если :80 занят не nginx; спрашивает, если в nginx уже
+   есть другие сайты; при памяти меньше 1,8 ГБ без swap предлагает swap 2 ГБ;
 1. ставит nginx, certbot, git и Node 22;
-2. берёт код из ветки `infra/selectel-mirror`;
+2. берёт свежий `main`, а из ветки `infra/selectel-mirror` — только папку `deploy/node`;
 3. собирает статику (`npm run build -- --base=/`) и `server.cjs`;
 4. спрашивает текущие логин и пароль входа со скрытым вводом, а ключ
    cookie генерирует заново (`openssl rand -base64 32`). Всё уходит в
@@ -36,8 +40,9 @@ sudo bash install.sh
 6. настраивает nginx на `<IP>.sslip.io`;
 7. выпускает сертификат: certbot спросит почту и согласие с условиями;
 
-и в конце проверяет адреса. Повторный запуск обновляет сборку и файл
-секретов не трогает.
+и в конце проверяет адреса. Копия обновляется вручную: повторный
+`sudo bash install.sh` пересобирает её со свежего `main` и файл секретов
+не трогает. Пароль вводится через `read -s` — в историю shell не попадает.
 
 ## Проверка
 

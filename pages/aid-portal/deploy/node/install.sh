@@ -2,14 +2,19 @@
 # Копия Presentbook на отдельном сервере (AID-18): https://<IP>.sslip.io.
 # Ubuntu 22.04/24.04 или Debian 12. Запуск на сервере под root:
 #   sudo bash install.sh
-# Повторный запуск обновляет сборку из ветки и не трогает файл секретов.
+# Сайт собирается со свежего main; из ветки infra/selectel-mirror берётся
+# только эта папка (адаптер), в main она не мержится. Повторный запуск
+# обновляет сборку и не трогает файл секретов.
 #
 # Секреты: логин и пароль входа вводятся со скрытым вводом, ключ cookie
 # генерируется здесь же. Всё пишется в /etc/presentbook/api.env (права 600)
 # и никуда не выводится.
 set -euo pipefail
 
-BRANCH=${BRANCH:-infra/selectel-mirror}
+BRANCH=${BRANCH:-main}
+# Адаптер берётся по конкретному коммиту: скрипт работает под root, и
+# следующий push в ветку не должен менять то, что он выполнит.
+ADAPTER_REF=${ADAPTER_REF:?Укажите коммит адаптера: sudo ADAPTER_REF=<sha> bash install.sh}
 REPO=https://github.com/RickOBrian/aid.git
 SRC=/opt/presentbook/src
 WWW=/var/www/presentbook
@@ -24,6 +29,33 @@ IP=${IP:-$(curl -fsS4 https://ipv4.icanhazip.com | tr -d '[:space:]')}
 DOMAIN=${DOMAIN:-$IP.sslip.io}
 echo "== Адрес копии: https://$DOMAIN"
 
+echo "== 0/7 Проверка сервера"
+# Чужое на :80 — не nginx — скрипт не трогает.
+if command -v ss >/dev/null && ss -ltnpH 'sport = :80' | grep -v nginx | grep -q .; then
+  echo "   Порт 80 занят не nginx:" >&2; ss -ltnpH 'sport = :80' >&2
+  echo "   Остановлено: копии нужен nginx на :80 для сертификата." >&2
+  exit 1
+fi
+if [ -d /etc/nginx/sites-enabled ]; then
+  others=$(find /etc/nginx/sites-enabled -mindepth 1 ! -name default ! -name presentbook -printf '%f ' 2>/dev/null)
+  if [ -n "$others" ]; then
+    echo "   В nginx уже есть сайты: $others"
+    read -r -p "   Добавить копию рядом с ними (они не меняются, nginx перезагрузится)? [y/N] " answer
+    [ "$answer" = "y" ] || { echo "   Остановлено." >&2; exit 1; }
+  fi
+fi
+mem=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+swap=$(awk '/SwapTotal/ {print int($2/1024)}' /proc/meminfo)
+echo "   память ${mem} МБ, swap ${swap} МБ"
+if [ "$mem" -lt 1800 ] && [ "$swap" -lt 1024 ]; then
+  read -r -p "   Для сборки мало памяти. Создать swap 2 ГБ (/swapfile)? [y/N] " answer
+  if [ "$answer" = "y" ]; then
+    fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap -q /swapfile && swapon /swapfile
+    grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    echo "   swap включён"
+  fi
+fi
+
 echo "== 1/7 Пакеты: nginx, certbot, git, Node 22"
 apt-get update -qq
 apt-get install -y -qq nginx certbot python3-certbot-nginx git curl ca-certificates openssl >/dev/null
@@ -33,7 +65,7 @@ if ! node --version 2>/dev/null | grep -q '^v22\.'; then
 fi
 echo "   node $(node --version), nginx $(nginx -v 2>&1 | cut -d/ -f2)"
 
-echo "== 2/7 Код из ветки $BRANCH"
+echo "== 2/7 Код: $BRANCH + адаптер $ADAPTER_REF"
 if [ -d "$SRC/.git" ]; then
   git -C "$SRC" fetch -q --depth 1 origin "$BRANCH"
   git -C "$SRC" reset -q --hard FETCH_HEAD
@@ -41,7 +73,9 @@ else
   mkdir -p "$(dirname "$SRC")"
   git clone -q --depth 1 --branch "$BRANCH" "$REPO" "$SRC"
 fi
-echo "   $(git -C "$SRC" log --oneline -1)"
+git -C "$SRC" fetch -q --depth 1 origin "$ADAPTER_REF"
+git -C "$SRC" checkout -q FETCH_HEAD -- pages/aid-portal/deploy/node
+echo "   main: $(git -C "$SRC" log --oneline -1 HEAD)"
 
 echo "== 3/7 Сборка сайта и сервера API"
 cd "$SRC/pages/aid-portal"
