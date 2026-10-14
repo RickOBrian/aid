@@ -20,6 +20,10 @@ FORCE=${1:-}
 exec 9>/run/presentbook-update.lock
 flock -n 9 || { echo "уже идёт обновление"; exit 0; }
 mkdir -p "$STATE"
+# Корень копии — только root: в нём лежат свой Node и состояние, а
+# исходники pbbuild — в отдельной подпапке.
+chown root:root /opt/presentbook "$STATE"
+chmod go-w /opt/presentbook "$STATE"
 
 # Node для сборки — с поддержкой TypeScript (скрипты сборки импортируют .ts).
 ts_support() { "$@" -p 'process.features.typescript || ""' 2>/dev/null | grep -Eq '^(strip|transform)$'; }
@@ -30,7 +34,15 @@ if ts_support node; then
 elif ts_support node --experimental-strip-types; then
   BUILD_NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning"
 else
-  if ! { [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
+  # Свой Node запускается под root — сначала права, потом запуск: файлы
+  # только root, без записи для группы и остальных. Иначе — переустановка
+  # (AID-18: tar под root сохранял владельца из архива, uid 1001).
+  private_node_safe() {
+    [ -d /opt/presentbook/node ] && [ ! -L /opt/presentbook/node ] &&
+      [ -z "$(find /opt/presentbook /opt/presentbook/node -maxdepth 0 \( \! -user root -o -perm /022 \) 2>/dev/null)" ] &&
+      [ -z "$(find /opt/presentbook/node \! -user root -o -perm /022 2>/dev/null | head -1)" ]
+  }
+  if ! { private_node_safe && [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
     case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "Неизвестная архитектура $(uname -m)" >&2; exit 1 ;; esac
     base=https://nodejs.org/dist/latest-v24.x
     sums=$(curl -fsS "$base/SHASUMS256.txt")
@@ -38,9 +50,12 @@ else
     tmp=$(mktemp -d)
     curl -fsS -o "$tmp/$file" "$base/$file"
     (cd "$tmp" && printf '%s\n' "$sums" | grep " $file\$" | sha256sum -c --quiet)
-    rm -rf /opt/presentbook/node && mkdir -p /opt/presentbook/node
-    tar -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
+    rm -rf /opt/presentbook/node && install -d -m 755 -o root -g root /opt/presentbook/node
+    tar --no-same-owner --no-same-permissions -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
+    chown -R root:root /opt/presentbook/node
+    chmod -R go-w /opt/presentbook/node
     rm -rf "$tmp"
+    private_node_safe || { echo "Права /opt/presentbook/node не исправились" >&2; exit 1; }
   fi
   BUILD_PATH=/opt/presentbook/node/bin:$BUILD_PATH
 fi
@@ -73,9 +88,14 @@ as_build npm ci --no-audit --no-fund --loglevel=error
 as_build npm run build --silent -- --base=/ >/dev/null
 as_build node deploy/node/build.mjs >/dev/null
 
-# Раскладка: папка сайта подменяется целиком, без полусобранного состояния.
-printf '{"sha":"%s","builtAt":"%s"}\n' "$sha" "$(date -u +%FT%TZ)" > dist/version.json
-rm -rf "$WWW.new" && cp -r dist "$WWW.new" && chmod -R a+rX "$WWW.new"
+# Раскладка под root. Сборку делал pbbuild, поэтому root не идёт по его
+# симлинкам и не пишет в его папки: симлинк в сборке — отказ.
+if [ -L dist ] || [ -L deploy/node/dist/server.cjs ] || [ -n "$(find dist -type l | head -1)" ]; then
+  echo "в сборке есть симлинки — отказ" >&2
+  false
+fi
+rm -rf "$WWW.new" && cp -r --no-preserve=mode,ownership dist "$WWW.new" && chmod -R a+rX,go-w "$WWW.new"
+printf '{"sha":"%s","builtAt":"%s"}\n' "$sha" "$(date -u +%FT%TZ)" > "$WWW.new/version.json"
 rm -rf "$WWW.old" && { [ -d "$WWW" ] && mv "$WWW" "$WWW.old" || true; } && mv "$WWW.new" "$WWW" && rm -rf "$WWW.old"
 
 if ! cmp -s deploy/node/dist/server.cjs /opt/presentbook/server.cjs; then
