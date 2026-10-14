@@ -78,9 +78,36 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
    с правами 0600; на экран и в чат не выводится. Работает одинаково в
    Claude Code и Cursor.
 
+## Код
+
+| Файл | Что |
+|---|---|
+| `service/src/app.js` | маршруты API v1, права, ETag |
+| `service/src/model.js` | поля задачи, статусы, проверка ввода, история |
+| `service/src/ydb-store.js` | YDB: номер задачи и запись — в одной транзакции; правка — с проверкой, что задачу не изменили (409) |
+| `service/src/sources.js` | `owners.json` с `main`, вход GitHub, имена «Имя Ф.» |
+| `service/src/keys.js` | ключи и их хэш (`KEY_PEPPER`) |
+| `service/src/index.js` | вход Cloud Function |
+| `service/scripts/init-db.js` | создание таблиц (один раз) |
+| `service/test/*.test.js` | тесты маршрутов в памяти — `npm test`, в CI |
+| `service/test/ydb.int.js` | проверка на настоящей YDB в отдельной папке таблиц `test/` |
+| `bin/team-key`, `bin/team-api` | ключ человека и запросы с ним — для скиллов в Claude Code и Cursor |
+| `.claude/skills/team-key/` | скилл `/team-key` |
+| `.github/workflows/team-service.yml` | тесты на PR, выкладка с `main`, смоук-тест |
+
+Имена «Имя Ф.» отдаются только по сервисному ключу (решение PD
+2026-10-14: «Давай тогда логин, но "Команда AID" можно не указывать»);
+файл имён `aidteam-team-names/names.json` строится из `people.json`
+так же, как `telegram.json` для бота.
+
 ## Состояние
 
 - 2026-10-14 — этап 1: каталог, YDB, сервисные аккаунты, Lockbox,
   профиль `team-tasks`, запрос сертификата и CNAME для его проверки.
   GitHub OAuth App «AID Team» зарегистрирован PD, Device Flow проверен.
+- 2026-10-14 — этап 2: таблицы `tasks`, `events`, `counters`, `keys`
+  созданы; код и 13 тестов; проверка на YDB пройдена (номера по продуктам,
+  права, история, лента, конфликт правки 409, отзыв ключа); функция
+  `team-tasks` создана, первая версия выложена вручную. Шлюз и домен — после
+  сбоя Облака 2026-10-14 (API Gateway недоступен) и выпуска сертификата.
   Ждут PD: ключ CI в GitHub Secrets (этап 2); имена в открытом чтении.
