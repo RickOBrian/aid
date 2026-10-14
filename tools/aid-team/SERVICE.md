@@ -100,6 +100,28 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
 файл имён `aidteam-team-names/names.json` строится из `people.json`
 так же, как `telegram.json` для бота.
 
+## Подключение выкладки — делает PD, один раз
+
+Нужно для `.github/workflows/team-service.yml`. Выполнять после того, как
+шлюз `team-tasks` создан. В Терминале, под своим входом; ключ CI сразу
+уходит в GitHub и удаляется с диска.
+
+1. Ключ аккаунта `team-tasks-ci` → секрет GitHub:
+   ```bash
+   yc iam key create --service-account-name team-tasks-ci --folder-name team-tasks --output ~/team-tasks-ci.json
+   gh secret set YC_TEAM_TASKS_CI_KEY --repo RickOBrian/aid < ~/team-tasks-ci.json
+   rm ~/team-tasks-ci.json
+   ```
+2. Переменные GitHub — не секреты, идентификаторы:
+   ```bash
+   gh variable set YC_TEAM_TASKS_FOLDER_ID --repo RickOBrian/aid --body b1g230iiimr8i7irovr3
+   gh variable set YC_TEAM_TASKS_RUNTIME_SA_ID --repo RickOBrian/aid --body aje0f9vgvcllh5f1u3qa
+   gh variable set YC_TEAM_TASKS_LOCKBOX_ID --repo RickOBrian/aid --body e6q3si45f6958tia6rmf
+   gh variable set YC_TEAM_TASKS_YDB_DATABASE --repo RickOBrian/aid --body /ru-central1/b1gnift36qhqvibb4qti/etnrte1m4ushkmmq0uji
+   ```
+3. Перезапустить выкладку: GitHub → Actions → team-service → Run workflow
+   (ветка `main`) или `gh workflow run team-service.yml --repo RickOBrian/aid --ref main`.
+
 ## Состояние
 
 - 2026-10-14 — этап 1: каталог, YDB, сервисные аккаунты, Lockbox,
