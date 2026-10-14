@@ -83,11 +83,32 @@ echo "   main: $(git -C "$SRC" log --oneline -1 HEAD)"
 
 echo "== 3/7 Сборка сайта и сервера API"
 cd "$SRC/pages/aid-portal"
-# Скрипты сборки импортируют .ts напрямую: в CI это Node 24, на Node 22
-# нужен флаг (сбой на сервере PD 2026-10-14).
-if [ "$node_major" -lt 23 ]; then
+# Скрипты сборки импортируют .ts напрямую (в CI — Node 24). Node для
+# сборки выбирается по поддержке TypeScript, а не по номеру версии: пакет
+# Ubuntu nodejs собран без неё (ERR_NO_TYPESCRIPT, сервер PD 2026-10-14).
+# Системный Node не меняем — сервис работает на нём, а сборке при
+# необходимости ставим свой Node 24 в /opt/presentbook/node.
+ts_support() { "$@" -p 'process.features.typescript || ""' 2>/dev/null | grep -Eq '^(strip|transform)$'; }
+if ts_support node; then
+  :
+elif ts_support node --experimental-strip-types; then
   export NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning ${NODE_OPTIONS:-}"
+else
+  if ! { [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
+    case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "Неизвестная архитектура $(uname -m)" >&2; exit 1 ;; esac
+    base=https://nodejs.org/dist/latest-v24.x
+    sums=$(curl -fsS "$base/SHASUMS256.txt")
+    file=$(printf '%s\n' "$sums" | awk -v a="linux-$arch.tar.xz" '$2 ~ a"$" {print $2}' | head -1)
+    tmp=$(mktemp -d)
+    curl -fsS -o "$tmp/$file" "$base/$file"
+    (cd "$tmp" && printf '%s\n' "$sums" | grep " $file\$" | sha256sum -c --quiet)
+    rm -rf /opt/presentbook/node && mkdir -p /opt/presentbook/node
+    tar -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
+    rm -rf "$tmp"
+  fi
+  export PATH="/opt/presentbook/node/bin:$PATH"
 fi
+echo "   сборка на node $(node --version)"
 npm ci --no-audit --no-fund --loglevel=error
 npm run build --silent -- --base=/ >/dev/null
 node deploy/node/build.mjs >/dev/null
