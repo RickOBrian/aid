@@ -25,40 +25,8 @@ mkdir -p "$STATE"
 chown root:root /opt/presentbook "$STATE"
 chmod go-w /opt/presentbook "$STATE"
 
-# Node для сборки — с поддержкой TypeScript (скрипты сборки импортируют .ts).
-ts_support() { "$@" -p 'process.features.typescript || ""' 2>/dev/null | grep -Eq '^(strip|transform)$'; }
 BUILD_PATH=/usr/local/bin:/usr/bin:/bin
 BUILD_NODE_OPTIONS=
-if ts_support node; then
-  :
-elif ts_support node --experimental-strip-types; then
-  BUILD_NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning"
-else
-  # Свой Node запускается под root — сначала права, потом запуск: файлы
-  # только root, без записи для группы и остальных. Иначе — переустановка
-  # (AID-18: tar под root сохранял владельца из архива, uid 1001).
-  private_node_safe() {
-    [ -d /opt/presentbook/node ] && [ ! -L /opt/presentbook/node ] &&
-      [ -z "$(find /opt/presentbook /opt/presentbook/node -maxdepth 0 \( \! -user root -o -perm /022 \) 2>/dev/null)" ] &&
-      [ -z "$(find /opt/presentbook/node \! -user root -o -perm /022 2>/dev/null | head -1)" ]
-  }
-  if ! { private_node_safe && [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
-    case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "Неизвестная архитектура $(uname -m)" >&2; exit 1 ;; esac
-    base=https://nodejs.org/dist/latest-v24.x
-    sums=$(curl -fsS "$base/SHASUMS256.txt")
-    file=$(printf '%s\n' "$sums" | awk -v a="linux-$arch.tar.xz" '$2 ~ a"$" {print $2}' | head -1)
-    tmp=$(mktemp -d)
-    curl -fsS -o "$tmp/$file" "$base/$file"
-    (cd "$tmp" && printf '%s\n' "$sums" | grep " $file\$" | sha256sum -c --quiet)
-    rm -rf /opt/presentbook/node && install -d -m 755 -o root -g root /opt/presentbook/node
-    tar --no-same-owner --no-same-permissions -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
-    chown -R root:root /opt/presentbook/node
-    chmod -R go-w /opt/presentbook/node
-    rm -rf "$tmp"
-    private_node_safe || { echo "Права /opt/presentbook/node не исправились" >&2; exit 1; }
-  fi
-  BUILD_PATH=/opt/presentbook/node/bin:$BUILD_PATH
-fi
 
 as_build() {
   runuser -u pbbuild -- env HOME=/var/lib/pbbuild PATH="$BUILD_PATH" NODE_OPTIONS="$BUILD_NODE_OPTIONS" "$@"
@@ -78,6 +46,42 @@ if [ "$FORCE" != "--force" ]; then
 fi
 
 trap 'echo "$stamp" > "$STATE/failed"; echo "сборка ${sha:0:7} не удалась — копия осталась на прежней версии" >&2' ERR
+
+# Node выбирается только когда есть что собирать: холостой тик его не трогает.
+# Node для сборки — с поддержкой TypeScript (скрипты сборки импортируют .ts).
+ts_support() { "$@" -p 'process.features.typescript || ""' 2>/dev/null | grep -Eq '^(strip|transform)$'; }
+if ts_support node; then
+  :
+elif ts_support node --experimental-strip-types; then
+  BUILD_NODE_OPTIONS="--experimental-strip-types --disable-warning=ExperimentalWarning"
+else
+  # Свой Node запускается под root — сначала права, потом запуск: файлы
+  # только root, без записи для группы и остальных. Иначе — переустановка
+  # (AID-18: tar под root сохранял владельца из архива, uid 1001).
+  private_node_safe() {
+    [ -d /opt/presentbook/node ] && [ ! -L /opt/presentbook/node ] &&
+      [ -z "$(find /opt/presentbook /opt/presentbook/node -maxdepth 0 \( \! -user root -o -perm /022 \) 2>/dev/null)" ] &&
+      # У симлинков права всегда 777 — у них проверяем только владельца.
+      [ -z "$(find /opt/presentbook/node \( \! -user root -o \( \! -type l -perm /022 \) \) 2>/dev/null | head -1)" ]
+  }
+  if ! { private_node_safe && [ -x /opt/presentbook/node/bin/node ] && ts_support /opt/presentbook/node/bin/node; }; then
+    case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "Неизвестная архитектура $(uname -m)" >&2; false ;; esac
+    base=https://nodejs.org/dist/latest-v24.x
+    sums=$(curl -fsS "$base/SHASUMS256.txt")
+    file=$(printf '%s\n' "$sums" | awk -v a="linux-$arch.tar.xz" '$2 ~ a"$" {print $2}' | head -1)
+    tmp=$(mktemp -d)
+    curl -fsS -o "$tmp/$file" "$base/$file"
+    (cd "$tmp" && printf '%s\n' "$sums" | grep " $file\$" | sha256sum -c --quiet)
+    rm -rf /opt/presentbook/node && install -d -m 755 -o root -g root /opt/presentbook/node
+    tar --no-same-owner --no-same-permissions -xJf "$tmp/$file" -C /opt/presentbook/node --strip-components=1
+    chown -R root:root /opt/presentbook/node
+    chmod -R go-w /opt/presentbook/node
+    rm -rf "$tmp"
+    private_node_safe || { echo "Права /opt/presentbook/node не исправились" >&2; false; }
+  fi
+  BUILD_PATH=/opt/presentbook/node/bin:$BUILD_PATH
+fi
+
 
 echo "сборка ${sha:0:7}"
 as_build git -C "$SRC" reset -q --hard "$sha"
