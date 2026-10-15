@@ -14,7 +14,7 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
   cancelled: 'Отменена',
 };
 
-/** Колонки канбана; отменённые — только при включённом переключателе. */
+/** Колонки канбана; отменённые на доске не показываются. */
 export const BOARD_COLUMNS: TaskStatus[] = ['new', 'in_progress', 'waiting', 'review', 'done'];
 
 /** Коды продуктов сервиса задач (ORCHESTRATION.md §10) → названия на сайте. */
@@ -43,29 +43,38 @@ export function personName(login: string, people: TaskBoard['people']): string {
   return people[login]?.displayName ?? login;
 }
 
+/** Пустой список — «все». */
 export interface TaskFilters {
-  product: string;
-  person: string;
-  showCancelled: boolean;
+  products: string[];
+  assignees: string[];
 }
 
-export const ALL = 'all';
+export const DEFAULT_FILTERS: TaskFilters = { products: [], assignees: [] };
 
-export const DEFAULT_FILTERS: TaskFilters = { product: ALL, person: ALL, showCancelled: false };
+/** Фильтры из адреса: `/manage/tasks?person=<логин>&product=<код>` — ссылки со страницы «Команда». */
+export function filtersFromSearch(search: string): TaskFilters {
+  const params = new URLSearchParams(search);
+  const list = (key: string) => params.getAll(key).flatMap((value) => value.split(',')).filter(Boolean);
+  return { products: list('product'), assignees: list('person') };
+}
 
 /** Все люди задачи: исполнители, на ком висит, куратор, автор. */
 export function taskPeople(task: Task): string[] {
   return [...new Set([...task.assignees, task.waitingOn, task.curator, task.author].filter((login): login is string => Boolean(login) && login !== 'pd'))];
 }
 
+function matchesProducts(task: Task, products: string[]): boolean {
+  return products.length === 0 || products.includes(task.product) || task.relatedProducts.some((product) => products.includes(product));
+}
+
 export function matchesFilters(task: Task, filters: TaskFilters): boolean {
-  if (!filters.showCancelled && task.status === 'cancelled') {
+  if (task.status === 'cancelled') {
     return false;
   }
-  if (filters.product !== ALL && task.product !== filters.product && !task.relatedProducts.includes(filters.product)) {
+  if (!matchesProducts(task, filters.products)) {
     return false;
   }
-  if (filters.person !== ALL && !taskPeople(task).includes(filters.person)) {
+  if (filters.assignees.length > 0 && !task.assignees.some((login) => filters.assignees.includes(login))) {
     return false;
   }
   return true;
@@ -73,27 +82,41 @@ export function matchesFilters(task: Task, filters: TaskFilters): boolean {
 
 /** Колонки с задачами: свежие изменения — выше. */
 export function groupByStatus(tasks: Task[], filters: TaskFilters): { status: TaskStatus; tasks: Task[] }[] {
-  const columns = filters.showCancelled ? [...BOARD_COLUMNS, 'cancelled' as const] : BOARD_COLUMNS;
   const visible = tasks.filter((task) => matchesFilters(task, filters));
-  return columns.map((status) => ({
+  return BOARD_COLUMNS.map((status) => ({
     status,
     tasks: visible.filter((task) => task.status === status).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
   }));
 }
 
-/** Варианты фильтров — из самих задач. */
-export function filterOptions(board: TaskBoard): { products: string[]; people: string[] } {
+/** Продукты для фильтра — из самих задач (без отменённых). */
+export function productOptions(board: TaskBoard): string[] {
   const products = new Set<string>();
-  const people = new Set<string>();
   for (const task of board.tasks) {
+    if (task.status === 'cancelled') {
+      continue;
+    }
     products.add(task.product);
     task.relatedProducts.forEach((product) => products.add(product));
-    taskPeople(task).forEach((login) => people.add(login));
   }
-  return {
-    products: [...products].sort((a, b) => productLabel(a).localeCompare(productLabel(b), 'ru')),
-    people: [...people].sort((a, b) => personName(a, board.people).localeCompare(personName(b, board.people), 'ru')),
-  };
+  return [...products].sort((a, b) => productLabel(a).localeCompare(productLabel(b), 'ru'));
+}
+
+/**
+ * Исполнители для тегов фильтра: логин и число задач на нём — среди
+ * неотменённых задач выбранных продуктов. Больше задач — левее.
+ */
+export function assigneeOptions(board: TaskBoard, products: string[]): { login: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const task of board.tasks) {
+    if (task.status === 'cancelled' || !matchesProducts(task, products)) {
+      continue;
+    }
+    task.assignees.forEach((login) => counts.set(login, (counts.get(login) ?? 0) + 1));
+  }
+  return [...counts]
+    .map(([login, count]) => ({ login, count }))
+    .sort((a, b) => b.count - a.count || a.login.localeCompare(b.login));
 }
 
 /** Строка истории: смена статуса — подписями, остальное — как есть. */
