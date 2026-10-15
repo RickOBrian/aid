@@ -1,6 +1,8 @@
 # Доска AID
 
-Активные задачи по чатам. Ведёт «AID · Hub · Штаб» (`ORCHESTRATION.md`).
+Активные задачи. «Активные» ведёт `ai-tasks` (AI-инженер Tasks, ADR-048):
+заводит, меняет статусы и «на ком», закрывает — PR, мержит Штаб. За Штабом —
+«Решения PD» дословно и «Вопросы PD» (`ORCHESTRATION.md`).
 Строка закрывается ссылкой на PR или решение и уходит в «Закрыто».
 
 Статусы: `в работе` · `ждёт PD` · `ждёт <чат>` · `блокер` · `сверить`
@@ -19,18 +21,19 @@ AI-исполнителем — живой инженер, по умолчани
 | Задача | Было | Что | Исполнители | Куратор | Связанные | На ком | Статус |
 |---|---|---|---|---|---|---|---|
 | team-1 | AID-8 | База людей AID: хранилище — каталог `team-data` (ADR-038), в репозитории — протокол и схема. От неё зависят вход в Presentbook через Яндекс ID и Q-04 бота | ai-team | PD | presentbook, bot-request | ai-team — план | в работе |
-| team-2 | AID-16 | Сервис задач `team.aidteam.pro` (ADR-046, ADR-047): API v1 (#195 смержен), `/team-key`, куратор, ключи AI-инженеров, входящие людей, AI и бота, журнал, перенос задач | ai-developer (Team Service), ai-devops (Team Service), ai-team | PD | presentbook, bot-request, hub | ai-devops (Team Service) — шлюз и домен после восстановления Облака; затем PD — секрет и переменные CI (`tools/aid-team/SERVICE.md`) | в работе |
-| team-3 | AID-23 | Карточки всех инженеров: `owners.json` format 3 — люди `kind: human`, AI-инженеры `kind: ai` (`ai-<роль>`, карточка, куратор); показ в Presentbook с бейджем «AI» | ai-team, ai-developer (Presentbook) | PD | presentbook | ai-team — PR `owners.json` (мерж PD) | новая |
+| team-2 | AID-16 | Сервис задач `team.aidteam.pro` (ADR-046, ADR-047): API v1 (#195), YDB токеном вызова (#217), ключи AI-инженеров (#222), куратор и AI-исполнители (#223) — смержены; осталось: домен, входящие людей, AI и бота, журнал, перенос задач; канбан в Presentbook — #224 | ai-developer (Team Service), ai-devops (Team Service), ai-team | PD | presentbook, bot-request, hub | ai-devops (Team Service) — сертификат домена (шлюз поднят; пересоздание сертификата — «да» PD); PD — ключ CI и переменные (`tools/aid-team/SERVICE.md`) | в работе |
+| team-3 | AID-23 | Карточки всех инженеров: `owners.json` format 3 — люди `kind: human`, AI-инженеры `kind: ai` (#219, смержен); показ в Presentbook с бейджем «AI» — #228 | ai-team, ai-developer (Presentbook) | PD | presentbook | ai-developer (Presentbook) — ревью и мерж #228 | на проверке |
 | bot-request-1 | AID-12 | Уведомления в Telegram между Штабами (ADR-042): R4–R7 на сервере с 14.10, R1–R3 отменены (#136); контракт #137. Сторона бота — доска `boards/bot.md`, AID-BOT-5 | effects121-lang, ai-developer (Bot) | PD | team, hub | PD — тест меткой `for:effects121-lang`, срок 15.10 | ждёт PD |
 | bot-request-2 | AID-22 | Контракт приёма запросов дизайнеров — #208 v0.4.0: бот → входящие `ai-requests`, ответ автору, статусы, входящие людей; утверждает владелец бота | ai-developer (Bot) | PD | requests, team | PD — Q-09, лид рядом или вместо, ссылка на Figma; effects121-lang — скрины и утверждение | ждёт PD |
 | mcp-1 | AID-7 | Исследование MCP: черновик `docs/research.md` — #177 (не мержить до прочтения PD); вывод — оставаться на официальном MCP | ai-developer (MCP) | PD | — | PD — прочитать #177, песочница да/нет, Р-1, Р-2, Р-6, Р-8 | ждёт PD |
-| token-comparator-1 | AID-15 | ADR-038, этап 7: проверить, что `aid-registry-api.vercel.app` никто не вызывает; адрес из манифеста и `server/vercel.json` уходят следующим релизом; отключение проекта — infra-2 | ai-developer (Token Comparator) | PD | infra | ai-developer (Token Comparator) — проверка вызовов, когда Облако доступно | в работе |
-| hub-1 | AID-11 | Хвосты этапа 7 ADR-038 в документах: корневой `CLAUDE.md` (#184 — контуры без Vercel, третий контур); `github-sync-architecture.md` §3a и `aid-ds.vercel.app` | Штаб, ai-standards | PD | standards | PD — мерж #184 | ждёт PD |
+| token-comparator-1 | AID-15 | ADR-038, этап 7: проверить, что `aid-registry-api.vercel.app` никто не вызывает; адрес из манифеста и `server/vercel.json` уходят следующим релизом. Итог — условие для infra-2 | ai-developer (Token Comparator) | PD | infra | ai-developer (Token Comparator) — проверка вызовов | в работе |
+| hub-1 | AID-11 | Хвосты этапа 7 ADR-038 в документах: корневой `CLAUDE.md` без Vercel — #184, смержен; в `github-sync-architecture.md` пометка «С 2026-10-09 Vercel не используется» стоит, `aid-ds.vercel.app` — только в исторических разделах | Штаб, ai-standards | PD | standards | ai-standards — подтвердить, что по §3a больше ничего не нужно; затем закрыть | на проверке |
 | infra-1 | AID-9 | Хвосты git: worktree `aid-claude-test` (4 незакоммиченных файла), `aid-governance`, `aid-presentbook-tools`, `aid-token-comparator-v0.1.0`; ветки без upstream; три stash `cursor/*` | ai-devops | PD | hub | PD — «удалить / оставить» по одному | ждёт PD |
-| infra-2 | AID-18 | Инфраструктура: справка `docs/hub/infra/README.md` (готова, #206); отключение Vercel `aid-registry-api` — шаги PD (токен — после сверки, что `api.aidteam.pro` на другом); копия Presentbook на Selectel остаётся запасной, вопросы по ней закрыты (решение PD 2026-10-15); хронология сбоя 14.10 — дописать восстановление | ai-devops, ai-devops (Presentbook) | PD | token-comparator, presentbook | ai-devops — восстановление Облака; PD — шаги Vercel | в работе |
+| infra-2 | AID-18 | Отключение Vercel-проекта `aid-registry-api` — шаги PD (токен — после сверки, что `api.aidteam.pro` на другом). Условие — token-comparator-1. Справка `docs/hub/infra/README.md` — #206; сверка DevOps — #231: копия Presentbook на Selectel — резерв (решение PD 2026-10-15), стоит на `main` `50cfaf0` от 14.10 и сама не обновляется (сообщение DevOps 2026-10-15); Облако восстановилось 14.10 между 13:21 и 19:06 UTC | ai-devops, PD | PD | token-comparator, presentbook | ai-developer (Token Comparator) — проверка вызовов (token-comparator-1); затем PD — шаги Vercel | ждёт |
+| infra-3 | — | Security: автоматическая проверка секретов и имён в CI — ключи, токены, имена людей, контакты, IP. Правка `.github/` — мерж PD | ai-security | PD | hub | ai-security — предложение проверки | новая |
 | requests-1 | AID-19 | Путь запроса дизайнера и типовые вопросы со ссылками на гайды; полная работа — после bot-request-2 и входящих team-2 | ai-requests | PD | bot-request, standards | ai-requests — PR черновика | в работе |
-| standards-1 | AID-20 | `semver-guide` 1.2.2 (#207 — нумерация, check-docs) и канон bump в `versioning-strategy` | ai-standards | PD | — | PD — мерж #207 и 4 расхождения | на проверке |
-| standards-2 | AID-21 | Методика замера внедрения AID в макетах (#209) и формат данных для Presentbook | ai-standards | PD | presentbook | arturuxui — копия отчёта (#205); PD — чем сканировать, ключи библиотек, кто снимает | ждёт |
+| standards-1 | AID-20 | `semver-guide` 1.2.2 — нумерация, check-docs (#207, смержен); часть 2 — канон bump в `versioning-strategy`, отдельным PR | ai-standards | PD | — | PD — ответ по 4 расхождениям | ждёт PD |
+| standards-2 | AID-21 | Методика замера внедрения AID в макетах (#209) и формат данных для Presentbook | ai-standards | PD | presentbook | Штаб — мерж #225 (копия отчёта, #205); PD — чем сканировать, ключи библиотек, кто снимает | ждёт |
 
 ## Вопросы PD
 
