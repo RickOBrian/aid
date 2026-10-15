@@ -155,8 +155,12 @@ function checkCanEdit(login, task, changed, owners) {
   }
 }
 
-/** События изменения: одно на поле, from/to — значения до и после. */
-function diffEvents(task, changed, by, at, note) {
+/**
+ * События изменения: одно на поле, from/to — значения до и после.
+ * by — кто правит (логин или id AI-инженера), via — логин хозяина машины,
+ * если правит AI-инженер (ADR-047), иначе null.
+ */
+function diffEvents(task, changed, by, at, note, via = null) {
   const ordered = PATCHABLE.filter((f) => f in changed).map((f) => [f, changed[f]]);
   return ordered.map(([field, to], i) => ({
     taskId: task.id,
@@ -166,11 +170,12 @@ function diffEvents(task, changed, by, at, note) {
     from: task[field] === undefined ? null : task[field],
     to,
     note: i === 0 && note ? note : null,
+    via,
   }));
 }
 
-function createdEvent(task, by, at) {
-  return { taskId: task.id, at, by, field: 'created', from: null, to: task.status, note: null };
+function createdEvent(task, by, at, via = null) {
+  return { taskId: task.id, at, by, field: 'created', from: null, to: task.status, note: null, via };
 }
 
 /** Задача в ответе API — контракт с Presentbook (SERVICE.md). */
@@ -193,6 +198,7 @@ function presentTask(task, history) {
   if (history) {
     out.history = history.map((e) => {
       const h = { at: e.at, by: e.by, field: e.field, from: e.from, to: e.to };
+      if (e.via) h.via = e.via;
       if (e.note) h.note = e.note;
       return h;
     });

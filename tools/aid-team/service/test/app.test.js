@@ -8,20 +8,26 @@ const { parseOwners } = require('../src/sources');
 const { hashKey } = require('../src/keys');
 
 const PEPPER = 'x'.repeat(64);
-const OWNERS = parseOwners({
+const OWNERS_JSON = {
+  format: 'aid-hub-owners/3',
   people: [
-    { github: 'pd-login', decides: ['system'] },
-    { github: 'eng-a', decides: [] },
-    { github: 'eng-b', decides: [] },
+    { github: 'pd-login', kind: 'human', decides: ['system'] },
+    { github: 'eng-a', kind: 'human', decides: [] },
+    { github: 'eng-b', kind: 'human', decides: [] },
   ],
-});
+  agents: [
+    { id: 'ai-team', kind: 'ai', curator: 'pd-login' },
+    { id: 'ai-qa', kind: 'ai', curator: 'pd-login' },
+  ],
+};
+const OWNERS = parseOwners(OWNERS_JSON);
 
-function setup() {
+function setup(ownersRef = { current: OWNERS }) {
   const store = createMemoryStore();
   let t = 0;
   const app = createApp({
     store,
-    owners: async () => OWNERS,
+    owners: async () => ownersRef.current,
     names: async () => ({ 'eng-a': { displayName: 'Аня А.' } }),
     githubLogin: async (token) => ({ 'tok-a': 'eng-a', 'tok-x': 'stranger', 'tok-pd': 'pd-login', 'tok-b': 'eng-b' })[token] || null,
     pepper: () => PEPPER,
@@ -32,7 +38,9 @@ function setup() {
     headers: { ...(key ? { Authorization: `Bearer ${key}` } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}), ...headers },
     body: body ? JSON.stringify(body) : undefined,
   }));
-  const keyFor = async (token) => (await (await call('POST', '/v1/keys', { body: { githubToken: token } })).json()).key;
+  const keyFor = async (token, agent) => (await (await call('POST', '/v1/keys', {
+    body: agent ? { githubToken: token, agent } : { githubToken: token },
+  })).json()).key;
   return { store, call, keyFor };
 }
 
@@ -164,4 +172,72 @@ test('неизвестный адрес — 404 JSON', async () => {
   const r = await call('GET', '/v2/nope');
   assert.equal(r.status, 404);
   assert.equal((await r.json()).error, 'not_found');
+});
+
+test('owners.json: format 2 и 3 — люди в logins, AI отдельно', () => {
+  const v2 = parseOwners({ people: [{ github: 'Eng-A', decides: ['system'] }] });
+  assert.deepEqual([...v2.logins], ['eng-a']);
+  assert.deepEqual([...v2.pd], ['eng-a']);
+  assert.equal(v2.agents.size, 0);
+  assert.deepEqual([...OWNERS.logins], ['pd-login', 'eng-a', 'eng-b']);
+  assert.deepEqual([...OWNERS.agents.keys()], ['ai-team', 'ai-qa']);
+  assert.equal(OWNERS.agents.get('ai-team').curator, 'pd-login');
+  const odd = parseOwners({ agents: [{ id: 'team', kind: 'ai' }, { id: 'ai-x', kind: 'human' }] });
+  assert.equal(odd.agents.size, 0, 'id без ai- и не kind: ai — не AI-инженер');
+});
+
+test('ключ AI-инженера: выдаёт человек из owners.json, только для agents[]', async () => {
+  const { store, call, keyFor } = setup();
+  const key = await keyFor('tok-a', 'ai-team');
+  assert.match(key, /^aida_/);
+  const saved = await store.findKey(hashKey(PEPPER, key));
+  assert.equal(saved.kind, 'agent');
+  assert.equal(saved.login, 'eng-a');
+  assert.equal(saved.name, 'ai-team');
+  const me = await (await call('GET', '/v1/me', { key })).json();
+  assert.deepEqual(me, { kind: 'agent', login: 'eng-a', name: 'ai-team', agent: 'ai-team' });
+  assert.equal((await call('POST', '/v1/keys', { body: { githubToken: 'tok-a', agent: 'ai-nope' } })).status, 400);
+  assert.equal((await call('POST', '/v1/keys', { body: { githubToken: 'tok-x', agent: 'ai-team' } })).status, 403);
+});
+
+test('AI-инженер пишет задачу: by — его id, via — хозяин машины', async () => {
+  const { call, keyFor } = setup();
+  const ai = await keyFor('tok-b', 'ai-team');
+  const a = await keyFor('tok-a');
+  let r = await call('POST', '/v1/tasks', { key: ai, body: { product: 'team', title: 't', assignees: ['eng-a'] } });
+  assert.equal(r.status, 201);
+  assert.equal((await r.json()).task.author, 'ai-team');
+  // автор-AI правит свою задачу; правка человека — без via
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: ai, body: { title: 't2' } })).status, 200);
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: a, body: { status: 'in_progress' } })).status, 200);
+  const { task } = await (await call('GET', '/v1/tasks/team-1')).json();
+  assert.deepEqual(task.history.map((h) => [h.field, h.by, h.via || null]), [
+    ['created', 'ai-team', 'eng-b'],
+    ['title', 'ai-team', 'eng-b'],
+    ['status', 'eng-a', null],
+  ]);
+  const feed = await (await call('GET', '/v1/events')).json();
+  assert.equal(feed.events[0].via, 'eng-b');
+});
+
+test('AI-инженер не получает прав хозяина машины', async () => {
+  const { call, keyFor } = setup();
+  const a = await keyFor('tok-a');
+  const aiOfPd = await keyFor('tok-pd', 'ai-qa');
+  await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['eng-b'] } });
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: aiOfPd, body: { status: 'cancelled' } })).status, 403);
+});
+
+test('ключ AI перестаёт работать, когда AI-инженера или хозяина убрали из owners.json', async () => {
+  const ref = { current: OWNERS };
+  const { call, keyFor } = setup(ref);
+  const ai = await keyFor('tok-a', 'ai-team');
+  assert.equal((await call('GET', '/v1/me', { key: ai })).status, 200);
+  ref.current = parseOwners({ ...OWNERS_JSON, agents: [] });
+  assert.equal((await call('GET', '/v1/me', { key: ai })).status, 403);
+  ref.current = parseOwners({ ...OWNERS_JSON, people: OWNERS_JSON.people.filter((p) => p.github !== 'eng-a') });
+  assert.equal((await call('GET', '/v1/me', { key: ai })).status, 403);
+  ref.current = OWNERS;
+  assert.equal((await call('DELETE', '/v1/keys/current', { key: ai })).status, 200);
+  assert.equal((await call('GET', '/v1/me', { key: ai })).status, 401);
 });

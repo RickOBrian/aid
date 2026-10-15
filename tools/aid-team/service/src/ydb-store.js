@@ -55,11 +55,12 @@ function eventFromRow(r) {
     from: r.from_value === null ? null : JSON.parse(r.from_value),
     to: r.to_value === null ? null : JSON.parse(r.to_value),
     note: r.note || null,
+    via: r.via || null,
   };
 }
 
 const TASK_COLUMNS = 'id, product, number, title, description, author, assignees, related_products, status, waiting_on, links, created_at, updated_at';
-const EVENT_COLUMNS = 'at, event_id, task_id, by_login, field, from_value, to_value, note';
+const EVENT_COLUMNS = 'at, event_id, task_id, by_login, field, from_value, to_value, note, via';
 
 function eventParams(e, prefix, seq = 0) {
   return {
@@ -72,16 +73,17 @@ function eventParams(e, prefix, seq = 0) {
     [`$${prefix}from_value`]: optUtf8(e.from === null || e.from === undefined ? null : JSON.stringify(e.from)),
     [`$${prefix}to_value`]: optUtf8(e.to === null || e.to === undefined ? null : JSON.stringify(e.to)),
     [`$${prefix}note`]: optUtf8(e.note || null),
+    [`$${prefix}via`]: optUtf8(e.via || null),
   };
 }
 
 function eventDeclare(prefix, withTask = true) {
   return ['event_id', ...(withTask ? ['task_id'] : []), 'at', 'by_login', 'field'].map((c) => `DECLARE $${prefix}${c} AS Utf8;`)
-    .concat(['from_value', 'to_value', 'note'].map((c) => `DECLARE $${prefix}${c} AS Utf8?;`)).join('\n');
+    .concat(['from_value', 'to_value', 'note', 'via'].map((c) => `DECLARE $${prefix}${c} AS Utf8?;`)).join('\n');
 }
 
 function eventUpsert(prefix) {
-  return `UPSERT INTO events (${EVENT_COLUMNS}) VALUES ($${prefix}at, $${prefix}event_id, $${prefix}task_id, $${prefix}by_login, $${prefix}field, $${prefix}from_value, $${prefix}to_value, $${prefix}note);`;
+  return `UPSERT INTO events (${EVENT_COLUMNS}) VALUES ($${prefix}at, $${prefix}event_id, $${prefix}task_id, $${prefix}by_login, $${prefix}field, $${prefix}from_value, $${prefix}to_value, $${prefix}note, $${prefix}via);`;
 }
 
 function createYdbStore({ endpoint, database, authService = getCredentialsFromEnv(), prefix = '' }) {
@@ -129,7 +131,7 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
         UPSERT INTO tasks (${TASK_COLUMNS}) VALUES
           ($id, $product, $n, $title, $description, $author, $assignees, $related, "new"u, NULL, $links, $at, $at);
         UPSERT INTO events (${EVENT_COLUMNS}) VALUES
-          ($e_at, $e_event_id, $id, $e_by_login, $e_field, $e_from_value, $e_to_value, $e_note);
+          ($e_at, $e_event_id, $id, $e_by_login, $e_field, $e_from_value, $e_to_value, $e_note, $e_via);
         SELECT $id AS id, $n AS number;
       `, {
         $product: TypedValues.utf8(fields.product),

@@ -57,26 +57,35 @@ function intParam(url, name, def, max) {
 function createApp(deps) {
   const { store, owners, names, githubLogin, pepper, now = () => new Date().toISOString() } = deps;
 
-  /** Кто пришёл: null — без ключа; иначе { kind, login | name, hash }. */
+  /**
+   * Кто пришёл: null — без ключа; иначе { kind, login, name, hash }.
+   * personal — login человека; agent — name = id AI-инженера, login —
+   * хозяин машины, оба должны оставаться в owners.json.
+   */
   async function caller(request) {
     const key = bearer(request.headers);
     if (!key) return null;
     const found = await store.findKey(hashKey(pepper(), key));
     if (!found || found.revokedAt) throw new ApiError(401, 'unauthorized', 'ключ неверный или отозван');
-    if (found.kind === 'personal') {
+    if (found.kind === 'personal' || found.kind === 'agent') {
       const o = await owners();
       if (!o.logins.has(found.login.toLowerCase())) {
         throw new ApiError(403, 'forbidden', 'логина нет в owners.json');
+      }
+      if (found.kind === 'agent' && !o.agents.has(found.name)) {
+        throw new ApiError(403, 'forbidden', `AI-инженера ${found.name} нет в owners.json`);
       }
     }
     return { ...found, hash: hashKey(pepper(), key) };
   }
 
-  async function personal(request) {
+  /** Автор правки: человек — сам; AI-инженер — by: id, via: хозяин машины. */
+  async function writer(request) {
     const who = await caller(request);
     if (!who) throw new ApiError(401, 'unauthorized', 'нужен личный ключ: /team-key');
-    if (who.kind !== 'personal') throw new ApiError(403, 'forbidden', 'писать можно только личным ключом');
-    return who;
+    if (who.kind === 'personal') return { by: who.login, via: null };
+    if (who.kind === 'agent') return { by: who.name, via: who.login };
+    throw new ApiError(403, 'forbidden', 'писать можно только личным ключом или ключом AI-инженера');
   }
 
   async function listTasks(request, url) {
@@ -115,24 +124,24 @@ function createApp(deps) {
   }
 
   async function createTask(request) {
-    const who = await personal(request);
+    const { by, via } = await writer(request);
     const fields = validateCreate(await readJson(request), await owners());
     const at = now();
-    const task = await store.createTask(fields, who.login, at, (t) => createdEvent(t, who.login, at));
+    const task = await store.createTask(fields, by, at, (t) => createdEvent(t, by, at, via));
     return json(201, { task: presentTask(task, null) });
   }
 
   async function patchTask(request, id) {
-    const who = await personal(request);
+    const { by, via } = await writer(request);
     if (!parseId(id)) throw new ApiError(404, 'not_found', 'нет такой задачи');
     const task = await store.getTask(id);
     if (!task) throw new ApiError(404, 'not_found', 'нет такой задачи');
     const o = await owners();
     const { changed, note } = validatePatch(await readJson(request), task, o);
     if (!Object.keys(changed).length) return json(200, { task: presentTask(task, null), changed: [] });
-    checkCanEdit(who.login, task, changed, o);
+    checkCanEdit(by, task, changed, o);
     const at = now();
-    const updated = await store.updateTask(task, changed, diffEvents(task, changed, who.login, at, note), at);
+    const updated = await store.updateTask(task, changed, diffEvents(task, changed, by, at, note, via), at);
     return json(200, { task: presentTask(updated, null), changed: Object.keys(changed) });
   }
 
@@ -141,19 +150,30 @@ function createApp(deps) {
     return json(200, page);
   }
 
+  /**
+   * POST /v1/keys: { githubToken } — личный ключ; { githubToken, agent } —
+   * ключ AI-инженера agent на машине этого человека (ADR-047). Выдаёт
+   * только человек из owners.json, agent — из agents[] там же.
+   */
   async function issueKey(request) {
     const body = await readJson(request);
     const token = body && body.githubToken;
     if (!token || typeof token !== 'string') throw new ApiError(400, 'bad_request', 'githubToken: обязательно');
+    const agent = body.agent === undefined || body.agent === null ? null : String(body.agent);
+    const o = await owners();
+    if (agent !== null && !o.agents.has(agent)) {
+      throw new ApiError(400, 'bad_request', `agent: AI-инженера ${agent} нет в owners.json`);
+    }
     const login = await githubLogin(token);
     if (!login) throw new ApiError(401, 'unauthorized', 'GitHub не узнал токен');
-    const o = await owners();
     if (!o.logins.has(login.toLowerCase())) {
       throw new ApiError(403, 'forbidden', `логина ${login} нет в owners.json — ключ не выдаётся`);
     }
-    const key = generateKey('personal');
-    await store.saveKey({ hash: hashKey(pepper(), key), kind: 'personal', login, name: null, createdAt: now() });
-    return json(201, { key, login }, { 'Cache-Control': 'no-store' });
+    const kind = agent ? 'agent' : 'personal';
+    const key = generateKey(kind);
+    await store.saveKey({ hash: hashKey(pepper(), key), kind, login, name: agent, createdAt: now() });
+    const out = agent ? { key, login, agent } : { key, login };
+    return json(201, out, { 'Cache-Control': 'no-store' });
   }
 
   async function revokeKey(request) {
@@ -166,7 +186,9 @@ function createApp(deps) {
   async function me(request) {
     const who = await caller(request);
     if (!who) throw new ApiError(401, 'unauthorized', 'нужен ключ');
-    return json(200, { kind: who.kind, login: who.login || null, name: who.name || null });
+    const out = { kind: who.kind, login: who.login || null, name: who.name || null };
+    if (who.kind === 'agent') out.agent = who.name;
+    return json(200, out);
   }
 
   return async function handle(request) {
