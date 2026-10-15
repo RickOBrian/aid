@@ -5,6 +5,7 @@ import { LoginPage } from './LoginPage';
 import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
+import { TeamPage } from './TeamPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -154,6 +155,9 @@ export function App() {
   }
   if (managePath === '/manage/tasks' || managePath.startsWith('/manage/tasks/')) {
     return <TasksPage />;
+  }
+  if (managePath === '/manage/team') {
+    return <TeamPage />;
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());

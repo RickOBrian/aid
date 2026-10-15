@@ -49,6 +49,12 @@ export function ManagePage() {
               </a>
             </li>
             <li>
+              <a className="mng-item" href={withBase('/manage/team')}>
+                <b>Команда</b>
+                <span>Живые инженеры и AI-инженеры AID</span>
+              </a>
+            </li>
+            <li>
               <div className="mng-item mng-soon">
                 <b>Роудмап</b>
                 <span>Скоро</span>
