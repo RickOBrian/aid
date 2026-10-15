@@ -7,15 +7,15 @@ import { ProductAccentScope } from './ProductAccentScope';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { parseReleaseNotes, type NoteInline } from './releaseNotes';
 import {
-  ALL,
   STATUS_LABEL,
-  filterOptions,
+  assigneeOptions,
   filtersFromSearch,
   formatTaskTime,
   groupByStatus,
   historyText,
   personName,
   productLabel,
+  productOptions,
   taskIdFromPath,
   type TaskFilters,
 } from './tasksModel';
@@ -54,7 +54,32 @@ ${DS_PRODUCT_ACCENT_STYLE}
   min-height: 36px; max-width: 100%; padding: 6px 10px; font: inherit; font-size: 14px;
   color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
 }
-.tsk input[type='checkbox'] { accent-color: var(--ds-accent); width: 16px; height: 16px; }
+.tsk input[type='checkbox'] { accent-color: var(--ds-accent); width: 16px; height: 16px; margin: 0; }
+.tsk-filter-label { font-size: 13px; color: ${T.textSecondary}; }
+.tsk-picker { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+.tsk-picker-button {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 10px; font: inherit; font-size: 14px; cursor: pointer;
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+}
+.tsk-picker-button[aria-expanded='true'], .tsk-picker-button:hover { border-color: var(--ds-accent); }
+.tsk-picker-chevron { font-size: 10px; color: ${T.textSecondary}; }
+.tsk-picker-panel {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 10; display: grid; gap: 2px; min-width: 220px; max-height: 320px; overflow-y: auto;
+  padding: 6px; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; box-shadow: 0 8px 24px color-mix(in srgb, ${T.toastBackground} 16%, transparent);
+}
+.tsk-picker-option { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 14px; color: ${T.textPrimary}; }
+.tsk-picker-option:hover { background: ${T.surfaceMuted}; }
+.tsk-picker-reset { margin-top: 4px; padding: 6px 8px; font: inherit; font-size: 13px; text-align: left; cursor: pointer; color: var(--ds-accent); background: none; border: 0; border-top: 1px solid ${T.border}; }
+.tsk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.tsk-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer;
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: 999px;
+}
+.tsk-chip:hover { border-color: var(--ds-accent); }
+.tsk-chip[aria-pressed='true'] { background: var(--ds-accent-bg); border-color: var(--ds-accent); color: var(--ds-accent); }
+.tsk-chip-count { font-size: 12px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.tsk-chip[aria-pressed='true'] .tsk-chip-count { color: inherit; }
+.tsk-picker-button:focus-visible, .tsk-chip:focus-visible, .tsk-picker-reset:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
 .tsk-updated { margin-left: auto; font-size: 12px; color: ${T.textSecondary}; }
 .tsk-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 8px; }
 .tsk-col { display: grid; align-content: start; gap: 8px; padding: 12px; border-radius: ${T.tableWrapRadius}; background: ${T.surfaceZebra}; border: 1px solid ${T.border}; min-height: 160px; }
@@ -395,10 +420,115 @@ function TaskDialog({ task, taskId, people, onClose }: { task: Task | undefined;
   );
 }
 
+function toggle(list: string[], value: string): string[] {
+  return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
+}
+
+/** Выпадающий список продуктов с чекбоксами; ничего не отмечено — все. */
+function ProductPicker({ options, selected, onChange }: { options: string[]; selected: string[]; onChange: (next: string[]) => void }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelId = 'tsk-products-panel';
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const onPointer = (event: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  // Продукт из адреса, у которого сейчас нет задач, — тоже в списке.
+  const all = [...options, ...selected.filter((product) => !options.includes(product))];
+  const summary =
+    selected.length === 0 ? 'Все' : selected.length === 1 ? productLabel(selected[0]) : `${productLabel(selected[0])} +${selected.length - 1}`;
+
+  return (
+    <div className="tsk-picker" ref={rootRef}>
+      <span className="tsk-filter-label" id="tsk-products-label">
+        Продукт
+      </span>
+      <button
+        type="button"
+        ref={buttonRef}
+        className="tsk-picker-button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-labelledby="tsk-products-label tsk-products-value"
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span id="tsk-products-value">{summary}</span>
+        <span className="tsk-picker-chevron" aria-hidden="true">
+          ▼
+        </span>
+      </button>
+      {open && (
+        <div className="tsk-picker-panel" id={panelId} role="group" aria-labelledby="tsk-products-label">
+          {all.map((product) => (
+            <label className="tsk-picker-option" key={product}>
+              <input type="checkbox" checked={selected.includes(product)} onChange={() => onChange(toggle(selected, product))} />
+              {productLabel(product)}
+            </label>
+          ))}
+          {selected.length > 0 && (
+            <button type="button" className="tsk-picker-reset" onClick={() => onChange([])}>
+              Сбросить
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Исполнители тегами: логин GitHub и число задач на нём; нажатый тег — фильтр. */
+function AssigneeChips({ options, selected, onChange }: { options: { login: string; count: number }[]; selected: string[]; onChange: (next: string[]) => void }) {
+  // Человек из адреса, у которого пока нет задач, — тоже тегом, с нулём.
+  const all = [...options, ...selected.filter((login) => !options.some((option) => option.login === login)).map((login) => ({ login, count: 0 }))];
+  return (
+    <div className="tsk-chips" role="group" aria-labelledby="tsk-assignees-label">
+      <span className="tsk-filter-label" id="tsk-assignees-label">
+        Исполнитель
+      </span>
+      {all.map(({ login, count }) => (
+        <button
+          type="button"
+          key={login}
+          className="tsk-chip"
+          aria-pressed={selected.includes(login)}
+          aria-label={`${login}, задач: ${count}`}
+          onClick={() => onChange(toggle(selected, login))}
+        >
+          {login}
+          <span className="tsk-chip-count">{count}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Board({ board, loadedAt }: { board: TaskBoard; loadedAt: Date }) {
   const [filters, setFilters] = useState<TaskFilters>(() => filtersFromSearch(window.location.search));
   const [selected, select] = useSelectedTask();
-  const options = useMemo(() => filterOptions(board), [board]);
+  const products = useMemo(() => productOptions(board), [board]);
+  const assignees = useMemo(() => assigneeOptions(board, filters.products), [board, filters.products]);
   const columns = groupByStatus(board.tasks, filters);
   const selectedTask = board.tasks.find((task) => task.id === selected);
   const update = (patch: Partial<TaskFilters>) => setFilters((current) => ({ ...current, ...patch }));
@@ -406,38 +536,12 @@ function Board({ board, loadedAt }: { board: TaskBoard; loadedAt: Date }) {
   return (
     <>
       <div className="tsk-filters">
-        <label>
-          Продукт
-          <select value={filters.product} onChange={(event) => update({ product: event.target.value })}>
-            <option value={ALL}>Все</option>
-            {options.products.map((product) => (
-              <option key={product} value={product}>
-                {productLabel(product)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Человек
-          <select value={filters.person} onChange={(event) => update({ person: event.target.value })}>
-            <option value={ALL}>Все</option>
-            {/* Человек из адреса, у которого пока нет задач, — тоже в списке. */}
-            {filters.person !== ALL && !options.people.includes(filters.person) && <option value={filters.person}>{personName(filters.person, board.people)}</option>}
-            {options.people.map((login) => (
-              <option key={login} value={login}>
-                {personName(login, board.people)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <input type="checkbox" checked={filters.showCancelled} onChange={(event) => update({ showCancelled: event.target.checked })} />
-          Показать отменённые
-        </label>
+        <ProductPicker options={products} selected={filters.products} onChange={(next) => update({ products: next })} />
         <span className="tsk-updated" aria-live="polite">
           обновлено в {loadedAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
+      <AssigneeChips options={assignees} selected={filters.assignees} onChange={(next) => update({ assignees: next })} />
       <div className="tsk-board">
         {columns.map((column) => (
           <section className="tsk-col" key={column.status} aria-labelledby={`tsk-col-${column.status}`}>

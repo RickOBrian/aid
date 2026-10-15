@@ -7,12 +7,14 @@ import { handler } from '../deploy/yc/handler';
 import { canonicalAppPath } from '../productRegistry';
 import {
   DEFAULT_FILTERS,
-  filterOptions,
+  assigneeOptions,
+  filtersFromSearch,
   groupByStatus,
   historyText,
   matchesFilters,
   personName,
   productLabel,
+  productOptions,
   taskIdFromPath,
   taskPeople,
 } from '../tasksModel';
@@ -190,20 +192,35 @@ describe('GET /api/tasks', () => {
 describe('логика канбана', () => {
   const cancelled: Task = { ...TASK, id: 'hub-2', product: 'hub', status: 'cancelled', relatedProducts: [], waitingOn: null, curator: null };
 
-  it('отменённые скрыты, пока не включён переключатель', () => {
+  it('отменённые на доске не показываются', () => {
     expect(matchesFilters(cancelled, DEFAULT_FILTERS)).toBe(false);
-    expect(matchesFilters(cancelled, { ...DEFAULT_FILTERS, showCancelled: true })).toBe(true);
     const columns = groupByStatus([TASK, cancelled], DEFAULT_FILTERS);
     expect(columns.map((column) => column.status)).toEqual(['new', 'in_progress', 'waiting', 'review', 'done']);
-    expect(groupByStatus([TASK, cancelled], { ...DEFAULT_FILTERS, showCancelled: true }).at(-1)?.tasks).toEqual([cancelled]);
+    expect(columns.flatMap((column) => column.tasks)).toEqual([TASK]);
+    expect(productOptions(board([TASK, cancelled]))).not.toContain('hub');
   });
 
-  it('фильтр продукта — главный и связанные; человека — исполнители, куратор, автор, висит на', () => {
-    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, product: 'team' })).toBe(true);
-    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, product: 'hub' })).toBe(false);
+  it('продукты — несколько сразу, главный и связанные; исполнители — только assignees', () => {
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, products: ['team'] })).toBe(true);
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, products: ['hub'] })).toBe(false);
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, products: ['hub', 'bot-request'] })).toBe(true);
     expect(taskPeople(TASK).sort()).toEqual(['a', 'b', 'c', 'k']);
-    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, person: 'k' })).toBe(true);
-    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, person: 'z' })).toBe(false);
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, assignees: TASK.assignees.slice(0, 1) })).toBe(true);
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, assignees: ['z'] })).toBe(false);
+    expect(matchesFilters(TASK, { ...DEFAULT_FILTERS, assignees: ['z', ...TASK.assignees] })).toBe(true);
+  });
+
+  it('теги исполнителей: логин и число неотменённых задач выбранных продуктов', () => {
+    const other: Task = { ...TASK, id: 'hub-3', product: 'hub', relatedProducts: [], assignees: ['z'] };
+    const all = assigneeOptions(board([TASK, other, cancelled]), []);
+    expect(all.find((option) => option.login === 'z')?.count).toBe(1);
+    expect(all.reduce((sum, option) => sum + option.count, 0)).toBe(TASK.assignees.length + 1);
+    expect(assigneeOptions(board([TASK, other]), ['hub'])).toEqual([{ login: 'z', count: 1 }]);
+  });
+
+  it('фильтры из адреса: ?person= и ?product=, можно несколько', () => {
+    expect(filtersFromSearch('')).toEqual(DEFAULT_FILTERS);
+    expect(filtersFromSearch('?person=ai-developer&product=team,hub')).toEqual({ assignees: ['ai-developer'], products: ['team', 'hub'] });
   });
 
   it('имена: «Имя Ф.» из сервиса, иначе логин; pd — «решение PD»', () => {
@@ -213,7 +230,7 @@ describe('логика канбана', () => {
     expect(personName('pd', people)).toBe('решение PD');
     expect(productLabel('bot-request')).toBe('Bot · Request');
     expect(productLabel('новый-продукт')).toBe('новый-продукт');
-    expect(filterOptions(board([TASK])).products).toEqual(['bot-request', 'team']);
+    expect(productOptions(board([TASK]))).toEqual(['bot-request', 'team']);
   });
 
   it('история: статусы и люди подписями', () => {
