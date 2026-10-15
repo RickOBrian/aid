@@ -39,6 +39,7 @@ function taskFromRow(r) {
     relatedProducts: JSON.parse(r.related_products || '[]'),
     status: r.status,
     waitingOn: r.waiting_on || null,
+    curator: r.curator || null,
     links: JSON.parse(r.links || '[]'),
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -55,11 +56,12 @@ function eventFromRow(r) {
     from: r.from_value === null ? null : JSON.parse(r.from_value),
     to: r.to_value === null ? null : JSON.parse(r.to_value),
     note: r.note || null,
+    via: r.via || null,
   };
 }
 
-const TASK_COLUMNS = 'id, product, number, title, description, author, assignees, related_products, status, waiting_on, links, created_at, updated_at';
-const EVENT_COLUMNS = 'at, event_id, task_id, by_login, field, from_value, to_value, note';
+const TASK_COLUMNS = 'id, product, number, title, description, author, assignees, related_products, status, waiting_on, links, created_at, updated_at, curator';
+const EVENT_COLUMNS = 'at, event_id, task_id, by_login, field, from_value, to_value, note, via';
 
 function eventParams(e, prefix, seq = 0) {
   return {
@@ -72,16 +74,17 @@ function eventParams(e, prefix, seq = 0) {
     [`$${prefix}from_value`]: optUtf8(e.from === null || e.from === undefined ? null : JSON.stringify(e.from)),
     [`$${prefix}to_value`]: optUtf8(e.to === null || e.to === undefined ? null : JSON.stringify(e.to)),
     [`$${prefix}note`]: optUtf8(e.note || null),
+    [`$${prefix}via`]: optUtf8(e.via || null),
   };
 }
 
 function eventDeclare(prefix, withTask = true) {
   return ['event_id', ...(withTask ? ['task_id'] : []), 'at', 'by_login', 'field'].map((c) => `DECLARE $${prefix}${c} AS Utf8;`)
-    .concat(['from_value', 'to_value', 'note'].map((c) => `DECLARE $${prefix}${c} AS Utf8?;`)).join('\n');
+    .concat(['from_value', 'to_value', 'note', 'via'].map((c) => `DECLARE $${prefix}${c} AS Utf8?;`)).join('\n');
 }
 
 function eventUpsert(prefix) {
-  return `UPSERT INTO events (${EVENT_COLUMNS}) VALUES ($${prefix}at, $${prefix}event_id, $${prefix}task_id, $${prefix}by_login, $${prefix}field, $${prefix}from_value, $${prefix}to_value, $${prefix}note);`;
+  return `UPSERT INTO events (${EVENT_COLUMNS}) VALUES ($${prefix}at, $${prefix}event_id, $${prefix}task_id, $${prefix}by_login, $${prefix}field, $${prefix}from_value, $${prefix}to_value, $${prefix}note, $${prefix}via);`;
 }
 
 function createYdbStore({ endpoint, database, authService = getCredentialsFromEnv(), prefix = '' }) {
@@ -115,21 +118,21 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
     driver,
 
     async createTask(fields, author, at, makeEvent) {
-      const draft = { ...fields, author, status: 'new', waitingOn: null, createdAt: at, updatedAt: at };
+      const draft = { ...fields, curator: fields.curator || null, author, status: 'new', waitingOn: null, createdAt: at, updatedAt: at };
       const ev = makeEvent({ ...draft, id: '' });
       const sets = await q(`
         DECLARE $product AS Utf8; DECLARE $title AS Utf8; DECLARE $description AS Utf8;
         DECLARE $author AS Utf8; DECLARE $assignees AS Utf8; DECLARE $related AS Utf8;
-        DECLARE $links AS Utf8; DECLARE $at AS Utf8;
+        DECLARE $links AS Utf8; DECLARE $at AS Utf8; DECLARE $curator AS Utf8?;
         ${eventDeclare('e_', false)}
         $last = (SELECT last FROM counters WHERE product = $product);
         $n = COALESCE($last, 0u) + 1u;
         $id = $product || "-"u || CAST($n AS Utf8);
         UPSERT INTO counters (product, last) VALUES ($product, $n);
         UPSERT INTO tasks (${TASK_COLUMNS}) VALUES
-          ($id, $product, $n, $title, $description, $author, $assignees, $related, "new"u, NULL, $links, $at, $at);
+          ($id, $product, $n, $title, $description, $author, $assignees, $related, "new"u, NULL, $links, $at, $at, $curator);
         UPSERT INTO events (${EVENT_COLUMNS}) VALUES
-          ($e_at, $e_event_id, $id, $e_by_login, $e_field, $e_from_value, $e_to_value, $e_note);
+          ($e_at, $e_event_id, $id, $e_by_login, $e_field, $e_from_value, $e_to_value, $e_note, $e_via);
         SELECT $id AS id, $n AS number;
       `, {
         $product: TypedValues.utf8(fields.product),
@@ -140,6 +143,7 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
         $related: TypedValues.utf8(JSON.stringify(fields.relatedProducts)),
         $links: TypedValues.utf8(JSON.stringify(fields.links)),
         $at: TypedValues.utf8(at),
+        $curator: optUtf8(fields.curator || null),
         ...(({ $e_task_id, ...rest }) => rest)(eventParams({ ...ev, taskId: '' }, 'e_')),
       });
       const [{ id, number }] = rows(sets[0]);
@@ -153,8 +157,8 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
       return r ? taskFromRow(r) : null;
     },
 
-    async listTasks({ status, product, assignee, updatedSince, limit, cursor }) {
-      // Задач — десятки и сотни: фильтр по исполнителю — в коде, остальное — в запросе.
+    async listTasks({ status, product, assignee, curator, updatedSince, limit, cursor }) {
+      // Задач — десятки и сотни: фильтр по исполнителю и куратору — в коде, остальное — в запросе.
       const where = ['id > $cursor'];
       if (status) where.push('status = $status');
       if (product) where.push('product = $product');
@@ -170,6 +174,7 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
       }, TX_RO);
       let list = rows(sets[0]).map(taskFromRow);
       if (assignee) list = list.filter((t) => t.assignees.some((a) => a.toLowerCase() === assignee.toLowerCase()));
+      if (curator) list = list.filter((t) => (t.curator || '').toLowerCase() === curator.toLowerCase());
       const page = list.slice(0, limit);
       return { tasks: page, nextCursor: list.length > limit ? page[page.length - 1].id : null };
     },
@@ -198,6 +203,7 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
         $related: TypedValues.utf8(JSON.stringify(next.relatedProducts)),
         $status: TypedValues.utf8(next.status),
         $waiting: optUtf8(next.waitingOn || null),
+        $curator: optUtf8(next.curator || null),
         $links: TypedValues.utf8(JSON.stringify(next.links)),
         $at: TypedValues.utf8(at),
       };
@@ -216,10 +222,11 @@ function createYdbStore({ endpoint, database, authService = getCredentialsFromEn
         await s.executeQuery(pragma + `
           DECLARE $id AS Utf8; DECLARE $title AS Utf8; DECLARE $description AS Utf8; DECLARE $assignees AS Utf8;
           DECLARE $related AS Utf8; DECLARE $status AS Utf8; DECLARE $waiting AS Utf8?; DECLARE $links AS Utf8;
-          DECLARE $at AS Utf8;
+          DECLARE $at AS Utf8; DECLARE $curator AS Utf8?;
           ${declares}
           UPDATE tasks SET title = $title, description = $description, assignees = $assignees,
-            related_products = $related, status = $status, waiting_on = $waiting, links = $links, updated_at = $at
+            related_products = $related, status = $status, waiting_on = $waiting, links = $links, updated_at = $at,
+            curator = $curator
             WHERE id = $id;
           ${upserts}
         `, params, { txId: tx.id, commitTx: true });

@@ -51,19 +51,37 @@
 
 | Запрос | Ключ | Что |
 |---|---|---|
-| `GET /v1/tasks` | нет | список; `status`, `product`, `assignee`, `updatedSince`, `limit` (200, до 500), `cursor`; `include=history` |
+| `GET /v1/tasks` | нет | список; `status`, `product`, `assignee`, `curator`, `updatedSince`, `limit` (200, до 500), `cursor`; `include=history` |
 | `GET /v1/tasks/{id}` | нет | задача с историей |
 | `GET /v1/events?after=` | нет | лента событий для бота |
 | `POST /v1/tasks` | личный | новая задача → id |
 | `PATCH /v1/tasks/{id}` | личный | статус, «ждёт», исполнители, ссылки, описание |
-| `POST /v1/keys` | вход GitHub | выдача личного ключа (`/team-key`) |
+| `POST /v1/keys` | вход GitHub | выдача личного ключа (`/team-key`); с `agent` — ключа AI-инженера |
 | `DELETE /v1/keys/current` | личный | отзыв своего ключа |
 | `GET /v1/me` | личный | чей ключ |
 
 Ответы списка и задачи — по контракту с Presentbook: `id, product,
-number, title, description, author, assignees[], relatedProducts[],
-status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
+number, title, description, author, assignees[], curator,
+relatedProducts[], status, waitingOn, links[], history[], createdAt,
+updatedAt`; `ETag` и
 `304`; ошибки `{error, message}` с 401/403/404.
+
+## Куратор и AI-исполнители
+
+ADR-047, `ORCHESTRATION.md` §11 «Права и куратор».
+
+- В `assignees` — логины людей и id AI-инженеров (`ai-<роль>` из
+  `agents[]`); id AI приводится к нижнему регистру.
+- `curator` — логин человека из `people[]`, не AI. Обязателен, если среди
+  исполнителей есть AI. Не указан — берётся `agents[].curator` первого
+  AI; нет и его — 400.
+- В правке: AI добавили без куратора — куратор по умолчанию; снять
+  куратора (`curator: null`), пока среди исполнителей есть AI, — 400. AI
+  убрали — куратор остаётся, снять можно.
+- Менять задачу могут автор, исполнители (и AI своим ключом), куратор и
+  PD; отменить — автор и PD. Смена куратора — событие `curator` в истории.
+- Мерж по задаче с AI-исполнителем — после «да» куратора; сервис это
+  поле хранит и показывает, сам мерж не проверяет.
 
 ## Личный ключ — `/team-key`
 
@@ -77,6 +95,27 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
    add-generic-password -s team.aidteam.pro -a <логин>`), на Linux — файл
    с правами 0600; на экран и в чат не выводится. Работает одинаково в
    Claude Code и Cursor.
+
+### Ключ AI-инженера — `team-key --agent ai-<роль>`
+
+ADR-047. Тот же вход GitHub, в `POST /v1/keys` уходит ещё `agent`. Выдаёт
+хозяин машины — человек из `people[]` `owners.json`; `agent` — id из
+`agents[]` там же. В таблице `keys`: `kind: "agent"`, `login` — хозяин
+машины, `name` — id AI. Ключ `aida_…` лежит отдельно от личного: в связке
+сервис `team.aidteam.pro/agent/<id>`, на Linux —
+`~/.config/aidteam/agent-<id>`. Запросы — `team-api --agent <id> …`.
+
+- Правка ключом AI в истории и ленте: `by: "ai-team"`, `via: "<логин>"`
+  → «ai-team (у @логин)». Колонка `events.via` (`init-db` дописывает
+  недостающие колонки в существующие таблицы).
+- Права AI — свои, не хозяина: правит задачи, где он автор или
+  исполнитель; AI на машине PD не получает прав PD.
+- Ключ перестаёт работать (403), когда AI или хозяина машины убрали из
+  `owners.json`; отзыв — `team-key --agent <id> --revoke`.
+- `owners.json` format 2 тоже читается: без `agents[]` ключи AI не
+  выдаются.
+- Рабочей базе колонку `via` добавляет `init-db` **до** выкладки этого
+  кода — выкладка `init-db` не запускает (DevOps · Team Service).
 
 ## Код
 
@@ -122,6 +161,23 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
 3. Перезапустить выкладку: GitHub → Actions → team-service → Run workflow
    (ветка `main`) или `gh workflow run team-service.yml --repo RickOBrian/aid --ref main`.
 
+## Изменение схемы базы — до мержа
+
+Выкладка (`.github/workflows/team-service.yml`) выкладывает только код и
+`init-db` не запускает: у аккаунта CI нет роли на YDB, а роли — решение
+PD. Поэтому, если PR меняет схему (новая таблица или колонка в
+`scripts/init-db.js`):
+
+1. В описании PR — пометка «меняет схему» и что именно.
+2. **До мержа** DevOps · Team Service запускает на рабочей базе
+   `node scripts/init-db.js` (без `TABLE_PREFIX`). Скрипт только создаёт
+   недостающие таблицы и дописывает колонки, данных не трогает; старый код
+   с новыми колонками работает.
+3. Мерж — после того, как DevOps подтвердил прогон.
+
+Удалять и переименовывать колонки так нельзя — это отдельное решение с
+переносом данных.
+
 ## План: ADR-047 — AI-инженеры, куратор, входящие
 
 Решения PD 2026-10-14 (`BOARD.md` «Решения PD»): метка AI у записей
@@ -133,10 +189,10 @@ status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
 1. **`owners.json` format 3** — `people[]` (`kind: "human"`) и `agents[]`
    (`kind: "ai"`, `id: "ai-<роль>"`, `card`, `curator`). Ключи по
    `/team-key` — только `kind: "human"`.
-2. **Ключи AI-инженеров** — вид `agent`: id роли + логин хозяина машины;
+2. **Ключи AI-инженеров** — сделано, см. «Ключ AI-инженера». Вид `agent`: id роли + логин хозяина машины;
    выдаёт хозяин машины `team-key --agent <id>`. В истории: `by: "ai-team"`,
    `via: "<логин>"` → «ai-team (у @логин)».
-3. **Куратор** — поле `curator` (логин человека); обязателен, если среди
+3. **Куратор** — сделано, см. «Куратор и AI-исполнители». Поле `curator` (логин человека); обязателен, если среди
    исполнителей есть AI; по умолчанию — `agents[].curator`.
 4. **Входящие и журнал** — закрыто, только по ключу.
 
