@@ -1,13 +1,16 @@
 'use strict';
 
-// Создаёт таблицы сервиса в YDB, если их ещё нет. Запуск — один раз,
-// из профиля `yc` с правами на базу:
+// Создаёт таблицы сервиса в YDB, если их ещё нет, и дописывает в
+// существующие недостающие колонки (только добавление, данные не трогает).
+// Запуск — после каждой новой колонки, из профиля `yc` с правами на базу:
 //   YDB_ACCESS_TOKEN_CREDENTIALS="$(yc --profile team-tasks iam create-token)" \
 //   YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135 YDB_DATABASE=/ru-central1/... \
 //   node scripts/init-db.js
 // Токен в переменную окружения, на экран не выводится.
 
-const { Driver, getCredentialsFromEnv, Types, Column, TableDescription, TableIndex } = require('ydb-sdk');
+const {
+  Driver, getCredentialsFromEnv, Types, Column, TableDescription, TableIndex, AlterTableDescription,
+} = require('ydb-sdk');
 
 const U = () => Types.optional(Types.UTF8);
 
@@ -18,12 +21,16 @@ const TABLES = {
       new Column('title', U()), new Column('description', U()), new Column('author', U()),
       new Column('assignees', U()), new Column('related_products', U()), new Column('status', U()),
       new Column('waiting_on', U()), new Column('links', U()), new Column('created_at', U()), new Column('updated_at', U()),
+      // ADR-047: куратор — логин человека; обязателен при AI-исполнителе.
+      new Column('curator', U()),
     )
     .withPrimaryKey('id'),
   events: new TableDescription()
     .withColumns(
       new Column('at', U()), new Column('event_id', U()), new Column('task_id', U()), new Column('by_login', U()),
       new Column('field', U()), new Column('from_value', U()), new Column('to_value', U()), new Column('note', U()),
+      // ADR-047: логин хозяина машины, если правку сделал AI-инженер.
+      new Column('via', U()),
     )
     .withPrimaryKeys('at', 'event_id')
     .withIndex(new TableIndex('idx_task').withIndexColumns('task_id').withGlobalAsync(false)),
@@ -49,13 +56,24 @@ async function main() {
   await driver.tableClient.withSession(async (session) => {
     for (const [base, desc] of Object.entries(TABLES)) {
       const name = prefix + base;
+      let existing;
       try {
-        await session.describeTable(name);
-        console.log(`${name}: уже есть`);
+        existing = await session.describeTable(name);
       } catch {
         await session.createTable(name, desc);
         console.log(`${name}: создана`);
+        continue;
       }
+      const have = new Set(existing.columns.map((c) => c.name));
+      const missing = desc.columns.filter((c) => !have.has(c.name));
+      if (!missing.length) {
+        console.log(`${name}: уже есть`);
+        continue;
+      }
+      const alter = new AlterTableDescription();
+      for (const c of missing) alter.withAddColumn(c);
+      await session.alterTable(name, alter);
+      console.log(`${name}: добавлены колонки ${missing.map((c) => c.name).join(', ')}`);
     }
   });
   await driver.destroy();

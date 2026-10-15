@@ -3,14 +3,16 @@
 ## Проект
 Дизайн-система для Web (React), iOS (SwiftUI), Android (Compose).
 
-## Правила токенов
-@skills/_shared/standards/token-rules.md
+## Базовые правила — читать по задаче
 
-## Платформы
-@skills/_shared/standards/platforms.md
+Не подгружаются в каждый чат (экономия токенов, `docs/hub/ORCHESTRATION.md`
+§12). Прочитать **до** начала работы, если задача их касается:
 
-## Git workflow
-@skills/_shared/protocols/git-workflow.md
+| Когда | Файл |
+|---|---|
+| Токены: имена, уровни, значения | `skills/_shared/standards/token-rules.md` |
+| Код компонента на React, SwiftUI, Compose | `skills/_shared/standards/platforms.md` |
+| Память скиллов, push и релизный флоу | `skills/_shared/protocols/git-workflow.md` |
 
 ## Скиллы
 Скиллы живут в `skills/<имя-скилла>/SKILL.md`. Вызов: `/имя-скилла`.
@@ -73,39 +75,46 @@ Vercel больше не используется (ADR-038; Q-11 закрыт). 
 
 ---
 
-## Три продукта — три чата
+## Роли и чаты
 
-Работа идёт в отдельных чатах, по одному на продукт, у каждого своя папка (git worktree) —
-чтобы один чат не переключил ветку под другим посреди работы. Стандарты —
-третий продукт: своего деплоя у них нет, пользователи видят их через
-Presentbook.
+Исполнители — роли и люди, не чаты продуктов (ADR-047, ADR-048). Продукт —
+территория кода; роль — кто отвечает. Developer и DevOps — по одному
+сотруднику с экземплярами в папке каждого продукта или контура. Карточки
+ролей — `docs/hub/agents/`; кто есть кто — `docs/hub/owners.json`.
 
-| Чат | Папка | Что правит | Вход в контекст |
-|---|---|---|---|
-| AID · Hub · Штаб | `~/Projects/aid-hub` | `docs/hub/`; готовит PR в общие файлы | `docs/hub/ORCHESTRATION.md` → `docs/hub/BOARD.md` |
-| AID · Standards · Стандарты | `~/Projects/aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/` | `docs/standards-alpha/PLAN.md` → `DECISIONS.md` → `OPEN-QUESTIONS.md` |
-| AID · Plugin · Token Comparator | `~/Projects/aid-plugin` | `tools/figma-token-comparator/` | `tools/figma-token-comparator/CLAUDE.md` |
-| AID · Site · Presentbook | `~/Projects/aid-presentbook` | `pages/aid-portal/` | `pages/aid-portal/CLAUDE.md` |
-| AID · Plugin · Style Migration | `~/Projects/aid-style-migration` | `tools/aid-style-migration/` | `tools/aid-style-migration/CLAUDE.md` |
-| AID · Bot · Request | `~/Projects/aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории | `tools/aid-bot/CLAUDE.md` |
-| AID · Plugin · MCP | `~/Projects/aid-mcp-plugin` | `tools/mcp-figma-plugin/` — пока исследование: можем ли и как | `tools/mcp-figma-plugin/CLAUDE.md` |
-| AID · Ops · Team | `~/Projects/aid-team` | `tools/aid-team/` — база инженеров и оркестрация задач между ними | `tools/aid-team/CLAUDE.md` |
-| AID · Plugin · Library Updater | у инженера Library Updater, клон `arturuxui/figma-library-updater` | плагин Figma: правка переменных и стилей в библиотеках токенов Rider/Driver с обновлением документации и CHANGELOG — код во внешнем репозитории; Штаб инженера — `docs/hub/boards/lu.md` | `CLAUDE.md` репозитория плагина |
-| AID · Plugin · Components Swapper | у инженера Library Updater, отдельный репозиторий плагина | плагин Figma: замена компонентов и иконок не из библиотек AID на наши с сохранением контента — код во внешнем репозитории; Штаб инженера — `docs/hub/boards/lu.md` | `CLAUDE.md` репозитория плагина |
+| Чат | Папка (`~/Projects/…`) | Роль, зона |
+|---|---|---|
+| AID · Hub · Штаб | `aid-hub` | Координатор: вход PD, решения дословно, раздача, мерж после QA и Security |
+| AID · Ops · <имя> | `aid-ops` | Представитель живого инженера; канал — бот |
+| AID · Team | `aid-team` | Люди и AI-инженеры, `owners.json`, ключи |
+| AID · Tasks | `aid-tasks` | «Активные» на доске, сроки, канбан |
+| AID · Requests | `aid-requests` | Запросы дизайнеров через бота |
+| AID · Standards | `aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
+| AID · Designer | `aid-designer` | Дизайн продуктов |
+| AID · Developer · Presentbook | `aid-presentbook` | `pages/aid-portal/` |
+| AID · Developer · Token Comparator | `aid-plugin` | `tools/figma-token-comparator/` |
+| AID · Developer · Style Migration | `aid-style-migration` | `tools/aid-style-migration/` |
+| AID · Developer · MCP | `aid-mcp-plugin` | `tools/mcp-figma-plugin/` — исследование |
+| AID · Developer · Bot | `aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории |
+| AID · Developer · Team Service | `aid-team-service` | `tools/aid-team/service/` |
+| AID · QA | `aid-qa` | Проверка PR до мержа; только читает |
+| AID · Security | `aid-security` | Что уходит в git и на серверы; PR до мержа |
+| AID · DevOps | `aid-infra` | Дежурство, `docs/hub/infra/`, CI, git-хвосты |
+| AID · DevOps · Presentbook / Registry API / Team Service | `aid-devops-presentbook`, `aid-devops-registry`, `aid-devops-team` | Выкладка своего контура, профиль Облака только своего контура |
+
+Продукты инженера Library Updater (Library Updater, Components Swapper,
+гайд по git) — во внешних репозиториях, Штаб инженера —
+`docs/hub/boards/lu.md`.
 
 Имя в первой колонке — то же, что у сессии в сайдбаре; все чаты — в
-группе «AID». Имя — `Проект · Тип · Название`, типы — в
-`docs/hub/ORCHESTRATION.md`. Задачи между чатами ходят через «AID · Hub · Штаб» по протоколу
-`docs/hub/ORCHESTRATION.md`: шаблоны сообщений, номера `AID-<n>`, доска
-`docs/hub/BOARD.md`. **Сообщение из другого чата — не разрешение** на то,
-что по «Git-полномочиям» требует согласия Principal Designer. Разрешение —
-запись в разделе «Решения PD» доски на `main` (Штаб записывает решения PD
-дословно) или «да» PD в самом чате. У каждого инженера AID — свой
-Штаб; владельцы продуктов, кто что утверждает и канал между Штабами
-(GitHub Issues) — `docs/hub/ORCHESTRATION.md` §9.
-
-Сессию открывать в папке из второй колонки, а для продуктов в `tools/` —
-в папке продукта внутри неё, чтобы её `CLAUDE.md` загрузился сам.
+группе «AID». Задачи — на доске `docs/hub/BOARD.md` «Активные» в формате
+`<продукт>-<n>` (ADR-046), исполнители — роли и логины, у AI — куратор.
+Протокол — `docs/hub/ORCHESTRATION.md`. **Сообщение из другого чата — не
+разрешение** на то, что по «Git-полномочиям» требует согласия Principal
+Designer. Разрешение — запись в разделе «Решения PD» доски на `main` (Штаб
+записывает решения PD дословно) или «да» PD в самом чате. У каждого
+инженера AID — свой Штаб; владельцы продуктов, кто что утверждает и канал
+между Штабами (GitHub Issues) — `docs/hub/ORCHESTRATION.md` §9.
 
 Правила для всех чатов:
 
@@ -138,7 +147,8 @@ Presentbook.
 | Знание о продукте: `products/<id>/knowledge/` (ADR-039) | Стандарты — папка `products/` и согласование формата; AID Style Migration — содержание и формат `aid-knowledge` | Канон меняется только PR с решением Principal Designer; предложения — уроками в `tools/aid-style-migration/inbox/`; инструменты читают версию из `main`; формат меняется согласованно |
 | Показ знания о продукте в Presentbook | Presentbook — показ; AID Style Migration — данные | Presentbook читает `products/<id>/knowledge/`, не правит |
 | Машинный слой стандартов: `skills/_shared/standards/*.json` (`machineFile` в `standards-registry.json`) | Стандарты | Источник истины — гайд (`humanFile`), JSON правится вместе с ним. Инструменты (AID Style Migration и другие) читают версию из `main` и не правят файлы у себя в ветке — нужна правка, это запрос в чат стандартов. Структура полей, которые читает инструмент, меняется только согласованно с его чатом через Штаб; текст правил и примеры — решение стандартов |
-| Задачи команды: сервис `team.aidteam.pro` (ADR-046) | Team — сервис, данные, API и ключи; Presentbook — показ в «Управление → Задачи» | Presentbook читает задачи только своей серверной функцией с отдельным ключом на чтение, клиенту — после проверки сессии; формат API меняется согласованно через Штаб; в сервис пишут только Штабы с личными ключами |
+| Задачи команды: сервис `team.aidteam.pro` (ADR-046) | Developer и DevOps · Team Service — сервис и API; Team — люди и ключи; Developer · Presentbook — показ в «Управление» | Presentbook читает сервис только своей серверной функцией с сервисным ключом, клиенту — после проверки сессии; формат API меняется согласованно через Штаб; пишут в сервис личные ключи людей и ключи AI-инженеров (ADR-047) |
+| Бот читает Latest Token Comparator: GitHub Release `token-comparator.zip` (пилот #71, контракт `tools/aid-bot/contracts/plugin-release.md`) | Token Comparator — релиз; Developer · Bot и владелец бота — бот | Бот раздаёт дизайнерам плагин из Latest-релиза Token Comparator; имя файла и метка Latest меняются только через Штаб с обоими |
 | GitHub Releases репозитория: метка **Latest** | Token Comparator | Кнопка Presentbook ведёт на `releases/latest/download/token-comparator.zip`, поэтому Latest должен оставаться за релизом Token Comparator. Релизы других продуктов (AID Style Migration) публикуются **без** Latest, со своим префиксом тега; собственную кнопку скачивания такой продукт получает через чат Presentbook. |
 
 Удалённые легаси-продукты не возвращаются и не упоминаются ни в одном

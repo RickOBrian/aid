@@ -18,18 +18,29 @@ function cached(load) {
   };
 }
 
-/** owners.json → { logins: Set(lower), pd: Set(lower), byLogin } */
+/**
+ * owners.json → { logins: Set(lower), pd: Set(lower), agents: Map(id → { id, curator }) }.
+ * Format 2 — только people[]; format 3 (ADR-047) — people[] с kind: "human"
+ * и agents[] с kind: "ai". В logins — только люди: ключ по /team-key и
+ * роль исполнителя-человека — у них.
+ */
 function parseOwners(json) {
   const people = Array.isArray(json && json.people) ? json.people : [];
   const logins = new Set();
   const pd = new Set();
   for (const p of people) {
     if (!p || !p.github) continue;
+    if (p.kind && p.kind !== 'human') continue;
     const l = String(p.github).toLowerCase();
     logins.add(l);
     if (Array.isArray(p.decides) && p.decides.includes('system')) pd.add(l);
   }
-  return { logins, pd };
+  const agents = new Map();
+  for (const a of Array.isArray(json && json.agents) ? json.agents : []) {
+    if (!a || a.kind !== 'ai' || !/^ai-[a-z][a-z0-9-]*$/.test(String(a.id || ''))) continue;
+    agents.set(a.id, { id: a.id, curator: a.curator ? String(a.curator) : null });
+  }
+  return { logins, pd, agents };
 }
 
 function ownersSource(fetchImpl = fetch) {

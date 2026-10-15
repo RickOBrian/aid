@@ -25,6 +25,7 @@ function createMemoryStore() {
         author,
         status: 'new',
         waitingOn: null,
+        curator: fields.curator || null,
         createdAt: at,
         updatedAt: at,
       };
@@ -38,12 +39,13 @@ function createMemoryStore() {
       return t ? { ...t } : null;
     },
 
-    async listTasks({ status, product, assignee, updatedSince, limit, cursor }) {
+    async listTasks({ status, product, assignee, curator, updatedSince, limit, cursor }) {
       let list = [...tasks.values()].sort(byId);
       if (cursor) list = list.filter((t) => t.id > cursor);
       if (status) list = list.filter((t) => t.status === status);
       if (product) list = list.filter((t) => t.product === product);
       if (assignee) list = list.filter((t) => t.assignees.some((a) => a.toLowerCase() === assignee.toLowerCase()));
+      if (curator) list = list.filter((t) => (t.curator || '').toLowerCase() === curator.toLowerCase());
       if (updatedSince) list = list.filter((t) => t.updatedAt >= updatedSince);
       const page = list.slice(0, limit);
       return { tasks: page.map((t) => ({ ...t })), nextCursor: list.length > limit ? page[page.length - 1].id : null };
