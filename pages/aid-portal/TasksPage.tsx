@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { isTaskBoard, type Task, type TaskBoard } from './api/_lib/tasks';
+import { isSafeLinkUrl, isTaskBoard, type Task, type TaskBoard } from './api/_lib/tasks';
 import { apiUrl, currentAppPath, withBase } from './base';
 import { DS_PORTAL_LAYOUT_TOKENS } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
@@ -361,7 +361,8 @@ function TaskDialog({ task, taskId, people, onClose }: { task: Task | undefined;
               <section className="tsk-section">
                 <h3>Ссылки</h3>
                 <ul className="tsk-links">
-                  {task.links.map((link) => (
+                  {/* Схема проверена при разборе ответа; здесь — ещё раз, на случай других путей данных. */}
+                  {task.links.filter((link) => isSafeLinkUrl(link.url)).map((link) => (
                     <li key={link.url}>
                       <a href={link.url} target="_blank" rel="noreferrer noopener">
                         {link.title ?? (link.type === 'pr' ? 'PR' : link.type === 'issue' ? 'Issue' : link.url)}

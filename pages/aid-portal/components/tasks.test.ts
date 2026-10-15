@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET, resetTasksCache } from '../api/tasks';
-import { isTask, isTaskBoard, loadTeamBoard, readTeamKey, type Task, type TaskBoard } from '../api/_lib/tasks';
+import { isSafeLinkUrl, isTask, isTaskBoard, loadTeamBoard, readTeamKey, type Task, type TaskBoard } from '../api/_lib/tasks';
 import { EXAMPLE_BOARD } from '../api/_lib/tasksExample';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { handler } from '../deploy/yc/handler';
@@ -51,6 +51,15 @@ describe('контракт сервиса задач v1', () => {
     expect(isTask({ ...TASK, curator: null })).toBe(true);
   });
 
+  it('ссылки — только https: javascript:, data:, http: и относительные — отказ всей задачи (XSS, Security #224)', () => {
+    for (const url of ['javascript:alert(1)', 'JavaScript:alert(1)', ' javascript:alert(1)', 'data:text/html,<script>alert(1)</script>', 'http://example.test/pr/1', '/manage', '//evil.test/x', 'vbscript:x', '']) {
+      expect(isSafeLinkUrl(url)).toBe(false);
+      expect(isTask({ ...TASK, links: [{ type: 'pr', url }] })).toBe(false);
+    }
+    expect(isSafeLinkUrl('https://github.com/RickOBrian/aid/pull/1')).toBe(true);
+    expect(isTaskBoard({ tasks: [{ ...TASK, links: [{ type: 'other', url: 'javascript:alert(1)' }] }], people: {} })).toBe(false);
+  });
+
   it('неизвестный статус, кривая ссылка или куратор-число — отказ', () => {
     expect(isTask({ ...TASK, status: 'archived' })).toBe(false);
     expect(isTask({ ...TASK, links: [{ type: 'mail', url: 'x' }] })).toBe(false);
@@ -85,6 +94,16 @@ describe('контракт сервиса задач v1', () => {
     const bad = vi.fn(async () => new Response('{"tasks":[{"id":1}],"people":{}}')) as unknown as typeof fetch;
     expect(await loadTeamBoard('https://team.example.test', 'secret-key', bad)).toBeNull();
     expect(log.mock.calls.flat().join(' ')).not.toContain('secret-key');
+    log.mockRestore();
+  });
+
+  it('загрузчик выбрасывает небезопасные ссылки, задача остаётся, адрес в журнал не пишется', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const page = { tasks: [{ ...TASK, links: [{ type: 'pr', url: 'javascript:alert(document.cookie)' }, TASK.links[0]] }], people: {}, nextCursor: null };
+    const fetchImpl = vi.fn(async () => new Response(JSON.stringify(page))) as unknown as typeof fetch;
+    const result = await loadTeamBoard('https://team.example.test', 'key', fetchImpl);
+    expect(result?.tasks[0].links).toEqual(TASK.links);
+    expect(log.mock.calls.flat().join(' ')).not.toContain('javascript');
     log.mockRestore();
   });
 
