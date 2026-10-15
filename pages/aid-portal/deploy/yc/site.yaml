@@ -24,6 +24,10 @@ paths:
   /api/ttm:
     get:
       x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
+  # Задачи команды для /manage/tasks (team-2) — только с сессией.
+  /api/tasks:
+    get:
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
   /assets/{path+}:
     get:
       parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
