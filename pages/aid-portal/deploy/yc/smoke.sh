@@ -48,6 +48,11 @@ if [ "$code" = 401 ]; then echo "ok   401 POST $base/api/login"; else echo "FAIL
 # Данные страницы /ttm закрытые (AID-13): без сессии — 401, на превью — 404
 # даже с сессией. Сама страница — обычный маршрут SPA.
 check "$base/ttm" 200 text/html
+# «Управление → Задачи» (team-2): страница — маршрут SPA, задачи — только с сессией.
+check "$base/manage/tasks" 200 text/html
+check "$base/api/tasks" 401 application/json
+check "$base/manage/team" 200 text/html
+check "$base/api/team" 401 application/json
 case "$base" in
   */pr-[0-9]*) check "$base/api/ttm" 404 application/json ;;
   *) check "$base/api/ttm" 401 application/json ;;
