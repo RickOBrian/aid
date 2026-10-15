@@ -51,7 +51,7 @@
 
 | Запрос | Ключ | Что |
 |---|---|---|
-| `GET /v1/tasks` | нет | список; `status`, `product`, `assignee`, `updatedSince`, `limit` (200, до 500), `cursor`; `include=history` |
+| `GET /v1/tasks` | нет | список; `status`, `product`, `assignee`, `curator`, `updatedSince`, `limit` (200, до 500), `cursor`; `include=history` |
 | `GET /v1/tasks/{id}` | нет | задача с историей |
 | `GET /v1/events?after=` | нет | лента событий для бота |
 | `POST /v1/tasks` | личный | новая задача → id |
@@ -61,9 +61,27 @@
 | `GET /v1/me` | личный | чей ключ |
 
 Ответы списка и задачи — по контракту с Presentbook: `id, product,
-number, title, description, author, assignees[], relatedProducts[],
-status, waitingOn, links[], history[], createdAt, updatedAt`; `ETag` и
+number, title, description, author, assignees[], curator,
+relatedProducts[], status, waitingOn, links[], history[], createdAt,
+updatedAt`; `ETag` и
 `304`; ошибки `{error, message}` с 401/403/404.
+
+## Куратор и AI-исполнители
+
+ADR-047, `ORCHESTRATION.md` §11 «Права и куратор».
+
+- В `assignees` — логины людей и id AI-инженеров (`ai-<роль>` из
+  `agents[]`); id AI приводится к нижнему регистру.
+- `curator` — логин человека из `people[]`, не AI. Обязателен, если среди
+  исполнителей есть AI. Не указан — берётся `agents[].curator` первого
+  AI; нет и его — 400.
+- В правке: AI добавили без куратора — куратор по умолчанию; снять
+  куратора (`curator: null`), пока среди исполнителей есть AI, — 400. AI
+  убрали — куратор остаётся, снять можно.
+- Менять задачу могут автор, исполнители (и AI своим ключом), куратор и
+  PD; отменить — автор и PD. Смена куратора — событие `curator` в истории.
+- Мерж по задаче с AI-исполнителем — после «да» куратора; сервис это
+  поле хранит и показывает, сам мерж не проверяет.
 
 ## Личный ключ — `/team-key`
 
@@ -174,7 +192,7 @@ PD. Поэтому, если PR меняет схему (новая таблиц
 2. **Ключи AI-инженеров** — сделано, см. «Ключ AI-инженера». Вид `agent`: id роли + логин хозяина машины;
    выдаёт хозяин машины `team-key --agent <id>`. В истории: `by: "ai-team"`,
    `via: "<логин>"` → «ai-team (у @логин)».
-3. **Куратор** — поле `curator` (логин человека); обязателен, если среди
+3. **Куратор** — сделано, см. «Куратор и AI-исполнители». Поле `curator` (логин человека); обязателен, если среди
    исполнителей есть AI; по умолчанию — `agents[].curator`.
 4. **Входящие и журнал** — закрыто, только по ключу.
 

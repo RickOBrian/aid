@@ -102,6 +102,21 @@ test('полный цикл на YDB', async () => {
   const aiHist = (await (await call('GET', `/v1/tasks/${aiTask.id}`)).json()).task.history;
   assert.deepEqual(aiHist.map((h) => [h.field, h.by, h.via]), [['created', 'ai-team', 'eng-b'], ['title', 'ai-team', 'eng-b']]);
 
+  // куратор (ADR-047): AI-исполнитель — куратор по умолчанию, правка куратора в истории
+  r = await call('POST', '/v1/tasks', a, { product: 'hub', title: 'Для AI', assignees: ['ai-team'] });
+  assert.equal(r.status, 201, await r.clone().text());
+  const forAi = (await r.json()).task;
+  assert.equal(forAi.curator, 'pd-login');
+  r = await call('PATCH', `/v1/tasks/${forAi.id}`, ai, { status: 'review' });
+  assert.equal(r.status, 200, await r.clone().text());
+  r = await call('PATCH', `/v1/tasks/${forAi.id}`, pd, { curator: 'eng-b' });
+  assert.equal(r.status, 200, await r.clone().text());
+  const got = (await (await call('GET', `/v1/tasks/${forAi.id}`)).json()).task;
+  assert.equal(got.curator, 'eng-b');
+  assert.deepEqual(got.history.filter((h) => h.field === 'curator').map((h) => [h.from, h.to]), [['pd-login', 'eng-b']]);
+  const curated = await (await call('GET', '/v1/tasks?curator=eng-b')).json();
+  assert.deepEqual(curated.tasks.map((t) => t.id), [forAi.id]);
+
   assert.equal((await call('DELETE', '/v1/keys/current', a)).status, 200);
   assert.equal((await call('GET', '/v1/me', a)).status, 401);
 });

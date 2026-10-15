@@ -98,6 +98,7 @@ function createApp(deps) {
       status,
       product,
       assignee: url.searchParams.get('assignee'),
+      curator: url.searchParams.get('curator'),
       updatedSince: url.searchParams.get('updatedSince'),
       limit: intParam(url, 'limit', 200, 500),
       cursor: url.searchParams.get('cursor'),

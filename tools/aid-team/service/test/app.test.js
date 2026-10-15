@@ -241,3 +241,78 @@ test('ключ AI перестаёт работать, когда AI-инжен�
   assert.equal((await call('DELETE', '/v1/keys/current', { key: ai })).status, 200);
   assert.equal((await call('GET', '/v1/me', { key: ai })).status, 401);
 });
+
+test('AI-исполнитель: куратор по умолчанию из owners.json, явный — человек', async () => {
+  const { call, keyFor } = setup();
+  const a = await keyFor('tok-a');
+  let r = await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['AI-Team', 'eng-b'] } });
+  assert.equal(r.status, 201);
+  let { task } = await r.json();
+  assert.deepEqual(task.assignees, ['ai-team', 'eng-b']);
+  assert.equal(task.curator, 'pd-login', 'agents[].curator');
+  r = await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-team'], curator: '@eng-b' } });
+  assert.equal((await r.json()).task.curator, 'eng-b');
+  // куратор — только человек; неизвестный AI — нет
+  assert.equal((await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-team'], curator: 'ai-qa' } })).status, 400);
+  assert.equal((await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-nope'] } })).status, 400);
+  // без AI куратор не обязателен
+  r = await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['eng-b'] } });
+  ({ task } = await r.json());
+  assert.equal(task.curator, null);
+});
+
+test('AI без куратора в owners.json и без явного — 400', async () => {
+  const ref = { current: parseOwners({ ...OWNERS_JSON, agents: [{ id: 'ai-team', kind: 'ai' }] }) };
+  const { call, keyFor } = setup(ref);
+  const a = await keyFor('tok-a');
+  const r = await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-team'] } });
+  assert.equal(r.status, 400);
+  assert.match((await r.json()).message, /curator/);
+});
+
+test('правка: AI добавили — куратор по умолчанию; снять куратора при AI нельзя', async () => {
+  const { call, keyFor } = setup();
+  const a = await keyFor('tok-a');
+  await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['eng-b'] } });
+  let r = await call('PATCH', '/v1/tasks/team-1', { key: a, body: { assignees: ['eng-b', 'ai-qa'] } });
+  assert.equal(r.status, 200);
+  let body = await r.json();
+  assert.equal(body.task.curator, 'pd-login');
+  assert.deepEqual(body.changed, ['assignees', 'curator']);
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: a, body: { curator: null } })).status, 400);
+  r = await call('PATCH', '/v1/tasks/team-1', { key: a, body: { curator: 'eng-a' } });
+  assert.equal((await r.json()).task.curator, 'eng-a');
+  // AI убрали — куратор остаётся, снять можно
+  r = await call('PATCH', '/v1/tasks/team-1', { key: a, body: { assignees: ['eng-b'], curator: null } });
+  body = await r.json();
+  assert.equal(r.status, 200);
+  assert.equal(body.task.curator, null);
+  const { task } = await (await call('GET', '/v1/tasks/team-1')).json();
+  assert.deepEqual(task.history.filter((h) => h.field === 'curator').map((h) => [h.from, h.to]), [
+    [null, 'pd-login'], ['pd-login', 'eng-a'], ['eng-a', null],
+  ]);
+});
+
+test('AI-исполнитель правит задачу своим ключом; куратор правит, но не отменяет', async () => {
+  const { call, keyFor } = setup();
+  const a = await keyFor('tok-a');
+  const ai = await keyFor('tok-b', 'ai-team');
+  const b = await keyFor('tok-b');
+  await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-team'], curator: 'eng-b' } });
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: ai, body: { status: 'review' } })).status, 200);
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: b, body: { status: 'in_progress', note: 'доработать' } })).status, 200);
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: b, body: { status: 'cancelled' } })).status, 403);
+  const other = await keyFor('tok-a', 'ai-qa');
+  assert.equal((await call('PATCH', '/v1/tasks/team-1', { key: other, body: { title: 'x' } })).status, 403);
+});
+
+test('фильтры assignee и curator', async () => {
+  const { call, keyFor } = setup();
+  const a = await keyFor('tok-a');
+  await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['ai-team'] } });
+  await call('POST', '/v1/tasks', { key: a, body: { product: 'team', title: 't', assignees: ['eng-b'] } });
+  const byAi = await (await call('GET', '/v1/tasks?assignee=ai-team')).json();
+  assert.deepEqual(byAi.tasks.map((t) => t.id), ['team-1']);
+  const byCurator = await (await call('GET', '/v1/tasks?curator=pd-login')).json();
+  assert.deepEqual(byCurator.tasks.map((t) => t.id), ['team-1']);
+});

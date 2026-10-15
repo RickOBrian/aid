@@ -30,13 +30,47 @@ function parseId(id) {
   return { product: m[1], number: Number(m[2]) };
 }
 
-function uniqueLogins(value, field, logins) {
-  if (!Array.isArray(value)) throw bad(`${field}: нужен массив логинов`);
+const isAgentId = (v) => /^ai-/.test(v);
+
+/**
+ * Исполнители: логины людей и id AI-инженеров (ADR-047) из owners.json.
+ * Логины — как ввели; id AI — нижним регистром, как в agents[].
+ */
+function members(value, field, owners) {
+  if (!Array.isArray(value)) throw bad(`${field}: нужен массив логинов или id AI-инженеров`);
   const out = [...new Set(value.map((v) => String(v).trim().replace(/^@/, '')))];
-  for (const login of out) {
-    if (!logins.has(login.toLowerCase())) throw bad(`${field}: логина ${login} нет в owners.json`);
+  for (const m of out) {
+    if (isAgentId(m.toLowerCase())) {
+      if (!owners.agents.has(m.toLowerCase())) throw bad(`${field}: AI-инженера ${m} нет в owners.json`);
+    } else if (!owners.logins.has(m.toLowerCase())) {
+      throw bad(`${field}: логина ${m} нет в owners.json`);
+    }
   }
-  return out;
+  return out.map((m) => (isAgentId(m.toLowerCase()) ? m.toLowerCase() : m));
+}
+
+function login(value, field, logins) {
+  if (value === null || value === undefined || value === '') return null;
+  const v = String(value).trim().replace(/^@/, '');
+  if (!logins.has(v.toLowerCase())) throw bad(`${field}: логина ${v} нет в owners.json — нужен человек`);
+  return v;
+}
+
+/**
+ * Куратор задачи (ADR-047, ORCHESTRATION.md §11): человек, без «да»
+ * которого задачу с AI-исполнителем не мержат. Обязателен, если среди
+ * исполнителей есть AI; не указан — берётся agents[].curator первого AI.
+ */
+function resolveCurator(curator, assignees, owners, explicit) {
+  const ais = assignees.filter(isAgentId);
+  if (curator || !ais.length) return curator;
+  if (!explicit) {
+    for (const id of ais) {
+      const c = owners.agents.get(id).curator;
+      if (c && owners.logins.has(c.toLowerCase())) return c;
+    }
+  }
+  throw bad(`curator: обязателен, если среди исполнителей есть AI-инженер (${ais.join(', ')})`);
 }
 
 function products(value, field) {
@@ -88,9 +122,10 @@ function validateCreate(body, owners) {
   if (!body || typeof body !== 'object') throw bad('нужно тело JSON');
   const product = String(body.product || '');
   if (!PRODUCTS.includes(product)) throw bad(`product: один из ${PRODUCTS.join(', ')}`);
-  const assignees = uniqueLogins(body.assignees || [], 'assignees', owners.logins);
+  const assignees = members(body.assignees || [], 'assignees', owners);
   if (assignees.length < 1) throw bad('assignees: нужен хотя бы один исполнитель');
   if (assignees.length > LIMITS.assignees) throw bad(`assignees: не больше ${LIMITS.assignees}`);
+  const curator = resolveCurator(login(body.curator, 'curator', owners.logins), assignees, owners, false);
   return {
     product,
     title: text(body.title, 'title', LIMITS.title, true),
@@ -98,10 +133,11 @@ function validateCreate(body, owners) {
     assignees,
     relatedProducts: products(body.relatedProducts || [], 'relatedProducts').filter((p) => p !== product),
     links: links(body.links || []),
+    curator,
   };
 }
 
-const PATCHABLE = ['title', 'description', 'status', 'waitingOn', 'assignees', 'relatedProducts', 'links'];
+const PATCHABLE = ['title', 'description', 'status', 'waitingOn', 'assignees', 'curator', 'relatedProducts', 'links'];
 
 /** Ввод PATCH /v1/tasks/{id} → только изменённые поля. */
 function validatePatch(body, task, owners) {
@@ -117,8 +153,17 @@ function validatePatch(body, task, owners) {
   }
   if ('waitingOn' in body) next.waitingOn = waitingOn(body.waitingOn, owners.logins);
   if ('assignees' in body) {
-    next.assignees = uniqueLogins(body.assignees, 'assignees', owners.logins);
+    next.assignees = members(body.assignees, 'assignees', owners);
     if (next.assignees.length < 1) throw bad('assignees: нужен хотя бы один исполнитель');
+    if (next.assignees.length > LIMITS.assignees) throw bad(`assignees: не больше ${LIMITS.assignees}`);
+  }
+  if ('curator' in body) next.curator = login(body.curator, 'curator', owners.logins);
+  if ('assignees' in next || 'curator' in next) {
+    // Снять куратора явно, пока среди исполнителей есть AI, нельзя;
+    // AI добавили без куратора — куратор по умолчанию из owners.json.
+    const cur = 'curator' in next ? next.curator : task.curator || null;
+    const resolved = resolveCurator(cur, next.assignees || task.assignees, owners, 'curator' in next);
+    if (resolved !== (task.curator || null)) next.curator = resolved;
   }
   if ('relatedProducts' in body) {
     next.relatedProducts = products(body.relatedProducts, 'relatedProducts').filter((p) => p !== task.product);
@@ -139,16 +184,17 @@ function validatePatch(body, task, owners) {
 }
 
 /**
- * Кто может менять задачу: автор, исполнители, PD (decides: system).
+ * Кто может менять задачу: автор, исполнители, куратор, PD (decides: system).
  * Отменить — только автор или PD.
  */
-function checkCanEdit(login, task, changed, owners) {
-  const l = login.toLowerCase();
+function checkCanEdit(by, task, changed, owners) {
+  const l = by.toLowerCase();
   const isPd = owners.pd.has(l);
   const isAuthor = task.author.toLowerCase() === l;
   const isAssignee = task.assignees.some((a) => a.toLowerCase() === l);
-  if (!isPd && !isAuthor && !isAssignee) {
-    throw new ApiError(403, 'forbidden', 'менять задачу могут автор, исполнители и PD');
+  const isCurator = !!task.curator && task.curator.toLowerCase() === l;
+  if (!isPd && !isAuthor && !isAssignee && !isCurator) {
+    throw new ApiError(403, 'forbidden', 'менять задачу могут автор, исполнители, куратор и PD');
   }
   if (changed.status === 'cancelled' && !isPd && !isAuthor) {
     throw new ApiError(403, 'forbidden', 'отменить задачу могут автор и PD');
@@ -188,6 +234,7 @@ function presentTask(task, history) {
     description: task.description,
     author: task.author,
     assignees: task.assignees,
+    curator: task.curator || null,
     relatedProducts: task.relatedProducts,
     status: task.status,
     waitingOn: task.waitingOn || null,
