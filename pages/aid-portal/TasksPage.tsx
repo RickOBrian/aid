@@ -8,9 +8,9 @@ import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { parseReleaseNotes, type NoteInline } from './releaseNotes';
 import {
   ALL,
-  DEFAULT_FILTERS,
   STATUS_LABEL,
   filterOptions,
+  filtersFromSearch,
   formatTaskTime,
   groupByStatus,
   historyText,
@@ -395,7 +395,7 @@ function TaskDialog({ task, taskId, people, onClose }: { task: Task | undefined;
 }
 
 function Board({ board, loadedAt }: { board: TaskBoard; loadedAt: Date }) {
-  const [filters, setFilters] = useState<TaskFilters>(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<TaskFilters>(() => filtersFromSearch(window.location.search));
   const [selected, select] = useSelectedTask();
   const options = useMemo(() => filterOptions(board), [board]);
   const columns = groupByStatus(board.tasks, filters);
@@ -420,6 +420,8 @@ function Board({ board, loadedAt }: { board: TaskBoard; loadedAt: Date }) {
           Человек
           <select value={filters.person} onChange={(event) => update({ person: event.target.value })}>
             <option value={ALL}>Все</option>
+            {/* Человек из адреса, у которого пока нет задач, — тоже в списке. */}
+            {filters.person !== ALL && !options.people.includes(filters.person) && <option value={filters.person}>{personName(filters.person, board.people)}</option>}
             {options.people.map((login) => (
               <option key={login} value={login}>
                 {personName(login, board.people)}

@@ -17,6 +17,7 @@ import { POST as login } from '../../api/login';
 import { GET as pluginVersion } from '../../api/plugin-version';
 import { GET as session } from '../../api/session';
 import { GET as tasks } from '../../api/tasks';
+import { GET as team } from '../../api/team';
 import { GET as ttm } from '../../api/ttm';
 import { fromResponse, toRequest, type YcHttpEvent, type YcHttpResult } from './adapter';
 
@@ -137,6 +138,12 @@ export async function route(request: Request, options: RouteOptions = {}): Promi
     // Задачи команды (AID-16): только с сессией; превью — примерные задачи.
     return authConfigured()
       ? tasks(request, { token: options.token, preview: options.preview })
+      : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  }
+  if (pathname === '/api/team') {
+    // Инженеры AID (team-3): owners.json с main, только с сессией.
+    return authConfigured()
+      ? team(request)
       : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
   const storageUrl = process.env.PREVIEW_STORAGE_URL;

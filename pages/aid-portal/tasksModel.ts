@@ -53,6 +53,12 @@ export const ALL = 'all';
 
 export const DEFAULT_FILTERS: TaskFilters = { product: ALL, person: ALL, showCancelled: false };
 
+/** Фильтры из адреса: `/manage/tasks?person=<логин>&product=<код>` — ссылки со страницы «Команда». */
+export function filtersFromSearch(search: string): TaskFilters {
+  const params = new URLSearchParams(search);
+  return { ...DEFAULT_FILTERS, person: params.get('person') || ALL, product: params.get('product') || ALL };
+}
+
 /** Все люди задачи: исполнители, на ком висит, куратор, автор. */
 export function taskPeople(task: Task): string[] {
   return [...new Set([...task.assignees, task.waitingOn, task.curator, task.author].filter((login): login is string => Boolean(login) && login !== 'pd'))];
