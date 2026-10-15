@@ -3,8 +3,8 @@ import { GET, resetTeamCache } from '../api/team';
 import { OWNERS_URL, isOwners, loadOwners, parseOwners, type Owners } from '../api/_lib/owners';
 import { createSessionPayload, signSessionCookie, SESSION_COOKIE_NAME } from '../api/_lib/session';
 import { canonicalAppPath } from '../productRegistry';
-import { ALL, filtersFromSearch } from '../tasksModel';
-import { instanceLabel, ownsLabel, repoFileUrl } from '../teamModel';
+import { filtersFromSearch } from '../tasksModel';
+import { agentSummary, agentTags, instanceLabel, ownsLabel, personTags } from '../teamModel';
 
 /**
  * «Управление → Команда» (team-3, ADR-047): owners.json format 3, карточки
@@ -94,19 +94,25 @@ describe('карточки', () => {
     expect(ownsLabel('site-presentbook')).toBe('Presentbook');
     expect(ownsLabel('новое')).toBe('новое');
     expect(instanceLabel({ chat: 'c', product: 'token-comparator' })).toBe('Token Comparator');
-    expect(instanceLabel({ chat: 'c', contour: 'duty' })).toBe('контур дежурный');
+    expect(instanceLabel({ chat: 'c', contour: 'registry-api' })).toBe('Registry API');
     expect(instanceLabel({ chat: 'Чат' })).toBe('Чат');
   });
 
-  it('ссылка на карточку AI — только файл в docs/ этого репозитория', () => {
-    expect(repoFileUrl('docs/hub/agents/developer.md')).toBe('https://github.com/RickOBrian/aid/blob/main/docs/hub/agents/developer.md');
-    expect(repoFileUrl('https://evil.example/x.md')).toBeNull();
-    expect(repoFileUrl('docs/../.github/x.md')).toBeNull();
+  it('теги человека: инструмент ИИ первым, затем продукты', () => {
+    expect(personTags({ kind: 'human', github: 'lead', title: 't', owns: ['hub', 'site-presentbook'], tool: 'claude' })).toEqual(['Claude', 'Штаб', 'Presentbook']);
+    expect(personTags({ kind: 'human', github: 'x', title: 't', owns: ['hub'] })).toEqual(['Штаб']);
   });
 
-  it('из карточки — в задачи с фильтром по человеку', () => {
-    expect(filtersFromSearch('?person=lead')).toMatchObject({ person: 'lead', product: ALL, showCancelled: false });
-    expect(filtersFromSearch('')).toMatchObject({ person: ALL, product: ALL });
+  it('AI-инженер: за что отвечает и продукты экземпляров, без дежурного чата', () => {
+    const devops = { kind: 'ai' as const, id: 'ai-devops', title: 'DevOps', card: 'c', curator: 'lead', instances: [{ chat: 'AID · DevOps', contour: 'duty' }, { chat: 'p', contour: 'presentbook' }] };
+    expect(agentSummary(devops)).toBeTruthy();
+    expect(agentTags(devops)).toEqual(['Presentbook']);
+    expect(agentTags({ kind: 'ai', id: 'ai-tasks', title: 't', card: 'c', curator: 'lead', instances: [{ chat: 'x', product: 'team' }] })).toEqual(['Team', 'Штаб']);
+    expect(agentSummary({ kind: 'ai', id: 'ai-новый', title: 't', card: 'c', curator: 'lead' })).toBeNull();
+  });
+
+  it('из карточки — в задачи с фильтром по исполнителю', () => {
+    expect(filtersFromSearch('?person=lead')).toEqual({ assignees: ['lead'], products: [] });
     expect(canonicalAppPath('/manage/team')).toBeNull();
   });
 });

@@ -7,7 +7,7 @@ import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
 import { ProductAccentScope } from './ProductAccentScope';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { personName } from './tasksModel';
-import { TOOL_LABEL, githubProfileUrl, instanceLabel, ownsLabel, repoFileUrl } from './teamModel';
+import { agentSummary, agentTags, personTags } from './teamModel';
 
 /**
  * «Управление → Команда» — `aidteam.pro/manage/team` (team-3, ADR-047).
@@ -43,12 +43,11 @@ ${DS_PRODUCT_ACCENT_STYLE}
 .tm-login { font-size: 12px; color: ${T.textSecondary}; }
 .tm-badge { padding: 1px 6px; border-radius: 4px; font-size: 11px; line-height: 16px; font-weight: 500; background: ${T.surfaceMuted}; color: ${T.textSecondary}; }
 .tm-badge-ai { background: var(--ds-accent-bg); color: var(--ds-accent); }
-.tm-title { color: ${T.textSecondary}; }
+.tm-summary { margin: 0; color: ${T.textSecondary}; }
 .tm-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .tm-tag { padding: 2px 6px; border-radius: 4px; background: ${T.surfaceMuted}; color: ${T.textSecondary}; font-size: 11px; line-height: 16px; font-weight: 500; }
 .tm-meta { display: grid; gap: 2px; font-size: 13px; color: ${T.textSecondary}; }
 .tm-meta b { font-weight: 500; color: ${T.textPrimary}; }
-.tm-instances { margin: 0; padding-left: 18px; font-size: 13px; color: ${T.textSecondary}; }
 .tm-links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 4px; font-size: 13px; }
 .tm-links a { color: var(--ds-accent); text-decoration: none; }
 .tm-links a:hover { text-decoration: underline; }
@@ -113,39 +112,46 @@ function usePeopleNames(): TaskBoard['people'] {
   return people;
 }
 
+function Tags({ tags }: { tags: string[] }) {
+  if (tags.length === 0) {
+    return null;
+  }
+  return (
+    <div className="tm-tags" aria-label="Инструмент и продукты">
+      {tags.map((tag) => (
+        <span className="tm-tag" key={tag}>
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function TasksLink({ login }: { login: string }) {
+  return (
+    <div className="tm-links">
+      <a href={withBase(`/manage/tasks?person=${encodeURIComponent(login)}`)}>Задачи</a>
+    </div>
+  );
+}
+
 function PersonCard({ person, people }: { person: OwnerPerson; people: TaskBoard['people'] }) {
   const name = personName(person.github, people);
-  const githubUrl = githubProfileUrl(person.github);
   return (
     <article className="tm-card">
       <div className="tm-name">
         <h3>{name}</h3>
         {person.manager && <span className="tm-badge">менеджер</span>}
-        {person.tool && <span className="tm-badge">{TOOL_LABEL[person.tool] ?? person.tool}</span>}
       </div>
       {name !== person.github && <span className="tm-login">{person.github}</span>}
-      <span className="tm-title">{person.title}</span>
-      {person.owns.length > 0 && (
-        <div className="tm-tags" aria-label="Продукты">
-          {person.owns.map((code) => (
-            <span className="tm-tag" key={code}>
-              {ownsLabel(code)}
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="tm-links">
-        <a href={withBase(`/manage/tasks?person=${encodeURIComponent(person.github)}`)}>Задачи</a>
-        <a href={githubUrl} target="_blank" rel="noreferrer noopener">
-          GitHub
-        </a>
-      </div>
+      <Tags tags={personTags(person)} />
+      <TasksLink login={person.github} />
     </article>
   );
 }
 
 function AgentCard({ agent, people }: { agent: OwnerAgent; people: TaskBoard['people'] }) {
-  const githubUrl = repoFileUrl(agent.card);
+  const summary = agentSummary(agent);
   return (
     <article className="tm-card">
       <div className="tm-name">
@@ -154,31 +160,14 @@ function AgentCard({ agent, people }: { agent: OwnerAgent; people: TaskBoard['pe
           AI
         </span>
       </div>
+      {summary && <p className="tm-summary">{summary}</p>}
+      <Tags tags={agentTags(agent)} />
       <div className="tm-meta">
         <span>
           Куратор: <b>{personName(agent.curator, people)}</b>
         </span>
       </div>
-      {agent.instances && (
-        <div className="tm-meta">
-          <span>Экземпляры:</span>
-          <ul className="tm-instances">
-            {agent.instances.map((instance) => (
-              <li key={instance.chat}>
-                {instanceLabel(instance)} — {instance.chat}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <div className="tm-links">
-        <a href={withBase(`/manage/tasks?person=${encodeURIComponent(agent.id)}`)}>Задачи</a>
-        {githubUrl && (
-          <a href={githubUrl} target="_blank" rel="noreferrer noopener">
-            Карточка
-          </a>
-        )}
-      </div>
+      <TasksLink login={agent.id} />
     </article>
   );
 }
