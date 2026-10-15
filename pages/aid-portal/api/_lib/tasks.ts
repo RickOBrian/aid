@@ -64,8 +64,23 @@ const isString = (value: unknown): value is string => typeof value === 'string';
 const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString);
 const STATUS_SET = new Set<string>(TASK_STATUSES);
 
+/**
+ * Только `https:`. Ссылка уходит в `href` на aidteam.pro, а `javascript:`,
+ * `data:` и прочие схемы из сервиса задач дали бы XSS (Security, #224).
+ */
+export function isSafeLinkUrl(url: unknown): url is string {
+  if (!isString(url)) {
+    return false;
+  }
+  try {
+    return new URL(url).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function isLink(value: unknown): value is TaskLink {
-  return isRecord(value) && ['pr', 'issue', 'other'].includes(value.type as string) && isString(value.url) && (value.title === undefined || isString(value.title));
+  return isRecord(value) && ['pr', 'issue', 'other'].includes(value.type as string) && isSafeLinkUrl(value.url) && (value.title === undefined || isString(value.title));
 }
 
 function isHistoryEntry(value: unknown): value is TaskHistoryEntry {
@@ -120,6 +135,21 @@ export async function readTeamKey(secretId: string, token: string, fetchImpl: ty
   return value || null;
 }
 
+/**
+ * Небезопасные ссылки выбрасываются из задачи, сама задача остаётся: одна
+ * кривая ссылка не должна гасить весь канбан. В журнал — только число.
+ */
+function dropUnsafeLinks(task: unknown): unknown {
+  if (!isRecord(task) || !Array.isArray(task.links)) {
+    return task;
+  }
+  const links = task.links.filter((link) => isRecord(link) && isSafeLinkUrl(link.url));
+  if (links.length !== task.links.length) {
+    console.error(`tasks: отброшено небезопасных ссылок: ${task.links.length - links.length}`);
+  }
+  return { ...task, links };
+}
+
 interface TeamPage {
   tasks?: unknown;
   people?: unknown;
@@ -158,7 +188,7 @@ export async function loadTeamBoard(baseUrl: string, key: string, fetchImpl: typ
     }
     cursor = body.nextCursor ?? null;
     if (!cursor) {
-      const board = { tasks, people };
+      const board = { tasks: tasks.map(dropUnsafeLinks), people };
       if (!isTaskBoard(board)) {
         console.error('tasks: ответ сервиса задач не прошёл проверку формы');
         return null;
