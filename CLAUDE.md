@@ -3,14 +3,16 @@
 ## Проект
 Дизайн-система для Web (React), iOS (SwiftUI), Android (Compose).
 
-## Правила токенов
-@skills/_shared/standards/token-rules.md
+## Базовые правила — читать по задаче
 
-## Платформы
-@skills/_shared/standards/platforms.md
+Не подгружаются в каждый чат (экономия токенов, `docs/hub/ORCHESTRATION.md`
+§12). Прочитать **до** начала работы, если задача их касается:
 
-## Git workflow
-@skills/_shared/protocols/git-workflow.md
+| Когда | Файл |
+|---|---|
+| Токены: имена, уровни, значения | `skills/_shared/standards/token-rules.md` |
+| Код компонента на React, SwiftUI, Compose | `skills/_shared/standards/platforms.md` |
+| Память скиллов, push и релизный флоу | `skills/_shared/protocols/git-workflow.md` |
 
 ## Скиллы
 Скиллы живут в `skills/<имя-скилла>/SKILL.md`. Вызов: `/имя-скилла`.
