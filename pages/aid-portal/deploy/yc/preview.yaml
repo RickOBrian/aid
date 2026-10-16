@@ -27,3 +27,11 @@ paths:
     get:
       parameters: [ { name: pr, in: path, required: true, schema: { type: string } }, { name: path, in: path, required: true, schema: { type: string } } ]
       x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
+    # Вход на превью: форма шлёт POST в /pr-N/api/login (apiUrl, a627be7). Без
+    # post шлюз отвечал 405, и на превью нельзя было войти (2026-10-06…10-15).
+    # Отдельный маршрут /{pr}/api/login не заводим: «параметр–литерал» шлюз
+    # разбирает неверно (прототип 2026-10-02). POST принимает только
+    # /api/login — остальное функция на POST отдаёт 404 или только читает.
+    post:
+      parameters: [ { name: pr, in: path, required: true, schema: { type: string } }, { name: path, in: path, required: true, schema: { type: string } } ]
+      x-yc-apigateway-integration: { type: cloud_functions, function_id: '${FUNCTION_ID}', tag: prod, service_account_id: '${GATEWAY_SA_ID}' }
