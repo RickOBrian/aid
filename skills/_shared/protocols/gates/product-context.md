@@ -49,8 +49,6 @@ outside the pipeline in the same way; its mockups may be read only as a
 reference while moving its screens into the `mergesInto` product, and any
 resulting work is done in the `mergesInto` product's context.
 
-historical product.
-
 ## 3. Product resolution
 
 Before reading token values, starting Figma discovery, creating or changing a
