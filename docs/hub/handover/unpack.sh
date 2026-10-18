@@ -3,8 +3,9 @@
 # До запуска: установлены git, gh, node, Claude Desktop; выполнен `gh auth login`.
 # Ничего существующего не перезаписывает.
 #
-#   bash unpack.sh ~/Desktop/aid-handover-YYYYMMDD-HHMM [~/Projects]
+#   bash unpack.sh ~/aid-handover-YYYYMMDD-HHMM [~/Projects]
 set -euo pipefail
+umask 077
 
 SRC="${1:?путь к распакованной папке aid-handover-*}"
 PROJECTS="${2:-$HOME/Projects}"
@@ -64,4 +65,4 @@ for d in skills agents; do
 done
 
 echo
-echo "Готово. Дальше — docs/hub/handover/README.md, шаги 4–6."
+echo "Готово. Дальше — docs/hub/handover/README.md, шаги 7–9."
