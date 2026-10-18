@@ -1,0 +1,31 @@
+{
+  "_doc": "Карта замен rider-1: чужой компонент (префикс ключа набора, 8 символов) → Rider (полный ключ). Получена на пробе Navigation · Taxi 2038:6035. Совпадение имён — гипотеза: свойства проверять на каждом экране. Порядок работы — README.md рядом.",
+  "riderComponentSetPrefixes": ["eaf4ddd8","876f8c80","20ee2082","8b908125","b0d8f8e3","a41194e9","46bed278","9ff05df4","a4ed6d3c","f10b6b0e","ec30bdfb","87b1f956","3b310e99","f5310c2e","bad3e165","4450ff21","23765b2f","fbf3502f","f4ad13c5","ddd47928","45700652","7068831d","d9784a48","daa2bbef","cdbcde95","4c213c4f","accb4ee7","1c18f61b","064b6fc7","ea707477","b800efd0","b245aca2","ae0b7b01","6594a71d"],
+  "swaps": [
+    { "from": ["a39c0929", "fda14238"], "name": "status bar", "to": { "key": "b245aca21ca7fdf92c7ee716813266fcfb15c67e", "kind": "component", "name": "Status Bar iOS" }, "rule": "swap; высота 54 против 44 — находка «статус-бар»" },
+    { "from": ["8528cc7c", "b2540e02"], "name": "home indicator", "to": { "key": "accb4ee7a68340fe3479018aac0e66b3f017be5e", "kind": "component", "name": "Home Indicator iOS" }, "rule": "swap, прижать к низу" },
+    { "from": ["989014ab", "220e2b5d"], "name": "searchfilled / Search", "to": { "key": "7068831df97b1424a600e076ac3399edb725f469", "kind": "set", "name": "Search Capsule" }, "rule": "State=Default, Filled=No (Filled=Yes, если в старом есть текст адреса); вернуть ширину; текст подсказки — в TEXT Label" },
+    { "from": ["8cf20aea", "99a70154"], "name": "service / Cards", "to": { "key": "9ff05df4d58ad3a521ecc862f00bc33f4be41d66", "kind": "set", "name": "Card Service" }, "rule": "Card=Big → Size=L, иначе S-M; Text First=True; Title Text и Body Text из старых текстов; вернуть ширину и x,y; картинку (самый крупный IMAGE не shadow) — в слой Image, FIT. Известная поломка — находка «карточки»" },
+    { "from": ["ca4fc9cf"], "name": "floating", "to": { "key": "a41194e93598de5df8554d68ef2abe4cecba343c", "kind": "set", "name": "Button Floating" }, "rule": "State=Default (Disabled=Yes → Disabled); без текста: Show Label=false, Left Icon=true, Icon L = иконка Rider с тем же именем; центр сохранить" },
+    { "from": ["5c3073c4", "beb400f4", "2f9f4a4d", "c98f95fc"], "name": "Map Pin", "to": { "key": "ddd4792897cf9ba7560d871777b9ae8ca8e5a5c3", "kind": "set", "name": "Map Pin" }, "rule": "State — тот же; Bubble=false, если Has Address=false; Show Caption по Caption; Time из текста; якорь — низ по центру" },
+    { "from": ["1bf23ba2"], "name": "My Location", "to": { "key": "f4ad13c5d2402d9e4bf3b1c3dc48280c3836c416", "kind": "set", "name": "My Location" }, "rule": "Directed по старому; центр сохранить" },
+    { "from": ["847f3389"], "name": "Loading Fade (местный)", "to": { "key": "f5310c2e", "kind": "set", "name": "Loading Fade" }, "rule": "полный ключ взять в 79UryRdexwKAv8vDIV5v4v" },
+    { "from": ["0e548a5d", "9a0b9598"], "name": "List Item", "to": { "key": "87b1f956", "kind": "set", "name": "List Item" }, "rule": "полный ключ и свойства — сверить перед заменой" },
+    { "from": ["febf9ba9", "1b9488ab"], "name": "TX Divider / Divider", "to": { "key": "ec30bdfb", "kind": "component", "name": "Divider" }, "rule": "полный ключ взять в файле компонентов" }
+  ],
+  "noPair": {
+    "_doc": "Нет пары в Rider — не трогать, красное на подсветке, пункт анкеты",
+    "items": ["Top Actions f5640242", "NavBarContainer c8e30f65/224d7e50/65898391/7945c4e6", "tabbar 8cfde85d/97fae84b", "address 7d0e89a3 (чипы подсказок)", "dragger 5e98086d (.Dragger не опубликован)", "Map 6e8fc7ff (F)", "Status Multiple a66006f6/2bae8b13/f5fc2f1d/76af98bb", "Car Class 6d51f735/5bd2f239", "Order Row 6d719658/ce44e587", "Tab 87d91947", "Carsharing 2d222904", "Car 7ba2aa94", "Rating Star a0a23c71", "Number Plate c29be045", "Order Badge d44ddf78", "Navbar/NavBar 5fe22e6a/125ae0bd"]
+  },
+  "tokens": {
+    "Background/Primary": "36c4def6fbeadf42e839b9a24de25b50e08f382e",
+    "radius-16": "0948d079df26dfce19d095cefb783a8bd9b4507c",
+    "radius-20": "83a97d9fc3f929d1f9152c3ad88a1b4b778472ea",
+    "radius-24": "fba2b8d59fda4ea579867e8184fd58264054cfcc",
+    "radius-28": "4f2a0273c3b83103997940d2d28a525c69c8d294",
+    "Shadows/Bottom Sheet": "4f1d0ff4979eced4e144c149ac11c18267dba137",
+    "ic_location": "ee6aeb5ca7afe8870ed60f8ebfc38f51b342c6f4",
+    "ic_search": "001ce425fb4d3c6fd45fac35995809719724b5b1",
+    "ic_menu": "732d85169011c171d06415e0acd20b87775d1f7e"
+  }
+}
