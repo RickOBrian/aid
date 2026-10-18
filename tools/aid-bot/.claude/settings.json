@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel 2>/dev/null || echo .)/.claude/hooks/context-guard.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

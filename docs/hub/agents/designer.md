@@ -1,6 +1,7 @@
 # AID · Designer
 
-**Папка:** `~/Projects/aid-designer`. **Вход:** эта карточка →
+**В архиве** (решение PD 2026-10-18), создаётся заново, когда
+понадобится. **Папка:** `~/Projects/aid-designer`. **Вход:** эта карточка →
 `products/*/product.json` → `skills/_shared/standards/` (компоненты,
 токены).
 

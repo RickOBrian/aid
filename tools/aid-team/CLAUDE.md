@@ -1,7 +1,6 @@
 # AID Team — чат базы инженеров и оркестрации задач
 
-Корневой `CLAUDE.md` действует тоже — особенно разделы «Три продукта — три
-чата», «Стыки между продуктами» и «Git-полномочия». Протокол работы между
+Корневой `CLAUDE.md` действует тоже — особенно разделы «Роли и чаты», «Стыки» (`docs/hub/JOINTS.md`) и «Git-полномочия». Протокол работы между
 чатами — `docs/hub/ORCHESTRATION.md`, его ведёт «AID · Hub · Штаб».
 
 Вход в контекст: этот файл → `PLAN.md` → `OPEN-QUESTIONS.md`. Хранилище и
@@ -12,7 +11,7 @@
 
 ## Где работаю
 
-- Чат — «AID · Ops · Team», папка — `~/Projects/aid-team` (git worktree).
+- Роль Team ведёт чат «AID · Ops» (`~/Projects/aid-ops`, решение PD 2026-10-18).
   Правлю только `tools/aid-team/`. Всё остальное — чужие продукты: см.
   «Стыки» в корневом `CLAUDE.md`.
 - Новую ветку — от свежего `origin/main`:
@@ -22,8 +21,8 @@
 - Роли по ADR-048 (`docs/hub/agents/team.md`): этот чат — люди, AI-инженеры,
   `docs/hub/owners.json`, ключи, база `team-data`, перенос задач. Код
   сервиса задач ведёт «AID · Developer · Team Service» (`aid-team-service`),
-  выкладку и ресурсы каталога `team-tasks` — «AID · DevOps · Team Service»
-  (`aid-devops-team`, профиль `team-tasks`). В каталог `team-tasks` этот чат
+  выкладку и ресурсы каталога `team-tasks` — «AID · DevOps»
+  (`aid-infra`, профиль `team-tasks`). В каталог `team-tasks` этот чат
   не ходит; задачи переименованы: AID-8 → team-1, AID-16 → team-2, AID-23 →
   team-3.
 - Координацию между чатами ведёт Штаб, не этот чат. Здесь — база
@@ -96,4 +95,4 @@
   Нужна настройка — `yc config get <имя>` по одной. Утечка — сразу PD,
   ключ заменить. Профиль `default` — админский вход PD (нужен этому чату
   для `team-data`, только по просьбе PD); профиль `team-tasks` передан
-  «AID · DevOps · Team Service» (ADR-048).
+  «AID · DevOps» (решение PD 2026-10-18).

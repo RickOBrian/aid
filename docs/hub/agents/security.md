@@ -1,6 +1,7 @@
-# AID · Security
+# Роль Security
 
-**Папка:** `~/Projects/aid-security`. **Вход:** эта карточка →
+**Чат:** AID · Review (`~/Projects/aid-security`, карточка `review.md`).
+**Вход:** эта карточка →
 `../ORCHESTRATION.md` §4 «Секреты» → корневой `CLAUDE.md`.
 
 ## Зона
