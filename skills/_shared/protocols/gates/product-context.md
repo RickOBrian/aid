@@ -43,6 +43,12 @@ Products with any other status, including `stable`, `legacy`, `prototype` or
 `archived`, are historical/reference products. Do not automatically select,
 suggest, read token values from, or write component/release artifacts to them.
 
+Status `transitional` marks a temporary product being absorbed into the
+product named in its `mergesInto` field (Flot → Driver, Taxi → Rider). It is
+outside the pipeline in the same way; its mockups may be read only as a
+reference while moving its screens into the `mergesInto` product, and any
+resulting work is done in the `mergesInto` product's context.
+
 historical product.
 
 ## 3. Product resolution
