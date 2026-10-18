@@ -44,24 +44,24 @@ done
 ( cd "$SRC/folders" && find . -type f ) | while read -r f; do
   dst="$PROJECTS/${f#./}"
   mkdir -p "$(dirname "$dst")"
-  [ -e "$dst" ] || cp "$SRC/folders/${f#./}" "$dst"
+  if [ ! -e "$dst" ]; then cp "$SRC/folders/${f#./}" "$dst"; fi
 done
 
 # 4. Память Claude по папкам — под путь нового пользователя
-enc=$(printf '%s' "$PROJECTS" | sed 's|[/.]|-|g')
+enc=$(printf '%s' "$PROJECTS" | sed 's|[^A-Za-z0-9]|-|g')
 for m in "$SRC"/claude/memory/*; do
   [ -d "$m" ] || continue
   dst="$HOME/.claude/projects/$enc-$(basename "$m")/memory"
-  mkdir -p "$dst"; cp -Rn "$m"/. "$dst"/
+  mkdir -p "$dst"; rsync -a --ignore-existing "$m"/ "$dst"/
 done
 
 # 5. Пользовательские настройки Claude
 mkdir -p "$HOME/.claude"
 for f in CLAUDE.md settings.json keybindings.json; do
-  [ -f "$SRC/claude/$f" ] && [ ! -e "$HOME/.claude/$f" ] && cp "$SRC/claude/$f" "$HOME/.claude/"
+  if [ -f "$SRC/claude/$f" ] && [ ! -e "$HOME/.claude/$f" ]; then cp "$SRC/claude/$f" "$HOME/.claude/"; fi
 done
 for d in skills agents; do
-  [ -d "$SRC/claude/$d" ] && { mkdir -p "$HOME/.claude/$d"; cp -Rn "$SRC/claude/$d"/. "$HOME/.claude/$d"/; }
+  [ -d "$SRC/claude/$d" ] && { mkdir -p "$HOME/.claude/$d"; rsync -a --ignore-existing "$SRC/claude/$d"/ "$HOME/.claude/$d"/; }
 done
 
 echo

@@ -19,17 +19,27 @@ MANIFEST="$OUT/manifest.tsv"
 printf 'folder\tworktree_of\tbranch\tdirty\tremote\n' > "$MANIFEST"
 WARN="$OUT/warnings.txt"; : > "$WARN"
 
+# Хвосты infra-1 — не переносить
+SKIP=" aid-claude-test aid-governance aid-presentbook-tools aid-token-comparator-v0.1.0 "
+
 for dir in "$PROJECTS"/aid*; do
   [ -d "$dir/.git" ] || [ -f "$dir/.git" ] || continue
   name=$(basename "$dir")
+  case "$SKIP" in *" $name "*) continue;; esac
+  git -C "$dir" fetch -q origin 2>/dev/null || echo "$name: git fetch не удался — проверка «запушено» по старым данным" >> "$WARN"
   common=$(cd "$dir" && cd "$(git rev-parse --git-common-dir)/.." && basename "$PWD")
   branch=$(git -C "$dir" branch --show-current || true)
   dirty=$(git -C "$dir" status --porcelain | wc -l | tr -d ' ')
   remote=$(git -C "$dir" remote get-url origin 2>/dev/null || true)
   printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$common" "$branch" "$dirty" "$remote" >> "$MANIFEST"
   [ "$dirty" != "0" ] && echo "$name: $dirty незакоммиченных файлов — закоммитить и запушить до переезда" >> "$WARN"
-  if [ -n "$branch" ] && ! git -C "$dir" rev-parse --verify -q "origin/$branch" >/dev/null; then
-    echo "$name: ветка $branch не запушена — запушить до переезда" >> "$WARN"
+  if [ -n "$branch" ]; then
+    if ! git -C "$dir" rev-parse --verify -q "origin/$branch" >/dev/null; then
+      echo "$name: ветка $branch не запушена — запушить до переезда" >> "$WARN"
+    else
+      ahead=$(git -C "$dir" rev-list --count "origin/$branch..HEAD")
+      [ "$ahead" != "0" ] && echo "$name: $ahead незапушенных коммитов в $branch — запушить до переезда" >> "$WARN"
+    fi
   fi
   # CLAUDE.local.md — состояние чатов (в git его нет)
   found=0
@@ -71,9 +81,13 @@ cp "$(dirname "$0")/unpack.sh" "$OUT/"
 # Проверка на секреты: нашлось — без архива
 PAT='(sk-ant-|sk-proj-|gh[opusr]_[A-Za-z0-9]{20,}|github_pat_|y0_[A-Za-z0-9_-]{20,}|AQVN|YC[AMN][A-Za-z0-9_-]{20,}|t1\.[A-Za-z0-9_-]{20,}|[0-9]{8,10}:[A-Za-z0-9_-]{35}|figd_|xox[abprs]-|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY|Bearer [A-Za-z0-9._~+/-]{16,}|(password|passwd|token|secret|api[_-]?key)["'"'"']?[[:space:]]*[:=][[:space:]]*["'"'"']?[^[:space:]"'"'"']{8,})'
 HITS=$(grep -rIlEi "$PAT" "$OUT" --exclude=warnings.txt --exclude=unpack.sh || true)
-BIN=$(find "$OUT" -type f -exec sh -c '[ "$(file -b --mime-encoding "$1")" = binary ] && echo "$1"' _ {} \; || true)
+BIN=$(find "$OUT" -type f -size +0 -exec sh -c '[ "$(file -b --mime-encoding "$1")" = binary ] && echo "$1"' _ {} \; || true)
 echo "Папок: $(($(wc -l < "$MANIFEST") - 1)) · собрано в $OUT"
 if [ -s "$WARN" ]; then echo; echo "Исправить до передачи:"; cat "$WARN"; fi
+if grep -q 'запушить до переезда' "$WARN"; then
+  echo; echo "СТОП: есть незакоммиченное или незапушенное — архив не собран, иначе эта работа не доедет."
+  exit 1
+fi
 if [ -n "$HITS$BIN" ]; then
   echo; echo "СТОП: похоже на секреты или бинарные файлы — архив не собран. Убрать и запустить снова:"
   printf '%s\n' $HITS $BIN
