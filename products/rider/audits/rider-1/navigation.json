@@ -5,8 +5,19 @@
   "date": "2026-10-18",
   "figma": {
     "fileKey": "bL4jeQWMvn3GKVNRPnmJMj",
-    "page": { "id": "2001:68545", "name": "✅ Navigation 🧭" },
-    "auditPage": { "id": "5011:3071", "name": "🔍 Аудит · Navigation", "section": "5014:7732" }
+    "page": {
+      "id": "2001:68545",
+      "name": "✅ Navigation 🧭"
+    },
+    "auditPage": {
+      "id": "5011:3071",
+      "name": "🔍 Аудит · Navigation",
+      "section": "5014:7732",
+      "sections": {
+        "probe": "5014:7732",
+        "Tabbar Navigation": "5019:3458"
+      }
+    }
   },
   "riderLibraries": {
     "tokens": "yrfG6u9osujKX8e1B14lpT",
@@ -30,46 +41,1546 @@
     "instancesTopLevel": 1631,
     "componentKinds": 80,
     "riderComponents": 0,
-    "localComponents": ["Order Badge", "Order Row", "Rating", "Number Plate", "Car Class", "Status Multiple", "icon", "NavBarContainer", "Tab", "Map Pin", "Loading Fade"],
+    "localComponents": [
+      "Order Badge",
+      "Order Row",
+      "Rating",
+      "Number Plate",
+      "Car Class",
+      "Status Multiple",
+      "icon",
+      "NavBarContainer",
+      "Tab",
+      "Map Pin",
+      "Loading Fade"
+    ],
     "nodesOutsideInstances": 3822,
     "mapFrames": 13,
-    "localTokens": { "variables": ["Neon Green #9dff00 (= Background/Neon)", "Accent Color #8526ff (= Background/Accent)"], "styles": 0 }
+    "localTokens": {
+      "variables": [
+        "Neon Green #9dff00 (= Background/Neon)",
+        "Accent Color #8526ff (= Background/Accent)"
+      ],
+      "styles": 0
+    }
   },
   "screens": [
     {
       "id": "2038:6035",
       "name": "Taxi",
       "section": "Tabbar Navigation",
-      "clones": { "before": "5011:3072", "after": "5011:3096", "binding": "5013:3380" },
+      "clones": {
+        "before": "5011:3072",
+        "after": "5011:3096",
+        "binding": "5013:3380"
+      },
       "swaps": [
-        { "from": "status bar [Form=iPhone12]", "to": "Status Bar iOS", "status": "open", "finding": 1 },
-        { "from": "floating (fab location)", "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]", "status": "open", "finding": 2 },
-        { "from": "searchfilled [State=Empty]", "to": "Search Capsule [State=Default, Filled=No]", "status": "open", "finding": 3 },
-        { "from": "service ×5 [Card=Small/Medium/Big]", "to": "Card Service [Size=S-M/L, Text First=True]", "status": "open", "finding": 4 },
-        { "from": "home indicator", "to": "Home Indicator iOS", "status": "open", "finding": 5 },
-        { "from": "Map Pin (местный) [State=ETA]", "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]", "status": "fixed" }
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "floating (fab location)",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
       ],
       "tokens": [
-        { "node": "Bottom sheet", "prop": "fill", "was": "#ffffff", "token": "Background/Primary", "exact": true, "status": "fixed" },
-        { "node": "Bottom sheet", "prop": "radius", "was": 28, "token": "radius-28", "exact": true, "status": "fixed" },
-        { "node": "Bottom sheet", "prop": "effect", "was": "3×DROP_SHADOW, второй слой a0.08", "token": "Shadows/Bottom Sheet", "exact": false, "delta": "второй слой a0.08 → 0.12", "status": "open", "finding": 6 }
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
       ],
       "findings": [
-        { "n": 1, "check": "diff", "what": "Статус-бар Rider выше (54 против 44): время и значки сместились", "ask": "Какой статус-бар целевой для Rider", "status": "open" },
-        { "n": 2, "check": "diff", "what": "Кнопка геолокации 48×48 вместо 52×52, другая тень", "ask": "Принять размер Rider или отклонение", "status": "open" },
-        { "n": 3, "check": "diff", "what": "Поиск: иконка и подсказка сдвинуты на 2–4 px, другой цвет подсказки", "proposal": "принять", "status": "open" },
-        { "n": 4, "check": "diff", "what": "Card Service устроена иначе: картинка полосой 80 px под текстом вместо объёмной иллюстрации, тёмной карточки нет", "ask": "Доработать Card Service или оставить карточку Taxi отклонением", "status": "open" },
-        { "n": 5, "check": "diff", "what": "Home Indicator: другая отрисовка полоски", "proposal": "принять", "status": "open" },
-        { "n": 6, "check": "value", "what": "Тень шторки: второй слой 0.08 → 0.12", "ask": "Принять сдвиг или отклонение", "status": "open" }
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44): время и значки сместились",
+          "ask": "Какой статус-бар целевой для Rider",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка геолокации 48×48 вместо 52×52, другая тень",
+          "ask": "Принять размер Rider или отклонение",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: иконка и подсказка сдвинуты на 2–4 px, другой цвет подсказки",
+          "proposal": "принять",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе: картинка полосой 80 px под текстом вместо объёмной иллюстрации, тёмной карточки нет",
+          "ask": "Доработать Card Service или оставить карточку Taxi отклонением",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator: другая отрисовка полоски",
+          "proposal": "принять",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки: второй слой 0.08 → 0.12",
+          "ask": "Принять сдвиг или отклонение",
+          "status": "open"
+        }
       ],
       "unbound": [
-        { "node": "Top Actions", "kind": "component", "status": "open", "note": "анкета п. 2" },
-        { "node": "NavBarContainer (таб-бар)", "kind": "component", "status": "open", "note": "анкета п. 1" },
-        { "node": "address ×2 (чипы подсказок)", "kind": "component", "status": "open", "note": "в Rider нет — новый пункт анкеты" },
-        { "node": "dragger", "kind": "component", "status": "open", "note": ".Dragger в Rider не опубликован" },
-        { "node": "Whitener", "kind": "gradient", "status": "open", "note": "кандидат Gradients/Top" },
-        { "node": "Rectangle 40902 (затухание подсказок)", "kind": "token", "status": "open", "note": "кандидат Gradients/Fade Horizontal" },
-        { "node": "Map, скриншот-подложка", "kind": "F", "status": "out-of-scope" }
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — новый пункт анкеты"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope"
+        }
+      ]
+    },
+    {
+      "id": "2038:6388",
+      "name": "492 (2 сервиса)",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5021:3458",
+        "after": "5021:3659",
+        "binding": "5021:4087",
+        "shiftLayer": "5021:4288",
+        "bindLayer": "5021:4289",
+        "row": "5019:3462",
+        "findingsColumn": "5027:6190"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2,
+          "note": "под развёрнутой шторкой, на снимке не виден"
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×6 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        },
+        {
+          "node": "Frame 78749846 (плашка ручного пина)",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Frame 78749846 (плашка ручного пина)",
+          "prop": "radius",
+          "was": 16,
+          "token": "radius-16",
+          "exact": true,
+          "status": "fixed"
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 7,
+          "check": "diff",
+          "what": "Card Service L режет Body до двух строк («с проверенными во…»), у Taxi — три; пастельные фоны карточек пропали",
+          "ask": "Число строк Body в Card Service L (к п. 4 анкеты)",
+          "status": "open"
+        },
+        {
+          "n": 9,
+          "check": "value",
+          "what": "Пин «Pickup point» нарисован вручную (векторы + плашка), не Map Pin; тексты и пин #8526ff (локальный Accent Color); под развёрнутой шторкой не виден",
+          "ask": "Заменить на Map Pin [Bubble=true, адрес] или убрать с экрана со шторкой на весь рост",
+          "status": "open"
+        },
+        {
+          "n": 10,
+          "check": "structure",
+          "what": "Под NavBarContainer лежит второй таб-бар tabbar 8cfde85d (284×64); экран назван «492», подпись на холсте «2 сервиса»",
+          "proposal": "лишний tabbar убрать, экран переименовать при переносе",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "tabbar 8cfde85d",
+          "kind": "component",
+          "status": "open",
+          "note": "лишний второй таб-бар, находка 10"
+        },
+        {
+          "node": "NavBarContainer c8e30f65 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "Pickup point",
+          "kind": "component",
+          "status": "open",
+          "note": "ручной пин, находка 9"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2067:9940",
+      "name": "Taxi · 1 сервис",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5022:3839",
+        "after": "5022:3863",
+        "binding": "5022:4094",
+        "shiftLayer": "5022:4118",
+        "bindLayer": "5022:4119",
+        "row": "5019:3468",
+        "findingsColumn": "5027:6229"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 12,
+          "check": "structure",
+          "what": "Таб-бар: таб-бара нет; NavBarContainer набора 7945c4e6, в пробе — c8e30f65",
+          "ask": "Таб-бар Rider на 2–4 таба и экран без таб-бара; какой набор — исходник (анкета п. 1)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2067:9916",
+      "name": "Taxi · 2 сервиса",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5022:4212",
+        "after": "5022:4236",
+        "binding": "5022:4484",
+        "shiftLayer": "5022:4508",
+        "bindLayer": "5022:4509",
+        "row": "5019:3474",
+        "findingsColumn": "5027:6254"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 12,
+          "check": "structure",
+          "what": "Таб-бар: 2 таба; NavBarContainer набора 7945c4e6, в пробе — c8e30f65",
+          "ask": "Таб-бар Rider на 2–4 таба и экран без таб-бара; какой набор — исходник (анкета п. 1)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer 7945c4e6 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2067:9844",
+      "name": "Taxi · 3 сервиса",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5022:4616",
+        "after": "5022:4640",
+        "binding": "5022:4888",
+        "shiftLayer": "5022:4912",
+        "bindLayer": "5022:4913",
+        "row": "5019:3480",
+        "findingsColumn": "5027:6279"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 12,
+          "check": "structure",
+          "what": "Таб-бар: 3 таба; NavBarContainer набора 7945c4e6, в пробе — c8e30f65",
+          "ask": "Таб-бар Rider на 2–4 таба и экран без таб-бара; какой набор — исходник (анкета п. 1)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer 7945c4e6 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2067:9868",
+      "name": "Taxi · 4 сервиса",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5023:4838",
+        "after": "5023:4862",
+        "binding": "5023:5115",
+        "shiftLayer": "5023:5139",
+        "bindLayer": "5023:5140",
+        "row": "5019:3486",
+        "findingsColumn": "5027:6304"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 12,
+          "check": "structure",
+          "what": "Таб-бар: 4 таба; NavBarContainer набора 7945c4e6, в пробе — c8e30f65",
+          "ask": "Таб-бар Rider на 2–4 таба и экран без таб-бара; какой набор — исходник (анкета п. 1)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer 7945c4e6 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2067:9892",
+      "name": "Taxi · 360×720",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5023:5253",
+        "after": "5023:5277",
+        "binding": "5023:5525",
+        "shiftLayer": "5023:5549",
+        "bindLayer": "5023:5550",
+        "row": "5019:3492",
+        "findingsColumn": "5027:6329"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2,
+          "note": "x 324–372 при ширине кадра 360, под шторкой"
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×5 [Card=Small/Medium/Big, Dark fill ×2]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 11,
+          "check": "structure",
+          "what": "Экран 360×720 не адаптирован: статус-бар, Home Indicator, dragger, Map — 390 px; FAB на x 322–374 за краем; карточки последнего ряда налезают (16–164 и 148–346); «907» в Top Actions обрезано",
+          "ask": "Нужен ли экран 360 в handoff; если да — пересобрать под 360",
+          "status": "open"
+        },
+        {
+          "n": 12,
+          "check": "structure",
+          "what": "Таб-бар: 4 таба; NavBarContainer набора 7945c4e6, в пробе — c8e30f65",
+          "ask": "Таб-бар Rider на 2–4 таба и экран без таб-бара; какой набор — исходник (анкета п. 1)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer 7945c4e6 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map, скриншот-подложка",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2038:6180",
+      "name": "Delivery",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5023:5663",
+        "after": "5023:5847",
+        "binding": "5023:6219",
+        "shiftLayer": "5023:6403",
+        "bindLayer": "5023:6404",
+        "row": "5019:3498",
+        "findingsColumn": "5027:6354"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "fab menu [ic_menu]",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_menu]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "fab menu [Text=Yes, «907», ic_citycoin]",
+          "to": "Button Floating [Show Label=true, Label=907, Left Icon=false, Right Icon=true, Icon R=ic_citycoin_color]",
+          "status": "open",
+          "finding": 8
+        },
+        {
+          "from": "searchfilled [State=Empty]",
+          "to": "Search Capsule [State=Default, Filled=No]",
+          "status": "open",
+          "finding": 3
+        },
+        {
+          "from": "service ×2 [Card=Small/Medium/Big, тёмная «От двери до двери»]",
+          "to": "Card Service [Size=S-M/L, Text First=True]",
+          "status": "open",
+          "finding": 4
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        },
+        {
+          "from": "Map Pin (местный) [State=ETA]",
+          "to": "Map Pin [State=ETA, Bubble=false, Show Caption=false]",
+          "status": "fixed"
+        }
+      ],
+      "tokens": [
+        {
+          "node": "Bottom sheet",
+          "prop": "fill",
+          "was": "#ffffff",
+          "token": "Background/Primary",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "radius",
+          "was": 28,
+          "token": "radius-28",
+          "exact": true,
+          "status": "fixed"
+        },
+        {
+          "node": "Bottom sheet",
+          "prop": "effect",
+          "was": "3×DROP_SHADOW, второй слой a0.08",
+          "token": "Shadows/Bottom Sheet",
+          "exact": false,
+          "delta": "второй слой a0.08 → 0.12",
+          "status": "open",
+          "finding": 6
+        }
+      ],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 3,
+          "check": "diff",
+          "what": "Поиск: сдвиг иконки и подсказки — как в пробе, находка 3",
+          "ref": "проба 2038:6035, находка 3",
+          "status": "open"
+        },
+        {
+          "n": 4,
+          "check": "diff",
+          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "ref": "проба 2038:6035, находка 4",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 6,
+          "check": "value",
+          "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
+          "ref": "проба 2038:6035, находка 6",
+          "status": "open"
+        },
+        {
+          "n": 8,
+          "check": "diff",
+          "what": "FAB с текстом «907»: правило swap-map не покрывает — нужны Right Icon и цветная ic_citycoin_color (300f386d…), иначе иконка чёрная и слева; ширина 83 против 89",
+          "proposal": "дописать правило в swap-map, ширину Rider принять",
+          "status": "open"
+        },
+        {
+          "n": 14,
+          "check": "structure",
+          "what": "Верх Delivery — два отдельных fab, в Taxi и Carsharing — компонент Top Actions",
+          "proposal": "после ответа по анкете п. 2 собрать верх одинаково",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "NavBarContainer c8e30f65 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "dragger",
+          "kind": "component",
+          "status": "open",
+          "note": ".Dragger в Rider не опубликован"
+        },
+        {
+          "node": "address ×2 (чипы подсказок)",
+          "kind": "component",
+          "status": "open",
+          "note": "в Rider нет — пункт анкеты"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Rectangle 40902 (затухание подсказок)",
+          "kind": "token",
+          "status": "open",
+          "note": "кандидат Gradients/Fade Horizontal"
+        },
+        {
+          "node": "Map",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
+      ]
+    },
+    {
+      "id": "2038:6364",
+      "name": "Carsharing",
+      "section": "Tabbar Navigation",
+      "auditSection": "5019:3458",
+      "clones": {
+        "before": "5023:6483",
+        "after": "5023:6507",
+        "binding": "5023:6691",
+        "shiftLayer": "5023:6715",
+        "bindLayer": "5023:6716",
+        "row": "5019:3504",
+        "findingsColumn": "5027:6386"
+      },
+      "swaps": [
+        {
+          "from": "status bar [Form=iPhone12]",
+          "to": "Status Bar iOS",
+          "status": "open",
+          "finding": 1
+        },
+        {
+          "from": "fab location",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_location]",
+          "status": "open",
+          "finding": 2
+        },
+        {
+          "from": "home indicator",
+          "to": "Home Indicator iOS",
+          "status": "open",
+          "finding": 5
+        }
+      ],
+      "tokens": [],
+      "findings": [
+        {
+          "n": 1,
+          "check": "diff",
+          "what": "Статус-бар Rider выше (54 против 44) — как в пробе, находка 1",
+          "ref": "проба 2038:6035, находка 1",
+          "status": "open"
+        },
+        {
+          "n": 2,
+          "check": "diff",
+          "what": "Кнопка 48×48 вместо 52×52 — как в пробе, находка 2",
+          "ref": "проба 2038:6035, находка 2",
+          "status": "open"
+        },
+        {
+          "n": 5,
+          "check": "diff",
+          "what": "Home Indicator — как в пробе, находка 5",
+          "ref": "проба 2038:6035, находка 5",
+          "status": "open"
+        },
+        {
+          "n": 13,
+          "check": "structure",
+          "what": "17 маркеров «Carsharing» (2d222904) — пары в Rider нет, Map Pin не умеет «машина с номером/зарядом»",
+          "ask": "Завести вариант Map Pin «каршеринг» или считать маркеры графикой карты (F)",
+          "status": "open"
+        }
+      ],
+      "unbound": [
+        {
+          "node": "Carsharing ×17 (маркеры машин)",
+          "kind": "component",
+          "status": "open",
+          "note": "находка 13"
+        },
+        {
+          "node": "Top Actions",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 2"
+        },
+        {
+          "node": "NavBarContainer c8e30f65 (таб-бар)",
+          "kind": "component",
+          "status": "open",
+          "note": "анкета п. 1; находка 12"
+        },
+        {
+          "node": "Whitener",
+          "kind": "gradient",
+          "status": "open",
+          "note": "кандидат Gradients/Top"
+        },
+        {
+          "node": "Map",
+          "kind": "F",
+          "status": "out-of-scope",
+          "note": "графика карты"
+        }
       ]
     }
   ]
