@@ -1,4 +1,4 @@
-# AID · AI Ops · Standards
+# AID · Standards
 
 **Папка:** `~/Projects/aid`, вход — `docs/standards-alpha/PLAN.md` →
 `DECISIONS.md` → `OPEN-QUESTIONS.md`.

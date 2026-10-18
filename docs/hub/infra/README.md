@@ -27,9 +27,10 @@
 - Устройство: статика — Object Storage; функции — Cloud Functions; вход,
   SPA-fallback и свой домен — API Gateway; сертификаты — Certificate
   Manager (Let's Encrypt); секреты — Lockbox.
-- Работа из чатов — `yc` только под профилем своего контура
-  (`--profile presentbook` / `registry-api` / `team-tasks`); `default` —
-  админский вход PD.
+- С Облаком работает только чат AID · DevOps: одна задача — один контур,
+  каждая команда `yc` — с явным `--profile presentbook` / `registry-api` /
+  `team-tasks`; `default` — админский вход PD. Полностью —
+  `../ORCHESTRATION.md` §4 «Секреты».
 
 ---
 
@@ -37,9 +38,9 @@
 
 | Контур | Код | Адрес | Каталог | Чат |
 |---|---|---|---|---|
-| Presentbook | `pages/aid-portal/` | `aidteam.pro`, превью `preview.aidteam.pro/pr-N/` | `presentbook` | AID · Site · Presentbook |
-| Token Comparator (API плагина) | `tools/figma-token-comparator/server/` | `api.aidteam.pro` | `registry-api` | AID · Plugin · Token Comparator |
-| Team (сервис задач) | `tools/aid-team/service/` | `team.aidteam.pro` — шлюз и домен ещё не заведены | `team-tasks` | AID · AI Ops · Team |
+| Presentbook | `pages/aid-portal/` | `aidteam.pro`, превью `preview.aidteam.pro/pr-N/` | `presentbook` | Developer · Presentbook, DevOps |
+| Token Comparator (API плагина) | `tools/figma-token-comparator/server/` | `api.aidteam.pro` | `registry-api` | Developer · Token Comparator, DevOps |
+| Team (сервис задач) | `tools/aid-team/service/` | `team.aidteam.pro` — шлюз и домен ещё не заведены | `team-tasks` | Developer · Team Service, DevOps |
 
 ### Выкладка
 

@@ -7,7 +7,6 @@ UserPromptSubmit: если последний шаг чата прочитал �
 """
 import json, os, sys
 
-LIMIT = int(os.environ.get("AID_CONTEXT_LIMIT", "150000"))
 
 def last_context(path):
     with open(path, "rb") as f:
@@ -25,6 +24,7 @@ def last_context(path):
     return 0
 
 try:
+    LIMIT = int(os.environ.get("AID_CONTEXT_LIMIT", "150000"))
     ctx = last_context(json.load(sys.stdin)["transcript_path"])
 except Exception:
     sys.exit(0)
