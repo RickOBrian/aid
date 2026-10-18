@@ -49,8 +49,9 @@
 
 Изменение в одном контуре не должно требовать инфраструктуру другого и не
 должно иметь возможности случайно сломать его production. Контуры разделены
-физически и инфраструктурно: с Облаком каждый чат работает только под
-профилем своего контура (`docs/hub/ORCHESTRATION.md` §4 «Секреты»).
+инфраструктурно (свой каталог и сервисный аккаунт), а в работе — правилом:
+одна задача DevOps — один контур, каждая команда `yc` — с явным
+`--profile <контур>` (`docs/hub/ORCHESTRATION.md` §4 «Секреты»).
 
 **Контур — не то же, что продукт дизайн-системы.** Гейты выше говорят о
 продуктах (`driver`, `rider`) — это UI Kit'ы. Здесь речь о единицах
@@ -82,29 +83,31 @@ Vercel больше не используется (ADR-038; Q-11 закрыт). 
 сотруднику с экземплярами в папке каждого продукта или контура. Карточки
 ролей — `docs/hub/agents/`; кто есть кто — `docs/hub/owners.json`.
 
-| Чат | Папка (`~/Projects/…`) | Роль, зона |
-|---|---|---|
-| AID · Hub · Штаб | `aid-hub` | Координатор: вход PD, решения дословно, раздача, мерж после QA и Security |
-| AID · Ops · <имя> | `aid-ops` | Представитель живого инженера; канал — бот |
-| AID · Team | `aid-team` | Люди и AI-инженеры, `owners.json`, ключи |
-| AID · Tasks | `aid-tasks` | «Активные» на доске, сроки, канбан |
-| AID · Requests | `aid-requests` | Запросы дизайнеров через бота |
-| AID · Standards | `aid` | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
-| AID · Designer | `aid-designer` | Дизайн продуктов |
-| AID · Developer · Presentbook | `aid-presentbook` | `pages/aid-portal/` |
-| AID · Developer · Token Comparator | `aid-plugin` | `tools/figma-token-comparator/` |
-| AID · Developer · Style Migration | `aid-style-migration` | `tools/aid-style-migration/` |
-| AID · Developer · MCP | `aid-mcp-plugin` | `tools/mcp-figma-plugin/` — исследование |
-| AID · Developer · Bot | `aid-bot` | `tools/aid-bot/` — сторона интеграции; код бота во внешнем репозитории |
-| AID · Developer · Team Service | `aid-team-service` | `tools/aid-team/service/` |
-| AID · QA | `aid-qa` | Проверка PR до мержа; только читает |
-| AID · Security | `aid-security` | Что уходит в git и на серверы; PR до мержа |
-| AID · DevOps | `aid-infra` | Дежурство, `docs/hub/infra/`, CI, git-хвосты |
-| AID · DevOps · Presentbook / Registry API / Team Service | `aid-devops-presentbook`, `aid-devops-registry`, `aid-devops-team` | Выкладка своего контура, профиль Облака только своего контура |
+Состав — решение PD 2026-10-18 («переходим на новый состав чатов по
+таблице»). Роли (Tasks, Team, Requests, QA, Security, DevOps по контурам)
+остались, их карточки и ключи AI-инженеров — прежние; меньше стало чатов,
+которые эти роли ведут.
 
-Сессию открывать в папке из второй колонки, а для продуктов в `tools/` —
-в папке продукта внутри неё (`aid-plugin/tools/figma-token-comparator`),
-чтобы её `CLAUDE.md` загрузился сам.
+| Чат | Папка (`~/Projects/…`) | Модель | Роль, зона |
+|---|---|---|---|
+| AID · Hub · Штаб | `aid-hub` | Opus · среднее | Координатор: вход PD, решения дословно в «Решения PD», мерж общих файлов (`docs/hub/`, этот файл), передача работы между чатами |
+| AID · Ops | `aid-ops` | Sonnet · низкое | Роли Tasks, Team, Requests: доска «Активные» и сроки; люди и AI-инженеры, `owners.json`, ключи; запросы дизайнеров через бота; каналы живых инженеров |
+| AID · Review | `aid-security` | Opus · среднее | Роли QA и Security: каждый PR до мержа по двум чеклистам — качество и безопасность (секреты, имена, доступы); итог — комментарием в PR; только читает |
+| AID · Standards | `aid` | Opus | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
+| AID · Developer · Presentbook | `aid-presentbook` | Opus | `pages/aid-portal/` |
+| AID · Developer · Token Comparator | `aid-plugin/tools/figma-token-comparator` | Opus | `tools/figma-token-comparator/`, его сервер `api.aidteam.pro`, релизы плагина |
+| AID · Developer · Bot | `aid-bot/tools/aid-bot` | Opus | `tools/aid-bot/` — контракты; код бота во внешнем репозитории |
+| AID · Developer · Team Service | `aid-team-service` | Opus | `tools/aid-team/service/` |
+| AID · DevOps | `aid-infra` | Sonnet · среднее | Выкладка и Облако всех контуров (одна задача — один контур, профиль явно), `docs/hub/infra/`, CI, дежурство |
+
+В архиве — создаются заново, когда понадобятся: AID · Designer
+(`aid-designer`), AID · Developer · MCP
+(`aid-mcp-plugin/tools/mcp-figma-plugin`), AID · Developer · Style
+Migration (`aid-style-migration/tools/aid-style-migration`). Их папки и
+`CLAUDE.local.md` сохраняются.
+
+Сессию открывать в папке из второй колонки — для продуктов в `tools/` это
+папка продукта, чтобы её `CLAUDE.md` загрузился сам.
 
 Продукты инженера Library Updater (Library Updater, Components Swapper,
 гайд по git) — во внешних репозиториях, Штаб инженера —

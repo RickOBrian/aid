@@ -71,29 +71,32 @@ Claude на новом устройстве. Цель — чтобы кажды�
    `CLAUDE.local.md` и продолжит с того же места. Начать со Штаба, остальные
    — по мере надобности: молчащий чат ничего не стоит (§12).
 
+Состав — решение PD 2026-10-18 («переходим на новый состав чатов по
+таблице»), корневой `CLAUDE.md` «Роли и чаты».
+
 | Чат | Папка (`~/Projects/…`) | Модель · усилие |
 |---|---|---|
 | AID · Hub · Штаб | `aid-hub` | Opus · среднее |
-| AID · Tasks | `aid-tasks` | Sonnet · низкое |
-| AID · Requests | `aid-requests` | Sonnet · низкое |
-| AID · Team | `aid-team/tools/aid-team` | Sonnet · среднее |
+| AID · Ops | `aid-ops` | Sonnet · низкое |
+| AID · Review | `aid-security` | Opus · среднее |
 | AID · Standards | `aid` | Opus |
-| AID · Designer | `aid-designer` | Opus |
-| AID · QA | `aid-qa` | Sonnet · среднее |
-| AID · Security | `aid-security` | Opus · среднее |
 | AID · Developer · Presentbook | `aid-presentbook` | Opus |
 | AID · Developer · Token Comparator | `aid-plugin/tools/figma-token-comparator` | Opus |
-| AID · Developer · Style Migration | `aid-style-migration/tools/aid-style-migration` | Opus |
-| AID · Developer · MCP | `aid-mcp-plugin/tools/mcp-figma-plugin` | Opus |
 | AID · Developer · Bot | `aid-bot/tools/aid-bot` | Opus |
 | AID · Developer · Team Service | `aid-team-service` | Opus |
 | AID · DevOps | `aid-infra` | Sonnet · среднее |
-| AID · DevOps · Presentbook | `aid-devops-presentbook` | Sonnet · среднее |
-| AID · DevOps · Registry API | `aid-devops-registry` | Sonnet · среднее |
-| AID · DevOps · Team Service | `aid-devops-team` | Sonnet · среднее |
-| AID · Ops · <имя> | `aid-ops` | Sonnet · низкое |
 
-Чаты Ops — по одному на живого инженера, имена — как на старом устройстве.
+Чаты, которые теперь ведёт один новый, переносят состояние так: до
+«старт» Штаб сводит в `CLAUDE.local.md` новой папки состояния старых —
+в Ops: Tasks, Team, Requests и чатов `Ops · <имя>`; в Review: QA и
+Security; в DevOps: четырёх DevOps. Исходные файлы остаются в папках
+старых чатов (`aid-tasks`, `aid-qa`, `aid-devops-*`…) до решения PD об их
+удалении.
+
+В архиве, создаются заново, когда понадобятся: AID · Designer
+(`aid-designer`), AID · Developer · MCP
+(`aid-mcp-plugin/tools/mcp-figma-plugin`), AID · Developer · Style
+Migration (`aid-style-migration/tools/aid-style-migration`).
 
 9. **Проверка.** В Штабе: «проверь переезд». Штаб сверяет, что папки на
    своих ветках, `CLAUDE.local.md` на месте, `gh` и ключ задач работают.
