@@ -102,6 +102,10 @@ Vercel больше не используется (ADR-038; Q-11 закрыт). 
 | AID · DevOps | `aid-infra` | Дежурство, `docs/hub/infra/`, CI, git-хвосты |
 | AID · DevOps · Presentbook / Registry API / Team Service | `aid-devops-presentbook`, `aid-devops-registry`, `aid-devops-team` | Выкладка своего контура, профиль Облака только своего контура |
 
+Сессию открывать в папке из второй колонки, а для продуктов в `tools/` —
+в папке продукта внутри неё (`aid-plugin/tools/figma-token-comparator`),
+чтобы её `CLAUDE.md` загрузился сам.
+
 Продукты инженера Library Updater (Library Updater, Components Swapper,
 гайд по git) — во внешних репозиториях, Штаб инженера —
 `docs/hub/boards/lu.md`.
