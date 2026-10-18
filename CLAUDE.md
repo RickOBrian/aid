@@ -74,14 +74,14 @@ Vercel не используется (ADR-038); проверки `aid-registry-a
 | AID · Ops | `aid-ops` | Sonnet · низкое | Роли Tasks, Team, Requests: доска «Активные» и сроки; люди и AI-инженеры, `owners.json`, ключи; запросы дизайнеров через бота; каналы живых инженеров |
 | AID · Review | `aid-security` | Opus · среднее | Роли QA и Security: PR уровня 3 (CI, зависимости, хостинг, доступы) по двум чеклистам — качество и безопасность; итог — комментарием в PR; только читает |
 | AID · Standards | `aid` | Opus | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
+| AID · Designer | `aid-designer` | Opus | Компоненты из сырых макетов в файл компонентов Figma: аудит, предложение PD, сборка; токены и компоненты — lookup у Standards |
 | AID · Developer · Presentbook | `aid-presentbook` | Opus | `pages/aid-portal/` |
 | AID · Developer · Token Comparator | `aid-plugin/tools/figma-token-comparator` | Opus | `tools/figma-token-comparator/`, его сервер `api.aidteam.pro`, релизы плагина |
 | AID · Developer · Bot | `aid-bot/tools/aid-bot` | Opus | `tools/aid-bot/` — контракты; код бота во внешнем репозитории |
 | AID · Developer · Team Service | `aid-team-service` | Opus | `tools/aid-team/service/` |
 | AID · DevOps | `aid-infra` | Sonnet · среднее | Выкладка и Облако всех контуров (одна задача — один контур, профиль явно), `docs/hub/infra/`, CI, дежурство |
 
-В архиве — создаются заново, когда понадобятся: AID · Designer
-(`aid-designer`), AID · Developer · MCP
+В архиве — создаются заново, когда понадобятся: AID · Developer · MCP
 (`aid-mcp-plugin/tools/mcp-figma-plugin`), AID · Developer · Style
 Migration (`aid-style-migration/tools/aid-style-migration`). Их папки и
 `CLAUDE.local.md` сохраняются.
