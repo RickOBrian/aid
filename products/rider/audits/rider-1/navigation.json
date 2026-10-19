@@ -90,7 +90,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -159,8 +159,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "proposal": "принять",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -259,7 +258,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -332,8 +331,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -459,7 +457,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -528,8 +526,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -629,7 +626,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -698,8 +695,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -805,7 +801,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -874,8 +870,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -981,7 +976,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -1050,8 +1045,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -1158,7 +1152,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -1220,8 +1214,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -1346,7 +1339,7 @@
         {
           "from": "searchfilled [State=Empty]",
           "to": "Search Capsule [State=Default, Filled=No]",
-          "status": "open",
+          "status": "fixed",
           "finding": 3
         },
         {
@@ -1415,8 +1408,7 @@
           "check": "diff",
           "what": "Поиск: иконка и подсказка на 2 px левее (отступ 14 вместо 16), иконка светлее (α 0.38 Icon/Tertiary вместо 0.54); текст, шрифт, высота и фон — как было",
           "ref": "проба 2038:6035, находка 3",
-          "status": "open",
-          "waiting": "ответ дизайнера (PD 2026-10-19)"
+          "status": "accepted"
         },
         {
           "n": 4,
@@ -1622,6 +1614,20 @@
       "open": [],
       "moved": [
         "2026-10-19: вопрос о верхних кнопках (fab menu в Delivery, Top Actions) перенесён в открытую находку 14 — тот же элемент, верх экрана"
+      ]
+    },
+    {
+      "finding": 3,
+      "date": "2026-10-19",
+      "by": "PD",
+      "status": "accepted",
+      "decision": "Эталон поиска — компонент Search в исходнике 5mg6h0oB8yRDoUfTruogca, узел 2247:21294 (PD: цвета и расстановка верные, сборка может быть кривой). Состояние на экранах (Default, Filled=No) совпадает с Search Capsule Rider: отступы 14, промежуток 12, радиус 24, Background/Secondary, лупа Icon/Tertiary, подсказка Text/Secondary — ошибался Taxi (16 и лупа 0.54). Где библиотека расходится с эталоном — правим компонент в библиотеке.",
+      "appliesTo": "все экраны с поиском",
+      "open": [
+        "Задача Designer: Search Capsule в библиотеке Rider по эталону 2247:21294 — крестик очистки (Filled=Yes) Icon/Disabled вместо Icon/Tertiary; без обёртки 24 (.Clear Field Button), крестик 20 — 18 px до правого края вместо 20; лупа — эталон 24/Stroke/search 21 px против ic_search 22 px, сверить глазами. Курсор не трогаем: Icon/Accent того же цвета, что Accent Purple эталона."
+      ],
+      "resolved": [
+        "2026-10-19: «стало» менять не нужно — Search Capsule уже стоит; бейдж «согласовано» на карточке 3 пробы и в повторах рядов 1–7."
       ]
     }
   ]
