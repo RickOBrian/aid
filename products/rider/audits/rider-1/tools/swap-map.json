@@ -87,7 +87,7 @@
         "kind": "set",
         "name": "Card Service"
       },
-      "rule": "Card=Big → Size=L, иначе S-M; Text First=True; Title Text и Body Text из старых текстов; вернуть ширину и x,y; картинку (самый крупный IMAGE не shadow) — в слой Image, FIT. Известная поломка — находка «карточки»"
+      "rule": "Card=Big → Size=L, иначе S-M; Text First: Opposite img=On → True, Off → False; Title Text и Body Text из старых текстов; вернуть ширину и x,y; Image — снимок PNG @3x эталонного фрейма иллюстрации того же размера (исходник 3589:27637; подбор по картинкам старой карточки; нет эталона — область иллюстрации старой карточки через рамку с обрезкой), FILL; фон — Pastel по hex старой карточки; белый текст в старой → Text/Constant White и Constant White Secondary; textTruncation снять. Проверка — снимок «было | стало» (находка 4)"
     },
     {
       "from": [
