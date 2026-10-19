@@ -17,6 +17,17 @@
         "probe": "5014:7732",
         "Tabbar Navigation": "5019:3458"
       }
+    },
+    "references": {
+      "_doc": "Эталоны PD в исходнике (только чтение): вид и цвета верные, сборка может быть кривой. Rider есть, но выглядит иначе — правим Rider; в Rider нет — заносим.",
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "componentsPage": {
+        "id": "3577:55382",
+        "name": "🔹 Components",
+        "date": "2026-10-19"
+      },
+      "search": "2247:21294",
+      "cards": "2247:21259"
     }
   },
   "riderLibraries": {
@@ -164,9 +175,9 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе: картинка полосой 80 px под текстом вместо объёмной иллюстрации, тёмной карточки нет",
-          "ask": "Доработать Card Service или оставить карточку Taxi отклонением",
-          "status": "open"
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -336,9 +347,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -531,9 +543,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -700,9 +713,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -875,9 +889,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -1050,9 +1065,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -1219,9 +1235,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
@@ -1413,9 +1430,10 @@
         {
           "n": 4,
           "check": "diff",
-          "what": "Card Service устроена иначе — как в пробе, находка 4",
+          "what": "Card Service против эталона Cards (2247:21259): устройство S, M, L совпадает. Не так: Text First=True везде, а у части карточек картинка сверху (Opposite img=Off) и у L слева; тёмные карточки — тёмный текст на тёмном фоне, тона у компонента нет; фоны — hex-переопределения, все пять есть в Pastel (#e7f1ec Lenny, #ede4e4 Lisa, #eeeeee Barney, #303038 Ralph, #4e4e60 Apu); зазор между карточками 12, в эталоне 6",
           "ref": "проба 2038:6035, находка 4",
-          "status": "open"
+          "status": "open",
+          "proposal": "Text First из Opposite img и Pastel — исправить самой; тёмные — свойство тона в Card Service (задача Designer), на экранах пока Text/Constant White и Constant White Secondary; зазор — 6 по эталону (вопрос PD)"
         },
         {
           "n": 5,
