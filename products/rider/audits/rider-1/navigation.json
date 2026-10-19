@@ -1639,10 +1639,10 @@
       "date": "2026-10-19",
       "by": "PD",
       "status": "accepted",
-      "decision": "Эталон поиска — компонент Search в исходнике 5mg6h0oB8yRDoUfTruogca, узел 2247:21294 (PD: цвета и расстановка верные, сборка может быть кривой). Состояние на экранах (Default, Filled=No) совпадает с Search Capsule Rider: отступы 14, промежуток 12, радиус 24, Background/Secondary, лупа Icon/Tertiary, подсказка Text/Secondary — ошибался Taxi (16 и лупа 0.54). Где библиотека расходится с эталоном — правим компонент в библиотеке.",
+      "decision": "Эталон поиска — компонент Search в исходнике 5mg6h0oB8yRDoUfTruogca, узел 2247:21294 (PD: цвета и расстановка верные, сборка может быть кривой). Состояние на экранах (Default, Filled=No) совпадает с Search Capsule Rider: отступы 14, промежуток 12, радиус 24, Background/Secondary, лупа Icon/Tertiary, подсказка Text/Secondary — ошибался Taxi (16 и лупа 0.54). Где библиотека расходится с эталоном — правим компонент в библиотеке. Уточнение PD 2026-10-19: поиск в Rider — Search Capsule, вид — по макету 2247:21294; любое расхождение Rider с ним правим в Rider. Токены и нейминг — Rider.",
       "appliesTo": "все экраны с поиском",
       "open": [
-        "Задача Designer: Search Capsule в библиотеке Rider по эталону 2247:21294 — крестик очистки (Filled=Yes) Icon/Disabled вместо Icon/Tertiary; без обёртки 24 (.Clear Field Button), крестик 20 — 18 px до правого края вместо 20; лупа — эталон 24/Stroke/search 21 px против ic_search 22 px, сверить глазами. Курсор не трогаем: Icon/Accent того же цвета, что Accent Purple эталона."
+        "Задача Designer: Search Capsule в библиотеке Rider под макет 2247:21294 во всех состояниях — крестик очистки (Filled=Yes) Icon/Disabled вместо Icon/Tertiary; без обёртки 24 (.Clear Field Button): крестик 20, 18 px до правого края вместо 20, подпись 294; лупа — глиф как в макете (21 px, 24/Stroke/search) вместо ic_search 22 px: в наборе иконок Rider. Курсор — цвет тот же, токен Icon/Accent (Rider) остаётся."
       ],
       "resolved": [
         "2026-10-19: «стало» менять не нужно — Search Capsule уже стоит; бейдж «согласовано» на карточке 3 пробы и в повторах рядов 1–7."
