@@ -9,5 +9,5 @@
   "proposedVersion": "1.2.0",
   "source": "Figma yrfG6u9osujKX8e1B14lpT — color-sem (28:2282), changelog (31:66)",
   "notes": "Initial Rider color token import with Figma changelog history through 1.2.0. Changelog source imported from Figma; final SemVer confirmation on Release Gate.",
-  "status": "pending"
+  "status": "released"
 }
