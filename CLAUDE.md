@@ -61,8 +61,8 @@ Vercel не используется (ADR-038); проверки `aid-registry-a
 ## Роли и чаты
 
 Исполнители — роли и люди, не чаты продуктов (ADR-047, ADR-048). Продукт —
-территория кода; роль — кто отвечает. Developer и DevOps — по одному
-сотруднику с экземплярами в папке каждого продукта или контура. Карточки
+территория кода; роль — кто отвечает. Developer — один сотрудник,
+чат под задачу в папке продукта; DevOps — один чат на все контуры. Карточки
 ролей — `docs/hub/agents/`; кто есть кто — `docs/hub/owners.json`.
 
 Состав — решение PD 2026-10-18. Роли и их карточки, ключи AI-инженеров —
@@ -75,16 +75,13 @@ Vercel не используется (ADR-038); проверки `aid-registry-a
 | AID · Review | `aid-security` | Opus · среднее | Роли QA и Security: PR уровня 3 (CI, зависимости, хостинг, доступы) по двум чеклистам — качество и безопасность; итог — комментарием в PR; только читает |
 | AID · Standards | `aid` | Opus | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
 | AID · Designer | `aid-designer` | Opus | Компоненты из сырых макетов в файл компонентов Figma: аудит, предложение PD, сборка; токены и компоненты — lookup у Standards |
-| AID · Developer · Presentbook | `aid-presentbook` | Opus | `pages/aid-portal/` |
-| AID · Developer · Token Comparator | `aid-plugin/tools/figma-token-comparator` | Opus | `tools/figma-token-comparator/`, его сервер `api.aidteam.pro`, релизы плагина |
-| AID · Developer · Bot | `aid-bot/tools/aid-bot` | Opus | `tools/aid-bot/` — контракты; код бота во внешнем репозитории |
-| AID · Developer · Team Service | `aid-team-service` | Opus | `tools/aid-team/service/` |
+| AID · Developer · <продукт> | папка продукта — `docs/hub/agents/developer.md` | Opus | Код продукта по задаче на доске. Постоянного чата нет: открывается под задачу, закрывается после мержа |
 | AID · DevOps | `aid-infra` | Sonnet · среднее | Выкладка и Облако всех контуров (одна задача — один контур, профиль явно), `docs/hub/infra/`, CI, дежурство |
 
-В архиве — создаются заново, когда понадобятся: AID · Developer · MCP
-(`aid-mcp-plugin/tools/mcp-figma-plugin`), AID · Developer · Style
-Migration (`aid-style-migration/tools/aid-style-migration`). Их папки и
-`CLAUDE.local.md` сохраняются.
+Developer — одна роль, чатов столько, сколько задач в работе (решение PD
+2026-10-20): Штаб открывает чат в папке продукта под задачу с номером,
+итог задачи — в PR, после мержа чат закрывается. Папки продуктов, включая
+MCP и Style Migration, и их `CLAUDE.local.md` сохраняются.
 
 Сессию открывать в папке из второй колонки — для продуктов в `tools/` это
 папка продукта, чтобы её `CLAUDE.md` загрузился сам. Модель задана файлом

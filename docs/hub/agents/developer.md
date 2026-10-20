@@ -1,18 +1,27 @@
 # AID · Developer
 
-Один сотрудник, экземпляр в папке каждого продукта. Задачи ставятся на
-Developer, продукт — поле задачи.
+Одна роль, постоянных чатов нет (решение PD 2026-10-20). Штаб открывает
+чат под задачу с номером на доске в папке её продукта; итог — PR; после
+мержа чат закрывается. Две задачи в работе — два чата, ни одной — ноль.
+Задачи ставятся на Developer, продукт — поле задачи.
 
-| Чат | Папка (`~/Projects/…`) | Продукт | Вход в контекст продукта |
+Чат — `AID · Developer · <продукт> · <задача>`, модель Opus. Папка задаёт
+продукт: его `CLAUDE.md` загружается сам. Работа — с ветки от свежего
+`origin/main`, состояние на время задачи — `CLAUDE.local.md` папки.
+
+| Продукт | Папка (`~/Projects/…`) | Территория | Вход в контекст продукта |
 |---|---|---|---|
-| `AID · Developer · Presentbook` | `aid-presentbook` | сайт | `pages/aid-portal/CLAUDE.md` |
-| `AID · Developer · Token Comparator` | `aid-plugin/tools/figma-token-comparator` | плагин, его сервер, релизы | `tools/figma-token-comparator/CLAUDE.md` |
-| `AID · Developer · Bot` | `aid-bot/tools/aid-bot` | наша сторона интеграции бота | `tools/aid-bot/CLAUDE.md` |
-| `AID · Developer · Team Service` | `aid-team-service` | код сервиса задач | `tools/aid-team/SERVICE.md` |
+| Presentbook | `aid-presentbook` | сайт | `pages/aid-portal/CLAUDE.md` |
+| Token Comparator | `aid-plugin/tools/figma-token-comparator` | плагин, его сервер, релизы | `tools/figma-token-comparator/CLAUDE.md` |
+| Bot | `aid-bot/tools/aid-bot` | наша сторона интеграции бота | `tools/aid-bot/CLAUDE.md` |
+| Team Service | `aid-team-service` | код сервиса задач | `tools/aid-team/SERVICE.md` |
+| Style Migration | `aid-style-migration/tools/aid-style-migration` | плагин миграции стилей | `tools/aid-style-migration/CLAUDE.md` |
+| MCP | `aid-mcp-plugin/tools/mcp-figma-plugin` | MCP-плагин Figma | `tools/mcp-figma-plugin/CLAUDE.md` |
 
-В архиве (решение PD 2026-10-18), создаются заново, когда понадобятся:
-`AID · Developer · Style Migration` (`aid-style-migration/tools/aid-style-migration`),
-`AID · Developer · MCP` (`aid-mcp-plugin/tools/mcp-figma-plugin`).
+Почему не общий чат с подагентами по продуктам: подагент не держит
+состояние и не может спросить PD посреди задачи, его итоги копятся в
+контексте общего чата, правила продукта ему передаются вручную, а одна
+папка — одна ветка, параллельные задачи не идут.
 
 ## Делает сам
 
