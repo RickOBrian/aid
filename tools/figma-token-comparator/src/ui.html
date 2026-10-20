@@ -1387,6 +1387,32 @@
         font-family: var(--ds-font);
       }
 
+      /* «Записать изменения»: одно изменение — бейдж вида, фраза, значения. */
+      .tc-changelog-list {
+        list-style: none;
+        margin: 0 0 12px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tc-changelog-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .tc-changelog-item__details {
+        margin: 0;
+        max-height: 96px;
+        overflow: auto;
+        white-space: pre-wrap;
+        font-size: 11px;
+        line-height: 16px;
+        color: var(--ds-text-secondary);
+      }
+
       /* Variable combobox — кастомный autocomplete вместо native datalist */
       .ds-combobox {
         position: relative;
@@ -2175,6 +2201,9 @@
         <button class="ds-tab" role="tab" data-tab="results" aria-selected="false" id="tc-tab-results">
           Результаты
         </button>
+        <button class="ds-tab" role="tab" data-tab="changelog" aria-selected="false" id="tc-tab-changelog">
+          Чейнжлог
+        </button>
         <button class="ds-tab" role="tab" data-tab="guide" aria-selected="false" id="tc-tab-guide">
           Гайд
         </button>
@@ -2602,6 +2631,53 @@
             <button class="ds-btn ds-btn-primary" id="tc-apply-decision-btn" type="button" disabled>
               Применить решение
             </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-panel" id="tc-panel-changelog" role="tabpanel" aria-hidden="true">
+        <div class="ds-field">
+          <div class="ds-field__head">
+            <label for="tc-changelog-select">Чейнжлог</label>
+            <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
+            <span class="ds-hint-text">
+              Откройте плагин в файле библиотеки. Плагин сравнит переменные или компоненты со снимком
+              последней опубликованной версии, соберёт запись «Не опубликовано», обновит таблицу
+              чейнжлога на странице и отправит запись на согласование. Нужен ключ для отправки решений.
+            </span>
+            <button
+              type="button"
+              class="ds-icon-btn"
+              id="tc-changelog-refresh-btn"
+              aria-label="Обновить список чейнжлогов"
+              title="Обновить"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12.5 8a4.5 4.5 0 1 1-1.32-3.18M12.5 3v2.5H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+          <select id="tc-changelog-select" class="ds-select"></select>
+        </div>
+
+        <div class="ds-field" id="tc-changelog-baseline" hidden>
+          <label for="tc-changelog-source-select">Что записывает таблица</label>
+          <select id="tc-changelog-source-select" class="ds-select"></select>
+          <p class="ds-section-caption">
+            Снимка опубликованной версии ещё нет. Если библиотека сейчас совпадает с опубликованной,
+            примите её за исходную точку — дальше плагин будет сравнивать с ней.
+          </p>
+          <div class="ds-row">
+            <button class="ds-btn" id="tc-changelog-baseline-btn" type="button">Принять как опубликованное</button>
+          </div>
+        </div>
+
+        <div class="ds-status-line" id="tc-changelog-status"></div>
+
+        <div id="tc-changelog-draft" hidden>
+          <div class="ds-field">
+            <label for="tc-changelog-author">Автор</label>
+            <input id="tc-changelog-author" class="ds-input" type="text" autocomplete="off" />
+          </div>
+          <ul class="tc-changelog-list" id="tc-changelog-list"></ul>
+          <div class="ds-row">
+            <button class="ds-btn ds-btn-primary" id="tc-changelog-record-btn" type="button">Записать изменения</button>
           </div>
         </div>
       </section>
@@ -3328,6 +3404,75 @@
 
                 <div class="ds-guide-note">
                   Строки без решения выгружаются с пустыми «Решение», «Комментарий» и «Дата решения».
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-guide-accordion__item">
+              <button
+                type="button"
+                class="ds-guide-accordion__trigger"
+                aria-expanded="false"
+                aria-controls="tc-guide-panel-record"
+                id="tc-guide-trigger-record"
+              >
+                <span>Записать изменения в чейнжлог</span>
+                <svg
+                  class="ds-guide-accordion__chevron"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ds-guide-accordion__panel" id="tc-guide-panel-record" role="region" hidden>
+                <p>
+                  Каждая правка библиотеки попадает в чейнжлог в той же работе — в запись «Не опубликовано».
+                  Плагин собирает её сам: вкладка «Чейнжлог», плагин открыт в файле библиотеки.
+                </p>
+
+                <h3>Как записать</h3>
+                <ol>
+                  <li>Выберите чейнжлог — в списке только те, чья таблица есть на страницах этого файла.</li>
+                  <li>
+                    Первый раз плагин спросит, что записывает таблица: коллекцию переменных или компоненты и иконки
+                    файла, — и попросит принять текущее состояние за опубликованное. Делайте это, пока библиотека
+                    совпадает с опубликованной версией: дальше плагин сравнивает с этим снимком.
+                  </li>
+                  <li>
+                    Плагин покажет, что изменилось: вид изменения, предлагаемую цифру версии и значения. У переменных
+                    фраза уже предложена — поправьте её. У компонентов и иконок фразу пишет автор.
+                  </li>
+                  <li>
+                    <strong>Записать изменения</strong> — плагин обновит строку «Не опубликовано» в таблице на
+                    странице и отправит запись на согласование. Нужен ключ для отправки решений.
+                  </li>
+                </ol>
+
+                <h3>Что происходит дальше</h3>
+                <ul>
+                  <li>
+                    Сервер открывает PR с чейнжлогом. Следующие правки до публикации дописываются в тот же PR:
+                    запись каждый раз собирается целиком от опубликованной версии, фразы сохраняются.
+                  </li>
+                  <li>
+                    Версию и дату ставит владелец продукта при публикации библиотеки. После этого плагин сам
+                    начнёт сравнивать с новой версией.
+                  </li>
+                </ul>
+
+                <div class="ds-guide-note">
+                  Плагин видит имена, значения, режимы, области применения и описания переменных; у компонентов —
+                  имена, варианты, свойства и описания. Изменение формы иконки он не замечает — допишите его сами.
                 </div>
               </div>
             </div>

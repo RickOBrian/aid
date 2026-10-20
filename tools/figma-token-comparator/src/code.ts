@@ -70,6 +70,12 @@ import {
 import { countResolvedByTeam, mergeRegistryDecisions } from "./lib/registryDecisions";
 import { isLibraryBoundDecision, scopeHistoryToLibrary } from "./lib/libraryScope";
 import { reconcileProposalStatuses, signaturesToCheck } from "./lib/proposalLifecycle";
+import {
+  handleChangelogBaseline,
+  handleChangelogLoad,
+  handleChangelogPrepare,
+  handleChangelogRecord,
+} from "./changelogFlow";
 import type { CodeToUiMessage, PreviewModeResult, ProposePreviewEntry, UiToCodeMessage } from "./messages";
 
 function send(message: CodeToUiMessage): void {
@@ -2295,6 +2301,18 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         break;
       case "propose-decisions":
         await handleProposeDecisions(message.payload.recordIds);
+        break;
+      case "changelog-load":
+        await handleChangelogLoad(send);
+        break;
+      case "changelog-baseline":
+        await handleChangelogBaseline(send, message.payload.path, message.payload.source);
+        break;
+      case "changelog-prepare":
+        await handleChangelogPrepare(send, message.payload.path);
+        break;
+      case "changelog-record":
+        await handleChangelogRecord(send, message.payload.path, message.payload.drafts, message.payload.author);
         break;
       default:
         break;
