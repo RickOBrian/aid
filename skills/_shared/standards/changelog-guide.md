@@ -120,7 +120,7 @@ Figma** (раздел 6). До неё запись стоит в строке «
 | `entries[]` | От новой записи к старой |
 | `entries[].version` | SemVer; `null` — запись «Не опубликовано» |
 | `entries[].date` | Дата публикации ISO; `null` до публикации |
-| `entries[].author` | Кто внёс изменение: отображаемое имя человека или AI-инженера, как его видят в таблице (имя в Figma, например «Артур», «Sergey AI»). Логин GitHub и id из `docs/hub/owners.json` сюда не пишут |
+| `entries[].author` | Кто внёс изменение: отображаемое имя человека или AI-инженера, как его видят в таблице (имя в Figma, например «Артур», «Sergey AI»). Логин GitHub и id из `docs/hub/owners.json` не пишут ни вместо имени, ни рядом с ним (решение PD 2026-10-20) |
 | `entries[].type` | Предлагаемая цифра: `major` / `minor` / `patch` |
 | `changes[].kind` | `added` / `changed` / `removed` / `fixed` / `deprecated` |
 | `changes[].description` | Одна фраза: что и зачем |
