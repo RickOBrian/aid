@@ -5,7 +5,7 @@
 // Порядок см. README «Раскладка страницы».
 
 const PAGE = '5011:3071';
-const COL_X = [60, 530, 1000, 1470]; // было · стало+сдвиги · натянутость · находки
+const COL_X = [60, 530, 1000, 1470]; // было · стало+сдвиги · натянутость · находки (для ещё не собранных рядов)
 const GAP_COL = 80, GAP_LABEL = 12, GAP_TITLE = 15, GAP_ROWS = 80, PAD = 60, GAP_SECTIONS = 100;
 
 const isOverlay = n => /^[⚠◐]/.test(n.name);
@@ -50,8 +50,8 @@ function buildRow(row, items, title) {
 
 // колонки находок — Hug по высоте
 function hugFindings(root) {
-  for (const f of root.findAll(n => n.type === 'FRAME' && n.name === 'Находки' && n.layoutMode === 'VERTICAL')) {
-    f.primaryAxisSizingMode = 'AUTO';
+  for (const f of root.findAll(n => n.type === 'FRAME' && ['Находки', 'На аудите', 'Согласовано'].includes(n.name) && n.layoutMode === 'VERTICAL')) {
+    f.layoutSizingVertical = 'HUG';
   }
   // шапка карточки: бейдж переносится, а не вылезает за карточку
   for (const h of root.findAll(n => n.type === 'FRAME' && n.name === 'head' && n.layoutMode === 'HORIZONTAL')) {
