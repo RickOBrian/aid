@@ -171,3 +171,37 @@ describe('превью API: /pr-N/api/... в версию функции это�
     vi.unstubAllGlobals();
   });
 });
+
+describe('превью: POST через общий маршрут шлюза /{pr}/{path+}', () => {
+  // Шлюз превью пускает POST на любой путь /pr-N/... — функция сама
+  // принимает POST только на /api/login.
+  const event = (path: string) => ({
+    httpMethod: 'POST',
+    url: path,
+    path,
+    headers: { 'Content-Type': 'application/json' },
+    multiValueHeaders: {},
+    queryStringParameters: {},
+    multiValueQueryStringParameters: {},
+    requestContext: {},
+    body: '{"username":"x","password":"y"}',
+    isBase64Encoded: false,
+  });
+
+  it('POST на страницу или файл превью — 404, бакет не трогается', async () => {
+    const { handler } = await import('../deploy/yc/handler');
+    for (const path of ['/pr-7/driver', '/pr-7/assets/index.js', '/pr-7/api/ttm']) {
+      expect((await handler(event(path) as never, undefined)).statusCode).toBe(404);
+    }
+  });
+
+  it('POST /pr-N/api/login доходит до входа', async () => {
+    const { handler } = await import('../deploy/yc/handler');
+    Object.assign(process.env, { BASIC_AUTH_USER: 'u', BASIC_AUTH_PASSWORD: 'p', AUTH_COOKIE_SECRET: 's' });
+    const result = await handler(event('/pr-7/api/login') as never, undefined);
+    expect(result.statusCode).toBe(401);
+    for (const name of ['BASIC_AUTH_USER', 'BASIC_AUTH_PASSWORD', 'AUTH_COOKIE_SECRET']) {
+      delete process.env[name];
+    }
+  });
+});

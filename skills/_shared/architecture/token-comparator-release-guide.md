@@ -2,7 +2,7 @@
 destination: skills/_shared/architecture/
 name: token-comparator-release-guide
 metadata:
-  version: "1.4.1"
+  version: "1.4.2"
   kind: architecture
   owner: design-system-team
   status: stable
@@ -15,7 +15,7 @@ description: >
 
 # Token Comparator — Release & Distribution Guide
 
-> Статус: Stable · v1.4.1 · обновлено 2026-09-20
+> Статус: Stable · v1.4.2 · обновлено 2026-10-09
 
 ---
 
@@ -318,8 +318,8 @@ npm run release:pack
 - если используется main, build берётся из актуального merge commit, а не из
   устаревшего локального worktree.
 
-Vercel checks не заменяют typecheck/build/package Figma plugin: это другой
-build target.
+Проверки сервера и выкладки (`registry-api-deploy`, «Портал») не заменяют
+typecheck/build/package Figma plugin: это другой build target.
 
 ### Publication sequence
 
@@ -572,7 +572,7 @@ branch: cursor/token-comparator-v0.1.0
 - Не распространять ZIP вручную через чат как постоянный канал.
 - Не публиковать релиз из WIP/Preview/feature branch.
 - Не перезаписывать versioned asset после публикации.
-- Не считать Vercel green checks проверкой Figma plugin build.
+- Не считать зелёные проверки сервера и выкладки проверкой Figma plugin build.
 - Не обновлять stable download link при каждом push.
 - Не мержить Presentbook CTA до доступности stable alias.
 - Не смешивать Token Comparator release tooling и Presentbook Tools UI scope.
@@ -773,6 +773,8 @@ git pull --ff-only origin main
 
 ## 13. Changelog
 
+- **1.4.2** — 2026-10-09. Vercel выведен (ADR-038, этап 7): упоминания
+  Vercel checks заменены на проверки сервера и выкладки в Облако.
 - **1.4.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.4.0 — 2026-09-18.** Раздел 11: перенумерация версий плагина по SemVer
   (`v0.1.0/0.1.1/0.1.2` → `v1.0.0/1.0.1/1.1.0`), удаление старых тегов.

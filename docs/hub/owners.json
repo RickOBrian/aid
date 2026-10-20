@@ -1,9 +1,10 @@
 {
-  "format": "aid-hub-owners/2",
-  "note": "Люди по логину GitHub (обязательное поле, ключ) — для проверки авторов issues, комментариев и PR досок между Штабами (ORCHESTRATION.md §9). Решения PD 2026-10-06: «1а 2а 3б» (список в репозитории) и «а» (ключ — логин, не роль). Только публичные логины GitHub; имена, контакты, Telegram — в базе AID · Ops · Team. title — описание, не идентификатор. Меняется решением PD. manager: true — менеджер команды: ставит задачи PD (`/task`), не утверждает ничего (ORCHESTRATION.md §9 «Менеджер команды»). tool (claude | cursor) — в чём работает человек; у cursor нет Штаба-чата Claude, SendMessage, доски и набора kit — связь только через issues.",
+  "format": "aid-hub-owners/3",
+  "note": "Люди по логину GitHub (обязательное поле, ключ) — для проверки авторов issues, комментариев и PR досок между Штабами (ORCHESTRATION.md §9). Решения PD 2026-10-06: «1а 2а 3б» (список в репозитории) и «а» (ключ — логин, не роль). Только публичные логины GitHub; имена, контакты, Telegram — в базе AID · Ops · Team. title — описание, не идентификатор. Меняется решением PD. manager: true — менеджер команды: ставит задачи PD (`/task`), не утверждает ничего (ORCHESTRATION.md §9 «Менеджер команды»). tool (claude | cursor) — в чём работает человек; у cursor нет Штаба-чата Claude, SendMessage, доски и набора kit — связь только через issues. Format 3 (ADR-047, решения PD 2026-10-14): у каждой записи kind — human у людей (people), ai у AI-инженеров (agents). Все, кто проверяет авторов и владельцев, читают только people; ключ сервиса задач по /team-key получают только kind: human. AI-инженер — id ai-<роль>, без github; card — его карточка; curator — живой инженер по умолчанию для задач с этим AI; instances — экземпляры по продуктам или контурам.",
   "people": [
     {
       "github": "RickOBrian",
+      "kind": "human",
       "title": "Principal Designer",
       "owns": [
         "hub",
@@ -21,7 +22,9 @@
     },
     {
       "github": "effects121-lang",
+      "kind": "human",
       "title": "Инженер бота",
+      "board": "docs/hub/boards/bot.md",
       "owns": [
         "bot-request"
       ],
@@ -30,21 +33,133 @@
     },
     {
       "github": "arturuxui",
+      "kind": "human",
       "title": "Инженер Library Updater",
       "board": "docs/hub/boards/lu.md",
       "owns": [
-        "plugin-library-updater"
+        "plugin-library-updater",
+        "plugin-components-swapper"
       ],
       "decides": [],
       "tool": "claude"
     },
     {
       "github": "tarlarion",
+      "kind": "human",
       "title": "Менеджер команды",
       "owns": [],
       "decides": [],
       "manager": true,
       "tool": "cursor"
+    }
+  ],
+  "agents": [
+    {
+      "id": "ai-team",
+      "kind": "ai",
+      "title": "AI Ops · Team",
+      "card": "docs/hub/agents/team.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-tasks",
+      "kind": "ai",
+      "title": "AI Ops · Tasks",
+      "card": "docs/hub/agents/tasks.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-requests",
+      "kind": "ai",
+      "title": "AI Ops · Requests",
+      "card": "docs/hub/agents/requests.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-standards",
+      "kind": "ai",
+      "title": "AI Ops · Standards",
+      "card": "docs/hub/agents/standards.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-designer",
+      "kind": "ai",
+      "title": "Designer",
+      "card": "docs/hub/agents/designer.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-developer",
+      "kind": "ai",
+      "title": "Developer",
+      "card": "docs/hub/agents/developer.md",
+      "curator": "RickOBrian",
+      "instances": [
+        {
+          "chat": "AID · Developer · Presentbook",
+          "product": "presentbook"
+        },
+        {
+          "chat": "AID · Developer · Token Comparator",
+          "product": "token-comparator"
+        },
+        {
+          "chat": "AID · Developer · Style Migration",
+          "product": "style-migration"
+        },
+        {
+          "chat": "AID · Developer · MCP",
+          "product": "mcp"
+        },
+        {
+          "chat": "AID · Developer · Bot",
+          "product": "bot-request"
+        },
+        {
+          "chat": "AID · Developer · Team Service",
+          "product": "team"
+        }
+      ]
+    },
+    {
+      "id": "ai-qa",
+      "kind": "ai",
+      "title": "QA",
+      "card": "docs/hub/agents/qa.md",
+      "curator": "RickOBrian"
+    },
+    {
+      "id": "ai-devops",
+      "kind": "ai",
+      "title": "DevOps",
+      "card": "docs/hub/agents/devops.md",
+      "curator": "RickOBrian",
+      "instances": [
+        {
+          "chat": "AID · DevOps",
+          "contour": "duty"
+        },
+        {
+          "chat": "AID · DevOps · Presentbook",
+          "contour": "presentbook"
+        },
+        {
+          "chat": "AID · DevOps · Registry API",
+          "contour": "registry-api"
+        },
+        {
+          "chat": "AID · DevOps · Team Service",
+          "contour": "team-tasks"
+        }
+      ]
+    },
+    {
+      "id": "ai-security",
+      "kind": "ai",
+      "title": "Security",
+      "card": "docs/hub/agents/security.md",
+      "curator": "RickOBrian"
     }
   ]
 }

@@ -32,3 +32,15 @@ paths:
         type: cloud_functions
         function_id: ${FUNCTION_ID}
         service_account_id: ${GATEWAY_SA_ID}
+  /api/registry/changelogs:
+    x-yc-apigateway-any-method:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: ${FUNCTION_ID}
+        service_account_id: ${GATEWAY_SA_ID}
+  /api/registry/changelog-record:
+    x-yc-apigateway-any-method:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: ${FUNCTION_ID}
+        service_account_id: ${GATEWAY_SA_ID}

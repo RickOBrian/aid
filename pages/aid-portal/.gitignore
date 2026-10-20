@@ -5,3 +5,5 @@ scripts/icons-manifest.json
 .env*.local
 .vitest
 deploy/yc/dist
+# Данные страницы /ttm для npm run dev — закрытые, в git не попадают (AID-13)
+ttm-data.local.json

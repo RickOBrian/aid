@@ -36,7 +36,8 @@ export interface RegistryEntry {
   targetLibraryFileKey?: string;
   proposedBy?: string;
   proposedAt?: string;
-  status: RegistryEntryStatus;
+  /** Сервер его не пишет: согласованность — это сам факт записи в main. */
+  status?: RegistryEntryStatus;
   approvedBy?: string;
   approvedAt?: string;
 }
@@ -73,25 +74,6 @@ export function createEmptyRegistryContent(): RegistryFileContent {
     updatedAt: new Date().toISOString(),
     entries: [],
   };
-}
-
-/** Парсит поле owner/repo или URL вида https://github.com/owner/repo. */
-export function parseGitHubRepo(input: string): { owner: string; repo: string } | null {
-  const trimmed = input.trim();
-  if (!trimmed) return null;
-
-  const withoutGitSuffix = trimmed.replace(/\.git\/?$/, "");
-  const urlMatch = withoutGitSuffix.match(/github\.com[/:]([^/]+)\/([^/?#]+)/i);
-  if (urlMatch) {
-    return { owner: urlMatch[1], repo: urlMatch[2] };
-  }
-
-  const slashMatch = withoutGitSuffix.match(/^([^/\s]+)\/([^/\s]+)$/);
-  if (slashMatch) {
-    return { owner: slashMatch[1], repo: slashMatch[2] };
-  }
-
-  return null;
 }
 
 export { DEFAULT_REGISTRY_PATH } from "./registryApiConfig";

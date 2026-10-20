@@ -15,6 +15,8 @@ import type {
 } from "./comparators/types";
 import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
+import type { BumpType, DraftChange } from "./lib/changelogRecord";
+import type { ChangelogSource } from "./lib/changelogSnapshot";
 
 export interface UiReadyMessage {
   type: "ui-ready";
@@ -23,21 +25,6 @@ export interface UiReadyMessage {
 export interface SaveSettingsMessage {
   type: "save-settings";
   payload: { token: string; registrySecret: string };
-}
-
-export interface SaveGitHubSettingsMessage {
-  type: "save-github-settings";
-  payload: { token: string; repo: string; registryPath: string };
-}
-
-export interface LoadRegistryMessage {
-  type: "load-registry";
-  payload: { token: string; repo: string; registryPath: string };
-}
-
-export interface InitEmptyRegistryMessage {
-  type: "init-empty-registry";
-  payload: { repo: string; registryPath: string };
 }
 
 /** Удалить библиотеку из списка вместе с её данными. Решения остаются в истории. */
@@ -184,10 +171,6 @@ export interface ApplyToLayoutMessage {
   recordId: string;
 }
 
-export interface ToggleAdminModeMessage {
-  type: "toggle-admin-mode";
-}
-
 /**
  * UI запрашивает у code.ts свежий список ещё не отправленных решений перед
  * показом подтверждающей модалки — единственное место, где backend/history
@@ -215,12 +198,39 @@ export interface ClearPendingProposalsMessage {
   payload: { category: TokenCategory };
 }
 
+// --- «Записать изменения» (changelog-guide §6) ---
+
+/** Найти таблицы чейнжлогов этого файла. */
+export interface ChangelogLoadMessage {
+  type: "changelog-load";
+}
+
+/** Первый снимок: принять текущее состояние за опубликованную версию. */
+export interface ChangelogBaselineMessage {
+  type: "changelog-baseline";
+  payload: { path: string; source: ChangelogSource };
+}
+
+/** Собрать черновик «Не опубликовано» от снимка. */
+export interface ChangelogPrepareMessage {
+  type: "changelog-prepare";
+  payload: { path: string };
+}
+
+/** Записать: таблица в Figma и PR с JSON. */
+export interface ChangelogRecordMessage {
+  type: "changelog-record";
+  /** type — цифра, выбранная дизайнером; ниже вычисленной сервер её не опустит. */
+  payload: { path: string; drafts: DraftChange[]; author: string; type?: BumpType };
+}
+
 export type UiToCodeMessage =
+  | ChangelogLoadMessage
+  | ChangelogBaselineMessage
+  | ChangelogPrepareMessage
+  | ChangelogRecordMessage
   | UiReadyMessage
   | SaveSettingsMessage
-  | SaveGitHubSettingsMessage
-  | LoadRegistryMessage
-  | InitEmptyRegistryMessage
   | LoadLibraryMessage
   | RemoveLibraryMessage
   | SetActiveLibraryMessage
@@ -234,7 +244,6 @@ export type UiToCodeMessage =
   | PrintToFigmaMessage
   | BuildPreviewMessage
   | ApplyToLayoutMessage
-  | ToggleAdminModeMessage
   | RequestProposePreviewMessage
   | ProposeDecisionsMessage
   | ClearPendingProposalsMessage;
@@ -252,19 +261,10 @@ export interface InitStateMessage {
     textStylesAvailable: boolean;
     icons: LibraryIconSummary[];
     iconsAvailable: boolean;
-    hasGitHubToken: boolean;
-    githubRepo: string | null;
-    githubRegistryPath: string | null;
     registryCache: { registryVersion: number; entryCount: number; fetchedAt: string; localOnly: boolean } | null;
-    adminMode: boolean;
     pendingProposeCount: number;
     pendingProposeCountByCategory: Record<TokenCategory, number>;
   };
-}
-
-export interface GitHubSettingsSavedMessage {
-  type: "github-settings-saved";
-  payload: { repo: string; registryPath: string };
 }
 
 export interface RegistryLoadingMessage {
@@ -280,16 +280,6 @@ export interface RegistryLoadedMessage {
     fetchedAt: string;
     localOnly: boolean;
   };
-}
-
-export interface RegistryNotFoundMessage {
-  type: "registry-not-found";
-  payload: { repo: string; registryPath: string };
-}
-
-export interface RegistryInitializedMessage {
-  type: "registry-initialized";
-  payload: { registryVersion: number; entryCount: number; updatedAt: string };
 }
 
 export interface SettingsSavedMessage {
@@ -430,11 +420,6 @@ export interface ApplyToLayoutResultMessage {
   appliedNodeIds?: string[];
 }
 
-export interface AdminModeChangedMessage {
-  type: "admin-mode-changed";
-  payload: { enabled: boolean };
-}
-
 export interface PendingProposeCountMessage {
   type: "pending-propose-count";
   payload: {
@@ -493,20 +478,69 @@ export interface DecisionsSubmittedMessage {
 
 export interface DecisionsSubmitFailedMessage {
   type: "decisions-submit-failed";
+  /** Почему: от неё зависит, что сказать дизайнеру. Нет — общая формулировка. */
+  payload?: { reason: "invalid_key" | "network" | "submit_failed" };
 }
 
 export interface RegistryUnavailableMessage {
   type: "registry-unavailable";
 }
 
+/** Таблица чейнжлога, найденная в открытом файле. */
+export interface ChangelogTableInfo {
+  path: string;
+  artifact: string;
+  currentVersion: string | null;
+  pullRequestUrl: string | null;
+  hasSnapshot: boolean;
+  /** Что записывает таблица: имя коллекции или «Компоненты и иконки файла». */
+  sourceLabel: string | null;
+}
+
+export interface ChangelogTablesMessage {
+  type: "changelog-tables";
+  payload: { tables: ChangelogTableInfo[]; collections: Array<{ id: string; name: string }> };
+}
+
+export interface ChangelogDraftMessage {
+  type: "changelog-draft";
+  payload: {
+    path: string;
+    artifact: string;
+    baseVersion: string | null;
+    author: string;
+    drafts: DraftChange[];
+  };
+}
+
+export interface ChangelogRecordedMessage {
+  type: "changelog-recorded";
+  payload: { path: string; pullRequestUrl: string | null; outcome: "created" | "updated" | "unchanged" };
+}
+
+/**
+ * - `stale` — библиотеку поправили после черновика, черновик пересобран;
+ * - `invalid` — не хватает фраз или автора (`problems`);
+ * - `table` — не получилось обновить таблицу в Figma;
+ * - остальное — как у отправки решений.
+ */
+export interface ChangelogFailedMessage {
+  type: "changelog-failed";
+  payload: {
+    reason: "invalid_key" | "network" | "submit_failed" | "registry_unavailable" | "stale" | "invalid" | "table";
+    problems?: string[];
+  };
+}
+
 export type CodeToUiMessage =
+  | ChangelogTablesMessage
+  | ChangelogDraftMessage
+  | ChangelogRecordedMessage
+  | ChangelogFailedMessage
   | InitStateMessage
   | SettingsSavedMessage
-  | GitHubSettingsSavedMessage
   | RegistryLoadingMessage
   | RegistryLoadedMessage
-  | RegistryNotFoundMessage
-  | RegistryInitializedMessage
   | LibraryLoadingMessage
   | LibrariesChangedMessage
   | ProposalStatusesMessage
@@ -520,7 +554,6 @@ export type CodeToUiMessage =
   | PreviewReadyMessage
   | PreviewErrorMessage
   | ApplyToLayoutResultMessage
-  | AdminModeChangedMessage
   | PendingProposeCountMessage
   | ProposePreviewMessage
   | DecisionsSubmittedMessage

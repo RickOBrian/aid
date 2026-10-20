@@ -5,20 +5,19 @@ import {
   RegistryGitHubError,
   type FetchLike,
 } from './registryGithub.js';
-import { secretsEqual } from './security.js';
 
 export interface GetRegistryDeps {
   fetchImpl: FetchLike;
 }
 
-function readPluginSecretHeader(request: Request): string | null {
-  const value = request.headers.get('X-Plugin-Secret') ?? request.headers.get('x-plugin-secret');
-  if (!value?.trim()) {
-    return null;
-  }
-  return value.trim();
-}
-
+/**
+ * Реестр решений из main — без ключа.
+ *
+ * Реестр публичный (находка №22): ключ его не защищал, а дизайнеру нужен до
+ * того, как ему выдали ключ. Плагин читал его с raw.githubusercontent.com,
+ * но из части сетей в России GitHub недоступен — сервер читает его своим
+ * токеном, а плагин берёт raw только запасным путём.
+ */
 export async function handleGetRegistry(
   request: Request,
   deps: GetRegistryDeps,
@@ -27,21 +26,10 @@ export async function handleGetRegistry(
     return jsonResponse({ error: 'method_not_allowed' }, 405);
   }
 
-  const configuredSecret = process.env.PLUGIN_SHARED_SECRET;
-  if (!configuredSecret) {
-    console.error('[get-registry] PLUGIN_SHARED_SECRET is not configured');
-    return jsonResponse({ error: 'internal_error' }, 500);
-  }
-
   const githubToken = process.env.GITHUB_TOKEN;
   if (!githubToken) {
     console.error('[get-registry] GITHUB_TOKEN is not configured');
     return jsonResponse({ error: 'internal_error' }, 500);
-  }
-
-  const providedSecret = readPluginSecretHeader(request);
-  if (!providedSecret || !secretsEqual(providedSecret, configuredSecret)) {
-    return jsonResponse({ error: 'unauthorized' }, 401);
   }
 
   const config = getRegistryConfig();

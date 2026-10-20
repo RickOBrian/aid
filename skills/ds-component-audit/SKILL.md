@@ -3,7 +3,7 @@ name: ds-component-audit
 argument-hint: "[screenshot | figma-link]"
 disable-model-invocation: true
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -138,7 +138,8 @@ MCP не подключён, интеграция ограничена» и ра
 ## Шаг 4. Сопоставь с системой — Match / New / Ambiguous / Not a DS component
 
 Сравнивай по роли и составу, не только по внешнему виду. Базой известных
-компонентов считай `docs/storybook/components/*.html` и записи из
+компонентов считай страницы компонентов в Presentbook (`pages/aid-portal/`),
+`components/*-changelog.json` и записи из
 `memory/ds-component-spec/log.*.json` / `memory/ds-component-audit/log.*.json`.
 
 **Порог для New — высокий.** При сомнении дефолт — **Ambiguous**, не New.
@@ -188,7 +189,7 @@ Surface View. Не выбирай автоматически «дополнит�
 
 Проверь имя не только на смысловое совпадение с ролью, но и на конфликт
 нейминга с существующими компонентами по всей системе
-(`docs/storybook/components/*.html`, `memory/ds-component-spec/log.*.json`).
+(страницы компонентов в Presentbook, `memory/ds-component-spec/log.*.json`).
 При конфликте — предложи альтернативу с явной причиной.
 
 ---
@@ -460,6 +461,7 @@ Designer, не за skill.
 
 ### Changelog
 
+- **1.3.1** — 2026-10-09. База известных компонентов — Presentbook вместо легаси `docs/storybook/components/*.html` (ADR-044).
 - **1.3.0** — 2026-07-03. Added Decomposition Check step before verdict;
   moved clarifying questions to precede verdict instead of following it.
   Новый Шаг 3.5 (Decomposition Check) — проверка повторяющихся структурных

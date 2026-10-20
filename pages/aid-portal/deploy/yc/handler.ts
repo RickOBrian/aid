@@ -8,11 +8,17 @@
  * неверно — так показал прототип 2026-10-02.
  *
  * Переменные: AUTH_COOKIE_SECRET, BASIC_AUTH_USER, BASIC_AUTH_PASSWORD,
- * GITHUB_RELEASES_TOKEN (Lockbox), PREVIEW_STORAGE_URL (адрес бакета превью).
+ * GITHUB_RELEASES_TOKEN (Lockbox), PREVIEW_STORAGE_URL (адрес бакета превью),
+ * TTM_SECRET_ID (id секрета Lockbox с данными страницы `/ttm`; сами данные
+ * функция читает при запросе — `api/_lib/ttm.ts`), TEAM_SECRET_ID и
+ * TEAM_API_URL (сервис задач Team для `/manage/tasks`, `api/tasks.ts`).
  */
 import { POST as login } from '../../api/login';
 import { GET as pluginVersion } from '../../api/plugin-version';
 import { GET as session } from '../../api/session';
+import { GET as tasks } from '../../api/tasks';
+import { GET as team } from '../../api/team';
+import { GET as ttm } from '../../api/ttm';
 import { fromResponse, toRequest, type YcHttpEvent, type YcHttpResult } from './adapter';
 
 const NOT_FOUND = () =>
@@ -92,7 +98,14 @@ export function authConfigured(env: Record<string, string | undefined> = process
   });
 }
 
-export async function route(request: Request): Promise<Response> {
+export interface RouteOptions {
+  /** IAM-токен сервисного аккаунта функции — для чтения Lockbox. */
+  token?: string;
+  /** Запрос пришёл с превью PR (`/pr-N/api/...`). */
+  preview?: boolean;
+}
+
+export async function route(request: Request, options: RouteOptions = {}): Promise<Response> {
   const { pathname } = new URL(request.url);
   if (pathname === '/api/login' && request.method !== 'POST') {
     return NOT_FOUND();
@@ -110,6 +123,28 @@ export async function route(request: Request): Promise<Response> {
   }
   if (pathname === '/api/plugin-version') {
     return cachedPluginVersion();
+  }
+  if (pathname === '/api/ttm') {
+    // Данные страницы КПД закрытые (AID-13): превью PR их не получает,
+    // даже с сессией — только основной сайт.
+    if (options.preview) {
+      return NOT_FOUND();
+    }
+    return authConfigured()
+      ? ttm(request, { token: options.token })
+      : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  }
+  if (pathname === '/api/tasks') {
+    // Задачи команды (AID-16): только с сессией; превью — примерные задачи.
+    return authConfigured()
+      ? tasks(request, { token: options.token, preview: options.preview })
+      : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  }
+  if (pathname === '/api/team') {
+    // Инженеры AID (team-3): owners.json с main, только с сессией.
+    return authConfigured()
+      ? team(request)
+      : new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   }
   const storageUrl = process.env.PREVIEW_STORAGE_URL;
   if (storageUrl && request.method === 'GET') {
@@ -134,6 +169,10 @@ export interface YcContext {
   token?: string | { access_token?: string };
 }
 
+function contextToken(context: YcContext | undefined): string | undefined {
+  return typeof context?.token === 'string' ? context.token : context?.token?.access_token;
+}
+
 function isHttpResult(value: unknown): value is YcHttpResult {
   return Boolean(value) && typeof (value as YcHttpResult).statusCode === 'number';
 }
@@ -145,7 +184,7 @@ export async function invokePreviewVersion(
   fetchImpl: typeof fetch = fetch,
 ): Promise<YcHttpResult | null> {
   const functionId = process.env.FUNCTION_ID;
-  const token = typeof context?.token === 'string' ? context.token : context?.token?.access_token;
+  const token = contextToken(context);
   if (!functionId || !token) {
     return null;
   }
@@ -189,7 +228,9 @@ export async function handler(rawEvent: YcHttpEvent | string, context?: YcContex
         return remote;
       }
     }
-    return fromResponse(await route(toRequest(apiEvent)));
+    return fromResponse(await route(toRequest(apiEvent), { preview: true }));
   }
-  return fromResponse(await route(request));
+  // Переадресованное из `prod` событие — это превью, хотя путь в нём уже
+  // без `/pr-N` (так его отдаёт `invokePreviewVersion`).
+  return fromResponse(await route(request, { token: contextToken(context), preview: Boolean(event[PROXIED_MARK]) }));
 }

@@ -1,0 +1,66 @@
+{
+  "id": "token-rider-gradients-changelog-2026-10-20",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Gradients",
+  "collectionName": "rider-gradients",
+  "product": "rider",
+  "changeSummary": "Чейнжлог градиентов Rider из таблицы Figma (1.0.0–1.2.0). Коллекции нет в реестре Presentbook (token-changelog-registry.json), поэтому файл tokens/rider-gradients-changelog.json не создан: ensure-token-changelogs падает на осиротевшем файле. Переносится в tokens/ одним PR с регистрацией коллекции и страницей — presentbook-1 (AID-26).",
+  "status": "pending",
+  "created": "2026-10-20",
+  "author": "Sergey AI",
+  "changelogFile": {
+    "artifact": "Rider Gradients",
+    "currentVersion": "1.2.0",
+    "figmaTable": {
+      "fileKey": "yrfG6u9osujKX8e1B14lpT",
+      "nodeId": "316:142"
+    },
+    "entries": [
+      {
+        "version": "1.2.0",
+        "date": "2026-09-03",
+        "author": "Артур",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Добавлены переменные и стили градиентов Fade Horizontal и Shimmer",
+            "details": "Переменные: Fade Horizontal/Step 1, Fade Horizontal/Step 2, Shimmer/Step 1, Shimmer/Step 2, Shimmer/Step 3, Shimmer/Step 4, Shimmer/Step 5, Shimmer/Step 6\nСтили: Gradients/Fade Horizontal, Gradients/Shimmer"
+          },
+          {
+            "kind": "removed",
+            "description": "Удалены переменные и стили градиентов Attention и Accent",
+            "details": "Переменные: Attention/Step 1-2, Attention/Step 3-4, Accent/Step 1-2, Accent/Step 3-4\nСтили: Gradients/Attention, Gradients/Accent"
+          }
+        ]
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-09-02",
+        "author": "Артур",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Добавлены переменные и стили градиентов Attention и Accent",
+            "details": "Переменные: Attention/Step 1-2, Attention/Step 3-4, Accent/Step 1-2, Accent/Step 3-4\nСтили: Gradients/Attention, Gradients/Accent\nРежим Night = Day, переменные скрыты от публикации"
+          }
+        ]
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-08-24",
+        "author": "Артур",
+        "type": "minor",
+        "changes": [
+          {
+            "kind": "added",
+            "description": "Добавлена коллекция переменных градиентов и стили",
+            "details": "Коллекция: gradients (режимы Day / Night)\nПеременные: Top/Step 1-2, Top/Step 3, Bottom/Step 1-2, Bottom/Step 3, Viewpoint/Step 1-2, Viewpoint/Step 3-4\nСтили: Gradients/Top, Gradients/Bottom, Gradients/Viewpoint"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -74,7 +74,18 @@ export function getProductLabelParts(id: string): { prefix: string; name: string
 const LEGACY_HUB_SEGMENT = 'design-system';
 
 /** Paths outside product routing — kept as they are. */
-const PRODUCT_AGNOSTIC_PATHS = new Set(['/login']);
+const PRODUCT_AGNOSTIC_PATHS = new Set(['/login', '/ttm']);
+/** Раздел «Управление» (`/manage/tasks`, позже `/manage/roadmap`) — без продукта в адресе. */
+const PRODUCT_AGNOSTIC_PREFIX = '/manage';
+
+export function isProductAgnosticPath(pathname: string): boolean {
+  const normalized = normalizePathname(pathname);
+  return (
+    PRODUCT_AGNOSTIC_PATHS.has(normalized) ||
+    normalized === PRODUCT_AGNOSTIC_PREFIX ||
+    normalized.startsWith(`${PRODUCT_AGNOSTIC_PREFIX}/`)
+  );
+}
 
 export function productHubPath(id: string): string {
   return `/${id}`;
@@ -104,7 +115,7 @@ export function productPath(id: string, route: string): string {
  */
 export function canonicalAppPath(pathname: string): string | null {
   const normalized = normalizePathname(pathname);
-  if (PRODUCT_AGNOSTIC_PATHS.has(normalized)) {
+  if (isProductAgnosticPath(normalized)) {
     return null;
   }
   const [first, ...rest] = normalized.split('/').filter(Boolean);

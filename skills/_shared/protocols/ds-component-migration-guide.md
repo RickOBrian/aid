@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/
 name: ds-component-migration-guide
 metadata:
-  version: "1.1.2"
+  version: "1.1.3"
   kind: protocol
   owner: design-system-team
   platforms: [web, ios, android]
@@ -18,7 +18,7 @@ description: >
 
 # Component Migration — Guide — v1.1.1
 
-> Статус: Draft · v1.1.2 · обновлено 2026-09-20
+> Статус: Draft · v1.1.3 · обновлено 2026-10-09
 
 ---
 
@@ -55,7 +55,7 @@ description: >
 |---|---|
 | **Component spec** | `memory/ds-component-spec/log.*.json` — `stage`, `open_questions` целевого компонента и связанных подкомпонентов |
 | **Migration log** | `memory/ds-component-migration/log.*.json` — состояние текущей/прошлой сессии по этому компоненту |
-| **Код/доки в scope** | пути, заданные при запуске (`docs/`, `storybook/` и т.п.) — что реально сканируется |
+| **Код/доки в scope** | пути, заданные при запуске (`pages/aid-portal/`, `docs/` и т.п.) — что реально сканируется |
 | **Rollout readiness / blockers** | производное значение: спека компонента и всех связанных подкомпонентов должна быть `stage: final`, `open_questions: 0` |
 
 Без первых двух входов процесс не стартует — см. Шаг 0.1 в SKILL.md:
@@ -246,7 +246,7 @@ SKILL.md, раздел «Разделение ответственности»).
 
 ## 8. Примеры типичных запросов к агенту
 
-- «`/migrate_component Table`. Discovery. Scope: `docs/`, `storybook/`.
+- «`/migrate_component Table`. Discovery. Scope: `pages/aid-portal/`, `docs/`.
   Legacy-маркеры: `.table-wrap`. Ничего не менять — только найти и
   сгруппировать.»
 - «Подтверждаю mapping. Запускай Phase 3: `/migrate_component pilot`
@@ -272,6 +272,7 @@ SKILL.md, раздел «Разделение ответственности»).
 
 ## 10. Changelog
 
+- **1.1.3** — 2026-10-09. Примеры скоупа — без легаси `storybook/` (ADR-044).
 - **1.1.2** — 2026-09-20. guide-lint: нормализация формы.
 - **1.1.1** — синхронизировано с `ds-component-migration/SKILL.md` v1.2.1:
   добавлено терминальное значение `rollout.status: completed` (раздел 6);

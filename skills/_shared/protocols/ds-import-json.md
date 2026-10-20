@@ -2,13 +2,13 @@
 destination: skills/_shared/protocols/
 name: ds-import-json
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
   kind: protocol
 ---
 
 # Скилл: ds-import-json
 
-> Статус: Draft · v1.5.0 · обновлено 2026-09-21
+> Статус: Draft · v1.5.1 · обновлено 2026-10-09
 
 ---
 
@@ -85,8 +85,6 @@ legacy/
 stories/{product}/
 tokens/
 components/
-3. Создать заглушку stories/{product}/components/Welcome.stories.tsx с текстом "Компоненты появятся здесь" — чтобы раздел продукта не выглядел пустым в React Storybook (:6006) до первого компонента.
-4. Добавить продукт в `docs/storybook/_products.json` и секцию в `docs/storybook/_storybook-nav.json` (Tokens + Components).
 
 ---
 
@@ -126,22 +124,12 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ---
 
-## 8. Шаг 7 — обновление таблицы токенов в Storybook
+## 8. Шаг 7 — показ токенов
 
-**Канонический вывод — static System Storybook** (docs-server, порт **8000**):
-
-1. Обновить запись продукта в `docs/storybook/_products.json` (пути к JSON-файлам core/semantic/legacy).
-2. Убедиться, что секция продукта есть в `docs/storybook/_storybook-nav.json` (Overview, Tokens → Colors / Typography, Components → Overview).
-3. Страницы подхватят изменения автоматически:
-   - `docs/storybook/product.html?product={product}` — хаб продукта
-   - `docs/storybook/product-colors.html?product={product}` — таблица цветовых токенов
-   - `docs/storybook/product-components.html?product={product}` — хаб компонентов
-
-Токены со статусом legacy — с бейджем LEGACY и tooltip из поля deviation.
-
-> Раздел про React Storybook удалён 2026-09-21 вместе с самим Storybook:
-> инструмент, его конфигурация и все истории убраны из репозитория.
-> Витрина токенов и компонентов — Presentbook (`pages/aid-portal/`).
+Витрина токенов и компонентов — Presentbook (`pages/aid-portal/`), он
+читает данные продукта при сборке. Показ нового продукта или новой
+коллекции — задача чата Presentbook (стык «Токены и changelog продуктов»
+в корневом `CLAUDE.md`). Легаси-портал `docs/storybook/` легаси и удаляется (ADR-044).
 
 ---
 
@@ -151,13 +139,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 - сколько файлов обработано
 - сколько токенов залито по каждому продукту, с разбивкой stable/legacy
 - список пропущенных невалидных записей с причиной (если были)
-- ссылки на localhost для каждой изменённой страницы (по одной на продукт):
-  - `http://localhost:8000/docs/storybook/product.html?product={product}`
-  - `http://localhost:8000/docs/storybook/product-colors.html?product={product}`
-  - `http://localhost:8000/docs/storybook/product-typography.html?product={product}` (если импортирована типографика)
-  - `http://localhost:8000/docs/storybook/product-components.html?product={product}`
-
-Запуск static Storybook: `./scripts/start-docs.sh 8000` или `python3 scripts/docs-server.py 8000`.
+- что нужно показать в Presentbook — запросом в его чат.
 
 ---
 
@@ -171,6 +153,7 @@ git commit -m "import: add {N} tokens to {product} ({type}, {status})"
 
 ## 11. Changelog
 
+- **1.5.1** — 2026-10-09. Убраны шаги и ссылки легаси-портала `docs/storybook/`; показ — через Presentbook (ADR-044). Убран шаг заглушки историй React Storybook.
 - **1.5.0** — 2026-09-21. Добавлено предупреждение: целевая раскладка импорта
   (`tokens/{product}/core|semantic`, `stories/{product}/`) удалена вместе со
   Storybook. Процедура сохранена, пути назначения требуют переписывания.

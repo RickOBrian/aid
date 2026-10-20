@@ -2,6 +2,10 @@ import { useEffect } from 'react';
 import { DriverColorTokensPage } from './DriverColorTokensPage';
 import { HubPage } from './HubPage';
 import { LoginPage } from './LoginPage';
+import { TtmPage } from './TtmPage';
+import { ManagePage } from './ManagePage';
+import { TasksPage } from './TasksPage';
+import { TeamPage } from './TeamPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -21,7 +25,7 @@ import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
 import { hasProductContent } from './productContent';
 import { ProductAccentScope } from './ProductAccentScope';
-import { DEFAULT_PRODUCT_ID, getProductLabel, productHubPath, resolveProductId, resolveProductRoute } from './productRegistry';
+import { DEFAULT_PRODUCT_ID, getProductLabel, normalizePathname, productHubPath, resolveProductId, resolveProductRoute } from './productRegistry';
 import { currentAppPath, withBase } from './base';
 
 /**
@@ -139,6 +143,21 @@ export function App() {
   // falls through to `NotFoundPage` for `/login` or `/rider/login`-style paths.
   if (currentAppPath() === '/login') {
     return <LoginPage />;
+  }
+  // `/ttm` — КПД команды AID (AID-13): без продукта и без ссылок из меню.
+  if (currentAppPath() === '/ttm') {
+    return <TtmPage />;
+  }
+  // «Управление» (ADR-046): без продукта в адресе и без ссылок из меню.
+  const managePath = normalizePathname(currentAppPath());
+  if (managePath === '/manage') {
+    return <ManagePage />;
+  }
+  if (managePath === '/manage/tasks' || managePath.startsWith('/manage/tasks/')) {
+    return <TasksPage />;
+  }
+  if (managePath === '/manage/team') {
+    return <TeamPage />;
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());

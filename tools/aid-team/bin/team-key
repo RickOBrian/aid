@@ -1,0 +1,201 @@
+#!/usr/bin/env python3
+"""Личный ключ сервиса задач AID (team.aidteam.pro) — /team-key.
+
+  team-key            получить ключ: вход через GitHub (приложение «AID Team»)
+  team-key --check    чей ключ сохранён на этой машине
+  team-key --revoke   отозвать ключ этой машины и удалить его
+
+  team-key --agent ai-<роль> [--check | --revoke]
+                      то же для AI-инженера на этой машине (ADR-047):
+                      выдаёт хозяин машины своим входом GitHub, в истории
+                      задач правка видна как «ai-<роль> (у @логин)».
+                      Хранится отдельно от личного ключа.
+
+Ключ никогда не выводится: сразу уходит в связку ключей macOS
+(security, сервис team.aidteam.pro) или, на Linux, в файл
+~/.config/aidteam/team-key с правами 0600. Токен GitHub после выдачи
+ключа не хранится. Нужен только python3 — работает и в Claude Code, и в
+Cursor.
+"""
+
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+API = os.environ.get("TEAM_API", "https://team.aidteam.pro").rstrip("/")
+CLIENT_ID = "Ov23litYvK5To9WhHv6Z"  # GitHub OAuth App «AID Team», Device Flow; не секрет
+SERVICE = "team.aidteam.pro"
+FILE = os.path.expanduser("~/.config/aidteam/team-key")
+AGENT_RE = re.compile(r"^ai-[a-z][a-z0-9-]*$")
+
+
+def slot(agent=None):
+    """Где лежит ключ: (сервис в связке ключей, файл на Linux)."""
+    if not agent:
+        return SERVICE, FILE
+    if not AGENT_RE.match(agent):
+        sys.exit(f"--agent: нужен id вида ai-<роль>, получено {agent!r}")
+    return f"{SERVICE}/agent/{agent}", os.path.expanduser(f"~/.config/aidteam/agent-{agent}")
+
+
+def post_form(url, data):
+    req = urllib.request.Request(
+        url,
+        data=urllib.parse.urlencode(data).encode(),
+        headers={"Accept": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+
+def api(method, path, key=None, body=None):
+    headers = {"Accept": "application/json"}
+    if key:
+        headers["Authorization"] = "Bearer " + key
+    data = None
+    if body is not None:
+        data = json.dumps(body).encode()
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(API + path, data=data, method=method, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status, json.load(r)
+    except urllib.error.HTTPError as e:
+        try:
+            return e.code, json.load(e)
+        except Exception:
+            return e.code, {"error": "http", "message": str(e)}
+
+
+def keychain():
+    return sys.platform == "darwin" and shutil.which("security")
+
+
+def save(login, key, agent=None):
+    service, path = slot(agent)
+    if keychain():
+        # Удалить прежний ключ этой машины для этого сервиса, затем записать новый.
+        subprocess.run(["security", "delete-generic-password", "-s", service],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["security", "add-generic-password", "-U", "-s", service, "-a", agent or login, "-w", key],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return "связка ключей macOS"
+    os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump({"login": login, "agent": agent, "key": key}, f)
+    return path
+
+
+def load(agent=None):
+    service, path = slot(agent)
+    if keychain():
+        r = subprocess.run(["security", "find-generic-password", "-s", service, "-w"],
+                           capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else None
+    try:
+        with open(path) as f:
+            return json.load(f).get("key")
+    except FileNotFoundError:
+        return None
+
+
+def forget(agent=None):
+    service, path = slot(agent)
+    if keychain():
+        subprocess.run(["security", "delete-generic-password", "-s", service],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    elif os.path.exists(path):
+        os.remove(path)
+
+
+def who(agent):
+    return f"{agent} (у @{{}})" if agent else "@{}"
+
+
+def issue(agent=None):
+    dev = post_form("https://github.com/login/device/code", {"client_id": CLIENT_ID})
+    print(f"1. Открой {dev['verification_uri']}")
+    print(f"2. Введи код: {dev['user_code']}")
+    print("3. Подтверди вход в приложение «AID Team». Жду…", flush=True)
+    interval = int(dev.get("interval", 5))
+    deadline = time.time() + int(dev.get("expires_in", 900))
+    token = None
+    while time.time() < deadline:
+        time.sleep(interval)
+        r = post_form("https://github.com/login/oauth/access_token", {
+            "client_id": CLIENT_ID,
+            "device_code": dev["device_code"],
+            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+        })
+        if r.get("access_token"):
+            token = r["access_token"]
+            break
+        err = r.get("error")
+        if err == "slow_down":
+            interval += 5
+        elif err != "authorization_pending":
+            sys.exit(f"Вход не удался: {err}")
+    if not token:
+        sys.exit("Время на вход истекло — запусти /team-key ещё раз.")
+    request = {"githubToken": token}
+    if agent:
+        request["agent"] = agent
+    status, body = api("POST", "/v1/keys", body=request)
+    token = request = None
+    if status != 201:
+        sys.exit(f"Сервис не выдал ключ: {body.get('message', status)}")
+    where = save(body["login"], body["key"], agent)
+    print(f"Готово: ключ для {who(agent).format(body['login'])} сохранён — {where}. На экран он не выводится.")
+
+
+def check(agent=None):
+    key = load(agent)
+    if not key:
+        sys.exit("Ключа на этой машине нет — запусти /team-key.")
+    status, body = api("GET", "/v1/me", key=key)
+    if status != 200:
+        sys.exit(f"Ключ не работает: {body.get('message', status)} — запусти /team-key заново.")
+    print(f"Ключ работает: {who(body.get('agent')).format(body.get('login'))}")
+
+
+def revoke(agent=None):
+    key = load(agent)
+    if not key:
+        sys.exit("Ключа на этой машине нет.")
+    status, body = api("DELETE", "/v1/keys/current", key=key)
+    forget(agent)
+    if status == 200:
+        print("Ключ отозван и удалён с этой машины.")
+    else:
+        print(f"Удалён с машины; сервис ответил: {body.get('message', status)}")
+
+
+def take_agent(args):
+    """Вынуть --agent <id> из аргументов: (id или None, остальное)."""
+    if "--agent" not in args:
+        return None, args
+    i = args.index("--agent")
+    if i + 1 >= len(args):
+        sys.exit(__doc__)
+    agent = args[i + 1]
+    slot(agent)
+    return agent, args[:i] + args[i + 2:]
+
+
+if __name__ == "__main__":
+    agent, rest = take_agent(sys.argv[1:])
+    arg = rest[0] if rest else ""
+    if len(rest) > 1:
+        sys.exit(__doc__)
+    action = {"": issue, "--check": check, "--revoke": revoke}.get(arg)
+    if not action:
+        sys.exit(__doc__)
+    action(agent)

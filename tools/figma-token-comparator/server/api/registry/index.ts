@@ -1,7 +1,7 @@
 import { optionsResponse } from '../_lib/cors.js';
 import { handleGetRegistry } from '../_lib/getRegistry.js';
 
-/** Vercel Web API — read decisions-registry.json from main via backend GitHub token. */
+/** Реестр решений из main, без ключа: сервер читает GitHub своим токеном. */
 export function OPTIONS(): Response {
   return optionsResponse();
 }

@@ -10,12 +10,12 @@
   "networkAccess": {
     "allowedDomains": [
       "https://api.figma.com",
-      "https://api.github.com",
       "https://raw.githubusercontent.com",
+      "https://api.aidteam.pro",
       "https://aid-registry-api.vercel.app",
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ],
-    "reasoning": "api.figma.com — чтение переменных и стилей текста библиотеки; api.github.com — чтение реестра в admin-режиме; raw.githubusercontent.com — чтение публичного реестра решений без авторизации; aid-registry-api.vercel.app — отправка решений на согласование; fonts.googleapis.com / fonts.gstatic.com — шрифт Google Sans."
+    "reasoning": "api.figma.com — чтение переменных и стилей текста библиотеки; raw.githubusercontent.com — запасной путь чтения реестра решений; api.aidteam.pro — сервер реестра: чтение реестра, отправка решений и их статусы; aid-registry-api.vercel.app — прежний адрес сервера, до конца переезда (ADR-038); fonts.googleapis.com / fonts.gstatic.com — шрифт Google Sans."
   }
 }
