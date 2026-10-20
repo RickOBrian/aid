@@ -1,6 +1,6 @@
 # Роль Requests
 
-**Чат:** AID · Ops (`~/Projects/aid-ops`, карточка `ops.md`).
+**Чат:** Ops (`~/Projects/aid-ops`, карточка `ops.md`).
 **Вход в контекст:** эта карточка → `../ORCHESTRATION.md` §2, §10–11 →
 `tools/aid-bot/CLAUDE.md`.
 

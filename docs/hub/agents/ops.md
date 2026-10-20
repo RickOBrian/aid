@@ -1,4 +1,4 @@
-# AID · Ops
+# Ops
 
 **Папка:** `~/Projects/aid-ops`. **Модель:** Sonnet · низкое.
 **Вход:** эта карточка → карточки ролей `tasks.md`, `team.md`,

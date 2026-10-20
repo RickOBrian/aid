@@ -1,4 +1,4 @@
-# AID · Review
+# Review
 
 **Папка:** `~/Projects/aid-security`. **Модель:** Opus · среднее.
 **Вход:** эта карточка → `qa.md`, `security.md` → `../ORCHESTRATION.md`

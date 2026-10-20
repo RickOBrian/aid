@@ -1,6 +1,6 @@
 # Инфраструктура AID: где что лежит
 
-Справка дежурного AI-инженера `AID · DevOps` (`../agents/devops.md`).
+Справка дежурного AI-инженера `DevOps` (`../agents/devops.md`).
 Источники — ADR-038, ADR-046, workflow в `.github/workflows/`. Значений
 секретов здесь нет и не будет: только имена переменных и где они живут.
 Правила работы с ключами — `../ORCHESTRATION.md` §4 «Секреты».
@@ -27,7 +27,7 @@
 - Устройство: статика — Object Storage; функции — Cloud Functions; вход,
   SPA-fallback и свой домен — API Gateway; сертификаты — Certificate
   Manager (Let's Encrypt); секреты — Lockbox.
-- С Облаком работает только чат AID · DevOps: одна задача — один контур,
+- С Облаком работает только чат DevOps: одна задача — один контур,
   каждая команда `yc` — с явным `--profile presentbook` / `registry-api` /
   `team-tasks`; `default` — админский вход PD. Полностью —
   `../ORCHESTRATION.md` §4 «Секреты».
