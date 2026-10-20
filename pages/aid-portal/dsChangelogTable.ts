@@ -177,6 +177,10 @@ ${DS_TOKEN_TABLE_STYLE}
   line-height: 16px;
   color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
+.dctp-changelog-version--unreleased {
+  font-family: inherit;
+  white-space: nowrap;
+}
 .dctp-changelog-date {
   font-size: 13px;
   line-height: 16px;

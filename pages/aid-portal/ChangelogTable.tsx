@@ -11,8 +11,9 @@ export interface ChangelogChange {
 }
 
 export interface ChangelogEntry {
-  version: string;
-  date: string;
+  /** `null` — запись «Не опубликовано»: изменение уже в библиотеке, версии ещё нет (changelog-guide §4). */
+  version: string | null;
+  date: string | null;
   type: ChangelogReleaseType;
   author: string;
   changes: ChangelogChange[];
@@ -20,7 +21,7 @@ export interface ChangelogEntry {
 
 export interface TokenChangelog {
   artifact: string;
-  currentVersion: string;
+  currentVersion: string | null;
   entries: ChangelogEntry[];
 }
 
@@ -44,6 +45,42 @@ function compareSemverDesc(a: string, b: string): number {
   }
 
   return 0;
+}
+
+export const UNRELEASED_LABEL = 'Не опубликовано';
+
+/** «Не опубликовано» — первой, дальше опубликованные от новой версии к старой. */
+export function sortChangelogEntries(entries: ChangelogEntry[]): ChangelogEntry[] {
+  return [...entries].sort((left, right) => {
+    if (left.version === null || right.version === null) {
+      return (left.version === null ? 0 : 1) - (right.version === null ? 0 : 1);
+    }
+    return compareSemverDesc(left.version, right.version);
+  });
+}
+
+function entryKey(entry: ChangelogEntry, index: number): string {
+  return entry.version ?? `unreleased-${index}`;
+}
+
+function ChangelogVersion({ version }: { version: string | null }) {
+  return version === null ? (
+    <span className="dctp-changelog-version dctp-changelog-version--unreleased">{UNRELEASED_LABEL}</span>
+  ) : (
+    <span className="dctp-changelog-version">{version}</span>
+  );
+}
+
+function ChangelogDate({ date }: { date: string | null }) {
+  if (date === null) {
+    return <span className="dctp-changelog-date">—</span>;
+  }
+
+  return (
+    <time className="dctp-changelog-date" dateTime={date}>
+      {formatChangelogDate(date)}
+    </time>
+  );
 }
 
 function formatChangelogDate(date: string): string {
@@ -87,13 +124,11 @@ function ChangelogChangesList({ changes }: { changes: ChangelogChange[] }) {
 function ChangelogEntryCards({ entries }: { entries: ChangelogEntry[] }) {
   return (
     <div className="dctp-changelog-cards">
-      {entries.map((entry) => (
-        <article key={entry.version} className="dctp-changelog-card">
+      {entries.map((entry, index) => (
+        <article key={entryKey(entry, index)} className="dctp-changelog-card">
           <div className="dctp-changelog-card-head">
-            <span className="dctp-changelog-version">{entry.version}</span>
-            <time className="dctp-changelog-date" dateTime={entry.date}>
-              {formatChangelogDate(entry.date)}
-            </time>
+            <ChangelogVersion version={entry.version} />
+            <ChangelogDate date={entry.date} />
           </div>
           <p className="dctp-changelog-card-author">Автор · {entry.author}</p>
           <ChangelogChangesList changes={entry.changes} />
@@ -111,7 +146,7 @@ export function ChangelogTable({
   emptyMessage?: string;
 }) {
   const sortedEntries = useMemo(
-    () => [...data.entries].sort((left, right) => compareSemverDesc(left.version, right.version)),
+    () => sortChangelogEntries(data.entries),
     [data.entries],
   );
 
@@ -147,18 +182,16 @@ export function ChangelogTable({
             </tr>
           </thead>
           <tbody>
-            {sortedEntries.map((entry) => (
-              <tr key={entry.version}>
+            {sortedEntries.map((entry, index) => (
+              <tr key={entryKey(entry, index)}>
                 <td className="dctp-changelog-col-version">
-                  <span className="dctp-changelog-version">{entry.version}</span>
+                  <ChangelogVersion version={entry.version} />
                 </td>
                 <td className="dctp-changelog-col-changes">
                   <ChangelogChangesList changes={entry.changes} />
                 </td>
                 <td className="dctp-changelog-col-date">
-                  <time className="dctp-changelog-date" dateTime={entry.date}>
-                    {formatChangelogDate(entry.date)}
-                  </time>
+                  <ChangelogDate date={entry.date} />
                 </td>
                 <td className="dctp-changelog-col-author">{entry.author}</td>
               </tr>
