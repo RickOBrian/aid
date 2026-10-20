@@ -99,7 +99,7 @@
         "kind": "set",
         "name": "Button Floating"
       },
-      "rule": "State=Default (Disabled=Yes → Disabled); без текста: Show Label=false, Left Icon=true, Icon L = иконка Rider с тем же именем; центр сохранить; с текстом (Delivery «907»): Show Label=true, иконка справа, цветная иконка Rider; ширину принять Rider"
+      "rule": "State=Default (Disabled=Yes → Disabled); без текста: Show Label=false, Left Icon=true, Icon L = иконка Rider с тем же именем; центр сохранить; с текстом (Delivery «907»): Show Label=true, иконка справа, цветная иконка Rider; поля: у иконки space-14, у текста space-16, иконка–текст space-4 (решение 8)"
     },
     {
       "from": [
