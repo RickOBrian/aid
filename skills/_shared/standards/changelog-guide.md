@@ -120,7 +120,7 @@ Figma** (раздел 6). До неё запись стоит в строке «
 | `entries[]` | От новой записи к старой |
 | `entries[].version` | SemVer; `null` — запись «Не опубликовано» |
 | `entries[].date` | Дата публикации ISO; `null` до публикации |
-| `entries[].author` | Кто внёс изменение: имя человека или AI-инженера, как в `docs/hub/owners.json` |
+| `entries[].author` | Кто внёс изменение: отображаемое имя человека или AI-инженера, как его видят в таблице (имя в Figma, например «Артур», «Sergey AI»). Логин GitHub и id из `docs/hub/owners.json` сюда не пишут |
 | `entries[].type` | Предлагаемая цифра: `major` / `minor` / `patch` |
 | `changes[].kind` | `added` / `changed` / `removed` / `fixed` / `deprecated` |
 | `changes[].description` | Одна фраза: что и зачем |
@@ -271,7 +271,7 @@ Bump: `1.1.1` → `2.0.0`
 {
   "version": "1.0.0",
   "date": "2026-08-16",
-  "author": "sergej",
+  "author": "Sergey AI",
   "type": "added",
   "impact": "initial",
   "changes": [
