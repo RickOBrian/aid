@@ -146,7 +146,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -191,7 +191,7 @@
           "check": "value",
           "what": "Тень шторки: второй слой 0.08 → 0.12",
           "ask": "Принять сдвиг или отклонение",
-          "status": "open"
+          "status": "accepted"
         }
       ],
       "unbound": [
@@ -309,7 +309,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         },
         {
@@ -364,7 +364,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 7,
@@ -515,7 +515,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -561,7 +561,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 12,
@@ -685,7 +685,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -731,7 +731,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 12,
@@ -861,7 +861,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -907,7 +907,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 12,
@@ -1037,7 +1037,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -1083,7 +1083,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 12,
@@ -1214,7 +1214,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -1253,7 +1253,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 11,
@@ -1402,7 +1402,7 @@
           "token": "Shadows/Bottom Sheet",
           "exact": false,
           "delta": "второй слой a0.08 → 0.12",
-          "status": "open",
+          "status": "fixed",
           "finding": 6
         }
       ],
@@ -1448,7 +1448,7 @@
           "check": "value",
           "what": "Тень шторки 0.08 → 0.12 — как в пробе, находка 6",
           "ref": "проба 2038:6035, находка 6",
-          "status": "open"
+          "status": "accepted"
         },
         {
           "n": 8,
@@ -1682,6 +1682,18 @@
         "Сверить ширину полоски 144 с китом Apple iOS 26 (Figma) — когда будет доступ к копии кита; у кита прежних версий 134.",
         "Задача Designer: Home Indicator iOS в библиотеке Rider — описание «системный элемент iOS, не реализуется; резерв нижнего safe area 34»; слои полоски отражены по горизонтали (масштаб −1) — вернуть без отражения."
       ]
+    },
+    {
+      "finding": 6,
+      "date": "2026-10-20",
+      "by": "PD",
+      "status": "accepted",
+      "decision": "Тень шторки — стиль Rider Shadows/Bottom Sheet как есть (три слоя: 0/3/5 α0.20, 0/1/18 α0.12, 0/6/10 α0.14 — Material elevation 6). В макете второй слой α0.08 без стиля; на странице Components исходника (3577:55382) та же шторка встречается и со стилем 0.12 (Shadows/Bottom Sheet, Shadow 6), 0.08 — ручные копии. Разница на глаз не видна (ниже порога сравнения снимков).",
+      "appliesTo": "все шторки",
+      "resolved": [
+        "2026-10-20: «стало» менять не нужно — Shadows/Bottom Sheet уже стоит на шторках всех 8 экранов с находкой. Бейдж «согласовано» на карточке 6 пробы и «…, 6 — согласовано» в рядах 1–7, текст карточки обновлён."
+      ],
+      "open": []
     }
   ]
 }
