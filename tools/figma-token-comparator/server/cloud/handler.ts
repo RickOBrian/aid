@@ -6,6 +6,8 @@
  * `api/registry/`, сюда и в спецификацию шлюза `cloud/gateway.yaml`.
  */
 
+import * as changelogRecord from '../api/registry/changelog-record.js';
+import * as changelogs from '../api/registry/changelogs.js';
 import * as registry from '../api/registry/index.js';
 import * as proposalStatus from '../api/registry/proposal-status.js';
 import * as proposeDecision from '../api/registry/propose-decision.js';
@@ -19,6 +21,8 @@ export const ROUTES: Record<string, Route> = {
   '/api/registry': registry,
   '/api/registry/proposal-status': proposalStatus,
   '/api/registry/propose-decision': proposeDecision,
+  '/api/registry/changelogs': changelogs,
+  '/api/registry/changelog-record': changelogRecord,
 };
 
 /** `/api/registry/` и `/api/registry` — один маршрут. */

@@ -15,6 +15,8 @@ import type {
 } from "./comparators/types";
 import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
+import type { BumpType, DraftChange } from "./lib/changelogRecord";
+import type { ChangelogSource } from "./lib/changelogSnapshot";
 
 export interface UiReadyMessage {
   type: "ui-ready";
@@ -196,7 +198,37 @@ export interface ClearPendingProposalsMessage {
   payload: { category: TokenCategory };
 }
 
+// --- «Записать изменения» (changelog-guide §6) ---
+
+/** Найти таблицы чейнжлогов этого файла. */
+export interface ChangelogLoadMessage {
+  type: "changelog-load";
+}
+
+/** Первый снимок: принять текущее состояние за опубликованную версию. */
+export interface ChangelogBaselineMessage {
+  type: "changelog-baseline";
+  payload: { path: string; source: ChangelogSource };
+}
+
+/** Собрать черновик «Не опубликовано» от снимка. */
+export interface ChangelogPrepareMessage {
+  type: "changelog-prepare";
+  payload: { path: string };
+}
+
+/** Записать: таблица в Figma и PR с JSON. */
+export interface ChangelogRecordMessage {
+  type: "changelog-record";
+  /** type — цифра, выбранная дизайнером; ниже вычисленной сервер её не опустит. */
+  payload: { path: string; drafts: DraftChange[]; author: string; type?: BumpType };
+}
+
 export type UiToCodeMessage =
+  | ChangelogLoadMessage
+  | ChangelogBaselineMessage
+  | ChangelogPrepareMessage
+  | ChangelogRecordMessage
   | UiReadyMessage
   | SaveSettingsMessage
   | LoadLibraryMessage
@@ -454,7 +486,57 @@ export interface RegistryUnavailableMessage {
   type: "registry-unavailable";
 }
 
+/** Таблица чейнжлога, найденная в открытом файле. */
+export interface ChangelogTableInfo {
+  path: string;
+  artifact: string;
+  currentVersion: string | null;
+  pullRequestUrl: string | null;
+  hasSnapshot: boolean;
+  /** Что записывает таблица: имя коллекции или «Компоненты и иконки файла». */
+  sourceLabel: string | null;
+}
+
+export interface ChangelogTablesMessage {
+  type: "changelog-tables";
+  payload: { tables: ChangelogTableInfo[]; collections: Array<{ id: string; name: string }> };
+}
+
+export interface ChangelogDraftMessage {
+  type: "changelog-draft";
+  payload: {
+    path: string;
+    artifact: string;
+    baseVersion: string | null;
+    author: string;
+    drafts: DraftChange[];
+  };
+}
+
+export interface ChangelogRecordedMessage {
+  type: "changelog-recorded";
+  payload: { path: string; pullRequestUrl: string | null; outcome: "created" | "updated" | "unchanged" };
+}
+
+/**
+ * - `stale` — библиотеку поправили после черновика, черновик пересобран;
+ * - `invalid` — не хватает фраз или автора (`problems`);
+ * - `table` — не получилось обновить таблицу в Figma;
+ * - остальное — как у отправки решений.
+ */
+export interface ChangelogFailedMessage {
+  type: "changelog-failed";
+  payload: {
+    reason: "invalid_key" | "network" | "submit_failed" | "registry_unavailable" | "stale" | "invalid" | "table";
+    problems?: string[];
+  };
+}
+
 export type CodeToUiMessage =
+  | ChangelogTablesMessage
+  | ChangelogDraftMessage
+  | ChangelogRecordedMessage
+  | ChangelogFailedMessage
   | InitStateMessage
   | SettingsSavedMessage
   | RegistryLoadingMessage
