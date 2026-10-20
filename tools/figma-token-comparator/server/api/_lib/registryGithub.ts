@@ -56,7 +56,7 @@ function buildAuthHeaders(token: string): Record<string, string> {
   };
 }
 
-async function parseJsonBody<T extends GitHubApiBody>(response: Response): Promise<T> {
+export async function parseJsonBody<T extends GitHubApiBody>(response: Response): Promise<T> {
   try {
     return (await response.json()) as T;
   } catch (error) {
@@ -68,7 +68,7 @@ async function parseJsonBody<T extends GitHubApiBody>(response: Response): Promi
   }
 }
 
-async function githubRequest(
+export async function githubRequest(
   fetchImpl: FetchLike,
   token: string,
   path: string,
@@ -89,7 +89,7 @@ async function githubRequest(
   }
 }
 
-function encodeRepoPath(path: string): string {
+export function encodeRepoPath(path: string): string {
   return path
     .split('/')
     .filter((segment) => segment.length > 0)
@@ -97,11 +97,11 @@ function encodeRepoPath(path: string): string {
     .join('/');
 }
 
-function decodeBase64Content(content: string): string {
+export function decodeBase64Content(content: string): string {
   return Buffer.from(content.replace(/\s/g, ''), 'base64').toString('utf8');
 }
 
-function encodeBase64Content(content: string): string {
+export function encodeBase64Content(content: string): string {
   return Buffer.from(content, 'utf8').toString('base64');
 }
 
