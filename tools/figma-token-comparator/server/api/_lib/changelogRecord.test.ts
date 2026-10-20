@@ -303,5 +303,6 @@ describe('buildChangelogPullRequestBody', () => {
     expect(text).toContain('**Добавлено** — Добавлена переменная Button/Warning Pressed');
     expect(text).toContain('  - Button/Warning Pressed: Day #BF0020, Night #FF4747');
     expect(text).not.toContain(SECRET);
+    expect(text).not.toContain('Артур');
   });
 });

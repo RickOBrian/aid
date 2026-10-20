@@ -328,7 +328,7 @@ export function buildChangelogPullRequestBody(body: RecordChangelogBody, artifac
   const lines = [
     `Запись «Не опубликовано» в \`${body.path}\` (${artifact}) — из Token Comparator, кнопка «Записать изменения».`,
     '',
-    `Автор: ${body.entry.author} · предлагаемая цифра: **${body.entry.type}**`,
+    `Предлагаемая цифра: **${body.entry.type}**. Автор — в самой записи (changelog-guide §5).`,
     '',
   ];
   for (const change of body.entry.changes) {
