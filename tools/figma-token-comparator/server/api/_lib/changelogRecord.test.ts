@@ -94,7 +94,7 @@ describe('validateUnpublishedEntry', () => {
 
 describe('validateRecordChangelogBody', () => {
   it('пускает только чейнжлоги из tokens/ и components/', () => {
-    const base = { sharedSecret: 's', recordedBy: 'Артур', entry: ENTRY };
+    const base = { sharedSecret: 's', entry: ENTRY };
     expect(validateRecordChangelogBody({ ...base, path: PATH })).not.toBeNull();
     expect(validateRecordChangelogBody({ ...base, path: 'components/switch-changelog.json' })).not.toBeNull();
     expect(validateRecordChangelogBody({ ...base, path: 'decisions-registry.json' })).toBeNull();
@@ -139,7 +139,7 @@ describe('handleRecordChangelog', () => {
     });
 
     const response = await handleRecordChangelog(
-      recordRequest({ sharedSecret: SECRET, recordedBy: 'Артур', path: PATH, entry: ENTRY }),
+      recordRequest({ sharedSecret: SECRET, path: PATH, entry: ENTRY }),
       { fetchImpl, now: () => new Date(1_700_000_000_000) },
     );
     const body = await response.json();
@@ -160,14 +160,14 @@ describe('handleRecordChangelog', () => {
     const onBranch = upsertUnpublishedEntry(MAIN_FILE, { ...validateUnpublishedEntry(ENTRY)!, author: 'Старое' });
     const { fetchImpl, calls } = fakeGithub({
       [PULLS]: () =>
-        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch } }]),
+        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch, repo: { full_name: 'RickOBrian/aid' } } }]),
       [`GET ${REPO}/contents/tokens/rider-colors-semantic-changelog.json?ref=${encodeURIComponent(branch)}`]: () =>
         contents(onBranch, 'sha-branch'),
       [`PUT ${REPO}/contents/tokens/rider-colors-semantic-changelog.json`]: () => json(200, {}),
     });
 
     const response = await handleRecordChangelog(
-      recordRequest({ sharedSecret: SECRET, recordedBy: 'Артур', path: PATH, entry: ENTRY }),
+      recordRequest({ sharedSecret: SECRET, path: PATH, entry: ENTRY }),
       { fetchImpl },
     );
     expect(await response.json()).toMatchObject({ success: true, updated: true, pullRequest: { number: 300 } });
@@ -177,17 +177,64 @@ describe('handleRecordChangelog', () => {
     expect(put?.body?.sha).toBe('sha-branch');
   });
 
+  it('PR из форка с веткой changelog/* не трогает — заводит свой', async () => {
+    const branch = 'changelog/rider-colors-semantic-1700000000000-abcd1234';
+    const { fetchImpl, calls } = fakeGithub({
+      [PULLS]: () =>
+        json(200, [
+          {
+            number: 299,
+            html_url: 'https://github.com/RickOBrian/aid/pull/299',
+            head: { ref: branch, repo: { full_name: 'stranger/aid' } },
+          },
+        ]),
+      [MAIN_CONTENTS]: () => contents(MAIN_FILE),
+      [`GET ${REPO}/git/ref/heads/main`]: () => json(200, { object: { sha: 'main-sha' } }),
+      [`POST ${REPO}/git/refs`]: () => json(201, {}),
+      [`PUT ${REPO}/contents/tokens/rider-colors-semantic-changelog.json`]: () => json(200, {}),
+      [`POST ${REPO}/pulls`]: () => json(201, { number: 302 }),
+      [`GET ${REPO}/pulls/302`]: () => json(200, { user: { login: 'aid-bot' } }),
+      [`POST ${REPO}/pulls/302/requested_reviewers`]: () => json(201, {}),
+    });
+    const response = await handleRecordChangelog(
+      recordRequest({ sharedSecret: SECRET, path: PATH, entry: ENTRY }),
+      { fetchImpl },
+    );
+    expect(await response.json()).toMatchObject({ success: true, created: true, pullRequest: { number: 302 } });
+    expect(calls.some((call) => call.url.includes(encodeURIComponent(branch)))).toBe(false);
+    expect(calls.find((call) => call.method === 'PUT')?.body?.branch).not.toBe(branch);
+  });
+
+  it('имя аккаунта Figma не попадает ни в коммит, ни в PR', async () => {
+    const { fetchImpl, calls } = fakeGithub({
+      [PULLS]: () => json(200, []),
+      [MAIN_CONTENTS]: () => contents(MAIN_FILE),
+      [`GET ${REPO}/git/ref/heads/main`]: () => json(200, { object: { sha: 'main-sha' } }),
+      [`POST ${REPO}/git/refs`]: () => json(201, {}),
+      [`PUT ${REPO}/contents/tokens/rider-colors-semantic-changelog.json`]: () => json(200, {}),
+      [`POST ${REPO}/pulls`]: () => json(201, { number: 303 }),
+      [`GET ${REPO}/pulls/303`]: () => json(200, { user: { login: 'aid-bot' } }),
+      [`POST ${REPO}/pulls/303/requested_reviewers`]: () => json(201, {}),
+    });
+    await handleRecordChangelog(
+      recordRequest({ sharedSecret: SECRET, recordedBy: 'Иван Иванов', path: PATH, entry: ENTRY }),
+      { fetchImpl },
+    );
+    const sent = JSON.stringify(calls.map((call) => call.body));
+    expect(sent).not.toContain('Иван Иванов');
+  });
+
   it('та же запись повторно — без коммита', async () => {
     const branch = 'changelog/rider-colors-semantic-1700000000000-abcd1234';
     const onBranch = upsertUnpublishedEntry(MAIN_FILE, validateUnpublishedEntry(ENTRY)!);
     const { fetchImpl, calls } = fakeGithub({
       [PULLS]: () =>
-        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch } }]),
+        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch, repo: { full_name: 'RickOBrian/aid' } } }]),
       [`GET ${REPO}/contents/tokens/rider-colors-semantic-changelog.json?ref=${encodeURIComponent(branch)}`]: () =>
         contents(onBranch, 'sha-branch'),
     });
     const response = await handleRecordChangelog(
-      recordRequest({ sharedSecret: SECRET, recordedBy: 'Артур', path: PATH, entry: ENTRY }),
+      recordRequest({ sharedSecret: SECRET, path: PATH, entry: ENTRY }),
       { fetchImpl },
     );
     expect(await response.json()).toMatchObject({ success: true, unchanged: true });
@@ -197,7 +244,7 @@ describe('handleRecordChangelog', () => {
   it('без ключа — 401, GitHub не трогает', async () => {
     const { fetchImpl, calls } = fakeGithub({});
     const response = await handleRecordChangelog(
-      recordRequest({ sharedSecret: 'wrong', recordedBy: 'Артур', path: PATH, entry: ENTRY }),
+      recordRequest({ sharedSecret: 'wrong', path: PATH, entry: ENTRY }),
       { fetchImpl },
     );
     expect(response.status).toBe(401);
@@ -207,7 +254,7 @@ describe('handleRecordChangelog', () => {
   it('файла чейнжлога нет в main — 404', async () => {
     const { fetchImpl } = fakeGithub({ [PULLS]: () => json(200, []) });
     const response = await handleRecordChangelog(
-      recordRequest({ sharedSecret: SECRET, recordedBy: 'Артур', path: PATH, entry: ENTRY }),
+      recordRequest({ sharedSecret: SECRET, path: PATH, entry: ENTRY }),
       { fetchImpl },
     );
     expect(response.status).toBe(404);
@@ -225,7 +272,7 @@ describe('handleListChangelogs', () => {
           { type: 'file', path: 'tokens/README.md' },
         ]),
       [PULLS]: () =>
-        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch } }]),
+        json(200, [{ number: 300, html_url: 'https://github.com/RickOBrian/aid/pull/300', head: { ref: branch, repo: { full_name: 'RickOBrian/aid' } } }]),
       [MAIN_CONTENTS]: () => contents(MAIN_FILE),
       [`GET ${REPO}/contents/tokens/rider-colors-semantic-changelog.json?ref=${encodeURIComponent(branch)}`]: () =>
         contents(onBranch),
@@ -250,7 +297,7 @@ describe('handleListChangelogs', () => {
 describe('buildChangelogPullRequestBody', () => {
   it('перечисляет изменения с бейджами и значениями', () => {
     const text = buildChangelogPullRequestBody(
-      { sharedSecret: SECRET, recordedBy: 'Артур', path: PATH, entry: validateUnpublishedEntry(ENTRY)! },
+      { sharedSecret: SECRET, path: PATH, entry: validateUnpublishedEntry(ENTRY)! },
       'Rider Colors/Semantic',
     );
     expect(text).toContain('**Добавлено** — Добавлена переменная Button/Warning Pressed');

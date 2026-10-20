@@ -54,7 +54,7 @@ export async function fetchChangelogs(): Promise<ChangelogSummary[]> {
 }
 
 export async function recordChangelogOnBackend(
-  payload: { path: string; recordedBy: string; entry: UnpublishedEntry },
+  payload: { path: string; entry: UnpublishedEntry },
   sharedSecret: string
 ): Promise<RecordChangelogResult> {
   if (!sharedSecret) throw new RegistryBackendError("invalid_key");

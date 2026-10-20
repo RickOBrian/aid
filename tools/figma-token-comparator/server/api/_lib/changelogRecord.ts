@@ -226,6 +226,9 @@ async function listOpenChangelogPulls(
   if (!Array.isArray(pulls)) return result;
   for (const pull of pulls) {
     if (!isRecord(pull) || !isRecord(pull.head)) continue;
+    // PR из форка с веткой changelog/* — чужой: читать и писать в него нельзя.
+    const repo = pull.head.repo;
+    if (!isRecord(repo) || repo.full_name !== `${config.owner}/${config.repo}`) continue;
     const ref = pull.head.ref;
     if (typeof ref !== 'string' || !ref.startsWith(CHANGELOG_BRANCH_PREFIX)) continue;
     if (typeof pull.number !== 'number' || typeof pull.html_url !== 'string') continue;
@@ -300,7 +303,6 @@ export async function handleListChangelogs(request: Request, deps: ChangelogDeps
 
 export interface RecordChangelogBody {
   sharedSecret: string;
-  recordedBy: string;
   path: string;
   entry: UnpublishedEntry;
 }
@@ -308,11 +310,10 @@ export interface RecordChangelogBody {
 export function validateRecordChangelogBody(body: unknown): RecordChangelogBody | null {
   if (!isRecord(body)) return null;
   if (typeof body.sharedSecret !== 'string' || !body.sharedSecret.trim()) return null;
-  if (typeof body.recordedBy !== 'string' || !body.recordedBy.trim() || body.recordedBy.length > MAX_AUTHOR) return null;
   if (typeof body.path !== 'string' || !CHANGELOG_PATH_PATTERN.test(body.path)) return null;
   const entry = validateUnpublishedEntry(body.entry);
   if (!entry) return null;
-  return { sharedSecret: body.sharedSecret, recordedBy: body.recordedBy.trim(), path: body.path, entry };
+  return { sharedSecret: body.sharedSecret, path: body.path, entry };
 }
 
 const KIND_TITLES: Record<ChangelogChange['kind'], string> = {
@@ -327,7 +328,7 @@ export function buildChangelogPullRequestBody(body: RecordChangelogBody, artifac
   const lines = [
     `Запись «Не опубликовано» в \`${body.path}\` (${artifact}) — из Token Comparator, кнопка «Записать изменения».`,
     '',
-    `Записал: ${body.recordedBy} · автор: ${body.entry.author} · предлагаемая цифра: **${body.entry.type}**`,
+    `Автор: ${body.entry.author} · предлагаемая цифра: **${body.entry.type}**`,
     '',
   ];
   for (const change of body.entry.changes) {
@@ -368,7 +369,8 @@ export async function handleRecordChangelog(request: Request, deps: ChangelogDep
   const config = getRegistryConfig();
   const stem = changelogStem(body.path);
   const now = deps.now?.() ?? new Date();
-  const commitMessage = `changelog(${stem}): «Не опубликовано» от ${body.recordedBy}`;
+  // Имя аккаунта Figma в публичный репозиторий не пишем: в коммите только файл.
+  const commitMessage = `changelog(${stem}): «Не опубликовано»`;
 
   try {
     const pull = (await listOpenChangelogPulls(deps, token, config)).get(stem);

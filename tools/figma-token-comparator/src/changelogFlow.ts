@@ -210,7 +210,7 @@ export async function handleChangelogRecord(
   let result;
   try {
     result = await recordChangelogOnBackend(
-      { path, recordedBy: currentUserName() || author.trim(), entry },
+      { path, entry },
       sharedSecret
     );
   } catch (error) {
