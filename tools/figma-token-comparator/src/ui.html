@@ -2672,7 +2672,14 @@
 
         <div id="tc-changelog-draft" hidden>
           <div class="ds-field">
-            <label for="tc-changelog-author">Автор</label>
+            <div class="ds-field__head">
+              <label for="tc-changelog-author">Автор</label>
+              <button type="button" class="ds-icon-btn ds-hint-trigger" aria-label="Подсказка" title="Подсказка" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5a1.5 1.5 0 1 1 2.1 1.37c-.37.17-.6.54-.6.94V9.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="11.25" r="0.75" fill="currentColor"/></svg></button>
+              <span class="ds-hint-text">
+                Имя попадёт в чейнжлог в публичном репозитории и в таблицу на странице. Пишите
+                отображаемое имя, как в таблице, например «Артур»: без фамилии, почты и логина.
+              </span>
+            </div>
             <input id="tc-changelog-author" class="ds-input" type="text" autocomplete="off" />
           </div>
           <div class="ds-field">
