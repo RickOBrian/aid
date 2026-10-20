@@ -120,6 +120,13 @@ export const riderShadowStyles: RiderShadowStyle[] = [
   riderStyle('cards', 'Cards', 'Cards', [
     layerValue(0, 2, 8, 'rgba(0,0,0,0.15)', 'rgba(0,0,0,0.15)'),
   ]),
+  riderStyle('active-car', 'Active Car', 'Active Car', [
+    layerValue(0, 1, 3, 'rgba(0,0,0,0.08)', 'rgba(0,0,0,0.08)', 1),
+    layerValue(0, -2, 3, 'rgba(255,0,251,0.12)', 'rgba(255,0,251,0.12)', 2),
+    layerValue(0, 2, 3, 'rgba(255,0,251,0.12)', 'rgba(255,0,251,0.12)', 3),
+    layerValue(-2, 0, 3, 'rgba(255,0,251,0.12)', 'rgba(255,0,251,0.12)', 4),
+    layerValue(2, 0, 3, 'rgba(255,0,251,0.12)', 'rgba(255,0,251,0.12)', 5),
+  ]),
 ];
 
 export const riderShadowSections: ShadowSection[] = [

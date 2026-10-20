@@ -59,6 +59,12 @@ const bgRows: SemanticColorRow[] = [
     description: 'Акцентный фон',
   },
   {
+    name: 'Accent Secondary',
+    day: { hex: '#8526FF', opacity: 10 },
+    night: { hex: '#8526FF', opacity: 14 },
+    description: '',
+  },
+  {
     name: 'Primary Inverted',
     day: { hex: '#1F1F23', opacity: 100 },
     night: { hex: '#F5F5F5', opacity: 100 },
