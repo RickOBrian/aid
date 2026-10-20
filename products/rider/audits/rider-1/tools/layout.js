@@ -61,7 +61,7 @@ function hugFindings(root) {
 
 const page = await figma.getNodeByIdAsync(PAGE);
 const report = [];
-for (const sec of page.children.filter(n => n.type === 'SECTION')) {
+for (const sec of page.children.filter(n => n.type === 'SECTION' && n.name.startsWith('Аудит'))) { // прототипы и прочее — не трогаем
   let canvas = sec.children.find(n => n.name === 'Полотно');
   if (!canvas) {
     const head = sec.children.find(n => n.name === 'Шапка');

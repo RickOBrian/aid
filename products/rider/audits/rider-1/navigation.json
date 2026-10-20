@@ -15,7 +15,8 @@
       "section": "5014:7732",
       "sections": {
         "probe": "5014:7732",
-        "Tabbar Navigation": "5019:3458"
+        "Tabbar Navigation": "5019:3458",
+        "Pickup point под шторкой (находка 9)": "5144:3263"
       }
     },
     "references": {
@@ -377,9 +378,67 @@
         {
           "n": 9,
           "check": "value",
-          "what": "Пин «Pickup point» нарисован вручную (векторы + плашка), не Map Pin; тексты и пин #8526ff (локальный Accent Color); под развёрнутой шторкой не виден",
-          "ask": "Заменить на Map Pin [Bubble=true, адрес] или убрать с экрана со шторкой на весь рост",
-          "status": "open"
+          "what": "Пин «Pickup point» нарисован вручную (векторы + плашка «Подача 5 мин» с адресом в две строки, три круга), не Map Pin. Светлый — стили старой библиотеки Text [day]/Accent, Text [day]/Primary, Icon [day]/Accent, Icon [day]/Constant White, круги и тени без токена; тёмный (Для бренда Dark) — уже на токенах Rider color-sem. Стоит на 7 экранах страницы (492; 460003931, 460003932, 460003935 — Status Island; 460003942 — Для бренда; 460003944, 460003945 — Для бренда Dark), везде целиком под шторкой.",
+          "ask": "Заменить на Map Pin Rider: B — [State=No ETA, Bubble, Title=«Подача 5 мин», Caption=адрес], без кругов (предлагаю); A — [State=ETA, Bubble, Title=адрес, Time=5]; или убрать с экранов, где шторка закрывает его целиком",
+          "status": "open",
+          "ref": "секция 5144:3263 «Pickup point под шторкой»: шторка скрыта, варианты A и B — 5145:13",
+          "section": {
+            "id": "5144:3263",
+            "rule": "клоны со скрытой шторкой и затемнением (Bottom sheet, «шторка», Bg [black: 30%]); остальное как в макете (PD 2026-10-20)",
+            "rows": [
+              {
+                "screen": "2038:6388",
+                "name": "492 · светлый пин",
+                "sameAs": [
+                  "2038:6851",
+                  "2038:7097",
+                  "2038:7351",
+                  "2038:9425"
+                ],
+                "clones": {
+                  "before": "5144:3273",
+                  "after": "5144:3559",
+                  "binding": "5144:3826",
+                  "shiftLayer": "5145:2",
+                  "bindLayer": "5144:22347",
+                  "findingsColumn": "5145:103"
+                },
+                "shifts": [
+                  1,
+                  2,
+                  5
+                ]
+              },
+              {
+                "screen": "2052:8479",
+                "name": "460003944 · тёмный пин",
+                "sameAs": [
+                  "2052:8733"
+                ],
+                "clones": {
+                  "before": "5145:137",
+                  "after": "5145:68970",
+                  "binding": "5145:69343",
+                  "shiftLayer": "5146:2",
+                  "bindLayer": "5146:13",
+                  "findingsColumn": "5146:250"
+                },
+                "theme": "Night во всех коллекциях (color-sem, effects, gradients) — как у секции «Для бренда Dark» 2052:8350",
+                "swaps": [
+                  "status bar → Status Bar iOS",
+                  "home indicator → Home Indicator iOS",
+                  "fab location → Button Floating 52, 12 до края"
+                ],
+                "shifts": [
+                  1,
+                  2,
+                  5
+                ],
+                "note": "Top Actions (кнопки, Car Class, Status Multiple) не заменены — секция Status Island, находка 14"
+              }
+            ],
+            "candidates": "5145:13 — A и B, инстансы Map Pin Rider"
+          }
         },
         {
           "n": 10,
