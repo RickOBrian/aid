@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: release-gate
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Release Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.1.0 · обновлено 2026-10-20
 
 ---
 
@@ -63,24 +63,29 @@ run unless the user explicitly asks for a cross-product release.
 
 ## 4. Version and changelog boundary (all artifact types)
 
-Version and final changelog **must not** change during:
+**Граница релиза библиотеки продукта — публикация библиотеки в Figma**
+(решение PD 2026-10-20, `standards/changelog-guide.md` §6).
 
-- local implementation edits;
-- review iterations;
-- preview or sandbox updates;
-- temporary placement decisions (`componentsRoot: null` review sandbox).
+До границы, в том числе во время правок, ревью и превью:
 
-They update **only** on Release Gate when:
+- изменение в библиотеке **сразу** дописывается в запись «Не опубликовано»
+  своего чейнжлога (`version: null`, `date: null`) — в JSON и в таблице
+  Figma; это не нарушение границы, а обязательная часть правки;
+- версия, дата и `currentVersion` **не** меняются.
 
-1. Principal Designer explicitly requests release/push preparation;
-2. Cursor groups all pending changes since the previous release;
-3. Cursor proposes SemVer impact, new version, and grouped changelog draft;
-4. Principal Designer explicitly confirms version, changelog, and push;
-5. Only after confirmation: update artifact version + changelog, move pending
-   to `released/`, create release commit, push via `protocols/git-workflow.md`.
+На границе, и только так:
 
-Cursor proposes; Principal Designer confirms. Version, changelog, and push
-are one linked operation — never split across silent auto-bumps.
+1. Перед публикацией библиотеки исполнитель показывает запись
+   «Не опубликовано» каждого затронутого чейнжлога и предлагает цифру по
+   `semver-guide`;
+2. Владелец продукта (для продуктов PD — Principal Designer) явно
+   подтверждает версию и текст;
+3. После подтверждения: запись получает `version` и `date`, обновляется
+   `currentVersion`, строка в таблице Figma получает версию, библиотека
+   публикуется с той же версией в описании; PR с JSON — в `main`.
+
+Исполнитель предлагает, владелец подтверждает. Версия, запись и публикация
+— одна связанная операция, без тихих поднятий версии.
 
 ## 5. Release types
 
@@ -208,4 +213,5 @@ Do not push release commits without explicit user approval.
 
 ## 11. Changelog
 
+- **1.1.0** — 2026-10-20. Решение PD: граница релиза библиотеки — публикация в Figma; изменение сразу пишется в запись «Не опубликовано», версия и дата — только на границе после подтверждения владельца продукта (§4).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/release-gate.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.
