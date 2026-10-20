@@ -15,7 +15,7 @@ import type {
 } from "./comparators/types";
 import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
-import type { DraftChange } from "./lib/changelogRecord";
+import type { BumpType, DraftChange } from "./lib/changelogRecord";
 import type { ChangelogSource } from "./lib/changelogSnapshot";
 
 export interface UiReadyMessage {
@@ -220,7 +220,8 @@ export interface ChangelogPrepareMessage {
 /** Записать: таблица в Figma и PR с JSON. */
 export interface ChangelogRecordMessage {
   type: "changelog-record";
-  payload: { path: string; drafts: DraftChange[]; author: string };
+  /** type — цифра, выбранная дизайнером; ниже вычисленной сервер её не опустит. */
+  payload: { path: string; drafts: DraftChange[]; author: string; type?: BumpType };
 }
 
 export type UiToCodeMessage =

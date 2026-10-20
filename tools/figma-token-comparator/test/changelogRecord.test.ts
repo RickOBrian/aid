@@ -155,6 +155,12 @@ describe("запись «Не опубликовано»", () => {
     expect(buildUnpublishedEntry(drafts, "Артур").type).toBe("major");
   });
 
+  it("цифру можно поднять, но не опустить ниже вычисленной", () => {
+    const patchOnly = drafts.filter((draft) => draft.bump === "patch");
+    expect(buildUnpublishedEntry(patchOnly, "Артур", "minor").type).toBe("minor");
+    expect(buildUnpublishedEntry(drafts, "Артур", "patch").type).toBe("major");
+  });
+
   it("версия и дата пустые, служебных полей черновика нет", () => {
     const entry = buildUnpublishedEntry(drafts, " Артур ");
     expect(entry.version).toBeNull();

@@ -3,7 +3,7 @@
  * Главный поток — src/changelogFlow.ts.
  */
 
-import { KIND_LABELS, type DraftChange } from "./lib/changelogRecord";
+import { KIND_LABELS, maxBump, type BumpType, type DraftChange } from "./lib/changelogRecord";
 import type { ChangelogTableInfo, CodeToUiMessage, UiToCodeMessage } from "./messages";
 
 type Post = (message: UiToCodeMessage) => void;
@@ -122,6 +122,19 @@ function renderTables(payload: Extract<CodeToUiMessage, { type: "changelog-table
   onTableSelected();
 }
 
+const BUMPS: BumpType[] = ["patch", "minor", "major"];
+
+/** Цифру можно только поднять: ниже старшей из изменений она не бывает. */
+function renderTypeSelect(computed: BumpType): void {
+  const select = el<HTMLSelectElement>("tc-changelog-type");
+  select.replaceChildren(
+    ...BUMPS.slice(BUMPS.indexOf(computed)).map((bump) =>
+      Object.assign(document.createElement("option"), { value: bump, textContent: bump })
+    )
+  );
+  select.value = computed;
+}
+
 function renderDraft(payload: Extract<CodeToUiMessage, { type: "changelog-draft" }>["payload"]): void {
   setBusy(false);
   drafts = payload.drafts;
@@ -137,6 +150,7 @@ function renderDraft(payload: Extract<CodeToUiMessage, { type: "changelog-draft"
 
   setStatus(`${table?.sourceLabel ?? ""} · изменений ${since}: ${drafts.length}`, table?.pullRequestUrl);
   el<HTMLInputElement>("tc-changelog-author").value = payload.author;
+  renderTypeSelect(maxBump(drafts.map((draft) => draft.bump)));
 
   const list = el("tc-changelog-list");
   list.replaceChildren(
@@ -215,7 +229,12 @@ export function initRecordPanel(postMessage: Post): void {
     setStatus("Обновляю таблицу и отправляю…");
     post({
       type: "changelog-record",
-      payload: { path: draftPath, drafts, author: el<HTMLInputElement>("tc-changelog-author").value },
+      payload: {
+        path: draftPath,
+        drafts,
+        author: el<HTMLInputElement>("tc-changelog-author").value,
+        type: el<HTMLSelectElement>("tc-changelog-type").value as BumpType,
+      },
     });
   });
 }

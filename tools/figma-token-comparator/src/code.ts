@@ -2312,7 +2312,13 @@ figma.ui.onmessage = async (message: UiToCodeMessage) => {
         await handleChangelogPrepare(send, message.payload.path);
         break;
       case "changelog-record":
-        await handleChangelogRecord(send, message.payload.path, message.payload.drafts, message.payload.author);
+        await handleChangelogRecord(
+          send,
+          message.payload.path,
+          message.payload.drafts,
+          message.payload.author,
+          message.payload.type
+        );
         break;
       default:
         break;

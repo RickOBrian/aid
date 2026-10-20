@@ -379,12 +379,20 @@ export function validateDrafts(drafts: DraftChange[], author: string): string[] 
   return problems;
 }
 
-export function buildUnpublishedEntry(drafts: DraftChange[], author: string): UnpublishedEntry {
+/**
+ * Цифра записи — старшая из изменений. Дизайнер может поднять её, если правка
+ * по смыслу новая (patch → minor), но не опустить ниже вычисленной.
+ */
+export function resolveEntryType(drafts: DraftChange[], requested?: BumpType): BumpType {
+  return maxBump([...drafts.map((draft) => draft.bump), ...(requested ? [requested] : [])]);
+}
+
+export function buildUnpublishedEntry(drafts: DraftChange[], author: string, requested?: BumpType): UnpublishedEntry {
   return {
     version: null,
     date: null,
     author: author.trim(),
-    type: maxBump(drafts.map((draft) => draft.bump)),
+    type: resolveEntryType(drafts, requested),
     changes: drafts.map((draft) => ({
       kind: draft.kind,
       description: draft.description.trim(),

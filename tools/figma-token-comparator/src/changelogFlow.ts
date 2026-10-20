@@ -19,6 +19,7 @@ import {
   diffSnapshots,
   resolveBaseline,
   validateDrafts,
+  type BumpType,
   type DraftChange,
   type LibrarySnapshot,
 } from "./lib/changelogRecord";
@@ -172,7 +173,8 @@ export async function handleChangelogRecord(
   send: Send,
   path: string,
   edited: DraftChange[],
-  author: string
+  author: string,
+  type?: BumpType
 ): Promise<void> {
   const sharedSecret = await storage.getRegistrySecret();
   if (!sharedSecret) {
@@ -196,7 +198,7 @@ export async function handleChangelogRecord(
     return;
   }
 
-  const entry = buildUnpublishedEntry(final, author);
+  const entry = buildUnpublishedEntry(final, author, type);
   try {
     await writeUnpublishedRow(table, entry);
   } catch (error) {
