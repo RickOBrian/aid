@@ -29,6 +29,16 @@
       },
       "search": "2247:21294",
       "cards": "2247:21259"
+    },
+    "prototypes": {
+      "map": {
+        "section": "5151:3950",
+        "component": "5151:68911",
+        "variant": "B",
+        "decision": "PD 2026-10-20: вариант B — тёмный слой поверх светлого, видимость на boolean Map/Dark (Day false / Night true); у компонента режим Day, Night включается в Appearance экземпляра. Вставлен в тёмные «стало» аудита до сборки компонента в библиотеке (Designer).",
+        "token": "Map/Dark — завести в color-sem Rider (Standards)",
+        "images": "временные, из Map Taxi Scale 17; нужны новые рендеры одной области в двух темах с запасом"
+      }
     }
   },
   "riderLibraries": {
@@ -427,7 +437,8 @@
                 "swaps": [
                   "status bar → Status Bar iOS",
                   "home indicator → Home Indicator iOS",
-                  "fab location → Button Floating 52, 12 до края"
+                  "fab location → Button Floating 52, 12 до края",
+                  "map → Map · B (прототип 5151:68911, экземпляры 5153:3958 и 5153:3961), Appearance: Night; в «было» — Map Taxi Scale=17, Dark=Off (светлая карта на тёмном экране)"
                 ],
                 "shifts": [
                   1,
