@@ -52,6 +52,13 @@
 - Гайды: `guide-registry.json` → `sourcePath` в `skills/_shared/`;
   `scripts/build-guides.mjs` собирает их при `dev` и `prebuild`.
   `generated/` — производное, в git не хранится.
+- Гайд со стороны (не из `skills/_shared/`) — `chapters` + `sourceDir` в
+  реестре: снимок markdown в `guides-preview/<guideId>/`; автор — только
+  имя, без логина и ссылки на GitHub (решение PD 2026-10-21); глава — подстраница, разметка ограничена
+  (`scripts/external-guide-markdown.mjs`: HTML по белому списку, mermaid —
+  текстом). `publication: "pending-approval"` — гайд ждёт согласования PD:
+  раздел «На согласовании» и пометка на странице, адрес `/guides/preview/…`.
+  Снять пометку и перенести в `/guides/<guideId>` — только по команде PD.
 - Токены и changelog: канон — корневые `tokens/`; `scripts/sync-token-changelogs.mjs`
   копирует их в `pages/aid-portal/tokens/`. Копию не править.
 - Инструменты: `tools-registry.json`, страницы `ToolsHubPage.tsx` и

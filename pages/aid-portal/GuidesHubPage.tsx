@@ -4,16 +4,23 @@ import { DS_INTERACTIVE_CARD_CLASS, DS_INTERACTIVE_CARD_STYLE } from './dsIntera
 import guideRegistry from './guide-registry.json';
 import { currentAppPath, withBase } from './base';
 import { productPath, resolveProductId } from './productRegistry';
+import { DS_PORTAL_LAYOUT_TOKENS as T } from './dsChangelogTable';
+import { GUIDE_PUBLICATION_STYLE, GuidePublicationBadge, isPendingApproval } from './GuidePublicationBadge';
 
 /**
  * Guides showcase — catalog of DS governance/standards documents, mirroring
  * the Components vitrina (`ComponentsHubPage.tsx`) structure: search, groups,
  * a card per guide. Cards show a document icon + version badge instead of a
  * live component preview — guides are text documents, not renderable UI.
+ *
+ * Гайды на согласовании (`publication: "pending-approval"`) показываются
+ * отдельным разделом «На согласовании» с пометкой вместо версии и в общие
+ * группы не попадают, пока PD их не примет.
  */
 
 const PAGE_STYLE = `
 ${DS_INTERACTIVE_CARD_STYLE}
+${GUIDE_PUBLICATION_STYLE}
 .dsgh,
 .dsgh *,
 .dsgh *::before,
@@ -127,6 +134,26 @@ ${DS_INTERACTIVE_CARD_STYLE}
   line-height: 20px;
   color: rgba(0, 0, 0, 0.54);
 }
+.dsgh-preview {
+  margin: 0 0 40px;
+  padding: 20px;
+  border: 1px dashed ${T.statusPendingBorder};
+  border-radius: ${T.cardRadius};
+  background: ${T.statusPendingSurfaceSubtle};
+}
+.dsgh-preview .dsgh-group-title { color: ${T.statusPendingText}; }
+.dsgh-preview-intro {
+  margin: -8px 0 16px;
+  font-size: 13px;
+  line-height: 20px;
+  color: ${T.textSecondary};
+}
+.dsgh-item-author {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: ${T.textSecondary};
+}
 @media (max-width: 768px) {
   .dsgh {
     padding: 24px 16px 48px;
@@ -137,10 +164,38 @@ ${DS_INTERACTIVE_CARD_STYLE}
 interface RegistryGuide {
   guideId: string;
   canonicalName: string;
-  version: string;
+  version?: string;
   reviewRoute: string;
   guidesGroup: string;
   description?: string;
+  publication?: string;
+  author?: string;
+}
+
+function GuideCard({ guide }: { guide: RegistryGuide }) {
+  const pending = isPendingApproval(guide.publication);
+  return (
+    <a
+      className={`dsgh-item ${DS_INTERACTIVE_CARD_CLASS}`}
+      href={withBase(productPath(resolveProductId(currentAppPath()), guide.reviewRoute))}
+    >
+      <div className="dsgh-item-preview" aria-hidden="true">
+        <span className="dsgh-item-icon">▤</span>
+      </div>
+      <div className="dsgh-item-body">
+        <div className="dsgh-item-title-row">
+          <p className="dsgh-item-title">{guide.canonicalName}</p>
+          {pending ? (
+            <GuidePublicationBadge />
+          ) : guide.version ? (
+            <span className="dsgh-item-version">v{guide.version}</span>
+          ) : null}
+        </div>
+        {guide.description && <p className="dsgh-item-description">{guide.description}</p>}
+        {guide.author && <p className="dsgh-item-author">Автор: {guide.author}</p>}
+      </div>
+    </a>
+  );
 }
 
 function groupGuides(items: RegistryGuide[]): Array<{ group: string; items: RegistryGuide[] }> {
@@ -168,18 +223,21 @@ export function GuidesHubPage() {
   const [search, setSearch] = useState('');
   const guides = guideRegistry.guides as RegistryGuide[];
 
-  const filteredGroups = useMemo(() => {
+  const { pending, groups: filteredGroups } = useMemo(() => {
     const query = search.trim().toLowerCase();
     const filtered = query
       ? guides.filter((guide) => {
-          const haystack = [guide.canonicalName, guide.guidesGroup, guide.description ?? '', guide.guideId]
+          const haystack = [guide.canonicalName, guide.guidesGroup, guide.description ?? '', guide.guideId, guide.author ?? '']
             .join(' ')
             .toLowerCase();
           return haystack.includes(query);
         })
       : guides;
 
-    return groupGuides(filtered);
+    return {
+      pending: filtered.filter((guide) => isPendingApproval(guide.publication)),
+      groups: groupGuides(filtered.filter((guide) => !isPendingApproval(guide.publication))),
+    };
   }, [guides, search]);
 
   return (
@@ -199,7 +257,24 @@ export function GuidesHubPage() {
           стандарты. Выберите гайд, чтобы открыть его.
         </p>
 
-        {filteredGroups.length === 0 ? (
+        {pending.length > 0 ? (
+          <section className="dsgh-preview" aria-labelledby="dsgh-group-preview">
+            <h2 className="dsgh-group-title" id="dsgh-group-preview">
+              На согласовании
+            </h2>
+            <p className="dsgh-preview-intro">
+              Черновики гайдов, которые ещё не приняты в Presentbook. После согласования гайд переходит в общий
+              список без пометки.
+            </p>
+            <div className="dsgh-items">
+              {pending.map((guide) => (
+                <GuideCard key={guide.guideId} guide={guide} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {filteredGroups.length === 0 && pending.length === 0 ? (
           <p className="dsgh-empty">Гайды не найдены.</p>
         ) : (
           <div className="dsgh-groups">
@@ -210,24 +285,7 @@ export function GuidesHubPage() {
                 </h2>
                 <div className="dsgh-items">
                   {items.map((guide) => (
-                    <a
-                      key={guide.guideId}
-                      className={`dsgh-item ${DS_INTERACTIVE_CARD_CLASS}`}
-                      href={withBase(productPath(resolveProductId(currentAppPath()), guide.reviewRoute))}
-                    >
-                      <div className="dsgh-item-preview" aria-hidden="true">
-                        <span className="dsgh-item-icon">▤</span>
-                      </div>
-                      <div className="dsgh-item-body">
-                        <div className="dsgh-item-title-row">
-                          <p className="dsgh-item-title">{guide.canonicalName}</p>
-                          <span className="dsgh-item-version">v{guide.version}</span>
-                        </div>
-                        {guide.description && (
-                          <p className="dsgh-item-description">{guide.description}</p>
-                        )}
-                      </div>
-                    </a>
+                    <GuideCard key={guide.guideId} guide={guide} />
                   ))}
                 </div>
               </section>
