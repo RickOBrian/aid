@@ -501,6 +501,30 @@
       "dependsOn": []
     },
     {
+      "id": "figma-library-workflow",
+      "title": "Работа с библиотекой Figma",
+      "kind": "protocol",
+      "humanFile": "skills/_shared/protocols/figma-library-workflow.md",
+      "machineFile": null,
+      "version": "0.1.0",
+      "status": "draft",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "product-context",
+        "audit-gate",
+        "component-gate",
+        "token-change-gate",
+        "token-integrity",
+        "release-gate",
+        "component-standards"
+      ]
+    },
+    {
       "id": "git-workflow",
       "title": "Git workflow",
       "kind": "protocol",
