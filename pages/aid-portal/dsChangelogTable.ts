@@ -30,6 +30,16 @@ export const DS_PORTAL_LAYOUT_TOKENS = {
   tableHeadLetterSpacing: '0.06em',
   tableCellPadding: '10px 16px',
   tableWrapRadius: '8px',
+  /* Статус «ждёт / не выпущено» — те же значения, что у бейджа Pending
+     на странице компонента (`ComponentReleaseStatus.tsx`). */
+  statusPendingSurface: '#fff8e6',
+  statusPendingSurfaceSubtle: '#fffdf5',
+  statusPendingBorder: '#f0d48a',
+  statusPendingText: '#8a6a00',
+  badgeRadius: '999px',
+  badgeFontSize: '11px',
+  badgePadding: '2px 10px',
+  cardRadius: '12px',
 } as const;
 
 /** Кнопки копирования значений/токенов. На новых страницах — класс `ds-copyable`. */

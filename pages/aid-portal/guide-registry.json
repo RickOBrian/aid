@@ -66,8 +66,43 @@
       "sourcePath": "skills/_shared/standards/platforms.md",
       "sourceDownloadFileName": "platforms.md",
       "sourceDownloadUrl": "/guides/sources/platforms.md"
+    },
+    {
+      "guideId": "git-for-beginners",
+      "canonicalName": "Git for Beginners",
+      "publication": "pending-approval",
+      "reviewRoute": "/guides/preview/git-for-beginners",
+      "guidesGroup": "Onboarding",
+      "description": "Git и GitHub с нуля: коммит, ветки, Pull Request, CI, релизы и как просить Claude — с блоками «Как это в AID»",
+      "author": "Артур",
+      "source": {
+        "label": "репозиторий aid-git-guide на GitHub",
+        "url": "https://github.com/arturuxui/aid-git-guide/tree/de037759f2cb8e1bd48d1351ddd95abf4be477b9/content/ru",
+        "commit": "de037759f2cb8e1bd48d1351ddd95abf4be477b9"
+      },
+      "sourceDir": "pages/aid-portal/guides-preview/git-for-beginners",
+      "chapters": [
+        "00-intro.md",
+        "01-why-git.md",
+        "02-commit.md",
+        "03-branches.md",
+        "04-remote.md",
+        "05-pull-request.md",
+        "06-merge.md",
+        "07-ci.md",
+        "08-teamwork.md",
+        "09-releases.md",
+        "10-issues.md",
+        "11-oops.md",
+        "12-claude.md",
+        "13-advanced.md",
+        "cheatsheet.md",
+        "glossary.md"
+      ]
     }
   ],
   "note": "Гайды рендерятся из канонических .md на сборке (scripts/build-guides.mjs, ADR-002). Источник правды — файл в skills/_shared/; страница показывает его результат и не хранит копию.",
-  "changelogNote": "Changelog гайда — раздел в самом .md (обязателен по guide-template.md) и рендерится как часть тела страницы. Отдельного JSON у гайдов нет: он дублировал бы текст и отставал от него, что и произошло с versioning-changelog.json."
+  "changelogNote": "Changelog гайда — раздел в самом .md (обязателен по guide-template.md) и рендерится как часть тела страницы. Отдельного JSON у гайдов нет: он дублировал бы текст и отставал от него, что и произошло с versioning-changelog.json.",
+  "publicationNote": "publication: \"pending-approval\" — гайд ждёт согласования PD: показывается в разделе «На согласовании» с пометкой, в адресе /guides/preview/. После согласования поле снимается, reviewRoute переезжает в /guides/<guideId> — только по команде PD. Без поля гайд опубликован.",
+  "externalNote": "Гайд со стороны (chapters + sourceDir + source) хранится снимком markdown с указанного коммита источника в pages/aid-portal/guides-preview/ и собирается с ограниченной разметкой (scripts/external-guide-markdown.mjs). Текст правит автор в своём репозитории, снимок обновляется отсюда."
 }
