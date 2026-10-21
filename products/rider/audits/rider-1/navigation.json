@@ -43,7 +43,7 @@
       "carPin": {
         "section": "5203:4022",
         "componentSet": "5203:4021",
-        "status": "ждёт решения PD",
+        "status": "принят PD 2026-10-21",
         "built": "2026-10-21",
         "props": {
           "Heading": [
@@ -68,7 +68,6 @@
         },
         "check": "2026-10-21: углы и центр машины, размеры 40×60 и 40×40 совпадают с чужим 1:1 (3 случая: 2 цифры, 1 цифра, без числа)",
         "open": [
-          "Принять Car Pin целиком — после проверки PD",
           "Замена: чужие 30° и 60° → ↖ (ближайшее), остальные — по ближайшей стрелке"
         ],
         "icon": {
@@ -1689,8 +1688,9 @@
           "check": "structure",
           "what": "16 маркеров «Carsharing» (2d222904) — пары в Rider нет, Map Pin не умеет «машина с номером/зарядом»",
           "ask": "Завести вариант Map Pin «каршеринг» или считать маркеры графикой карты (F)",
-          "status": "open",
-          "proposal": "Новый компонент Rider «Car Pin» на странице Pins: Heading (8 углов, варианты), Show Count, Count; плашка Hug вместо Quantity. Прототип — секция 5203:4022 (2026-10-21)."
+          "status": "accepted",
+          "proposal": "Новый компонент Rider «Car Pin» на странице Pins: Heading (8 углов, варианты), Show Count, Count; плашка Hug вместо Quantity. Прототип — секция 5203:4022 (2026-10-21).",
+          "pd": "2026-10-21: принят Car Pin (решение 13)."
         }
       ],
       "unbound": [
@@ -1698,7 +1698,7 @@
           "node": "Carsharing ×16 (маркеры машин)",
           "kind": "component",
           "status": "open",
-          "note": "находка 13"
+          "note": "находка 13 — Car Pin, решение PD 2026-10-21"
         },
         {
           "node": "Top Actions",
@@ -1905,6 +1905,23 @@
       },
       "history": [
         "2026-10-20: отложена до ТЗ PD."
+      ]
+    },
+    {
+      "finding": 13,
+      "date": "2026-10-21",
+      "by": "PD",
+      "status": "resolved",
+      "decision": "Маркер машины каршеринга — новый компонент Rider «Car Pin» на странице Pins по прототипу 5203:4021: Heading — 8 направлений стрелками Unicode (↑ ↗ → ↘ ↓ ↙ ← ↖, шаг 45°, ↑ — нос вверх); Show Count — плашка с числом; Count — текст. Плашка Hug, minWidth 20: Background/Constant Dark Secondary, Text/Constant White, Subtitle 3, space-4/space-2, radius-pill; тень машины Shadows/Mini. Машина — иконка ic_car_top из библиотеки иконок Rider в одном повороте (нос вверх), вращается в компоненте.",
+      "appliesTo": "Carsharing (ряд 8) и все экраны с маркерами машин",
+      "context": [
+        "Чужой набор Carsharing 2d222904: Claster × Degree (8 углов) × Quantity — до 48 вариантов; One/More отличались только шириной плашки, No one = Claster No.",
+        "В Rider пары нет: Pins — Map Pin, PPL Pin, My Location; машины в иконках нет.",
+        "Не графика карты (F): объект приложения, нажимается, рисует разработчик."
+      ],
+      "open": [
+        "Задача Designer: Car Pin в Rider (Pins) + иконка ic_car_top в иконки Rider.",
+        "Замена 16 маркеров во всех «стало»: направление — по ближайшей стрелке (30°, 60° → ↖)."
       ]
     }
   ]
