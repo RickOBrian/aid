@@ -116,7 +116,6 @@ function buildChapteredGuide(guide) {
     description: guide.description ?? null,
     publication: guide.publication ?? 'published',
     author: guide.author ?? null,
-    source: guide.source ?? null,
     chapters: chapters.map(({ chapterId, title, route }) => ({ chapterId, title, route })),
   });
 
@@ -174,7 +173,6 @@ for (const guide of registry.guides ?? []) {
     description: guide.description ?? null,
     publication: guide.publication ?? 'published',
     author: null,
-    source: null,
     chapters: null,
   });
 

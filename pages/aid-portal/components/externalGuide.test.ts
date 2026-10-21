@@ -15,7 +15,7 @@ beforeAll(async () => {
 });
 
 /**
- * Гайд со стороны (`source` в реестре): разметка ограничена, ссылки между
+ * Гайд со стороны (`chapters` в реестре): разметка ограничена, ссылки между
  * главами идут через маршрут портала, схемы mermaid — текстом.
  */
 
@@ -100,14 +100,14 @@ describe('гайды на согласовании в реестре', () => {
     (guide) => (guide as { publication?: string }).publication === 'pending-approval',
   );
 
-  it('живут в /guides/preview/ и указывают автора и источник', () => {
+  it('живут в /guides/preview/, автор — только имя, без логина и ссылки (решение PD 2026-10-21)', () => {
     expect(pending.length).toBeGreaterThan(0);
     for (const guide of pending) {
-      const entry = guide as typeof guide & { author?: string; source?: { url: string; commit: string } };
+      const entry = guide as typeof guide & { author?: string };
       expect(entry.reviewRoute.startsWith('/guides/preview/')).toBe(true);
       expect(entry.author).toBeTruthy();
-      expect(entry.source?.url).toMatch(/^https:\/\//);
-      expect(entry.source?.commit).toMatch(/^[0-9a-f]{40}$/);
+      expect(entry.author).not.toMatch(/[@/]|github/i);
+      expect(JSON.stringify(entry)).not.toMatch(/github\.com/i);
     }
   });
 

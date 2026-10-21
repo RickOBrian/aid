@@ -19,7 +19,7 @@ import {
  * держать в соответствии с источником (ADR-002).
  *
  * Канонические гайды приходят из нашего же репозитория и проходят
- * `check-docs`. Гайд со стороны (`source` в реестре) собирается по главам с
+ * `check-docs`. Гайд со стороны (`chapters` в реестре) собирается по главам с
  * ограниченной разметкой — `scripts/external-guide-markdown.mjs`; ссылки
  * между главами приходят как `aid-route:/guides/...`, базу превью и продукт
  * подставляет `resolveRouteLinks`.
@@ -45,7 +45,6 @@ interface GuideIndexEntry {
   reviewRoute: string;
   publication: string;
   author: string | null;
-  source: { label: string; url: string; commit: string } | null;
   chapters: GuideChapter[] | null;
 }
 
@@ -356,17 +355,7 @@ export function GuidePage({ path }: { path: string }) {
                 ) : null}
                 <dt>Источник</dt>
                 <dd>
-                  {meta.source ? (
-                    <>
-                      <a className="dsgp-link" href={meta.source.url} rel="noopener noreferrer">
-                        {meta.source.label}
-                      </a>
-                      {' · снимок '}
-                      <code>{meta.source.commit.slice(0, 7)}</code>
-                    </>
-                  ) : (
-                    <code>{meta.sourcePath}</code>
-                  )}
+                  <code>{meta.sourcePath}</code>
                   {meta.sourceDownloadUrl ? (
                     <>
                       {' · '}
