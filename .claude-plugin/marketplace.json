@@ -1,0 +1,17 @@
+{
+  "name": "aid",
+  "owner": {
+    "name": "AID Design System",
+    "url": "https://github.com/RickOBrian/aid"
+  },
+  "metadata": {
+    "description": "Стандарты дизайн-системы AID для Claude Code инженеров продуктов"
+  },
+  "plugins": [
+    {
+      "name": "aid-standards",
+      "source": "./plugins/aid-standards",
+      "description": "Гейты, стандарты, реестр и скиллы ds-* дизайн-системы AID: токены, компоненты, Figma, гайды"
+    }
+  ]
+}
