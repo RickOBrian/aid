@@ -515,7 +515,8 @@
       },
       "10": {
         "applies": "full",
-        "reading": "запись «Не опубликовано» в чейнжлог Figma вручную с PD, без версии (WORKING-RULES §5)"
+        "reading": "изменение — в changes/<id>/pending/; запись «Не опубликовано» без версии — в таблицу чейнжлога Figma и в JSON, вручную с PD (WORKING-RULES §5); в main JSON-запись только с версией",
+        "releaseBoundary": "release-gate; у библиотек Rider и Driver версию и changelog ставит arturuxui в своём PR (CLAUDE.md, «Только PD» п.4)"
       }
     }
   },
