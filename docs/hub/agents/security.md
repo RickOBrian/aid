@@ -1,6 +1,6 @@
 # Роль Security
 
-**Чат:** AID · Review (`~/Projects/aid-security`, карточка `review.md`).
+**Чат:** Review (`~/Projects/aid-security`, карточка `review.md`).
 **Вход:** эта карточка →
 `../ORCHESTRATION.md` §4 «Секреты» → корневой `CLAUDE.md`.
 

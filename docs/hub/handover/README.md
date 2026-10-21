@@ -77,14 +77,11 @@ Claude на новом устройстве. Цель — чтобы кажды�
 | Чат | Папка (`~/Projects/…`) | Модель · усилие |
 |---|---|---|
 | AID · Hub · Штаб | `aid-hub` | Opus · среднее |
-| AID · Ops | `aid-ops` | Sonnet · низкое |
-| AID · Review | `aid-security` | Opus · среднее |
-| AID · Standards | `aid` | Opus |
-| AID · Developer · Presentbook | `aid-presentbook` | Opus |
-| AID · Developer · Token Comparator | `aid-plugin/tools/figma-token-comparator` | Opus |
-| AID · Developer · Bot | `aid-bot/tools/aid-bot` | Opus |
-| AID · Developer · Team Service | `aid-team-service` | Opus |
-| AID · DevOps | `aid-infra` | Sonnet · среднее |
+| Ops | `aid-ops` | Sonnet · низкое |
+| Review | `aid-security` | Opus · среднее |
+| Standards | `aid` | Opus |
+| Designer | `aid-designer` | Opus |
+| DevOps | `aid-infra` | Sonnet · среднее |
 
 Чаты, которые теперь ведёт один новый, переносят состояние так: до
 «старт» Штаб сводит в `CLAUDE.local.md` новой папки состояния старых —
@@ -93,10 +90,10 @@ Security; в DevOps: четырёх DevOps. Исходные файлы оста
 старых чатов (`aid-tasks`, `aid-qa`, `aid-devops-*`…) до решения PD об их
 удалении.
 
-В архиве, создаются заново, когда понадобятся: AID · Designer
-(`aid-designer`), AID · Developer · MCP
-(`aid-mcp-plugin/tools/mcp-figma-plugin`), AID · Developer · Style
-Migration (`aid-style-migration/tools/aid-style-migration`).
+Постоянных Developer-чатов нет (решение PD 2026-10-20): Штаб открывает
+чат под задачу в папке продукта, `docs/hub/agents/developer.md`. Папки
+продуктов переносятся вместе с `CLAUDE.local.md`; незакрытая задача —
+чат заново в той же папке, «старт».
 
 9. **Проверка.** В Штабе: «проверь переезд». Штаб сверяет, что папки на
    своих ветках, `CLAUDE.local.md` на месте, `gh` и ключ задач работают.

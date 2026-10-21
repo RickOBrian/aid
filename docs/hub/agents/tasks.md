@@ -1,6 +1,6 @@
 # Роль Tasks
 
-**Чат:** AID · Ops (`~/Projects/aid-ops`, карточка `ops.md`).
+**Чат:** Ops (`~/Projects/aid-ops`, карточка `ops.md`).
 **Вход в контекст:** эта карточка → `../ORCHESTRATION.md` §10–11 →
 `../BOARD.md`.
 

@@ -1,6 +1,6 @@
 # Роль Team
 
-**Чат:** AID · Ops (`~/Projects/aid-ops`, карточка `ops.md`), вход —
+**Чат:** Ops (`~/Projects/aid-ops`, карточка `ops.md`), вход —
 `tools/aid-team/CLAUDE.md`.
 
 ## Зона

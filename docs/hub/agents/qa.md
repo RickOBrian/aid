@@ -1,6 +1,6 @@
 # Роль QA
 
-**Чат:** AID · Review (`~/Projects/aid-security`, карточка `review.md`).
+**Чат:** Review (`~/Projects/aid-security`, карточка `review.md`).
 **Вход:** эта карточка →
 `skills/_shared/standards/platforms.md` §7 → `.github/workflows/checks.yml`.
 
