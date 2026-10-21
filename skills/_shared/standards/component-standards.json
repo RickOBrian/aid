@@ -1,6 +1,6 @@
 {
   "id": "component-standards",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "status": "alpha",
   "humanFile": "component-standards.md",
   "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
@@ -465,7 +465,59 @@
       "9": "should",
       "10": "should"
     },
-    "_levelNote": "Пункты 1, 2, 4 и 8 содержат правила уровня must; пункт 4 — только в части цвета, остальные категории значений уровня should. Пункт, отмеченный must, не делает must всё его содержание."
+    "_levelNote": "Пункты 1, 2, 4 и 8 содержат правила уровня must; пункт 4 — только в части цвета, остальные категории значений уровня should. Пункт, отмеченный must, не делает must всё его содержание.",
+    "figmaOnly": {
+      "_doc": "Прочтение пунктов для компонента, который есть только в библиотеке Figma. Раздел 15.1. n/a — пункт не применяется, проверяет checkedBy.",
+      "1": {
+        "applies": "full"
+      },
+      "2": {
+        "applies": "partial",
+        "reading": "component properties: перечисления — variant; умолчания — вариант по умолчанию и умолчания boolean/text; слоты и escape hatches — instance swap и slot",
+        "na": [
+          "управляемость"
+        ],
+        "checkedBy": "development"
+      },
+      "3": {
+        "applies": "full",
+        "reading": "матрица только из допустимых сочетаний, каждое значение — токен"
+      },
+      "4": {
+        "applies": "full",
+        "reading": "значений без токена нет"
+      },
+      "5": {
+        "applies": "full",
+        "reading": "пример «худший случай»"
+      },
+      "6": {
+        "applies": "partial",
+        "reading": "область нажатия, вариант фокуса, недоступное состояние, состояние не только цветом",
+        "na": [
+          "атрибуты",
+          "поведение фокуса"
+        ],
+        "checkedBy": "development"
+      },
+      "7": {
+        "applies": "n/a",
+        "checkedBy": "development",
+        "note": "полная матрица пункта 3 — эталон для визуальных тестов"
+      },
+      "8": {
+        "applies": "n/a",
+        "checkedBy": "development"
+      },
+      "9": {
+        "applies": "full",
+        "reading": "описание компонента в Figma"
+      },
+      "10": {
+        "applies": "full",
+        "reading": "запись «Не опубликовано» в чейнжлог Figma вручную с PD, без версии (WORKING-RULES §5)"
+      }
+    }
   },
   "platformModelSource": "products/<id>/product.json → platformModel",
   "gates": {
