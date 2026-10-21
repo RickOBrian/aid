@@ -1,25 +1,39 @@
 /**
- * Build Rider icon catalog + SVG assets from Figma Rider-Icons file (node 3691:4).
+ * Build Rider icon catalog + SVG assets from Figma Rider-Icons file
+ * (section «Icons», node 3698:316).
  *
- * Usage: node scripts/import-rider-icons.mjs
+ * Usage:
+ *   FIGMA_API_KEY=… node scripts/import-rider-icons.mjs
+ *   node scripts/import-rider-icons.mjs --from-export <manifest.json> <svg-dir>
+ *
+ * --from-export: no REST token. manifest.json — { icons: [{ frame, symbolName,
+ * figmaNodeId }] }, read from the file via Figma MCP; <svg-dir>/<nodeId with
+ * ':' → '_'>.svg — node exports (Figma MCP download_assets, format svg).
  */
-import { mkdir, writeFile } from 'node:fs/promises';
-import { existsSync, readFileSync as readSync, writeFileSync } from 'node:fs';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { readFileSync as readSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { sanitizeIconSvg } from '../sanitizeIconSvg.ts';
+import { extractIconSymbolSvg, sanitizeIconSvg } from '../sanitizeIconSvg.ts';
 
 const FILE_KEY = 'n6LppQbTv85yI29h6u30DI';
-const ROOT_NODE_ID = '3691:4';
+const ROOT_NODE_ID = '3698:316';
 const BATCH = 50;
 
+/** Figma frame name → section id and title, in catalog order. */
 const SECTION_FRAMES = new Map([
-  ['Brands', 'brands'],
-  ['Controls', 'controls'],
-  ['informative', 'informative'],
-  ['Actions', 'actions'],
-  ['Addresses', 'addresses'],
+  ['Brands', { id: 'brands', title: 'Brands' }],
+  ['Controls', { id: 'controls', title: 'Controls' }],
+  ['informative', { id: 'informative', title: 'Informative' }],
+  ['Actions', { id: 'actions', title: 'Actions' }],
+  ['Addresses', { id: 'addresses', title: 'Addresses' }],
+  ['Status', { id: 'status', title: 'Status' }],
+  ['Markers', { id: 'markers', title: 'Markers' }],
+  ['Scooters', { id: 'scooters', title: 'Scooters' }],
+  ['Road Events', { id: 'road_events', title: 'Road Events' }],
+  ['Payments', { id: 'payments', title: 'Payments' }],
+  ['Theme', { id: 'theme', title: 'Theme' }],
 ]);
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
@@ -45,10 +59,6 @@ function resolveToken() {
 }
 
 function symbolToId(symbolName) {
-  if (symbolName.startsWith('Property 1=')) {
-    const active = symbolName.includes('Active=On') ? 'on' : 'off';
-    return `radiobutton_${active}`;
-  }
   return symbolName
     .replace(/^ic_/, '')
     .trim()
@@ -57,69 +67,51 @@ function symbolToId(symbolName) {
     .toLowerCase();
 }
 
-function sectionTitle(name) {
-  if (name === 'informative') return 'Informative';
-  return name;
-}
-
-function walkSymbols(node, sectionId, sectionTitleName, items, usedIds) {
+function walkSymbols(node, frameName, out) {
   if (node.type === 'SYMBOL' || node.type === 'COMPONENT') {
-    const figmaNodeId = node.id;
-    const symbolName = node.name;
-    let id = symbolToId(symbolName);
-    if (usedIds.has(id)) {
-      let suffix = 2;
-      while (usedIds.has(`${id}_${suffix}`)) suffix += 1;
-      id = `${id}_${suffix}`;
-    }
-    usedIds.add(id);
-    items.push({
-      id,
-      name: id,
-      figmaNodeId,
-      symbolName,
-      sectionId,
-      sectionTitle: sectionTitleName,
-    });
+    out.push({ frame: frameName, symbolName: node.name, figmaNodeId: node.id });
     return;
   }
-
-  if (node.type === 'FRAME' && SECTION_FRAMES.has(node.name)) {
-    sectionId = SECTION_FRAMES.get(node.name);
-    sectionTitleName = sectionTitle(node.name);
-    usedIds = new Set();
-  }
-
+  const nextFrame = node.type === 'FRAME' && SECTION_FRAMES.has(node.name) ? node.name : frameName;
   for (const child of node.children ?? []) {
-    walkSymbols(child, sectionId, sectionTitleName, items, usedIds);
+    walkSymbols(child, nextFrame, out);
   }
 }
 
-function groupSections(flatItems) {
+function buildSections(symbols) {
   const map = new Map();
-  for (const item of flatItems) {
-    if (!map.has(item.sectionId)) {
-      map.set(item.sectionId, {
-        id: item.sectionId,
-        title: item.sectionTitle,
-        items: [],
-      });
+  for (const symbol of symbols) {
+    const section = SECTION_FRAMES.get(symbol.frame);
+    if (!section) {
+      throw new Error(`Unknown section frame «${symbol.frame}» for ${symbol.symbolName}`);
     }
-    map.get(item.sectionId).items.push({
-      id: item.id,
-      name: item.name,
-      figmaNodeId: item.figmaNodeId,
-    });
+    if (!map.has(section.id)) {
+      map.set(section.id, { ...section, items: [], usedIds: new Set() });
+    }
+    const target = map.get(section.id);
+    let id = symbolToId(symbol.symbolName);
+    if (target.usedIds.has(id)) {
+      let suffix = 2;
+      while (target.usedIds.has(`${id}_${suffix}`)) suffix += 1;
+      id = `${id}_${suffix}`;
+    }
+    target.usedIds.add(id);
+    target.items.push({ id, name: id, figmaNodeId: symbol.figmaNodeId, symbolName: symbol.symbolName });
   }
-  const order = ['brands', 'controls', 'informative', 'actions', 'addresses'];
-  return order.filter((id) => map.has(id)).map((id) => map.get(id));
+  return [...SECTION_FRAMES.values()]
+    .filter((section) => map.has(section.id))
+    .map(({ id }) => {
+      const { usedIds: _usedIds, ...section } = map.get(id);
+      return section;
+    });
 }
 
 function emitIconsData(sections) {
   const lines = [
     '/**',
-    ' * Rider icons from Figma «Rider Icons» (node 3691:4).',
-    ' * Source: https://www.figma.com/design/n6LppQbTv85yI29h6u30DI/Rider-Icons?node-id=3691-4',
+    ` * Rider icons from Figma «Rider Icons» (section «Icons», node ${ROOT_NODE_ID}).`,
+    ` * Source: https://www.figma.com/design/${FILE_KEY}/Rider-Icons?node-id=${ROOT_NODE_ID.replace(':', '-')}`,
+    ' * Generated by scripts/import-rider-icons.mjs — do not edit by hand.',
     ' */',
     '',
     "import type { IconSection } from '../../iconsData';",
@@ -152,72 +144,99 @@ function emitIconsData(sections) {
   return `${lines.join('\n')}`;
 }
 
-const token = resolveToken();
-if (!token) {
-  console.error('Set FIGMA_API_KEY or FIGMA_API_TOKEN');
-  process.exit(1);
+function toIconSvg(raw, item) {
+  return extractIconSymbolSvg(raw, item.symbolName) ?? sanitizeIconSvg(raw, item.id);
 }
 
-const apiUrl = `https://api.figma.com/v1/files/${FILE_KEY}/nodes?ids=${encodeURIComponent(ROOT_NODE_ID)}&depth=20`;
-const treeRes = await fetch(apiUrl, { headers: { 'X-Figma-Token': token } });
-if (!treeRes.ok) {
-  throw new Error(`Figma nodes API ${treeRes.status}: ${await treeRes.text()}`);
+/** Yields [item, rawSvg | Error] for every icon. */
+async function* restSource(token, allIcons) {
+  for (let i = 0; i < allIcons.length; i += BATCH) {
+    const batch = allIcons.slice(i, i + BATCH);
+    const ids = batch.map((item) => item.figmaNodeId).join(',');
+    const imagesUrl = `https://api.figma.com/v1/images/${FILE_KEY}?ids=${encodeURIComponent(ids)}&format=svg&svg_outline_text=false&svg_include_id=true`;
+    const res = await fetch(imagesUrl, { headers: { 'X-Figma-Token': token } });
+    if (!res.ok) {
+      throw new Error(`Figma images API ${res.status}: ${await res.text()}`);
+    }
+    const data = await res.json();
+    if (data.err) {
+      throw new Error(data.err);
+    }
+    for (const item of batch) {
+      const assetUrl = data.images[item.figmaNodeId];
+      if (!assetUrl) {
+        yield [item, new Error('No URL')];
+        continue;
+      }
+      const svgRes = await fetch(assetUrl);
+      yield [item, svgRes.ok ? await svgRes.text() : new Error(`Download ${svgRes.status}`)];
+    }
+  }
 }
 
-const treeJson = await treeRes.json();
-const rootNode = treeJson.nodes?.[ROOT_NODE_ID]?.document;
-if (!rootNode) {
-  throw new Error('Root node 3691:4 not found');
+async function* exportSource(svgDir, allIcons) {
+  for (const item of allIcons) {
+    try {
+      yield [item, await readFile(join(svgDir, `${item.figmaNodeId.replace(':', '_')}.svg`), 'utf8')];
+    } catch (error) {
+      yield [item, error];
+    }
+  }
 }
 
-const flatItems = [];
-walkSymbols(rootNode, null, null, flatItems, null);
-const sections = groupSections(flatItems);
+const fromExport = process.argv.indexOf('--from-export');
+let symbols;
+let source;
 
-await mkdir(publicRoot, { recursive: true });
-for (const section of sections) {
-  await mkdir(join(publicRoot, section.id), { recursive: true });
+if (fromExport !== -1) {
+  const manifestPath = resolve(process.argv[fromExport + 1] ?? '');
+  const svgDir = resolve(process.argv[fromExport + 2] ?? '');
+  symbols = JSON.parse(await readFile(manifestPath, 'utf8')).icons;
+  source = (allIcons) => exportSource(svgDir, allIcons);
+} else {
+  const token = resolveToken();
+  if (!token) {
+    console.error('Set FIGMA_API_KEY or FIGMA_API_TOKEN, or use --from-export <manifest.json> <svg-dir>');
+    process.exit(1);
+  }
+  const apiUrl = `https://api.figma.com/v1/files/${FILE_KEY}/nodes?ids=${encodeURIComponent(ROOT_NODE_ID)}&depth=20`;
+  const treeRes = await fetch(apiUrl, { headers: { 'X-Figma-Token': token } });
+  if (!treeRes.ok) {
+    throw new Error(`Figma nodes API ${treeRes.status}: ${await treeRes.text()}`);
+  }
+  const rootNode = (await treeRes.json()).nodes?.[ROOT_NODE_ID]?.document;
+  if (!rootNode) {
+    throw new Error(`Root node ${ROOT_NODE_ID} not found`);
+  }
+  symbols = [];
+  walkSymbols(rootNode, null, symbols);
+  source = (allIcons) => restSource(token, allIcons);
 }
 
-let ok = 0;
-const errors = [];
+const sections = buildSections(symbols);
 const allIcons = sections.flatMap((section) =>
   section.items.map((item) => ({ ...item, sectionId: section.id })),
 );
 
-for (let i = 0; i < allIcons.length; i += BATCH) {
-  const batch = allIcons.slice(i, i + BATCH);
-  const ids = batch.map((item) => item.figmaNodeId).join(',');
-  const imagesUrl = `https://api.figma.com/v1/images/${FILE_KEY}?ids=${encodeURIComponent(ids)}&format=svg&svg_outline_text=false&svg_include_id=true`;
-  const res = await fetch(imagesUrl, { headers: { 'X-Figma-Token': token } });
-  if (!res.ok) {
-    throw new Error(`Figma images API ${res.status}: ${await res.text()}`);
-  }
-  const data = await res.json();
-  if (data.err) {
-    throw new Error(data.err);
-  }
+// Write into a fresh tree so icons removed from the library disappear too.
+const results = [];
+for await (const [item, raw] of source(allIcons)) {
+  results.push([item, raw]);
+}
+const errors = results
+  .filter(([, raw]) => raw instanceof Error)
+  .map(([item, error]) => ({ id: item.id, sectionId: item.sectionId, error: String(error) }));
+if (errors.length > 0) {
+  console.error(JSON.stringify({ errors }, null, 2));
+  process.exit(1);
+}
 
-  for (const item of batch) {
-    const assetUrl = data.images[item.figmaNodeId];
-    if (!assetUrl) {
-      errors.push({ id: item.id, sectionId: item.sectionId, error: 'No URL' });
-      continue;
-    }
-    try {
-      const svgRes = await fetch(assetUrl);
-      if (!svgRes.ok) {
-        throw new Error(`Download ${svgRes.status}`);
-      }
-      const raw = await svgRes.text();
-      const sanitized = sanitizeIconSvg(raw, item.id);
-      const outPath = join(publicRoot, item.sectionId, `${item.id}.svg`);
-      await writeFile(outPath, `${sanitized}\n`, 'utf8');
-      ok += 1;
-    } catch (error) {
-      errors.push({ id: item.id, sectionId: item.sectionId, error: String(error) });
-    }
-  }
+await rm(publicRoot, { recursive: true, force: true });
+for (const section of sections) {
+  await mkdir(join(publicRoot, section.id), { recursive: true });
+}
+for (const [item, raw] of results) {
+  await writeFile(join(publicRoot, item.sectionId, `${item.id}.svg`), `${toIconSvg(raw, item)}\n`, 'utf8');
 }
 
 writeFileSync(iconsDataPath, emitIconsData(sections), 'utf8');
@@ -227,8 +246,7 @@ console.log(
     {
       sections: sections.map((s) => ({ id: s.id, count: s.items.length })),
       total: allIcons.length,
-      downloaded: ok,
-      errors,
+      written: results.length,
       iconsDataPath,
     },
     null,
