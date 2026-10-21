@@ -174,7 +174,9 @@ Migration (`aid-style-migration/tools/aid-style-migration`). Их папки и
 3. DNS, домены, биллинг, смена провайдера хостинга;
 4. релиз продукта, у которого владелец — PD: версия, changelog, GitHub
    Release, метка Latest (у продукта с другим владельцем — он,
-   `docs/hub/ORCHESTRATION.md` §9, ADR-041);
+   `docs/hub/ORCHESTRATION.md` §9, ADR-041); версию и changelog
+   библиотек Rider и Driver arturuxui ставит сам в своём PR через
+   release-gate (решение PD 2026-10-21);
 5. сообщения людям от имени PD;
 6. правила-предохранители: раздел «Git-полномочия» этого файла и
    `docs/hub/ORCHESTRATION.md` §4 («Что считается разрешением», «Проверка
