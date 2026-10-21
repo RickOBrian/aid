@@ -72,7 +72,7 @@ const BackgroundRows: SemanticColorRow[] = [
   {
     name: 'Success Surface',
     day: { hex: '#D6EDE1', opacity: 100 },
-    night: { hex: '#D6EDE1', opacity: 100 },
+    night: { hex: '#283C32', opacity: 100 },
     description: 'Для каллаута',
   },
   {
@@ -84,7 +84,7 @@ const BackgroundRows: SemanticColorRow[] = [
   {
     name: 'Attention Surface',
     day: { hex: '#F9E8BF', opacity: 100 },
-    night: { hex: '#F9E8BF', opacity: 100 },
+    night: { hex: '#402222', opacity: 100 },
     description: 'Для каллаута',
   },
   {
@@ -101,8 +101,8 @@ const BackgroundRows: SemanticColorRow[] = [
   },
   {
     name: 'Warning',
-    day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    day: { hex: '#E52817', opacity: 100 },
+    night: { hex: '#E53828', opacity: 100 },
     description: 'Для отображения критическийх предупреждений',
   },
   {
@@ -182,6 +182,48 @@ const BackgroundRows: SemanticColorRow[] = [
     day: { hex: '#000000', opacity: 30 },
     night: { hex: '#000000', opacity: 30 },
     description: 'Цвет заливки фона при открытии модалок',
+  },
+  {
+    name: 'Zone Available',
+    day: { hex: '#EDEDFF', opacity: 70 },
+    night: { hex: '#19191D', opacity: 50 },
+    description: '',
+  },
+  {
+    name: 'Zone Unavailable',
+    day: { hex: '#8C7AFF', opacity: 25 },
+    night: { hex: '#7262DA', opacity: 25 },
+    description: '',
+  },
+  {
+    name: 'Zone Forbidden',
+    day: { hex: '#D62347', opacity: 30 },
+    night: { hex: '#B01C3A', opacity: 30 },
+    description: '',
+  },
+  {
+    name: 'Pill Accent',
+    day: { hex: '#F5EFF6', opacity: 100 },
+    night: { hex: '#4D4164', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Pill Secondary',
+    day: { hex: '#EDEDF3', opacity: 100 },
+    night: { hex: '#404047', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'PPL Pin/Back',
+    day: { hex: '#303038', opacity: 100 },
+    night: { hex: '#C9D1E4', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'PPL Pin/Inner',
+    day: { hex: '#FFFFFF', opacity: 100 },
+    night: { hex: '#425076', opacity: 100 },
+    description: '',
   }
 ];
 
@@ -218,14 +260,14 @@ const TextRows: SemanticColorRow[] = [
   },
   {
     name: 'Warning',
-    day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    day: { hex: '#E52817', opacity: 100 },
+    night: { hex: '#E53828', opacity: 100 },
     description: 'Для состояния ошибок',
   },
   {
     name: 'Success',
     day: { hex: '#23AD58', opacity: 100 },
-    night: { hex: '#23AD58', opacity: 100 },
+    night: { hex: '#D2FF73', opacity: 100 },
     description: 'Акцентные тексты',
   },
   {
@@ -243,7 +285,7 @@ const TextRows: SemanticColorRow[] = [
   {
     name: 'Attention Deep',
     day: { hex: '#FF7200', opacity: 100 },
-    night: { hex: '#FF7200', opacity: 100 },
+    night: { hex: '#FFA173', opacity: 100 },
     description: 'Для особо важных предупреждений',
   },
   {
@@ -253,19 +295,19 @@ const TextRows: SemanticColorRow[] = [
     description: ' ',
   },
   {
-    name: 'Primary Opposite',
+    name: 'Primary Inverted',
     day: { hex: '#FFFFFF', opacity: 100 },
     night: { hex: '#0F0F1F', opacity: 87 },
     description: 'Основной текст для тёмных областей',
   },
   {
-    name: 'Secondary Opposite',
+    name: 'Secondary Inverted',
     day: { hex: '#E9EAEE', opacity: 100 },
     night: { hex: '#393944', opacity: 100 },
     description: '',
   },
   {
-    name: 'Tertiary Opposite',
+    name: 'Tertiary Inverted',
     day: { hex: '#FFFFFF', opacity: 38 },
     night: { hex: '#0F0F1F', opacity: 38 },
     description: 'Подписи и неактивные состояния для тёмных областей',
@@ -298,6 +340,12 @@ const TextRows: SemanticColorRow[] = [
     name: 'Secondary Clean',
     day: { hex: '#7E7E86', opacity: 100 },
     night: { hex: '#7E7E86', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Accent Inverted',
+    day: { hex: '#8526FF', opacity: 100 },
+    night: { hex: '#FFD4F8', opacity: 100 },
     description: '',
   }
 ];
@@ -335,14 +383,14 @@ const IconRows: SemanticColorRow[] = [
   },
   {
     name: 'Warning',
-    day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    day: { hex: '#E52817', opacity: 100 },
+    night: { hex: '#E53828', opacity: 100 },
     description: 'Для состояния ошибок',
   },
   {
     name: 'Success',
     day: { hex: '#23AD58', opacity: 100 },
-    night: { hex: '#23AD58', opacity: 100 },
+    night: { hex: '#D2FF73', opacity: 100 },
     description: 'Акцентное состояние',
   },
   {
@@ -360,7 +408,7 @@ const IconRows: SemanticColorRow[] = [
   {
     name: 'Attention Deep',
     day: { hex: '#FF7200', opacity: 100 },
-    night: { hex: '#FF7200', opacity: 100 },
+    night: { hex: '#FFA173', opacity: 100 },
     description: 'Для особо важных предупреждений',
   },
   {
@@ -370,19 +418,19 @@ const IconRows: SemanticColorRow[] = [
     description: ' ',
   },
   {
-    name: 'Primary Opposite',
+    name: 'Primary Inverted',
     day: { hex: '#FFFFFF', opacity: 100 },
     night: { hex: '#0F0F1F', opacity: 87 },
     description: 'Для важных акцентных состояний на тёмном фоне',
   },
   {
-    name: 'Secondary Opposite',
+    name: 'Secondary Inverted',
     day: { hex: '#E9EAEE', opacity: 100 },
     night: { hex: '#393944', opacity: 100 },
     description: 'Драгер',
   },
   {
-    name: 'Tertiary Opposite',
+    name: 'Tertiary Inverted',
     day: { hex: '#FFFFFF', opacity: 38 },
     night: { hex: '#0F0F1F', opacity: 38 },
     description: '',
@@ -416,6 +464,12 @@ const IconRows: SemanticColorRow[] = [
     day: { hex: '#7E7E86', opacity: 100 },
     night: { hex: '#7E7E86', opacity: 100 },
     description: 'Второстепенный цвет для иконок на карте',
+  },
+  {
+    name: 'Accent Inverted',
+    day: { hex: '#8526FF', opacity: 100 },
+    night: { hex: '#FFD4F8', opacity: 100 },
+    description: '',
   }
 ];
 
@@ -440,8 +494,8 @@ const StrokeRows: SemanticColorRow[] = [
   },
   {
     name: 'Warning',
-    day: { hex: '#D62347', opacity: 100 },
-    night: { hex: '#D62347', opacity: 100 },
+    day: { hex: '#E52817', opacity: 100 },
+    night: { hex: '#E53828', opacity: 100 },
     description: '',
   },
   {
@@ -465,11 +519,11 @@ const StrokeRows: SemanticColorRow[] = [
   {
     name: 'Attention Deep',
     day: { hex: '#FF7200', opacity: 100 },
-    night: { hex: '#FF7200', opacity: 100 },
+    night: { hex: '#FFA173', opacity: 100 },
     description: 'Для особо важных предупреждений',
   },
   {
-    name: 'Opposite',
+    name: 'Inverted',
     day: { hex: '#393944', opacity: 100 },
     night: { hex: '#D6D7DC', opacity: 100 },
     description: 'Линия построенного маршрута на экране прайсинга / перенёс в Route',
@@ -491,6 +545,30 @@ const StrokeRows: SemanticColorRow[] = [
     day: { hex: '#9DFF00', opacity: 100 },
     night: { hex: '#9DFF00', opacity: 100 },
     description: ' ',
+  },
+  {
+    name: 'Secondary',
+    day: { hex: '#FFFFFF', opacity: 100 },
+    night: { hex: '#393944', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Active Car',
+    day: { hex: '#FF9AFD', opacity: 100 },
+    night: { hex: '#FF9AFD', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Zone Availability',
+    day: { hex: '#8F69FF', opacity: 100 },
+    night: { hex: '#734EDF', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Zone Forbidden',
+    day: { hex: '#EC5171', opacity: 100 },
+    night: { hex: '#C73553', opacity: 100 },
+    description: '',
   }
 ];
 
@@ -570,7 +648,7 @@ const PastelRows: SemanticColorRow[] = [
   {
     name: 'Nelson',
     day: { hex: '#D6EDE1', opacity: 100 },
-    night: { hex: '#393F3B', opacity: 100 },
+    night: { hex: '#393F3C', opacity: 100 },
     description: '',
   },
   {
@@ -582,7 +660,7 @@ const PastelRows: SemanticColorRow[] = [
   {
     name: 'Selma',
     day: { hex: '#F8E6F3', opacity: 100 },
-    night: { hex: '#413D40', opacity: 100 },
+    night: { hex: '#423D41', opacity: 100 },
     description: '',
   },
   {
@@ -596,14 +674,14 @@ const PastelRows: SemanticColorRow[] = [
 const TechnicalRows: SemanticColorRow[] = [
   {
     name: 'Invisible Deep',
-    day: { hex: '#000000', opacity: 100 },
-    night: { hex: '#000000', opacity: 100 },
+    day: { hex: '#000000', opacity: 0 },
+    night: { hex: '#000000', opacity: 0 },
     description: 'Технический цвет',
   },
   {
     name: 'Invisible Surface',
-    day: { hex: '#FFFFFF', opacity: 100 },
-    night: { hex: '#FFFFFF', opacity: 100 },
+    day: { hex: '#FFFFFF', opacity: 0 },
+    night: { hex: '#FFFFFF', opacity: 0 },
     description: 'Технический цвет',
   },
   {
@@ -662,6 +740,18 @@ const ButtonRows: SemanticColorRow[] = [
     day: { hex: '#21A038', opacity: 100 },
     night: { hex: '#21A038', opacity: 100 },
     description: 'Для кнопки Sber Pay',
+  },
+  {
+    name: 'Warning Default',
+    day: { hex: '#E52817', opacity: 100 },
+    night: { hex: '#E53727', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Warning Pressed',
+    day: { hex: '#BF0020', opacity: 100 },
+    night: { hex: '#FF4747', opacity: 100 },
+    description: '',
   }
 ];
 
@@ -823,6 +913,12 @@ const StoriesRows: SemanticColorRow[] = [
     name: 'Ned',
     day: { hex: '#FFF1E5', opacity: 100 },
     night: { hex: '#FFF1E5', opacity: 100 },
+    description: '',
+  },
+  {
+    name: 'Nelson',
+    day: { hex: '#FAF8DC', opacity: 100 },
+    night: { hex: '#FAF8DC', opacity: 100 },
     description: '',
   }
 ];
