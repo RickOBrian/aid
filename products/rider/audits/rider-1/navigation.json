@@ -1465,7 +1465,7 @@
         },
         {
           "from": "fab menu [ic_menu]",
-          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_menu]",
+          "to": "Button Floating [State=Default, Show Label=false, Icon L=ic_menu_outline]",
           "status": "open",
           "finding": 2
         },
