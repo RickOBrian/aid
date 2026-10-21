@@ -55,13 +55,23 @@ def token():
     return value
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """urllib по умолчанию идёт по Location и уносит X-Figma-Token на чужой адрес."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+OPENER = urllib.request.build_opener(NoRedirect)
+
+
 def get(path, tok, params=None):
     url = f"{API}{path}"
     if params:
         url += "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"X-Figma-Token": tok})
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with OPENER.open(req, timeout=60) as r:
             return json.load(r)
     except urllib.error.HTTPError as e:
         hint = {
@@ -71,7 +81,8 @@ def get(path, tok, params=None):
                  f"новый токен PD кладёт той же командой:\n  {ADD_CMD}",
             404: "файл не найден или ключ с ошибкой",
             429: "лимит запросов Figma, повторить через минуту",
-        }.get(e.code, "ошибка Figma API")
+        }.get(e.code, "редирект не выполняется: токен уходит только на api.figma.com"
+              if 300 <= e.code < 400 else "ошибка Figma API")
         sys.exit(f"Figma API {e.code} на {path}: {hint}")
     except urllib.error.URLError as e:
         sys.exit(f"Нет связи с api.figma.com: {e.reason}")
