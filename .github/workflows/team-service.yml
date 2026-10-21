@@ -4,7 +4,7 @@ name: team-service
 # На PR — тесты; с main — новая версия функции, спецификация шлюза и
 # смоук-тест. Только при изменениях в папке сервиса.
 #
-# Секрет репозитория:
+# Секрет environment team-tasks (выдаётся только ветке main, devops-2):
 #   YC_TEAM_TASKS_CI_KEY — авторизованный ключ (JSON) аккаунта team-tasks-ci
 # Переменные репозитория (не секретные):
 #   YC_TEAM_TASKS_FOLDER_ID     — каталог team-tasks
@@ -51,6 +51,7 @@ jobs:
     needs: test
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    environment: team-tasks
     defaults:
       run:
         working-directory: tools/aid-team/service

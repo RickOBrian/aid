@@ -1,0 +1,47 @@
+# Владельцы зон репозитория (devops-2, AID-35; решения PD 2026-10-21 в
+# docs/hub/BOARD.md «Решения PD»: #286, #292, #294).
+#
+# Как читать. Правило защиты main требует одобрения владельца для файлов, у
+# которых владелец есть. Автор PR не может одобрить свой PR, поэтому зона
+# arturuxui записана строками БЕЗ владельца: такой PR не ждёт ничьего
+# одобрения, его автор мержит сам после зелёных проверок. Всё остальное —
+# владелец PD: PR инженера, задевший хоть один такой файл, ждёт одобрения PD
+# последнего коммита. PD свои PR мержит в обход этого правила (роль admin);
+# проверки обязательны для всех.
+#
+# Порядок важен: побеждает последняя подходящая строка.
+
+# Всё по умолчанию — PD.
+*                                             @RickOBrian
+
+# Зона arturuxui (и PD): иконки, токены и гайды Presentbook.
+/pages/aid-portal/public/icons/
+/pages/aid-portal/iconDimensions.json
+/pages/aid-portal/products/*/*Data.ts
+# Токены и иконки Driver лежат в корне портала. В этих же файлах — общие
+# типы и SHADOW_PARAMETERS, которые импортирует Rider.
+/pages/aid-portal/data.ts
+/pages/aid-portal/radiusData.ts
+/pages/aid-portal/shadowsData.ts
+/pages/aid-portal/spacingData.ts
+/pages/aid-portal/typographyData.ts
+/pages/aid-portal/gradientsData.ts
+/pages/aid-portal/iconsData.ts
+/pages/aid-portal/guides-preview/
+
+# Зона arturuxui: версия и чейнжлог библиотек Rider и Driver (запись PD
+# 2026-10-21 о версии и чейнжлоге). Копия в pages/aid-portal/tokens/ — её
+# переписывает сборка из корневых tokens/.
+/tokens/rider-*-changelog.json
+/tokens/driver-*-changelog.json
+/pages/aid-portal/tokens/rider-*-changelog.json
+/pages/aid-portal/tokens/driver-*-changelog.json
+/components/*-changelog.json
+/changes/rider/
+/changes/driver/
+
+# Явно за PD (и так вне зоны, записаны для читателя): паспорта продуктов,
+# реестр стандартов, сам этот файл и CI.
+/products/*/product.json                      @RickOBrian
+/standards-registry.json                      @RickOBrian
+/.github/                                     @RickOBrian

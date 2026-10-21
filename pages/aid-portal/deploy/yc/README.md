@@ -12,7 +12,7 @@ Vercel больше не используется: резерв `aid-ds` сня�
 | `aidteam.pro/` и маршруты SPA | `presentbook-site` | `index.html` из бакета `presentbook-site` (object_storage, `error_object`) |
 | `aidteam.pro/assets|icons|guides/...` | `presentbook-site` | файлы бакета через http-прокси — с их настоящим типом |
 | `aidteam.pro/api/login|session|plugin-version` | оба | функция `presentbook-api`, версия с меткой `prod` |
-| `preview.aidteam.pro/pr-N/api/...` | `presentbook-preview` | версия `prod` переадресует в версию с меткой `pr-N` — код `api/` из этого PR; нет такой версии — отвечает сама |
+| `preview.aidteam.pro/pr-N/api/...` | `presentbook-preview` | версия `prod` (версий `pr-N` превью больше не выкатывает — ниже) |
 | `preview.aidteam.pro/pr-N/...` | `presentbook-preview` | функция `presentbook-api` раздаёт `pr-N/...` из бакета `presentbook-preview`, маршрут без файла → `pr-N/index.html` |
 
 Почему так, а не проще, — прототип 2026-10-02:
@@ -48,7 +48,7 @@ Vercel больше не используется: резерв `aid-ds` сня�
 | Бакеты (чтение открыто) | `presentbook-site`, `presentbook-preview` |
 | Функция | `presentbook-api` |
 | Шлюзы | `presentbook-site`, `presentbook-preview` |
-| Сервисные аккаунты | `presentbook-runtime` — функция и шлюзы; `presentbook-ci` — GitHub Actions |
+| Сервисные аккаунты | `presentbook-runtime` — функция и шлюзы; `presentbook-ci` — выкладка из `main`; `presentbook-preview-ci` — превью PR |
 | Lockbox | `presentbook-auth`: `BASIC_AUTH_USER`, `BASIC_AUTH_PASSWORD`, `AUTH_COOKIE_SECRET`; `presentbook-github`: `GITHUB_RELEASES_TOKEN`; `presentbook-ttm`: `TTM_DATA` — данные страницы `/ttm` |
 | Сертификаты | `presentbook-aidteam-pro`, `presentbook-preview-aidteam-pro` |
 
@@ -59,7 +59,8 @@ Vercel больше не используется: резерв `aid-ds` сня�
 | `presentbook-runtime` | `storage.viewer` | каталог — шлюз читает `index.html` |
 | `presentbook-runtime` | `functions.functionInvoker` | каталог — шлюз вызывает функцию |
 | `presentbook-runtime` | `lockbox.payloadViewer` | секреты `presentbook-auth`, `presentbook-github`, `presentbook-ttm` |
-| `presentbook-ci` | `storage.editor` | каталог — выкладка и удаление превью |
+| `presentbook-ci` | `storage.editor` | каталог — выкладка на сайт |
+| `presentbook-preview-ci` | ACL `WRITE` и `READ` | только бакет `presentbook-preview`; ролей на каталог нет |
 | `presentbook-ci` | `functions.editor` | каталог — новая версия функции |
 | `presentbook-ci` | `iam.serviceAccounts.user` | аккаунт `presentbook-runtime` — функция работает от его имени |
 | `presentbook-ci` | `lockbox.viewer` | секреты `presentbook-auth`, `presentbook-github` — `yc` без `version-id` сам находит текущую версию секрета; без роли «flag --secret Permission denied» (первая выкладка, 2026-10-03). `lockbox.payloadViewer` CI не нужна: снята 2026-10-03, выкладка проходит с одной `lockbox.viewer` |
@@ -70,15 +71,22 @@ Vercel больше не используется: резерв `aid-ds` сня�
 ## Версии функции: `prod` и `pr-N`
 
 Шлюзы вызывают функцию по метке `prod`, не `$latest`. Метку `prod` ставит
-только выкладка из `main`. Каждый PR выкатывает свою версию с меткой `pr-N`;
-сайт её не видит, а превью этого PR шлёт API-запросы в `/pr-N/api/...`
-(`apiUrl` в `base.ts`), и версия `prod` переадресует их в `pr-N` — вызов
-функции по метке с `integration=raw` и IAM-токеном своего сервисного
-аккаунта (`invokePreviewVersion` в `handler.ts`). При закрытии PR метка
-`pr-N` снимается.
+только выкладка из `main`.
 
-Версии PR работают с теми же секретами Lockbox, что и `prod`: превью
-собираются только для PR из этого репозитория, не из форков.
+С 2026-10-21 (devops-2) PR версию функции не выкатывает. Раньше каждый PR
+выкатывал версию с меткой `pr-N` ключом `presentbook-ci`, и код из ветки
+работал с секретами Lockbox прода, а тот же ключ мог переставить метку
+`prod`. Теперь превью получает только слабый ключ `presentbook-preview-ci`
+(environment `presentbook-preview`), который пишет в один бакет.
+
+Превью по-прежнему шлёт API-запросы в `/pr-N/api/...` (`apiUrl` в
+`base.ts`). Версия `prod` пробует переадресовать их в метку `pr-N`
+(`invokePreviewVersion` в `handler.ts`), не находит её и отвечает сама.
+Значит, правка `api/` на превью не видна: её проверяют тесты и смоук после
+мержа.
+
+Ключи выкладки — в GitHub environment `presentbook`, который выдаётся только
+ветке `main`; секретов Облака на уровне репозитория нет.
 
 Откат функции — перенести метку `prod` на прошлую версию:
 `yc serverless function version set-tag --id <версия> --tag prod`.
@@ -121,6 +129,7 @@ Changelog на странице Token Comparator строится из рели�
 CI на раннере GitHub — задача «Changelog плагина» в workflow, скрипт
 `plugin-history.ts` — и кладёт в бакет сайта: `data/plugin-history.json`.
 Функция читает файл по `PLUGIN_HISTORY_URL`. Обновляется при выкладке из
-`main`, при публикации релиза и раз в 15 минут. Нет релизов в ответе
+`main` и раз в 15 минут (по релизу — нет: environment `presentbook` выдаётся
+только ветке `main`, а не тегу). Нет релизов в ответе
 GitHub — скрипт падает, прежний файл остаётся.
 

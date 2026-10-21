@@ -145,10 +145,12 @@ ADR-047. Тот же вход GitHub, в `POST /v1/keys` уходит ещё `ag
 шлюз `team-tasks` создан. В Терминале, под своим входом; ключ CI сразу
 уходит в GitHub и удаляется с диска.
 
-1. Ключ аккаунта `team-tasks-ci` → секрет GitHub:
+1. Ключ аккаунта `team-tasks-ci` → секрет environment `team-tasks` (его
+   получает только выкладка из `main`; секрет уровня репозитория получила бы
+   любая ветка — devops-2):
    ```bash
    yc iam key create --service-account-name team-tasks-ci --folder-name team-tasks --output ~/team-tasks-ci.json
-   gh secret set YC_TEAM_TASKS_CI_KEY --repo RickOBrian/aid < ~/team-tasks-ci.json
+   gh secret set YC_TEAM_TASKS_CI_KEY --repo RickOBrian/aid --env team-tasks < ~/team-tasks-ci.json
    rm ~/team-tasks-ci.json
    ```
 2. Переменные GitHub — не секреты, идентификаторы:
