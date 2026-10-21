@@ -1255,7 +1255,7 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/add_circle": {
+  "rider/actions/add_circle_fill": {
     "width": 24,
     "height": 24
   },
@@ -1271,7 +1271,15 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/call": {
+  "rider/actions/call_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/call_off_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/call_off_outline": {
     "width": 24,
     "height": 24
   },
@@ -1279,11 +1287,47 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/copy": {
+  "rider/actions/chat_duo_fill": {
     "width": 24,
     "height": 24
   },
-  "rider/actions/favorite": {
+  "rider/actions/copy_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/download": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/drag": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/exit": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/external_link": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/favorite_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/lightning_off_outline": {
+    "width": 26,
+    "height": 26
+  },
+  "rider/actions/map_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/message_balloon_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/message_balloon_outline": {
     "width": 24,
     "height": 24
   },
@@ -1303,7 +1347,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/scan_qr": {
+  "rider/actions/placeholder": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/scan_card": {
     "width": 24,
     "height": 24
   },
@@ -1323,11 +1371,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/settings": {
+  "rider/actions/settings_fill": {
     "width": 24,
     "height": 24
   },
-  "rider/actions/share__android": {
+  "rider/actions/share_android": {
     "width": 24,
     "height": 24
   },
@@ -1335,7 +1383,19 @@
     "width": 24,
     "height": 24
   },
-  "rider/actions/trash": {
+  "rider/actions/trash_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/addresse_home": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/addresse_work": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/circle_stop": {
     "width": 24,
     "height": 24
   },
@@ -1351,11 +1411,27 @@
     "width": 24,
     "height": 24
   },
+  "rider/addresses/finish_flag": {
+    "width": 24,
+    "height": 24
+  },
   "rider/addresses/home": {
     "width": 24,
     "height": 24
   },
-  "rider/addresses/person": {
+  "rider/addresses/house_tree_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/passenger": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/person_circle": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/addresses/tree": {
     "width": 24,
     "height": 24
   },
@@ -1427,11 +1503,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/brands/mirbg_color": {
+  "rider/brands/mirbg": {
     "width": 24,
     "height": 24
   },
-  "rider/brands/mirbg_color_2": {
+  "rider/brands/mirbg_color": {
     "width": 24,
     "height": 24
   },
@@ -1451,13 +1527,21 @@
     "width": 24,
     "height": 24
   },
+  "rider/brands/spasibo": {
+    "width": 24,
+    "height": 24
+  },
   "rider/brands/spasibo_color": {
     "width": 24,
     "height": 24
   },
-  "rider/brands/spasibo_color_2": {
+  "rider/brands/telegram_fill": {
     "width": 24,
     "height": 24
+  },
+  "rider/brands/viber_outline": {
+    "width": 24,
+    "height": 25
   },
   "rider/brands/visa": {
     "width": 24,
@@ -1483,19 +1567,19 @@
     "width": 24,
     "height": 24
   },
-  "rider/controls/arrow_down": {
+  "rider/brands/watermelon_color": {
     "width": 24,
     "height": 24
   },
-  "rider/controls/arrow_left": {
+  "rider/brands/watermelon_outline": {
     "width": 24,
     "height": 24
   },
-  "rider/controls/arrow_right": {
+  "rider/brands/whatsapp_fill": {
     "width": 24,
     "height": 24
   },
-  "rider/controls/arrow_up": {
+  "rider/brands/whatsapp_outline": {
     "width": 24,
     "height": 24
   },
@@ -1507,7 +1591,35 @@
     "width": 24,
     "height": 24
   },
+  "rider/controls/chevron_down": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/chevron_large_left": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/chevron_large_right": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/chevron_left": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/chevron_right": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/chevron_up": {
+    "width": 24,
+    "height": 24
+  },
   "rider/controls/close": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/close_large": {
     "width": 24,
     "height": 24
   },
@@ -1515,7 +1627,7 @@
     "width": 24,
     "height": 24
   },
-  "rider/controls/delete_circle": {
+  "rider/controls/delete_circle_fill": {
     "width": 24,
     "height": 24
   },
@@ -1527,7 +1639,23 @@
     "width": 24,
     "height": 24
   },
-  "rider/controls/menu": {
+  "rider/controls/done_bold": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/done_double": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/done_double_bold": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/done_small": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/menu_outline": {
     "width": 24,
     "height": 24
   },
@@ -1543,17 +1671,17 @@
     "width": 24,
     "height": 24
   },
-  "rider/controls/radiobutton_off": {
-    "width": 24,
-    "height": 24
-  },
-  "rider/controls/radiobutton_on": {
-    "width": 24,
-    "height": 24
-  },
   "rider/controls/refresh": {
     "width": 24,
     "height": 24
+  },
+  "rider/controls/repeat": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/controls/update": {
+    "width": 24,
+    "height": 25
   },
   "rider/informative/assistant": {
     "width": 24,
@@ -1567,11 +1695,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/card": {
+  "rider/informative/chart": {
     "width": 24,
     "height": 24
   },
-  "rider/informative/cash": {
+  "rider/informative/clipboard_outline": {
     "width": 24,
     "height": 24
   },
@@ -1583,11 +1711,19 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/documents": {
+  "rider/informative/document_fill": {
     "width": 24,
     "height": 24
   },
-  "rider/informative/done": {
+  "rider/informative/document_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/done_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/done_outline": {
     "width": 24,
     "height": 24
   },
@@ -1595,7 +1731,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/envelope": {
+  "rider/informative/envelope_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/envelope_outline": {
     "width": 24,
     "height": 24
   },
@@ -1608,6 +1748,10 @@
     "height": 24
   },
   "rider/informative/food": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/forbidden": {
     "width": 24,
     "height": 24
   },
@@ -1628,6 +1772,14 @@
     "height": 24
   },
   "rider/informative/info": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/info_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/lifebuoy": {
     "width": 24,
     "height": 24
   },
@@ -1659,6 +1811,10 @@
     "width": 24,
     "height": 24
   },
+  "rider/informative/no_location": {
+    "width": 24,
+    "height": 24
+  },
   "rider/informative/number": {
     "width": 24,
     "height": 24
@@ -1671,7 +1827,23 @@
     "width": 24,
     "height": 24
   },
+  "rider/informative/pet": {
+    "width": 24,
+    "height": 24
+  },
   "rider/informative/phone": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/pin_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/pin_fill_city": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/pin_outline": {
     "width": 24,
     "height": 24
   },
@@ -1683,7 +1855,11 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/ride_experience": {
+  "rider/informative/question": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/question_smooth": {
     "width": 24,
     "height": 24
   },
@@ -1699,6 +1875,10 @@
     "width": 24,
     "height": 24
   },
+  "rider/informative/safety_warning": {
+    "width": 24,
+    "height": 24
+  },
   "rider/informative/sand_clock": {
     "width": 24,
     "height": 24
@@ -1707,11 +1887,15 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/seat": {
+  "rider/informative/search_car": {
     "width": 24,
     "height": 24
   },
-  "rider/informative/set_on_map": {
+  "rider/informative/search_taxi": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/seat": {
     "width": 24,
     "height": 24
   },
@@ -1739,6 +1923,10 @@
     "width": 24,
     "height": 24
   },
+  "rider/informative/support": {
+    "width": 24,
+    "height": 24
+  },
   "rider/informative/surge": {
     "width": 24,
     "height": 24
@@ -1747,7 +1935,15 @@
     "width": 24,
     "height": 24
   },
-  "rider/informative/taxi": {
+  "rider/informative/taxi_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/taxi_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/time_outline": {
     "width": 24,
     "height": 24
   },
@@ -1768,6 +1964,238 @@
     "height": 24
   },
   "rider/informative/wheel": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/accommodation_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/adress": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/adress_to": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/business_atm": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/business_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/business_petrolstation": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/business_touristinformation": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/eatdrink_barpub": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/eatdrink_coffee": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/eatdrink_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/facilities_bank": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/facilities_education": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/facilities_hospital": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/facilities_parking": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/goingout_cinema": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/goingout_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/leisure_amusement": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/leisure_sport": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/leisure_zoo": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/natural_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/shopping_main": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/shopping_pharmacy": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/sights_attraction": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/sights_religious": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_aerial": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_airport": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_bus": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_ferry": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_inclined": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/markers/transport_rail_regional": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/card_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/card_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/cash_city": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/cash_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/cash_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/nfc": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/receipt_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/receipt_outline": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/payments/wallet_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/barrier": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/bumps": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/cow_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/danger_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/no_turn": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/police_post_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/railway_fill": {
+    "width": 25,
+    "height": 24
+  },
+  "rider/road_events/roadworks": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/road_events/snail_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/scooters/no_parking": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/scooters/parking": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/scooters/parking_tarif": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/scooters/scooter_forbidden": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/scooters/speed": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/status/error": {
+    "width": 72,
+    "height": 72
+  },
+  "rider/status/succes": {
+    "width": 72,
+    "height": 72
+  },
+  "rider/theme/theme_dark": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/theme/theme_light": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/theme/theme_system": {
     "width": 24,
     "height": 24
   }

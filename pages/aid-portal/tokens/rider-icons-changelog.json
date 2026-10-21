@@ -1,16 +1,88 @@
 {
   "artifact": "Icons/Rider",
-  "currentVersion": "1.0.0",
+  "currentVersion": "1.4.0",
+  "figmaTable": {
+    "fileKey": "n6LppQbTv85yI29h6u30DI",
+    "nodeId": "3703:4"
+  },
   "entries": [
     {
-      "version": "1.0.0",
-      "date": "2026-08-26",
-      "author": "sergej",
+      "version": "1.4.0",
+      "date": "2026-10-14",
+      "author": "Sergey AI",
       "type": "minor",
       "changes": [
         {
           "kind": "added",
-          "description": "Каталог Rider Icons: 129 SVG в 5 категориях (Brands, Controls, Informative, Actions, Addresses) с preview, поиском и скачиванием"
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_question_smooth"
+        }
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-10-13",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_placeholder"
+        },
+        {
+          "kind": "changed",
+          "description": "ic_favorite — изменился вектор иконки",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-09-11",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые иконки.",
+          "details": "ic_no_location\nic_passenger\nic_finish_flag\nic_addresse_home\nic_addresse_work\nic_tree\nic_circle\nic_drag"
+        },
+        {
+          "kind": "changed",
+          "description": "Изменился верктор в иконке ic_location",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-09-10",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые иконки.",
+          "details": "ic_forbidden\nic_question"
+        },
+        {
+          "kind": "removed",
+          "description": "Удалена иконка Radiobutton.",
+          "details": "Radiobutton"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-27",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Полный набор иконок дизайн-системы, сгруппированных по категориям.",
+          "details": "Actions (21):\n  • ic_send\n  • ic_add_home\n  • ic_pencil\n  • ic_trash\n  • ic_set_photo\n  • ic_call\n  • ic_chat\n  • ic_copy\n  • ic_options\n  • ic_schedule\n  • ic_share_ios\n  • ic_share _android\n  • ic_attach\n  • ic_search\n  • ic_favorite\n  • ic_more\n  • ic_add_person\n  • ic_add_circle\n  • ic_settings\n  • ic_more_vert\n  • ic_scan_qr\n\nAddresses (6):\n  • ic_home\n  • ic_work\n  • ic_countryside\n  • ic_default\n  • ic_favorite\n  • ic_person\n\nControls (17):\n  • ic_back\n  • ic_arrow_right\n  • ic_arrow_left\n  • ic_arrow_up\n  • ic_arrow_down\n  • ic_change\n  • ic_plus\n  • ic_minus\n  • ic_close\n  • ic_menu\n  • ic_done\n  • ic_refresh\n  • Radiobutton\n  • ic_delete\n  • ic_delete_circle\n  • ic_plus_mini\n  • ic_delete_mini\n\nInformative (54):\n  • ic_taxi\n  • ic_scooter\n  • ic_eco\n  • ic_people\n  • ic_surge_down\n  • ic_finish\n  • ic_lightning\n  • ic_luggage\n  • ic_gift\n  • ic_price\n  • ic_set_on_map\n  • ic_ride_experience\n  • ic_safety\n  • ic_number\n  • ic_seat\n  • ic_documents\n  • ic_wheel\n  • ic_info\n  • ic_faq\n  • ic_attention\n  • ic_lock\n  • ic_unlock\n  • ic_road\n  • ic_walkman\n  • ic_route\n  • ic_assistant\n  • ic_discount\n  • ic_location\n  • ic_magic\n  • ic_streaming\n  • ic_star\n  • ic_star_outlined\n  • ic_surge\n  • ic_discount_min\n  • ic_heart\n  • ic_person\n  • ic_police\n  • ic_shared_account\n  • ic_loading\n  • ic_food\n  • ic_tips\n  • ic_network_offline\n  • ic_done\n  • ic_wait\n  • ic_squircle_wait\n  • ic_history\n  • ic_business\n  • ic_squircle_star\n  • ic_sand_clock\n  • ic_envelope\n  • ic_card\n  • ic_cash\n  • ic_phone\n  • ic_house\n\nBrands (30):\n  • ic_vk_color\n  • ic_sber_color\n  • ic_citycoin_color\n  • ic_spasibo_color\n  • ic_dc_color\n  • ic_apple_color\n  • ic_vk\n  • ic_sber\n  • ic_citycoin\n  • ic_spasibo_color\n  • ic_dc\n  • ic_apple\n  • ic_mastercard_color\n  • ic_maestro_color\n  • ic_visa_color\n  • ic_visabg_color\n  • ic_mir_color\n  • ic_mirbg_color\n  • ic_applepay_color\n  • ic_googlepay_color\n  • ic_sberpay_color\n  • ic_mastercard\n  • ic_maestro\n  • ic_visa\n  • ic_visabg\n  • ic_mir\n  • ic_mirbg_color\n  • ic_applepay\n  • ic_googlepay\n  • ic_sberpay\n\nStatus (2):\n  • ic_succes\n  • ic_error\n\nMarkers (30):\n  • ic_accommodation_main\n  • ic_business_atm\n  • ic_business_main\n  • ic_business_petrolstation\n  • ic_business_touristinformation\n  • ic_eatdrink_barpub\n  • ic_eatdrink_coffee\n  • ic_eatdrink_main\n  • ic_facilities_bank\n  • ic_facilities_education\n  • ic_facilities_hospital\n  • ic_sights_attraction\n  • ic_sights_religious\n  • ic_transport_aerial\n  • ic_transport_airport\n  • ic_transport_bus\n  • ic_transport_ferry\n  • ic_transport_inclined\n  • ic_transport_rail_regional\n  • ic_facilities_parking\n  • ic_goingout_cinema\n  • ic_goingout_main\n  • ic_leisure_amusement\n  • ic_leisure_sport\n  • ic_leisure_zoo\n  • ic_natural_main\n  • ic_shopping_main\n  • ic_shopping_pharmacy\n  • ic_adress\n  • ic_adress_to\n\nScooters (5):\n  • ic_forbidden\n  • ic_parking\n  • ic_no_parking\n  • ic_parking_tarif\n  • ic_speed"
         }
       ]
     }

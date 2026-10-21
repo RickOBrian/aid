@@ -99,3 +99,88 @@ export function sanitizeIconSvg(svgText: string, iconId?: string): string {
 
   return wrapSvgContent(stripped, svgText);
 }
+
+const DEF_REFERENCE = /url\(#([^)]+)\)|href="#([^"]+)"/g;
+
+function findElementEnd(svg: string, tagName: string, start: number): number {
+  const openTag = svg.indexOf('>', start);
+  if (openTag === -1) {
+    return -1;
+  }
+  if (svg[openTag - 1] === '/') {
+    return openTag + 1;
+  }
+
+  const tagPattern = new RegExp(`<(/?)${tagName}\\b[^>]*?(/?)>`, 'g');
+  tagPattern.lastIndex = openTag + 1;
+  let depth = 1;
+  for (let match = tagPattern.exec(svg); match; match = tagPattern.exec(svg)) {
+    if (match[2]) {
+      continue;
+    }
+    depth += match[1] ? -1 : 1;
+    if (depth === 0) {
+      return match.index + match[0].length;
+    }
+  }
+  return -1;
+}
+
+function collectReferencedDefs(svg: string, content: string): string[] {
+  const defs = svg.match(/<defs>([\s\S]*?)<\/defs>/i)?.[1] ?? '';
+  const byId = new Map<string, string>();
+  const elementStart = /<([a-zA-Z][\w:-]*)\b[^>]*\bid="([^"]+)"/g;
+  for (let match = elementStart.exec(defs); match; match = elementStart.exec(defs)) {
+    const end = findElementEnd(defs, match[1], match.index);
+    if (end === -1) {
+      continue;
+    }
+    byId.set(match[2], defs.slice(match.index, end));
+    elementStart.lastIndex = end;
+  }
+
+  const kept: string[] = [];
+  const seen = new Set<string>();
+  const queue = [content];
+  while (queue.length > 0) {
+    const chunk = queue.shift() ?? '';
+    for (const match of chunk.matchAll(DEF_REFERENCE)) {
+      const id = match[1] ?? match[2];
+      const element = byId.get(id);
+      if (!element || seen.has(id)) {
+        continue;
+      }
+      seen.add(id);
+      kept.push(element);
+      queue.push(element);
+    }
+  }
+  return kept;
+}
+
+/**
+ * Cuts one icon symbol (`<g id="ic_…">`) out of a Figma export that still
+ * carries its parent frames, and keeps only the defs the symbol references.
+ * Returns null when the export has no such group.
+ */
+export function extractIconSymbolSvg(svgText: string, symbolName: string): string | null {
+  const start = svgText.indexOf(`<g id="${symbolName}"`);
+  if (start === -1) {
+    return null;
+  }
+  const end = findElementEnd(svgText, 'g', start);
+  if (end === -1) {
+    return null;
+  }
+
+  const group = svgText.slice(start, end);
+  const defs = collectReferencedDefs(svgText, group);
+  const { width, height, viewBox } = readRootSvgAttributes(svgText);
+
+  return [
+    `<svg width="${width}" height="${height}" viewBox="${viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg">`,
+    group,
+    ...(defs.length > 0 ? ['<defs>', ...defs, '</defs>'] : []),
+    '</svg>',
+  ].join('\n');
+}
