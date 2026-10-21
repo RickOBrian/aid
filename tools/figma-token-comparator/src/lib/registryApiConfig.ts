@@ -26,3 +26,9 @@ export const REGISTRY_PROPOSAL_STATUS_URL = `${REGISTRY_API_BASE}/api/registry/p
 export const DEFAULT_REGISTRY_OWNER = "RickOBrian";
 export const DEFAULT_REGISTRY_REPO = "aid";
 export const DEFAULT_REGISTRY_PATH = "decisions-registry.json";
+
+/** Чейнжлоги библиотек и их записи «Не опубликовано», без ключа. */
+export const CHANGELOGS_URL = `${REGISTRY_API_BASE}/api/registry/changelogs`;
+
+/** «Записать изменения»: запись «Не опубликовано» → PR с чейнжлогом. */
+export const CHANGELOG_RECORD_URL = `${REGISTRY_API_BASE}/api/registry/changelog-record`;

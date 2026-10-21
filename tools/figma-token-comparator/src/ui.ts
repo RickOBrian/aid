@@ -37,6 +37,7 @@ import type { LibraryMeta } from "./lib/storage";
 import type { ProposalStatusInfo } from "./lib/proposalLifecycle";
 import type { IconOutline } from "./lib/iconShape";
 import { version as PLUGIN_VERSION } from "../package.json";
+import { handleRecordMessage, initRecordPanel, resetRecordPanel } from "./changelogPanel";
 
 function post(message: UiToCodeMessage): void {
   parent.postMessage({ pluginMessage: message }, "*");
@@ -4222,6 +4223,7 @@ function initExportMenus(): void {
 window.onmessage = (event: MessageEvent) => {
   const message = (event.data as { pluginMessage?: CodeToUiMessage }).pluginMessage;
   if (!message) return;
+  if (handleRecordMessage(message)) return;
 
   switch (message.type) {
     case "init-state": {
@@ -4405,6 +4407,7 @@ window.onmessage = (event: MessageEvent) => {
       break;
     }
     case "error": {
+      resetRecordPanel();
       $<HTMLButtonElement>("tc-load-library-btn").disabled = false;
       $<HTMLButtonElement>("tc-load-registry-btn").disabled = false;
       $<HTMLButtonElement>("tc-scan-btn").disabled = false;
@@ -4525,6 +4528,7 @@ initRescanTypographyButton();
 initPreviewModal();
 initApplyToLayoutModal();
 initProposeConfirmModal();
+initRecordPanel(post);
 initWindowResize();
 renderResultsTable();
 post({ type: "ui-ready" });

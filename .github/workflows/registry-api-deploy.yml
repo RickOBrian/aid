@@ -5,7 +5,7 @@ name: registry-api deploy
 # Vercel. Vercel-версия работает параллельно, пока PD не подтвердит, что все
 # дизайнеры переимпортировали плагин.
 #
-# Секрет репозитория:
+# Секрет environment registry-api (выдаётся только ветке main, devops-2):
 #   YC_REGISTRY_API_CI_KEY — авторизованный ключ (JSON) сервисного аккаунта
 #                            registry-api-ci
 # Переменные репозитория (не секретные):
@@ -31,6 +31,7 @@ jobs:
   deploy:
     name: Функция и шлюз
     runs-on: ubuntu-latest
+    environment: registry-api
     defaults:
       run:
         working-directory: tools/figma-token-comparator/server

@@ -19,7 +19,7 @@ import { BadgeDotPage } from './BadgeDotPage';
 import { GuidesHubPage } from './GuidesHubPage';
 import { ToolsHubPage } from './ToolsHubPage';
 import { TokenComparatorPluginPage } from './TokenComparatorPluginPage';
-import { GuidePage, guideExists } from './GuidePage';
+import { GuidePage, findGuideByPath } from './GuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
 import { HUB_ROUTES } from './hubData';
@@ -93,12 +93,12 @@ function resolveSectionKey(remainder: string) {
     return 'guides' as const;
   }
 
-  // Маршрут гайда динамический: /guides/<guideId>. Гайды приходят из
+  // Маршрут гайда динамический: /guides/<guideId>, у гайда на согласовании —
+  // /guides/preview/<guideId>[/<глава>]. Гайды приходят из
   // guide-registry.json и собираются build-guides.mjs, поэтому отдельная
   // ветка на каждый документ здесь не нужна.
   if (path.startsWith(`${HUB_ROUTES.guides}/`)) {
-    const guideId = path.slice(HUB_ROUTES.guides.length + 1);
-    return guideExists(guideId) ? ('guide' as const) : ('not-found' as const);
+    return findGuideByPath(normalizePathname(path)) ? ('guide' as const) : ('not-found' as const);
   }
 
   if (path === HUB_ROUTES.tools) {
@@ -197,7 +197,7 @@ export function App() {
   } else if (page === 'guides') {
     content = <GuidesHubPage />;
   } else if (page === 'guide') {
-    content = <GuidePage guideId={remainder.slice(HUB_ROUTES.guides.length + 1)} />;
+    content = <GuidePage path={normalizePathname(remainder)} />;
   } else if (page === 'tools') {
     content = <ToolsHubPage />;
   } else if (page === 'toolsTokenComparator') {

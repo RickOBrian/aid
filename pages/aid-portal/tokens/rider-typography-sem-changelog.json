@@ -1,7 +1,24 @@
 {
   "artifact": "Rider Typography/Semantic",
-  "currentVersion": "1.1.0",
+  "currentVersion": "1.2.0",
+  "figmaTable": {
+    "fileKey": "yrfG6u9osujKX8e1B14lpT",
+    "nodeId": "11:502"
+  },
   "entries": [
+    {
+      "version": "1.2.0",
+      "date": "2026-09-02",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлен стиль Captions/Caption 1 CAP",
+          "details": "• Новые sem-переменные: Captions/Caption 1 CAP (font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing)\n• Новый текстовый стиль: Captions/Caption 1 CAP (fs=12, lh=16, ls=0, fw=400, textCase=SMALL_CAPS_FORCED)"
+        }
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-08-25",

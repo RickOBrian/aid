@@ -3,7 +3,7 @@
   "bundleVersion": "0.1.0-alpha",
   "bundleStatus": "alpha",
   "canonicalRoot": "skills/_shared",
-  "updated": "2026-10-09",
+  "updated": "2026-10-21",
   "note": "Реестр стандартов дизайн-системы. Каждый стандарт версионируется самостоятельно по semver-guide; bundleVersion — версия публикуемого набора целиком. Машинный слой (machineFile) читают инструменты: аудит, линтер, плагины, распознавание компонентов.",
   "statuses": [
     "draft",
@@ -86,7 +86,7 @@
       "kind": "standard",
       "humanFile": "skills/_shared/standards/component-standards.md",
       "machineFile": "component-standards.json",
-      "version": "3.0.1",
+      "version": "3.1.1",
       "status": "alpha",
       "wave": 1,
       "core": true,
@@ -501,6 +501,30 @@
       "dependsOn": []
     },
     {
+      "id": "figma-library-workflow",
+      "title": "Работа с библиотекой Figma",
+      "kind": "protocol",
+      "humanFile": "skills/_shared/protocols/figma-library-workflow.md",
+      "machineFile": null,
+      "version": "0.1.0",
+      "status": "draft",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "product-context",
+        "audit-gate",
+        "component-gate",
+        "token-change-gate",
+        "token-integrity",
+        "release-gate",
+        "component-standards"
+      ]
+    },
+    {
       "id": "git-workflow",
       "title": "Git workflow",
       "kind": "protocol",
@@ -522,7 +546,7 @@
       "kind": "protocol",
       "humanFile": "skills/_shared/protocols/guide-template.md",
       "machineFile": null,
-      "version": "1.0.1",
+      "version": "1.1.0",
       "status": "alpha",
       "wave": 0,
       "core": false,

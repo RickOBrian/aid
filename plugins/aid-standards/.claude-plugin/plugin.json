@@ -1,0 +1,10 @@
+{
+  "name": "aid-standards",
+  "description": "Стандарты дизайн-системы AID: три запрета, гейты по задаче, реестр стандартов, токены продуктов и скиллы ds-*. Версия — SHA коммита в main.",
+  "author": {
+    "name": "AID · Standards",
+    "url": "https://github.com/RickOBrian/aid"
+  },
+  "homepage": "https://github.com/RickOBrian/aid/tree/main/plugins/aid-standards",
+  "repository": "https://github.com/RickOBrian/aid"
+}

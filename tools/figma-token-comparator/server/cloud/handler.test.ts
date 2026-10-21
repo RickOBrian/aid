@@ -4,10 +4,12 @@
  * тесты; здесь — только то, что событие доходит до них без потерь.
  */
 
+import { readFileSync } from 'node:fs';
+
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { eventToRequest, responseToResult, type YcHttpEvent } from './adapter.js';
-import { handler } from './handler.js';
+import { handler, ROUTES } from './handler.js';
 
 const SECRET = 'test-shared-secret';
 
@@ -104,5 +106,14 @@ describe('handler', () => {
   it('метод, которого у маршрута нет, — 405', async () => {
     const result = await handler(event({ httpMethod: 'GET', path: '/api/registry/propose-decision' }));
     expect(result.statusCode).toBe(405);
+  });
+});
+
+describe('gateway.yaml', () => {
+  it('у каждого маршрута функции есть путь в шлюзе — иначе запрос до неё не дойдёт', () => {
+    const spec = readFileSync(new URL('./gateway.yaml', import.meta.url), 'utf8');
+    for (const path of Object.keys(ROUTES)) {
+      expect(spec).toContain(`  ${path}:\n`);
+    }
   });
 });

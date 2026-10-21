@@ -5,13 +5,25 @@ name: presentbook-yc
 #   pull request     → сборка base=/pr-N/, бакет presentbook-preview/pr-N/, смоук-тест, ссылка в PR
 #   PR закрыт        → папка pr-N удаляется
 #
+# Ключи — в GitHub environments, не в секретах репозитория (devops-2, решение
+# PD 2026-10-21): иначе любая ветка этого репозитория получает ключи прода
+# ещё до ревью.
+#   presentbook          — только ветка main: выкладка на сайт, функция, история
+#   presentbook-preview  — любой PR: слабый ключ, пишет только в бакет
+#                          presentbook-preview; функцию не трогает
+# Версию функции с кодом из PR превью больше не выкатывает: она работала с
+# секретами Lockbox прода. Превью ходит в API версии prod.
+#
 # Пути — те же, что читает сборка портала (раньше это был ignoreCommand в
 # pages/aid-portal/vercel.json).
 #
-# Secrets (значения заводит PD):
+# Secrets environment presentbook:
 #   YC_CI_SA_KEY_JSON      — авторизованный ключ сервисного аккаунта presentbook-ci (JSON)
 #   YC_S3_ACCESS_KEY_ID    — статический ключ presentbook-ci для Object Storage
 #   YC_S3_SECRET_KEY       — его секретная часть
+# Secrets environment presentbook-preview:
+#   YC_S3_ACCESS_KEY_ID    — статический ключ presentbook-preview-ci: запись
+#   YC_S3_SECRET_KEY         только в бакет presentbook-preview (ACL бакета)
 # Variables:
 #   YC_FOLDER_ID           — каталог presentbook
 #   PRESENTBOOK_SITE_URL   — адрес основного сайта (до переключения домена — домен шлюза)
@@ -42,9 +54,8 @@ on:
       - 'products/registry.json'
       - '.github/workflows/presentbook-yc.yml'
   # История релизов плагина для changelog на странице Token Comparator:
-  # сразу при публикации релиза и раз в 15 минут на всякий случай.
-  release:
-    types: [published]
+  # раз в 15 минут. Триггер release снят (devops-2): он запускается от тега,
+  # а environment presentbook выдаётся только ветке main.
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
@@ -58,9 +69,8 @@ permissions:
   contents: read
   pull-requests: write
 
+# Ключи S3 — на уровне задачи: секреты environment видны только внутри неё.
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.YC_S3_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_S3_SECRET_KEY }}
   AWS_DEFAULT_REGION: ru-central1
   S3: aws s3 --endpoint-url=https://storage.yandexcloud.net
 
@@ -70,6 +80,10 @@ jobs:
     # PR из форков secrets не получают — для них превью не собирается.
     if: github.event.action != 'closed' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'pull_request' && 'presentbook-preview' || 'presentbook' }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.YC_S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_S3_SECRET_KEY }}
     defaults:
       run:
         working-directory: pages/aid-portal
@@ -109,13 +123,14 @@ jobs:
           $S3 sync dist "$dest" --exclude 'assets/*' --exclude 'index.html' --cache-control 'public, max-age=300'
           $S3 cp dist/index.html "$dest/index.html" --content-type 'text/html; charset=utf-8' --cache-control 'no-cache'
 
-      # Функция: из main — версия с меткой prod (её вызывают шлюзы), из PR —
-      # версия с меткой pr-N (её вызывает только превью этого PR через
-      # /pr-N/api/...). Так изменения в api/ видны на превью до мержа.
+      # Функция: только из main, версия с меткой prod (её вызывают шлюзы).
+      # Превью PR функцию не выкатывает (devops-2): версия pr-N работала бы
+      # с секретами Lockbox прода, а ключ мог бы переставить метку prod.
       - name: Функция presentbook-api
+        if: github.event_name == 'push'
         env:
           YC_KEY: ${{ secrets.YC_CI_SA_KEY_JSON }}
-          TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'prod' }}
+          TAG: prod
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
           export PATH="$HOME/yc/bin:$PATH"
@@ -171,8 +186,12 @@ jobs:
   # сайта, функция читает готовый файл (PLUGIN_HISTORY_URL).
   history:
     name: Changelog плагина
-    if: contains(fromJSON('["push", "schedule", "release", "workflow_dispatch"]'), github.event_name)
+    if: contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
     runs-on: ubuntu-latest
+    environment: presentbook
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.YC_S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_S3_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -195,21 +214,9 @@ jobs:
     name: Удаление превью
     if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    environment: presentbook-preview
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.YC_S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_S3_SECRET_KEY }}
     steps:
       - run: $S3 rm "s3://presentbook-preview/pr-${{ github.event.pull_request.number }}" --recursive
-      - name: Снять метку pr-N с версии функции
-        env:
-          YC_KEY: ${{ secrets.YC_CI_SA_KEY_JSON }}
-          TAG: pr-${{ github.event.pull_request.number }}
-        run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
-          export PATH="$HOME/yc/bin:$PATH"
-          printf '%s' "$YC_KEY" > "$RUNNER_TEMP/key.json"
-          yc config set endpoint api.cloud.yandex.net:443
-          yc config set service-account-key "$RUNNER_TEMP/key.json"
-          yc config set folder-id "${{ vars.YC_FOLDER_ID }}"
-          rm -f "$RUNNER_TEMP/key.json"
-          version_id=$(yc serverless function version get-by-tag --function-name presentbook-api --tag "$TAG" --format json 2>/dev/null | jq -r '.id // empty')
-          if [ -n "$version_id" ]; then
-            yc serverless function version remove-tag --id "$version_id" --tag "$TAG"
-          fi
