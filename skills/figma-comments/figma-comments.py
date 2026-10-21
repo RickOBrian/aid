@@ -46,6 +46,12 @@ def token():
             "Токена Figma нет в связке ключей. PD выполняет в терминале "
             f"(спросит значение, на экран не выводит):\n  {ADD_CMD}"
         )
+    if not value.startswith("figd_") or len(value) < 40:
+        sys.exit(
+            f"В связке не токен Figma: {len(value)} символов, ожидается "
+            "figd_… длиной 40+. Скорее всего, при вводе не сработала вставка. "
+            f"PD кладёт заново:\n  {ADD_CMD}"
+        )
     return value
 
 
@@ -60,6 +66,7 @@ def get(path, tok, params=None):
     except urllib.error.HTTPError as e:
         hint = {
             400: "неверный ключ файла или node-id",
+            401: f"Figma не приняла токен (опечатка, отозван или истёк); PD кладёт новый:\n  {ADD_CMD}",
             403: "у токена нет доступа к файлу или прав File content / Comments: Read; "
                  f"новый токен PD кладёт той же командой:\n  {ADD_CMD}",
             404: "файл не найден или ключ с ошибкой",
