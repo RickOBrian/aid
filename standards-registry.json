@@ -522,7 +522,7 @@
       "kind": "protocol",
       "humanFile": "skills/_shared/protocols/guide-template.md",
       "machineFile": null,
-      "version": "1.0.1",
+      "version": "1.1.0",
       "status": "alpha",
       "wave": 0,
       "core": false,

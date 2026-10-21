@@ -9,6 +9,9 @@
 Ядро альфы (ADR-003): `component-standards`, `ds-component-architecture-guide`,
 `component-states-guide`, `naming-conventions`, `platforms`.
 
+Рабочие правила роли и всех, кто применяет стандарты, — `WORKING-RULES.md`
+(standards-5): не в памяти чата.
+
 Статусы задач: `todo` · `in progress` · `done` · `blocked` · `dropped`
 
 ---
