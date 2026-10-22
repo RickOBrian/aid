@@ -2,9 +2,9 @@
 destination: skills/_shared/standards/
 name: ds-component-architecture-guide
 metadata:
-  version: "1.5.1"
+  version: "1.6.0"
   status: alpha
-  lastReviewed: "2026-09-20"
+  lastReviewed: "2026-10-22"
   machineFile: component-architecture.json
   kind: standard
   owner: design-system-team
@@ -17,7 +17,7 @@ description: >
 
 # Архитектура компонентов дизайн-системы
 
-> Статус: Alpha · v1.5.1 · обновлено 2026-09-27
+> Статус: Alpha · v1.6.0 · обновлено 2026-10-22
 
 ---
 
@@ -75,6 +75,10 @@ AppSurface (Layout)
 
 App Surface — не уровень архитектуры. Это корневой контейнер экрана,
 который задаёт фон и не управляет UI-логикой.
+
+Панель, закреплённая у края экрана, — не `Section` и не `Zone`, даже если
+она повторяется на каждом экране. У неё есть дизайн, состав и системные
+отступы, значит это компонент: Role-семья `Dock` (раздел 9).
 
 ---
 
@@ -183,6 +187,19 @@ Island может содержать Grid и List. Widget — нет.
 | BottomSheet | Header + Body + Footer |
 | Dialog | Header + Body + Footer |
 | SidePanel | Панель |
+
+### Dock
+
+Dock — панель, закреплённая у края экрана, с системными отступами (safe
+area). Внутри — один Structural View, который сам о крае экрана не знает.
+
+| Компонент | Состав |
+|-----------|-------|
+| DockTabBar | TabBar + отступы безопасной зоны + Home Indicator |
+| DockAction | Кнопки действия + отступы безопасной зоны (кандидат) |
+
+Отступы безопасной зоны и Home Indicator принадлежат Dock, а не
+вложенному компоненту: тот же TabBar можно поставить и в другое место.
 
 ---
 
@@ -300,12 +317,17 @@ Entity не дублируется: Avatar, Badge, Tag, Chip, Dialog — уст�
 | Row    | Structural View | Строчный компонент                  | ListRow, MenuRow             |
 | Island | Structural View | Повторяемый контентный блок         | IslandProduct, IslandHotel   |
 | Widget | Structural View | Штучный сценарный блок              | WidgetBalance, WidgetSummary |
+| Dock   | Structural View | Панель у края экрана с системными отступами (safe area) | DockTabBar, DockAction |
 
 Колонка «Когда использовать» — это то, что отличает Role друг от друга.
 Без неё Tag и Chip неразличимы, а Island и Widget выбираются на слух.
 Различение статики и интерактивности (Tag против Chip) и повторяемости
 против штучности (Island против Widget) — рабочий критерий при разборе
 чужой библиотеки.
+
+Dock против вложенного компонента (TabBar, NavBar): кто владеет краем
+экрана. Отступы безопасной зоны, Home Indicator и закрепление у края —
+у Dock; содержимое — у вложенного компонента.
 
 ### Исключение: Row-компоненты
 
@@ -425,6 +447,7 @@ Repeatable Slot — слот, который повторяется переме
 | Structural View | Компонент с несколькими именованными слотами |
 | Layout | Компонент-расстановщик без дизайна |
 | App Surface | Корневой фон экрана, не уровень архитектуры |
+| Dock | Structural View: панель у края экрана с системными отступами (safe area) |
 | Slot | Именованная зона Structural View: leading, content, trailing, header, footer |
 | Variant | Визуальный вариант компонента: primary, secondary, ghost, destructive |
 | Lifecycle | Управление появлением/скрытием Structural View |
@@ -434,6 +457,14 @@ Repeatable Slot — слот, который повторяется переме
 
 ## 12. Changelog
 
+- **1.6.0** — 2026-10-22. Новая Role-семья `Dock` (Structural View):
+  панель, закреплённая у края экрана, с системными отступами (safe area).
+  Первый компонент — `DockTabBar` (TabBar Rider, designer-2). В §3 сказано,
+  что такая панель — не `Section` и не `Zone`. Основание — решение PD
+  2026-10-22 (standards-11, AID-45): нижняя обёртка экрана не находила
+  места в архитектуре — App Surface не уровень, а правило `must`
+  `architecture-level-declared` требует уровня; роль закреплена, чтобы
+  похожие панели не придумывать заново.
 - **1.5.1** — 2026-09-27. Ссылка на матрицу применимости исправлена:
   в `component-standards` 3.0.0 она стала разделом 4, а не 3.
 - **1.5.0** — 2026-09-20. Канон слотов дополнен `title`, `subtitle`,
