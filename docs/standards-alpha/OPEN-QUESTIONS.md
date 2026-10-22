@@ -549,6 +549,6 @@ boolean в color-sem Rider: Day false / Night true. Варианты имени:
    после первых десяти записей?
 3. TabBar Rider, токен `Background/Tab Selected` — запись `rider-dev-001`;
    нужна задача на общее приведение Rider Tokens.
-4. Нижняя обёртка экрана — пробел стандарта: временная запись и правка
-   `ds-component-architecture-guide` отдельной задачей Стандартов?
+4. ~~Нижняя обёртка экрана~~ — решено PD 2026-10-22: Role-семья `Dock`
+   в `ds-component-architecture-guide` 1.6.0 (PR #330).
 5. Перенос двух записей Driver из `changes/driver/pending/` в реестр.

@@ -166,35 +166,14 @@ Designer собирает нижнюю обёртку (TabBar + отступы +
   `Screen`, `Section`, `Zone`), но нет повторяемого «хрома» экрана —
   зоны, которая одинакова на всех экранах и содержит компоненты.
 
-Предлагаю:
+**Решение PD 2026-10-22** (передано через Designer и Штаб): вместо
+исключения — новая Role-семья `Dock` в `ds-component-architecture-guide`:
+Structural View, «панель, закреплённая у края экрана, с системными
+отступами (safe area)». Первый компонент — `DockTabBar`. «Zone» отвергнут:
+коллизия с App Surface §3. Правка гайда — PR #330 (1.6.0).
 
-1. Сейчас — временная запись `rider-dev-002` с `exit.kind:
-   "standard-change"`, чтобы Designer мог собрать компонент и аудит не
-   назвал его нарушением.
-2. Отдельной задачей Стандартов — правка `ds-component-architecture-guide`
-   (MINOR): повторяемые зоны экрана (верхняя и нижняя обёртка с безопасной
-   зоной) как Structural View на App Surface, с уровнем и правилами
-   имени. После правки запись — `absorbed`.
-
-```json
-{
-  "id": "rider-dev-002",
-  "standard": "ds-component-architecture-guide",
-  "rule": "#3-app-surface",
-  "level": "should",
-  "ideal": "Нижняя зона экрана — App Surface (Section/Zone), не компонент",
-  "product": "Отдельный компонент: TabBar + отступы + Home Indicator",
-  "scope": ["Rider Components: нижняя обёртка экрана"],
-  "basis": "product-specific",
-  "reason": "Зона повторяется на каждом экране с таб-баром; собранная компонентом, она не расходится по отступам между экранами.",
-  "decision": null,
-  "exit": { "kind": "standard-change", "what": "раздел о повторяемых зонах экрана в ds-component-architecture-guide", "ref": null },
-  "status": "proposed"
-}
-```
-
-Решения PD по второму случаю в issue #322 я не нашёл, поэтому запись —
-`proposed`. Если решение было в чате Designer, нужна ссылка.
+Записи `rider-dev-002` нет: пробел стандарта закрыт правкой стандарта, а
+не исключением. Этот случай — образец для §2.1.
 
 ---
 
@@ -211,7 +190,7 @@ Designer собирает нижнюю обёртку (TabBar + отступы +
 | `protocols/gates/release-gate.md` | реестр не переносится; снятие исключения — правкой `status` | PATCH |
 | `notes/product-deviations-draft.md` | из заметки — в протокол `protocols/product-deviations.md` + схема JSON | 1.0.0 |
 | `products/driver/deviations.json` | перенос двух записей: контраст BadgeCount (`upstream-defect`, `fix`), пространство ADR-036 (`product-specific`, `none`) | — |
-| `products/rider/deviations.json` | `rider-dev-001`, `rider-dev-002` | — |
+| `products/rider/deviations.json` | `rider-dev-001` | — |
 | `WORKING-RULES` §3 | строка «отклонение — запись в реестре, утверждает PD» | — |
 
 Стык: реестр читают Presentbook (страница продукта) и Style Migration (не
@@ -233,9 +212,7 @@ Designer собирает нижнюю обёртку (TabBar + отступы +
    уведомлением PD.
 3. **Случай 1** (`rider-dev-001`) — записать как в §3.1? Нужна задача на
    общее приведение Rider Tokens.
-4. **Случай 2** — согласны, что это пробел стандарта (§3.2): временная
-   запись сейчас и правка `ds-component-architecture-guide` отдельной
-   задачей Стандартов?
+4. ~~Случай 2~~ — решён PD 2026-10-22: Role-семья `Dock`, PR #330.
 5. **Перенос записей Driver** из `changes/driver/pending/` в реестр — да?
 
 Вопросы записаны как Q-25 в `docs/standards-alpha/OPEN-QUESTIONS.md`.
