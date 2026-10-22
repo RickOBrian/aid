@@ -535,3 +535,20 @@ boolean в color-sem Rider: Day false / Night true. Варианты имени:
 - удаление веток `standards/role-card`, `standards/product-deviations-draft`
   на GitHub, старых локальных веток и трёх стэшей эпохи Cursor (п. 1
   «Только PD»).
+
+---
+
+## Q-25 · open · 2026-10-22
+**standards-11 (AID-45): механизм обоснованных исключений.**
+
+Предложение — `changes/standards-11-exceptions-proposal-2026-10-22.md`.
+
+1. Механизм: реестр `products/<id>/deviations.json`, четыре основания,
+   обязательное условие снятия, утверждает PD — да?
+2. Исключения уровня `should` — пока утверждает только PD; вернуться
+   после первых десяти записей?
+3. TabBar Rider, токен `Background/Tab Selected` — запись `rider-dev-001`;
+   нужна задача на общее приведение Rider Tokens.
+4. Нижняя обёртка экрана — пробел стандарта: временная запись и правка
+   `ds-component-architecture-guide` отдельной задачей Стандартов?
+5. Перенос двух записей Driver из `changes/driver/pending/` в реестр.
