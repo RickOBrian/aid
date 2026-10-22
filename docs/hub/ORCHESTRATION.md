@@ -578,6 +578,7 @@ ADR-047. AI-инженер — роль с зоной ответственнос
 | Security | `agents/security.md` | Review | Что уходит наружу: секреты, имена, доступы |
 | Standards | `agents/standards.md` | Standards | Стандарты, машинный слой, замер внедрения AID в макетах |
 | Developer | `agents/developer.md` | Developer · <продукт> | Код продукта |
+| Merge | `agents/merge.md` | Merge | Мерж PR в `main` вместо Штаба и за заблокированных авторов, по условиям «Git-полномочий» |
 | DevOps | `agents/devops.md` | DevOps | Выкладка и Облако всех контуров, CI, дежурство |
 | Designer | `agents/designer.md` | Designer | Компоненты из сырых макетов в файл компонентов Figma |
 | Product | — | — | После бота: актуальность продуктов, что вышло, что обновить |
