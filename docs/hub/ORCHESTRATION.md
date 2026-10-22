@@ -579,7 +579,7 @@ ADR-047. AI-инженер — роль с зоной ответственнос
 | Standards | `agents/standards.md` | Standards | Стандарты, машинный слой, замер внедрения AID в макетах |
 | Developer | `agents/developer.md` | Developer · <продукт> | Код продукта |
 | DevOps | `agents/devops.md` | DevOps | Выкладка и Облако всех контуров, CI, дежурство |
-| Designer | `agents/designer.md` | Designer | Компоненты из сырых макетов в файл компонентов Figma |
+| Designer | `agents/designer.md` | Designer · Components; Designer · <продукт> · <задача> | Компоненты AID (аудит, сборка); дизайн-задачи продукта под задачу; куратор — Standards |
 | Product | — | — | После бота: актуальность продуктов, что вышло, что обновить |
 
 Чаты Ops и Review — карточки `agents/ops.md`, `agents/review.md`. Ключ
