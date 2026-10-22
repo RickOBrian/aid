@@ -285,6 +285,7 @@ Vercel и из корневого `CLAUDE.md`.
 | Hub · Штаб (система) | PD (`RickOBrian`) | `to:hub` |
 | DS · Стандарты | PD | `to:ds-standards` |
 | Site · Presentbook | PD | `to:site-presentbook` |
+| UI Kit · Persefona | PD | `to:persefona` |
 | Plugin · Token Comparator | PD | `to:plugin-token-comparator` |
 | Plugin · Style Migration | PD | `to:plugin-style-migration` |
 | Plugin · MCP | PD | `to:plugin-mcp` |

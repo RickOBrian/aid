@@ -75,6 +75,8 @@ Vercel не используется (ADR-038); проверки `aid-registry-a
 | Review | `aid-security` | Opus · среднее | Роли QA и Security: PR уровня 3 (CI, зависимости, хостинг, доступы) по двум чеклистам — качество и безопасность; итог — комментарием в PR; только читает |
 | Standards | `aid` | Opus | `skills/_shared/`, `standards-registry.json`, `docs/standards-alpha/`, `products/`, `tokens/`, `changes/`, `components/`; замер внедрения |
 | Designer · Components | `aid-designer` | Opus | Компоненты AID: аудит, предложение PD, сборка в файле компонентов Figma; приёмка и стандарты — у Standards |
+| Designer · Persefona | `aid-persefona` | Opus | Persefona — UI Kit внутренних продуктов и решений AID (не Rider и не Driver): библиотека Figma и токены Kit, оформление страниц аудита и сборки и файлов библиотек, проверка UI в PR внутренних продуктов |
+| Standards · Persefona | `aid-persefona-standards` | Opus | Правила Persefona: токены, компоненты, оформление служебных страниц, приёмка работ Designer · Persefona; общие стандарты AID применяет, отход от них — только через Standards |
 | Designer · <продукт> · <задача> | папка продукта — `docs/hub/agents/designer.md` | Opus | Дизайн-задачи продукта (иллюстрации, визуал, гайды) по задаче на доске. Постоянного чата нет: открывается под задачу, закрывается после приёмки |
 | Developer · <продукт> | папка продукта — `docs/hub/agents/developer.md` | Opus | Код продукта по задаче на доске. Постоянного чата нет: открывается под задачу, закрывается после мержа |
 | Product Logic | `aid-logic` | Opus | Бизнес-логика продуктов: экраны, переходы и события, решения продактов, сценарии — база знаний на сервере, не в репозитории; отвечает Designer и Developer, был ли похожий сценарий (`docs/hub/agents/product-logic.md`) |
@@ -91,6 +93,14 @@ MCP и Style Migration, и их `CLAUDE.local.md` сохраняются.
 продукта. Standards — куратор стандартов над всеми дизайнерами: принимает
 аудит и сборку, отход от стандарта и новое правило — только через
 Standards (`docs/hub/agents/designer.md`).
+
+Persefona (решение PD 2026-10-22) — UI Kit внутренних продуктов и решений
+AID: Presentbook, гайды, чейнжлоги, страницы аудита и сборки, оформление
+файлов библиотек, плагины. Rider и Driver он не касается. Основа — стили
+Presentbook. Первая очередь — Figma. Чаты: Designer · Persefona и
+Standards · Persefona — постоянные; код — Developer · Persefona под
+задачу. Standards · Persefona ниже основного Standards: спор — Standards,
+дальше PD (`docs/hub/agents/standards.md`).
 
 Сессию открывать в папке из второй колонки — для продуктов в `tools/` это
 папка продукта, чтобы её `CLAUDE.md` загрузился сам. Модель задана файлом
