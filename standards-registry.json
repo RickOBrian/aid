@@ -525,6 +525,30 @@
       ]
     },
     {
+      "id": "external-repo-standards",
+      "title": "Стандарты AID во внешнем репозитории",
+      "kind": "protocol",
+      "humanFile": "skills/_shared/protocols/external-repo-standards.md",
+      "machineFile": null,
+      "version": "0.1.0",
+      "status": "draft",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "product-context",
+        "token-integrity",
+        "token-change-gate",
+        "component-gate",
+        "audit-gate",
+        "release-gate",
+        "figma-library-workflow"
+      ]
+    },
+    {
       "id": "git-workflow",
       "title": "Git workflow",
       "kind": "protocol",

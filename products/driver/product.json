@@ -64,6 +64,10 @@
       "url": "https://www.figma.com/design/AwRpEGfyeNjRbZP8KGG1wy/"
     }
   },
+  "figmaLegacyLibraries": {
+    "_doc": "Старые библиотеки продукта для замера внедрения: экземпляры из них считаются legacy (aid-adoption-measurement §2). Ключ — fileKey файла библиотеки. Библиотеки AID — figmaFiles, здесь не повторяются. Формат и порядок пополнения — external-repo-standards §8.",
+    "items": []
+  },
   "colorModeMapping": {
     "Day": "light",
     "Night": "dark",

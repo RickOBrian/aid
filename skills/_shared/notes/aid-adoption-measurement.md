@@ -2,7 +2,7 @@
 destination: skills/_shared/notes/
 name: aid-adoption-measurement
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
   kind: notes
   status: draft
 description: >
@@ -13,7 +13,7 @@ description: >
 
 # Замер внедрения AID в макетах — черновик методики
 
-> Статус: Draft · v0.1.0 · обновлено 2026-10-14
+> Статус: Draft · v0.1.1 · обновлено 2026-10-22
 
 Задача AID-21, куратор — PD. Отправная точка — аудит AID-LU-13 от
 2026-10-13 (пять страниц Rider и Driver): 0,2 % экземпляров из AID, 86 % —
@@ -119,13 +119,18 @@ description: >
    пересчитывается, либо помечается как точка по другой методике.
 2. Чем сканировать: сканер одного из плагинов AID, Figma MCP или
    отдельный скрипт. Скан — код продукта, делается в его чате.
-3. Где списки библиотек (`aid`, `legacy`) с ключами: предлагаю поле в
-   `products/<id>/product.json`; это меняет формат манифеста, который
-   читает Presentbook, — согласованно с его чатом.
+3. ~~Где списки библиотек (`aid`, `legacy`) с ключами~~ — решено
+   2026-10-22: `aid` — `figmaFiles` продукта, `legacy` — поле
+   `figmaLegacyLibraries` в `products/<id>/product.json`
+   (`skills/_shared/protocols/external-repo-standards.md` §8). Presentbook
+   читает `products/registry.json`, не манифест продукта, — его не задевает.
 4. Кто снимает замер по расписанию: AI Ops · Standards по поручению или
    владелец сканера.
 
 ## 7. Changelog
+
+- **0.1.1** — 2026-10-22. §6 п.3 закрыт: где списки библиотек `aid` и
+  `legacy` (#280, `external-repo-standards` §8).
 
 - **0.1.0** — 2026-10-14. Первый черновик (AID-21): метрики, правила
   счёта, выборка, повторяемость, формат данных для Presentbook, вопросы.

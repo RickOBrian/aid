@@ -72,6 +72,8 @@ ${CLAUDE_PLUGIN_ROOT}/repo/
 | Версии и статусы стандартов | `standards-registry.json` |
 | Все стандарты | `skills/_shared/standards/` |
 | Как работают со стандартами (правила, решения, открытые вопросы) | `docs/standards-alpha/` — начать с `WORKING-RULES.md` |
+| Работа во внешнем репозитории: гейты по виду работы, отклонение, фрагмент `CLAUDE.md` | `skills/_shared/protocols/external-repo-standards.md` |
+| Старые библиотеки продукта для замера внедрения | `products/<id>/product.json` → `figmaLegacyLibraries` |
 
 Канон значений — `tokenDataFiles` продукта; Figma — источник для сверки.
 Значения в гайдах — иллюстрации структуры, не требования.
