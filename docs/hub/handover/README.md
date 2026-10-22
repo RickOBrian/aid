@@ -79,6 +79,7 @@ Claude на новом устройстве. Цель — чтобы кажды�
 | AID · Hub · Штаб | `aid-hub` | Opus · среднее |
 | Ops | `aid-ops` | Sonnet · низкое |
 | Review | `aid-security` | Opus · среднее |
+| Merge | `aid-merge` | Sonnet · среднее |
 | Standards | `aid` | Opus |
 | Designer · Components | `aid-designer` | Opus |
 | DevOps | `aid-infra` | Sonnet · среднее |
