@@ -36,6 +36,10 @@ claude plugin install aid-standards@aid
 }
 ```
 
+Как подключить стандарты во внешнем репозитории (плагин Figma, гайд,
+папка без git), какие гейты проходить и готовый фрагмент `CLAUDE.md` —
+`skills/_shared/protocols/external-repo-standards.md`.
+
 ## Что внутри
 
 - `skills/aid-standards/SKILL.md` — входной скилл: Claude вызывает его сам
