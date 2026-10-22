@@ -80,7 +80,7 @@ Claude на новом устройстве. Цель — чтобы кажды�
 | Ops | `aid-ops` | Sonnet · низкое |
 | Review | `aid-security` | Opus · среднее |
 | Standards | `aid` | Opus |
-| Designer | `aid-designer` | Opus |
+| Designer · Components | `aid-designer` | Opus |
 | DevOps | `aid-infra` | Sonnet · среднее |
 
 Чаты, которые теперь ведёт один новый, переносят состояние так: до
