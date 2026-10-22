@@ -552,3 +552,6 @@ boolean в color-sem Rider: Day false / Night true. Варианты имени:
 4. ~~Нижняя обёртка экрана~~ — решено PD 2026-10-22: Role-семья `Dock`
    в `ds-component-architecture-guide` 1.6.0 (PR #330).
 5. Перенос двух записей Driver из `changes/driver/pending/` в реестр.
+6. Стандарт продукта = Стандарты AID + реестр отличий (расхождения и
+   исключения) + автоматическая страница в Presentbook — подтвердить для
+   ADR (направление задано в чате Standards 22.10).

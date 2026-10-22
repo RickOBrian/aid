@@ -46,6 +46,7 @@ description: >
       "ideal": "hover",
       "product": "pressed-light",
       "scope": ["button", "chip"],
+      "kind": "exception",
       "basis": "product-specific",
       "reason": "Почему продукту так нужно — одной-двумя фразами",
       "decision": { "by": "PD", "date": "2026-10-18", "ref": "ссылка на PR, issue или запись в DECISIONS.md" },
@@ -66,13 +67,14 @@ description: >
 | `ideal` | да | что требует стандарт |
 | `product` | да | как сделано в продукте |
 | `scope` | нет | на что распространяется: компоненты, токены, коллекции; пусто — на весь продукт |
-| `basis` | да | основание: `migration-cost`, `platform`, `product-specific`, `upstream-defect`; другие не принимаются |
+| `kind` | да | `divergence` — расхождение, так сложилось, фиксируют Стандарты по аудиту; `exception` — намеренный отход, утверждает PD |
+| `basis` | для `exception` | основание: `migration-cost`, `platform`, `product-specific`, `upstream-defect`; другие не принимаются |
 | `reason` | да | почему продукту так нужно |
 | `reuseJustification` | для `must` | почему артефакт всё равно годится для переиспользования |
-| `decision` | да, кроме `proposed` | кто, когда и где решил (`decision:pd`); без решения запись не действует |
-| `exit` | да | условие снятия: `kind` — `event`, `fix`, `standard-change`, `none`; `what` — что должно случиться; `ref` — задача или PR |
+| `decision` | для `exception`, кроме `proposed` | кто, когда и где решил (`decision:pd`); без решения запись не действует |
+| `exit` | для `exception` | условие снятия: `kind` — `event`, `fix`, `standard-change`, `none`; `what` — что должно случиться; `ref` — задача или PR |
 | `guard` | для `exit.kind: fix` | проверка, которая упадёт, когда дефекта не станет |
-| `status` | да | `proposed` — ждёт решения PD; `accepted` — действует; `retired` — продукт вернулся к стандарту; `absorbed` — стандарт принял вариант продукта |
+| `status` | да | расхождение: `open`, `aligned`, `converted`; исключение: `proposed` — ждёт решения PD; `accepted` — действует; `retired` — продукт вернулся к стандарту; `absorbed` — стандарт принял вариант продукта |
 | `review` | для `exit.kind: none` | дата пересмотра, не дальше 12 месяцев; прошла — аудит пишет «исключение истекло» |
 
 ## Правила
