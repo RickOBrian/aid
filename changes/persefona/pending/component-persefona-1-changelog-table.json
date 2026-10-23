@@ -1,0 +1,37 @@
+{
+  "id": "component-persefona-1-changelog-table",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "TableChangelog",
+  "changeSummary": "Образец таблицы чейнжлога для Token Comparator (анкета — changes/persefona-1-changelog-table-2026-10-23.md §3, приёмка #370; ответ PD 2026-10-23 «7а»). TableChangelog: HeaderSection, рамка Table (bg-surface-main, line-default, radius-m), шапка из TableCell Header (Версия | Список изменений | Дата | Автор), Changelog Table Body с одной строкой Changes Row «Не опубликовано». Строка и ячейка изменений — фреймы: образец вставляют и сразу отвязывают. Подкомпонент BadgeChangelog: Change = Added | Removed | Edited → Badge Success | Error | Info. Имена слоёв Changelog Table Body, Changes Row, __Changelog Badge, {separator} — контракт плагина. Проверено прогоном writeUnpublishedRow в файле Kit (§4.1 документа, снимки). Все цвета, отступы и радиусы привязаны к переменным Kit, тексты — к стилям.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "TableChangelog — образец таблицы чейнжлога для Token Comparator и бейдж вида изменения BadgeChangelog"
+  },
+  "figma": {
+    "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
+    "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc",
+    "folderId": "638447836",
+    "componentPages": {
+      "TableChangelog": "68:22",
+      "BadgeChangelog": "68:22"
+    },
+    "components": {
+      "TableChangelog": "68:69",
+      "BadgeChangelog": "68:68"
+    }
+  },
+  "product": "persefona",
+  "relatedTokenChanges": [
+    "token-persefona-1-initial"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-23",
+  "author": "sergej"
+}
