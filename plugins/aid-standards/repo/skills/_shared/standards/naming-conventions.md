@@ -5,7 +5,7 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
   status: alpha
   lastReviewed: "2026-09-20"
   machineFile: naming-conventions.json
@@ -16,7 +16,7 @@ metadata:
 
 # Правила именования
 
-> Статус: Alpha · v1.3.1 · обновлено 2026-10-09
+> Статус: Alpha · v1.3.2 · обновлено 2026-10-23
 
 ---
 
@@ -181,6 +181,8 @@ Semantic — **назначение**, не значение. Формула: `<
 
 **Исключения (устоявшиеся имена):** `Avatar`, `Badge`, `Dialog`, `Toast`, `Tooltip`, `Switch` — не следуют формуле, когда роль очевидна из одного слова. См. `skills/_shared/standards/ds-component-architecture-guide.md`, раздел 9.
 
+**Исключение: Row-компоненты.** Row стоит последним — `ListRow`, `TableRow`; новые Row — так же (`TokenRow`). Канон — `ds-component-architecture-guide.md` §9 «Исключение: Row-компоненты».
+
 **Item-level:** `Icon`, `Text`, `Image` — **без суффикса `Item`**.  
 Суффикс `Item` — только внутри коллекций: `List.Item`, `Menu.Item`, `Accordion.Item`.
 
@@ -203,7 +205,7 @@ States map на semantic tokens (`bg-accent-states-hover`), не на отдел
 |---|---|
 | **Item** | По типу контента: `Icon`, `Text`, `Image` |
 | **Surface View** | Role + Entity: `ButtonText`, `BadgeStatus` |
-| **Structural View** | Role + Entity + слоты: `IslandProduct`, `RowList` |
+| **Structural View** | Role + Entity + слоты: `IslandProduct`; Row — Entity + Row: `ListRow` (исключение ниже) |
 | **Layout** | Направление / контейнер: `VStack`, `HStack`, `ScrollView` |
 
 ---
@@ -318,6 +320,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ## 8. Changelog
 
+- **1.3.2** — 2026-10-23. §4: пример Structural View `RowList` заменён на `ListRow`, добавлено исключение Row со ссылкой на `ds-component-architecture-guide` §9 — md расходился с гайдом архитектуры и с `naming-conventions.json` `legacyExceptions.Row` (вопрос Standards · Persefona).
 - **1.3.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.3.0** — 2026-09-21. Уровни соответствия вместо «блокера»; дубль `name` назван
   ошибкой корпуса, а не расхождением артефакта — это разные вещи.
