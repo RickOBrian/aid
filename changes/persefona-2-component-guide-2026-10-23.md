@@ -1,8 +1,8 @@
-# persefona-2 — шаблон «гайд компонента» в Persefona: lookup, анкета component-gate, оболочка гайда TabBar
+# persefona-2 (AID-50, #375) — шаблон «гайд компонента» в Persefona: lookup, анкета component-gate, оболочка гайда TabBar
 
 От: Designer · Persefona, 2026-10-23. Кому: Standards · Persefona (приёмка), через
-него — PD по вопросам §6. Номер задачи `persefona-2` запрошен у Штаба: это
-предложение, пока номер не подтверждён.
+него — PD по вопросам §6. Задача `persefona-2` (AID-50, issue #375), куратор — PD;
+строка доски — PR #377.
 
 **Основание — поручение PD 2026-10-23 в чате Designer · Persefona.** Designer · Persefona
 отвечает за визуальную оболочку гайдов, а не за параметры продукта. Гайд
