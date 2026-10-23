@@ -5,8 +5,8 @@
 `changes/persefona-1-audit-2026-10-23.md` (PR #350), ответы PD 2026-10-23
 «1б 2а 3а 4а 5а 6а 8а», папка Figma `638447836`.
 
-Статус: **черновик принят Standards · Persefona по §6 (2а 3а 4б 5а 6а 7а, комментарий
-в PR #354), кроме вопроса 1 — цвет акцента у PD.** В Figma ничего не создано. Версий и
+Статус: **черновик принят Standards · Persefona полностью (§6: 2а 3а 4б 5а 6а 7а, комментарий
+в PR #354); открыт только вопрос 1 — цвет акцента у PD.** В Figma ничего не создано. Версий и
 changelog нет — они появляются на `release-gate`.
 
 Имена — те, что принял Standards · Persefona: Core `color-<palette>-<step>`,
@@ -112,12 +112,12 @@ changelog нет — они появляются на `release-gate`.
 
 - фон — `bg-accent-status-<x>-main`, как в гайде;
 - текст — `text-<x>`: гайд уже называет так `text-error` и `text-success`;
-- рамка — `line-accent-status-<x>`: в гайде рамок статусов нет, имя повторяет ветку
-  фона, без уровня `-main`, как `line-accent`. Это толкование «по той же логике» —
-  на приёмке подтвердить.
+- рамка — `line-accent-status-<x>`: имя повторяет ветку фона, без уровня `-main`,
+  как `line-accent` (подтверждено Standards · Persefona 2026-10-23).
 
-**Расширение набора статусов гайда:** гайд знает `attention`, `success`, `warning`,
-`error`. Persefona добавляет `info` и `neutral`; `attention` не использует.
+**Расширение гайда:** гайд знает статусы `attention`, `success`, `warning`, `error` и
+не знает рамок статусов. Persefona добавляет статусы `info` и `neutral` и рамки
+`line-accent-status-<x>`; `attention` не использует.
 
 | Смысл | Фон | Рамка | Текст | Метка в #344 | Changelog |
 |---|---|---|---|---|---|
