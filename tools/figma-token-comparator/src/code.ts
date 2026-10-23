@@ -2136,7 +2136,6 @@ async function handlePrintToFigma(
     // Все строки печати приходят из одной таблицы, поэтому категория у них общая.
     const category = results[0].category;
 
-
     const truncated = results.length > MAX_PRINTABLE_ROWS;
     const resultsForTable = truncated ? results.slice(0, MAX_PRINTABLE_ROWS) : results;
     // Один источник данных для CSV/JSON/MD и для Figma-таблицы — buildExportRows().
