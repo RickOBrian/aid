@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: core-color-tokens-guide
 metadata:
-  version: "1.2.1"
+  version: "1.2.2"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -13,7 +13,7 @@ description: >
 
 # Core Color Tokens — Архитектурный гайд
 
-> Статус: Draft · v1.2.1 · обновлено 2026-09-20
+> Статус: Draft · v1.2.2 · обновлено 2026-10-23
 
 ---
 
@@ -63,8 +63,8 @@ core/
 │       └── jasper-55-a20
 ├── carnelian/
 ├── citrine/
-├── neutral-x/
-├── neutral-y/
+├── graphite/
+├── basalt/
 └── [palette-name]/
 ```
 
@@ -85,7 +85,7 @@ core/
 Примеры:
 ```
 jasper-65
-neutral-x-10
+graphite-10
 citrine-50
 ```
 
@@ -229,7 +229,7 @@ jasper/
 добавляется под конкретный semantic-токен.
 
 **Правило:** непрозрачные и прозрачные ступени — разные наборы.
-`neutral-x-10` и `neutral-x-100-a10` дают разный результат на разных фонах —
+`graphite-10` и `graphite-100-a10` дают разный результат на разных фонах —
 не взаимозаменяемы.
 
 ---
@@ -276,8 +276,8 @@ Core Color Tokens живут в отдельной Figma-коллекции `cor
   jasper/alpha/     → прозрачные ступени jasper
   citrine/
   carnelian/
-  neutral-x/
-  neutral-y/
+  graphite/
+  basalt/
   ...
 ```
 
@@ -308,6 +308,11 @@ Core Color Tokens живут в отдельной Figma-коллекции `cor
 
 ## 11. Changelog
 
+- **1.2.2** — 2026-10-23. Примеры палитр `neutral-x`, `neutral-y` заменены на
+  `graphite`, `basalt`: они противоречили §5. Настоящая палитра служебных страниц
+  (`docs/tokens/color-tokens-registry.md`, CSS плагина Token Comparator) пока
+  называется `neutral-x` — это известное отклонение от §5, переименование —
+  отдельной задачей.
 - **1.2.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.2.0** — добавлен раздел о версионировании Core vs Semantic, пересобран пример
   структуры папок под нейтральные имена палитр (jasper, citrine и т.п.), уточнено
