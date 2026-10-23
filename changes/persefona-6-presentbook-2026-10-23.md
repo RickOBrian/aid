@@ -150,15 +150,15 @@ Figma. Маркер анатомии на странице компонента 
 | Таблица (токены, гайд, changelog) | рамка `#EBEDF0`, `r8`; шапка `#F5F5F5` 11 px капс `.54`; ячейка `10 16`; разделитель сверху у строки | рамка как у `TableComparison`: `line-default`, `radius-m`. Шапка — `TableCell` Header (`bg-surface-muted`, `label-xs-caps`, `text-primary`), ячейка — `TableCell` Default (`spacing-16` / `spacing-12`, линия снизу), зебра — `bg-surface-zebra` |
 | Строка токена в таблицах Colors, Spacing, Radius | имя 14/20 · 500, значение 11/14 · 500, альфа 10/12 | имя — `label-m`, hex — `code-s` `text-primary`, альфа — `body-xs` `text-secondary`. Порядок колонок не меняется: колонки портала (Day, Night, описание) — не те же, что у `TokenRow`, поэтому строка остаётся строкой таблицы, а не экземпляром `TokenRow` |
 | Changelog `ChangelogTable` | заголовок 18/24, версия mono 13 · 500, изменения 13 и 14 px вперемешку, точка 8 px | заголовок — `HeaderSection`-уровень `heading-m`; таблица — как `TableChangelog` (колонки и шаги совпадают); версия — `code-s`; текст изменения — `body-s`; точка — §1.2 |
-| Мета-список (гайд, мета компонента, release) | сетка 150/160 + 1fr, 13/20, рамка, `r12`, поля 16/20 | **нет блока** → `ListMeta` (§7.2, имя черновое). Ключ — `body-s` `text-secondary`, значение — `body-s` или `code-s` `text-primary`, рамка `line-default`, `radius-l`, поля `spacing-16` / `spacing-20` |
-| Блок кода (API, сниппет, `pre` в гайде, установка плагина) | `#FAFAFA`, рамка, `r8`/`r12`, поля 14/18, mono 12/20 | **нет блока** → `BlockCode` (§7.2, имя черновое): `bg-surface-zebra`, `line-default`, `radius-m`, `spacing-16`, `code-m` |
+| Мета-список (гайд, мета компонента, release) | сетка 150/160 + 1fr, 13/20, рамка, `r12`, поля 16/20 | **нет блока** → `IslandMeta` (§7.2): строки — `IslandRow`, leading — ключ, trailing — значение. Ключ — `body-s` `text-secondary`, значение — `body-s` или `code-s` `text-primary`, рамка `line-default`, `radius-l`, поля `spacing-16` / `spacing-20` |
+| Блок кода (API, сниппет, `pre` в гайде, установка плагина) | `#FAFAFA`, рамка, `r8`/`r12`, поля 14/18, mono 12/20 | **нет блока** → `IslandCode` (§7.2): `bg-surface-zebra`, `line-default`, `radius-m`, `spacing-16`, `code-m` |
 | Инлайн-код | mono 12.5, `#F5F5F5`, поля 2/5, `r4` | `code-s`, `bg-surface-muted`, `spacing-2` / `spacing-4`, `radius-s` |
 | Кнопка копирования | 11/16 `.54`, рамка, `r6`; после копирования — зелёная плашка | **нет блока** → `ButtonCopy` (§7.2); состояние «скопировано» — `Badge` Success вместо перекраски кнопки |
 | Тост | `#2D2C2E`, 13/16, `r8`, тень `.16`; три разных отступа снизу | **нет блока** → `Toast` (§7.2): `bg-inverse-main`, `text-inverse`, `body-s`, `radius-m`, `shadow-1`, отступ снизу `spacing-24` везде |
 | Кнопки JSON, «Скачать», «Ещё», выбор формата | две одинаковые копии CSS: 13/16 · 500, рамка, `r8`, поля 8/12 | **нет блока** → `ButtonText` Secondary и `ButtonGroup` (§7.2) |
 | Выпадающее меню (скачать, контекстное, выбор в задачах) | `#FFF`, рамка, `r8`, `shadow .12`, пункт 13/16 `r6` | **нет блока** → `Menu` + `MenuRow` (§7.2): `bg-surface-main`, `line-default`, `radius-m`, `shadow-1`, пункт — `body-s`, `radius-s`, hover — `bg-accent-states-hover` |
-| Сегмент (платформа, режим, фильтр ТТМ, песочница) | рамка, `r8`, кнопка 13 px `.7`; нажатая — `--ds-accent-bg` + `--ds-accent` | **нет блока** → `SegmentedControl` (§7.2, имя черновое); выбранный — в разделе продукта `bg-accent-product-<продукт>-fade` + `text-accent-product-<продукт>`, вне его — `bg-accent-main` + `text-inverse` (§1.1) |
-| Табы страницы компонента | 14 · 500 `.54`; выбранный — цвет и линия `--ds-accent` | **нет блока** → `Tabs` (§7.2, имя черновое); выбранный — `text-accent-product-<продукт>` и линия того же цвета в разделе продукта, вне его — §1.1 |
+| Сегмент (платформа, режим, фильтр ТТМ, песочница) | рамка, `r8`, кнопка 13 px `.7`; нажатая — `--ds-accent-bg` + `--ds-accent` | **нет блока** → `SegmentedControl` (§7.2); выбранный — в разделе продукта `bg-accent-product-<продукт>-fade` + `text-accent-product-<продукт>`, вне его — `bg-accent-main` + `text-inverse` (§1.1) |
+| Табы страницы компонента | 14 · 500 `.54`; выбранный — цвет и линия `--ds-accent` | **нет блока** → `TabBar` Variant=Underline (§7.2); выбранный — `text-accent-product-<продукт>` и линия того же цвета в разделе продукта, вне его — §1.1 |
 | Карточка-ссылка (хабы, управление, задача, команда) | `ds-interactive-card` `r8`, hover рамки `#D0D4DC` или акцент, hover фона `.48`/`.72` | **нет блока** → `IslandLink` (§7.2): `bg-surface-main`, `line-default` → `line-hover`, hover фона — `bg-accent-states-hover`, `radius-m`, фокус по §1.4 |
 | Модалка JSON и диалог задачи | `r12` и `r8`, тень `0 16 48`; на мобиле — лист снизу | **нет блока** → `Dialog` (§7.2): `radius-xl`, `shadow-2`, затемнение `bg-overlay` |
 | Чекбокс выбора иконок | круг 20, рамка `.26`, отмеченный — `#2D2C2E` | **нет блока** → `Checkbox` Shape=Round (§7.2): `line-hover` → `bg-accent-main` + `icon-inverse` |
@@ -209,14 +209,14 @@ Figma. Маркер анатомии на странице компонента 
 
 | Элемент | Было | Станет |
 |---|---|---|
-| Мета-шапка | карточка `r12`, строка заголовка `#FAFAFA`, имя mono 15/600 | `ListMeta` (§2); имя — `heading-s`, псевдоним — `code-s` `text-secondary`; строка заголовка — `bg-surface-zebra` |
+| Мета-шапка | карточка `r12`, строка заголовка `#FAFAFA`, имя mono 15/600 | `IslandMeta` (§2); имя — `heading-s`, псевдоним — `code-s` `text-secondary`; строка заголовка — `bg-surface-zebra` |
 | Ссылка Figma | mono 12, `--ds-accent` | `code-s`, `text-accent-product-<продукт>` (§1.1) |
 | Песочница | `#FAFAFA`, рамка, `r12`; подписи 11/600 `.45` | `bg-surface-zebra`, `line-default`, `radius-l`; подписи — `label-xs-caps` `text-secondary`; сегменты — `SegmentedControl` |
-| Табы | §2 | `Tabs` |
+| Табы | §2 | `TabBar` Variant=Underline |
 | Блок «Day» / «Night» | рамка, `r12`, 24; Night — `#2D2C2E`, подпись `rgba(255,255,255,.7)` | Day — `line-default`, `radius-l`, `spacing-24`; Night — `bg-inverse-main`, подпись `text-inverse` |
-| CODE / API | h2 13/600 капс `.45`; блок кода `r12` | h2 — `label-xs-caps`; блок — `BlockCode` |
+| CODE / API | h2 13/600 капс `.45`; блок кода `r12` | h2 — `label-xs-caps`; блок — `IslandCode` |
 | Карточки API | `r12`, h3 11/600 капс `.38`, флаг 10/600 | `radius-l`; h3 — `label-xs-caps` `text-secondary`; флаг — `Badge` Success / Neutral |
-| Release status | §1.2, мета `r12`, панель `#FFFDF5` | бейджи — `Badge`; мета — `ListMeta`; панель «ждёт» — `Banner` Warning |
+| Release status | §1.2, мета `r12`, панель `#FFFDF5` | бейджи — `Badge`; мета — `IslandMeta`; панель «ждёт» — `Banner` Warning |
 | Анатомия | маркер — круг с рамкой 2 px `--ds-accent`, линия `--ds-accent` 1.5 px · .55, ореол и свечение; номер в списке — круг `--ds-accent`; hover — `--ds-accent-bg` и `color-mix` | маркер и номер — `TagMarker`: круг `bg-accent-vivid-main`, цифра `text-inverse`, точка и линия — `icon-accent-vivid`. Выбранная зона: рамка `icon-accent-vivid`, `shadow-1` без свечения. Hover в списке — `bg-accent-states-hover`. Зум — `ButtonIcon`, hover — `bg-accent-states-hover` вместо `#F0F4FF` |
 | Чип вида значения | 4 пары Material | §1.2 |
 | Сцена анатомии | `#FAFAFA`, `r12`, поля 72/48 | `bg-surface-zebra`, `radius-l`, `spacing-64` / `spacing-48` |
@@ -227,7 +227,7 @@ Figma. Маркер анатомии на странице компонента 
 
 | Элемент | Было | Станет |
 |---|---|---|
-| Обложка | заголовок только в шапке 28/36, мета-карточка: версия, статус, сверено, источник | `HeaderPage`: бейджи (статус — `Badge` Neutral, версия — `Badge` Neutral, «ждёт согласования» — `Badge` Warning), заголовок `display-l`, описание `body-m` `text-secondary`, ниже — `ListMeta` (сверено, источник, скачать). Как быть с h1 в шапке страницы — в панели остаётся «Guides», название гайда только в обложке (§7.1, п. 3а) |
+| Обложка | заголовок только в шапке 28/36, мета-карточка: версия, статус, сверено, источник | `HeaderPage`: бейджи (статус — `Badge` Neutral, версия — `Badge` Neutral, «ждёт согласования» — `Badge` Warning), заголовок `display-l`, описание `body-m` `text-secondary`, ниже — `IslandMeta` (сверено, источник, скачать). Как быть с h1 в шапке страницы — в панели остаётся «Guides», название гайда только в обложке (§7.1, п. 3а) |
 | h2 «1. Артефакты…» | 22/28 · 600, линия сверху, отступы 48/16/24 | `HeaderSection`: `heading-l` 32/40; линия сверху остаётся — `line-default`, `spacing-48` |
 | h3, h4 | 16/24 · 600 | h3 — `heading-m` 20/28, h4 — `heading-s` |
 | Текст, списки | 14/22 | `body-m` |
@@ -424,8 +424,9 @@ Lookup по файлу Persefona Components (`X8DoqKC0SKfxb8SoKboo3N`, 9 ком�
 цветами поверхности состояния не рисуются (#361 §6.3). В колонке «Tokens required» —
 только покой и выбранный цвет, состояния у всех 16 блоков одинаковые. Токенов
 `bg-accent-states-*` в Kit нет — пачка №0 (§8). Имена латиницей, Role первым (#362 §10,
-architecture-guide §9). `ListMeta`, `BlockCode`, `SegmentedControl`, `Tabs` — имена
-черновые: вопрос у Standards (рекомендация Standards · Persefona — `IslandMeta`, `IslandCode`).
+architecture-guide §9). Имена блоков 5, 6, 12, 13 — ответ Standards 2026-10-23:
+`SegmentedControl` остаётся, `Tabs` → `TabBar` (вид — Variant), `ListMeta` → `IslandMeta`,
+`BlockCode` → `IslandCode`.
 
 | # | Component | Где на портале | Tokens required | Variants / Properties | Confidence |
 |---|---|---|---|---|---|
@@ -434,14 +435,14 @@ architecture-guide §9). `ListMeta`, `BlockCode`, `SegmentedControl`, `Tabs` —
 | 3 | `ButtonGroup` | формат + скачать + ещё, JSON + скачать | общая рамка `line-default`, `radius-m`, внутренние линии `line-default` | слот из `ButtonText` / `ButtonIcon` | medium — 2 места, одинаковые |
 | 4 | `ButtonCopy` | значения токенов, мета, сниппеты | `label-s`, `text-secondary`, `line-default`, `radius-s`; «скопировано» — `Badge` Success | State = Idle \| Copied | high |
 | 5 | `SegmentedControl` | платформа, режим, Day/Night, фильтр ТТМ | рамка `line-default`, `radius-m`; пункт `label-m` `text-secondary`; выбранный — `bg-accent-product-<продукт>-fade` + `text-accent-product-<продукт>` в продукте, `bg-accent-main` + `text-inverse` вне его | Size = S \| M; слот пунктов | high — 7 мест |
-| 6 | `Tabs` | страница компонента | `label-m` `text-secondary` → `text-primary`; выбранный — `text-accent-product-<продукт>` и линия 2 px того же цвета в продукте, `text-accent` и `bg-accent-main` вне его; линия низа `line-default` | слот `.Tab` | high |
+| 6 | `TabBar` | страница компонента | `label-m` `text-secondary` → `text-primary`; выбранный — `text-accent-product-<продукт>` и линия 2 px того же цвета в продукте, `text-accent` и `bg-accent-main` вне его; линия низа `line-default` | Variant = Underline; слот `.Tab` | high |
 | 7 | `FieldText` / `FieldSearch` | вход, поиск в шапке | `body-m`, `bg-surface-main`, `line-default` → `line-hover`, плейсхолдер `text-muted`, фокус — кольцо, ошибка — `text-error` | Search (иконка, очистка) | high |
 | 8 | `FieldSelect` | продукт в задачах, ТТМ | как `FieldText` + шеврон `icon-secondary`; открывает `Menu` | Multi (чекбоксы) | medium |
 | 9 | `Menu` + `MenuRow` | скачать, контекстное меню иконки, выбор | §2 «Выпадающее меню» | Row: Default \| Checked \| Disabled | high |
 | 10 | `Chip` | исполнители в задачах | `radius-pill`, `line-default`, `body-s`; pressed — `bg-accent-main` + `text-inverse`; счётчик `body-xs` | Pressed (bool), Count (text) | medium. Отличие от `Badge`: нажимается |
 | 11 | `IslandLink` | хабы, гайды, управление, задачи, навигация гайда | §2 «Карточка-ссылка»; плоский вид хаба — без рамки | Variant = Outlined \| Plain; слоты preview, content | high — 6 экранов |
-| 12 | `ListMeta` | мета гайда, мета компонента, release | §2 «Мета-список» | Value = Text \| Code \| Badge \| Link | high. Имя — вопрос Standards |
-| 13 | `BlockCode` | API, сниппет, `pre` в гайде, установка | §2 «Блок кода» | Title (bool), ButtonCopy (bool) | high. Имя — вопрос Standards |
+| 12 | `IslandMeta` | мета гайда, мета компонента, release | §2 «Мета-список» | строки `IslandRow`: leading — ключ, trailing — значение = Text \| Code \| Badge \| Link; если слоты `IslandRow` не подходят — `MetaRow` | high |
+| 13 | `IslandCode` | API, сниппет, `pre` в гайде, установка | §2 «Блок кода» | Title (bool), ButtonCopy (bool) | high |
 | 14 | `Toast` | копирование | §2 «Тост» | Action (bool) — тогда фокус `line-focus-inverse` | high |
 | 15 | `Dialog` | JSON, задача | `bg-surface-main`, `radius-xl`, `shadow-2`, `bg-overlay` (§7.1, п. 7); заголовок `heading-m`; на мобиле — лист снизу | Size = M (720) \| L (960) | medium |
 | 16 | `Checkbox` Shape=Round | выбор иконок | `line-hover` → `bg-accent-main` + `icon-inverse`; Indeterminate | Shape = Round; State = Off \| On \| Mixed | medium — одно место |
