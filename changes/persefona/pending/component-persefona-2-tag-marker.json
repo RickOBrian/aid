@@ -1,0 +1,35 @@
+{
+  "id": "component-persefona-2-tag-marker",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "TagMarker",
+  "changeSummary": "Номер-маркер анатомии в гайде компонента (анкета — changes/persefona-2-component-guide-2026-10-23.md §4.3, приёмка #378, ответ 10: BadgeMarker → TagMarker). Круг spacing-20, radius-pill, bg-accent-vivid-main; цифра label-s text-inverse; точка-якорь spacing-6 и линия 1 px (без токена, как border: 1px в гайдах AID) — icon-accent-vivid (ответ 11). Leader = None | Left | Right | Top | Bottom; свойство Number. Как anatomy-annotation-standard §2–3 Presentbook. Варианты None 40:101, Left 40:105, Right 40:111, Top 40:116, Bottom 40:121; размер круга и точки привязан к spacing-20 / spacing-6, линия растягивается по размеру экземпляра (мастер 50 px). Собран в Persefona Components (X8DoqKC0SKfxb8SoKboo3N) 2026-10-23; токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc), 0 сырых заливок и обводок, все тексты со стилями.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "TagMarker — номер-маркер анатомии с линией-выноской"
+  },
+  "figma": {
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
+    "folderId": "638447836",
+    "componentPages": {
+      "TagMarker": "39:52"
+    },
+    "components": {
+      "TagMarker": "40:144"
+    }
+  },
+  "product": "persefona",
+  "relatedTokenChanges": [
+    "token-persefona-1-initial"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-23",
+  "author": "sergej"
+}
