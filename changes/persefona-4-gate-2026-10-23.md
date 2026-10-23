@@ -72,8 +72,9 @@ Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (
 ```
 Component: HeaderPage (5:77), правка
 Figma source: X8DoqKC0SKfxb8SoKboo3N, 5:77
-Change 1: фрейм Badges → слот. Свойство — badge (SLOT, контракт badge (repeatable, 1..4),
-  принят Standards · Persefona, 3а); слой может остаться Badges.
+Change 1: фрейм Badges → слот. Свойство в Figma — Badge (SLOT), с заглавной, как остальные
+  свойства Kit; контракт в спеке и отходе — badge (repeatable, 1..4), принят Standards ·
+  Persefona (3а); слой остаётся Badges.
   preferredValues — набор Badge 3:90. По умолчанию в слоте две метки:
   «Принято» · Success и «Persefona» · Neutral (вопрос 1).
   Порядок меток — #362 §6.1–6.2 и таблица тонов persefona-4 §2 п. 9.
@@ -84,7 +85,7 @@ Change 2: новый слой Cover Link «← Cover» над Title, свойс�
   How to Read — по спеке #381: «Как читать эту страницу →».
 Tokens required: те же; новых нет
 Variants: нет
-Properties: Title, Subtitle, How to Read, Contents (TEXT); Show How to Read, Show Cover Link (BOOLEAN); badge (SLOT)
+Properties: Title, Subtitle, How to Read, Contents (TEXT); Show How to Read, Show Cover Link (BOOLEAN); Badge (SLOT)
 Modes: light
 Breaking: yes — для 25 экземпляров: метки переходят в слот, при провале пробы
   собираются заново по снимку (§3); до 1.0.0, новой версии не нужно
@@ -98,7 +99,7 @@ Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (
 
 ```
 HeaderPage                    вертикаль
-├─ Badges                     слот, свойство badge (1..4), горизонталь — Badge
+├─ Badges                     слот, свойство Badge (badge 1..4), горизонталь — Badge
 ├─ Header
 │  ├─ Cover Link              «← Cover» (Show Cover Link)
 │  ├─ Title
@@ -218,6 +219,10 @@ Version: до 1.0.0 — правка pending component-persefona-2-banner.json (
    How to Read, под описанием.
 
 ## 5. Что дальше
+
+Принято Standards · Persefona 2026-10-23, §4 — все ★а. Правка приёмки: свойства-слоты в
+Figma с заглавной — Content и Badge; контракт в спеке и отходе — строчными.
+
 
 1. Standards · Persefona принимает §2 и отвечает на §4.
 2. Сборка в Components: Banner без Error → IslandBlock со слотом → HeaderPage (проба §3
