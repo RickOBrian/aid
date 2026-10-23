@@ -1,0 +1,35 @@
+{
+  "id": "component-persefona-1-token-row",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "TokenRow",
+  "changeSummary": "Строка справочника токенов для витрин Kit (анкета — changes/persefona-1-changelog-table-2026-10-23.md §7, приёмка #370). Свойства Table = Core | Semantic, Swatch = Solid | Split, Zebra = Off | On; тексты Name, Path, Value, Core, Usage. Ячейки выровнены по верху, первая строка всех текстов — на одной базовой линии: у Usage (body-s, строка 20) отступ сверху spacing-6, у остальных ячеек spacing-8. Обводка строки снизу, как у TableCell Header. 62 склонированные строки страницы Colors заменены экземплярами, шапки 11 таблиц — TableCell Header. Все цвета, отступы и радиусы привязаны к переменным Kit; сырой только #000000 левой половины Split (#367 п. 5). Собран в файле Persefona Components (X8DoqKC0SKfxb8SoKboo3N) с нуля по решению PD 2026-10-23 (правило трёх файлов, #362 §10.4); токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc). Рамка набора привязана: отступы spacing-24, шаг spacing-16, радиус radius-s.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "TokenRow — строка справочника токенов: имя и путь, образец и значение, Core, где применять"
+  },
+  "figma": {
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
+    "folderId": "638447836",
+    "componentPages": {
+      "TokenRow": "1:19"
+    },
+    "components": {
+      "TokenRow": "3:395"
+    }
+  },
+  "product": "persefona",
+  "relatedTokenChanges": [
+    "token-persefona-1-initial"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-23",
+  "author": "sergej"
+}
