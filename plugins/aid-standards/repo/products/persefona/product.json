@@ -1,0 +1,51 @@
+{
+  "id": "persefona",
+  "label": "aid: persefona",
+  "status": "internal",
+  "owner": "PD",
+  "kind": "ui-kit",
+  "scope": {
+    "_doc": "Persefona — UI Kit самого AID: визуальный язык служебных сред AID, не Driver и не Rider (решение PD 2026-10-22, уточнение PD 2026-10-23).",
+    "surfaces": [
+      "figma: страницы аудита и сборки компонентов, оформление файлов библиотек Driver и Rider",
+      "presentbook: интерфейс портала (не токены продуктов, которые он показывает)",
+      "гайды и чейнжлоги",
+      "плагины и другие рабочие среды AID"
+    ],
+    "notFor": ["driver", "rider"]
+  },
+  "platformModel": {
+    "targets": null,
+    "stacks": null,
+    "declared": false,
+    "note": "Поверхности — Figma и веб (Presentbook, плагины). Стек кода объявляет Developer · Persefona с первой задачей перевода портала на переменные; до этого — спросить, не подставлять."
+  },
+  "cssVariablePrefix": "pf",
+  "cssVariablePrefixNote": "Префикс CSS-переменных Persefona в коде — короткий: --pf-… (решение PD 2026-10-23). Норму вносит Standards в naming-conventions.",
+  "tokensRoot": null,
+  "tokenDataRoot": null,
+  "tokenDataFiles": [],
+  "tokenAssetsRoot": null,
+  "presentbookRoot": null,
+  "routeBase": null,
+  "tokenRoutes": null,
+  "tokenRegistry": null,
+  "changelogRoot": "tokens",
+  "changelogFiles": [],
+  "changelogNote": "Файлы — tokens/persefona-*-changelog.json и components/persefona-*-changelog.json по changelog-guide; создаются вместе с первыми токенами.",
+  "releaseRoot": "changes/persefona",
+  "releasePendingRoot": "changes/persefona/pending",
+  "releaseReleasedRoot": "changes/persefona/released",
+  "componentsRoot": null,
+  "componentsStatus": "not_started",
+  "componentRegistry": null,
+  "rulesRoot": "products/persefona/rules",
+  "relatedPrototypes": [],
+  "figmaFolder": {
+    "folderId": "638447836",
+    "url": "https://www.figma.com/files/1379448576167521267/folder/638447836",
+    "note": "Папка библиотек AID (решение PD 2026-10-23). Файл библиотеки Persefona — figmaFiles, когда создан (persefona-1)."
+  },
+  "figmaFiles": null,
+  "notes": "Статус internal: в пайплайне токенов и компонентов участвует, в переключателе продуктов Presentbook не показывается (product-context §2). Токены и компоненты Persefona заводятся по общим стандартам AID с визуальным языком AID; Standards · Persefona создаёт их по необходимости (решение PD 2026-10-23), гейты и lookup обязательны."
+}
