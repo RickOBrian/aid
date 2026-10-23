@@ -5,9 +5,9 @@ description: >
 destination: skills/_shared/standards/
 name: naming-conventions
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
   status: alpha
-  lastReviewed: "2026-09-20"
+  lastReviewed: "2026-10-23"
   machineFile: naming-conventions.json
   kind: standard
   platforms: [web, ios, android]
@@ -16,7 +16,7 @@ metadata:
 
 # Правила именования
 
-> Статус: Alpha · v1.3.1 · обновлено 2026-10-09
+> Статус: Alpha · v1.4.0 · обновлено 2026-10-23
 
 ---
 
@@ -54,17 +54,17 @@ metadata:
 | Сегмент | Назначение | Примеры |
 |---|---|---|
 | **collection** | Категория токена | `color`, `type`, `space`, `radius`, `shadow`, `icon` |
-| **group** | Подгруппа или роль | `neutral`, `accent`, `control`, `heading`, `inset` |
+| **group** | Подгруппа или роль | `accent`, `control`, `heading`, `inset` |
 | **property** | Конкретное свойство | `500`, `main`, `primary`, `h-m`, `m` |
 | **variant** | Уточнение (опционально) | `hover`, `secondary`, `static`, `ios` |
 
 **Физическая нотация в документации и кросс-платформенном именовании — дефисная**, не точечная:
 
 ```
-collection-group-property-variant  →  bg-accent-main, space-16, color-neutral-500
+collection-group-property-variant  →  bg-accent-main, space-16
 ```
 
-❌ `color.blue.500`, `bg.accent.main` — точечная нотация запрещена как имя токена.  
+❌ `jasper.50`, `bg.accent.main` — точечная нотация запрещена как имя токена.  
 ✅ Исключение: **iOS Asset Catalog** — точка как разделитель пути в `.xcassets` (`Color("bg.accent.main")`); имя токена остаётся дефисным.
 
 ### Collection naming
@@ -99,19 +99,22 @@ data-файле.
 
 ### Core tokens naming
 
-Core — сырые значения **без смысловой нагрузки**. Формула: `<type>-<group>-<step>`.
+Core — сырые значения **без смысловой нагрузки**. Формула: `<type>-<group>-<step>`;
+исключение — цвет, у него свой канон (ниже).
 
 | Категория | Паттерн | Примеры |
 |---|---|---|
-| **Color** | `color-<palette>-<step>` | `color-neutral-0`, `color-blue-500`, `color-teal-50` |
+| **Color** | `<palette>-<step>`, прозрачные — `<palette>-<step>-a<opacity>` | `jasper-0`, `jasper-60`, `citrine-100-a10` |
 | **Typography** | `type-<property>-<step>` | `type-size-16`, `type-weight-700`, `type-lh-24`, `type-tracking-0` |
 | **Spacing** | `spacing-<step>` | `spacing-0`, `spacing-4`, `spacing-16`, `spacing-80` |
 | **Radius (shape)** | `shape-corner-<step>` | `shape-corner-0`, `shape-corner-8`, `shape-corner-full` |
 | **Shadows** | `shadow-<step>` | Core-значения в effects collection (см. `shadowsData.ts`) |
 | **Icons** | asset id / filename | `icon-name` в `public/icons/`, id в `iconsData.ts` |
 
-**Цветовые палитры Core:** `neutral`, `blue`, `teal`, `green`, `red`, `orange`, `yellow`, `purple`.  
-**Шаги насыщенности:** `0` → `900` с шагом 100; дополнительные `50`, `150`, `650` — только при необходимости.
+**Core-цвет — канон `core-color-tokens-guide.md`** (§3–5): без префикса `color-`,
+ступени `0`…`100` (0 — белый, 100 — чёрный, шаг по умолчанию 5), палитры
+называются нейтрально (камни, города). Имена с ролью или цветом — `neutral`,
+`brand`, `error`, `success`, `blue` — в Core запрещены: роль назначает Semantic.
 
 ### Semantic tokens naming
 
@@ -144,7 +147,7 @@ Semantic — **назначение**, не значение. Формула: `<
 
 | ✅ Правильно | ❌ Неправильно | Почему |
 |---|---|---|
-| `bg-accent-main` | `color-blue-500` в компоненте | Component → Core напрямую |
+| `bg-accent-main` | `jasper-50` в компоненте | Component → Core напрямую |
 | `text-primary` | `color-white` как semantic | Semantic с именем цвета |
 | `inset-control-h-m` | `inset-control-h-16` | Число в semantic space-имени |
 | `space-16` | `spacing-16` в компоненте | Component → Core spacing |
@@ -300,7 +303,7 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 | Anti-pattern | Почему плохо | Как исправить |
 |---|---|---|
-| Точечная нотация токенов (`color.blue.500`) | Нарушает стандарт DS | Дефис: `color-blue-500` |
+| Точечная нотация токенов (`jasper.50`) | Нарушает стандарт DS | Дефис: `jasper-50` |
 | Component-level token (`button-bg-primary`) | Component token layer не используется | Semantic: `bg-accent-main` |
 | Variant в имени компонента (`ButtonPrimary`) | Variant = prop, не имя | `ButtonText` + `variant="primary"` |
 | Entity перед Role (`TextButton`) | Ломает IDE-группировку | `ButtonText` |
@@ -318,6 +321,10 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 
 ## 8. Changelog
 
+- **1.4.0** — 2026-10-23. Имя Core-цвета приведено к `core-color-tokens-guide`:
+  `<palette>-<step>` без `color-`, ступени 0–100, нейтральные имена палитр;
+  список палитр `neutral`, `blue`… и шкала 0–900 сняты. Два стандарта
+  противоречили друг другу (нашёл Standards · Persefona).
 - **1.3.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).
 - **1.3.0** — 2026-09-21. Уровни соответствия вместо «блокера»; дубль `name` назван
   ошибкой корпуса, а не расхождением артефакта — это разные вещи.
