@@ -5,13 +5,14 @@
 `changes/persefona-1-audit-2026-10-23.md` (PR #350), ответы PD 2026-10-23
 «1б 2а 3а 4а 5а 6а 8а», папка Figma `638447836`.
 
-Статус: **черновик, в Figma ничего не создано.** Версий и changelog нет — они
-появляются на `release-gate`.
+Статус: **черновик принят Standards · Persefona по §6 (2а 3а 4б 5а 6а 7а, комментарий
+в PR #354), кроме вопроса 1 — цвет акцента у PD.** В Figma ничего не создано. Версий и
+changelog нет — они появляются на `release-gate`.
 
 Имена — те, что принял Standards · Persefona: Core `color-<palette>-<step>`,
 `spacing-*`, `shape-corner-*`, `type-*`; Semantic `text-*`, `bg-*`, `line-*`,
-`icon-*`, `radius-*`, `shadow-*`. Где принятые имена расходятся с общими гайдами
-AID — раздел 6, решать до сборки.
+`icon-*`, `radius-*`, `shadow-*`; статусы — по `semantic-color-tokens-guide` (§6, п. 4б).
+Расхождение общих гайдов о Core-цвете Standards · Persefona передал в Standards (§6, п. 3).
 
 ## 1. Коллекции Figma
 
@@ -75,7 +76,7 @@ AID — раздел 6, решать до сборки.
 
 | Группа | Токены |
 |---|---|
-| Семейство | `type-family-sans-1` = Google Sans; `type-family-mono-1` — вопрос п. 2 |
+| Семейство | `type-family-sans-1` = Google Sans; `type-family-mono-1` = Google Sans Code (§6, п. 2а) |
 | Размер | `type-size-11, 12, 13, 14, 16, 18, 28, 48` |
 | Интерлиньяж | `type-lh-16, 20, 24, 36, 56` |
 | Вес | `type-weight-400, 500, 600` (700 порталу не нужен в стилях первой сборки) |
@@ -89,14 +90,14 @@ AID — раздел 6, решать до сборки.
 |---|---|---|
 | `text-primary` | `neutral-900` | основной текст |
 | `text-secondary` | `neutral-500` | описания, мета |
-| `text-muted` | `neutral-400` | подсказки (контраст — §5) |
+| `text-muted` | `neutral-400` | только несмысловое: плейсхолдер, разделитель «·» (§6, п. 6а) |
 | `text-disabled` | `neutral-300` | отключённое |
-| `text-inverse` | `neutral-0` | **добавить**: текст на `bg-inverse-main` и `bg-accent-main` |
+| `text-inverse` | `neutral-0` | текст на `bg-inverse-main` и `bg-accent-main` (добавлен, п. 5а) |
 | `text-accent` | `neutral-900` | ссылки (с подчёркиванием — цветом не отличаются, п. 1) |
-| `icon-primary` | `neutral-900` | **добавить** |
-| `icon-secondary` | `neutral-500` | **добавить**: шевроны, меню |
-| `icon-disabled` | `neutral-300` | **добавить** |
-| `icon-inverse` | `neutral-0` | **добавить** |
+| `icon-primary` | `neutral-900` | добавлен, п. 5а |
+| `icon-secondary` | `neutral-500` | шевроны, меню (добавлен, п. 5а) |
+| `icon-disabled` | `neutral-300` | добавлен, п. 5а |
+| `icon-inverse` | `neutral-0` | добавлен, п. 5а |
 | `icon-accent` | `neutral-900` | |
 | `bg-surface-main` | `neutral-0` | страница, карточка |
 | `bg-surface-muted` | `neutral-100` | шапка таблицы, превью |
@@ -106,18 +107,27 @@ AID — раздел 6, решать до сборки.
 | `line-default` | `neutral-150` | рамка 1px, разделитель |
 | `line-hover` | `neutral-200` | рамка при наведении |
 
-Статусы (PD 4а) — один набор на пять смыслов, `bg-status-<x>` / `line-status-<x>` /
-`text-status-<x>`:
+Статусы (PD 4а) — один набор на пять смыслов. Имена — по `semantic-color-tokens-guide`
+(§6, п. 4б):
 
-| Смысл | bg | line | text | Метка в #344 | Changelog | Вид значения |
-|---|---|---|---|---|---|---|
-| `success` | `green-50` | `green-200` | `green-700` | success | добавлено | число / цвет |
-| `warning` | `yellow-50` | `yellow-300` | `yellow-800` | pending | исправлено | — |
-| `error` | `red-50` | `red-200` | `red-700` | error | удалено | — |
-| `info` | `blue-50` | `blue-200` | `blue-700` | info | изменено | ссылка |
-| `neutral` | `neutral-100` | `neutral-150` | `neutral-600` | neutral | устарело | строка |
+- фон — `bg-accent-status-<x>-main`, как в гайде;
+- текст — `text-<x>`: гайд уже называет так `text-error` и `text-success`;
+- рамка — `line-accent-status-<x>`: в гайде рамок статусов нет, имя повторяет ветку
+  фона, без уровня `-main`, как `line-accent`. Это толкование «по той же логике» —
+  на приёмке подтвердить.
 
-Точка changelog — цвет `text-status-<x>`. Сопоставление «вид значения» → смысл
+**Расширение набора статусов гайда:** гайд знает `attention`, `success`, `warning`,
+`error`. Persefona добавляет `info` и `neutral`; `attention` не использует.
+
+| Смысл | Фон | Рамка | Текст | Метка в #344 | Changelog |
+|---|---|---|---|---|---|
+| `success` | `bg-accent-status-success-main` → `green-50` | `line-accent-status-success` → `green-200` | `text-success` → `green-700` | success | добавлено |
+| `warning` | `bg-accent-status-warning-main` → `yellow-50` | `line-accent-status-warning` → `yellow-300` | `text-warning` → `yellow-800` | pending | исправлено |
+| `error` | `bg-accent-status-error-main` → `red-50` | `line-accent-status-error` → `red-200` | `text-error` → `red-700` | error | удалено |
+| `info` ⁺ | `bg-accent-status-info-main` → `blue-50` | `line-accent-status-info` → `blue-200` | `text-info` → `blue-700` | info | изменено |
+| `neutral` ⁺ | `bg-accent-status-neutral-main` → `neutral-100` | `line-accent-status-neutral` → `neutral-150` | `text-neutral` → `neutral-600` | neutral | устарело |
+
+⁺ — расширение. Точка changelog — цвет `text-<x>`. Сопоставление «вид значения» → смысл
 уточню при сборке блоков, на имена токенов оно не влияет.
 
 ### 3.2 Радиусы
@@ -127,7 +137,7 @@ AID — раздел 6, решать до сборки.
 | `radius-s` | `shape-corner-4` | метка, ячейка |
 | `radius-m` | `shape-corner-8` | карточка, таблица |
 | `radius-l` | `shape-corner-12` | крупный контейнер |
-| `radius-xl` | `shape-corner-16` | **добавить**: модалка (PD 2а назвал 16, имени в списке нет) |
+| `radius-xl` | `shape-corner-16` | модалка (добавлен, п. 5а) |
 | `radius-pill` | `shape-corner-full` | плашка статуса |
 
 ### 3.3 Текстовые стили
@@ -141,7 +151,7 @@ AID — раздел 6, решать до сборки.
 | `body-m` | 14/20 · 400 · 0 | 14/20 (14/22 в гайде — уходит) |
 | `body-s` | 13/20 · 400 · 0 | 13/20 и 13/16 |
 | `label-s` | 12/16 · 500 · 0 | 12/16, 12/18, 11/14 |
-| `label-xs-caps` | 11/16 · 500 · 0_6 · ВЕРХНИЙ РЕГИСТР | 4 рецепта → один |
+| `label-xs-caps` | 11/16 · 500 · 0_6 · ВЕРХНИЙ РЕГИСТР | 4 рецепта → один; в шапке таблицы — цвет `text-primary` (п. 7а) |
 | `code-m` | mono 13/20 · 500 · 0 | блоки кода |
 | `code-s` | mono 12/16 · 500 · 0 | версии, инлайн-код |
 
@@ -172,17 +182,23 @@ Pending-записи в `changes/persefona/pending/` заведу при сбо�
 |---|---|---|
 | `text-primary` на `bg-surface-main` | 13.9 | ✓ |
 | `text-secondary` на `bg-surface-main` | 4.61 | ✓ |
-| `text-secondary` на `bg-surface-muted` | 4.23 | ✗ — подпись в шапке таблицы |
-| `text-muted` на `bg-surface-main` | 2.68 | ✗ |
+| `text-secondary` на `bg-surface-muted` | 4.23 | ✗ — поэтому подпись шапки таблицы — `text-primary` (п. 7а) |
+| `text-muted` на `bg-surface-main` | 2.68 | ✗ — только несмысловое (п. 6а) |
 | статусы, текст на своём фоне | 4.79 – 5.84 | ✓ |
-| `text-status-neutral` на `bg-status-neutral` | 5.68 | ✓ (поэтому `neutral-600`) |
+| `text-neutral` на `bg-accent-status-neutral-main` | 5.68 | ✓ (поэтому `neutral-600`) |
 | `text-inverse` на `bg-accent-main` | 13.9 | ✓ |
 
 `text-disabled` по WCAG не проверяется.
 
-## 6. Вопросы — одним списком
+**Правило (п. 6а, проверяется на приёмке сборки): `text-muted` не используется для
+смыслового текста** — заголовков, подписей, значений, описаний, текста меток. Только
+плейсхолдер, разделитель и другое, без чего смысл не теряется. Смысловой второстепенный
+текст — `text-secondary`.
 
-Ответ вида «1а, 2а, 3а…». Рекомендация отмечена ★.
+## 6. Вопросы и решения
+
+Решения Standards · Persefona 2026-10-23: **2а 3а 4б 5а 6а 7а** (комментарий в PR #354).
+Открыт только вопрос 1 — у PD через Standards · Persefona. Рекомендация отмечена ★.
 
 1. **Цвет акцента Persefona** (PD 1б выбрал «свой акцент», значения нет).
    а) ★ графит `#2D2C2E` (`neutral-900`): цвета продуктов остаются единственными
@@ -190,35 +206,42 @@ Pending-записи в `changes/persefona/pending/` заведу при сбо�
    Минус: `text-accent` = `text-primary`.
    б) свой цвет — бирюза `#0E7C7B` (5.0:1 на белом), далеко от синего Driver и
    фиолетового Rider; заводится палитра `teal` (50 / 600).
-   Решение о цвете — PD; передать через Штаб или ответить здесь.
+   **Открыт:** Standards · Persefona спрашивает PD, ответ передаст сюда.
 2. **Моно-шрифт в Figma.** Системного стека в Figma нет.
    а) ★ Google Sans Code — та же семья, что 5а;
    б) JetBrains Mono; в) Roboto Mono (Roboto уже есть в портале).
    Портал при переводе на токены берёт тот же шрифт (задача Developer · Persefona).
+   **Решено: 2а** — Google Sans Code (OFL).
 3. **Противоречие общих гайдов о Core-цвете.** `naming-conventions` (Alpha 1.3.1):
    `color-<palette>-<step>`, шаги 0–900, палитра `neutral` разрешена.
    `core-color-tokens-guide` (Stable 1.2): `<palette>-<step>` без `color-`, шаги
    0–100, имена палитр без смысла (`neutral` запрещено), альфа `<palette>-<step>-a<N>`.
    Черновик — по принятым именам (первое). а) ★ так и оставить, противоречие —
    в Standards; б) перейти на второе до сборки (переименование после релиза — MAJOR).
+   **Решено: 3а.** Противоречие — в Standards. Если до первого релиза Standards выберет
+   `core-color-tokens-guide`, переименуем без MAJOR.
 4. **Статусы — имя.** Принято `bg-status-<x>`; `semantic-color-tokens-guide`
    кладёт статус в `bg-accent-status-<x>-main` и знает attention / success /
    warning / error (нет info, neutral). а) ★ оставить `bg-status-*` как отход
    Persefona, оформить через Standards; б) перейти на `bg-accent-status-*`.
+   **Решено: 4б** — по стандарту, `info` и `neutral` — расширение (§3.1).
 5. **Добавить в список имён:** `text-inverse`, `icon-primary`, `icon-secondary`,
    `icon-disabled`, `icon-inverse`, `radius-xl`. а) ★ да; б) другое имя — какое.
+   **Решено: 5а.**
 6. **`text-muted` не проходит AA** (2.68). Он светлее вторичного, а вторичный уже
    на границе (4.61), — поднять его без слияния нельзя.
    а) ★ оставить по PD 3а, но только для нетекстового и необязательного
    (плейсхолдер, разделитель «·»), смысловой текст — `text-secondary`; б) слить с
    `text-secondary` — нужен новый ответ PD на 3.
+   **Решено: 6а** — правило записано в §5.
 7. **Подпись в шапке таблицы** — `text-secondary` на `bg-surface-muted` даёт 4.23.
    а) ★ подпись шапки — `text-primary`, отличие держит `label-xs-caps`;
    б) шапка таблицы на `bg-surface-zebra` (4.4 — всё ещё ✗); в) принять как есть.
+   **Решено: 7а.**
 
 ## 7. Что дальше
 
-1. Приёмка черновика Standards · Persefona; вопрос 1 — у PD.
+1. Ответ PD на вопрос 1 → окончательная приёмка Standards · Persefona.
 2. Сборка в Figma: файл Persefona в папке `638447836`, коллекции → стили → 5 блоков.
 3. Pending-записи и `figmaFiles` в `products/persefona/product.json` — с созданием
    файла (раскладка — PR Standards · Persefona).
