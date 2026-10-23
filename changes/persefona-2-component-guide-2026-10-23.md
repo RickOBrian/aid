@@ -66,7 +66,7 @@ Components при этом импортируются по ключу: пров�
 
 | # | Блок | Из чего состоит сейчас | Элементы Persefona |
 |---|---|---|---|
-| 0 | Обложка | Метки, заголовок, описание, ссылка на аудит, содержание текстом | `HeaderPage`: метки — `Badge`, содержание — `Contents` с гиперссылками на блоки |
+| 0 | Обложка | Метки, заголовок, описание, ссылка на аудит, содержание текстом | `HeaderPage`: метки — `Badge` (статус, задача и исполнитель — §6.2 правила страниц), ссылка «← Cover», содержание — `Contents` с гиперссылками на блоки |
 | 1 | Компоненты | Подзаголовок + 3 карточки: имя, мастер, подпись | `IslandExample` ×3 (новый, §4.1) |
 | 2 | Когда применять | Две колонки списков с цветными заголовками; 3 примера «Так / Не так» | Списки `body-m`, над колонкой `Badge` Success / Error; `IslandExample` с меткой Tone |
 | 3 | Анатомия и токены | Образец + строка слоёв; таблица «Элемент · Токен · Значение»; плашка исключения | Образец с `BadgeMarker` (новый, §4.3); таблица из `TableCell`; `IslandNote` Tone=Vivid Soft (новый, §4.2) |
@@ -75,7 +75,7 @@ Components при этом импортируются по ключу: пров�
 | 6 | Трудные случаи | 6 карточек: заголовок, сцена, подпись | `IslandExample` ×6 |
 | 7 | Связи | Таблица 4 колонки | Таблица из `TableCell` |
 | 8 | В боевом макете | Подпись «День» + экран | `IslandExample` ×1 (сцена без фона: экран сам себе фон) |
-| 9 | Changelog · <Компонент> | Таблица «Версия · Изменения · Дата · Автор» | `TableChangelog`: вставить и отвязать (§6.5 правила страниц), строка «Не опубликовано» переносится как есть |
+| 9 | Changelog · <Компонент> | Таблица «Версия · Изменения · Дата · Автор» | `TableChangelog`: вставить и отвязать, строка «Не опубликовано» переносится как есть. Это содержание гайда (changelog у каждого компонента — решение PD 2026-10-22), а не таблица страницы по §6.5: в зоне 3 её нет. Конфликт — §6, вопрос 9 |
 | 10 | Отчёт автопроверки | Таблица «Правило · Статус · Подробности», статусы цветным текстом | Таблица из `TableCell`, статус — `TableCell` Variant=Badge (правка, §4.4) |
 
 Каждый элемент шаблона повторяется в нескольких блоках. Поэтому новых компонентов
@@ -95,7 +95,7 @@ Components при этом импортируются по ключу: пров�
 | Заголовок раздела «N. Название» + подзаголовок | `HeaderSection` 2:136 | Переиспользовать |
 | Карточка раздела | `IslandBlock` 5:114 | Переиспользовать; ширина блока 5 — по содержимому (§6, вопрос 4) |
 | Метки статуса, «Так / Не так», «Применять / Не применять» | `Badge` 3:90 (Tone) | Переиспользовать |
-| Таблица общего вида | `TableCell` 2:118 (Header / Default) | Переиспользовать; строки — фреймы, как в `TableComparison` |
+| Таблица общего вида | `TableCell` 2:118 (Header / Default / Before / After) | Переиспользовать; строки — фреймы, как в `TableComparison` |
 | Changelog компонента | `TableChangelog` 5:354 | Переиспользовать: колонки совпадают один в один |
 | Статус в ячейке таблицы | — `TableCell` только текстовая | Правка `TableCell`: Variant=Badge (§4.4) |
 | Карточка примера: заголовок, сцена, подпись, метка | — | Новый `IslandExample` (§4.1) |
@@ -119,16 +119,17 @@ Component: IslandExample
 Figma source: Persefona Components X8DoqKC0SKfxb8SoKboo3N, новая страница IslandExample (зона 2, по алфавиту — после IslandBlock)
 Tokens required: заголовок — heading-s, text-primary; подпись — body-s, text-secondary;
   шаг spacing-12 (заголовок → сцена → подпись), spacing-8 (метка → заголовок);
-  сцена — radius-m, обрезка; заливки сцены у Persefona нет (§5, У4)
-Variants: Stage=Filled|Bare (сцена с фоном продукта / без фона — для экрана и мастеров с пунктирной рамкой)
+  сцена — radius-m, обрезка, в мастере без заливки: в Components нет своих переменных
+  (persefona-figma-pages §10.4), фон продукта ставится на экземпляре (§5, У4; §6, вопрос 8)
+Variants: нет
 Properties: Title (TEXT), Caption (TEXT), Show Badge (BOOLEAN), Show Caption (BOOLEAN); метка — вложенный Badge (Tone меняется у экземпляра)
 Slots: content — сцена; кладут экземпляр компонента продукта
 Modes: light
 Proposed path: только Figma, sourcePath null
-Confidence: high — 14 одинаковых карточек в блоках 1, 2, 4, 6, 8
+Confidence: high — 17 одинаковых карточек в блоках 1, 2, 4, 6, 8 (3 + 3 + 4 + 6 + 1)
 Naming exception: no — Role Island (повторяемый контентный блок) + Entity Example
 Architecture exception: no
-Review at: release
+Review at: n/a
 ```
 
 ```
@@ -136,7 +137,7 @@ IslandExample                 вертикаль, шаг spacing-12, ширин�
 ├─ Badge                      Tone=Success «Так» (Show Badge)
 ├─ Title                      heading-s
 ├─ Stage                      фрейм-слот, radius-m, отступы spacing-24, по центру
-│  └─ <экземпляр продукта>
+│  └─ <экземпляр продукта>   фон сцены — на экземпляре, в файле продукта
 └─ Caption                    body-s, text-secondary (Show Caption)
 ```
 
@@ -147,15 +148,15 @@ Component: IslandNote
 Figma source: Persefona Components, новая страница IslandNote (после IslandExample)
 Tokens required: фон bg-accent-status-<tone>-main (Vivid Soft — bg-accent-vivid-fade); заголовок — heading-s,
   text-<tone> (Vivid Soft — text-accent-vivid);
-  текст — body-m, text-primary; отступы spacing-16 / spacing-24; radius-m; без рамки (правило бейджей Б.2.1)
-Variants: Tone=Info|Warning|Error|Vivid Soft (Vivid Soft — обоснованное исключение из стандарта)
+  текст — body-m, text-primary; отступы spacing-16 / spacing-24; radius-m; без рамки (persefona-visual-language §4.2)
+Variants: Tone=Info|Warning|Error|Vivid Soft (Vivid Soft — для плашки «одобренное исключение» в гайде; у самого компонента исключений нет)
 Properties: Title (TEXT), Text (TEXT)
 Modes: light
 Proposed path: только Figma
 Confidence: medium — на странице TabBar 2 случая (блоки 3 и 4); такие же плашки есть в аудите и витринах Persefona
-Naming exception: no — Island + Note
+Naming exception: no — Island + Note; Role спорный (плашка ближе к баннеру, такой Role-семьи нет) — §6, вопрос 10
 Architecture exception: no
-Review at: release
+Review at: n/a
 ```
 
 Плашка не заменяет предупреждения Presentbook: на review page баннер — только для
@@ -167,16 +168,17 @@ Review at: release
 ```
 Component: BadgeMarker
 Figma source: Persefona Components, страница BadgeMarker (после BadgeChangelog)
-Tokens required: круг 20 × 20 — bg-accent-vivid-main, цифра — label-s, text-inverse;
-  точка-якорь 6 × 6 и линия 1 px — тот же акцент (как anatomy-annotation-standard §2–3 у Presentbook)
+Tokens required: круг spacing-20 × spacing-20, radius-pill, bg-accent-vivid-main; цифра — label-s, text-inverse;
+  точка-якорь spacing-6 × spacing-6, radius-pill; линия — тот же акцент, толщина 1 px без токена (§6, вопрос 11);
+  как anatomy-annotation-standard §2–3 у Presentbook
 Variants: Leader=None|Left|Right|Top|Bottom (с какой стороны линия)
 Properties: Number (TEXT)
 Modes: light
 Proposed path: только Figma
 Confidence: medium — нужен в каждом гайде компонента (блок 3), сейчас на TabBar нет вообще
-Naming exception: no — Role Badge (компактный индикатор) + Entity Marker
+Naming exception: no — Role Badge (компактный индикатор, по форме как BadgeCount) + Entity Marker; маркер не статус — §6, вопрос 10
 Architecture exception: no
-Review at: release
+Review at: n/a
 ```
 
 Цвет, точка и линия — те же, что у анатомии в Presentbook, чтобы маркер в Figma и на
@@ -192,7 +194,7 @@ Change: новое значение Variant=Badge — ячейка с вложе
 Tokens required: те же, что у Default; Badge — свой набор
 Breaking: no — новое значение варианта, старые экземпляры не меняются
 Version: до 1.0.0 (компоненты pending, не выпущены) — запись в pending component-persefona-1-blocks.json
-Review at: release
+Review at: n/a
 ```
 
 Нужна для статусов в таблицах: «ок / вручную» в автопроверке, «Принято / В работе» в
@@ -210,9 +212,9 @@ Review at: release
 | У1 | Оболочка — SF Pro, 214 текстов без стиля | Стили Persefona: `heading-l` (через `HeaderSection`), `heading-s`, `body-m`, `body-s`, `label-s`; контент продукта остаётся на SF Pro | Оболочка всех служебных страниц читается одинаково; шрифт продукта отличает пример от подписи к нему |
 | У2 | Основной текст и списки — 11 px (192 текста) | Списки и подзаголовки — `body-m` (14), подписи под примерами — `body-s` (13) | 11 px — подпись, а не текст для чтения; при масштабе Figma 50 % он не читается |
 | У3 | «Применять / Не применять» — зелёный и красный заголовки текстом, примеры — метки «Так / Не так» | Над обеими колонками и над примерами — `Badge` Success / Error | Одна мысль «можно / нельзя» — один знак, а не два |
-| У4 | Сцена примера — сырой `#F6F6F8` днём, `#1A1A1F` / `#0F0F1F` ночью | Сцена — переменная Rider `Background/Primary` с явным режимом Day или Night на рамке сцены | Компонент показан на фоне своего продукта. Ночная сцена переключается режимом, и цвет фона не расходится с продуктом |
+| У4 | Сцена примера — сырой `#F6F6F8` днём, `#1A1A1F` / `#0F0F1F` ночью | В мастере `IslandExample` сцена без заливки; в файле Rider на экземпляре — переменная Rider `Background/Primary` и явный режим Day или Night на рамке сцены (§6, вопрос 8) | Компонент показан на фоне своего продукта. Ночная сцена переключается режимом, и цвет фона не расходится с продуктом |
 | У5 | Анатомия — подпись «Слои .Tab: background → icon…» и таблица без связи с образцом | Номера `BadgeMarker` на образце = номера в первой колонке таблицы | Читатель находит элемент на образце по номеру, а не по слову; так же устроена анатомия в Presentbook |
-| У6 | Плашка исключения — сырой фиолетовый, предупреждения — сырой жёлтый | `IslandNote` Tone=Vivid Soft и Tone=Warning | Тон плашки — из статусов Kit, у которых проверен AA |
+| У6 | Плашка исключения — сырой фиолетовый, предупреждения — сырой жёлтый | `IslandNote` Tone=Vivid Soft и Tone=Warning | Тон плашки — из токенов Kit. AA у Warning проверен; у Vivid Soft (`text-accent-vivid` на `bg-accent-vivid-fade`) — проверяю при сборке, цель ≥ 4.5:1, цифра — в PR |
 | У7 | «ок» и «вручную» в автопроверке — цветной текст | `TableCell` Variant=Badge: Success «ок», Warning «вручную» | Статус в таблице — как статус везде: бейджем |
 | У8 | Changelog — самодельная таблица | `TableChangelog`, отвязанный образец | Token Comparator сможет вписывать строку «Не опубликовано» сам (§6.5 правила страниц) |
 | У9 | 11 рамок на холсте, обложка — рамка | Секция `TabBar` (§6.3 правила страниц): `HeaderPage`, под ним блоки 1–10 столбцом, шаг `spacing-64`; аудит — своя секция сбоку, как сейчас | По правилу страниц вне секций на странице ничего нет; ссылки содержания ведут на узлы |
@@ -238,9 +240,26 @@ Review at: release
 6. **Подключение библиотеки.** Компоненты импортируются и без подключения. ★а —
    подключить Persefona Tokens и Components в Rider Components (делает человек в
    настройках файла: через API нельзя), чтобы дизайнеры видели, откуда оболочка;
-   б — не подключать.
+   б — не подключать. Подключение меняет файл Rider — нужно согласие куратора Rider
+   (как §10.2 правила страниц).
 7. **Новые компоненты в Kit до 1.0.0.** ★а — три компонента и правка `TableCell` — в
    pending 1.0.0, без отдельной версии; б — после 1.0.0, minor.
+
+8. **Фон сцены.** В Components своих переменных нет (§10.4 правила страниц), а у
+   Persefona нет токена «фон сцены примера». ★а — в мастере без заливки, фон продукта —
+   на экземпляре в файле продукта; б — завести в Tokens `bg-surface-stage` (через
+   token-change-gate): нейтральный фон для примеров без продукта.
+9. **Changelog в гайде и §6.5.** Changelog на компонент в блоке 9 — решение PD
+   2026-10-22, а §6.5 не ставит таблицу чейнжлога в зоне 3. ★а — блок 9 — часть гайда:
+   после приёмки страница переходит в зону 2, и таблица встаёт по §6.5 «Место» (справа
+   от содержимого); `figmaTable` TabBar сверяю по id до и после; б — сейчас без
+   таблицы, только после выхода в зону 2.
+10. **Имена `IslandNote` и `BadgeMarker`.** Role-семьи для плашки нет; маркер анатомии
+    не статус. ★а — оставить (Island — повторяемый блок, Badge — компактный
+    индикатор, как BadgeCount); б — спросить Standards про новую Role (например,
+    `Banner`) и до ответа считать имена черновыми.
+11. **Толщина линии маркера** 1 px — без токена (у Kit нет `stroke-*`). ★а — сырое
+    значение как platform-convention, отмечено в описании компонента; б — завести токен.
 
 ---
 
