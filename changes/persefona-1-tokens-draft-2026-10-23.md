@@ -110,7 +110,7 @@ Core-цвет — по `core-color-tokens-guide`: Standards сделал его 
 | Семейство | `type-family-sans-1` = Google Sans; `type-family-mono-1` = Google Sans Code (§6, п. 2а) |
 | Размер | `type-size-11, 12, 13, 14, 16, 18, 28, 48` |
 | Интерлиньяж | `type-lh-16, 20, 24, 36, 56` |
-| Вес | `type-weight-400, 500, 600` (700 порталу не нужен в стилях первой сборки) |
+| Вес | `type-weight-400, 500` (600 не заводится: у Google Sans нет начертания 600 — принято Standards · Persefona при приёмке сборки, #357; 700 не нужен стилям первой сборки) |
 | Трекинг | `type-tracking--1` (**новый** шаг, = −0.02em у 48), `type-tracking-0`, `type-tracking-0_6` (= .06em у 11) |
 
 ## 3. Semantic
