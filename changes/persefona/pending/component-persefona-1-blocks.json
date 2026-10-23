@@ -4,7 +4,7 @@
   "changeType": "added",
   "taskType": "create",
   "artifact": "Badge, HeaderSection, TableCell, TableComparison, IslandBlock, HeaderPage",
-  "changeSummary": "Пять блоков служебных страниц из #344 (HeaderPage, HeaderSection, IslandBlock, TableComparison с TableCell, Badge) — первая очередь Persefona по ответу PD 8а; структура — аудит changes/persefona-1-audit-2026-10-23.md §4.3. Lookup пуст: в Persefona ничего не было, аналоги Rider/Driver не используются. Все цвета, отступы и радиусы привязаны к persefona-semantic / persefona-core. Badge: свойство Tone — Neutral, Warning, Success, Error, Info, Vivid Soft, Vivid, Accent; без рамки (PD 2026-10-23, #358 Б.2.1, Б.2.3). HeaderPage: заголовок — display-l 48/56 (арт-директорский проход, PR #358). Имена — латиницей по persefona-figma-pages 0.4.2 §10.3 (#368); HeaderPage и HeaderSection — черновые до Role Header в ds-component-architecture-guide §9.",
+  "changeSummary": "Пять блоков служебных страниц из #344 (HeaderPage, HeaderSection, IslandBlock, TableComparison с TableCell, Badge) — первая очередь Persefona по ответу PD 8а; структура — аудит changes/persefona-1-audit-2026-10-23.md §4.3. Lookup пуст: в Persefona ничего не было, аналоги Rider/Driver не используются. Все цвета, отступы и радиусы привязаны к persefona-semantic / persefona-core. Badge: свойство Tone — Neutral, Warning, Success, Error, Info, Vivid Soft, Vivid, Accent; без рамки (PD 2026-10-23, #358 Б.2.1, Б.2.3). HeaderPage: заголовок — display-l 48/56 (арт-директорский проход, PR #358). Имена — латиницей по persefona-figma-pages 0.4.2 §10.3 (#368); HeaderPage и HeaderSection — черновые до Role Header в ds-component-architecture-guide §9. Собран в файле Persefona Components (X8DoqKC0SKfxb8SoKboo3N) с нуля по решению PD 2026-10-23 (правило трёх файлов, #362 §10.4); токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc).",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
@@ -13,23 +13,23 @@
     "description": "Блоки служебных страниц Persefona: обложка, заголовок раздела, карточка, таблица «было | стало», метка"
   },
   "figma": {
-    "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
-    "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc",
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
     "folderId": "638447836",
     "componentPages": {
-      "HeaderSection": "0:1",
-      "IslandBlock": "29:163",
-      "Badge": "29:164",
-      "TableComparison": "29:165",
-      "HeaderPage": "29:166"
+      "Badge": "1:7",
+      "HeaderPage": "1:9",
+      "HeaderSection": "1:11",
+      "IslandBlock": "1:13",
+      "TableComparison": "1:17"
     },
     "components": {
-      "Badge": "4:19",
-      "HeaderSection": "4:20",
-      "TableCell": "4:31",
-      "TableComparison": "4:32",
-      "IslandBlock": "4:61",
-      "HeaderPage": "4:70"
+      "Badge": "3:90",
+      "HeaderSection": "2:136",
+      "TableCell": "2:118",
+      "TableComparison": "5:240",
+      "IslandBlock": "5:114",
+      "HeaderPage": "5:77"
     }
   },
   "product": "persefona",

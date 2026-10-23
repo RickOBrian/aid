@@ -4,7 +4,7 @@
   "changeType": "added",
   "taskType": "create",
   "artifact": "TableChangelog",
-  "changeSummary": "Образец таблицы чейнжлога для Token Comparator (анкета — changes/persefona-1-changelog-table-2026-10-23.md §3, приёмка #370; ответ PD 2026-10-23 «7а»). TableChangelog: HeaderSection, рамка Table (bg-surface-main, line-default, radius-m), шапка из TableCell Header (Версия | Список изменений | Дата | Автор), Changelog Table Body с одной строкой Changes Row «Не опубликовано». Строка и ячейка изменений — фреймы: образец вставляют и сразу отвязывают. Подкомпонент BadgeChangelog: Change = Added | Removed | Edited → Badge Success | Error | Info. Имена слоёв Changelog Table Body, Changes Row, __Changelog Badge, {separator} — контракт плагина. Проверено прогоном writeUnpublishedRow в файле Kit (§4.1 документа, снимки). Все цвета, отступы и радиусы привязаны к переменным Kit, тексты — к стилям.",
+  "changeSummary": "Образец таблицы чейнжлога для Token Comparator (анкета — changes/persefona-1-changelog-table-2026-10-23.md §3, приёмка #370; ответ PD 2026-10-23 «7а»). TableChangelog: HeaderSection, рамка Table (bg-surface-main, line-default, radius-m), шапка из TableCell Header (Версия | Список изменений | Дата | Автор), Changelog Table Body с одной строкой Changes Row «Не опубликовано». Строка и ячейка изменений — фреймы: образец вставляют и сразу отвязывают. Подкомпонент BadgeChangelog: Change = Added | Removed | Edited → Badge Success | Error | Info. Имена слоёв Changelog Table Body, Changes Row, __Changelog Badge, {separator} — контракт плагина. Проверено прогоном writeUnpublishedRow в файле Kit (§4.1 документа, снимки). Все цвета, отступы и радиусы привязаны к переменным Kit, тексты — к стилям. Собран в файле Persefona Components (X8DoqKC0SKfxb8SoKboo3N) с нуля по решению PD 2026-10-23 (правило трёх файлов, #362 §10.4); токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc). Прогон writeUnpublishedRow повторён в Components после переноса — результат как в §4.1.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
@@ -13,16 +13,16 @@
     "description": "TableChangelog — образец таблицы чейнжлога для Token Comparator и бейдж вида изменения BadgeChangelog"
   },
   "figma": {
-    "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
-    "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc",
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
     "folderId": "638447836",
     "componentPages": {
-      "TableChangelog": "68:22",
-      "BadgeChangelog": "68:22"
+      "TableChangelog": "1:15",
+      "BadgeChangelog": "1:15"
     },
     "components": {
-      "TableChangelog": "68:69",
-      "BadgeChangelog": "68:68"
+      "TableChangelog": "5:354",
+      "BadgeChangelog": "5:153"
     }
   },
   "product": "persefona",
