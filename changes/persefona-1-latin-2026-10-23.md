@@ -1,7 +1,7 @@
 # persefona-1 — латиница в файле Kit: таблица «было → станет»
 
 - Дата: 2026-10-23
-- Задача: persefona-1 (AID-48), шаг 1 §10.3 `products/persefona/rules/persefona-figma-pages.md` 0.4.1 (87690db)
+- Задача: persefona-1 (AID-48), шаг 1 §10.3 `products/persefona/rules/persefona-figma-pages.md` 0.4.2 (db567a1)
 - Файл: Persefona `YDjPxFrW1yXqm9RzBGQXuc` (папка `638447836`)
 - Исполнитель: Designer · Persefona; приёмка — Standards · Persefona
 - Статус: **на приёмку. В файле ничего не переименовано.**
@@ -33,14 +33,25 @@
 | 4:19 | `Метка` | `Badge` | можно |
 | 4:31 | `Ячейка таблицы` | `TableCell` | можно |
 | 4:32 | `Таблица сравнения` | `TableComparison` | можно |
-| 4:20 | `Заголовок раздела` | `HeaderSection` ¹ | ждёт Standards |
-| 4:61 | `Карточка блока` | `CardBlock` ¹ | ждёт Standards |
-| 4:70 | `Шапка страницы` | `HeaderPage` ¹ | ждёт Standards |
+| 4:20 | `Заголовок раздела` | `HeaderSection` | можно |
+| 4:61 | `Карточка блока` | `IslandBlock` | можно |
+| 4:70 | `Шапка страницы` | `HeaderPage` | можно |
 
-¹ Role `Header` и `Card` нет в таблице Role-семей — до ответа Standards
-не переименовываются (#362 0.4.1 §10.3). Их свойства — тоже: свойства
-переименовываю тем же проходом, что и компонент, чтобы не делать два
-прохода по экземплярам.
+Имена — по ответу Standards (#362 0.4.2, db567a1, §10.3).
+
+- `HeaderPage`, `HeaderSection` — черновые: Role `Header` Standards вносит
+  в §9 своим PR через «да» PD. В Kit ставим сейчас; релиз Kit 1.0.0 —
+  только после того мержа.
+- `IslandBlock`, а не `IslandDocBlock`. Роль `Card` не заводится,
+  повторяемый блок — `Island`. По факту карточка — не один из
+  оформительских блоков страницы (`Doc blocks`: шапка, заголовок раздела,
+  таблица, метка), а контейнер для любого содержимого раздела: в зоне
+  `Content` — заглушка под произвольный материал, снизу — заметка для
+  инженера. Уточнение `Doc` ничего не различает: все компоненты Kit —
+  для служебных страниц, а `IslandDocBlock` повторяет `Doc blocks` и
+  читается как «один из них».
+
+Свойства переименовываю тем же проходом, что и компонент.
 
 ## 3. Свойства и значения
 
@@ -79,7 +90,7 @@
 
 Свойств нет.
 
-### 3.4 HeaderSection (4:20) — ждёт Standards
+### 3.4 HeaderSection (4:20)
 
 | Было | Станет | Тип | Код |
 |---|---|---|---|
@@ -87,7 +98,7 @@
 | `Подзаголовок` | `Subtitle` | текст | `subtitle` (слот) |
 | `Есть подзаголовок` | `Show Subtitle` ★ | булево | `showSubtitle` |
 
-### 3.5 CardBlock (4:61) — ждёт Standards
+### 3.5 IslandBlock (4:61)
 
 | Было | Станет | Тип | Код |
 |---|---|---|---|
@@ -98,7 +109,7 @@
 инженера» остаётся в подписи слоя `Label` («Для инженера», по-русски).
 Вопрос 4.
 
-### 3.6 HeaderPage (4:70) — ждёт Standards
+### 3.6 HeaderPage (4:70)
 
 | Было | Станет | Тип | Код |
 |---|---|---|---|
@@ -119,13 +130,13 @@
 |---|---|---|
 | Badge, TableCell | `Текст` | `Text` |
 | TableComparison | `Строка` | `Row` |
-| HeaderSection, CardBlock, HeaderPage | `Заголовок` (текст) | `Title` |
-| HeaderSection, CardBlock | `Подзаголовок` | `Subtitle` |
-| CardBlock | `Содержимое` | `Content` |
-| CardBlock | `Заглушка` | `Placeholder` |
-| CardBlock | `Для инженера` (рамка) | `Footer` |
-| CardBlock | `Метка строки` | `Label` |
-| CardBlock | `Текст` | `Text` |
+| HeaderSection, IslandBlock, HeaderPage | `Заголовок` (текст) | `Title` |
+| HeaderSection, IslandBlock | `Подзаголовок` | `Subtitle` |
+| IslandBlock | `Содержимое` | `Content` |
+| IslandBlock | `Заглушка` | `Placeholder` |
+| IslandBlock | `Для инженера` (рамка) | `Footer` |
+| IslandBlock | `Метка строки` | `Label` |
+| IslandBlock | `Текст` | `Text` |
 | HeaderPage | `Метки` | `Badges` |
 | HeaderPage | `Заголовок` (рамка) | `Header` |
 | HeaderPage | `Описание` | `Subtitle` |
@@ -135,7 +146,7 @@
 | HeaderPage | `Пункты` | `Contents Items` |
 
 Имя слоя-экземпляра совпадает с компонентом (`Заголовок раздела` в
-CardBlock, `Метка` в HeaderPage, `Ячейка таблицы` в TableComparison) —
+IslandBlock, `Метка` в HeaderPage, `Ячейка таблицы` в TableComparison) —
 меняется вместе с компонентом.
 
 ## 5. Страницы и секции
@@ -151,9 +162,9 @@ CardBlock, `Метка` в HeaderPage, `Ячейка таблицы` в TableCom
 | стр. 24:614, секция 31:225 | `Тени` | `Shadows` | можно |
 | стр. 29:164, секция 30:22 | `Метка` | `Badge` | можно |
 | стр. 29:165, секция 31:296 | `Таблица сравнения` | `TableComparison` | можно |
-| стр. 0:1, секция 31:244 | `Заголовок раздела` | `HeaderSection` | с компонентом |
-| стр. 29:163, секция 31:265 | `Карточка блока` | `CardBlock` | с компонентом |
-| стр. 29:166, секция 31:315 | `Шапка страницы` | `HeaderPage` | с компонентом |
+| стр. 0:1, секция 31:244 | `Заголовок раздела` | `HeaderSection` | можно |
+| стр. 29:163, секция 31:265 | `Карточка блока` | `IslandBlock` | можно |
+| стр. 29:166, секция 31:315 | `Шапка страницы` | `HeaderPage` | можно |
 | стр. 7:22 | `Архив` | `Archive` | можно |
 | секция 31:334 | `Арт-дирекция · предложения · 2026-10-23` | `Art direction · proposals · 2026-10-23` | вопрос 6 |
 | секция 43:74 | `Пример · Справочник цветов (Driver) · 2026-10-23` | `Example · Color reference (Driver) · 2026-10-23` | вопрос 6 |
@@ -185,7 +196,7 @@ CardBlock, `Метка` в HeaderPage, `Ячейка таблицы` в TableCom
 2. Все 113 экземпляров: значения свойств и тексты-переопределения до и
    после совпадают (снимок скриптом до, сверка после).
 3. Ни одного слоя с кириллицей в имени внутри компонентов; ни одной
-   страницы и секции с кириллицей, кроме отложенных ¹.
+   страницы и секции с кириллицей.
 
 ## 8. Вопросы на приёмку
 
@@ -193,7 +204,7 @@ CardBlock, `Метка` в HeaderPage, `Ячейка таблицы` в TableCom
 2. Свойство ячейки: ★а `Variant` (`Header/Default/Before/After`) · б
    `Type` (как было по смыслу).
 3. Булевы свойства: ★а `Show <Слот>` (`Show Subtitle`) · б `Has <Слот>`.
-4. CardBlock: ★а слот `Footer` (`Show Footer`, `Footer Text`) · б по
+4. IslandBlock: ★а слот `Footer` (`Show Footer`, `Footer Text`) · б по
    смыслу `Show Engineer Note`, `Engineer Note`.
 5. HeaderPage, «Описание»: ★а `Subtitle` (слот канона) · б `Description`.
 6. Секции архива: ★а латиницей, как в §5 · б оставить: архив не читает
