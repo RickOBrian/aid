@@ -16,7 +16,9 @@
     "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
     "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc",
     "folderId": "638447836",
-    "componentsPage": "64:22",
+    "componentPages": {
+      "TokenRow": "64:22"
+    },
     "components": {
       "TokenRow": "64:119"
     }
