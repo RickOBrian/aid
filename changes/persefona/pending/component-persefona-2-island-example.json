@@ -1,0 +1,35 @@
+{
+  "id": "component-persefona-2-island-example",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "IslandExample",
+  "changeSummary": "Карточка примера в гайде компонента (анкета — changes/persefona-2-component-guide-2026-10-23.md §4.1, приёмка #378). Свойства Title, Caption (TEXT), Show Badge, Show Caption (BOOLEAN); метка — вложенный Badge; слот Stage — сцена с экземпляром компонента продукта, radius-m, обрезка, отступы spacing-24. Заголовок heading-s text-primary, подпись body-s text-secondary, шаг spacing-12. В мастере сцена без заливки: у Kit нет токена фона сцены, фон продуктовый — ставится на экземпляре (в примерах Kit — bg-surface-muted; ответ 8). Собирается в Persefona Components; токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc). Node id — после сборки.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "IslandExample — карточка примера в гайде: метка, заголовок, сцена с компонентом продукта, подпись"
+  },
+  "figma": {
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
+    "folderId": "638447836",
+    "componentPages": {
+      "IslandExample": null
+    },
+    "components": {
+      "IslandExample": null
+    }
+  },
+  "product": "persefona",
+  "relatedTokenChanges": [
+    "token-persefona-1-initial"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-23",
+  "author": "sergej"
+}
