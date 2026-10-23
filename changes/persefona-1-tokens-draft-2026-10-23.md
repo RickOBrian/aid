@@ -9,10 +9,10 @@
 в PR #354); открыт только вопрос 1 — цвет акцента у PD.** В Figma ничего не создано. Версий и
 changelog нет — они появляются на `release-gate`.
 
-Имена — те, что принял Standards · Persefona: Core `color-<palette>-<step>`,
+Имена — те, что принял Standards · Persefona: Core-цвет `<palette>-<step>` (§2.1),
 `spacing-*`, `shape-corner-*`, `type-*`; Semantic `text-*`, `bg-*`, `line-*`,
 `icon-*`, `radius-*`, `shadow-*`; статусы — по `semantic-color-tokens-guide` (§6, п. 4б).
-Расхождение общих гайдов о Core-цвете Standards · Persefona передал в Standards (§6, п. 3).
+Core-цвет — по `core-color-tokens-guide`: Standards сделал его каноном (§6, п. 3).
 
 ## 1. Коллекции Figma
 
@@ -30,36 +30,54 @@ changelog нет — они появляются на `release-gate`.
 
 ### 2.1 Цвет
 
-Непрозрачные значения вместо `rgba(0,0,0,.N)`: на белом они совпадают с порталом
-пиксель в пиксель, на `#F5F5F5` чуть светлее альфы. Так снимается вопрос имени
-альфа-токенов (раздел 6, п. 3), а контраст считается заранее.
+Имена — по `core-color-tokens-guide` (канон, решение Standards 2026-10-23,
+`naming-conventions` 1.4.0, PR #355): `<palette>-<step>`, ступени 0–100 (0 — белый,
+100 — чёрный, шаг по умолчанию 5), прозрачные — `<palette>-<step>-a<opacity>`, палитры
+названы нейтрально — минералами. Ступень — по светлоте OKLCH: `≈ (1 − L) × 100`,
+округлено к шагу 5; 2 и 3 у graphite — произвольные ступени (гайд разрешает), чтобы
+светлые серые не слились со ступенью 5.
 
-| Токен | Значение | Откуда |
+| Палитра | Роль (только в Semantic) | Почему имя |
 |---|---|---|
-| `color-neutral-0` | `#FFFFFF` | поверхность |
-| `color-neutral-50` | `#FAFAFA` | зебра, код |
-| `color-neutral-100` | `#F5F5F5` | приглушённая поверхность |
-| `color-neutral-150` | `#EBEDF0` | рамка |
-| `color-neutral-200` | `#D0D4DC` | рамка hover (из двух `#D0D4DC` / `#D7DADE` — более заметная) |
-| `color-neutral-300` | `#BDBDBD` | = `rgba(0,0,0,.26)` на белом, отключённый |
-| `color-neutral-400` | `#9E9E9E` | = `.38`, приглушённый |
-| `color-neutral-500` | `#757575` | = `.54`, вторичный |
-| `color-neutral-600` | `#616161` | **новое**: текст нейтральной плашки (контраст, §5) |
-| `color-neutral-900` | `#2D2C2E` | основной текст, инверсная поверхность, акцент (★ п. 1) |
-| `color-green-50` | `#EEF8F1` | «Выпущено», фон |
-| `color-green-200` | `#B9E6C9` | «Выпущено», рамка |
-| `color-green-700` | `#1F7A3F` | «Выпущено», текст |
-| `color-yellow-50` | `#FFF8E6` | «Ждёт», фон |
-| `color-yellow-300` | `#F0D48A` | «Ждёт», рамка |
-| `color-yellow-800` | `#8A6A00` | «Ждёт», текст |
-| `color-red-50` | `#FDEFEF` | **новое**, по рецепту мягких плашек |
-| `color-red-200` | `#F3C1C1` | **новое** |
-| `color-red-700` | `#B3261E` | **новое** (вместо `#C62828` / `#D62347`) |
-| `color-blue-50` | `#EEF4FF` | **новое** |
-| `color-blue-200` | `#BCD0F7` | **новое** |
-| `color-blue-700` | `#1F5BC4` | **новое** (вместо `#1565C0` / `#005AFF`); не синий Driver |
+| `graphite` | нейтральные | графит — серый, «карандашный» |
+| `malachite` | success | зелёный минерал |
+| `amber` | warning | жёлтая смола |
+| `garnet` | error | гранат: камень и плод Персефоны |
+| `lapis` | info | синий лазурит |
+| `turquoise` | акцент — только при ответе PD «1б» (§6, п. 1) | бирюза |
 
-Палитр Driver и Rider нет. Шагов «про запас» нет: каждый шаг занят Semantic-токеном.
+Непрозрачные значения вместо `rgba(0,0,0,.N)`: на белом они совпадают с порталом
+пиксель в пиксель, на `#F5F5F5` чуть светлее альфы; контраст считается заранее.
+
+| Токен | Значение | OKLCH L | Откуда |
+|---|---|---|---|
+| `graphite-0` | `#FFFFFF` | 1.000 | поверхность |
+| `graphite-2` | `#FAFAFA` | 0.985 | зебра, код |
+| `graphite-3` | `#F5F5F5` | 0.970 | приглушённая поверхность |
+| `graphite-5` | `#EBEDF0` | 0.945 | рамка |
+| `graphite-15` | `#D0D4DC` | 0.869 | рамка hover (из `#D0D4DC` / `#D7DADE` — более заметная) |
+| `graphite-20` | `#BDBDBD` | 0.798 | = `rgba(0,0,0,.26)` на белом, отключённый |
+| `graphite-30` | `#9E9E9E` | 0.699 | = `.38`, приглушённый |
+| `graphite-45` | `#757575` | 0.562 | = `.54`, вторичный |
+| `graphite-50` | `#616161` | 0.493 | **новое**: текст нейтральной плашки (контраст, §5) |
+| `graphite-70` | `#2D2C2E` | 0.295 | основной текст, инверсная поверхность, акцент (★ п. 1) |
+| `graphite-100-a12` | `#000000` 12% | — | цвет `shadow-1` |
+| `graphite-100-a14` | `#000000` 14% | — | цвет `shadow-2` |
+| `malachite-5` | `#EEF8F1` | 0.970 | «Выпущено», фон |
+| `malachite-10` | `#B9E6C9` | 0.885 | «Выпущено», рамка |
+| `malachite-50` | `#1F7A3F` | 0.513 | «Выпущено», текст |
+| `amber-5` | `#FFF8E6` | 0.980 | «Ждёт», фон |
+| `amber-10` | `#F0D48A` | 0.877 | «Ждёт», рамка |
+| `amber-45` | `#8A6A00` | 0.541 | «Ждёт», текст |
+| `garnet-5` | `#FDEFEF` | 0.963 | **новое**, по рецепту мягких плашек |
+| `garnet-15` | `#F3C1C1` | 0.855 | **новое** |
+| `garnet-50` | `#B3261E` | 0.501 | **новое** (вместо `#C62828` / `#D62347`) |
+| `lapis-5` | `#EEF4FF` | 0.966 | **новое** |
+| `lapis-15` | `#BCD0F7` | 0.855 | **новое** |
+| `lapis-50` | `#1F5BC4` | 0.497 | **новое** (вместо `#1565C0` / `#005AFF`); не синий Driver |
+
+Ступени 0 и 100 у всех палитр — белый и чёрный по правилу гайда; в Figma заводятся
+только занятые Semantic-токенами. Палитр Driver и Rider нет. Шагов «про запас» нет.
 
 ### 2.2 Отступы
 
@@ -88,24 +106,24 @@ changelog нет — они появляются на `release-gate`.
 
 | Токен | → Core | Где |
 |---|---|---|
-| `text-primary` | `neutral-900` | основной текст |
-| `text-secondary` | `neutral-500` | описания, мета |
-| `text-muted` | `neutral-400` | только несмысловое: плейсхолдер, разделитель «·» (§6, п. 6а) |
-| `text-disabled` | `neutral-300` | отключённое |
-| `text-inverse` | `neutral-0` | текст на `bg-inverse-main` и `bg-accent-main` (добавлен, п. 5а) |
-| `text-accent` | `neutral-900` | ссылки (с подчёркиванием — цветом не отличаются, п. 1) |
-| `icon-primary` | `neutral-900` | добавлен, п. 5а |
-| `icon-secondary` | `neutral-500` | шевроны, меню (добавлен, п. 5а) |
-| `icon-disabled` | `neutral-300` | добавлен, п. 5а |
-| `icon-inverse` | `neutral-0` | добавлен, п. 5а |
-| `icon-accent` | `neutral-900` | |
-| `bg-surface-main` | `neutral-0` | страница, карточка |
-| `bg-surface-muted` | `neutral-100` | шапка таблицы, превью |
-| `bg-surface-zebra` | `neutral-50` | зебра, блок кода |
-| `bg-inverse-main` | `neutral-900` | тост |
-| `bg-accent-main` | `neutral-900` | метка «accent», активный сегмент |
-| `line-default` | `neutral-150` | рамка 1px, разделитель |
-| `line-hover` | `neutral-200` | рамка при наведении |
+| `text-primary` | `graphite-70` | основной текст |
+| `text-secondary` | `graphite-45` | описания, мета |
+| `text-muted` | `graphite-30` | только несмысловое: плейсхолдер, разделитель «·» (§6, п. 6а) |
+| `text-disabled` | `graphite-20` | отключённое |
+| `text-inverse` | `graphite-0` | текст на `bg-inverse-main` и `bg-accent-main` (добавлен, п. 5а) |
+| `text-accent` | `graphite-70` | ссылки (с подчёркиванием — цветом не отличаются, п. 1) |
+| `icon-primary` | `graphite-70` | добавлен, п. 5а |
+| `icon-secondary` | `graphite-45` | шевроны, меню (добавлен, п. 5а) |
+| `icon-disabled` | `graphite-20` | добавлен, п. 5а |
+| `icon-inverse` | `graphite-0` | добавлен, п. 5а |
+| `icon-accent` | `graphite-70` | |
+| `bg-surface-main` | `graphite-0` | страница, карточка |
+| `bg-surface-muted` | `graphite-3` | шапка таблицы, превью |
+| `bg-surface-zebra` | `graphite-2` | зебра, блок кода |
+| `bg-inverse-main` | `graphite-70` | тост |
+| `bg-accent-main` | `graphite-70` | метка «accent», активный сегмент |
+| `line-default` | `graphite-5` | рамка 1px, разделитель |
+| `line-hover` | `graphite-15` | рамка при наведении |
 
 Статусы (PD 4а) — один набор на пять смыслов. Имена — по `semantic-color-tokens-guide`
 (§6, п. 4б):
@@ -121,11 +139,11 @@ changelog нет — они появляются на `release-gate`.
 
 | Смысл | Фон | Рамка | Текст | Метка в #344 | Changelog |
 |---|---|---|---|---|---|
-| `success` | `bg-accent-status-success-main` → `green-50` | `line-accent-status-success` → `green-200` | `text-success` → `green-700` | success | добавлено |
-| `warning` | `bg-accent-status-warning-main` → `yellow-50` | `line-accent-status-warning` → `yellow-300` | `text-warning` → `yellow-800` | pending | исправлено |
-| `error` | `bg-accent-status-error-main` → `red-50` | `line-accent-status-error` → `red-200` | `text-error` → `red-700` | error | удалено |
-| `info` ⁺ | `bg-accent-status-info-main` → `blue-50` | `line-accent-status-info` → `blue-200` | `text-info` → `blue-700` | info | изменено |
-| `neutral` ⁺ | `bg-accent-status-neutral-main` → `neutral-100` | `line-accent-status-neutral` → `neutral-150` | `text-neutral` → `neutral-600` | neutral | устарело |
+| `success` | `bg-accent-status-success-main` → `malachite-5` | `line-accent-status-success` → `malachite-10` | `text-success` → `malachite-50` | success | добавлено |
+| `warning` | `bg-accent-status-warning-main` → `amber-5` | `line-accent-status-warning` → `amber-10` | `text-warning` → `amber-45` | pending | исправлено |
+| `error` | `bg-accent-status-error-main` → `garnet-5` | `line-accent-status-error` → `garnet-15` | `text-error` → `garnet-50` | error | удалено |
+| `info` ⁺ | `bg-accent-status-info-main` → `lapis-5` | `line-accent-status-info` → `lapis-15` | `text-info` → `lapis-50` | info | изменено |
+| `neutral` ⁺ | `bg-accent-status-neutral-main` → `graphite-3` | `line-accent-status-neutral` → `graphite-5` | `text-neutral` → `graphite-50` | neutral | устарело |
 
 ⁺ — расширение. Точка changelog — цвет `text-<x>`. Сопоставление «вид значения» → смысл
 уточню при сборке блоков, на имена токенов оно не влияет.
@@ -161,8 +179,8 @@ changelog нет — они появляются на `release-gate`.
 
 | Стиль | Значение | Заменяет |
 |---|---|---|
-| `shadow-1` | `0 8 24` чёрный 12% | меню, тост (16%) |
-| `shadow-2` | `0 12 40` чёрный 14% | всплывающее, модалка, карточка входа (8%) |
+| `shadow-1` | `0 8 24` `graphite-100-a12` | меню, тост (16%) |
+| `shadow-2` | `0 12 40` `graphite-100-a14` | всплывающее, модалка, карточка входа (8%) |
 
 ## 4. Анкета `token-change-gate`
 
@@ -185,7 +203,7 @@ Pending-записи в `changes/persefona/pending/` заведу при сбо�
 | `text-secondary` на `bg-surface-muted` | 4.23 | ✗ — поэтому подпись шапки таблицы — `text-primary` (п. 7а) |
 | `text-muted` на `bg-surface-main` | 2.68 | ✗ — только несмысловое (п. 6а) |
 | статусы, текст на своём фоне | 4.79 – 5.84 | ✓ |
-| `text-neutral` на `bg-accent-status-neutral-main` | 5.68 | ✓ (поэтому `neutral-600`) |
+| `text-neutral` на `bg-accent-status-neutral-main` | 5.68 | ✓ (поэтому `graphite-50`) |
 | `text-inverse` на `bg-accent-main` | 13.9 | ✓ |
 
 `text-disabled` по WCAG не проверяется.
@@ -201,11 +219,11 @@ Pending-записи в `changes/persefona/pending/` заведу при сбо�
 Открыт только вопрос 1 — у PD через Standards · Persefona. Рекомендация отмечена ★.
 
 1. **Цвет акцента Persefona** (PD 1б выбрал «свой акцент», значения нет).
-   а) ★ графит `#2D2C2E` (`neutral-900`): цвета продуктов остаются единственными
+   а) ★ графит `#2D2C2E` (`graphite-70`): цвета продуктов остаются единственными
    цветными метками и не спорят с акцентом; ссылка отличается подчёркиванием.
    Минус: `text-accent` = `text-primary`.
    б) свой цвет — бирюза `#0E7C7B` (5.0:1 на белом), далеко от синего Driver и
-   фиолетового Rider; заводится палитра `teal` (50 / 600).
+   фиолетового Rider; заводится палитра `turquoise` (`turquoise-5` / `turquoise-45`).
    **Открыт:** Standards · Persefona спрашивает PD, ответ передаст сюда.
 2. **Моно-шрифт в Figma.** Системного стека в Figma нет.
    а) ★ Google Sans Code — та же семья, что 5а;
@@ -218,8 +236,9 @@ Pending-записи в `changes/persefona/pending/` заведу при сбо�
    0–100, имена палитр без смысла (`neutral` запрещено), альфа `<palette>-<step>-a<N>`.
    Черновик — по принятым именам (первое). а) ★ так и оставить, противоречие —
    в Standards; б) перейти на второе до сборки (переименование после релиза — MAJOR).
-   **Решено: 3а.** Противоречие — в Standards. Если до первого релиза Standards выберет
-   `core-color-tokens-guide`, переименуем без MAJOR.
+   **Решено: 3а → закрыто иначе.** Standards выбрал канон `core-color-tokens-guide`
+   (`naming-conventions` 1.4.0, PR #355). Core-цвета переименованы до сборки (§2.1),
+   без MAJOR — релиза не было. Semantic-имена не менялись.
 4. **Статусы — имя.** Принято `bg-status-<x>`; `semantic-color-tokens-guide`
    кладёт статус в `bg-accent-status-<x>-main` и знает attention / success /
    warning / error (нет info, neutral). а) ★ оставить `bg-status-*` как отход
