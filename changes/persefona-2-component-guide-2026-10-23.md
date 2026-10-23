@@ -46,7 +46,7 @@ https://github.com/RickOBrian/aid/pull/378#issuecomment-6371226734). Ответ�
 | Кегли | 11 px — 192 текста, 13 px — 135, 14 px — 60 |
 | Компонентов Persefona | 0 |
 
-Библиотеки Persefona в файле Rider Components не подключены. Компоненты Persefona
+Библиотеки Persefona в файле Rider Components на момент скана не подключены (подключены позже — §10). Компоненты Persefona
 Components при этом импортируются по ключу: проверено на `HeaderPage` и `Badge`,
 экземпляры не создавались. Подключать библиотеку в настройках файла не обязательно,
 но без этого дизайнеры Rider не увидят Persefona в Assets (§6, вопрос 6).
@@ -358,7 +358,9 @@ Persefona Components `X8DoqKC0SKfxb8SoKboo3N`. Страницы — зона 2 �
 ## 10. Оболочка гайда TabBar (2026-10-23)
 
 Rider Components `79UryRdexwKAv8vDIV5v4v`, страница `🚧 TabBar · сборка` 389:47.
-Компоненты Persefona импортированы по ключу, библиотеки в файле не подключались (ответ 6).
+Компоненты Persefona сначала импортированы по ключу. Затем Persefona Tokens и Components подключены
+в Rider Components (ответ 6): подключил и согласовал куратор Rider
+(сам, ответом в чате Designer · Persefona 2026-10-23: «Я — куратор Rider»).
 Первым собран блок 3 «Анатомия» (PD: «блок анатомии сейчас самый болезненный»).
 
 **Раскладка (У9).** Секция `TabBar` 679:4238: `HeaderPage` 679:4217, под ним блоки 1–10
@@ -396,8 +398,7 @@ Rider Components `79UryRdexwKAv8vDIV5v4v`, страница `🚧 TabBar · сб
   `IslandExample` 40:61 — `line-default`, 1 px, внутренняя; в pending — строкой в
   `changeSummary` (компонент в 1.0.0, Edited нет). Три отвязанные карточки блока 1 получили
   ту же обводку вручную (674:4004, 674:4019, 674:4034).
-  Persefona Tokens и Components подключены в Rider Components человеком (ответ 6), обновление
-  принято: обводка — у всех 14 сцен в слоте; `block-4-themes.png` переснят.
+  После подключения библиотек (см. начало §10) обновление принято: обводка — у всех 14 сцен в слоте; `block-4-themes.png` переснят.
 - Оболочка: 223 текста, все на стилях `persefona/*`; сырых заливок и обводок — 0.
 - Снимки — та же папка: `page-overview.png`, `block-2-when.png`, `block-3-anatomy.png`,
   `block-4-themes.png`.
