@@ -224,5 +224,12 @@ export function App() {
     content = <NotFoundPage />;
   }
 
+  // Гайды, инструменты и «не найдено» не зависят от продукта: хром у них —
+  // графит Kit из `:root`, без цвета продукта (приёмка #384, п. 1).
+  const productNeutral =
+    page === 'not-found' || page === 'guides' || page === 'guide' || page === 'tools' || page === 'toolsTokenComparator';
+  if (productNeutral || content.type === NotFoundPage) {
+    return content;
+  }
   return <ProductAccentScope productId={productId}>{content}</ProductAccentScope>;
 }

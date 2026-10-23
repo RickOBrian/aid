@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DS_CHANGELOG_TABLE_STYLE, DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
-import { ProductAccentScope } from './ProductAccentScope';
 import { HUB_ROUTES } from './hubData';
 import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
@@ -273,7 +272,7 @@ export function TokenComparatorPluginPage() {
   const version = release?.version ?? null;
 
   return (
-    <ProductAccentScope productId={productId}>
+    <>
       <div className="dstp">
         <style>{PAGE_STYLE}</style>
         <main className="dstp-shell">
@@ -345,6 +344,6 @@ export function TokenComparatorPluginPage() {
           )}
         </main>
       </div>
-    </ProductAccentScope>
+    </>
   );
 }
