@@ -6,7 +6,8 @@
 `changes/persefona-4-content-2026-10-23.md` (PR #390, комментарий 2026-10-23):
 
 - 2а — у IslandBlock содержимое становится слотом `content`;
-- 3а — у HeaderPage ряд меток становится слотом `badge (repeatable, 1..4)`;
+- 3а — у HeaderPage ряд меток становится слотом `badge (repeatable, 1..4)`: имя и диапазон
+  приняты, открыт только способ записать отход от канона (вопрос 3);
 - 5 — у Banner остаётся Info («цитата или справка в гайде»), Error убирается до 1.0.0;
 - 6а — у HeaderPage появляется отдельное свойство-ссылка «← Cover», How to Read остаётся
   по спеке #381.
@@ -14,6 +15,9 @@
 Все три компонента — в Persefona Components `X8DoqKC0SKfxb8SoKboo3N`, версия 1.0.0 ещё не
 выпущена (pending). Поэтому правки пишутся в те же pending-записи, без новой версии и без
 строки в чейнжлоге. В Figma пока ничего не менял.
+
+Figma source: Persefona Components `X8DoqKC0SKfxb8SoKboo3N` — IslandBlock `5:114`,
+HeaderPage `5:77`, Banner `40:54`.
 
 ## 1. Lookup
 
@@ -36,6 +40,7 @@
 
 ```
 Component: IslandBlock (5:114), правка
+Figma source: X8DoqKC0SKfxb8SoKboo3N, 5:114
 Change: фрейм Content → слот Content (тип свойства SLOT), канон — content
   (ds-component-architecture-guide, «Слоты Structural View»); как Stage у IslandExample.
   В слот кладут таблицу, превью, текст — без отвязки карточки.
@@ -50,8 +55,13 @@ Confidence: high — 22 отвязанные карточки, все ради �
 Naming exception: no
 Architecture exception: no
 Review at: n/a
-Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (changeSummary)
+Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (§5 п. 4)
 ```
+
+Новое описание мастера IslandBlock:
+
+> Карточка одного раздела служебной страницы: заголовок, содержимое в слоте и строка «Для
+> инженера». Строку выключают, если разработчику в разделе нечего взять.
 
 Отвязанные карточки остаются как есть: их замена на экземпляры — отдельная задача
 (ответ 2а). Для гайда TabBar это территория Designer · Components, для Archive Tokens —
@@ -61,31 +71,34 @@ Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (
 
 ```
 Component: HeaderPage (5:77), правка
-Change 1: фрейм Badges → слот Badges (свойство SLOT, контракт badge (repeatable, 1..4));
+Figma source: X8DoqKC0SKfxb8SoKboo3N, 5:77
+Change 1: фрейм Badges → слот. Свойство — badge (SLOT, контракт badge (repeatable, 1..4),
+  принят Standards · Persefona, 3а); слой может остаться Badges.
   preferredValues — набор Badge 3:90. По умолчанию в слоте две метки:
   «Принято» · Success и «Persefona» · Neutral (вопрос 1).
   Порядок меток — #362 §6.1–6.2 и таблица тонов persefona-4 §2 п. 9.
 Change 2: новый слой Cover Link «← Cover» над Title, свойство Show Cover Link (BOOLEAN, вкл.);
-  стиль и цвет — как у How to Read: body-m, text-accent, подчёркивание.
+  токены: стиль body-m, цвет text-accent, подчёркивание — как у How to Read.
   Текст в мастере постоянный; гиперссылку на шапку Cover ставят на экземпляре —
-  у каждого файла свой узел (вопрос 2).
+  у каждого файла свой узел (вопрос 2; переопределение ссылки проверяет проба §3 п. 2).
   How to Read — по спеке #381: «Как читать эту страницу →».
 Tokens required: те же; новых нет
 Variants: нет
-Properties: Title, Subtitle, How to Read, Contents (TEXT); Show How to Read, Show Cover Link (BOOLEAN); Badges (SLOT)
+Properties: Title, Subtitle, How to Read, Contents (TEXT); Show How to Read, Show Cover Link (BOOLEAN); badge (SLOT)
 Modes: light
-Breaking: no для макетов — до 1.0.0; 25 экземпляров переносятся по §3
+Breaking: yes — для 25 экземпляров: метки переходят в слот, при провале пробы
+  собираются заново по снимку (§3); до 1.0.0, новой версии не нужно
 Proposed path: только Figma
 Confidence: high — 25 экземпляров, на каждом 2–4 метки, у 15 ссылка на Cover идёт строкой How to Read
 Naming exception: no
-Architecture exception: yes — диапазон 1..4 (вопрос 3)
+Architecture exception: yes — badge 1..4 при каноне Repeatable Slot 2..N (вопрос 3)
 Review at: release
-Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (changeSummary)
+Version: до 1.0.0 — правка pending component-persefona-1-blocks.json (§5 п. 4)
 ```
 
 ```
 HeaderPage                    вертикаль
-├─ Badges                     слот badge (1..4), горизонталь — Badge
+├─ Badges                     слот, свойство badge (1..4), горизонталь — Badge
 ├─ Header
 │  ├─ Cover Link              «← Cover» (Show Cover Link)
 │  ├─ Title
@@ -94,15 +107,23 @@ HeaderPage                    вертикаль
 └─ Contents
 ```
 
-Почему ссылка над заголовком: по #362 §6.2 «← Cover» — навигация назад, её ищут в начале
-шапки, как хлебную крошку. How to Read — переход вперёд, внутрь страницы, остаётся под
-описанием.
+Почему ссылка над заголовком — моё решение, правилом страниц не задано (вопрос 6):
+«← Cover» — навигация назад, её ищут в начале шапки. How to Read — переход вперёд, внутрь
+страницы, остаётся под описанием.
+
+Новое описание мастера HeaderPage (лимит меток — словами, потому что Figma его не
+проверяет, §3 п. 4):
+
+> Шапка служебной страницы, первая в её первой секции: метки, ссылка на обложку,
+> заголовок, описание, содержание. Меток от одной до четырёх, первая — статус. Заголовок
+> совпадает с именем страницы без значка.
 
 ### 2.3. Banner — без Error (правка)
 
 ```
 Component: Banner (40:54), правка
-Change: удалить вариант Tone=Error (40:29). Набор: Info | Warning | Vivid Soft.
+Figma source: X8DoqKC0SKfxb8SoKboo3N, 40:54
+Change: удалить вариант Tone=Error (40:29). Набор: Info 40:22 | Warning 40:26 | Vivid Soft 40:32.
   Описание мастера уточняется под Info (ниже).
 Tokens required: те же; bg-accent-status-error-main и text-error в Banner больше не нужны
   (у Badge и в тексте они остаются)
@@ -115,40 +136,57 @@ Confidence: high
 Naming exception: no
 Architecture exception: no
 Review at: n/a
-Version: до 1.0.0 — правка pending component-persefona-2-banner.json (changeSummary, proposedChangelogEntry)
+Version: до 1.0.0 — правка pending component-persefona-2-banner.json (§5 п. 4)
 ```
 
 Новое описание мастера Banner (вопрос 4):
 
 > Плашка в тексте гайда. Warning — ограничение инструмента, из-за которого нужно действие
-> руками; Vivid Soft — одобренное исключение из стандарта; Info — цитата или справка.
-> Заголовок — суть, текст — почему так и что делать. Не для статуса задачи.
+> руками; Vivid Soft — одобренное исключение из стандарта; Info — цитата или справка в
+> гайде. Заголовок — суть, текст — почему так и что делать. Не для статуса задачи.
 
 Прежнее описание («Не для статуса задачи и не для обычной подсказки») противоречит
-ответу 5: Info и есть справка. Строку Tone в §3.3 persefona-4 и раздел «Наполнение»
-спеки поправлю тем же текстом.
+ответу 5: Info и есть справка.
 
 ## 3. Как переношу 25 экземпляров HeaderPage
+
+Состав: 10 + 5 + 3 + 6 + 1 = 25 — 10 страниц Components и 5 шапок на страницах Tokens
+(Colors ×2, Space and Radius, Typography, Shadows) переводятся на Cover Link; 3 Cover
+(Components, Tokens, Icons); 6 шапок Archive Tokens; 1 — гайд TabBar 679:4217.
 
 1. **Снимок «до»** по каждому экземпляру: видимые метки (текст, тон, порядок), Title,
    Subtitle, How to Read, Contents, видимость, гиперссылки.
 2. **Проба на копии.** Слот меняют в мастере, и правка сразу доходит до всех экземпляров.
-   Поэтому сначала — на временной копии мастера на странице Archive в Components: её
-   экземпляр с переопределёнными и скрытыми метками, затем `Badges` → слот, проверка,
-   переживают ли переопределения. Копия и её экземпляр после пробы удаляются. Если
-   переопределения переживают — в каждом экземпляре удаляю из слота скрытые метки. Если
-   нет — собираю метки в слоте каждого экземпляра заново по снимку. В обоих случаях
-   скрытых меток после переноса не остаётся.
-3. **Ссылка на Cover:** где How to Read сейчас «← Cover» (10 страниц Components, 5 шапок
-   на страницах Tokens), включаю Cover Link с гиперссылкой на шапку Cover этого файла,
-   How to Read выключаю, пока у страницы нет «как читать» (вопрос 5). На трёх Cover —
-   Show Cover Link выкл., How to Read остаётся ссылкой на правило. Archive Tokens (6 шапок,
-   там есть и «← Обложка») — только перенос меток в слот, тексты и ссылки как были: архив
-   не редактируют. TabBar 679:4217 — Cover Link выкл., How to Read как есть: у Rider
-   Components своя обложка.
+   Поэтому сначала — на временной копии мастера на странице Archive в Components и её
+   экземпляре: в экземпляре переопределены тексты и тоны меток, одна метка скрыта, у How
+   to Read стоит гиперссылка.
+   - Проверяю: можно ли превратить фрейм `Badges` с вложенными экземплярами в слот
+     напрямую и что станет с его содержимым (останется содержимым слота по умолчанию или
+     пропадёт). Если напрямую нельзя — слот создаётся на месте фрейма, метки по умолчанию
+     кладутся в него заново.
+   - Сверяю экземпляр с его снимком по пяти признакам: текст меток, видимость, тон,
+     порядок, гиперссылки.
+   - Добавляю Cover Link и проверяю, что гиперссылку на узел можно поставить в экземпляре
+     и она переживает обновление мастера.
+   - **Прошла**, если все пять признаков совпали и ссылка Cover Link ставится в
+     экземпляре. Тогда в каждом экземпляре удаляю из слота скрытые метки.
+   - **Не прошла по меткам** — собираю метки в слоте каждого экземпляра заново по
+     снимку. **Не ставится ссылка** — останавливаюсь и пишу Standards · Persefona до
+     правки мастера: ссылку тогда не доказать без копии, вопрос 2 решается заново.
+   - Копия и её экземпляр после пробы удаляются. Скрытых меток после переноса не
+     остаётся.
+3. **Ссылка на Cover.** У 15 экземпляров, где How to Read сейчас «← Cover» (10 страниц
+   Components, 5 шапок Tokens), включаю Cover Link с гиперссылкой на шапку Cover этого
+   файла; How to Read выключаю — только при ответе 5а. При 5б How to Read получает текст
+   по умолчанию со ссылкой на правило. На трёх Cover — Show Cover Link выкл., How to Read
+   остаётся ссылкой на правило. Archive Tokens (6 шапок, там есть и «← Обложка») — метки
+   переносятся в слот механически, тексты и ссылки не правятся. TabBar 679:4217 — Cover
+   Link выкл., How to Read как есть: у Rider Components своя обложка.
 4. **Сверка «после»:** снимок совпадает с «до», кроме того, что меняется намеренно (п. 2,
    п. 3); у всех 25 экземпляров `mainComponent` прежний, ключ HeaderPage не меняется;
-   отвязанных нет.
+   отвязанных нет; в каждом слоте от одной до четырёх меток. Сверка разовая: границы
+   1..4 Figma не проверяет (preferredValues только подсказывает), поэтому дальше это
+   открытый риск — его закрывает только описание мастера (§2.2) и приёмка страниц.
 5. Публикует Components человек; в Tokens, Icons и Rider Components обновление
    библиотеки принимает человек, затем повторяю сверку п. 4 в этих файлах.
 
@@ -157,28 +195,49 @@ Version: до 1.0.0 — правка pending component-persefona-2-banner.json (
 
 ## 4. Вопросы
 
+Все — Standards · Persefona.
+
 1. **Метки по умолчанию в слоте `badge`.** ★а — две: «Принято» · Success и «Persefona» ·
    Neutral, как на каждой странице зоны 2; тот, кто ставит шапку на страницу зоны 3,
    меняет первую и добавляет метку задачи. б — одна метка статуса.
 2. **Ссылка на Cover.** ★а — только BOOLEAN Show Cover Link, текст «← Cover» в мастере
    постоянный: другого текста у этой ссылки нет (§2 п. 7 правил подписей). б — ещё и
    TEXT-свойство Cover Link.
-3. **Диапазон 1..4 и канон.** В `component-standards` §7.5 Repeatable Slot — «2..N», то
-   есть повторение по данным. У HeaderPage меток одна-четыре, и предел задаёт дизайн,
-   а не данные. ★а — записать отход: Architecture exception: yes, «badge 1..4: нижняя
-   граница — одна метка статуса, верхняя — ширина шапки», Review at: release. б — считать,
-   что 1..4 канону не противоречит, без отхода. Если а — кому записать отход в канон: вам
-   или через Standards. Ограничение 4 Figma не проверяет (preferredValues только
-   подсказывает), поэтому его проверяет сверка (§3 п. 4).
+3. **Как записать отход badge 1..4 от канона.** Слот и диапазон приняты (3а). В
+   `component-standards` §7.5 Repeatable Slot — «2..N», повторение по данным; у HeaderPage
+   нижняя граница — одна метка статуса, верхняя — ширина шапки. ★а — отход по
+   component-gate §9: pending `component-deviation-persefona-header-page-badge` и блок
+   `exceptions` во frontmatter спеки #381 (§5 п. 5), канон не правится; status
+   `accepted`, reviewAt `release`. б — считать, что 1..4 канону не противоречит, без
+   записи.
 4. **Описание Banner** — текст в §2.3. ★а — принять.
-5. **How to Read на страницах без «как читать».** ★а — выключить (Show How to Read
+5. **How to Read на 15 страницах без «как читать».** ★а — выключить (Show How to Read
    выкл.), пока у страницы нет такого раздела. б — оставить текст по умолчанию со
-   ссылкой на правило #362.
+   ссылкой на правило; номер PR в текст макета не пишется.
+6. **Место Cover Link.** ★а — над Title, первой строкой шапки после меток. б — рядом с
+   How to Read, под описанием.
 
 ## 5. Что дальше
 
 1. Standards · Persefona принимает §2 и отвечает на §4.
-2. Сборка в Components: Banner без Error → IslandBlock со слотом → HeaderPage (слот,
-   Cover Link) → перенос 25 экземпляров по §3 → pending → снимки на приёмку.
-3. Человек публикует Components и принимает обновление в Tokens, Icons и Rider Components.
-4. Раздел «Наполнение» в спеке #381 — моим PR после её мержа, с этими правками.
+2. Сборка в Components: Banner без Error → IslandBlock со слотом → HeaderPage (проба §3
+   п. 2, слот, Cover Link) → перенос 25 экземпляров по §3 → снимки на приёмку.
+3. Описания мастеров IslandBlock, HeaderPage, Banner в Figma — текстом из §2.1–2.3.
+4. Pending:
+   - `component-persefona-1-blocks.json` — changeSummary: слот content у IslandBlock,
+     слот badge (1..4) и Cover Link у HeaderPage; proposedChangelogEntry.description —
+     с упоминанием слотов;
+   - `component-persefona-2-banner.json` — changeSummary: Tone = Info | Warning | Vivid
+     Soft, варианты 40:22, 40:26, 40:32, назначение под Info;
+     proposedChangelogEntry.description — без Error.
+5. При 3а — pending `component-deviation-persefona-header-page-badge.json` (exceptionType
+   architecture, standard «Repeatable Slot 2..N», actual «badge 1..4», reason, status,
+   reviewAt, pendingRef → `component-persefona-1-blocks.json`) и блок `exceptions` во
+   frontmatter спеки #381 — моим PR после её мержа (в ветку Designer · Components не
+   коммичу).
+6. Правки `changes/persefona-4-content-2026-10-23.md`: §3.3 — строка Tone без Error,
+   пример «Исключение · Error» в «Не так» заменить; §3.4 — снять временное правило «How to
+   Read служит ссылкой на Cover», меток — слот badge; §3.6 — убрать «Пока Content не
+   слот»; §4 — отметить, что вопросы 2, 3, 5, 6 закрыты этой анкетой.
+7. Человек публикует Components и принимает обновление в Tokens, Icons и Rider Components.
+8. Раздел «Наполнение» в спеке #381 — моим PR после её мержа, с этими правками.
