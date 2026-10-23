@@ -396,6 +396,8 @@ Rider Components `79UryRdexwKAv8vDIV5v4v`, страница `🚧 TabBar · сб
   `IslandExample` 40:61 — `line-default`, 1 px, внутренняя; в pending — строкой в
   `changeSummary` (компонент в 1.0.0, Edited нет). Три отвязанные карточки блока 1 получили
   ту же обводку вручную (674:4004, 674:4019, 674:4034).
+  Persefona Tokens и Components подключены в Rider Components человеком (ответ 6), обновление
+  принято: обводка — у всех 14 сцен в слоте; `block-4-themes.png` переснят.
 - Оболочка: 223 текста, все на стилях `persefona/*`; сырых заливок и обводок — 0.
 - Снимки — та же папка: `page-overview.png`, `block-2-when.png`, `block-3-anatomy.png`,
   `block-4-themes.png`.
