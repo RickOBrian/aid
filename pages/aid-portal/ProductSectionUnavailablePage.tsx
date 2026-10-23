@@ -26,16 +26,16 @@ export function ProductSectionUnavailablePage({
   return (
     <div
       style={{
-        fontFamily: "'Google Sans', system-ui, sans-serif",
-        color: '#2d2c2e',
-        background: '#ffffff',
+        fontFamily: 'var(--pf-type-family-sans-1)',
+        color: 'var(--pf-text-primary)',
+        background: 'var(--pf-bg-surface-main)',
         minHeight: '100vh',
-        padding: '40px 48px 64px',
+        padding: 'var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64)',
       }}
     >
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
         <DsPageHeader title={sectionLabel} showSearch={false} />
-        <p style={{ fontSize: 14, lineHeight: '20px', color: 'rgba(0, 0, 0, 0.54)' }}>
+        <p style={{ font: 'var(--pf-font-body-m)', color: 'var(--pf-text-secondary)' }}>
           Нет данных для продукта «{productLabel}».
         </p>
       </div>

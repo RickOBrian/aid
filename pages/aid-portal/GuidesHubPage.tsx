@@ -28,135 +28,119 @@ ${GUIDE_PUBLICATION_STYLE}
   box-sizing: border-box;
 }
 .dsgh {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 48px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dsgh-shell {
   max-width: 960px;
   margin: 0 auto;
 }
 .dsgh-intro {
-  margin: 0 0 32px;
-  font-size: 14px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
+  margin: 0 0 var(--pf-spacing-32);
+  font: var(--pf-font-body-m);
+  color: var(--pf-text-secondary);
 }
 .dsgh-groups {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: var(--pf-spacing-40);
 }
 .dsgh-group-title {
-  margin: 0 0 16px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.06em;
+  margin: 0 0 var(--pf-spacing-16);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.32);
+  color: var(--pf-text-secondary);
 }
 .dsgh-items {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dsgh-item {
   display: block;
   text-decoration: none;
   color: inherit;
   overflow: hidden;
-  transition: background-color 0.15s ease;
-}
-.dsgh-item:hover {
-  background: rgba(245, 245, 245, 0.48);
 }
 .dsgh-item:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsgh-item-preview {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 128px;
-  padding: 24px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ebedf0;
+  padding: var(--pf-spacing-24);
+  background: var(--pf-bg-surface-muted);
+  border-bottom: 1px solid var(--pf-line-default);
   pointer-events: none;
   user-select: none;
 }
 .dsgh-item-icon {
   font-size: 40px;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.32);
+  color: var(--pf-text-muted);
 }
 .dsgh-item-body {
-  padding: 16px;
+  padding: var(--pf-spacing-16);
 }
 .dsgh-item-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: var(--pf-spacing-8);
+  margin-bottom: var(--pf-spacing-4);
 }
 .dsgh-item-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-  color: rgba(0, 0, 0, 0.87);
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
+/* Badge Neutral */
 .dsgh-item-version {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f5f5f5;
-  border: 1px solid #ebedf0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.54);
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  background: var(--pf-bg-accent-status-neutral-main);
+  font: var(--pf-font-label-s);
+  color: var(--pf-text-neutral);
 }
 .dsgh-item-description {
   margin: 0;
-  font-size: 14px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-body-m);
+  color: var(--pf-text-secondary);
 }
 .dsgh-empty {
   margin: 0;
-  font-size: 14px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-body-m);
+  color: var(--pf-text-secondary);
 }
+/* Группа «На согласовании» — как остальные; над ней Badge Warning (спека §3.2) */
 .dsgh-preview {
-  margin: 0 0 40px;
-  padding: 20px;
-  border: 1px dashed ${T.statusPendingBorder};
-  border-radius: ${T.cardRadius};
-  background: ${T.statusPendingSurfaceSubtle};
+  margin: 0 0 var(--pf-spacing-40);
 }
-.dsgh-preview .dsgh-group-title { color: ${T.statusPendingText}; }
+.dsgh-preview-badge {
+  margin: 0 0 var(--pf-spacing-8);
+}
 .dsgh-preview-intro {
-  margin: -8px 0 16px;
-  font-size: 13px;
-  line-height: 20px;
+  margin: calc(-1 * var(--pf-spacing-8)) 0 var(--pf-spacing-16);
+  font: var(--pf-font-body-s);
   color: ${T.textSecondary};
 }
 .dsgh-item-author {
-  margin: 8px 0 0;
-  font-size: 13px;
-  line-height: 18px;
+  margin: var(--pf-spacing-8) 0 0;
+  font: var(--pf-font-body-s);
   color: ${T.textSecondary};
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .dsgh {
-    padding: 24px 16px 48px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
 }
 `;
@@ -259,6 +243,9 @@ export function GuidesHubPage() {
 
         {pending.length > 0 ? (
           <section className="dsgh-preview" aria-labelledby="dsgh-group-preview">
+            <div className="dsgh-preview-badge">
+              <GuidePublicationBadge />
+            </div>
             <h2 className="dsgh-group-title" id="dsgh-group-preview">
               На согласовании
             </h2>

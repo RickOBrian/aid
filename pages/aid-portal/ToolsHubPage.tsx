@@ -27,57 +27,50 @@ ${DS_INTERACTIVE_CARD_STYLE}
   color: ${T.textPrimary};
   background: ${T.surface};
   min-height: 100vh;
-  padding: 48px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dsth-shell {
   max-width: 960px;
   margin: 0 auto;
 }
 .dsth-intro {
-  margin: 0 0 32px;
-  font-size: 14px;
-  line-height: 20px;
+  margin: 0 0 var(--pf-spacing-32);
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
 .dsth-groups {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: var(--pf-spacing-40);
 }
 .dsth-group-title {
-  margin: 0 0 16px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.06em;
+  margin: 0 0 var(--pf-spacing-16);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: ${T.textMuted};
+  color: ${T.textSecondary};
 }
 .dsth-items {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dsth-item {
   display: block;
   text-decoration: none;
   color: inherit;
   overflow: hidden;
-  transition: background-color 0.15s ease;
-}
-.dsth-item:hover {
-  background: rgba(245, 245, 245, 0.48);
 }
 .dsth-item:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsth-item-preview {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 128px;
-  padding: 24px;
+  padding: var(--pf-spacing-24);
   background: ${T.surfaceMuted};
   border-bottom: 1px solid ${T.border};
   pointer-events: none;
@@ -89,30 +82,26 @@ ${DS_INTERACTIVE_CARD_STYLE}
   color: ${T.textMuted};
 }
 .dsth-item-body {
-  padding: 16px;
+  padding: var(--pf-spacing-16);
 }
 .dsth-item-title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-  color: rgba(0, 0, 0, 0.87);
+  margin: 0 0 var(--pf-spacing-4);
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
 .dsth-item-description {
   margin: 0;
-  font-size: 14px;
-  line-height: 20px;
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
 .dsth-empty {
   margin: 0;
-  font-size: 14px;
-  line-height: 20px;
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .dsth {
-    padding: 24px 16px 48px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
 }
 `;
