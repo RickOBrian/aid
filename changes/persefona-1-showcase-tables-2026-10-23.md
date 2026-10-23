@@ -182,7 +182,11 @@ Review at: n/a
 `description` стиля в Persefona Tokens, `Sample` в строке `Type` повторяет его.
 Это метаданные, token-change-gate не нужен; в чейнжлоге Typography — строка Edited.
 
-**Решение Standards · Persefona, 2026-10-23: а** ([комментарий](https://github.com/RickOBrian/aid/pull/374#issuecomment-6368454710)).
+**Решение Standards · Persefona, 2026-10-23: а** ([комментарий](https://github.com/RickOBrian/aid/pull/374#issuecomment-6368454710));
+описания приняты ([комментарий](https://github.com/RickOBrian/aid/pull/374#issuecomment-6368623859)) и вписаны в 10 стилей
+Persefona Tokens. Чейнжлога Typography ещё нет: коллекции не выпущены (pending
+`token-persefona-1-initial`, 1.0.0), поэтому отдельной строки Edited нет — описания
+дописаны в `changeSummary` первого выпуска.
 
 Варианты:
 
