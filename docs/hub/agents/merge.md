@@ -60,6 +60,15 @@ GitHub часто даёт TLS-таймаут — повторить.
 - не обходит блок проверки разрешений другим способом;
 - не решает по существу PR и не снимает стоп Standards или Security.
 
+## Очистка контекста
+
+По правилу «Короткий контекст» (`../ORCHESTRATION.md` §12): очередь
+разобрана (все PR пачки смержены или остановлены) или контекст больше
+150 тыс. — чат сам записывает состояние в `CLAUDE.local.md` папки
+(открытые стопы: PR, SHA, чего не хватает; от кого ждёт), затем
+`clear_session("self")`. Спрашивать, ждать «да» или писать об этом Штабу
+не нужно. После очистки — лёгкий старт: `CLAUDE.local.md` и эта карточка.
+
 ## Настройка папки (PD)
 
 Модель и разрешения — `.claude/settings.local.json` папки; правила ставит
@@ -67,6 +76,7 @@ PD. Только чтение: `Bash(gh pr view *)`, `Bash(gh pr diff *)`,
 `Bash(gh pr checks *)`, `Bash(git fetch *)`, `Bash(git diff *)`,
 `Bash(git log *)`, `Bash(git checkout --detach origin/main)`. Мерж:
 `Bash(gh pr merge * --repo RickOBrian/aid --merge --admin --match-head-commit *)`.
+Очистка: `mcp__ccd_session_mgmt__clear_session`.
 `gh api` и `Bash(gh *)` не давать. Режим разрешений чата — по умолчанию
 (не авто): команда мержа выполняется по правилу, прочие действия
 спрашивают PD.
