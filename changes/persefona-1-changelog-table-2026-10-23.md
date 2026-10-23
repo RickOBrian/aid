@@ -1,4 +1,4 @@
-# persefona-1 (AID-48, #344) — TableChangelog и RowToken в Kit: lookup и анкета component-gate
+# persefona-1 (AID-48, #344) — TableChangelog и TokenRow в Kit: lookup и анкета component-gate
 
 От: Designer · Persefona, 2026-10-23. Кому: Standards · Persefona (приёмка), через
 него — PD по вопросам §5.
@@ -173,10 +173,10 @@ Review at: n/a
 | 3 | Тон `Edited` | а) info; б) warning | **а** — warning в Kit — предупреждение; «Изменено» — обычное событие |
 | 4 | Имена | ~~а) латиница; б) кириллица~~ | **Снят.** Латиница — решение PD для папки `638447836` (#362 0.4.0); имена `TableChangelog`, `BadgeChangelog`, свойство `Change`, страница `TableChangelog` — по naming-conventions §4, Role первым (#362 0.4.1, приёмка #368); слой `__Changelog Badge` не меняется |
 | 5 | Порядок проверки | а) прогон кода плагина в файле Kit (§4, шаг 1), настоящая запись — с первым чейнжлогом Kit; б) ждать первого чейнжлога и проверять только им | **а** — контракт слоёв проверяется сразу, без PR и сервера |
-| 6 | Имя строки токена | а) `RowToken` — Role первым, как `RowList` в naming-conventions §4; б) `TokenRow` — по `legacyExceptions` в `naming-conventions.json` | **а** — в Kit все имена Role первым (§4, строка Structural View: `RowList`). При ответе б — `Naming exception: yes` до правки стандарта. Противоречие в самом стандарте — §7.4, решает Standards |
-| 7 | Объём `RowToken` | а) один компонент, сейчас только цвет; витрины отступов, типографики и теней добавят новые значения свойств, когда их переведут в таблицы (например, `Table=Spacing`, `Swatch=Bar`; `Table=Type`, `Swatch=Sample`; `Table=Shadow`, `Swatch=Card`) — каждое через component-gate как minor; б) отдельный компонент строки на каждую витрину | **а** — шапка, зебра, ячейка «Токен» и тексты одни и те же, разная только ячейка значения |
+| 6 | Имя строки токена | а) `RowToken`; б) `TokenRow` | **Решено: `TokenRow`** — ответ Standards: канон ds-component-architecture-guide §9, новые Row — Entity + Row; пример `RowList` в naming-conventions.md §4 исправляют в #371. `Naming exception: no` |
+| 7 | Объём `TokenRow` | а) один компонент, сейчас только цвет; витрины отступов, типографики и теней добавят новые значения свойств, когда их переведут в таблицы (например, `Table=Spacing`, `Swatch=Bar`; `Table=Type`, `Swatch=Sample`; `Table=Shadow`, `Swatch=Card`) — каждое через component-gate как minor; б) отдельный компонент строки на каждую витрину | **а** — шапка, зебра, ячейка «Токен» и тексты одни и те же, разная только ячейка значения |
 | 8 | Шапка таблиц витрин | а) экземпляры TableCell `Variant=Header` как есть: подпись `text-primary`, отступ 12; б) сначала перевести TableCell `Header` на `text-secondary` во всём Kit | **а** — один вид шапки во всех таблицах Kit. Вариант б меняет принятый компонент: это отдельная пачка арт-дирекции «было / стало» |
-| 9 | Строки на странице `Colors` | а) заменить 62 склонированных фрейма экземплярами `RowToken` сразу после сборки; б) только новые витрины, `Colors` — позже | **а** — иначе в одном файле два вида строк, и генератору (п. 3 приёмки #367) не на что опираться |
+| 9 | Строки на странице `Colors` | а) заменить 62 склонированных фрейма экземплярами `TokenRow` сразу после сборки; б) только новые витрины, `Colors` — позже | **а** — иначе в одном файле два вида строк, и генератору (п. 3 приёмки #367) не на что опираться |
 
 ## 6. После ответов
 
@@ -188,11 +188,11 @@ Review at: n/a
    (`initial`, `1.0.0`, `sourcePath: null`).
 4. Приёмка — Standards · Persefona. В §6.5 правила убрать фразу «пока образца нет»
    и описать отход от 7а — он пишет правило.
-5. `RowToken`: сборка по §7.2, замена строк `Colors` по §7.3, pending
-   `changes/persefona/pending/component-persefona-1-row-token.json` (`initial`, `1.0.0`,
+5. `TokenRow`: сборка по §7.2, замена строк `Colors` по §7.3, pending
+   `changes/persefona/pending/component-persefona-1-token-row.json` (`initial`, `1.0.0`,
    `sourcePath: null`) тем же PR.
 
-## 7. RowToken — строка справочника токенов
+## 7. TokenRow — строка справочника токенов
 
 ### 7.1. Lookup
 
@@ -208,12 +208,12 @@ Review at: n/a
 | Часть строки | Сейчас на `Colors` | В Kit | Решение |
 |---|---|---|---|
 | Шапка таблицы | фрейм `Шапка`, тексты label-xs-caps | TableCell `Variant=Header` | **Переиспользовать** — вопрос 8 |
-| Ячейка «Токен»: имя и путь | фрейм, два текста label-s и code-s | нет: у `TableCell` один текст | Новая, внутри `RowToken` |
-| Ячейка «Значение»: образец и HEX | фрейм, образец 72×36 и текст code-s | нет | Новая, внутри `RowToken` |
-| «Используется в», «Core», «Где применять» | тексты body-s и code-s, `text-secondary` | TableCell `Default` — body-s, `text-primary` | Текст внутри `RowToken`: значения (Core) — `text-primary`, пояснения («Используется в», «Где применять») — `text-secondary` (В10) |
+| Ячейка «Токен»: имя и путь | фрейм, два текста label-s и code-s | нет: у `TableCell` один текст | Новая, внутри `TokenRow` |
+| Ячейка «Значение»: образец и HEX | фрейм, образец 72×36 и текст code-s | нет | Новая, внутри `TokenRow` |
+| «Используется в», «Core», «Где применять» | тексты body-s и code-s, `text-secondary` | TableCell `Default` — body-s, `text-primary` | Текст внутри `TokenRow`: значения (Core) — `text-primary`, пояснения («Используется в», «Где применять») — `text-secondary` (В10) |
 | Рамка таблицы | фрейм `Таблица`: line-default, radius-m, обрезка | так же у TableComparison 4:32 | Остаётся фреймом |
 
-Итог: один новый компонент `RowToken` (вопрос 6). Шапка — из TableCell. Рамка —
+Итог: один новый компонент `TokenRow` (вопрос 6). Шапка — из TableCell. Рамка —
 фрейм, как у `TableChangelog`.
 
 Попутно исправлено в файле, без изменения вида: у трёх рамок разделённого образца
@@ -226,9 +226,9 @@ Review at: n/a
 ### 7.2. Анкета component-gate
 
 ```
-Component: RowToken
-Figma source: файл Kit YDjPxFrW1yXqm9RzBGQXuc, страница RowToken
-  (зона 2, по алфавиту между IslandBlock и TableChangelog)
+Component: TokenRow
+Figma source: файл Kit YDjPxFrW1yXqm9RzBGQXuc, страница TokenRow
+  (зона 2, после TableComparison)
 Tokens required: bg-surface-main, bg-surface-zebra (фон строки);
   line-default (обводка сверху, рамка образца); radius-s (образец);
   spacing-2 (имя — путь), spacing-8 (отступ строки по вертикали),
@@ -239,7 +239,7 @@ Variants: Table = Core | Semantic; Swatch = Solid | Split; Zebra = Off | On
 Modes: light
 Proposed path: только Figma, sourcePath null
 Confidence: high для цвета; medium для будущих витрин (вопрос 7)
-Naming exception: no при ответе 6а; при 6б — см. 7.4
+Naming exception: no — Entity + Row по ds-component-architecture-guide §9
 Architecture exception: no
 Review at: n/a
 ```
@@ -247,7 +247,7 @@ Review at: n/a
 Состав (одна строка, ширина — по таблице):
 
 ```
-RowToken                       компонент, горизонталь, шаг 0, отступ 8 по вертикали,
+TokenRow                       компонент, горизонталь, шаг 0, отступ 8 по вертикали,
 │                              обводка сверху line-default; Zebra=On → bg-surface-zebra
 ├─ Token                       фрейм, вертикаль, шаг spacing-2, отступ 16 по горизонтали
 │  ├─ Name                     label-s, text-primary          → свойство Name
@@ -272,7 +272,7 @@ Core 172, Usage 360. Отступ 16 у каждой ячейки, а не у с
 а справочник на 131 токен (Driver) — на 1000 с лишним px. Текущая высота строк на
 `Colors` сохраняется.
 
-Имена слоёв внутри `RowToken` — латиницей (§10.3 правила). Кириллические `Шапка`,
+Имена слоёв внутри `TokenRow` — латиницей (§10.3 правила). Кириллические `Шапка`,
 `Таблица`, `Образец` в §7.1 — нынешние слои витрин; витрины в шаг 1 латиницы не
 входили и уйдут вместе с заменой строк (§7.3).
 
@@ -285,7 +285,7 @@ Core 172, Usage 360. Отступ 16 у каждой ячейки, а не у с
 После сборки — скриптом, в файле Kit:
 
 1. Снимок обеих витрин до замены.
-2. Каждая из 62 строк заменяется экземпляром `RowToken` на том же месте. Тексты
+2. Каждая из 62 строк заменяется экземпляром `TokenRow` на том же месте. Тексты
    переносятся в свойства, переменная образца — в переопределение `Fill`, зебра — в
    `Zebra`. Три строки `graphite-100-a*` получают `Swatch=Split`: обе половины
    проверяются отдельно. Шапки 11 таблиц — экземпляры TableCell `Header`: **вид
@@ -296,11 +296,10 @@ Core 172, Usage 360. Отступ 16 у каждой ячейки, а не у с
    навигации ведут на те же группы.
 4. Снимок после замены — в этот документ.
 
-### 7.4. Противоречие в naming-conventions
+### 7.4. Имя: TokenRow
 
-`naming-conventions.md` §4 ставит Role первым всегда и приводит `RowList` как
-пример Structural View. `naming-conventions.json` в `legacyExceptions` пишет: «Row-компоненты
-сохраняют форму Entity + Role; новые следуют тому же паттерну». По md новый
-компонент — `RowToken`, по json — `TokenRow`. Прошу Standards · Persefona передать
-это Standards: исправить нужно одно из двух мест. Для Kit рекомендую `RowToken`
-(вопрос 6а).
+`naming-conventions.md` §4 ставит Role первым и приводил `RowList` как пример;
+`naming-conventions.json` в `legacyExceptions` требует для новых Row форму Entity + Row.
+Ответ Standards (через Standards · Persefona): канон — ds-component-architecture-guide §9,
+новые Row тоже Entity + Row; пример `RowList` был недосмотром и исправляется в #371.
+Имя компонента — **`TokenRow`**, это канон, а не исключение.
