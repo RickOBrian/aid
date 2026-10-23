@@ -1,0 +1,325 @@
+{
+  "taken": "2026-10-23",
+  "component": "HeaderPage 5:77, key 21df81e076e13e27d067cc374c63bc38bdbea9e3",
+  "note": "Видимые метки по порядку (текст · тон); скрытые метки в снимок не входят. Subtitle и Contents сняты полностью в сессии, совпадение проверяется сверкой «после».",
+  "instances": [
+    {
+      "file": "Persefona Components",
+      "page": "Cover",
+      "id": "6:162",
+      "title": "Persefona Components",
+      "badges": [
+        "Не опубликовано · Neutral",
+        "Компоненты 1.0.0 — на release-gate · Neutral",
+        "Светлая тема · Neutral"
+      ],
+      "howToRead": "Как устроен файл — правило persefona-figma-pages",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "Badge",
+      "id": "6:2",
+      "title": "Badge",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "Banner",
+      "id": "40:36",
+      "title": "Banner",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "HeaderPage",
+      "id": "6:24",
+      "title": "HeaderPage",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "HeaderSection",
+      "id": "6:42",
+      "title": "HeaderSection",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "IslandBlock",
+      "id": "6:62",
+      "title": "IslandBlock",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "IslandExample",
+      "id": "40:69",
+      "title": "IslandExample",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "TableChangelog",
+      "id": "6:96",
+      "title": "TableChangelog",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "TableComparison",
+      "id": "6:126",
+      "title": "TableComparison",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "TagMarker",
+      "id": "40:126",
+      "title": "TagMarker",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Components",
+      "page": "TokenRow",
+      "id": "6:144",
+      "title": "TokenRow",
+      "badges": [
+        "Принято · Success",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Cover",
+      "id": "4:87",
+      "title": "Persefona · UI Kit внутренних продуктов AID",
+      "badges": [
+        "Не опубликовано · Warning",
+        "Designer · Persefona · persefona-1 · Neutral",
+        "Токены 1.0.0 — на release-gate · Neutral",
+        "Светлая тема · Neutral"
+      ],
+      "howToRead": "Как устроен файл — правило persefona-figma-pages",
+      "howToReadLink": "URL …/products/persefona/rules/persefona-figma-pages.md"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Colors",
+      "id": "45:75",
+      "title": "Colors Core",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Colors",
+      "id": "45:94",
+      "title": "Colors Semantic",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Space and Radius",
+      "id": "103:274",
+      "title": "Space and Radius",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Typography",
+      "id": "105:64",
+      "title": "Typography",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Shadows",
+      "id": "106:41",
+      "title": "Shadows",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "31:340",
+      "title": "Цвет · справочник — пример на Driver",
+      "badges": [
+        "Пример · Vivid Soft",
+        "designer · AID-48 · Neutral",
+        "Не канон · Neutral",
+        "Driver · Neutral"
+      ],
+      "howToRead": null,
+      "howToReadLink": null
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "23:24",
+      "title": "Цвет Core",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Обложка",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "24:24",
+      "title": "Цвет Semantic",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Обложка",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "24:315",
+      "title": "Space and Radius",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "24:461",
+      "title": "Typography",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Tokens",
+      "page": "Archive",
+      "id": "24:616",
+      "title": "Shadows",
+      "badges": [
+        "Принято · Success",
+        "Не опубликовано · Neutral",
+        "Persefona · Neutral"
+      ],
+      "howToRead": "← Cover",
+      "howToReadLink": "NODE 4:87"
+    },
+    {
+      "file": "Persefona Icons",
+      "page": "Cover",
+      "id": "3:101",
+      "title": "Persefona Icons",
+      "badges": [
+        "Не опубликовано · Neutral",
+        "Иконок пока нет · Neutral",
+        "Светлая тема · Neutral"
+      ],
+      "howToRead": "Как устроен файл — правило persefona-figma-pages",
+      "howToReadLink": null
+    },
+    {
+      "file": "Rider Components",
+      "page": "🚧 TabBar · сборка",
+      "id": "679:4217",
+      "title": "TabBar · сборка",
+      "badges": [
+        "Сборка · Vivid Soft",
+        "designer-2 · AID-43 · Neutral",
+        "Rider Components · Neutral",
+        "Не опубликовано · Neutral"
+      ],
+      "howToRead": null,
+      "howToReadLink": null
+    }
+  ]
+}
