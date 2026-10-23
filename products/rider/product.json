@@ -54,7 +54,18 @@
   },
   "figmaLegacyLibraries": {
     "_doc": "Старые библиотеки продукта для замера внедрения: экземпляры из них считаются legacy (aid-adoption-measurement §2). Ключ — fileKey файла библиотеки. Библиотеки AID — figmaFiles, здесь не повторяются. Формат и порядок пополнения — external-repo-standards §8.",
-    "items": []
+    "items": [
+      {
+        "label": "🔥 DS Ui Kit",
+        "fileKey": "IpBYXW1UD5m2eQA8XwU4Sq",
+        "url": "https://www.figma.com/design/IpBYXW1UD5m2eQA8XwU4Sq/"
+      },
+      {
+        "label": "📖 DS Icon & Illustration",
+        "fileKey": "6FjhiobrmMZmzBrkox0j3y",
+        "url": "https://www.figma.com/design/6FjhiobrmMZmzBrkox0j3y/"
+      }
+    ]
   },
   "notes": "Onboarding product (2026-08-19). Shares the React portal at pages/aid-portal/ with Driver — same page structure/logic, product-specific content only. Content index lives at pages/aid-portal/products/rider/index.ts and is currently empty (infrastructure only, per explicit user confirmation — no real tokens/components yet). All hub sections resolve as unavailable automatically until that index exports non-empty collections."
 }
