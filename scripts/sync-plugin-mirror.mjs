@@ -9,7 +9,7 @@
  */
 import { copyFileSync, existsSync, lstatSync, readFileSync, readdirSync, rmSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { dirname, join, relative } from 'node:path';
+import { dirname, isAbsolute, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,10 +42,20 @@ function copyFiles(base) {
   return files;
 }
 
+// Путь из mirror.json должен оставаться внутри своей папки: иначе rmSync удалит чужое.
+function inside(base, p) {
+  const rel = relative(base, p);
+  return rel !== '' && !rel.startsWith('..') && !isAbsolute(rel);
+}
+
 const problems = [];
 for (const { path, source } of items) {
   const src = join(root, source);
   const dst = join(pluginRoot, path);
+  if (typeof path !== 'string' || typeof source !== 'string' || !inside(pluginRoot, dst) || !inside(root, src)) {
+    console.error(`mirror.json: недопустимый путь ${JSON.stringify({ path, source })} — копия только внутри plugins/aid-standards, источник только внутри репозитория`);
+    process.exit(1);
+  }
   if (!existsSync(src)) { problems.push(`${path}: источника ${source} нет`); continue; }
 
   const a = sourceFiles(source);
