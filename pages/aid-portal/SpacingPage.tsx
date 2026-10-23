@@ -79,7 +79,7 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dps-visual__bar-fill {
   flex-shrink: 0;
   width: 100%;
-  background: var(--pf-bg-accent-vivid-main);
+  background: var(--pf-bg-accent-vivid-fade);
 }
 .dps-cards {
   display: none;

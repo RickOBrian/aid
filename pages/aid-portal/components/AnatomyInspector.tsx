@@ -79,7 +79,7 @@ const ANATOMY_INSPECTOR_STYLE = `
   min-width: 52px;
   padding: 0 var(--pf-spacing-6);
   font: var(--pf-font-label-s);
-  line-height: 28px;
+  line-height: 28px; /* высота кнопок зума 28 — размер контрола, не токен (спека §7.1, п. 9а) */
   text-align: center;
   color: var(--pf-text-secondary);
   font-variant-numeric: tabular-nums;

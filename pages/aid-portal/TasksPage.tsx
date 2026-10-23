@@ -72,7 +72,7 @@ ${DS_PRODUCT_ACCENT_STYLE}
   transition: border-color 150ms ease;
 }
 .tsk-picker-button[aria-expanded='true'], .tsk-picker-button:hover { border-color: ${T.borderHover}; }
-.tsk-picker-chevron { font-size: 10px; color: var(--pf-icon-secondary); }
+.tsk-picker-chevron { font-size: 10px; /* размер глифа-шеврона, не текстовый стиль */ color: var(--pf-icon-secondary); }
 .tsk-picker-button:hover .tsk-picker-chevron { color: var(--pf-icon-primary); }
 .tsk-picker-panel {
   position: absolute; top: calc(100% + var(--pf-spacing-4)); left: 0; z-index: 10; display: grid; gap: var(--pf-spacing-2); min-width: 220px; max-height: 320px; overflow-y: auto;
