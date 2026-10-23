@@ -4,7 +4,7 @@
   "changeType": "added",
   "taskType": "create",
   "artifact": "Banner",
-  "changeSummary": "Информационный баннер (Structural View по ds-component-architecture-guide) для документированного исключения или ограничения инструмента в гайде, не для процессных статусов (анкета — changes/persefona-2-component-guide-2026-10-23.md §4.2, приёмка #378, ответ 10: IslandNote → Banner). Tone = Info | Warning | Error | Vivid Soft; фон bg-accent-status-<tone>-main (Vivid Soft — bg-accent-vivid-fade), заголовок heading-s text-<tone> (Vivid Soft — text-accent-vivid, 6.66:1 AA), текст body-m text-primary, отступы spacing-16 / spacing-24, radius-m, без рамки. Свойства Title, Text. Node id — после сборки.",
+  "changeSummary": "Информационный баннер (Structural View по ds-component-architecture-guide) для документированного исключения или ограничения инструмента в гайде, не для процессных статусов (анкета — changes/persefona-2-component-guide-2026-10-23.md §4.2, приёмка #378, ответ 10: IslandNote → Banner). Tone = Info | Warning | Error | Vivid Soft; фон bg-accent-status-<tone>-main (Vivid Soft — bg-accent-vivid-fade), заголовок heading-s text-<tone> (Vivid Soft — text-accent-vivid, 6.66:1 AA), текст body-m text-primary, отступы spacing-16 / spacing-24, radius-m, без рамки. Свойства Title, Text. Варианты 40:22, 40:26, 40:29, 40:32; ширина мастера 560, высота по содержимому, шаг заголовок → текст spacing-4. Собран в Persefona Components (X8DoqKC0SKfxb8SoKboo3N) 2026-10-23; токены и стили — из Persefona Tokens (YDjPxFrW1yXqm9RzBGQXuc), 0 сырых заливок и обводок, все тексты со стилями.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
@@ -17,10 +17,10 @@
     "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N",
     "folderId": "638447836",
     "componentPages": {
-      "Banner": null
+      "Banner": "39:50"
     },
     "components": {
-      "Banner": null
+      "Banner": "40:54"
     }
   },
   "product": "persefona",
