@@ -97,7 +97,10 @@ Standards (`docs/hub/agents/designer.md`).
 Persefona (решение PD 2026-10-22) — UI Kit внутренних продуктов и решений
 AID: Presentbook, гайды, чейнжлоги, страницы аудита и сборки, оформление
 файлов библиотек, плагины. Rider и Driver он не касается. Основа — стили
-Presentbook. Первая очередь — Figma. Чаты: Designer · Persefona и
+Presentbook; Kit улучшает их как арт-директор: каждое улучшение —
+предложение «было / стало / почему» на приёмку Standards · Persefona,
+прежние решения PD по Persefona — только его ответом (решение PD
+2026-10-23). Первая очередь — Figma. Чаты: Designer · Persefona и
 Standards · Persefona — постоянные; применение Kit в продукте —
 Designer · Persefona · <задача> под задачу после приёмки базы Kit
 (решение PD 2026-10-23); код — Developer · Persefona под задачу. Standards · Persefona ниже основного Standards: спор — Standards,
