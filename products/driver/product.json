@@ -66,7 +66,18 @@
   },
   "figmaLegacyLibraries": {
     "_doc": "Старые библиотеки продукта для замера внедрения: экземпляры из них считаются legacy (aid-adoption-measurement §2). Ключ — fileKey файла библиотеки. Библиотеки AID — figmaFiles, здесь не повторяются. Формат и порядок пополнения — external-repo-standards §8.",
-    "items": []
+    "items": [
+      {
+        "label": "🔥 DS Ui Kit",
+        "fileKey": "IpBYXW1UD5m2eQA8XwU4Sq",
+        "url": "https://www.figma.com/design/IpBYXW1UD5m2eQA8XwU4Sq/"
+      },
+      {
+        "label": "📖 DS Icon & Illustration",
+        "fileKey": "6FjhiobrmMZmzBrkox0j3y",
+        "url": "https://www.figma.com/design/6FjhiobrmMZmzBrkox0j3y/"
+      }
+    ]
   },
   "colorModeMapping": {
     "Day": "light",
