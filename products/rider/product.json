@@ -27,9 +27,18 @@
     "icons": "/rider/tokens/icons"
   },
   "tokenRegistry": null,
-  "changelogRoot": null,
-  "changelogMirrorRoot": null,
-  "changelogFiles": [],
+  "changelogRoot": "tokens",
+  "changelogMirrorRoot": "pages/aid-portal/tokens",
+  "changelogFiles": [
+    "tokens/rider-colors-semantic-changelog.json",
+    "tokens/rider-typography-sem-changelog.json",
+    "tokens/rider-typography-sem-out-changelog.json",
+    "tokens/rider-space-changelog.json",
+    "tokens/rider-radius-changelog.json",
+    "tokens/rider-effects-shadows-changelog.json",
+    "tokens/rider-effects-glass-changelog.json",
+    "tokens/rider-icons-changelog.json"
+  ],
   "releaseRoot": "changes/rider",
   "releasePendingRoot": "changes/rider/pending",
   "releaseReleasedRoot": "changes/rider/released",

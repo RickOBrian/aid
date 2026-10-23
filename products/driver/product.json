@@ -40,6 +40,7 @@
     "tokens/driver-spacing-sem-changelog.json",
     "tokens/driver-radius-sem-changelog.json",
     "tokens/driver-effects-shadows-changelog.json",
+    "tokens/driver-gradients-changelog.json",
     "tokens/driver-icons-changelog.json"
   ],
   "releaseRoot": "changes/driver",
