@@ -29,76 +29,77 @@ const ANATOMY_INSPECTOR_STYLE = `
 .dsw-anatomy {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dsw-anatomy-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dsw-anatomy-toolbar-label {
   margin: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-secondary);
 }
 .dsw-anatomy-zoom {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  background: #fff;
-  padding: 2px;
+  gap: var(--pf-spacing-4);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-main);
+  padding: var(--pf-spacing-2);
 }
 .dsw-anatomy-zoom button {
   margin: 0;
   min-width: 32px;
   height: 28px;
-  padding: 0 8px;
+  padding: 0 var(--pf-spacing-8);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--pf-radius-s);
   background: transparent;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 14px; /* pf-gap: label-m 14/20·500 (кнопка зума) */
+  font-weight: var(--pf-type-weight-500);
   line-height: 1;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
   cursor: pointer;
+  transition: background-color 150ms ease;
 }
-.dsw-anatomy-zoom button:hover,
+.dsw-anatomy-zoom button:hover {
+  background: #f0f4ff; /* pf-gap: bg-accent-states-hover */
+}
 .dsw-anatomy-zoom button:focus-visible {
-  background: #f0f4ff;
-  outline: none;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsw-anatomy-zoom-value {
   min-width: 52px;
-  padding: 0 6px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 0 var(--pf-spacing-6);
+  font: var(--pf-font-label-s);
   line-height: 28px;
   text-align: center;
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--pf-text-secondary);
   font-variant-numeric: tabular-nums;
 }
 .dsw-anatomy-layout {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) minmax(260px, 320px);
-  gap: 24px;
+  gap: var(--pf-spacing-24);
   align-items: start;
 }
-@media (max-width: 720px) {
+@media (max-width: 767px) {
   .dsw-anatomy-layout {
     grid-template-columns: 1fr;
   }
 }
 .dsw-anatomy-stage-wrap {
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
-  padding: 72px 48px;
-  background: #fafafa;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-l);
+  padding: var(--pf-spacing-64) var(--pf-spacing-48);
+  background: var(--pf-bg-surface-zebra);
   min-height: 320px;
   overflow: visible;
   display: flex;
@@ -106,14 +107,14 @@ const ANATOMY_INSPECTOR_STYLE = `
   justify-content: center;
 }
 .dsw-anatomy-stage-wrap[data-theme="night"] {
-  background: #2d2c2e;
-  border-color: #3a393b;
+  background: var(--pf-bg-inverse-main);
+  border-color: var(--pf-bg-inverse-main);
 }
 .dsw-anatomy-canvas {
   position: relative;
   display: inline-block;
   overflow: visible;
-  padding: 64px;
+  padding: var(--pf-spacing-64);
 }
 .dsw-anatomy-scale-host {
   transform-origin: center center;
@@ -139,77 +140,72 @@ const ANATOMY_INSPECTOR_STYLE = `
   pointer-events: none;
 }
 .dsw-anatomy-leader-line {
-  stroke: var(--ds-accent);
+  stroke: var(--pf-icon-accent-vivid);
   stroke-width: 1.5;
-  opacity: 0.55;
 }
 .dsw-anatomy-leader-line.is-active {
   stroke-width: 2;
-  opacity: 1;
 }
 .dsw-anatomy-anchor-dot {
   position: absolute;
   width: ${ANCHOR_DOT_RADIUS * 2}px;
   height: ${ANCHOR_DOT_RADIUS * 2}px;
   border-radius: 50%;
-  background: var(--ds-accent);
+  background: var(--pf-icon-accent-vivid);
   transform: translate(-50%, -50%);
   pointer-events: none;
-  opacity: 0.85;
 }
 .dsw-anatomy-halo {
   position: absolute;
   box-sizing: border-box;
-  border: 2px solid var(--ds-accent);
+  border: 2px solid var(--pf-icon-accent-vivid);
   background: transparent;
   border-radius: inherit;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.12s ease, box-shadow 0.12s ease, border-width 0.12s ease;
+  transition: opacity 150ms ease, box-shadow 150ms ease;
 }
 .dsw-anatomy-halo.is-visible {
   opacity: 1;
-  border-width: 3px;
-  box-shadow: 0 0 0 4px rgba(var(--ds-accent-rgb), 0.18);
+  box-shadow: var(--pf-shadow-1);
 }
 .dsw-anatomy-badge {
   position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: ${BADGE_SIZE}px;
   height: ${BADGE_SIZE}px;
   margin: 0;
   padding: 0;
-  border: 2px solid var(--ds-accent);
+  border: none;
   border-radius: 50%;
-  background: #ffffff;
-  color: var(--ds-accent);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: ${BADGE_SIZE - 4}px;
+  background: var(--pf-bg-accent-vivid-main);
+  color: var(--pf-text-inverse);
+  font: var(--pf-font-label-s);
   text-align: center;
   cursor: pointer;
   pointer-events: auto;
   z-index: 3;
   transform: translate(-50%, -50%);
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
-.dsw-anatomy-badge:hover,
+.dsw-anatomy-badge:hover {
+  box-shadow: var(--pf-shadow-1);
+}
 .dsw-anatomy-badge:focus-visible {
-  background: var(--ds-accent);
-  color: #ffffff;
-  outline: none;
-  box-shadow: 0 2px 8px rgba(var(--ds-accent-rgb), 0.35);
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsw-anatomy-badge[aria-pressed="true"] {
-  background: var(--ds-accent);
-  color: #ffffff;
   transform: translate(-50%, -50%) scale(1.12);
-  box-shadow: 0 4px 14px rgba(var(--ds-accent-rgb), 0.4);
+  box-shadow: var(--pf-shadow-1);
 }
 .dsw-anatomy-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dsw-anatomy-zone-list {
   list-style: none;
@@ -217,136 +213,130 @@ const ANATOMY_INSPECTOR_STYLE = `
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--pf-spacing-4);
 }
 .dsw-anatomy-zone-list button {
   width: 100%;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
+  gap: var(--pf-spacing-10);
+  padding: var(--pf-spacing-8) var(--pf-spacing-10);
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--pf-radius-m);
   background: transparent;
   text-align: left;
-  font: inherit;
-  font-size: 13px;
-  line-height: 18px;
-  color: inherit;
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-primary);
   cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
-.dsw-anatomy-zone-list button:hover,
+.dsw-anatomy-zone-list button:hover {
+  background: #f5f5f5; /* pf-gap: bg-accent-states-hover */
+}
 .dsw-anatomy-zone-list button:focus-visible {
-  background: var(--ds-accent-bg);
-  border-color: color-mix(in srgb, var(--ds-accent) 35%, #fff);
-  outline: none;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsw-anatomy-zone-list button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  border-color: var(--ds-accent);
+  background: var(--pf-bg-surface-muted); /* pf-gap: bg-accent-states-active (выбранная зона) */
+  border-color: var(--pf-line-hover);
 }
 .dsw-anatomy-zone-num {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--ds-accent);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
+  background: var(--pf-bg-accent-vivid-main);
+  color: var(--pf-text-inverse);
+  font: var(--pf-font-label-s);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .dsw-anatomy-detail {
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
-  padding: 16px;
-  background: #fff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-l);
+  padding: var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
 }
 .dsw-anatomy-detail h3 {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 20px;
+  margin: 0 0 var(--pf-spacing-4);
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
 .dsw-anatomy-detail-summary {
-  margin: 0 0 16px;
-  font-size: 13px;
-  line-height: 18px;
-  color: rgba(0, 0, 0, 0.54);
+  margin: 0 0 var(--pf-spacing-16);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-secondary);
 }
 .dsw-anatomy-props {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dsw-anatomy-prop {
-  border-top: 1px solid #f0f0f0;
-  padding-top: 12px;
+  border-top: 1px solid var(--pf-line-default);
+  padding-top: var(--pf-spacing-12);
 }
 .dsw-anatomy-prop:first-child {
   border-top: none;
   padding-top: 0;
 }
 .dsw-anatomy-prop-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.54);
-  margin: 0 0 4px;
+  font: var(--pf-font-label-s);
+  color: var(--pf-text-secondary);
+  margin: 0 0 var(--pf-spacing-4);
 }
+/* Вид значения — Badge Success / Info / Warning / Error (как .ds-vkind) */
 .dsw-anatomy-prop-kind {
   display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-bottom: 6px;
+  font: var(--pf-font-label-s);
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  margin-bottom: var(--pf-spacing-6);
+  white-space: nowrap;
 }
 .dsw-anatomy-prop-kind--semantic-token {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--pf-bg-accent-status-success-main);
+  color: var(--pf-text-success);
 }
 .dsw-anatomy-prop-kind--platform-convention {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--pf-bg-accent-status-info-main);
+  color: var(--pf-text-info);
 }
 .dsw-anatomy-prop-kind--raw-value {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--pf-bg-accent-status-warning-main);
+  color: var(--pf-text-warning);
 }
 .dsw-anatomy-prop-kind--hardcode {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--pf-bg-accent-status-error-main);
+  color: var(--pf-text-error);
 }
 .dsw-anatomy-prop-value {
-  font-size: 13px;
-  line-height: 18px;
-  margin: 0 0 4px;
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font: var(--pf-font-code-m);
+  color: var(--pf-text-primary);
+  margin: 0 0 var(--pf-spacing-4);
   word-break: break-word;
 }
 .dsw-anatomy-prop-token {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.7);
-  margin: 0 0 4px;
+  font-size: 12px; /* pf-gap: body-xs 12/16·400 */
+  color: var(--pf-text-primary);
+  margin: 0 0 var(--pf-spacing-4);
 }
 .dsw-anatomy-prop-source {
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  font-size: 11px; /* pf-gap: body-xs 12/16·400 */
+  color: var(--pf-text-secondary);
   margin: 0;
 }
 .dsw-anatomy-prop-note {
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.54);
-  margin: 4px 0 0;
+  font-size: 11px; /* pf-gap: body-xs 12/16·400 */
+  color: var(--pf-text-secondary);
+  margin: var(--pf-spacing-4) 0 0;
   font-style: italic;
 }
 .dsw-anatomy-empty {
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-secondary);
   margin: 0;
 }
 `;

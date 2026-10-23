@@ -32,30 +32,27 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   box-sizing: border-box;
 }
 .dctp {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 40px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dctp-search-empty {
   margin: 0;
-  padding: 24px 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  line-height: 20px;
+  padding: var(--pf-spacing-24) 0;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-m);
 }
 .dctp section {
-  margin-bottom: 48px;
+  margin-bottom: var(--pf-spacing-48);
 }
 .dctp h2 {
-  margin: 0 0 16px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
+  margin: 0 0 var(--pf-spacing-16);
+  font: var(--pf-font-heading-m);
 }
 .dctp-toast {
-  bottom: 32px;
+  bottom: var(--pf-spacing-24);
   z-index: 1100;
   pointer-events: none;
 }
@@ -70,7 +67,7 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dctp-table thead th.dctp-col-name {
   width: 180px;
   min-width: 140px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -81,10 +78,11 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 }
 .dctp-swatch-btn {
   display: inline-flex;
-  border-radius: 4px;
+  border-radius: var(--pf-radius-s);
 }
 .dctp-token-name {
-  font-weight: 500;
+  /* pf-gap: label-m 14/20·500 — размер от таблицы, вес 500 */
+  font-weight: var(--pf-type-weight-500);
 }
 .dctp-token-card-name.dctp-copyable {
   display: block;
@@ -95,38 +93,38 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dctp-table thead th.dctp-col-description {
   min-width: 280px;
   width: 42%;
-  border-left: 1px solid #ebedf0;
-  color: rgba(0, 0, 0, 0.54);
+  border-left: 1px solid var(--pf-line-default);
+  color: var(--pf-text-secondary);
   white-space: normal;
   overflow: visible;
   overflow-wrap: anywhere;
   word-break: break-word;
-  line-height: 18px;
+  font: var(--pf-font-body-s);
 }
 .dctp-col-mode-group,
 .dctp-table thead th.dctp-col-mode-group {
   min-width: 112px;
   width: 150px;
-  border-left: 1px solid #ebedf0;
+  border-left: 1px solid var(--pf-line-default);
 }
 .dctp-mode-cell {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 6px;
+  gap: var(--pf-spacing-6);
   min-width: 0;
 }
 .dctp-mode-cell-meta {
   flex: 1;
   min-width: 0;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1023px) {
   .dctp-table thead th {
-    padding: 8px 12px;
+    padding: var(--pf-spacing-8) var(--pf-spacing-12);
   }
   .dctp-table td {
-    padding: 8px 12px;
+    padding: var(--pf-spacing-8) var(--pf-spacing-12);
   }
   .dctp-col-description,
   .dctp-table thead th.dctp-col-description {
@@ -136,7 +134,7 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
     flex-direction: column;
     align-items: flex-start;
     flex-wrap: nowrap;
-    gap: 4px;
+    gap: var(--pf-spacing-4);
   }
   .dctp-swatch {
     width: 28px;
@@ -146,46 +144,46 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dctp-cards {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dctp-token-card {
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 14px 16px;
-  background: #ffffff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-16) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
 }
 .dctp-token-card-name {
-  margin: 0 0 12px;
+  margin: 0 0 var(--pf-spacing-12);
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 15/20 */
   font-size: 15px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
   line-height: 20px;
 }
 .dctp-token-card-modes {
   display: grid;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: var(--pf-spacing-10);
+  margin-bottom: var(--pf-spacing-12);
 }
 .dctp-token-card-mode {
   display: grid;
   grid-template-columns: 56px 1fr;
-  gap: 10px;
+  gap: var(--pf-spacing-10);
   align-items: center;
-  padding: 10px 12px;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  background: #fafafa;
+  padding: var(--pf-spacing-10) var(--pf-spacing-12);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-zebra);
 }
 .dctp-token-card-mode-label {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--pf-text-secondary);
 }
 .dctp-token-card-mode-values {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--pf-spacing-10);
   min-width: 0;
 }
 .dctp-token-card-mode-values .dctp-swatch {
@@ -193,23 +191,22 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 }
 .dctp-token-card-description {
   margin: 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 13px;
-  line-height: 20px;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-s);
   overflow-wrap: break-word;
   word-break: break-word;
 }
 .dctp-swatch {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #ffffff;
+  border-radius: var(--pf-radius-s);
+  border: 1px solid var(--pf-line-default);
+  background-color: var(--pf-bg-surface-main);
   background-image:
-    linear-gradient(45deg, #eeeeee 25%, transparent 25%),
-    linear-gradient(-45deg, #eeeeee 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #eeeeee 75%),
-    linear-gradient(-45deg, transparent 75%, #eeeeee 75%);
+    linear-gradient(45deg, var(--pf-bg-surface-muted) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--pf-bg-surface-muted) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--pf-bg-surface-muted) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--pf-bg-surface-muted) 75%);
   background-size: 8px 8px;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0;
   overflow: hidden;
@@ -218,14 +215,14 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   width: 100%;
   height: 100%;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .dctp {
-    padding: 32px 24px 48px;
+    padding: var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48);
   }
 }
 @media (max-width: 767px) {
   .dctp {
-    padding: 20px 16px 40px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .dctp-table-wrap {
     display: none;
@@ -234,9 +231,9 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
     display: flex;
   }
   .dctp-toast {
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+    left: var(--pf-spacing-16);
+    right: var(--pf-spacing-16);
+    bottom: var(--pf-spacing-24);
     transform: none;
     text-align: center;
   }

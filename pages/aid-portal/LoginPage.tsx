@@ -9,104 +9,100 @@ const LOGIN_PAGE_STYLE = `
   box-sizing: border-box;
 }
 .dslp {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: var(--pf-spacing-24);
 }
 .dslp-card {
   width: 100%;
   max-width: 360px;
-  border: 1px solid #ebedf0;
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  padding: 32px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-xl);
+  box-shadow: var(--pf-shadow-2);
+  padding: var(--pf-spacing-32);
 }
 .dslp-title {
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 28px;
-  color: rgba(0, 0, 0, 0.87);
+  margin: 0 0 var(--pf-spacing-4);
+  font: var(--pf-font-heading-m);
+  color: var(--pf-text-primary);
 }
 .dslp-subtitle {
-  margin: 0 0 24px;
-  font-size: 14px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
+  margin: 0 0 var(--pf-spacing-24);
+  font: var(--pf-font-body-m);
+  color: var(--pf-text-secondary);
 }
 .dslp-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dslp-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--pf-spacing-6);
 }
 .dslp-label {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-label-s);
+  color: var(--pf-text-secondary);
 }
 .dslp-input {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  color: #2d2c2e;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  border-radius: 10px;
-  padding: 10px 12px;
+  font: var(--pf-font-body-m);
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-10) var(--pf-spacing-12);
   width: 100%;
 }
 .dslp-input::placeholder {
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-muted);
 }
 .dslp-input:focus {
   outline: none;
-  border-color: rgba(45, 44, 46, 0.32);
+}
+.dslp-input:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dslp-input:disabled {
-  opacity: 0.4;
+  color: var(--pf-text-disabled);
   cursor: not-allowed;
 }
 .dslp-submit {
-  margin-top: 8px;
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  color: #ffffff;
-  background: #2d2c2e;
+  margin-top: var(--pf-spacing-8);
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 14px; /* pf-gap: label-m 14/20·500 */
+  font-weight: var(--pf-type-weight-500);
+  line-height: 20px; /* pf-gap: label-m */
+  color: var(--pf-text-inverse);
+  background: var(--pf-bg-accent-main);
   border: none;
-  border-radius: 10px;
-  padding: 12px 16px;
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 150ms ease;
 }
 .dslp-submit:hover:not(:disabled) {
-  background: #1a1a1b;
+  background: #1a1a1b; /* pf-gap: bg-accent-states-hover поверх bg-accent-main (пачка №0) */
 }
 .dslp-submit:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dslp-submit:disabled {
-  opacity: 0.4;
+  opacity: 0.4; /* pf-gap: bg-accent-states-disable (пачка №0) */
   cursor: not-allowed;
 }
 .dslp-error {
   margin: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: #c62828;
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-error);
 }
 `;
 

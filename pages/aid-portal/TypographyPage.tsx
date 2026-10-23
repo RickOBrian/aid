@@ -43,44 +43,44 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   box-sizing: border-box;
 }
 .dtp {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 40px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dtp-search-empty {
   margin: 0;
-  padding: 24px 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  line-height: 20px;
+  padding: var(--pf-spacing-24) 0;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-m);
 }
 .dtp-data {
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
   overflow: hidden;
 }
 .dtp-group-head {
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-top: 1px solid #ebedf0;
-  border-bottom: 1px solid #ebedf0;
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-muted);
+  border-top: 1px solid var(--pf-line-default);
+  border-bottom: 1px solid var(--pf-line-default);
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13/16 */
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
   line-height: 16px;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 .dtp-data > .dtp-group-head:first-child {
   border-top: none;
 }
 .dtp-style-row {
   display: flex;
-  gap: 48px;
+  gap: var(--pf-spacing-48);
   align-items: flex-start;
-  padding: 24px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #ebedf0;
+  padding: var(--pf-spacing-24) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
+  border-bottom: 1px solid var(--pf-line-default);
 }
 .dtp-style-row:last-child {
   border-bottom: none;
@@ -90,110 +90,113 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dtp-sample__label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
+  text-transform: uppercase;
+  color: var(--pf-text-secondary);
 }
 .dtp-sample__preview {
   margin: 0;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 .dtp-sample__caption {
   margin: 0;
+  /* pf-gap: body-xs 12/16·400 — до него прежний размер 11/14 */
   font-size: 11px;
   line-height: 14px;
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-secondary);
 }
 .dtp-token-table-wrap {
   flex: 1 1 580px;
   min-width: 0;
 }
 .ds-token-table tbody tr:nth-child(even) td {
-  background: #fafafa;
+  background: var(--pf-bg-surface-zebra);
 }
 .dtp-col-param {
   width: 160px;
   min-width: 120px;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 .dtp-col-value {
   width: 130px;
   min-width: 100px;
-  font-weight: 500;
-  color: #2d2c2e;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
 }
 .dtp-col-token {
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--pf-text-secondary);
   white-space: nowrap;
 }
 .dtp-platform-field {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
 .dtp-platform-field span {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--pf-text-secondary);
 }
 .dtp-platform-segment {
   display: inline-flex;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-main);
 }
+.dtp-platform-segment > button:first-child { border-top-left-radius: inherit; border-bottom-left-radius: inherit; }
+.dtp-platform-segment > button:last-child { border-top-right-radius: inherit; border-bottom-right-radius: inherit; }
+.dtp-platform-segment > button:focus-visible { position: relative; z-index: 1; }
 .dtp-platform-segment button {
   margin: 0;
-  padding: 6px 12px;
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
   border: none;
-  border-right: 1px solid #ebedf0;
+  border-right: 1px solid var(--pf-line-default);
   background: transparent;
   font: inherit;
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13 */
   font-size: 13px;
   cursor: pointer;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--pf-text-primary);
 }
 .dtp-platform-segment button:last-child {
   border-right: none;
 }
 .dtp-platform-segment button[aria-pressed="true"],
 .dtp-set-segment button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  color: var(--ds-accent);
-  font-weight: 500;
+  background: var(--ds-selected-bg);
+  color: var(--ds-selected-text);
+  font-weight: var(--pf-type-weight-500);
 }
 .dtp-platform-segment button:focus-visible,
 .dtp-set-segment button:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: -2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .dtp {
-    padding: 32px 24px 48px;
+    padding: var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48);
   }
   .dtp-style-row {
-    gap: 24px;
-    padding: 20px 16px;
+    gap: var(--pf-spacing-24);
+    padding: var(--pf-spacing-20) var(--pf-spacing-16);
   }
 }
 @media (max-width: 767px) {
   .dtp {
-    padding: 20px 16px 40px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .dtp-style-row {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    gap: var(--pf-spacing-16);
+    padding: var(--pf-spacing-16);
   }
   .dtp-sample {
     flex-basis: auto;

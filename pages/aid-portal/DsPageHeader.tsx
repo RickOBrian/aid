@@ -7,7 +7,7 @@ import { currentAppPath, withBase } from './base';
  * Стандартная шапка разделов DS-портала (Colors, Icons, …).
  *
  * Структура: [← back] + заголовок слева; поиск + actions справа.
- * Breakpoints: 1024 (wrap tools), 767 (column tools), 480 (меньший h1).
+ * Breakpoints: 1023 (wrap tools), 767 (column tools), 479 (меньший h1).
  * Actions оборачивать в элемент с классом `ds-page-header__action-group`.
  */
 
@@ -16,15 +16,15 @@ export const DS_PAGE_HEADER_STYLE = `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #ebedf0;
+  gap: var(--pf-spacing-16);
+  margin-bottom: var(--pf-spacing-32);
+  padding-bottom: var(--pf-spacing-24);
+  border-bottom: 1px solid var(--pf-line-default);
 }
 .ds-page-header__lead {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
   min-width: 0;
 }
 .ds-page-header__back {
@@ -34,28 +34,28 @@ export const DS_PAGE_HEADER_STYLE = `
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 8px;
-  color: rgba(0, 0, 0, 0.54);
+  border-radius: var(--pf-radius-m);
+  color: var(--pf-icon-secondary);
   text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 .ds-page-header__back:hover {
-  color: #2d2c2e;
-  background: #f5f5f5;
+  color: var(--pf-icon-primary);
+  background: #f5f5f5; /* pf-gap: bg-accent-states-hover (пачка №0) */
 }
 .ds-page-header__back:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-page-header h1 {
   margin: 0;
-  font-size: 28px;
-  font-weight: 500;
-  line-height: 36px;
+  font: var(--pf-font-heading-l);
+  letter-spacing: var(--pf-tracking-heading-l);
 }
 .ds-page-header__tools {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
   flex: 1 1 auto;
   justify-content: flex-end;
   min-width: 0;
@@ -65,21 +65,24 @@ export const DS_PAGE_HEADER_STYLE = `
   width: auto;
   max-width: 320px;
   min-width: 0;
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 16px;
-  color: #2d2c2e;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 8px 12px;
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 13px; /* pf-gap: FieldSearch (§7.2) — стиль текста поля */
+  line-height: 16px; /* pf-gap: FieldSearch (§7.2) */
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-8) var(--pf-spacing-12);
 }
 .ds-page-header__search::placeholder {
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-muted);
 }
 .ds-page-header__search:focus {
   outline: none;
-  border-color: rgba(45, 44, 46, 0.32);
+}
+.ds-page-header__search:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-page-header__actions {
   display: contents;
@@ -88,7 +91,7 @@ export const DS_PAGE_HEADER_STYLE = `
   display: inline-flex;
   flex-shrink: 0;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .ds-page-header {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -105,7 +108,7 @@ export const DS_PAGE_HEADER_STYLE = `
 }
 @media (max-width: 767px) {
   .ds-page-header {
-    gap: 12px;
+    gap: var(--pf-spacing-12);
   }
   .ds-page-header__tools {
     flex-direction: column;
@@ -120,10 +123,10 @@ export const DS_PAGE_HEADER_STYLE = `
     width: 100%;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .ds-page-header h1 {
-    font-size: 24px;
-    line-height: 32px;
+    font-size: 24px; /* pf-gap: мобильный heading-l (стиля 24/32 в Kit нет) */
+    line-height: 32px; /* pf-gap: мобильный heading-l */
   }
 }
 `;

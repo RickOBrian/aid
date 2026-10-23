@@ -120,16 +120,16 @@ function NotFoundPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: "'Google Sans', system-ui, sans-serif",
-        color: '#2d2c2e',
-        background: '#f5f5f5',
-        padding: 24,
+        fontFamily: 'var(--pf-type-family-sans-1)',
+        color: 'var(--pf-text-primary)',
+        background: 'var(--pf-bg-surface-main)',
+        padding: 'var(--pf-spacing-24)',
         textAlign: 'center',
       }}
     >
       <div>
-        <p style={{ margin: '0 0 12px', fontSize: 18 }}>Страница не найдена</p>
-        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: '#2d2c2e' }}>
+        <p style={{ margin: '0 0 var(--pf-spacing-12)', font: 'var(--pf-font-heading-m)' }}>Страница не найдена</p>
+        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: 'var(--pf-text-accent)', textDecoration: 'underline' }}>
           Перейти на главную
         </a>
       </div>
