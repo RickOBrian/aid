@@ -2,7 +2,7 @@
 destination: products/persefona/rules/
 name: persefona-figma-pages
 metadata:
-  version: "0.4.1"
+  version: "0.4.2"
   kind: standard
   status: draft
   platforms: [web]
@@ -18,7 +18,7 @@ description: >
 
 # Страницы файлов Figma
 
-> Статус: Draft · v0.4.1 · обновлено 2026-10-23
+> Статус: Draft · v0.4.2 · обновлено 2026-10-23
 
 ---
 
@@ -492,7 +492,7 @@ Comparator или отдельный скрипт Figma, который выда
 | Было | Станет |
 |---|---|
 | `Заголовок раздела` | `HeaderSection` ¹ |
-| `Карточка блока` | `CardBlock` ¹ |
+| `Карточка блока` | `IslandBlock` ² |
 | `Метка` | `Badge` |
 | `Таблица сравнения` | `TableComparison` |
 | `Ячейка таблицы` | `TableCell` |
@@ -508,10 +508,16 @@ Comparator или отдельный скрипт Figma, который выда
 §9. Образец чейнжлога — `TableChangelog` (ответ PD 7а называл его
 `ChangelogTable`; имя приведено к стандарту, смысл тот же).
 
-¹ Role `Header` и `Card` в таблице Role-семей
-`ds-component-architecture-guide` §9 нет. Подтверждает Standards: это новая
-Role или другое имя (например, `Island`). До ответа эти три компонента
-не переименовываются, остальные — можно.
+¹ Role `Header` — новая (ответ Standards 2026-10-23): зона «заголовок +
+метки + ссылки» вверху страницы или раздела, без навигационных действий
+(с ними — `NavBar`). Standards вносит её в `ds-component-architecture-guide`
+§9 (1.7.0) своим PR через «да» PD. До этого `HeaderPage` и `HeaderSection` —
+черновые имена: в Kit ставить можно, релиз Kit 1.0.0 — после мержа.
+
+² Role `Card` не заводится (ответ Standards): блоки аудита и витрины на
+странице повторяются, это критерий `Island`. Entity — по содержимому:
+`IslandBlock`; если блок всегда один из `Doc blocks` — `IslandDocBlock`,
+выбирает исполнитель по факту.
 
 - Свойства и их значения — тоже латиницей (`Тон` → `Tone`, `было` /
   `стало` → `before` / `after`). Полную таблицу «было → станет» по всем
@@ -532,6 +538,10 @@ Role или другое имя (например, `Island`). До ответа 
 ---
 
 ## 11. Changelog
+
+- **0.4.2** — 2026-10-23. Ответ Standards: Role `Header` — новая
+  (черновые имена до PR §9 и «да» PD), `Card` нет — карточка блока
+  `IslandBlock`.
 
 - **0.4.1** — 2026-10-23. Имена компонентов Kit приведены к
   `naming-conventions` §4 (Role первым): `HeaderPage`, `HeaderSection`,
