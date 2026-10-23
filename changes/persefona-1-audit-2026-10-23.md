@@ -108,21 +108,31 @@ PD решил: основа Persefona — стили Presentbook. Значит `
 
 ### 4.1 Файл
 
-Один файл **Persefona** (библиотека), публикуется командой; файлы Rider/Driver и рабочие
-страницы аудита подключают его как библиотеку. Папка Figma — по ответу PD (вопрос 7).
+Один файл **Persefona** (библиотека) в папке Figma `638447836` (`figmaFolders.libraries`);
+файлы Rider/Driver и рабочие страницы аудита подключают его как библиотеку. Карточка
+продукта — #352.
+
+Persefona — визуальный язык самого AID, не в стиле Driver или Rider (PD 2026-10-23,
+по приёмке Standards · Persefona в #350): свои значения, на токены продуктов не ссылается;
+цвет продукта — только метка (бейдж, полоска в шапке).
 
 ### 4.2 Переменные
 
-Иерархия по `token-rules`: Core → Semantic, без уровня компонента. Имена — черновик,
-утверждает Standards · Persefona (`naming-conventions`).
+Иерархия по `token-rules`: Core → Semantic, без уровня компонента. Имена — по
+`naming-conventions`, черновик токенов принимает Standards · Persefona. Коллекции — с
+префиксом продукта (`persefona-colors-semantic` и т. д.); changelog-файлы
+`tokens/persefona-*-changelog.json` — при первом релизе (`release-gate`). В коде портала
+CSS-переменные — `--pf-…`.
 
 | Коллекция | Содержимое | Режимы |
 |---|---|---|
-| `Persefona/Core` | палитра `color-neutral-*`, статусные палитры, акценты Driver/Rider; `space-*` (шаг 4), `radius-*`, размеры шрифта | — |
-| `Persefona/Semantic` | `text-primary/secondary/muted/disabled`, `bg-surface/surface-muted/surface-zebra/inverse`, `stroke-default/hover`, `bg-status-*` / `stroke-status-*` / `text-status-*` (success, warning, error, info, neutral), `accent-main/bg` | Accent: Neutral · Driver · Rider (вопрос 1) |
+| Core | `color-<palette>-<step>` (neutral, статусные палитры, палитра акцента Persefona), `spacing-<step>` (шаг 4), `shape-corner-<step>`, `type-size-*` / `type-weight-*` / `type-lh-*` | — |
+| Semantic | `text-primary/secondary/muted/disabled`, `bg-surface-main/muted/zebra`, `bg-inverse-main`, `line-default`, `line-hover`, `bg-status-*` / `line-status-*` / `text-status-*` (success, warning, error, info, neutral), `bg-accent-main`, `text-accent`, `icon-accent`, `radius-s/m/l/pill` | без режимов (вопрос 6) |
 
-Текстовые стили: Display, H1, H2, H3, Body, Body S, Caption, Label Caps, Mono, Mono S.
-Эффекты: `shadow-popover`, `shadow-overlay`.
+Палитр Driver и Rider в Core нет.
+
+Текстовые стили: `display-l`, `heading-l/m/s`, `body-m/s`, `label-s`, `label-xs-caps`,
+`code-m/s`. Эффекты: `shadow-1` (меню), `shadow-2` (всплывающее, модалка).
 
 ### 4.3 Страницы файла
 
@@ -145,10 +155,9 @@ lookup пуст; аналоги в Rider/Driver не используются �
 
 Ответ вида «1а, 2а, 3б…». Рекомендация отмечена ★.
 
-1. **Акцент Persefona.**
-   а) ★ свой нейтральный акцент + режимы Driver/Rider: на файле Rider плашки фиолетовые,
-   на Driver — синие, в общем — нейтральные;
-   б) один акцент Persefona на всё, независимо от продукта;
+1. **Акцент Persefona.** (рекомендация изменена после приёмки: «не в стиле Driver/Rider»)
+   а) свой акцент + режимы Driver/Rider;
+   б) ★ один акцент Persefona на всё; цвет продукта — только метка;
    в) только акценты продуктов, без своего.
 2. **Радиусы.** а) ★ шкала 4 · 8 · 12 · 16 · 999; 2, 3, 6, 10 убрать (карточка и
    таблица — 8, крупный контейнер — 12, модалка — 16); б) оставить как в коде.
@@ -160,14 +169,14 @@ lookup пуст; аналоги в Rider/Driver не используются �
 5. **Шрифт в Figma.** а) ★ Google Sans, как на портале; б) другой — какой.
 6. **Ночная тема у Persefona.** а) ★ первая очередь — только светлая; ночь — только
    в превью компонентов Rider/Driver внутри блоков; б) сразу две темы.
-7. **Файл Figma.** Ссылка на файл Persefona и доступ (редактирование) — или создать
-   новый: в какой папке (`figmaFolders.libraries` или новая папка «Persefona»)?
+7. ~~Файл Figma~~ — закрыт: папка `638447836` (§4.1).
 8. **Объём первой сборки.** а) ★ переменные + текстовые стили + 5 блоков из #344;
    б) сразу и вторая очередь.
 
 ## 6. Что дальше
 
-1. Ответы PD → черновик токенов (значения и имена) — Standards · Persefona на приёмку.
+1. Ответы PD → черновик токенов (значения и имена) — Standards · Persefona на приёмку
+   до сборки в Figma.
 2. Сборка в Figma: переменные → стили → 5 блоков; приёмка по снимку «было | стало»
    (`WORKING-RULES` §7) на пейдже TabBar.
 3. Перевод портала на токены — отдельная задача Developer · Persefona (не эта).
