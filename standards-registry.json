@@ -145,7 +145,7 @@
       "kind": "standard",
       "humanFile": "skills/_shared/standards/core-color-tokens-guide.md",
       "machineFile": null,
-      "version": "1.2.1",
+      "version": "1.2.2",
       "status": "draft",
       "wave": null,
       "core": false,
