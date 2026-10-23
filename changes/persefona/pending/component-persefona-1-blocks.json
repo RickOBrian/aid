@@ -1,0 +1,38 @@
+{
+  "id": "component-persefona-1-blocks",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Метка, Заголовок раздела, Ячейка таблицы, Таблица · было | стало, Карточка блока, Обложка",
+  "changeSummary": "Пять блоков служебных страниц из #344 (Обложка, Заголовок раздела, Карточка блока, Таблица «было | стало», Метка / плашка статуса) — первая очередь Persefona по ответу PD 8а; структура — аудит changes/persefona-1-audit-2026-10-23.md §4.3. Lookup пуст: в Persefona ничего не было, аналоги Rider/Driver не используются. Все цвета, отступы и радиусы привязаны к persefona-semantic / persefona-core. Метка: тона neutral, warning, success, error, info, vivid-soft, vivid, accent.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Блоки служебных страниц Persefona: обложка, заголовок раздела, карточка, таблица «было | стало», метка"
+  },
+  "figma": {
+    "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
+    "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc",
+    "folderId": "638447836",
+    "componentsPage": "0:1",
+    "components": {
+      "Метка": "4:19",
+      "Заголовок раздела": "4:20",
+      "Ячейка таблицы": "4:31",
+      "Таблица · было | стало": "4:32",
+      "Карточка блока": "4:61",
+      "Обложка": "4:70"
+    }
+  },
+  "product": "persefona",
+  "relatedTokenChanges": [
+    "token-persefona-1-initial"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-23",
+  "author": "sergej"
+}
