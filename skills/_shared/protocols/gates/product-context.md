@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: product-context
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Product Context Gate
 
-> Статус: Stable · v1.0.1 · обновлено 2026-09-21
+> Статус: Stable · v1.1.0 · обновлено 2026-10-23
 
 ---
 
@@ -36,8 +36,17 @@ utilities, non-UI refactoring or infrastructure that does not affect those artif
 
 Before applicable work, read `products/registry.json`.
 
-Only products with status `active` or `onboarding` participate in the
-component/token pipeline.
+Only products with status `active`, `onboarding` or `internal` participate in
+the component/token pipeline.
+
+Status `internal` marks a UI Kit of AID itself, not a business product —
+today Persefona (`products/persefona/`): the visual language of AID's own
+working surfaces (Figma audit and build pages, library file decoration,
+Presentbook UI, guides, changelogs, plugins). It follows the same gates and
+global standards as Driver and Rider, with its own visual language. It is
+**not** shown in the Presentbook product switcher (only `active` and
+`onboarding` are) and is never selected for Driver or Rider work. Decision
+PD 2026-10-22, clarified 2026-10-23.
 
 Products with any other status, including `stable`, `legacy`, `prototype` or
 `archived`, are historical/reference products. Do not automatically select,
@@ -175,8 +184,10 @@ After product context is confirmed, still follow these rules for the same task:
 Ниже — правила, которых в манифесте нет и быть не может:
 
 - UI самого портала (`ChangelogTable`, `ComponentReleaseStatus` и подобные)
-  **не является** компонентом дизайн-системы продукта: версия и changelog
-  компонента ему не назначаются;
+  **не является** компонентом Driver или Rider: версия и changelog
+  компонента продукта ему не назначаются. Его визуальный язык — Persefona
+  (`internal`); компонентом Persefona он становится только через
+  Component Gate в контексте `persefona`;
 - версия компонента и финальная запись changelog обновляются **только** на
   Release Gate — не во время реализации, превью или обновления sandbox;
 - данные одного продукта не смешиваются с данными другого: токены,
@@ -186,6 +197,9 @@ After product context is confirmed, still follow these rules for the same task:
 
 ## 10. Changelog
 
+- **1.1.0** — 2026-10-23. Статус `internal` (Persefona — UI Kit самого AID):
+  в пайплайне, вне переключателя Presentbook; UI портала — визуальный язык
+  Persefona, не Driver и не Rider.
 - **1.0.1** — 2026-09-21. Убрано правило об исключении трёх легаси-продуктов:
   продукты удалены из репозитория (ADR-037).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/product-context.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.
