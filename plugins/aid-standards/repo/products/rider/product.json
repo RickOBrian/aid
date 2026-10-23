@@ -1,0 +1,60 @@
+{
+  "id": "rider",
+  "label": "aid: rider",
+  "status": "onboarding",
+  "platformModel": {
+    "targets": null,
+    "stacks": null,
+    "declared": false,
+    "note": "Целевые платформы и стек продукта. Стандарты дизайн-системы платформо-независимы; конкретный стек резолвится отсюда, а не предполагается гайдом. Допустимые targets: web, ios, android. Допустимые stacks: react, swiftui, compose, cmp (Kotlin Compose Multiplatform), иные — по согласованию. Пока declared=false, агент обязан спросить, а не подставлять умолчание."
+  },
+  "tokensRoot": null,
+  "tokenDataRoot": "pages/aid-portal/products/rider",
+  "tokenDataFiles": [
+    "colorData.ts"
+  ],
+  "tokenAssetsRoot": null,
+  "presentbookRoot": "pages/aid-portal",
+  "presentbookType": "react-vite",
+  "routeBase": "/rider/design-system",
+  "tokenRoutes": {
+    "hub": "/rider/design-system",
+    "colors": "/rider/tokens/colors",
+    "typography": "/rider/tokens/typography",
+    "spacing": "/rider/tokens/spacing",
+    "radius": "/rider/tokens/radius",
+    "shadows": "/rider/tokens/shadows",
+    "icons": "/rider/tokens/icons"
+  },
+  "tokenRegistry": null,
+  "changelogRoot": null,
+  "changelogMirrorRoot": null,
+  "changelogFiles": [],
+  "releaseRoot": "changes/rider",
+  "releasePendingRoot": "changes/rider/pending",
+  "releaseReleasedRoot": "changes/rider/released",
+  "componentsRoot": null,
+  "componentsStatus": "not_started",
+  "componentRegistry": null,
+  "relatedPrototypes": [],
+  "figmaFiles": {
+    "_doc": "Рабочие Figma-файлы продукта (решение PD 2026-10-18). Файлы могут быть неполными — дополняются по стандартам AID и реалиям макетов. Канон значений токенов — tokenDataRoot, Figma — источник для сверки и развития.",
+    "tokens": {
+      "fileKey": "yrfG6u9osujKX8e1B14lpT",
+      "url": "https://www.figma.com/design/yrfG6u9osujKX8e1B14lpT/"
+    },
+    "components": {
+      "fileKey": "79UryRdexwKAv8vDIV5v4v",
+      "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/"
+    },
+    "icons": {
+      "fileKey": "n6LppQbTv85yI29h6u30DI",
+      "url": "https://www.figma.com/design/n6LppQbTv85yI29h6u30DI/"
+    }
+  },
+  "figmaLegacyLibraries": {
+    "_doc": "Старые библиотеки продукта для замера внедрения: экземпляры из них считаются legacy (aid-adoption-measurement §2). Ключ — fileKey файла библиотеки. Библиотеки AID — figmaFiles, здесь не повторяются. Формат и порядок пополнения — external-repo-standards §8.",
+    "items": []
+  },
+  "notes": "Onboarding product (2026-08-19). Shares the React portal at pages/aid-portal/ with Driver — same page structure/logic, product-specific content only. Content index lives at pages/aid-portal/products/rider/index.ts and is currently empty (infrastructure only, per explicit user confirmation — no real tokens/components yet). All hub sections resolve as unavailable automatically until that index exports non-empty collections."
+}

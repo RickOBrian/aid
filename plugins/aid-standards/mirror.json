@@ -1,0 +1,105 @@
+{
+  "_doc": "Зеркало части репозитория AID внутри плагина aid-standards. Файлы по этим путям — копии, не симлинки (на Windows git-симлинки ломаются, #348). Пересобрать: node scripts/sync-plugin-mirror.mjs; проверить: --check. Руками не править.",
+  "items": [
+    {
+      "path": "repo/components",
+      "source": "components"
+    },
+    {
+      "path": "repo/docs/hub/STANDARDS-WORK.md",
+      "source": "docs/hub/STANDARDS-WORK.md"
+    },
+    {
+      "path": "repo/docs/standards-alpha",
+      "source": "docs/standards-alpha"
+    },
+    {
+      "path": "repo/pages/aid-portal/component-registry.json",
+      "source": "pages/aid-portal/component-registry.json"
+    },
+    {
+      "path": "repo/pages/aid-portal/data.ts",
+      "source": "pages/aid-portal/data.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/gradientsData.ts",
+      "source": "pages/aid-portal/gradientsData.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/iconsData.ts",
+      "source": "pages/aid-portal/iconsData.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/products",
+      "source": "pages/aid-portal/products"
+    },
+    {
+      "path": "repo/pages/aid-portal/radiusData.ts",
+      "source": "pages/aid-portal/radiusData.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/shadowsData.ts",
+      "source": "pages/aid-portal/shadowsData.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/spacingData.ts",
+      "source": "pages/aid-portal/spacingData.ts"
+    },
+    {
+      "path": "repo/pages/aid-portal/token-changelog-registry.json",
+      "source": "pages/aid-portal/token-changelog-registry.json"
+    },
+    {
+      "path": "repo/pages/aid-portal/typographyData.ts",
+      "source": "pages/aid-portal/typographyData.ts"
+    },
+    {
+      "path": "repo/products",
+      "source": "products"
+    },
+    {
+      "path": "repo/skills",
+      "source": "skills"
+    },
+    {
+      "path": "repo/standards-registry.json",
+      "source": "standards-registry.json"
+    },
+    {
+      "path": "repo/tokens",
+      "source": "tokens"
+    },
+    {
+      "path": "skills/ds-component-audit",
+      "source": "skills/ds-component-audit"
+    },
+    {
+      "path": "skills/ds-component-build",
+      "source": "skills/ds-component-build"
+    },
+    {
+      "path": "skills/ds-component-migration",
+      "source": "skills/ds-component-migration"
+    },
+    {
+      "path": "skills/ds-component-spec",
+      "source": "skills/ds-component-spec"
+    },
+    {
+      "path": "skills/ds-developer-guide",
+      "source": "skills/ds-developer-guide"
+    },
+    {
+      "path": "skills/ds-import",
+      "source": "skills/ds-import"
+    },
+    {
+      "path": "skills/ds-ui-review",
+      "source": "skills/ds-ui-review"
+    },
+    {
+      "path": "skills/guide-lint",
+      "source": "skills/guide-lint"
+    }
+  ]
+}
