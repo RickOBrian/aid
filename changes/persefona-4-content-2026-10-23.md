@@ -329,3 +329,22 @@ Body, Changes Row, __Changelog Badge и {separator} не менять.
    задачи снимается; «Не опубликовано» снимается со всех страниц зоны 2.
 4. Раздел «Наполнение» в спеку — моим PR после мержа #381 (так решил Designer · Components).
    Н8–Н10 Designer · Components принял, правит гайд TabBar после «да» PD.
+
+## 6. Сделано в Figma — 2026-10-23
+
+Persefona Components `X8DoqKC0SKfxb8SoKboo3N`, **не опубликовано** — публикует человек.
+
+1. Описания 12 мастеров заменены текстом «Описание мастера» из §3 слово в слово: Badge 3:90,
+   Banner 40:54, BadgeChangelog 5:153, HeaderPage 5:77, HeaderSection 2:136, IslandBlock 5:114,
+   IslandExample 40:61, TableCell 2:118, TableComparison 5:240, TableChangelog 5:354,
+   TagMarker 40:144, TokenRow 3:395. Сверка: ни в одном нет дат, номеров PR и решений, токенов.
+2. Шапки зоны 2 (Н5–Н7): у Banner 40:36, IslandExample 40:69, TagMarker 40:126,
+   TableChangelog 6:96 первая метка — «Принято» / Success; метка задачи скрыта; «Не
+   опубликовано» скрыто на всех 10 страницах. Видимые метки на каждой — «Принято», «Persefona».
+3. Cover 6:162: «Не опубликовано» — Neutral (ответ 1а), метка задачи скрыта. Остались метки
+   библиотеки по #362 §6.1: «Не опубликовано», «Компоненты 1.0.0 — на release-gate», «Светлая тема».
+4. Тот же порядок — на Cover файла Persefona Icons `dcccBNrHsTuROv7uUp3NGk` (3:101):
+   «Не опубликовано» → Neutral, метка задачи скрыта.
+
+Метки скрыты, а не удалены: слой внутри экземпляра Figma удалить не даёт. Лишние скрытые
+слои уйдут с Repeatable Slot `badge` (ответ 3а, component-gate отдельно).
