@@ -1,4 +1,4 @@
-# persefona-1 (AID-48, #344) — ChangelogTable в Kit: lookup и анкета component-gate
+# persefona-1 (AID-48, #344) — TableChangelog в Kit: lookup и анкета component-gate
 
 От: Designer · Persefona, 2026-10-23. Кому: Standards · Persefona (приёмка), через
 него — PD по вопросам §5.
@@ -38,28 +38,28 @@
 
 | Часть таблицы | В Rider | В Kit | Решение |
 |---|---|---|---|
-| Заголовок таблицы (имя артефакта) | локальный `__Changelog Header`, карточка 166 px | «Заголовок раздела» 4:20 — heading-l и подзаголовок | **Переиспользовать** 4:20 |
-| Шапка колонок | локальный `__Changelog Table Header` ×4 | «Ячейка таблицы» 4:31, `Тип=шапка` — label-xs-caps на bg-surface-muted | **Переиспользовать** |
-| Ячейки версии, даты, автора | фреймы `__Changelog Table Cell` | «Ячейка таблицы» 4:31, `Тип=обычная` — body-s | **Переиспользовать** |
+| Заголовок таблицы (имя артефакта) | локальный `__Changelog Header`, карточка 166 px | HeaderSection 4:20 — heading-l и подзаголовок | **Переиспользовать** 4:20 |
+| Шапка колонок | локальный `__Changelog Table Header` ×4 | TableCell 4:31, `Variant=Header` — label-xs-caps на bg-surface-muted | **Переиспользовать** |
+| Ячейки версии, даты, автора | фреймы `__Changelog Table Cell` | TableCell 4:31, `Variant=Default` — body-s | **Переиспользовать** |
 | Рамка таблицы | фрейм со скруглением 16 и обводкой | «Таблица сравнения» 4:32 — line-default, radius-m | Взять тот же вид, но фреймом: таблицу сравнения целиком плагин читать не сможет |
-| Бейдж вида изменения | `__Changelog Badge`, вариант `Change Status` | «Метка» 4:19 — тона `success`, `error`, `info` | **Новый** `ChangelogBadge`, внутри — экземпляр «Метки» |
-| Образец таблицы целиком | нет, фрейм собран вручную | нет | **Новый** `ChangelogTable` |
+| Бейдж вида изменения | `__Changelog Badge`, вариант `Change Status` | Badge 4:19 — тона `Success`, `Error`, `Info` | **Новый** `BadgeChangelog`, внутри — экземпляр Badge |
+| Образец таблицы целиком | нет, фрейм собран вручную | нет | **Новый** `TableChangelog` |
 
-Итог lookup: два новых компонента (`ChangelogTable`, `ChangelogBadge`), три
+Итог lookup: два новых компонента (`TableChangelog`, `BadgeChangelog`), три
 переиспользуются. Отдельные компоненты шапки и заголовка колонки, как в Rider, не
 нужны: в Kit уже есть равнозначные, и таблица чейнжлога будет выглядеть так же, как
 таблица «было | стало».
 
 ## 3. Анкета component-gate
 
-### ChangelogTable
+### TableChangelog
 
 ```
-Component: ChangelogTable
+Component: TableChangelog
 Figma source: файл Kit YDjPxFrW1yXqm9RzBGQXuc, новая страница (§5, вопрос 4)
 Tokens required: bg-surface-main, line-default, radius-m (рамка);
   spacing-24 (отступ между заголовком и таблицей);
-  через «Ячейку таблицы»: bg-surface-muted, spacing-12, spacing-16,
+  через TableCell: bg-surface-muted, spacing-12, spacing-16,
   label-xs-caps, body-s, text-primary;
   ячейка изменений: spacing-12, spacing-16 (отступы), spacing-8 (шаг),
   body-s + text-primary (фраза), code-s + text-secondary (значения);
@@ -68,7 +68,7 @@ Variants: нет
 Modes: light (Kit только light — решение PD 2026-10-23)
 Proposed path: только Figma, sourcePath null (как блоки #344)
 Confidence: high — состав задан кодом плагина и §6.5
-Naming exception: no — имя задал PD; латиница — §5, вопрос 4
+Naming exception: no — TableChangelog: PD назвал ChangelogTable, Role первым по naming-conventions §4 (#362 0.4.1)
 Architecture exception: yes — образец, который всегда отвязывают; строка —
   фрейм, не подкомпонент (§1, отход от формулировки 7а — §5, вопрос 1)
 Review at: release
@@ -77,25 +77,25 @@ Review at: release
 Состав образца (имена слоёв — контракт плагина, §6.5):
 
 ```
-ChangelogTable                       компонент, вертикаль, шаг spacing-24, ширина 920
-├─ Заголовок раздела                 экземпляр 4:20, текст = artifact, подзаголовок выкл.
+TableChangelog                       компонент, вертикаль, шаг spacing-24, ширина 920
+├─ HeaderSection                     экземпляр 4:20, текст = artifact, подзаголовок выкл.
 └─ Table                             фрейм: bg-surface-main, line-default, radius-m, обрезка
    ├─ Table Header                   фрейм, горизонталь
-   │  └─ Ячейка таблицы ×4           Тип=шапка: Версия | Список изменений | Дата | Автор
+   │  └─ TableCell ×4                Variant=Header: Версия | Список изменений | Дата | Автор
    └─ Changelog Table Body           фрейм, вертикаль
       └─ Changes Row                 фрейм, горизонталь — одна строка
-         ├─ Ячейка таблицы           Тип=обычная, 120, «Не опубликовано»
+         ├─ TableCell                Variant=Default, 120, «Не опубликовано»
          ├─ Changes Cell             фрейм, заполняет ширину, вертикаль, шаг spacing-8,
          │  │                        отступы 12/16, обводка снизу line-default
-         │  ├─ __Changelog Badge     экземпляр ChangelogBadge, Change=Added
+         │  ├─ __Changelog Badge     экземпляр BadgeChangelog, Change=Added
          │  ├─ Description           body-s, text-primary
          │  ├─ Details               code-s, text-secondary
          │  ├─ {separator}           фрейм 1 px, заливка line-default, ширина — вся ячейка
          │  ├─ __Changelog Badge     Change=Edited
          │  ├─ Description
          │  └─ Details
-         ├─ Ячейка таблицы           Тип=обычная, 112, пусто
-         └─ Ячейка таблицы           Тип=обычная, 140, автор
+         ├─ TableCell                Variant=Default, 112, пусто
+         └─ TableCell                Variant=Default, 140, автор
 ```
 
 Ширины колонок: Версия 120 (вмещает `10.10.10` одной строкой, «Не опубликовано» —
@@ -104,11 +104,11 @@ ChangelogTable                       компонент, вертикаль, ш�
 «Таблице сравнения». Во второй записи образца стоит `{separator}`: плагин берёт его
 как образец разделителя, а без него записи слипнутся.
 
-### ChangelogBadge
+### BadgeChangelog
 
 ```
-Component: ChangelogBadge
-Figma source: файл Kit, рядом с ChangelogTable на его странице
+Component: BadgeChangelog
+Figma source: файл Kit, рядом с TableChangelog на его странице
 Tokens required: через «Метку»: bg-accent-status-success-main / -error-main /
   -info-main, text-success / text-error / text-info, label-s, spacing-4,
   spacing-8, radius-pill
@@ -121,14 +121,14 @@ Architecture exception: no
 Review at: n/a
 ```
 
-| Change | Тон «Метки» | Подпись по умолчанию |
+| Change | Tone у Badge | Подпись по умолчанию |
 |---|---|---|
-| Added | success | Добавлено |
-| Removed | error | Удалено |
-| Edited | info | Изменено |
+| Added | Success | Добавлено |
+| Removed | Error | Удалено |
+| Edited | Info | Изменено |
 
 «Исправлено» и «Устарело» плагин пишет подписью поверх `Edited`. Внутри варианта —
-экземпляр «Метки», поэтому вид бейджа меняется вместе с «Меткой» и не расходится с
+экземпляр Badge, поэтому вид бейджа меняется вместе с Badge и не расходится с
 остальным Kit.
 
 Новых токенов нет: все значения выше уже есть в `persefona-core` и
@@ -169,14 +169,14 @@ Review at: n/a
 | # | Вопрос | Варианты | Рекомендация |
 |---|---|---|---|
 | 1 | Подкомпонент строки (в 7а — «с подкомпонентом строки») | а) строки нет как компонента: в образце `Changes Row` — фрейм; б) компонент `ChangelogRow`, который тоже отвязывают | **а** — вторая отвязка легко забывается, и плагин тогда не видит строк вообще |
-| 2 | Шапка и заголовок таблицы | а) переиспользовать «Заголовок раздела» и «Ячейку таблицы»; б) отдельные компоненты шапки и заголовка колонки, как в Rider | **а** — lookup нашёл равнозначные; одна таблица Kit вместо двух видов |
+| 2 | Шапка и заголовок таблицы | а) переиспользовать HeaderSection и TableCell; б) отдельные компоненты шапки и заголовка колонки, как в Rider | **а** — lookup нашёл равнозначные; одна таблица Kit вместо двух видов |
 | 3 | Тон `Edited` | а) info; б) warning | **а** — warning в Kit — предупреждение; «Изменено» — обычное событие |
-| 4 | Имена: Kit пока кириллицей («Метка», «Ячейка таблицы»), PD назвал компонент `ChangelogTable` | а) латиница: `ChangelogTable`, `ChangelogBadge`, свойство `Change`, страница `ChangelogTable`; б) кириллица: «Таблица чейнжлога», «Бейдж чейнжлога» | **а** — имя от PD; по итогу теста латиницы Kit переводится на латиницу целиком до 1.0.0, так новые компоненты не придётся переименовывать |
+| 4 | Имена | ~~а) латиница; б) кириллица~~ | **Снят.** Латиница — решение PD для папки `638447836` (#362 0.4.0); имена `TableChangelog`, `BadgeChangelog`, свойство `Change`, страница `TableChangelog` — по naming-conventions §4, Role первым (#362 0.4.1, приёмка #368); слой `__Changelog Badge` не меняется |
 | 5 | Порядок проверки | а) прогон кода плагина в файле Kit (§4, шаг 1), настоящая запись — с первым чейнжлогом Kit; б) ждать первого чейнжлога и проверять только им | **а** — контракт слоёв проверяется сразу, без PR и сервера |
 
 ## 6. После ответов
 
-1. Сборка в Figma: страница компонента в зоне 2 после «Таблицы сравнения», только
+1. Сборка в Figma: страница компонента в зоне 2 после TableComparison, только
    переменные и стили Kit; описание компонента — «вставить и сразу отвязать
    (Detach instance), имена слоёв — контракт Token Comparator».
 2. Проверка по §4, шаг 1; снимки — в этот документ.
