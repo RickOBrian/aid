@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: release-gate
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Release Gate
 
-> Статус: Stable · v1.0.0 · обновлено 2026-09-20
+> Статус: Stable · v1.1.0 · обновлено 2026-10-23
 
 ---
 
@@ -189,6 +189,32 @@ After SemVer and changelog are confirmed:
 Do not change token values, component implementations or skills as part of the
 release flow. That must be done in separate tasks before release.
 
+### 9.1 Чейнжлог библиотеки: канон и копия
+
+Решение PD 2026-10-23 по #349 п.1 («инфа должна быть между ними всегда
+максимально оперативно синхронизирована»; выбор схемы — за Standards).
+
+- **Канон** записи чейнжлога библиотеки продукта (токены, стили, иконки) —
+  JSON в AID: `tokens/<продукт>-<коллекция>-changelog.json`. Список файлов
+  продукта — `changelogFiles` в `products/<id>/product.json`.
+- **Таблица CHANGELOG в Figma — копия** канона. Какая таблица какому файлу
+  соответствует, записано в самом JSON: поле `figmaTable`
+  (`fileKey`, `nodeId`). Одна таблица ↔ один JSON ↔ один артефакт
+  `semver-guide` §1.
+- **Одним шагом.** Кто бы ни писал запись — человек, Library Updater или
+  Token Comparator, — он пишет её в JSON и в таблицу Figma в одной операции
+  и в одном PR. Запись только в одном месте — работа не закончена.
+- **Расхождение** решает канон: таблицу Figma приводят к JSON, а не
+  наоборот. Если правда на стороне Figma (запись внесли только туда), её
+  сначала переносят в JSON PR-ом, потом выравнивают таблицу.
+- **Проверка.** Инструмент, который пишет в таблицу, после записи читает её
+  обратно и сверяет с JSON; несовпадение — релиз не закончен. В репозитории
+  форму чейнжлогов проверяет `node scripts/check-changelogs.mjs`: файлы из
+  `changelogFiles` на месте, `figmaTable` указывает в файл продукта из
+  `figmaFiles`, запись «Не опубликовано» не больше одной и первая,
+  `currentVersion` равна последней опубликованной версии, копия в
+  `changelogMirrorRoot` совпадает с каноном.
+
 ## 10. Release commit and push
 
 After release artifacts are created:
@@ -208,4 +234,5 @@ Do not push release commits without explicit user approval.
 
 ## 11. Changelog
 
+- **1.1.0** — 2026-10-23. §9.1: канон чейнжлога библиотеки — JSON в AID, таблица CHANGELOG в Figma — копия; запись в оба места одним шагом; расхождение решает канон; проверка `scripts/check-changelogs.mjs` (#349 п.1, решение PD 2026-10-23).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/release-gate.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.
