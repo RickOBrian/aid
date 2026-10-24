@@ -70,34 +70,41 @@ async function setText(node: TextNode, text: string): Promise<void> {
 interface CellTemplates {
   badge: InstanceNode;
   description: TextNode;
-  details: TextNode;
+  /** Образца нет, если ни в одной строке таблицы нет значений (так бывает и в таблице, созданной плагином). */
+  details: TextNode | null;
   separator: FrameNode | null;
 }
 
-/** Образцы для ячейки изменений — из любой строки таблицы, где они есть. */
+/**
+ * Образцы для ячейки изменений — из любой строки таблицы, где они есть.
+ * Бейдж и фраза обязательны; details — нет: строка без значений тоже годится
+ * в образец, а образец details берётся из любой строки, где он есть.
+ */
 function findTemplates(rows: FrameNode[]): CellTemplates {
   let separator: FrameNode | null = null;
-  for (const row of rows) {
-    const cell = row.children[1];
-    if (!cell || !("children" in cell)) continue;
-    const found = cell.children.find((child) => child.name === SEPARATOR_NAME);
-    if (found && found.type === "FRAME") {
-      separator = found;
-      break;
-    }
-  }
+  let base: { badge: InstanceNode; description: TextNode } | null = null;
+  let details: TextNode | null = null;
   for (const row of rows) {
     const cell = row.children[1];
     if (!cell || !("children" in cell)) continue;
     const children = cell.children;
-    const badgeIndex = children.findIndex((child) => child.name === BADGE_NAME && child.type === "INSTANCE");
-    const description = children[badgeIndex + 1];
-    const details = children[badgeIndex + 2];
-    if (badgeIndex >= 0 && description?.type === "TEXT" && details?.type === "TEXT") {
-      return { badge: children[badgeIndex] as InstanceNode, description, details, separator };
+    if (!separator) {
+      const found = children.find((child) => child.name === SEPARATOR_NAME);
+      if (found && found.type === "FRAME") separator = found;
     }
+    for (const [index, child] of children.entries()) {
+      if (child.name !== BADGE_NAME || child.type !== "INSTANCE") continue;
+      const description = children[index + 1];
+      if (description?.type !== "TEXT") continue;
+      if (!base) base = { badge: child, description };
+      const next = children[index + 2];
+      if (!details && next?.type === "TEXT") details = next;
+    }
+    if (base && details && separator) break;
   }
-  throw new ChangelogTableError("В таблице чейнжлога нет строки-образца с бейджем, фразой и значениями.");
+  if (!base) throw new ChangelogTableError("В таблице чейнжлога нет строки-образца с бейджем и фразой.");
+  const { badge, description } = base;
+  return { badge, description, details, separator };
 }
 
 async function setBadge(badge: InstanceNode, kind: ChangeKind): Promise<void> {
@@ -118,7 +125,7 @@ async function fillChangesCell(cell: FrameNode, entry: UnpublishedEntry, templat
   };
   const badge = detach(templates.badge.clone());
   const description = detach(templates.description.clone());
-  const details = detach(templates.details.clone());
+  const details = templates.details ? detach(templates.details.clone()) : null;
   const separator = templates.separator ? detach(templates.separator.clone()) : null;
 
   for (const child of [...cell.children]) child.remove();
@@ -131,7 +138,7 @@ async function fillChangesCell(cell: FrameNode, entry: UnpublishedEntry, templat
     const changeDescription = description.clone();
     cell.appendChild(changeDescription);
     await setText(changeDescription, change.description);
-    if (change.details) {
+    if (change.details && details) {
       const changeDetails = details.clone();
       cell.appendChild(changeDetails);
       await setText(changeDetails, change.details);
@@ -148,6 +155,12 @@ export async function writeUnpublishedRow(table: FrameNode, entry: UnpublishedEn
   if (rows.length === 0) throw new ChangelogTableError("В таблице чейнжлога нет ни одной строки — не с чего взять образец.");
 
   const templates = findTemplates(rows);
+  // Проверка до правок: таблица остаётся как была.
+  if (!templates.details && entry.changes.some((change) => change.details)) {
+    throw new ChangelogTableError(
+      "В таблице чейнжлога нет строки со значениями под фразой — не с чего взять их оформление. Добавьте значения в любую строку таблицы вручную.",
+    );
+  }
   const first = rows[0];
   const firstVersion = first.children[0] ? firstText(first.children[0]) : null;
   let row: FrameNode;
