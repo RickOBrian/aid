@@ -128,7 +128,7 @@ web — сейчас не предлагаю (вопрос 6).
 
 | Что | Форма | Токен |
 |---|---|---|
-| Отступ (padding) | Полупрозрачная заливка 24 % + контур 1 px по внешнему и внутреннему краю | `bg-annotation-space` → `turquoise-45-a24`; край — `line-annotation-measure` |
+| Отступ (padding) | Полупрозрачная заливка 24 % + контур 1 px по внешнему и внутреннему краю | `bg-annotation-measure-fade` → `turquoise-45-a24`; край — `line-annotation-measure` |
 | Промежуток (gap) | Штриховка 45°, без заливки | `line-annotation-measure` → `turquoise-45` |
 | Размер, радиус | Размерная линия с засечками | `line-annotation-measure` |
 | Подпись («space-8», «64») | `persefona/code-s` | `text-annotation-measure` → `turquoise-45` |
@@ -213,11 +213,11 @@ Semantic (`persefona-semantic`, режим `light`, 39 → 47):
 | Токен | Ссылка | Где применять |
 |---|---|---|
 | `bg-annotation-marker-main` | `iolite-55` | Круг маркера, основной набор |
-| `icon-annotation-marker-main` | `iolite-55` | Точка и линия маркера, основной набор |
-| `bg-annotation-marker-alt` | `graphite-70` | Круг маркера, запасной набор |
-| `icon-annotation-marker-alt` | `graphite-70` | Точка и линия маркера, запасной набор |
+| `icon-annotation-marker` | `iolite-55` | Точка и линия маркера, основной набор |
+| `bg-annotation-marker-neutral-main` | `graphite-70` | Круг маркера, запасной набор |
+| `icon-annotation-marker-neutral` | `graphite-70` | Точка и линия маркера, запасной набор |
 | `line-annotation-marker-outline` | `graphite-0` | Контур точки и линии маркера |
-| `bg-annotation-space` | `turquoise-45-a24` | Заливка полосы отступа |
+| `bg-annotation-measure-fade` | `turquoise-45-a24` | Заливка полосы отступа |
 | `line-annotation-measure` | `turquoise-45` | Контур полосы отступа, штриховка промежутка, размерная линия, засечки |
 | `text-annotation-measure` | `turquoise-45` | Подпись измерения |
 
@@ -248,7 +248,7 @@ Semantic (`persefona-semantic`, режим `light`, 39 → 47):
    как строка в `changeSummary`. **Целевая версия остаётся 1.0.0** (первый выпуск), MINOR
    отдельно не поднимается.
 5. **Зависимости:** MAJOR нет — синхронного подъёма Semantic не нужно.
-   - TagMarker (Persefona Components 40:144) — MINOR: свойство-вариант `Set=Main|Alt`
+   - TagMarker (Persefona Components 40:144) — MINOR: свойство-вариант `Set=Main|Neutral`
      (по умолчанию `Main`, существующие экземпляры не меняются), контур в мастере, круг,
      точка и линия на `*-annotation-marker-*`. Анкета `component-gate` — отдельным шагом
      после «принято» по токенам (вопрос 4).
@@ -261,14 +261,21 @@ Semantic (`persefona-semantic`, режим `light`, 39 → 47):
 
 ## 8. Вопросы к Standards · Persefona
 
+**Принято Standards · Persefona 2026-10-24** (комментарий в #400): 1а 3а 4а 5а 6а 7а;
+2 — имена по `semantic-color-tokens-guide` §2–§7: `icon-annotation-marker`,
+`bg-annotation-marker-neutral-main`, `icon-annotation-marker-neutral`,
+`bg-annotation-measure-fade` (полупрозрачный `main` — `fade`), TagMarker `Set=Main|Neutral`.
+Группа `annotation` — расширение карты групп AID внутри Kit; `turquoise` в интерфейсе Kit
+не используется (запишет Standards · Persefona в правило вида). Переменные — после мержа.
+
 1. **Предложение целиком** (маркеры §2, измерения §3, токены §5). а) ★ принять;
    б) частично (какие пункты); в) отклонить.
-2. **Имя запасного набора.** а) ★ `-alt` (`bg-annotation-marker-alt`); б) по цвету —
-   `-neutral`; в) другое.
+2. **Имя запасного набора.** Решено Standards · Persefona: по грамматике
+   `semantic-color-tokens-guide` §2 — `neutral` (роль, как `bg-accent-status-neutral-main`).
 3. **Палитра.** а) ★ `turquoise-45` — служебная палитра инфографики, ответ PD «turquoise
    не заводится» (акцент интерфейса, #354) не затрагивает; б) это пересмотр ответа PD —
    вопрос к PD через Standards; в) другое имя (`aquamarine`).
-4. **TagMarker.** а) ★ анкета `component-gate` моим следующим шагом: `Set=Main|Alt`,
+4. **TagMarker.** а) ★ анкета `component-gate` моим следующим шагом: `Set=Main|Neutral`,
    контур в мастере, константы схемы (линия 1 px, засечки 7 px, шаг штриховки 3 px) —
    в правило схем; б) без варианта — набор меняют переопределением заливок в экземпляре
    (так собран макет; хрупко, при обновлении библиотеки переопределения могут слететь).
