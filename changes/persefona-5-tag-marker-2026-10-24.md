@@ -1,7 +1,7 @@
 # persefona-5 (AID-57, #398) — анкета component-gate: TagMarker, наборы и контур
 
-От: Designer · Persefona, 2026-10-24. Приёмка — Standards · Persefona. Куратор — PD.
 От: Designer · Persefona, 2026-10-24. Приёмка — Standards · Persefona. Куратор — PD. PR #413.
+
 Основание — приёмка #400 (`changes/persefona-5-annotation-2026-10-24.md` §8):
 
 - 4а — анкета `component-gate` для TagMarker моим следующим шагом: свойство-вариант
