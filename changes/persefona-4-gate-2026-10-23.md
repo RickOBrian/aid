@@ -308,6 +308,10 @@ Subtitle, Contents, How to Read совпали со снимком «до» по
 файлах Kit их не было; у TabBar 679:4217 11 ссылок (блоки 1–10 и секция аудита 599:2797)
 поставлены заново по §10 дока #378. Гиперссылка How to Read переживает замену, как в пробе.
 
+**Правка приёмки:** на пяти страницах зоны 2 Tokens (45:75, 45:94, 103:274, 105:64, 106:41)
+метка «Не опубликовано» снята — по #390 она только на Cover; остались «Принято» · Success и
+«Persefona» · Neutral, как в Components. Archive не тронут.
+
 Снимки «после»: `changes/persefona/snapshots/gate/` — `tokens-cover-4-87-after.png`,
 `tokens-colors-core-45-75-after.png`, `icons-cover-3-101-after.png`,
 `rider-tabbar-679-4217-after.png`.
