@@ -1,11 +1,24 @@
 {
   "artifact": "Rider Space",
-  "currentVersion": "1.0.0",
+  "currentVersion": "1.0.1",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "208:54"
   },
   "entries": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-25",
+      "author": "Sergey AI",
+      "type": "patch",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "У space-1 расширена область применения: кроме промежутков — ширина и высота (толщина линии Divider)",
+          "details": "space-1 (1): scopes GAP → GAP, WIDTH_HEIGHT"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-21",
