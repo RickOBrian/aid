@@ -227,3 +227,87 @@ persefona-4-content §2), метка задачи с исполнителем о
 
 Самопроверка: все 14 `figmaTable` (13 в `tokens/*-changelog.json` + pending Rider Gradients) из репозитория найдены в Figma, узлы совпали;
 устройство таблиц сверено с мастером `TableChangelog` 5:354 и с `changelogTable.ts`.
+
+## 6. Перевод таблиц чейнжлога — сделано 2026-10-25
+
+**Решения PD в чате Designer · Persefona 2026-10-25** (ответы на вопросы о порядке и §5):
+
+- порядок: «Сразу, приёмка по итогу» — таблицы переводятся до приёмки инвентаризации, Standards · Persefona принимает результат;
+- вопросы 1 и 2: «Делаем всё по стандартам и компонентам Персефоны. В нужные плагины отправим правки, чтобы они переезжали на стили персефоны»;
+- вопрос 7: «Аналогично как мы уже сделали в чейнжлогах по стандартам Персефоны» — заголовок как в образце Kit `TableChangelog`: `HeaderSection`, Title = `artifact` из JSON, без подзаголовка;
+- вопрос 6: «Да, заодно» — образцы на `Оформление` тоже переведены.
+
+Аудиты (§3) в этот шаг не входят.
+
+### 6.1 Как переведено
+
+Скрипт — `changes/persefona/snapshots/kit-migration/changelog/migrate-table.js` (один для всех таблиц, §6.5 «Уже сделанные таблицы»).
+До правок он проверяет устройство и ничего не трогает, если оно не совпало с контрактом.
+
+| Часть | Было | Стало |
+|---|---|---|
+| Корень `CHANGELOG` (id = `figmaTable`) | белая карточка r32, отступ 40 | тот же узел: `bg-surface-main`, `line-default`, `radius-l`, отступ `spacing-48`, шаг `spacing-24`, ширина 1016 (таблица 920, как в мастере) |
+| Шапка | `__Changelog Header` (локальный) / фрейм у Rider · иконки | `HeaderSection`, Title = `artifact` |
+| `Changelog Table` | фрейм | тот же узел, имя `Table`: `bg-surface-main`, `line-default`, `radius-m` |
+| Заголовки колонок | `__Changelog Table Header` × 4 | `TableCell` `Header`: Версия 120 · Список изменений (FILL) · Дата 112 · Автор 140 |
+| `Changelog Table Body`, `Changes Row` | фреймы | те же узлы, без заливок |
+| Версия, дата, автор | фреймы с текстом / тексты | `TableCell` `Default` (текст 1:1) |
+| Ячейка изменений | `{Chnagelog_Cell}` / `Changelog Cell` | тот же узел, имя `Changes Cell`: `bg-surface-main`, нижняя `line-default`, отступы `spacing-12`/`spacing-16`, шаг `spacing-8` |
+| Бейдж | `__Changelog Badge` или `Badge` (локальный / Rider Icons) | Swap → `BadgeChangelog` (вариант прежний), слой `__Changelog Badge` во всех таблицах |
+| Фраза / значения | сырые цвета, Google Sans / Inter | `Description` — `persefona/body-s` + `text-primary`; `Details` — `persefona/code-s` + `text-secondary` |
+| `{separator}` | фрейм / прямоугольник `Separator` | FRAME `{separator}` 1 px, `line-default` |
+
+Отпечаток до/после (id корня, тела, строк, ячеек изменений; тексты версии, даты, автора; бейджи и тексты ячейки изменений по порядку) совпал во всех 16 таблицах (14 с `figmaTable` и 2 образца).
+
+### 6.2 Результат
+
+| # | Таблица | Узел | Строк | Бейджей | Отпечаток | Примечание |
+|---|---|---|---|---|---|---|
+| 1 | Rider Colors/Semantic | 31:66 | 13 | 26 | = | |
+| 2 | Rider Gradients | 316:142 | 3 | 4 | = | прямоугольник `Separator` → `{separator}` (1598:140) |
+| 3 | Rider Typography/Semantic | 11:502 | 3 | 3 | = | |
+| 4 | Rider Typography/Semantic Outstanding | 184:971 | 1 | 1 | = | |
+| 5 | Rider Effects/Shadows | 21:15 | 2 | 2 | = | |
+| 6 | Rider Effects/Glass | 71:17 | 1 | 1 | = | |
+| 7 | Rider Space | 208:54 | 2 | 2 | = | пилот |
+| 8 | Rider Radius | 204:50 | 1 | 1 | = | |
+| 9 | Rider · образец `Оформление` | 1:16 | 2 | 4 | = | Title «Имя артефакта», как в мастере |
+| 10 | Driver Colors/Semantic | 45:905 | 15 | 19 | = | 5 прямоугольников `Separator` → `{separator}` |
+| 11 | Driver Gradients | 352:204 | 2 | 2 | = | |
+| 12 | Driver Typography/Semantic | 49:13 | 4 | 4 | = | |
+| 13 | Driver Effects/Shadows | 51:24 | 1 | 1 | = | |
+| 14 | Driver · образец `Оформление` | 45:899 | 2 | 4 | = | Title «Имя артефакта» |
+| 15 | Icons/Rider | 3703:4 | 8 | 13 | = | приведена к контракту: шапка-фрейм → `HeaderSection`, `Data Container` (3703:26) → `Changelog Table Body` во фрейме `Table`, `Table Header Row` → `Table Header` |
+| 16 | Icons/Wilhelm (Driver) | 5503:18 | 2 | 2 | = | |
+
+Число строк в таблицах больше, чем в инвентаризации (§2): после неё плагины дописали строки (Rider Space 1.0.1, Icons/Rider 1.5.0–1.7.0).
+
+Заголовки Driver — `artifact` как есть (`Colors/Semantic`, `Gradients`, …), без слова «Driver»: у Rider `artifact` начинается с «Rider», у Driver — нет. Привести `artifact` к одному виду — вопрос Standards (JSON в `tokens/`).
+
+Снимки до/после — `changes/persefona/snapshots/kit-migration/changelog/*-before.png`, `*-after.png`.
+
+### 6.3 Проверка плагина
+
+`changes/persefona/snapshots/kit-migration/changelog/plugin-check.js` — логика `writeUnpublishedRow` из `changelogTable.ts`, перенесённая 1:1,
+на копии таблицы (копия удаляется), запись из двух изменений (added с details + fixed). `findChangelogTable` — на оригинале по `figmaTable`.
+
+| Файл | Таблица | findChangelogTable | Строка «Не опубликовано» | Бейджи | Разделитель |
+|---|---|---|---|---|---|
+| Rider · токены | Rider Radius 204:50 (бейдж был `Badge`) | находит | сверху, 4 ячейки | Added / Edited «Исправлено» | образца нет в таблице — нет и в новой строке |
+| Driver · токены | Colors/Semantic 45:905 | находит | сверху | Added / Edited «Исправлено» | есть |
+| Rider · иконки | Icons/Rider 3703:4 (до перевода не находилась) | находит | сверху | Added / Edited «Исправлено» | есть |
+| Driver · иконки | Icons/Wilhelm 5503:18 | находит | сверху | Added / Edited «Исправлено» | образца нет |
+
+### 6.4 Находки для плагинов (правки — задачей Developer · Token Comparator через Штаб)
+
+1. **Шрифты перед вставкой строки.** `writeUnpublishedRow` клонирует строку и вставляет её (`insertChild`), не загрузив шрифты строки. В пробе это падает
+   «unloaded font Google Sans Regular»; с предзагрузкой шрифтов таблицы — проходит. Касалось и прежних таблиц (они тоже были на Google Sans).
+   Правка: перед `insertChild` загрузить шрифты всех текстов строки.
+2. **Разделитель без образца.** Если в таблице нет ни одного `{separator}`, у новой строки с несколькими изменениями разделителя нет. Правка: брать
+   разделитель из Kit (FRAME 1 px, `line-default`), если образца нет.
+3. **Icons/Rider пишет не Token Comparator.** В таблице были строки 1.5.0–1.7.0 (2026-10-21…25), которых нет в `tokens/rider-icons-changelog.json`
+   (там 1.4.0). Значит, её пополняет другой инструмент — вероятно, Library Updater (внешний репозиторий). Устройство таблицы изменилось
+   (`Data Container` → `Changelog Table Body` внутри `Table`, текстовые ячейки → `TableCell`). Владельцу инструмента нужно сообщить до следующей записи.
+4. **Локальные компоненты старых таблиц** (`__Changelog Header`, `__Changelog Table Header`, `__Changelog Badge`) в файлах Rider и Driver больше не
+   используются в таблицах. Не удалены (§4 замечаний подагента, п. 7): удаление — отдельным шагом после проверки, что их нет в других местах.
+5. Строку в чейнжлог библиотек перевод не пишет: менялось оформление страницы, не артефакт.
