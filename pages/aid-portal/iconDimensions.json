@@ -1287,6 +1287,14 @@
     "width": 24,
     "height": 24
   },
+  "rider/actions/chat_call_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/chat_call_outline": {
+    "width": 24,
+    "height": 24
+  },
   "rider/actions/chat_duo_fill": {
     "width": 24,
     "height": 24
