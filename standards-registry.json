@@ -506,7 +506,7 @@
       "kind": "protocol",
       "humanFile": "skills/_shared/protocols/figma-library-workflow.md",
       "machineFile": null,
-      "version": "0.7.0",
+      "version": "0.8.0",
       "status": "draft",
       "wave": null,
       "core": false,
