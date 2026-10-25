@@ -363,3 +363,10 @@ Rider · токены 1599:149, Driver · токены 1047:268, Rider · ико
 
 1. Секция гайда 679:4238 (рядом) — фон сырой `#FFFFFF`. Не трогала: вне шага; одна привязка `bg-surface-main` — при следующей правке гайда.
 2. Ссылки в оболочке без подчёркивания: у Kit нет стиля ссылки, отличие — цвет `text-accent-vivid`. Если нужно подчёркивание — вопрос в правила Kit.
+
+### 6.5 Правка по приёмке — Driver 1.5.0
+
+Driver Colors/Semantic 45:905, строка 1.5.0 575:272, ячейка 575:275: у второго изменения («Добавлена переменная Bg/Primary inverted…») не было
+бейджа, описание лежало в `Details` 586:268 (`code-s`). Добавлен `BadgeChangelog` `Added` 1055:93 (слой `__Changelog Badge`), 586:268 →
+`Description`, `body-s`, `text-primary`; `Details` 586:269 без изменений. Теперь строка совпадает с `driver-colors-semantic-changelog.json`
+(три изменения: Added, Added, Edited). Снимок — `snapshots/kit-migration/changelog/driver-colors-1.5.0-fixed.png`.
