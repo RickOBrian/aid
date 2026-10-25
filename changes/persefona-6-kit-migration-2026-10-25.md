@@ -131,6 +131,18 @@ persefona-4-content §2), метка задачи с исполнителем о
 
 В Driver (компоненты, токены, иконки) и в Rider токенах и иконках страниц аудита нет.
 
+**Окончание `· аудит` → `· audit`** (PD, #362 0.10.3 §10.3 шаг 4; рядом уже `👀 Spinner · audit`):
+
+| Узел | Было | Стало | Заголовок шапки |
+|---|---|---|---|
+| 733:4364 | `👀 Map Pin · аудит` | `👀 Map Pin · audit` | 733:4365 → «Map Pin · audit» |
+| 773:2 | `👀 Divider · аудит` | `👀 Divider · audit` | 773:33 → «Divider · audit» |
+
+Ссылок на эти страницы в содержаниях нет, страницы `Cover` в Rider · компоненты нет. Других
+страниц с `· аудит` в папке нет (Rider и Driver — токены, иконки, компоненты). Текст 778:546
+«…набор «.Divider · аудит · прототип»» — содержимое аудита (имя набора-прототипа), не трогала.
+Снимок — `changes/persefona/snapshots/kit-migration/header-map-pin-audit-latin.png`.
+
 Сделано в Figma 2026-10-25 (разрешение пользователя в чате): обе страницы и обе метки; снимки —
 `changes/persefona/snapshots/kit-migration/header-map-pin-audit.png`, `header-divider-audit.png`.
 
