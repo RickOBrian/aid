@@ -164,6 +164,8 @@ export const riderIconSections: IconSection[] = [
       icon('safety_warning', 'safety_warning', '3867:543'),
       icon('lifebuoy', 'lifebuoy', '3867:551'),
       icon('clipboard_outline', 'clipboard_outline', '3867:559'),
+      icon('delivery_fill', 'delivery_fill', '3904:16'),
+      icon('medicine_case_fill', 'medicine_case_fill', '3904:22'),
     ],
   },
   {
