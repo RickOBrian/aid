@@ -1,11 +1,24 @@
 {
   "artifact": "Icons/Rider",
-  "currentVersion": "1.6.0",
+  "currentVersion": "1.7.0",
   "figmaTable": {
     "fileKey": "n6LppQbTv85yI29h6u30DI",
     "nodeId": "3703:4"
   },
   "entries": [
+    {
+      "version": "1.7.0",
+      "date": "2026-10-25",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_chat_call_fill\nic_chat_call_outline"
+        }
+      ]
+    },
     {
       "version": "1.6.0",
       "date": "2026-10-22",
