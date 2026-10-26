@@ -864,6 +864,29 @@
       "migratedFrom": ".cursor/rules/"
     },
     {
+      "id": "persefona-visual-language",
+      "title": "Persefona: визуальный язык",
+      "kind": "standard",
+      "humanFile": "products/persefona/rules/persefona-visual-language.md",
+      "machineFile": null,
+      "version": "1.1.0",
+      "status": "alpha",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "persefona-kit-improvement",
+        "core-color-tokens-guide",
+        "semantic-color-tokens-guide",
+        "naming-conventions",
+        "accessibility"
+      ],
+      "product": "persefona"
+    },
+    {
       "id": "portal-table-standard",
       "title": "Portal Table Standard",
       "kind": "protocol",
