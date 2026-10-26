@@ -1,22 +1,99 @@
 {
-  "file": "yrfG6u9osujKX8e1B14lpT",
-  "page": "0:1 ✅ Colors",
-  "method": "Отсортированные строки текстов блока: свои TEXT-узлы + у экземпляров верхнего уровня видимые тексты (до перевода экземпляров не было); у 31:66 — текстовые свойства экземпляров, как в #436. Хэш — FNV-1a 32 по строкам через \\n. Скрипт — fingerprint.js.",
-  "blocks": {
-    "32:2349 → 1619:143 (шапка витрины → HeaderPage)": { "before": "3 6b65801e", "after": "3 6b65801e" },
-    "28:784 Background": { "before": "159 54cb89e9", "after": "159 54cb89e9" },
-    "28:3 Text": { "before": "94 5b65ca59", "after": "94 5b65ca59" },
-    "28:393 Icon": { "before": "95 44ea1363", "after": "95 44ea1363" },
-    "28:1446 Stroke": { "before": "68 4169986b", "after": "68 4169986b" },
-    "28:1700 Pastel": { "before": "52 8b490ecf", "after": "52 8b490ecf" },
-    "28:2034 Technical": { "before": "20 43c0a8a0", "after": "20 43c0a8a0" },
-    "28:1252 Button": { "before": "42 77622f42", "after": "42 77622f42" },
-    "28:2128 Legacy Button": { "before": "36 f8276628", "after": "36 f8276628" },
-    "28:1403 Field": { "before": "12 279cff8f", "after": "12 279cff8f" },
-    "28:1579 Route": { "before": "30 154aa3d9", "after": "30 154aa3d9" },
-    "28:1867 Stories": { "before": "37 4bc11fea", "after": "37 4bc11fea" },
-    "31:66 CHANGELOG (не трогался)": { "before": "123 89046031", "after": "123 89046031" }
+  "page_0_1": {
+    "file": "yrfG6u9osujKX8e1B14lpT",
+    "page": "0:1 ✅ Colors",
+    "method": "Отсортированные строки текстов блока: свои TEXT-узлы + у экземпляров верхнего уровня видимые тексты (до перевода экземпляров не было); у 31:66 — текстовые свойства экземпляров, как в #436. Хэш — FNV-1a 32 по строкам через \\n. Скрипт — fingerprint.js.",
+    "blocks": {
+      "32:2349 → 1619:143 (шапка витрины → HeaderPage)": {
+        "before": "3 6b65801e",
+        "after": "3 6b65801e"
+      },
+      "28:784 Background": {
+        "before": "159 54cb89e9",
+        "after": "159 54cb89e9"
+      },
+      "28:3 Text": {
+        "before": "94 5b65ca59",
+        "after": "94 5b65ca59"
+      },
+      "28:393 Icon": {
+        "before": "95 44ea1363",
+        "after": "95 44ea1363"
+      },
+      "28:1446 Stroke": {
+        "before": "68 4169986b",
+        "after": "68 4169986b"
+      },
+      "28:1700 Pastel": {
+        "before": "52 8b490ecf",
+        "after": "52 8b490ecf"
+      },
+      "28:2034 Technical": {
+        "before": "20 43c0a8a0",
+        "after": "20 43c0a8a0"
+      },
+      "28:1252 Button": {
+        "before": "42 77622f42",
+        "after": "42 77622f42"
+      },
+      "28:2128 Legacy Button": {
+        "before": "36 f8276628",
+        "after": "36 f8276628"
+      },
+      "28:1403 Field": {
+        "before": "12 279cff8f",
+        "after": "12 279cff8f"
+      },
+      "28:1579 Route": {
+        "before": "30 154aa3d9",
+        "after": "30 154aa3d9"
+      },
+      "28:1867 Stories": {
+        "before": "37 4bc11fea",
+        "after": "37 4bc11fea"
+      },
+      "31:66 CHANGELOG (не трогался)": {
+        "before": "123 89046031",
+        "after": "123 89046031"
+      }
+    },
+    "shell": {
+      "rawPaints": 0,
+      "textsWithoutKitStyle": 0,
+      "riderVariablesInShell": 0
+    },
+    "content": {
+      "colorOverlayBound": 266,
+      "colorOverlayRaw": 22,
+      "checkerRects": 592
+    }
   },
-  "shell": { "rawPaints": 0, "textsWithoutKitStyle": 0, "riderVariablesInShell": 0 },
-  "content": { "colorOverlayBound": 266, "colorOverlayRaw": 22, "checkerRects": 592 }
+  "page_302_53": {
+    "file": "yrfG6u9osujKX8e1B14lpT",
+    "page": "302:53 ✅ Gradients",
+    "method": "Тот же, что для 0:1; у 316:142 — текстовые свойства экземпляров.",
+    "blocks": {
+      "316:36 → 1622:196 (шапка витрины → HeaderPage)": {
+        "before": "3 2c505521",
+        "after": "3 2c505521"
+      },
+      "316:42 Gradients Content": {
+        "before": "33 dcbf492c",
+        "after": "33 dcbf492c"
+      },
+      "316:142 CHANGELOG (не трогался)": {
+        "before": "27 c9a95db0",
+        "after": "27 c9a95db0"
+      }
+    },
+    "shell": {
+      "rawPaints": 0,
+      "textsWithoutKitStyle": 0,
+      "riderVariablesInShell": 0
+    },
+    "content": {
+      "sceneNodes": 93,
+      "note": "5 Preview: шахматка, заливка градиента, линии, 45 маркеров; 28 заливок Color у образцов Day/Night"
+    }
+  }
 }
