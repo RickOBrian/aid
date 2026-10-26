@@ -69,7 +69,7 @@ for(const fid of FRAMES){
         if(r.name==='TH'){ r.fills=[paint(C['surface-muted'])]; pad(r,0,0,0,0); gap(r,0);
           const ts=r.children.filter(n=>n.type==='TEXT');
           ts.forEach((t,i)=>{ const inst=TH.createInstance(); inst.name='TableCell'; const k=Object.keys(inst.componentProperties).find(x=>x.startsWith('Text')); inst.setProperties({[k]:t.characters});
-            r.insertChild(r.children.indexOf(t),inst); if(i<ts.length-1){ inst.layoutSizingHorizontal='FIXED'; inst.resize(t.width+16,inst.height); } // +16 — отступ ячейки; у строк столько же шаг else inst.layoutSizingHorizontal='FILL';
+            r.insertChild(r.children.indexOf(t),inst); if(i<ts.length-1){ inst.layoutSizingHorizontal='FIXED'; inst.resize(t.width+16,inst.height); } else inst.layoutSizingHorizontal='FILL'; // +16 — отступ ячейки; у строк столько же шаг
             t.remove(); log.cells++; });
           continue; }
         const f=r.fills[0]; r.fills=[paint(C[f&&f.type==='SOLID'&&hex(f.color)==='#F6F7F9'?'surface-zebra':'surface-main'])];
