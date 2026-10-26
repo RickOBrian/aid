@@ -106,7 +106,7 @@ for(const ch of F.children){
     continue; }
   log.left.push('блок '+ch.id+' '+ch.name);
 }
-// Shadows, Glass: витрина 1400 (как Typography), строки и таблицы токенов — FILL: моноширинные значения и имена токенов не помещались в 710
+// Shadows, Glass: витрина 1400 (как на 1:2 Typography, #466), строки и таблицы токенов — FILL: моноширинные значения и имена токенов не помещались в 710
 if(D0){ F.counterAxisSizingMode='FIXED'; F.resize(1400,F.height); D0.layoutSizingHorizontal='FILL';
   for(const row of D0.children){ row.layoutSizingHorizontal='FILL'; const tt=row.children.find(n=>n.name==='Token Table'); if(tt) tt.layoutSizingHorizontal='FILL'; } }
 F.primaryAxisSizingMode='AUTO'; // у Radius высота витрины была фиксированной

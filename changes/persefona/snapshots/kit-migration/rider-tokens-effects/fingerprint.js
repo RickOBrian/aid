@@ -1,5 +1,7 @@
 // persefona-6 (AID-64): отпечаток текстов витрин Shadows 1:3, Glass 66:278, Space 1:4, Radius 1:5 (Rider Tokens yrfG6u9osujKX8e1B14lpT). Только чтение.
 // BLOCKS — [страница, id блока]; шапки до перевода — фреймы Header, после — экземпляры HeaderPage. У таблиц чейнжлога — текстовые свойства экземпляров (#436).
+// Прогон по страницам; __BLOCKS__ — список [страница, id блока], например для Space:
+// [['1:4','1649:193'],['1:4','62:39'],['1:4','208:54']]; id блоков всех страниц — в fingerprint-before.json / fingerprint-after.json.
 const BLOCKS = __BLOCKS__;
 const CHANGELOGS = ['21:15','71:17','208:54','204:50'];
 const fnv=s=>{let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');};
