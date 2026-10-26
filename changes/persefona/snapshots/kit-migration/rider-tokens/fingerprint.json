@@ -6,7 +6,9 @@
     "blocks": {
       "32:2349 → 1619:143 (шапка витрины → HeaderPage)": {
         "before": "3 6b65801e",
-        "after": "3 6b65801e"
+        "after_kit": "3 6b65801e",
+        "after_review": "5 29b071a1",
+        "note": "Правка приёмки §5.2 «б»: Title «Colors»; Subtitle — прежние заголовок и подпись двумя строками; метки «Принято», «Rider» добавлены, «1.10.0» прежняя"
       },
       "28:784 Background": {
         "before": "159 54cb89e9",
@@ -75,7 +77,9 @@
     "blocks": {
       "316:36 → 1622:196 (шапка витрины → HeaderPage)": {
         "before": "3 2c505521",
-        "after": "3 2c505521"
+        "after_kit": "3 2c505521",
+        "after_review": "5 e4d55e45",
+        "note": "Так же: Title «Gradients», Subtitle «Градиенты» + подпись, метки «Принято», «Rider», «1.2.0»"
       },
       "316:42 Gradients Content": {
         "before": "33 dcbf492c",
