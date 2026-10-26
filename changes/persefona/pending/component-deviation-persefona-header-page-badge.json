@@ -1,0 +1,23 @@
+{
+  "id": "component-deviation-persefona-header-page-badge",
+  "type": "component",
+  "exceptionType": "architecture",
+  "standard": "Repeatable Slot 2..N (component-standards §7.5)",
+  "actual": "HeaderPage: слот badge (repeatable, 1..4)",
+  "reason": "Нижняя граница — одна метка статуса страницы, верхняя — ширина шапки; предел задаёт дизайн, а не данные. Figma границы не проверяет: предел записан в описании мастера.",
+  "recommendation": "Пересмотреть при выпуске: если канон примет Repeatable Slot с нижней границей 1, отход снимается.",
+  "status": "accepted",
+  "reviewAt": "release",
+  "pendingRef": "changes/persefona/pending/component-persefona-1-blocks.json",
+  "product": "persefona",
+  "figma": {
+    "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+    "components": {
+      "HeaderPage": "5:77"
+    },
+    "slot": "61:268"
+  },
+  "sourcePath": null,
+  "created": "2026-10-23",
+  "author": "sergej"
+}

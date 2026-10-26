@@ -1,0 +1,36 @@
+{
+  "artifact": "Rider Effects/Shadows",
+  "currentVersion": "1.1.0",
+  "figmaTable": {
+    "fileKey": "yrfG6u9osujKX8e1B14lpT",
+    "nodeId": "21:15"
+  },
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-09-02",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные и стиль тени Active Car",
+          "details": "• 25 переменных в коллекции «effects»: Shadows/Active Car/Level 1–5 (offset-x, offset-y, blur, spread, color)\n• Стиль эффекта «Shadows/Active Car» — 5 drop shadow с привязкой к переменным"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-14",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Создана система токенов и стилей теней Effects",
+          "details": "• Коллекция переменных «effects» с режимами Day и Night\n• 32 переменных: Mini, Small (Level 1/2), Medium, Large (Level 1/2), Brand Button (Level 1/2)\n• Свойства: offset-x, offset-y, blur (FLOAT), color (COLOR)\n• Скоупинги EFFECT_FLOAT и EFFECT_COLOR\n• 5 стилей эффектов: Mini, Small, Medium, Large, Brand Button\n• Документация: таблица параметров теней с режимами Day/Night\n• Bottom Sheet (Level 1/2/3) — 12 переменных, стиль Shadows/Bottom Sheet\n• FAB — 4 переменных, стиль Shadows/FAB\n• Knob (Level 1/2) — 8 переменных, стиль Shadows/Knob\n• Cards — 4 переменных, стиль Shadows/Cards\n• Cards: обновлён color rgba(0,0,0,0.12) → rgba(0,0,0,0.15)\n• Large Air — 4 переменных (hidden from publishing), стиль Shadows/Large Air"
+        }
+      ]
+    }
+  ]
+}

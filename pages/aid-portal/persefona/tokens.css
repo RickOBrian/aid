@@ -1,0 +1,175 @@
+/*
+ * Persefona Kit — переменные портала (`--pf-<имя>`, решение PD 2026-10-23).
+ *
+ * Источник — Figma Persefona Tokens `YDjPxFrW1yXqm9RzBGQXuc`, коллекции
+ * `persefona-core` (режим value) и `persefona-semantic` (режим light), текстовые
+ * стили `persefona/*` и стили теней. Снято 2026-10-23 (presentbook-6, AID-52).
+ * Semantic ссылается только на Core — как в Figma. Значения здесь не придумываются:
+ * новый токен сначала появляется в Kit (token-change-gate), потом здесь.
+ *
+ * Чего в Kit пока нет (спека `changes/persefona-6-presentbook-2026-10-23.md` §7–§8):
+ * `bg-accent-states-*` (пачка №0), `label-m`, `body-xs`, `bg-overlay`,
+ * `accent-product-*`. Там портал держит прежнее значение с пометкой `pf-gap`.
+ */
+
+:root {
+  /* ── Core: цвет ───────────────────────────────────────────── */
+  --pf-graphite-0: #ffffff;
+  --pf-graphite-2: #fafafb;
+  --pf-graphite-3: #f5f5f7;
+  --pf-graphite-5: #edecf0;
+  --pf-graphite-15: #d4d3d9;
+  --pf-graphite-20: #bdbcc2;
+  --pf-graphite-30: #9e9da3;
+  --pf-graphite-45: #6d6c72;
+  --pf-graphite-50: #616166;
+  --pf-graphite-70: #2c2c2f;
+  --pf-graphite-100-a6: rgba(0, 0, 0, 0.06);
+  --pf-graphite-100-a8: rgba(0, 0, 0, 0.08);
+  --pf-graphite-100-a12: rgba(0, 0, 0, 0.12);
+  --pf-malachite-5: #e9f8ec;
+  --pf-malachite-10: #b9e6c9;
+  --pf-malachite-50: #077739;
+  --pf-amber-5: #fdf1e4;
+  --pf-amber-10: #f0d48a;
+  --pf-amber-50: #895706;
+  --pf-garnet-5: #ffefed;
+  --pf-garnet-15: #f3c1c1;
+  --pf-garnet-50: #a8372c;
+  --pf-lapis-5: #edf4ff;
+  --pf-lapis-15: #bcd0f7;
+  --pf-lapis-50: #2d5fb7;
+  --pf-iolite-5: #efecfe;
+  --pf-iolite-15: #d0c4fe;
+  --pf-iolite-55: #6a1fd0;
+
+  /* ── Core: отступы, углы ──────────────────────────────────── */
+  --pf-spacing-0: 0px;
+  --pf-spacing-2: 2px;
+  --pf-spacing-4: 4px;
+  --pf-spacing-6: 6px;
+  --pf-spacing-8: 8px;
+  --pf-spacing-10: 10px;
+  --pf-spacing-12: 12px;
+  --pf-spacing-16: 16px;
+  --pf-spacing-20: 20px;
+  --pf-spacing-24: 24px;
+  --pf-spacing-32: 32px;
+  --pf-spacing-40: 40px;
+  --pf-spacing-48: 48px;
+  --pf-spacing-64: 64px;
+  --pf-shape-corner-4: 4px;
+  --pf-shape-corner-8: 8px;
+  --pf-shape-corner-12: 12px;
+  --pf-shape-corner-16: 16px;
+  --pf-shape-corner-full: 9999px;
+
+  /* ── Core: типографика ────────────────────────────────────── */
+  --pf-type-family-sans-1: 'Google Sans', system-ui, sans-serif;
+  --pf-type-family-mono-1: 'Google Sans Code', ui-monospace, monospace;
+  --pf-type-size-11: 11px;
+  --pf-type-size-12: 12px;
+  --pf-type-size-13: 13px;
+  --pf-type-size-14: 14px;
+  --pf-type-size-16: 16px;
+  --pf-type-size-20: 20px;
+  --pf-type-size-32: 32px;
+  --pf-type-size-48: 48px;
+  --pf-type-lh-16: 16px;
+  --pf-type-lh-20: 20px;
+  --pf-type-lh-22: 22px;
+  --pf-type-lh-24: 24px;
+  --pf-type-lh-28: 28px;
+  --pf-type-lh-40: 40px;
+  --pf-type-lh-56: 56px;
+  --pf-type-weight-400: 400;
+  --pf-type-weight-500: 500;
+  --pf-type-tracking--1: -1px;
+  --pf-type-tracking--0_3: -0.3px;
+  --pf-type-tracking-0: 0px;
+  --pf-type-tracking-0_6: 0.6px;
+
+  /* ── Semantic: текст и иконки ─────────────────────────────── */
+  --pf-text-primary: var(--pf-graphite-70);
+  --pf-text-secondary: var(--pf-graphite-45);
+  --pf-text-muted: var(--pf-graphite-30);
+  --pf-text-disabled: var(--pf-graphite-20);
+  --pf-text-inverse: var(--pf-graphite-0);
+  --pf-text-accent: var(--pf-graphite-70);
+  --pf-text-accent-vivid: var(--pf-iolite-55);
+  --pf-text-success: var(--pf-malachite-50);
+  --pf-text-warning: var(--pf-amber-50);
+  --pf-text-error: var(--pf-garnet-50);
+  --pf-text-info: var(--pf-lapis-50);
+  --pf-text-neutral: var(--pf-graphite-50);
+  --pf-icon-primary: var(--pf-graphite-70);
+  --pf-icon-secondary: var(--pf-graphite-45);
+  --pf-icon-disabled: var(--pf-graphite-20);
+  --pf-icon-inverse: var(--pf-graphite-0);
+  --pf-icon-accent: var(--pf-graphite-70);
+  --pf-icon-accent-vivid: var(--pf-iolite-55);
+
+  /* ── Semantic: фоны и линии ───────────────────────────────── */
+  --pf-bg-surface-main: var(--pf-graphite-0);
+  --pf-bg-surface-muted: var(--pf-graphite-3);
+  --pf-bg-surface-zebra: var(--pf-graphite-2);
+  --pf-bg-inverse-main: var(--pf-graphite-70);
+  --pf-bg-accent-main: var(--pf-graphite-70);
+  --pf-bg-accent-vivid-main: var(--pf-iolite-55);
+  --pf-bg-accent-vivid-fade: var(--pf-iolite-5);
+  --pf-bg-accent-status-success-main: var(--pf-malachite-5);
+  --pf-bg-accent-status-warning-main: var(--pf-amber-5);
+  --pf-bg-accent-status-error-main: var(--pf-garnet-5);
+  --pf-bg-accent-status-info-main: var(--pf-lapis-5);
+  --pf-bg-accent-status-neutral-main: var(--pf-graphite-5);
+  --pf-line-default: var(--pf-graphite-5);
+  --pf-line-hover: var(--pf-graphite-15);
+  --pf-line-focus: var(--pf-graphite-70);
+  --pf-line-focus-inverse: var(--pf-graphite-0);
+
+  /* ── Semantic: радиусы ────────────────────────────────────── */
+  --pf-radius-s: var(--pf-shape-corner-4);
+  --pf-radius-m: var(--pf-shape-corner-8);
+  --pf-radius-l: var(--pf-shape-corner-12);
+  --pf-radius-xl: var(--pf-shape-corner-16);
+  --pf-radius-pill: var(--pf-shape-corner-full);
+
+  /* ── Текстовые стили persefona/* — `font` + `letter-spacing` ─ */
+  --pf-font-display-l: var(--pf-type-weight-500) var(--pf-type-size-48) / var(--pf-type-lh-56) var(--pf-type-family-sans-1);
+  --pf-tracking-display-l: var(--pf-type-tracking--1);
+  --pf-font-heading-l: var(--pf-type-weight-500) var(--pf-type-size-32) / var(--pf-type-lh-40) var(--pf-type-family-sans-1);
+  --pf-tracking-heading-l: var(--pf-type-tracking--0_3);
+  --pf-font-heading-m: var(--pf-type-weight-500) var(--pf-type-size-20) / var(--pf-type-lh-28) var(--pf-type-family-sans-1);
+  --pf-font-heading-s: var(--pf-type-weight-500) var(--pf-type-size-16) / var(--pf-type-lh-24) var(--pf-type-family-sans-1);
+  --pf-font-body-m: var(--pf-type-weight-400) var(--pf-type-size-14) / var(--pf-type-lh-22) var(--pf-type-family-sans-1);
+  --pf-font-body-s: var(--pf-type-weight-400) var(--pf-type-size-13) / var(--pf-type-lh-20) var(--pf-type-family-sans-1);
+  --pf-font-label-s: var(--pf-type-weight-500) var(--pf-type-size-12) / var(--pf-type-lh-16) var(--pf-type-family-sans-1);
+  /* label-xs-caps: ещё `text-transform: uppercase` */
+  --pf-font-label-xs-caps: var(--pf-type-weight-500) var(--pf-type-size-11) / var(--pf-type-lh-16) var(--pf-type-family-sans-1);
+  --pf-tracking-label-xs-caps: var(--pf-type-tracking-0_6);
+  --pf-font-code-m: var(--pf-type-weight-400) var(--pf-type-size-13) / var(--pf-type-lh-20) var(--pf-type-family-mono-1);
+  --pf-font-code-s: var(--pf-type-weight-400) var(--pf-type-size-12) / var(--pf-type-lh-16) var(--pf-type-family-mono-1);
+
+  /* ── Тени persefona/shadow-* ──────────────────────────────── */
+  --pf-shadow-1: 0 1px 2px var(--pf-graphite-100-a6), 0 4px 12px var(--pf-graphite-100-a8);
+  --pf-shadow-2: 0 2px 6px var(--pf-graphite-100-a6), 0 16px 40px var(--pf-graphite-100-a12);
+
+  /* ── Хром портала: акцент раздела ─────────────────────────────
+   * Вне разделов Driver и Rider (задачи, команда, ТТМ, управление, вход) —
+   * графит Kit (спека §7.1, п. 1а). В разделах `ProductAccentScope` подставляет
+   * цвет продукта — pf-gap: `text-accent-product-*` / `bg-accent-product-*-fade`
+   * ещё не заведены в Kit, значения — `PRODUCT_ACCENT`.
+   */
+  --ds-accent: var(--pf-text-accent);
+  --ds-accent-rgb: 44, 44, 47;
+  /* Выбранный пункт (сегмент, чип): вне продукта — `bg-accent-main` + `text-inverse` */
+  --ds-selected-bg: var(--pf-bg-accent-main);
+  --ds-selected-text: var(--pf-text-inverse);
+  /* Ссылка: вне продукта — `text-accent` с подчёркиванием (спека §1.1) */
+  --ds-link-decoration: underline;
+
+  /* Фокус — всегда графит, никогда не цвет продукта (спека §1.4) */
+  --pf-focus-ring: 2px solid var(--pf-line-focus);
+  --pf-focus-offset: 2px;
+}
+

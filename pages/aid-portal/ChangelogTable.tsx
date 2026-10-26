@@ -25,12 +25,13 @@ export interface TokenChangelog {
   entries: ChangelogEntry[];
 }
 
+/** Точка вида изменения — цвет `text-<тон>` Persefona (спека presentbook-6 §1.2, п. 5а). */
 const CHANGE_KIND_COLORS: Record<ChangelogChangeKind, string> = {
-  added: '#23AD58',
-  changed: '#005AFF',
-  fixed: '#F0A11D',
-  deprecated: '#9E9E9E',
-  removed: '#D62347',
+  added: 'var(--pf-text-success)',
+  changed: 'var(--pf-text-info)',
+  fixed: 'var(--pf-text-warning)',
+  deprecated: 'var(--pf-text-neutral)',
+  removed: 'var(--pf-text-error)',
 };
 
 function compareSemverDesc(a: string, b: string): number {
