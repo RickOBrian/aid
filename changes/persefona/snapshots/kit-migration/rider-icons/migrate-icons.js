@@ -94,6 +94,8 @@ for(const c of cards){ c.x=x; c.y=top; x+=c.width+GAP; }
 const bottom=Math.max(...cards.map(c=>c.y+c.height));
 SEC.resizeWithoutConstraints(Math.max(x, GAP+1216+GAP), bottom+GAP);
 // чейнжлог — справа от секции, верх по верху, отступ 80 (таблица не перестраивается)
-const CL=await figma.getNodeByIdAsync(CHANGELOG); CL.x=SEC.x+SEC.width+GAP; CL.y=SEC.y;
+// чейнжлог — своя секция «Changelog · Icons» (условие PD 2026-10-26: «чейнжлоги ВСЕГДА должны быть отдельной секцией или фреймом рядом с гайдом»)
+const CL=await figma.getNodeByIdAsync(CHANGELOG); const cs=figma.createSection(); cs.name='Changelog · Icons'; P.appendChild(cs); cs.fills=[paint(C['surface-main'])]; cs.strokes=[];
+cs.x=SEC.x+SEC.width+GAP; cs.y=SEC.y; cs.appendChild(CL); CL.x=GAP; CL.y=GAP; cs.resizeWithoutConstraints(CL.width+2*GAP, CL.height+2*GAP);
 log.hp=hp.id; log.section=[SEC.x,SEC.y,SEC.width,SEC.height];
 return log;
