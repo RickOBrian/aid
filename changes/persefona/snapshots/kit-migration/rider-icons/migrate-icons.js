@@ -7,7 +7,7 @@ const K = {
   st: { 'code-s':'dc6f78fc82ce91d3a06a28b1dabb01d17df35cca' },  // 12/16 — та же метрика, что у подписи Rider Captions/Caption
   c: { 'text-secondary':'4b2825ef9a779f55c1332634032ad0b4faa64e20','surface-main':'125448d6c36643d97f23500c7b74b1874738c645','line-default':'2a52e5ad5a83039e73014691e06c54e3d1b1cbfb' },
   sp: { 24:'b287ebd1044990477d532e55da91e824f099a34b', 48:'e0272ce24e25e0dc663e2ccf3adac07ae09cc35b' },
-  r: { 16:'c0fef2998af49f2638481b5cf3968e5d2b0bb727' },
+  r: { l:'ca07e9e0afde0bd5cb5c952a9daf371b3bd68d4c' },  // radius-l (12) — как у мастера IslandBlock
   comp: { headerPage:'21df81e076e13e27d067cc374c63bc38bdbea9e3', headerSection:'09e45bfbda7bdf79a6a47b1c969ade6e913b0467' },
 };
 const S={},C={},SP={},R={};
@@ -39,7 +39,7 @@ for(const card of cards){
   const title=titleT?titleT.characters:card.name;
   // карточка — вид IslandBlock
   card.fills=[paint(C['surface-main'])]; card.strokes=[paint(C['line-default'])]; card.strokeWeight=1; card.strokeAlign='INSIDE';
-  card.effects=[]; bindR(card,R[16]); card.clipsContent=false;
+  card.effects=[]; bindR(card,R.l); card.clipsContent=false; card.strokesIncludedInLayout=false; // иначе шапка на y=49
   const hs=HS.createInstance(); hs.name='HeaderSection'; hs.setProperties({[tkey(hs,'Title')]:title,[tkey(hs,'Show Subtitle')]:false});
   if(card.layoutMode==='VERTICAL'){
     const rows=card.children.filter(n=>n!==head);
