@@ -2,12 +2,12 @@
 destination: products/persefona/rules/
 name: persefona-figma-pages
 metadata:
-  version: "0.10.4"
+  version: "0.10.5"
   kind: standard
   status: draft
   platforms: [web]
   owner: design-system-team
-  lastReviewed: "2026-10-25"
+  lastReviewed: "2026-10-26"
   machineFile: null
 description: >
   Страницы файлов Figma AID: из каких зон состоит файл, как называется
@@ -354,6 +354,8 @@ Comparator. Их не переименовывают, в том числе пр�
 - слои-контракт (выше, «Состав») не переименовывают и не перекладывают;
 - после перевода сверяют id корня с `figmaTable` и прогоняют
   `writeUnpublishedRow` на одной таблице файла.
+- если таблицу только сдвинули (меняется позиция фрейма, а слои и id те же),
+  прогон не нужен: плагин ищет таблицу по id (#463).
 
 Таблицу не пересобирают из образца: копия получает новый id (выше, «Не
 пересоздавать»). Файлы Rider и Driver для этого подключают библиотеки
@@ -722,6 +724,8 @@ Archive 31) — столько же, сколько в снимке «до» н�
 
 ## 11. Changelog
 
+- **0.10.5** — 2026-10-26. §6.5: сдвиг таблицы без правки слоёв — без
+  прогона `writeUnpublishedRow` (#463, вопрос 3).
 - **0.10.4** — 2026-10-25. §6.6 по переводу аудита TabBar (#436 §7):
   `IslandDocBlock` убран (в Kit его нет); обложка секции аудита — блок
   `IslandBlock`, не `HeaderPage`; таблицы — `TableCell` во фрейме Kit,
