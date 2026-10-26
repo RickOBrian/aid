@@ -89,114 +89,111 @@ export function ComponentReleaseStatus({
 
 export const COMPONENT_RELEASE_STATUS_STYLE = `
 .dsw-release {
-  margin-top: 16px;
-  padding-top: 48px;
-  border-top: 1px solid #ebedf0;
+  margin-top: var(--pf-spacing-16);
+  padding-top: var(--pf-spacing-48);
+  border-top: 1px solid var(--pf-line-default);
 }
 .dsw-release-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--pf-spacing-12);
+  margin-bottom: var(--pf-spacing-16);
 }
 .dsw-release-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
+  font: var(--pf-font-heading-m);
+  color: var(--pf-text-primary);
 }
 .dsw-release-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
+/* Badge: версия — Neutral, «ждёт» — Warning, «выпущено» — Success (мягкие, без рамки) */
 .dsw-version-badge,
 .dsw-pending-badge,
 .dsw-released-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s);
+  white-space: nowrap;
 }
 .dsw-version-badge {
-  background: #f5f5f5;
-  border: 1px solid #ebedf0;
-  color: rgba(0, 0, 0, 0.54);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: var(--pf-bg-accent-status-neutral-main);
+  color: var(--pf-text-neutral);
 }
 .dsw-pending-badge {
-  background: #fff8e6;
-  border: 1px solid #f0d48a;
-  color: #8a6a00;
+  background: var(--pf-bg-accent-status-warning-main);
+  color: var(--pf-text-warning);
 }
 .dsw-released-badge {
-  background: #eef8f1;
-  border: 1px solid #b9e6c9;
-  color: #1f7a3f;
+  background: var(--pf-bg-accent-status-success-main);
+  color: var(--pf-text-success);
 }
 .dsw-release-meta {
   display: grid;
   grid-template-columns: 160px 1fr;
-  gap: 8px 16px;
-  font-size: 13px;
-  line-height: 20px;
-  margin: 0 0 20px;
-  padding: 16px 20px;
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
+  gap: var(--pf-spacing-8) var(--pf-spacing-16);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-primary);
+  margin: 0 0 var(--pf-spacing-20);
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-l);
 }
 .dsw-release-meta dt {
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--pf-text-secondary);
 }
 .dsw-release-meta dd {
   margin: 0;
 }
+.dsw-release-meta code {
+  font: var(--pf-font-code-s);
+}
+/* Banner Warning (без рамки) */
 .dsw-pending-panel {
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  border: 1px solid #f0d48a;
-  border-radius: 12px;
-  background: #fffdf5;
+  margin-bottom: var(--pf-spacing-24);
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
+  border: none;
+  border-radius: var(--pf-radius-l);
+  background: var(--pf-bg-accent-status-warning-main);
 }
 .dsw-pending-panel-title {
-  margin: 0 0 12px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 18px;
-  color: #8a6a00;
+  margin: 0 0 var(--pf-spacing-12);
+  font: var(--pf-font-body-s);
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-warning);
 }
 .dsw-pending-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--pf-spacing-20);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dsw-pending-item {
-  font-size: 13px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.7);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-primary);
 }
+/* Импакт — Badge Neutral */
 .dsw-pending-impact {
   display: inline-block;
-  margin-right: 8px;
-  padding: 0 6px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.06);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  margin-right: var(--pf-spacing-8);
+  padding: 0 var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  background: var(--pf-bg-accent-status-neutral-main);
+  color: var(--pf-text-neutral);
+  font: var(--pf-font-label-s);
 }
 .dsw-pending-draft {
   display: block;
-  margin-top: 4px;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 12px;
-  line-height: 18px;
+  margin-top: var(--pf-spacing-4);
+  color: var(--pf-text-secondary);
+  font-size: 12px; /* pf-gap: body-xs 12/16·400 */
+  line-height: 18px; /* pf-gap: body-xs */
 }
 `;

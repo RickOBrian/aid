@@ -15,13 +15,15 @@
 
 ## Чаты
 
+Имена — по `ORCHESTRATION.md` §1a: приставка `AID ·` — только у Штаба.
+
 | Чат | Папка | Что правит | Вход в контекст |
 |---|---|---|---|
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
-| AID · Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
-| AID · Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; клон `arturuxui/figma-components-swapper` | весь продукт | первое сообщение чата → его план |
-| AID · Guide · Git for Beginners | клон `arturuxui/aid-git-guide` | весь репозиторий гайда | его `CLAUDE.md` → `docs/PLAN.md` |
-| AID · Components · Rework | `<рабочая папка>/Components Rework` (без git) | файлы Figma: аудит локальных компонентов дизайнеров и перенос в библиотеки компонентов Rider/Driver по скиллу `wb-aid-migration` | первая задача — от `arturuxui` в чате |
+| Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
+| Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; клон `arturuxui/figma-components-swapper` | весь продукт | первое сообщение чата → его план |
+| Guide · Git for Beginners | клон `arturuxui/aid-git-guide` | весь репозиторий гайда | его `CLAUDE.md` → `docs/PLAN.md` |
+| Components · Rework | `<рабочая папка>/Components Rework` (без git) | файлы Figma: аудит локальных компонентов дизайнеров и перенос в библиотеки компонентов Rider/Driver по скиллу `wb-aid-migration` | первая задача — от `arturuxui` в чате |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 

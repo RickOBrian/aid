@@ -1,9 +1,9 @@
 /**
  * Shared value-kind marking for component review pages.
  *
- * Palette matches the Anatomy Inspector chips (`AnatomyInspector.tsx`) so a
- * token reference and a raw/exception value read the same way everywhere on
- * the page.
+ * Persefona `Badge` Success / Info / Warning / Error (presentbook-6 §1.2); the
+ * Anatomy Inspector chips (`AnatomyInspector.tsx`) use the same tones so a
+ * token reference and a raw/exception value read the same way everywhere.
  */
 
 export type ComponentValueKind =
@@ -22,29 +22,26 @@ const VALUE_KIND_LABEL: Record<ComponentValueKind, string> = {
 export const COMPONENT_VALUE_KIND_STYLE = `
 .ds-vkind {
   display: inline-block;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s);
   white-space: nowrap;
 }
 .ds-vkind--semantic-token {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--pf-bg-accent-status-success-main);
+  color: var(--pf-text-success);
 }
 .ds-vkind--platform-convention {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--pf-bg-accent-status-info-main);
+  color: var(--pf-text-info);
 }
 .ds-vkind--raw-value {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--pf-bg-accent-status-warning-main);
+  color: var(--pf-text-warning);
 }
 .ds-vkind--hardcode {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--pf-bg-accent-status-error-main);
+  color: var(--pf-text-error);
 }
 `;
 

@@ -18,7 +18,7 @@ export const DS_VALUE_META_STYLE = `
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: var(--pf-spacing-2);
   min-width: 0;
 }
 .ds-value-meta--center {
@@ -31,18 +31,18 @@ export const DS_VALUE_META_STYLE = `
 }
 .ds-value-meta__primary {
   margin: 0;
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.87);
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-primary);
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 .ds-value-meta__caption {
   margin: 0;
+  /* pf-gap: body-xs 12/16·400 — до него прежний размер */
+  font-family: var(--pf-type-family-sans-1);
   font-size: 10px;
   line-height: 12px;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.38);
+  font-weight: var(--pf-type-weight-400);
+  color: var(--pf-text-secondary);
 }
 `;

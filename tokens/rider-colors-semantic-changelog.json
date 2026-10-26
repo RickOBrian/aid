@@ -1,11 +1,24 @@
 {
   "artifact": "Rider Colors/Semantic",
-  "currentVersion": "1.10.0",
+  "currentVersion": "1.11.0",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "31:66"
   },
   "entries": [
+    {
+      "version": "1.11.0",
+      "date": "2026-10-22",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Background/Tab Selected — фон выбранного таба в TabBar",
+          "details": "Background/Tab Selected: Day #D9D9D9 50% (Plus darker), Night #FFFFFF 20%"
+        }
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-10-15",

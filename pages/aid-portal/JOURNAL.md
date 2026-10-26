@@ -25,6 +25,7 @@
 
 | Что | Где записано |
 |---|---|
+| Persefona, волна 2: заменить `pf-gap` после пачки №0 и токенов §8 (`label-m`, `body-xs`, `bg-overlay`, `accent-product-*`); интерактивные блоки §7.2 и обложка гайда HeaderPage — после сборки в Kit | спека `changes/persefona-6-presentbook-2026-10-23.md` §4, §7–§8 |
 | Promote в production — договорённость или настройка | Q-11, `docs/standards-alpha/OPEN-QUESTIONS.md` |
 | `src/pages/FigmaStyles/` остался без просмотрщика | Q-14 |
 | Стандарты ссылаются на скрипты в `docs/storybook/`, не подключённые к порталу | Q-15 |
@@ -74,3 +75,4 @@
 | 2026-10-15 | «Управление → Команда» (team-3, ADR-047): `/manage/team` — карточки людей и AI-инженеров (бейдж «AI», куратор, экземпляры) из `owners.json` на main через `/api/team`; из карточки — задачи с фильтром по человеку | — |
 | 2026-10-15 | Вход на превью: шлюз presentbook-preview пускает POST на `/{pr}/{path+}` — с 06.10 форма слала POST в `/pr-N/api/login` и получала 405 | — |
 | 2026-10-21 | Гайды на согласовании: поле `publication`, раздел «На согласовании», многоглавный гайд со стороны — «Git for Beginners» | ветка `presentbook/git-guide-preview` |
+| 2026-10-23 | presentbook-6 (AID-52), волна 1: портал на UI Kit Persefona — переменные `--pf-*` из Figma (`persefona/tokens.css`), Badge и текстовые стили (`persefona/kit.css`), Google Sans Code, веса 400/500, акцент вне продукта — графит, фокус `line-focus`, точки 480/768/1024/1280. Где токена нет — прежнее значение с пометкой `pf-gap` (ждёт пачку №0 и заявку §8 спеки) | — |
