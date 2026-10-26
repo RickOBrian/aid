@@ -6,7 +6,7 @@
   "artifact": "Map",
   "componentId": "map",
   "product": "rider",
-  "changeSummary": "Map Rider — новый компонент в библиотеке Rider Components: заглушка карты 2GIS для макетов (в коде — MapView SDK 2GIS, из Figma не реализуется). Задача AID-71 (designer-10, #444). Вход — прототип Map · B (New Rider DEV, 5151:68911). Аудит — пейдж «👀 Map · audit». Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
+  "changeSummary": "Map Rider — новый компонент в библиотеке Rider Components: системный элемент (Platform) — заглушка карты 2GIS для макетов (в коде — MapView SDK 2GIS, из Figma не реализуется). Задача AID-71 (designer-10, #444). Вход — прототип Map · B (New Rider DEV, 5151:68911). Аудит — пейдж «👀 Map · audit». Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
