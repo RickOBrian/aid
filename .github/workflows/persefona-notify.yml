@@ -39,12 +39,13 @@ jobs:
           if [ "$author" != arturuxui ] && [ "$merger" != arturuxui ]; then
             echo "#$pr: автор $author, мерж $merger — не arturuxui, issue не нужен"; exit 0
           fi
+          # previous_filename — чтобы перенос файла из зоны тоже попал в список.
           # Заголовок PR — текст автора: только через переменную, не подстановкой
           # в скрипт, чтобы он не исполнился как shell.
           title=$(gh api "repos/$REPO/pulls/$pr" --jq .title)
-          files=$(gh api "repos/$REPO/pulls/$pr/files" --paginate --jq '.[].filename' \
-            | grep -E '^(products/persefona/|plugins/aid-standards/repo/products/persefona/)' \
-            | sed 's/^/- `/; s/$/`/')
+          files=$(gh api "repos/$REPO/pulls/$pr/files" --paginate --jq '.[] | .filename, (.previous_filename // empty)' \
+            | { grep -E '^(products/persefona/|plugins/aid-standards/repo/products/persefona/)' || true; } \
+            | sort -u | sed 's/^/- `/; s/$/`/')
           body=$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
             "Правка стандартов Persefona от arturuxui смержена в \`main\`: #$pr ($SHA)." \
             "Файлы зоны Persefona:" \
