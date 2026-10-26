@@ -3,13 +3,54 @@
   "page": "1:2 ✅ Typography",
   "method": "Как в #465 (rider-tokens/fingerprint.js): отсортированные строки текстов блока, у экземпляров — видимые тексты, у таблиц чейнжлога — текстовые свойства. Хэш — FNV-1a 32 по строкам через \\n.",
   "blocks": {
-    "11:9 → 1632:170 (шапка Rider Typography → HeaderPage)": { "before": "3 a84f9032", "after": "5 3bfbcf26", "note": "По решению #465 §5.2 «б»: Title «Typography», в Subtitle прежние заголовок и подпись, метки «Принято», «Rider», «1.2.0»" },
-    "11:12 Data (Rider Typography)": { "before": "436 20648d78", "after": "436 20648d78" },
-    "184:92 → 1631:173 (шапка Outstanding → HeaderPage)": { "before": "3 b0ff5f92", "after": "5 16bb16b0", "note": "Так же; метка версии «1.0.0»" },
-    "184:98 Data (Outstanding)": { "before": "244 5224c7f1", "after": "244 5224c7f1" },
-    "11:502 CHANGELOG (тексты не менялись, не трогался)": { "before": "26 6903751c", "after": "26 6903751c" },
-    "184:971 CHANGELOG Outstanding (не трогался)": { "before": "12 f0c1f577", "after": "12 f0c1f577" }
+    "11:9 → 1632:170 (шапка Rider Typography → HeaderPage)": {
+      "before": "3 a84f9032",
+      "after": "5 3bfbcf26",
+      "note": "По решению #465 §5.2 «б»: Title «Typography», в Subtitle прежние заголовок и подпись, метки «Принято», «Rider», «1.2.0»",
+      "after_review": "6 94901587",
+      "note_review": "Правка #466: в слот добавлена метка «Outstanding 1.0.0» (слой «{version} Outstanding») — версия второй коллекции"
+    },
+    "11:12 Data (Rider Typography)": {
+      "before": "436 20648d78",
+      "after": "436 20648d78"
+    },
+    "184:98 Data (Outstanding)": {
+      "before": "244 5224c7f1",
+      "after": "244 5224c7f1"
+    },
+    "11:502 CHANGELOG (тексты не менялись, не трогался)": {
+      "before": "26 6903751c",
+      "after": "26 6903751c"
+    },
+    "184:971 CHANGELOG Outstanding (не трогался)": {
+      "before": "12 f0c1f577",
+      "after": "12 f0c1f577"
+    },
+    "184:92 → 1637:329 (шапка Outstanding → HeaderSection)": {
+      "before": "3 b0ff5f92",
+      "after_kit": "5 16bb16b0",
+      "after_review": "2 8309ff13",
+      "note": "Правка #466 (одна шапка на странице): HeaderSection — Title «Стили типографики Outstanding», Subtitle — прежняя подпись; версия «1.0.0» — в шапке 1632:170"
+    }
   },
-  "shell": { "rawPaints": 0, "textsWithoutKitStyle": 0, "riderVariablesInShell": 0 },
-  "content": { "samples": 25, "note": "Сэмплы «Съешь ещё этих мягких булок» — стили и цвет Rider, не тронуты" }
+  "shell": {
+    "rawPaints": 0,
+    "textsWithoutKitStyle": 0,
+    "riderVariablesInShell": 0
+  },
+  "content": {
+    "samples": 25,
+    "note": "Сэмплы «Съешь ещё этих мягких булок» — стили и цвет Rider, не тронуты"
+  },
+  "sections": {
+    "1637:335 typography-sem": [
+      "11:8",
+      "11:502"
+    ],
+    "1637:336 typography-sem-out": [
+      "184:91",
+      "184:971"
+    ],
+    "note": "Узлы перемещены в секции, id прежние; картинка 142:34 осталась на холсте"
+  }
 }
