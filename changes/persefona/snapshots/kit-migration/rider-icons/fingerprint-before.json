@@ -1,0 +1,21 @@
+{
+  "file": "n6LppQbTv85yI29h6u30DI",
+  "page": "0:1 Icons",
+  "date": "2026-10-26",
+  "method": "отсортированные строки: TEXT вне экземпляров и мастеров + текстовые свойства экземпляров; хэш djb2-xor по строкам через \\u0001",
+  "blocks": {
+    "18:52 Description": { "n": 2, "hash": "df0079cb" },
+    "1562:375 Brands": { "n": 37, "hash": "ba4b65f3" },
+    "494:10 Controls": { "n": 26, "hash": "e27d3182" },
+    "541:37 informative": { "n": 74, "hash": "7237d0de" },
+    "463:34 Actions": { "n": 36, "hash": "dd0aab79" },
+    "905:4 Addresses": { "n": 14, "hash": "ab72e051" },
+    "1:1699 Status": { "n": 1, "hash": "c5df0d51" },
+    "1:1710 Markers": { "n": 1, "hash": "4f3744f4" },
+    "1:1704 Scooters": { "n": 1, "hash": "b7d50c65" },
+    "3867:222 Road Events": { "n": 10, "hash": "6ab89cf0" },
+    "3867:228 Payments": { "n": 10, "hash": "c76f18a" },
+    "3867:234 Theme": { "n": 4, "hash": "95079fc9" },
+    "3703:4 CHANGELOG": { "n": 54, "hash": "a926460e" }
+  }
+}
