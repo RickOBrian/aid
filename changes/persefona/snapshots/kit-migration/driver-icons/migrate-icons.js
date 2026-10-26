@@ -47,7 +47,7 @@ for(const id of HIGHLIGHTS){ const r=await figma.getNodeByIdAsync(id); if(r) r.r
 for(const t of RB.findAll(n=>n.type==='TEXT'&&n!==rhead.findOne(x=>x.type==='TEXT'))){
   for(const f of t.getRangeAllFontNames(0,t.characters.length)) await figma.loadFontAsync(f);
   const segs=t.getStyledTextSegments(['fontName','fills']);
-  for(const s of segs){ const fam=s.fontName.family, bold=/Bold|Medium/.test(s.fontName.style), f=s.fills[0]; const h=f?hex(f.color):''; const op=f?(f.opacity??1):1;
+  for(const s of segs){ const fam=s.fontName.family, f=s.fills[0]; const h=f?hex(f.color):''; const op=f?(f.opacity??1):1;
     let st,c;
     if(/Mono/.test(fam)){ st='code-m'; c= h==='#8526FF'?'text-accent-vivid': h==='#D62347'?'text-error': (op>=0.8||/Bold/.test(s.fontName.style))?'text-primary':'text-secondary'; }
     else if(/Bold/.test(s.fontName.style)){ if(op>=0.8){ st='heading-s'; c='text-primary'; } else { st='body-m'; c='text-primary'; } } // полужирное внутри абзаца → body-m text-primary (вопрос 1)
@@ -82,6 +82,8 @@ sec.resizeWithoutConstraints(Math.max(x,GAP+RB.width+GAP), maxB+GAP);
 const items=hp.findOne(n=>n.type==='TEXT'&&n.name==='Contents Items'); let pos=0;
 items.characters.split('\n').forEach((l,i)=>{ items.setRangeHyperlink(pos,pos+l.length,{type:'NODE',value:order[i]}); pos+=l.length+1; });
 // 4. чейнжлог — справа от секции, верх по верху, отступ 80 (таблица не перестраивается)
-const CL=await figma.getNodeByIdAsync(CHANGELOG); CL.x=sec.x+sec.width+GAP; CL.y=sec.y;
+// чейнжлог — своя секция «Changelog · Icons» справа, верх по верху, отступ 80 (условие PD 2026-10-26: «чейнжлоги ВСЕГДА должны быть отдельной секцией или фреймом рядом с гайдом»)
+const CL=await figma.getNodeByIdAsync(CHANGELOG); const cs=figma.createSection(); cs.name='Changelog · Icons'; P.appendChild(cs); cs.fills=[paint(C['surface-main'])]; cs.strokes=[];
+cs.x=sec.x+sec.width+GAP; cs.y=sec.y; cs.appendChild(CL); CL.x=GAP; CL.y=GAP; cs.resizeWithoutConstraints(CL.width+2*GAP, CL.height+2*GAP);
 log.hp=hp.id; log.section=[sec.id,sec.x,sec.y,sec.width,sec.height];
 return log;
