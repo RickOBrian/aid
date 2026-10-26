@@ -1,6 +1,6 @@
 // persefona-6 (AID-64): перевод витрин Shadows 1:3, Glass 66:278, Space 1:4, Radius 1:5 (Rider Tokens yrfG6u9osujKX8e1B14lpT) на Kit Persefona.
 // Запуск через use_figma, по прогону на страницу: RUN = {page, frame, title, version, cl, section}.
-//   ['1:3','17:20','Shadows',null,'21:15','effects · Shadows'], ['66:278','70:12','Glass',null,'71:17','effects · Glass'],
+//   ['1:3','17:20','Shadows',null,'21:15','effects/Shadows'], ['66:278','70:12','Glass',null,'71:17','effects/Glass'],
 //   ['1:4','62:34','Space','1.0.2','208:54','space'], ['1:5','63:14','Radius','1.0.0','204:50','radius'] (version — только если в шапке её нет: из последней строки чейнжлога).
 // Меняется только вид оболочки. Шапка — по решению приёмки #465 §5.2 «б» (Title = имя страницы, прежние заголовок и подпись — в Subtitle,
 // метки «Принято», «Rider», версия со слоем {version}). Образцы Rider (прямоугольник с тенью, стекло, полосы отступов, рамки скруглений) не трогаются.
