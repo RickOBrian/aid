@@ -879,6 +879,31 @@
       "hasChangelogSection": true,
       "dependsOn": [],
       "migratedFrom": ".cursor/rules/"
+    },
+    {
+      "id": "persefona-kit-improvement",
+      "title": "Persefona: улучшение визуального языка",
+      "kind": "protocol",
+      "humanFile": "products/persefona/rules/persefona-kit-improvement.md",
+      "machineFile": null,
+      "version": "1.0.0",
+      "status": "alpha",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "token-change-gate",
+        "component-gate",
+        "naming-conventions",
+        "accessibility",
+        "conformance-levels",
+        "semver-guide",
+        "release-gate"
+      ],
+      "product": "persefona"
     }
   ],
   "formTemplate": "skills/_shared/protocols/guide-template.md",
