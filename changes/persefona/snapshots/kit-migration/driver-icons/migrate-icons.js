@@ -65,6 +65,8 @@ tColor.y=tOp.y+tOp.height+40; gShots.y=gLayers.y+gLayers.height+40; shot.y=gShot
 main.resizeWithoutConstraints(main.width, Math.max(...mk.map(n=>n.y+n.height)));
 { const rb=RB.absoluteBoundingBox; let mb=0; for(const n of RB.findAll(n=>n.type!=='FRAME')){ const b=n.absoluteRenderBounds||n.absoluteBoundingBox; if(b) mb=Math.max(mb,b.y+b.height-rb.y); }
   RB.resizeWithoutConstraints(RB.width, Math.round(mb)+48); } // высота — по нижнему краю содержимого
+{ const rb=RB.absoluteBoundingBox; let m=1e9; for(const k of side.findAll(x=>x.type!=='FRAME')){ const b=k.absoluteBoundingBox; if(b) m=Math.min(m,b.x-rb.x);} const dx=48-m; side.x+=dx; main.x+=dx; } // колонки по x 48, как HeaderSection (приёмка)
+RB.name='Icon rules';
 
 // 3. секция Icons: шапка страницы, правила, карточки в ряд
 const sec=figma.createSection(); sec.name='Icons'; P.appendChild(sec); sec.x=0; sec.y=RB.y-GAP; sec.fills=[paint(C['surface-main'])]; sec.strokes=[]; // у новой секции по умолчанию обводка #000000
