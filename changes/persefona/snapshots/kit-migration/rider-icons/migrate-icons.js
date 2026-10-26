@@ -33,6 +33,8 @@ const cards=SEC.children.filter(n=>n.type==='FRAME').sort((a,b)=>a.x-b.x);
 
 for(const card of cards){
   const head=card.children.find(n=>n.name==='Head');
+  if(!head){ log.left.push('нет Head '+card.id); continue; }
+  if(card.layoutMode==='HORIZONTAL'){ log.left.push('горизонтальный автолейаут '+card.id); continue; } // в этом файле таких нет: 8 VERTICAL + 3 NONE
   const titleT=head&&head.findOne(n=>n.type==='TEXT');
   const title=titleT?titleT.characters:card.name;
   // карточка — вид IslandBlock
