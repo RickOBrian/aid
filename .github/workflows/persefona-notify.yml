@@ -1,0 +1,55 @@
+name: persefona-notify
+
+# О каждой правке arturuxui в стандартах Persefona PD получает issue, чтобы
+# при желании откатить (решение PD 2026-10-26, #476; devops-4, AID-77).
+# Правку arturuxui подтверждает сам, PD её не согласует, а узнаёт о ней.
+#
+# Срабатывает на push в main, задевший зону Persefona: по коммиту находит
+# PR, и если его автор или тот, кто его смержил, — arturuxui, заводит issue.
+# Push, а не pull_request: событие PR из форка получает токен только на
+# чтение. Секретов не нужно: только GITHUB_TOKEN с правом завести issue.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'products/persefona/**'
+      - 'plugins/aid-standards/repo/products/persefona/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  notify:
+    name: Issue PD о правке Persefona
+    runs-on: ubuntu-latest
+    steps:
+      - name: Завести issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          pr=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '[.[] | select(.merged_at != null)][0].number // empty')
+          if [ -z "$pr" ]; then echo "PR для $SHA не найден"; exit 0; fi
+          author=$(gh api "repos/$REPO/pulls/$pr" --jq .user.login)
+          merger=$(gh api "repos/$REPO/pulls/$pr" --jq '.merged_by.login // ""')
+          if [ "$author" != arturuxui ] && [ "$merger" != arturuxui ]; then
+            echo "#$pr: автор $author, мерж $merger — не arturuxui, issue не нужен"; exit 0
+          fi
+          # Заголовок PR — текст автора: только через переменную, не подстановкой
+          # в скрипт, чтобы он не исполнился как shell.
+          title=$(gh api "repos/$REPO/pulls/$pr" --jq .title)
+          files=$(gh api "repos/$REPO/pulls/$pr/files" --paginate --jq '.[].filename' \
+            | grep -E '^(products/persefona/|plugins/aid-standards/repo/products/persefona/)' \
+            | sed 's/^/- `/; s/$/`/')
+          body=$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
+            "Правка стандартов Persefona от arturuxui смержена в \`main\`: #$pr ($SHA)." \
+            "Файлы зоны Persefona:" \
+            "$files" \
+            "Откатить при желании: PR с \`git revert -m 1 $SHA\` (для squash — без \`-m 1\`). Решение PD 2026-10-26 (#476): права равные, правку PD не согласует, это уведомление.")
+          gh issue create --repo "$REPO" --assignee RickOBrian \
+            --title "Persefona: правка arturuxui — #$pr $title" \
+            --body "$body"
