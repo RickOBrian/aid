@@ -6,7 +6,7 @@
   "artifact": "TabBar",
   "componentId": "tab-bar",
   "product": "rider",
-  "changeSummary": "TabBar Rider — новый компонент в библиотеке Rider Components, первый прогон флоу компонента (figma-library-workflow 0.3.0, раздел 3.2). Аудит — пейдж «🚧 TabBar · аудит». Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
+  "changeSummary": "TabBar Rider — новый компонент в библиотеке Rider Components, первый прогон флоу компонента (figma-library-workflow 0.3.0, раздел 3.2). Пейдж — «🚧 TabBar · construction» (до 26.10 — «🚧 TabBar · аудит»). Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
