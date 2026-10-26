@@ -100,7 +100,9 @@ AID: Presentbook, гайды, чейнжлоги, страницы аудита 
 Presentbook; Kit улучшает их как арт-директор: каждое улучшение —
 предложение «было / стало / почему» на приёмку Standards · Persefona,
 прежние решения PD по Persefona — только отдельным ответом PD
-(решение PD 2026-10-23). Первая очередь — Figma. Чаты: Designer · Persefona и
+(решение PD 2026-10-23) или подтверждением arturuxui: права на стандарты
+Persefona у PD и arturuxui равные, правку со своей стороны каждый
+подтверждает сам (решение PD 2026-10-26). Первая очередь — Figma. Чаты: Designer · Persefona и
 Standards · Persefona — постоянные; применение Kit в продукте —
 Designer · Persefona · <задача> под задачу после приёмки базы Kit
 (решение PD 2026-10-23); код — Developer · Persefona под задачу. Standards · Persefona ниже основного Standards: спор — Standards,
