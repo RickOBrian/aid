@@ -113,6 +113,10 @@
 
 - force-push даже в свою ветку — только с «да» PD; вместо rebase — merge
   `main` в ветку.
+- правка файла, который входит в зеркало плагина `aid-standards`
+  (`plugins/aid-standards/mirror.json`: `skills/`, `products/`, `tokens/`,
+  реестр и другие), — в том же PR `node scripts/sync-plugin-mirror.mjs`
+  и коммит копий; иначе инженеры получат устаревшие стандарты (#348).
 
 ## 9. Где ещё живут правила
 

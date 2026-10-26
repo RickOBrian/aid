@@ -33,70 +33,68 @@ export interface ComponentMetaHeaderProps {
 
 export const COMPONENT_META_HEADER_STYLE = `
 .ds-cmeta {
-  margin-bottom: 32px;
+  margin-bottom: var(--pf-spacing-32);
 }
 .ds-cmeta-identity {
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-l);
   overflow: hidden;
 }
 .ds-cmeta-title {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  padding: 14px 20px;
-  border-bottom: 1px solid #ebedf0;
-  background: #fafafa;
+  gap: var(--pf-spacing-8);
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
+  border-bottom: 1px solid var(--pf-line-default);
+  background: var(--pf-bg-surface-zebra);
 }
 .ds-cmeta-title code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 15px;
-  font-weight: 600;
-  color: #2d2c2e;
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
 .ds-cmeta-alias {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-secondary);
 }
 .ds-cmeta-rows {
   display: grid;
   grid-template-columns: 150px minmax(0, 1fr);
   gap: 0;
   margin: 0;
-  padding: 8px 20px 12px;
-  font-size: 13px;
-  line-height: 20px;
+  padding: var(--pf-spacing-8) var(--pf-spacing-20) var(--pf-spacing-12);
+  font: var(--pf-font-body-s);
 }
 .ds-cmeta-rows dt {
-  padding: 5px 0;
-  color: rgba(0, 0, 0, 0.45);
+  padding: 5px 0; /* pf-gap: шаг 5 вне шкалы — поля IslandRow */
+  color: var(--pf-text-secondary);
 }
 .ds-cmeta-rows dd {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
   min-width: 0;
   margin: 0;
-  padding: 5px 0;
+  padding: 5px 0; /* pf-gap: шаг 5 вне шкалы — поля IslandRow */
 }
 .ds-cmeta-value {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  color: #2d2c2e;
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-primary);
   overflow-wrap: anywhere;
 }
 .ds-cmeta-link {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
+  font: var(--pf-font-code-s);
   color: var(--ds-accent);
-  text-decoration: none;
+  text-decoration: var(--ds-link-decoration);
   overflow-wrap: anywhere;
 }
 .ds-cmeta-link:hover {
   text-decoration: underline;
 }
-@media (max-width: 640px) {
+.ds-cmeta-link:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
+}
+@media (max-width: 767px) {
   .ds-cmeta-rows {
     grid-template-columns: minmax(0, 1fr);
   }
