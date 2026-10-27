@@ -1,0 +1,38 @@
+{
+  "id": "component-balance",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "balance",
+  "componentId": "balance",
+  "product": "driver",
+  "changeSummary": "Кнопка бара Driver `balance` — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Мастер `balance` 89:2876 (Controls): 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. Web, iOS, Android — реализаций нет. Все цвета на переменных Driver (Light Ind, Icons/Warning), новых токенов для кольца точки не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а 8а»: кольцо точки — Bg/Actions вместо Strokes/Primary (ночью было светлым); точка — экземпляр mini_notification в границах кнопки вместо локального вектора; ось Active → Disabled (True / False); Notification — boolean, подпись — TEXT, иконка — INSTANCE_SWAP; добавить Pressed и Focused, Hover — только Web; длинная подпись — одна строка, многоточие. Ждут Standards: имя по роли (BarButton или ActionBarItem, вопрос 5) и модель недоступного — токены 38% против прозрачности 40% у Switch (вопрос 7). Найдено при сборке аудита, ещё не задавалось: кольцо фокуса на тёмном баре — Strokes/Primary днём не виден, нужен белый токен (вопрос 9, дизайнер); у bar/button в варианте Main подписи и иконки на Texts/Icons Primary Inverted — ночью тёмные на тёмном (вопрос 10, куратор). В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Pressed показан хексом-допущением #FFFFFF 12%. Сборка также: auto layout, слои icon / label / dot, radius-flat снять, описание и ссылки на документацию. Аудит — пейдж «👀 Balance · audit» 452:889, блоки 0–8, день и ночь на 360; мастера не правились. Текущей версии нет. Переименование оси и сета ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Кнопка бара: имя по роли, свойство «недоступна» — Disabled; подпись, иконка и уведомление — свойства; добавлены нажатие и фокус; кольцо точки уведомления не светится ночью"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "452:889",
+    "componentPage": "194:3098",
+    "components": {
+      "balance": "89:2876",
+      "bar/button": "89:2891",
+      "mini_notification": "89:4216"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6173:16550"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
