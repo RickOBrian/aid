@@ -1,0 +1,18 @@
+{
+  "file": "AwRpEGfyeNjRbZP8KGG1wy",
+  "page": "0:88 Icons",
+  "date": "2026-10-26",
+  "method": "отсортированные строки: TEXT вне экземпляров и мастеров + текстовые свойства экземпляров; хэш djb2-xor через \\u0001 (как в rider-icons)",
+  "blocks": {
+    "3465:68 Page 3 (Правила иконок)": { "n": 5, "hash": "2f34ef32" },
+    "4:186 alternative": { "n": 1, "hash": "1ced93b2" },
+    "732:917 informative": { "n": 1, "hash": "8396aabb" },
+    "653:1418 action": { "n": 1, "hash": "94118e3b" },
+    "732:919 controls": { "n": 1, "hash": "13d954d1" },
+    "732:920 operations": { "n": 1, "hash": "7018463" },
+    "2641:4 navigator": { "n": 1, "hash": "b9a8f5ba" },
+    "5503:18 CHANGELOG": { "n": 16, "hash": "cfd50982" }
+  },
+  "masters": 315,
+  "strays_not_touched": 17
+}
