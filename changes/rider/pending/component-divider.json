@@ -7,13 +7,13 @@
   "componentId": "divider",
   "product": "rider",
   "task": "designer-5 (AID-62, #416)",
-  "changeSummary": "Divider Rider — развитие компонента в Rider Components (210:839): приведение к стандартам и новые свойства Inset и Orientation (решение PD 25.10, вариант Б). До задачи компонент был без версии, поэтому первая записанная версия — 1.0.0. Аудит — пейдж «🚧 Divider · аудит». Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
+  "changeSummary": "Divider Rider — развитие компонента в Rider Components (210:839): приведение к стандартам и свойства Orientation, Padding и Color (решение PD 25.10 — вариант Б; модель свойств пересмотрена sergej 26.10: вместо Inset — Padding 0/2/4/8 на space-0/2/4/8, по бокам у Horizontal всегда 0; цвет Primary и Secondary, токены — вопрос 9 к Standards). До задачи компонент был без версии, поэтому первая записанная версия — 1.0.0. Аудит — пейдж «🚧 Divider · аудит». Версия — предложение, итоговая — на границе релиза; импакт уточняется на приёмке аудита и сборки.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
     "kind": "changed",
     "impact": "initial",
-    "description": "Divider: свойства Inset и Orientation, значения на токенах"
+    "description": "Divider: свойства Orientation, Padding (0/2/4/8) и Color (Primary/Secondary), значения на токенах"
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
