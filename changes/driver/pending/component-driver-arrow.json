@@ -1,0 +1,32 @@
+{
+  "id": "component-driver-arrow",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "DriverArrow",
+  "componentId": "driver-arrow",
+  "product": "driver",
+  "changeSummary": "Driver arrow small Driver — развитие (designer-23, issue #491, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1, платформы — все (Figma, Web, iOS, Android). Мастер `Driver arrow small` 89:5932 (Pins): одиночный компонент 20×20 без свойств; экземпляры — 3 в Route Progress 89:5939, через него — в Headers/navigation 89:4571. Кода нет ни на одной платформе. Токены: заливка Icons/Accent и обводка Strokes/Primary Inverted совпадают с каноном Driver; три грани — шесть хексов в радиальных градиентах без токенов, ночью стрелка остаётся дневной. Те же хексы и та же форма нарисованы заново в пине Driver 89:5852 (Navigating 2D 89:5881 и 3D). Предложение: один токен Gradients/Arrow (day / night) — только после «да» PD по token-change-gate, ночные цвета выбирает дизайнер; пин Driver в состояниях Navigating берёт экземпляр стрелки. Сборка: один контур с тремя гранями вместо Bounds + маски + трёх слоёв Mask, слои outline / face-top / face-bottom / face-left, обводка внутри габарита 20×20, без привязки radius-flat, описание и ссылка на документацию; пустые переопределения effects/strokes в экземплярах Route Progress сбросить. Открытые вопросы аудита (блок 8): ночные цвета граней — дизайнер; один токен или три — PD; имя DriverArrow — Standards; обводка внутри, без свойства направления, сброс переопределений — куратор. Аудит — пейдж «👀 Driver Arrow · audit» 460:2122, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет. Свойств у компонента нет, переименование и пересборка слоёв ломают только пустые переопределения — предложение minor; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "minor",
+    "description": "Стрелка водителя: грани на токене, ночью свой оттенок; пин Driver использует ту же стрелку; обводка внутри габарита"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "460:2122",
+    "componentPage": "194:3106",
+    "components": {
+      "Driver arrow small": "89:5932"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
