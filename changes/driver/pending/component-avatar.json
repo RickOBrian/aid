@@ -1,0 +1,36 @@
+{
+  "id": "component-avatar",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Avatar",
+  "componentId": "avatar",
+  "product": "driver",
+  "changeSummary": "Avatar Driver — развитие (designer-19, issue #487, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `avatar` 89:4931 (Rows): одна ось Type = Photo / No photo / Letters / Icon, все 44×44, без auto layout, без свойств; Web-компонента нет. 20 из 22 экземпляров — Type=Icon как «иконка в цветном круге» (Controls/bar/slider 89:2930 — 16, Rows/line 89:5009 — 4), Photo — 2 (Rows/ActiveOrderClientView 89:4949 растянут до 48, Widgets/instruction/rounded 89:3249 — до 56). Токены мастера на переменных Driver и совпадают с каноном data.ts. По ответам куратора arturuxui 27.10 «1а, 2а, 3а, 4 — оба, 5а, 6а, 7а, 8а»: разделить на Avatar (Photo / Initials / Placeholder) и IconSurface (иконка в круге), bar/slider и line перевести на IconSurface; ось Size 44 / 48 / 56 с таблицей размеров иконки и букв (ряд — за дизайнером); свойства Text initials, Instance swap icon, фото — заливкой слоя image; фон круга IconSurface — фон-токен, не Icons/* (подходящего нет — предложение через token-change-gate, хозяин Standards, молча не создаём); имена Avatar / IconSurface вне группы Rows/ — на приёмке Standards; online-бейдж — идеей, не в этой задаче. Вопрос 4 (иконка на пастели ночью: Icons/Primary Light Ind или Icons/Secondary Inverted) ждёт дизайнера: на пейдже оба варианта в обеих темах с контрастом — днём на Corn 1.8:1 в любом варианте, ночью белая лучше на Cobalt и Azure, Secondary Inverted — на Corn. Сборка также: auto layout, круг рамкой с радиусом на токене вместо VECTOR, описание сета вместо «label». Аудит — пейдж «👀 Avatar · audit» 460:889, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет. Разделение сета и переименование ломают экземпляры — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Avatar: иконка в круге вынесена в отдельный IconSurface; у аватара появились размеры 44 / 48 / 56 и свойства для инициалов, иконки и фото"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "460:889",
+    "componentPage": "194:3103",
+    "components": {
+      "avatar": "89:4931"
+    },
+    "input": {
+      "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+      "node": "89:4931"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
