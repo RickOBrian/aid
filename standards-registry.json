@@ -864,6 +864,32 @@
       "migratedFrom": ".cursor/rules/"
     },
     {
+      "id": "persefona-figma-pages",
+      "title": "Persefona: страницы файлов Figma",
+      "kind": "standard",
+      "humanFile": "products/persefona/rules/persefona-figma-pages.md",
+      "machineFile": null,
+      "version": "0.12.0",
+      "status": "draft",
+      "wave": null,
+      "core": false,
+      "publish": false,
+      "presentbookRoute": null,
+      "changelogFile": null,
+      "hasChangelogSection": true,
+      "dependsOn": [
+        "figma-library-workflow",
+        "naming-conventions",
+        "ds-component-architecture-guide",
+        "component-categories-guide",
+        "changelog-guide",
+        "product-context",
+        "persefona-visual-language",
+        "persefona-kit-improvement"
+      ],
+      "product": "persefona"
+    },
+    {
       "id": "persefona-visual-language",
       "title": "Persefona: визуальный язык",
       "kind": "standard",
