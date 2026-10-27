@@ -1,0 +1,36 @@
+{
+  "id": "component-motivation",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Motivation",
+  "componentId": "motivation",
+  "product": "driver",
+  "changeSummary": "Motivation Driver — развитие (designer-18, issue #486), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Motivation` 89:5998 (Buttons): одиночный COMPONENT без свойств — текст «–12» (Subtitles/Subtitle 1) и иконка motivation_round из Icons, gap space-4; 48 экземпляров, все внутри кнопок wide / big / floating. Web-реализации нет. Токены — пары color-sem, новых не нужно: Inverted (Texts / Icons · Primary Inverted), Primary, Warning, Disabled (Texts · Disabled + Icons · Inactive). По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6б»: Motivation — отдельный Item вне группы Buttons (имя — на приёмке Standards); цвет — вариант-ось Tone = Inverted / Primary / Warning / Disabled на существующих парах токенов вместо ручной заливки в 30 экземплярах; знак — минус U+2212 везде (сейчас U+2013 в мастере и 13 экземплярах, U+2212 в двух); значение — TEXT-свойство Value; слои value / icon; фирменный тон «+3 Ⓜ» не трогаем — другой компонент, к аудиту reward. Сборка также: убрать лишнюю привязку radius-flat, описание и ссылки. Открыто: имя компонента и чтение в коде («минус 12 баллов мотивации», иконка декоративная) — Standards; ось Icon у кнопок-родителей (на деле — показ Motivation) — аудит Button, designer-17. Аудит — пейдж «👀 Motivation · audit» 455:7078, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет; свойств у компонента не было, новые ось и свойство добавляются со значениями по умолчанию, вид не меняется — предложение minor; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "minor",
+    "description": "Motivation: отдельный компонент значения мотивации; тон выбирается свойством Tone, число — свойством Value, знак минуса один во всех экземплярах"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "455:7078",
+    "componentPage": "0:1",
+    "components": {
+      "motivation": "89:5998"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6976:99952"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/motivation",
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
