@@ -1,0 +1,36 @@
+{
+  "id": "component-switch",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Switch",
+  "componentId": "switch",
+  "product": "driver",
+  "changeSummary": "Switch Driver — развитие (designer-16, issue #482, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `switch` 89:3083 (Controls): 6 вариантов, оси Checked / Active / Loading; Web — Switch.tsx (checked, isDisabled, isLoading). Токены совпадают с каноном Driver (Controls · Checked / Unchecked / Accent, radius-20), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: в Loading цвет трека — по Checked (сейчас перепутан); ось Active → Disabled (True / False), как isDisabled; добавить состояние Focused — кольцо 2px на существующем Strokes · Primary, Hover — только Web; прозрачность недоступного 40%, как в Web и accessibility.md (вместо 50%); компонент 40×24, зона касания 44×44 — в спеке и коде, не в макете; источник Figma в switch.meta.json — AID Driver Components 89:3083 вместо Wilhelm Library 9872:15; имена слоёв track / thumb / loader во всех вариантах. Сборка также: auto layout вместо абсолютных позиций, трек одним типом слоя с радиусом на radius-20, имя сета Switch (находка audit-2026-09-21-switch-standalone-name), описание и ссылки на документацию. Аудит — пейдж «👀 Switch · audit» 425:102, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет (components/switch-changelog.json, currentVersion null; Web 1.0.0 — component-switch-initial, не выпущен). Переименование оси Active ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Switch: свойство «недоступен» называется Disabled, как в коде; добавлен фокус; в загрузке трек по включённости; недоступный — 40% прозрачности"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "425:102",
+    "componentPage": "194:3098",
+    "components": {
+      "switch": "89:3083"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6173:15163"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/switch",
+  "sourcePath": "pages/aid-portal/components/Switch.tsx",
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
