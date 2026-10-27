@@ -1,0 +1,88 @@
+{
+  "1:3 Shadows": {
+    "1646:187 HeaderPage": {
+      "count": 5,
+      "fnv": "0cb11ebd",
+      "lines": [
+        "1.1.0",
+        "Rider",
+        "Shadows",
+        "Принято",
+        "Стили Shadows\nКоллекция токенов: effects  ·  Режимы: Day, Night"
+      ]
+    },
+    "17:24 Data": {
+      "count": 419,
+      "fnv": "3127422f"
+    },
+    "21:15 CHANGELOG": {
+      "count": 18,
+      "fnv": "8346fb60"
+    }
+  },
+  "66:278 Glass": {
+    "1644:188 HeaderPage": {
+      "count": 5,
+      "fnv": "61a931be",
+      "lines": [
+        "1.0.0",
+        "Glass",
+        "Glass\nКоллекция токенов: effects · Режимы: Day, Night",
+        "Rider",
+        "Принято"
+      ]
+    },
+    "70:19 Data": {
+      "count": 183,
+      "fnv": "baaa7d78"
+    },
+    "71:17 CHANGELOG": {
+      "count": 12,
+      "fnv": "1876291f"
+    }
+  },
+  "1:4 Space": {
+    "1649:193 HeaderPage": {
+      "count": 5,
+      "fnv": "559a6b08",
+      "lines": [
+        "1.0.2",
+        "Rider",
+        "Space",
+        "Переменные отступов в Rider\nКоллекция токенов: space",
+        "Принято"
+      ]
+    },
+    "62:39 Token Table": {
+      "count": 69,
+      "fnv": "c2aa47dc"
+    },
+    "208:54 CHANGELOG": {
+      "count": 24,
+      "fnv": "a147d17d"
+    }
+  },
+  "1:5 Radius": {
+    "1650:182 HeaderPage": {
+      "count": 5,
+      "fnv": "91bbf1e8",
+      "lines": [
+        "1.0.0",
+        "Radius",
+        "Rider",
+        "Переменные скруглений в Rider\nКоллекция токенов: radius",
+        "Принято"
+      ]
+    },
+    "63:19 Token Table": {
+      "count": 45,
+      "fnv": "07d83496",
+      "fnv_kit": "f5a7790c",
+      "note": "После решения PD 2026-10-26: radius-pill «Значение» 50% → 9999 (единственная изменённая строка)"
+    },
+    "204:50 CHANGELOG": {
+      "count": 12,
+      "fnv": "e56bfc01"
+    }
+  }
+}
