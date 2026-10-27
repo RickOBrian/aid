@@ -1,0 +1,32 @@
+{
+  "id": "component-comment",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Comment",
+  "componentId": "comment",
+  "product": "driver",
+  "changeSummary": "Comment Driver (Widgets / comment) — развитие (designer-20, issue #488, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `comment` 89:3277 (Widgets): 4 варианта, оси Type (Address / General Order) и Long (True / False); Web-реализации нет. Токены совпадают с каноном Driver (Messages/Default, Pastels/Parchment, Texts, Icons), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2б 3а 4а 5а 7а 8а 9а 10а»: «общий комментарий» на Pastels/Parchment с Texts/Primary и Icons/Primary вместо Dark Ind — ночью контраст ≈ 1,9:1 → ≈ 10,5:1 (подтверждает Standards); вариант General Order уходит из сета, подпись «Общий комментарий» и пузырь собираются в Rows/adresses/order 89:5109 (заявка его чату); ось Long → Collapsed (True / False); свёрнутый — затухание на auto layout с местом под шеврон, без наезда; ширина FILL по родителю, внешние поля — у родителя; тон — ось Tone = Default / Parchment; текст — TEXT-свойство Text; короткий текст продукт показывает Collapsed=False; тексты-примеры исправить. Имя сета comment → Comment ждёт решения Standards (в naming-conventions нет правила для имени сета Figma; связь с audit-2026-09-21-switch-standalone-name). Аудит — пейдж «👀 Comment · audit» 455:102, блоки 0–8, день и ночь на 360; рабочий компонент .Comment · рабочий 455:8419 не публикуется; мастер не правился. Текущей версии нет. Удаление варианта и переименование оси ломают экземпляры Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Comment: пузырь сворачивается осью Collapsed, тон — осью Tone, текст — свойством; «общий комментарий» читается ночью и собирается в строке адреса заказа"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "455:102",
+    "componentPage": "194:3105",
+    "components": {
+      "comment": "89:3277"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
