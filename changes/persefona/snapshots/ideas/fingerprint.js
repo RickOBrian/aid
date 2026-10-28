@@ -2,7 +2,7 @@
 // Запуск: use_figma, файл New Rider DEV 5mg6h0oB8yRDoUfTruogca. Один и тот же код — «до» и «после».
 // Что считает:
 //  - texts: тексты оболочки (вне клонов) + текстовые свойства экземпляров Kit, без начальных «→ », хэш;
-//  - flows: стрелки (VECTOR «стрелка»): координаты вершин относительно корня, сегменты, концы — «связи до = после»;
+//  - flows: стрелки (VECTOR «стрелка»): координаты вершин относительно корня, сегменты, концы; hash — с dashed, geomHash — без;
 //  - clones: 4 клона — id, имена и тексты всех узлов внутри, кроме слоёв «набросок · …», хэш;
 //  - sketches: слои «набросок · …» — id и геометрия;
 //  - raw: сырые заливки/обводки/тексты без стиля вне клонов и вне экземпляров Kit (после перевода должно быть 0).
@@ -49,7 +49,8 @@ for (const n of shell) {
 return {
   page: page.name, rootName: root.name,
   texts: { n: texts.length, hash: h(texts.join('\n')), list: texts },
-  flows: { n: flows.length, hash: h(JSON.stringify(flows.map(f => [f.v, f.seg, f.dashed]))), list: flows },
+  // hash — с типом линии (dashed); geomHash — только связи: вершины, сегменты, концы
+  flows: { n: flows.length, hash: h(JSON.stringify(flows.map(f => [f.v, f.seg, f.dashed]))), geomHash: h(JSON.stringify(flows.map(f => [f.v, f.seg]))), list: flows },
   clones, clonesHash: h(clones.map(c => c.hash).join('')),
   sketches, raw: { n: raw.length, list: raw.slice(0, 80) },
 };
