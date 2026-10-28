@@ -53,7 +53,7 @@ const BLOCK={1:'4280:4450',2:'4280:4558',3:'4280:4693'};
 const TONE={1:['Warning','Расхождение'],2:['Info','Нет в PRD'],3:['Neutral','Нет в макетах']};
 
 if(PART==='A'){
-  // 1. секции: шапка и легенда (корень 4280:4434) + по секции на блок; фон bg-surface-muted
+  // 1. секции: шапка и легенда (корень 4280:4434) + по секции на блок; фон bg-surface-main (#521 bec9989)
   const names=['PRD audit · Главная','1. Figma расходится с PRD','2. Есть в Figma, нет в PRD','3. Есть в PRD, нет в макетах'];
   const nodes=[root, await figma.getNodeByIdAsync(BLOCK[1]), await figma.getNodeByIdAsync(BLOCK[2]), await figma.getNodeByIdAsync(BLOCK[3])];
   let y=0;
@@ -105,7 +105,7 @@ if(PART==='B'||PART==='C'){
     const m=row.children.find(n=>n.name==='Метка'); const [tone,text]=TONE[blockNo];
     if(m){ const b=badge(tone,m.findOne(n=>n.type==='TEXT').characters); row.insertChild(row.children.indexOf(m),b); m.remove(); log.badges++; }
     else { row.appendChild(badge(tone,text)); log.badges++; }
-    if(!row.children.some(n=>n.type==='INSTANCE'&&n.componentProperties&&Object.values(n.componentProperties).some(v=>v.value==='Ждёт дизайнера'))){ row.appendChild(badge('Warning','Ждёт дизайнера')); log.badges++; } }
+    if(!row.children.some(n=>n.type==='INSTANCE'&&n.componentProperties&&Object.values(n.componentProperties).some(v=>v.value==='Ждёт дизайнера'))){ row.appendChild(badge('Neutral','Ждёт дизайнера')); log.badges++; } }
 
   if(PART==='B'){
     for(const b of [1,2]){ const F=await figma.getNodeByIdAsync(BLOCK[b]);

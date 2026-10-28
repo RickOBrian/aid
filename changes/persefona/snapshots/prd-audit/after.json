@@ -89,7 +89,7 @@
   "perCard": {
     "cards": 19,
     "bad": 0,
-    "check": "номер = имя фрейма; ровно 2 Badge: метка блока (1 Warning «Расхождение», 2 Info «Нет в PRD», 3 Neutral «Нет в макетах») и Warning «Ждёт дизайнера»"
+    "check": "номер = имя фрейма; ровно 2 Badge: метка блока (1 Warning «Расхождение», 2 Info «Нет в PRD», 3 Neutral «Нет в макетах») и Neutral «Ждёт дизайнера» (после приёмки 1б)"
   },
   "headerLink": "How to Read 4295:10590 — text-accent-vivid (переопределение в экземпляре), ссылка на 2247-16932",
   "sectionFill": "bg-surface-main (#FFFFFF запасной), 2026-10-28 по #521 bec9989"
