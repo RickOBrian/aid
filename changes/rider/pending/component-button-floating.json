@@ -1,0 +1,42 @@
+{
+  "id": "component-button-floating",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Button Floating",
+  "componentId": "button-floating",
+  "product": "rider",
+  "changeSummary": "Button Floating Rider — новый компонент с новым ключом (designer-9, AID-70, issue #443), флоу figma-library-workflow §3.1–3.8. Вход — прототип C 5138:47 аудита rider-1 (копия bL4jeQWMvn3GKVNRPnmJMj, секция 5134:3202, находка 8). Имя ButtonFloating — кнопка не делится на текстовую и иконочную (решение sergej 26.10 для Rider и Driver; отличие от формулы §4/§9 гайда архитектуры — в реестр отличий после #329). Свойства: State = Default / Pressed / Disabled / Loading; Label, Show Label, Left Icon / Right Icon (bool), Icon L / Icon R (instance swap). Высота min 52 — space-52 (scope WIDTH_HEIGHT, ждёт публикации Rider Tokens), ширина Hug. Pressed — Background/Secondary день и ночь (дизайнер Rider «а», Standards 28.10; семантический pressed-токен — пробел Rider Tokens). Loading — Spinner 1033:150 по центру, содержимое opacity 0. Текст и числа не обрезаются — длину держит редактура команды (вопрос 7а). При выключенной подписи — обязательный accessibilityLabel. Аудит — пейдж «👀 Button Floating · audit» 897:3 (принят Standards 26.10, ответы sergej 28.10 «2а 3а 4а 5а 7а», вопрос 1 передан в DockNavBar AID-75). Сборка — пейдж «👀 Button Floating · construction» 1076:5988, на приёмке Standards. Старый 238:25 — отдельной записью component-button-floating-legacy-deprecated.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Button Floating: новая плавающая кнопка Rider — подпись и иконки включаются свойствами, состояния нажатия, недоступности и загрузки"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "897:3",
+    "constructionPage": "1076:5988",
+    "components": {
+      "Button Floating": "1076:5989"
+    },
+    "guideSection": "1078:6467",
+    "changelogSection": "1078:6787",
+    "auditPrototypes": {
+      ".Proto/Button Floating · аудит": "897:32"
+    },
+    "input": {
+      "fileKey": "bL4jeQWMvn3GKVNRPnmJMj",
+      "node": "5138:47",
+      "decisions": "products/rider/audits/rider-1/navigation.json (ветка standards/rider-1-audit-navigation), находка 8"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-28",
+  "author": "sergej"
+}
