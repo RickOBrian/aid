@@ -51,7 +51,7 @@ async function drawDiamond(sch, d) {
   const t = await T(sch, d.q, 'heading-s', 'text-primary', d.cx - 60, 0, 120, 'CENTER'); t.y = d.cy - t.height / 2; t.name = d.q; d.node = p; }
 // FlowTerminal (Б3): капсула radius-pill, контур line-annotation-flow 2 px; Exit/Start-ссылка — text-accent-vivid с гиперссылкой.
 async function terminal(sch, type, text, x, cy, alignRight) {
-  const f = figma.createFrame(); sch.appendChild(f); f.name = `FlowTerminal · ${type}`; f.layoutMode = 'HORIZONTAL';
+  const f = figma.createFrame(); sch.appendChild(f); f.name = `TerminalFlow · ${type}`; f.layoutMode = 'HORIZONTAL';
   f.primaryAxisSizingMode = 'AUTO'; f.counterAxisSizingMode = 'AUTO'; bindPad(f, 'spacing-8', 'spacing-16'); bindR(f, 'radius-pill');
   f.fills = [P('bg-surface-main')]; f.strokes = [P('line-annotation-flow')]; f.strokeWeight = 2; f.strokeAlign = 'INSIDE';
   const t = await T(f, text, 'body-m', type === 'Exit' || text.startsWith('←') ? 'text-accent-vivid' : 'text-primary', 0, 0); t.name = 'Text';
@@ -68,7 +68,7 @@ async function flow(sch, pts, dashed, label, li = 0) {
   if (label) await flowLabel(sch, label, pts[li], pts[li + 1]); return v; }
 // FlowLabel (Б2): плашка bg-surface-main на линии, 16 px от начала сегмента, разрывает линию; body-m text-secondary.
 async function flowLabel(sch, text, a, b) {
-  const f = figma.createFrame(); sch.appendChild(f); f.name = 'FlowLabel'; f.layoutMode = 'HORIZONTAL';
+  const f = figma.createFrame(); sch.appendChild(f); f.name = 'TagFlow'; f.layoutMode = 'HORIZONTAL';
   f.primaryAxisSizingMode = 'AUTO'; f.counterAxisSizingMode = 'AUTO'; bindPad(f, 'spacing-4', 'spacing-8'); bindR(f, 'radius-s');
   f.fills = [P('bg-surface-main')]; const t = await T(f, text, 'body-m', 'text-secondary', 0, 0); t.name = 'Text';
   const dx = Math.sign(b[0] - a[0]), dy = Math.sign(b[1] - a[1]);
@@ -77,7 +77,7 @@ async function flowLabel(sch, text, a, b) {
   log.labels.push(f.id); }
 async function pin(sch, s, n) {
   const i = C.tagIdea.createInstance(); sch.appendChild(i); i.name = 'вопрос'; i.setProperties({ [prop(i, 'Number')]: '?' + n });
-  i.x = s.x + COL - i.width / 2; i.y = s.y - i.height / 2; return i; }
+  i.x = s.x + COL + 8; i.y = s.y - 8 - i.height; // снаружи угла экрана, не на клоне return i; }
 async function sketch(s) {
   const z = figma.createRectangle(); s.f.appendChild(z); z.name = 'набросок · зона'; z.resize(240, 200); z.x = 75; z.y = 180;
   z.fills = [P('bg-annotation-idea-fade')]; z.strokes = [P('line-annotation-idea')]; z.strokeWeight = 2; z.dashPattern = [8, 6]; bindR(z, 'radius-xl');
@@ -197,15 +197,16 @@ function row(parent) { const r = figma.createFrame(); parent.appendChild(r); r.n
 function sampleBox(r) { const b = figma.createFrame(); r.appendChild(b); b.name = 'образец'; b.resize(96, 32); b.fills = []; b.clipsContent = false; return b; }
 const lg = await island('Легенда', 80, 0, 600);
 const legend = [['solid', 'Действие пользователя'], ['dash', 'Событие системы, выход развилки · пунктир 12/8'], ['diamond', 'Развилка: вопрос, выходы подписаны условием'],
-  ['label', 'Подпись перехода — у начала, на линии'], ['term', 'Начало, конец, выход «→ экран N»'], ['pin', 'Вопрос дизайнеру — список справа'], ['idea', 'Набросок: того, для чего нет компонента']];
+  ['label', 'Подпись перехода — плашка на линии, у начала'], ['term', 'Начало, конец, выход «→ экран N»'], ['pin', 'Вопрос дизайнеру — текст в блоке «Вопросы дизайнеру»'], ['idea', 'Набросок: того, для чего нет компонента']];
 for (const [k, txt] of legend) { const r = row(lg); const b = sampleBox(r);
   if (k === 'solid' || k === 'dash') { const v = figma.createVector(); b.appendChild(v); await v.setVectorNetworkAsync({ vertices:[{ x:0, y:0 }, { x:96, y:0, strokeCap:'ARROW_EQUILATERAL' }], segments:[{ start:0, end:1 }], regions:[] });
     v.y = 16; v.strokes = [P('line-annotation-flow')]; v.strokeWeight = 2; v.dashPattern = k === 'dash' ? [12, 8] : []; }
   if (k === 'diamond') { const p = figma.createPolygon(); b.appendChild(p); p.pointCount = 4; p.resize(32, 32); p.x = 32; p.fills = [P('bg-surface-main')]; p.strokes = [P('line-annotation-flow')]; p.strokeWeight = 2; }
-  if (k === 'label') { const t = await T(b, 'условие', 'body-m', 'text-secondary', 16, 6); }
+  if (k === 'label') { const v = figma.createVector(); b.appendChild(v); await v.setVectorNetworkAsync({ vertices:[{ x:0, y:0 }, { x:96, y:0, strokeCap:'ARROW_EQUILATERAL' }], segments:[{ start:0, end:1 }], regions:[] });
+    v.y = 16; v.strokes = [P('line-annotation-flow')]; v.strokeWeight = 2; await flowLabel(b, 'если', [0, 16], [96, 16]); }
   if (k === 'term') { const t = await terminal(b, 'Start', 'Начало', 0, 16); }
   if (k === 'pin') { const i = C.tagIdea.createInstance(); b.appendChild(i); i.setProperties({ [prop(i, 'Number')]: '?1' }); i.x = 38; i.y = 6; }
-  if (k === 'idea') { const z = figma.createRectangle(); b.appendChild(z); z.resize(64, 32); z.x = 16; z.fills = [P('bg-annotation-idea-fade')]; z.strokes = [P('line-annotation-idea')]; z.strokeWeight = 2; z.dashPattern = [8, 6]; bindR(z, 'radius-s'); }
+  if (k === 'idea') { const z = figma.createRectangle(); b.appendChild(z); z.resize(64, 32); z.x = 16; z.fills = [P('bg-annotation-idea-fade')]; z.strokes = [P('line-annotation-idea')]; z.strokeWeight = 2; z.dashPattern = [8, 6]; bindR(z, 'radius-xl'); }
   await T(r, txt, 'body-m', 'text-primary', 0, 0); }
 const qs = await island('Вопросы дизайнеру', 720, 0, 600);
 for (let i = 0; i < Q.length; i++) { const r = row(qs); r.counterAxisAlignItems = 'MIN';
