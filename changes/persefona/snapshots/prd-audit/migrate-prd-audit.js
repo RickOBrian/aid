@@ -57,7 +57,7 @@ if(PART==='A'){
   const names=['PRD audit · Главная','1. Figma расходится с PRD','2. Есть в Figma, нет в PRD','3. Есть в PRD, нет в макетах'];
   const nodes=[root, await figma.getNodeByIdAsync(BLOCK[1]), await figma.getNodeByIdAsync(BLOCK[2]), await figma.getNodeByIdAsync(BLOCK[3])];
   let y=0;
-  for(let i=0;i<4;i++){ const s=figma.createSection(); s.name=names[i]; s.fills=[paint(C['surface-muted'])]; page.appendChild(s); s.x=0; s.y=y;
+  for(let i=0;i<4;i++){ const s=figma.createSection(); s.name=names[i]; s.fills=[paint(C['surface-main'])]; page.appendChild(s); s.x=0; s.y=y;
     s.appendChild(nodes[i]); nodes[i].x=80; nodes[i].y=80; s.resizeWithoutConstraints(nodes[i].width+160,nodes[i].height+160); y+=s.height+80; log.new.push(s.id+' '+s.name); }
   // 2. корень → «Шапка и легенда»
   root.name='Шапка и легенда'; root.fills=[]; unpad(root); bind(root,'itemSpacing',48);
