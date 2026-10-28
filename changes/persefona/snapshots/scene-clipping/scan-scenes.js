@@ -2,11 +2,13 @@
 // Запуск: Figma Plugin API (use_figma) в файле компонентов. Итог — строки
 // [страница, сцена, рамка с обрезкой, узел, геом|тень, вылет л/п/в/н px, число узлов].
 // «геом» — вылезает сам узел (bounding box); «тень» — только тень/размытие (оценка: radius + spread + сдвиг).
-// Не проверяются: рамки-экраны (имя «Экран», «Вьюпорт», «Карта», «Taxi ·») и подложки-карты — обрезка там
-// изображает край экрана; маски текста; содержимое экземпляров продукта (их обрезка — дизайн продукта).
+// Не проверяются (намеренная обрезка, правило С2 дока persefona-7-scene-clipping):
+//  - рамка-экран: имя начинается с «Экран», «Вьюпорт», «Карта», «Taxi ·» — обрезка изображает край экрана;
+//  - прокрутка внутри экрана продукта: «Container [Suggests]», «Bottom sheet Taxi»; подложки-карты; маски текста;
+//  - содержимое экземпляров продукта (их обрезка — дизайн продукта).
 // Важно: absoluteRenderBounds уже обрезан родителем — для вылета нужен absoluteBoundingBox без обрезки.
 const SCENE_RE=/^(Пример|Эталон|Сцена|Example|Stage)/i;
-const VIEW=/Экран|Вьюпорт|^Карта|Taxi ·|Text$|маской/i; const MAPN=/^(Карта|Map$|Карта нью)/;
+const VIEW=/^(Экран|Вьюпорт|Карта|Taxi ·)|^Container \[Suggests\]|^Bottom sheet Taxi|Text$|маской/i; const MAPN=/^(Карта|Map$|Карта нью)/;
 const res=[]; let sceneCount=0;
 function ieCheck(n){ if(n.type!=='INSTANCE')return false; if(/IslandExample/.test(n.name))return true;
   return !!(n.children && n.children.some(c=>c.name==="Stage")); }
@@ -38,4 +40,8 @@ for(const page of figma.root.children){ await page.loadAsync();
   for(const f of frTop) scan(f,page);
 }
 const g={}; for(const r of res){ const k=r[1]+'|'+r[3]; if(!g[k]) g[k]=[...r,1]; else { g[k][7]++; const a=g[k][6].split('/').map(Number), b=r[6].split('/').map(Number); g[k][6]=a.map((v,i)=>Math.max(v,b[i])).join('/'); if(r[5]==='геом') g[k][5]='геом'; } }
-return {scenes:sceneCount,rows:Object.values(g)};
+const rowsAll=Object.values(g);
+const rows=rowsAll;
+const byPage={}; for(const r of rows){ (byPage[r[0]]=byPage[r[0]]||new Set()).add(r[1]); }
+return {scenes:sceneCount,scenesWithOverflow:new Set(rows.map(r=>r[1])).size,
+  pagesWithOverflow:Object.fromEntries(Object.entries(byPage).map(([k,v])=>[k,v.size])),rows};
