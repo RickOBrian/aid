@@ -6,10 +6,10 @@
   "artifact": "IconSurface",
   "componentId": "icon-surface",
   "product": "rider",
-  "changeSummary": "IconSurface Rider — развитие (designer-29, AID-81, issue #515), флоу figma-library-workflow §3.1. Вход — мастер 98:9 (пейдж Surfaces; круг 68, pad space-20, иконка 28, фон Pastel/Patty, иконка Icon/Special; одно свойство Icon). В макетах Handoff 5mg6h0oB8yRDoUfTruogca — 13 мест в шапке шторок-разрешений: 3 экземпляра IconSurface с перебитым фоном, 9 legacy Icon 68 (ключ 182ba4d9…), 1 отцепленный фрейм с хексом. Решено: Tone = Neutral / Success / Special / Warning / Custom (пара «фон Pastel + цвет иконки» в мастере; Custom — свои фон и цвет иконки из токенов), один размер 68/28, иконка декоративная, замена legacy — после публикации (§3.9), аудит по Figma. Аудит — пейдж «👀 Icon Surface · audit» 1126:3914, блоки 0–8, прототип .IconSurface · audit 1131:256; открыто в блоке 8: Custom как значение Tone (Standards), усиленный цвет иконки для трёх пар с контрастом ниже 3:1 (дизайнер), смысловые вариации тонов (куратор), иконка по умолчанию (дизайнер).",
-  "currentVersion": "1.0.0",
+  "changeSummary": "IconSurface Rider — развитие (designer-29, AID-81, issue #515), флоу figma-library-workflow §3.1. Вход — мастер 98:9 (пейдж Surfaces; круг 68, pad space-20, иконка 28, фон Pastel/Patty, иконка Icon/Special; одно свойство Icon). В макетах Handoff 5mg6h0oB8yRDoUfTruogca — 13 мест в шапке шторок-разрешений: 3 экземпляра IconSurface с перебитым фоном, 9 legacy Icon 68 (ключ 182ba4d9…), 1 отцепленный фрейм с хексом. Решено: Tone = Neutral / Success / Special / Warning / Custom (пара «фон Pastel + цвет иконки» в мастере; Custom — свои фон и цвет иконки из токенов), один размер 68/28, иконка декоративная, замена legacy — после публикации (§3.9), аудит по Figma. Аудит — пейдж «👀 Icon Surface · audit» 1126:3914, блоки 0–8, прототип .IconSurface · audit 1131:256; открыто в блоке 8: Custom как значение Tone (Standards), усиленный цвет иконки для трёх пар с контрастом ниже 3:1 (дизайнер), смысловые вариации тонов (куратор), иконка по умолчанию (дизайнер). Версии нет (Q-22): предложение куратора — принять мастер как 1.0.0, после Tone — 1.1.0 (minor, новое свойство); итог на приёмке аудита и границе релиза.",
+  "currentVersion": null,
   "proposedSemVerImpact": "minor",
-  "proposedVersion": "1.1.0",
+  "proposedVersion": null,
   "proposedChangelogEntry": {
     "kind": "changed",
     "impact": "minor",
