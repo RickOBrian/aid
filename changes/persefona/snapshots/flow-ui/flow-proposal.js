@@ -51,7 +51,7 @@ async function drawDiamond(sch, d) {
   const t = await T(sch, d.q, 'heading-s', 'text-primary', d.cx - 60, 0, 120, 'CENTER'); t.y = d.cy - t.height / 2; t.name = d.q; d.node = p; }
 // FlowTerminal (Б3): капсула radius-pill, контур line-annotation-flow 2 px; Exit/Start-ссылка — text-accent-vivid с гиперссылкой.
 async function terminal(sch, type, text, x, cy, alignRight) {
-  const f = figma.createFrame(); sch.appendChild(f); f.name = `TerminalFlow · ${type}`; f.layoutMode = 'HORIZONTAL';
+  const f = figma.createFrame(); sch.appendChild(f); f.name = `TagTerminal · ${type}`; f.layoutMode = 'HORIZONTAL';
   f.primaryAxisSizingMode = 'AUTO'; f.counterAxisSizingMode = 'AUTO'; bindPad(f, 'spacing-8', 'spacing-16'); bindR(f, 'radius-pill');
   f.fills = [P('bg-surface-main')]; f.strokes = [P('line-annotation-flow')]; f.strokeWeight = 2; f.strokeAlign = 'INSIDE';
   const t = await T(f, text, 'body-m', type === 'Exit' || text.startsWith('←') ? 'text-accent-vivid' : 'text-primary', 0, 0); t.name = 'Text';
