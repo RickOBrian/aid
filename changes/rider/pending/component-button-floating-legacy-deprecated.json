@@ -6,7 +6,7 @@
   "artifact": "Button Floating (238:25)",
   "componentId": "button-floating",
   "product": "rider",
-  "changeSummary": "Прежний Button Floating 238:25 (Rider Components, пейдж Buttons 231:1272) помечается устаревшим: замена — новый Button Floating 1076:5989 (component-button-floating). Новый ключ — новый компонент (протокол §3.3), поэтому устаревание — отдельной строкой. Перенос 238:25 в Archive — только после приёмки сборки нового (sergej 28.10, вопрос 2а). Способ пометки устаревания в Figma не решён — пробел 1 протокола.",
+  "changeSummary": "Прежний Button Floating 238:25 (Rider Components, пейдж Buttons 231:1272) помечается устаревшим: замена — новый Button Floating 1076:5989 (component-button-floating). Новый ключ — новый компонент (протокол §3.3), поэтому устаревание — отдельной строкой. Перенос 238:25 на пейдж Archive 465:630 — после приёмки сборки нового (sergej 28.10, вопрос 2а); сборка принята Standards 28.10, перенос — куратором. Способ пометки устаревания в Figma не решён — пробел 1 протокола.",
   "currentVersion": null,
   "proposedSemVerImpact": "minor",
   "proposedVersion": null,
