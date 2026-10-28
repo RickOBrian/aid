@@ -354,3 +354,13 @@ Persefona Tokens: Core 74, Semantic 52. Новые: `carnelian/carnelian-45` 197
 намеренно. Pending `token-persefona-1-initial` — 74 / 52 и строка в `changeSummary`.
 **Поправка §8:** Title `HeaderPage` — имя идеи (текст 4302:11526 как есть), не имя страницы (Standards · Persefona, §6.8).
 Дальше: публикация Tokens (человек) → `TagMarker` Set=Idea в Components → публикация Components → перевод страницы.
+
+## 10. TagMarker Set=Idea (2026-10-28)
+
+Tokens опубликован пользователем. Persefona Components, набор `TagMarker` 40:144: Set = Main | Neutral | Idea,
+15 вариантов. Новые: 112:35 (None), 112:38 (Left), 112:43 (Right), 112:48 (Top), 112:53 (Bottom) — клоны вариантов
+Neutral, 13 красок перепривязаны (`bg-annotation-marker-neutral-main` → `bg-annotation-idea-main`,
+`icon-annotation-marker-neutral` → `icon-annotation-idea`), контур и `text-inverse` — как были. Ключ набора и
+прежние 10 вариантов не менялись. Описание мастера — по §4. Снимок — `tag-marker-set-idea.png`. Pending
+`component-persefona-2-tag-marker` — строка в `changeSummary`.
+Дальше: публикация Components (человек) → перевод страницы 4302:11524.
