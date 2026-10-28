@@ -343,3 +343,14 @@ Description (правка): «… Set — набор цветов: Main, Neutral
 - П4 — устраивает при условии: зона читается как область на карте — размер зоны 300 × 260 не меняется.
 - П5 — Product Logic комментарии не видит, спрашивает PD. **До ответа PD узлы с возможными комментариями (тексты
   шапки 4302:11526, :11527 и пять пинов) не удаляются.**
+
+## 9. Переменные (2026-10-28, после «принято»)
+
+Persefona Tokens: Core 74, Semantic 52. Новые: `carnelian/carnelian-45` 197:19, `carnelian/alpha/carnelian-45-a8` 197:20,
+`line/line-annotation-flow` 197:21, `line/line-annotation-idea` 197:22, `bg/annotation/bg-annotation-idea-main` 197:23,
+`bg/annotation/bg-annotation-idea-fade` 197:24, `icon/icon-annotation-idea` 197:25. Скоупы — как у соседей
+(`line-annotation-measure`, `bg-annotation-marker-main`, `bg-annotation-measure-fade`, `icon-annotation-marker`), WEB —
+`var(--pf-<имя>)`. Макет 194:481: 14 сырых красок групп 2–3 привязаны к новым переменным, группа 1 «Было» — сырая
+намеренно. Pending `token-persefona-1-initial` — 74 / 52 и строка в `changeSummary`.
+**Поправка §8:** Title `HeaderPage` — имя идеи (текст 4302:11526 как есть), не имя страницы (Standards · Persefona, §6.8).
+Дальше: публикация Tokens (человек) → `TagMarker` Set=Idea в Components → публикация Components → перевод страницы.
