@@ -1,0 +1,18 @@
+{
+  "id": "component-deviation-search-field-error-without-text",
+  "type": "component",
+  "exceptionType": "states",
+  "artifact": "search-field",
+  "product": "rider",
+  "standard": "skills/_shared/standards/component-states-guide.md — error всегда с текстом под компонентом; accessibility — ошибка не только цветом",
+  "actual": "Search Field Rider, State=Error: текст и иконка поля окрашены Text/Warning и Icon/Warning, подписи под полем в компоненте нет.",
+  "reason": "Ответ PD 25.10 «3б» на вопрос аудита «а — текст ошибки под полем внутри компонента; б — только цвет, сообщение — экран»: сообщение об ошибке даёт экран, а не поле.",
+  "recommendation": "В описании мастера и в «Для инженера»: экран обязан показать текст ошибки и связать его с полем для экранного диктора (accessibilityHint / aria-describedby). Снять, если появится экран, где сообщение экрана недоступно, — тогда вернуть подпись в компонент.",
+  "guard": "Приёмка аудита и сборки Search Field (figma-library-workflow §3.1, §3.8): пункт «Для инженера» блока 4 аудита",
+  "status": "proposed",
+  "reviewAt": "release",
+  "pendingRef": "changes/rider/pending/component-deviation-search-field-error-without-text.json",
+  "decidedBy": "Principal Designer, 2026-10-25 («3б»); запись — на утверждение Standards (standards-11)",
+  "created": "2026-10-29",
+  "author": "sergej"
+}

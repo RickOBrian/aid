@@ -6,7 +6,7 @@
   "artifact": "Search Field",
   "componentId": "search-field",
   "product": "rider",
-  "changeSummary": "Search Field Rider — развитие (designer-6, AID-65), флоу figma-library-workflow §3.1. Охват — секция Search (798:10125): Search Field 186:190, .Search Actions 190:365, Search Route 213:44; Search Capsule 186:224 не входит (ответ PD 1а). По ответам PD 25.10 «1а 2а 3б 4а 5(решение Designer) 6б 7а»: State (Default / Focused / Error) × Filled (bool) вместо пяти значений одной оси; ошибка без текста под полем — сообщение даёт экран, исключение к component-states-guide через Standards; disabled/pressed/loading не добавляются, отмечаются в описании; крест очистки относится к инпуту, стоит у правого края области ввода (Input Row: Input Fill → Clear, gap space-8), виден при Focused × Filled, область касания 44; ввод — в фокусе текст прокручивается к каретке, каретка у правого края области текста, крест на месте; без фокуса — многоточие (принято sergej 25.10, демо 836:1381); .Search Actions — булевы Plus и Map без связи с состоянием (вариант Focused Input убрать); обрезка — многоточие, isFade (false) — маска прозрачности текста на Gradients/Fade Horizontal (pending rider-gradients), ширина space-24; высота 60. Технические правки: Gaps/SPx3 → space-12, каретка в автолейауте за текстом. Аудит — пейдж «👀 Search Field · audit» 806:76 (секция Search Field · audit 1035:22760), блоки 0–8 (1 — дерево компонентов); ждёт ответа PD на блок 8 (плюс справа А/Б, ошибка + фокус, ширина растворения, Search Route). Текущей версии нет — опубликован 21.10 без версии (Q-22); смена State и свойств ломает API — предложение major, итог на приёмке аудита и границе релиза.",
+  "changeSummary": "Search Field Rider — развитие (designer-6, AID-65), флоу figma-library-workflow §3.1. Охват — секция Search (798:10125): Search Field 186:190, .Search Actions 190:365, Search Route 213:44; Search Capsule 186:224 не входит (ответ PD 1а). По ответам PD 25.10 «1а 2а 3б 4а 5(решение Designer) 6б 7а»: State (Default / Focused / Error) × Filled (bool) вместо пяти значений одной оси; ошибка без текста под полем — сообщение даёт экран, исключение к component-states-guide через Standards; disabled/pressed/loading не добавляются, отмечаются в описании; крест очистки относится к инпуту, стоит у правого края области ввода (Input Row: Input Fill → Clear, gap space-8), виден при Focused × Filled, область касания 44; ввод — в фокусе текст прокручивается к каретке, каретка у правого края области текста, крест на месте; без фокуса — многоточие (принято sergej 25.10, демо 836:1381); .Search Actions — булевы Plus и Map без связи с состоянием (вариант Focused Input убрать); обрезка — многоточие, isFade (false) — маска прозрачности текста на Gradients/Fade Horizontal (pending rider-gradients), ширина space-24; высота 60. Технические правки: Gaps/SPx3 → space-12, каретка в автолейауте за текстом. Аудит — пейдж «👀 Search Field · audit» 806:76 (секция Search Field · audit 1035:22760), блоки 0–8 (1 — дерево компонентов); блок 8 решён 28.10 (sergej, дословно «1б 2а 3а 4(покажи что ты под search route имеешь ввиду)», затем «б»): 1б — плюс справа явным сдвигом space-2 внутри рамки Plus 24 по краю контента; 2а — фокус снимает ошибку, Error × Focused не собираем; 3а — ширина растворения space-24; 4б — Search Route переводится на новое поле отдельной задачей, в этой только переназначаются два экземпляра поля после смены State с прежним видом (иконка «Откуда» без токена, роль и имя — в той задаче). Исключение «ошибка без подписи» (3б) — запись component-deviation-search-field-error-without-text, ждёт Standards. Текущей версии нет — опубликован 21.10 без версии (Q-22); смена State и свойств ломает API — предложение major, итог на приёмке аудита и границе релиза.",
   "currentVersion": null,
   "proposedSemVerImpact": "major",
   "proposedVersion": null,
@@ -41,5 +41,12 @@
   "sourcePath": null,
   "status": "pending",
   "created": "2026-10-25",
-  "author": "sergej"
+  "author": "sergej",
+  "decisions": {
+    "pd-2026-10-25": "1а 2а 3б 4а 5(тут нужно как ты посчитаешь грамотным. Крест очистки не зависит от правых элементов, он вроде как больше к инпуту относится) 6б 7а",
+    "audit-block-8-2026-10-28": "1б 2а 3а 4(покажи что ты под search route имеешь ввиду) → «б»"
+  },
+  "exceptions": [
+    "changes/rider/pending/component-deviation-search-field-error-without-text.json"
+  ]
 }
