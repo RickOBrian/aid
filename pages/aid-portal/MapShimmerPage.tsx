@@ -293,10 +293,12 @@ export function MapShimmerPage() {
     setState((prev) => ({ ...prev, [theme]: { ...prev[theme], ...p } }));
 
   const copy = () => {
-    void navigator.clipboard
-      .writeText(json)
-      .then(() => setCopied('Скопировано'))
-      .catch(() => setCopied('Не скопировалось — выделите текст и нажмите ⌘C'));
+    const failed = () => setCopied('Не скопировалось — выделите текст и нажмите ⌘C');
+    try {
+      void navigator.clipboard.writeText(json).then(() => setCopied('Скопировано'), failed);
+    } catch {
+      failed();
+    }
   };
 
   return (
