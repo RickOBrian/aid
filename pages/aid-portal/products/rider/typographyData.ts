@@ -160,6 +160,12 @@ export const riderTypographySections: RiderTypographySection[] = [
         platformValue('Roboto', 400, 'Regular (400)', 12, 16, 0),
       ),
       riderStyle(
+        'caption-1-cap',
+        'Caption 1 CAP',
+        platformValue('SF Pro Text', 600, 'SemiBold (600)', 12, 16, 0),
+        platformValue('Roboto', 600, 'SemiBold (600)', 12, 16, 0),
+      ),
+      riderStyle(
         'caption-2',
         'Caption 2',
         platformValue('SF Pro Text', 500, 'Medium (500)', 11, 14, 0),
