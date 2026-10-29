@@ -16,14 +16,15 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": "850:10549",
+    "auditPage": null,
     "source": {
       "fileKey": "bL4jeQWMvn3GKVNRPnmJMj",
       "node": "5151:68911"
     },
     "constructionPage": "1149:27989",
     "masterSet": "1149:28004",
-    "masterKey": "e0021fc7bcb34f55e570fdccc695241dc22b3fcd"
+    "masterKey": "e0021fc7bcb34f55e570fdccc695241dc22b3fcd",
+    "auditSection": "852:94 (на пейдже сборки 1149:27989; пейдж 850:10549 удалён 29.10)"
   },
   "relatedTokenChanges": [
     "Map/Dark — boolean в color-sem Rider Tokens (yrfG6u9osujKX8e1B14lpT, VariableID:1683:177; Day false / Night true) заведён 28.10, ждёт публикации; после неё — привязать видимость слоя Map · Dark (сейчас прозрачность 0 в мастере)",
@@ -39,5 +40,5 @@
     "Блик Loading: а — экземпляр Loading Fade, б — свой градиент на Shimmer/Step 1–6 (выбор sergej)",
     "Токены motion для приглушения и блика (Standards)"
   ],
-  "updated": "2026-10-28"
+  "updated": "2026-10-29"
 }
