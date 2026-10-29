@@ -48,5 +48,15 @@
   },
   "exceptions": [
     "changes/rider/pending/component-deviation-search-field-error-without-text.json"
-  ]
+  ],
+  "divergences": [
+    "Цвет ошибки — Text/Warning и Icon/Warning вместо error; не переименовывается до приведения Rider Tokens. Запись divergence в products/rider/deviations.json после #329 — Standards (ответ 29.10)."
+  ],
+  "standardsAnswers-2026-10-29": {
+    "exception-3b": "утверждено, условие — доступность экранному диктору (см. запись исключения)",
+    "dot-prefix": "точку оставляем: .Search Actions, .Caret Input, .Clear Field Button — служебные; публичные без точки",
+    "booleans": "свойство Boolean; если нужна комбинация в variant set (Filled в State × Filled) — значения True / False; No/Yes Taxi — наследие, к протягиванию",
+    "state": "Default / Focused / Error; Disabled — только если есть в макетах (PD 4а — не добавляем)",
+    "search-route": "роль и имя — на предаудите Search Route, прислать места использования"
+  }
 }
