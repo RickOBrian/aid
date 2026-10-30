@@ -6,7 +6,7 @@
   "artifact": "balance",
   "componentId": "balance",
   "product": "driver",
-  "changeSummary": "Кнопка бара Driver `balance` — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Мастер `balance` 89:2876 (Controls): 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. Web, iOS, Android — реализаций нет. Все цвета на переменных Driver (Light Ind, Icons/Warning), новых токенов для кольца точки не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а 8а»: кольцо точки — Bg/Actions вместо Strokes/Primary (ночью было светлым); точка — экземпляр mini_notification в границах кнопки вместо локального вектора; ось Active → Disabled (True / False); Notification — boolean, подпись — TEXT, иконка — INSTANCE_SWAP; добавить Pressed и Focused, Hover — только Web; длинная подпись — одна строка, многоточие. Ждут Standards: имя по роли (BarButton или ActionBarItem, вопрос 5) и модель недоступного — токены 38% против прозрачности 40% у Switch (вопрос 7). Найдено при сборке аудита, ещё не задавалось: кольцо фокуса на тёмном баре — Strokes/Primary днём не виден, нужен белый токен (вопрос 9, дизайнер); у bar/button в варианте Main подписи и иконки на Texts/Icons Primary Inverted — ночью тёмные на тёмном (вопрос 10, куратор). В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Pressed показан хексом-допущением #FFFFFF 12%. Сборка также: auto layout, слои icon / label / dot, radius-flat снять, описание и ссылки на документацию. Аудит — пейдж «👀 Balance · audit» 452:889, блоки 0–8, день и ночь на 360; мастера не правились. Текущей версии нет. Переименование оси и сета ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "changeSummary": "Кнопка бара Driver `balance` — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Мастер `balance` 89:2876 (Controls): 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. Web, iOS, Android — реализаций нет. Все цвета на переменных Driver (Light Ind, Icons/Warning), новых токенов для кольца точки не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а 8а»: кольцо точки — Bg/Actions вместо Strokes/Primary (ночью было светлым); точка — экземпляр mini_notification в границах кнопки вместо локального вектора; ось Active → Disabled (True / False); Notification — boolean, подпись — TEXT, иконка — INSTANCE_SWAP; добавить Pressed и Focused, Hover — только Web; длинная подпись — одна строка, многоточие. Ждут Standards: имя по роли (BarButton или ActionBarItem, вопрос 5) и модель недоступного — токены 38% против прозрачности 40% у Switch (вопрос 7). Найдено при сборке аудита, ещё не задавалось: кольцо фокуса на тёмном баре — Strokes/Primary днём не виден, нужен белый токен (вопрос 9, дизайнер); у bar/button в варианте Main подписи и иконки на Texts/Icons Primary Inverted — ночью тёмные на тёмном (вопрос 10, куратор). В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Сборка также: auto layout, слои icon / label / dot, radius-flat снять, описание и ссылки на документацию. Аудит — пейдж «👀 Balance · audit» 452:889, блоки 0–8, день и ночь на 360; мастера не правились. Текущей версии нет. Переименование оси и сета ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза. Сборка 30.10 (этап 6, решения куратора по комментариям frank.daniil 28.10: 1–4, 6, 8–10 приняты; 5 и 7 ждут Standards): страница «🚧 Balance · construction» 541:1568, аудит перенесён на неё секцией «Balance · audit» 544:1569 (id блоков прежние, пустая страница аудита удалена по persefona-figma-pages §7.1). Новый набор под рабочим именем balance 542:644: оси Disabled False/True × State Default/Pressed/Focused (4 варианта), свойства Label (TEXT), Notification (BOOLEAN), Icon (INSTANCE_SWAP); auto layout 104×56, подпись в одну строку с многоточием, точка — экземпляр mini_notification в кольце Bg/Actions в границах кнопки; только токены Driver, хексов нет. Pressed (белый 12%) и Focused (белое кольцо 2px) — пробел «ждёт токен», заявка Designer · Components; токены не создавались. Рабочая копия bar/button 542:945 на новых кнопках, переопределения Inverted у Type=Main сняты (10а). Мастера 89:2876 и 89:2891 не менялись — замена при публикации, публикует arturuxui.",
   "currentVersion": null,
   "proposedSemVerImpact": "major",
   "proposedVersion": null,
@@ -17,7 +17,7 @@
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
-    "auditPage": "452:889",
+    "auditPage": "544:1569",
     "componentPage": "194:3098",
     "components": {
       "balance": "89:2876",
@@ -27,6 +27,12 @@
     "input": {
       "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
       "node": "6173:16550"
+    },
+    "auditSection": "544:1569",
+    "constructionPage": "541:1568",
+    "construction": {
+      "balance": "542:644",
+      "bar/button": "542:945"
     }
   },
   "relatedTokenChanges": [],
@@ -34,5 +40,6 @@
   "sourcePath": null,
   "status": "pending",
   "created": "2026-10-27",
-  "author": "arturuxui"
+  "author": "arturuxui",
+  "updated": "2026-10-30"
 }
