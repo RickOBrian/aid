@@ -1,0 +1,37 @@
+{
+  "id": "component-tab",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Tab",
+  "componentId": "tab",
+  "product": "driver",
+  "changeSummary": "Tab Driver — развитие (designer-25, issue #493, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Tab` 89:5270 (страница Tabs): 2 варианта, ось State = Active / Normal; родитель — Tabs 89:5279 (ось Quantity 2–5). В Web реализации нет. Токены совпадают с каноном Driver (Buttons/Primary, Buttons/Disabled, Texts/Primary, Texts/Primary Inverted, radius-20, space-2/8/12, Subtitles/Subtitle 1), новых не нужно. По сути это чип выбора смены: подпись «06:00 — 14:00» зашита в три текстовых слоя. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а»: компонент — ChipSelect с осью Selected (имя — на решении Standards); подпись — один слой label со свойством Label; фон невыбранного — Buttons/Secondary вместо Buttons/Disabled (визуал — дизайнеру); состояния Selected + Disabled (Buttons/Disabled + Texts/Disabled), фокус — кольцо 2px на Strokes/Primary, Hover — только Web; высота 40, зона касания 44×44 — в спеке. Боевой макет: Copy_New-Driver-DEV XddnBR2XdC4l5HX7pPzTxF, Order History, «Menu / Orders» 6916:47752 → Frame 45 6916:46070 — ряд недель нарисован фреймами 32 px, Subtitle 2, выбранный — хексом; мастер не используется. Предложены в аудите, ответ куратора 28.10 «6а 7а 8а»: ось Size — M 40 · Subtitle 1 и S 32 · Subtitle 2 (S — как в Order History, выбранный на токенах вместо хекса); свой аудит Tabs 89:5279 (прокрутка на 360, слот вместо оси Quantity) — отдельной задачей; развести имена двух сетов Tabs (89:5279 и сегмент 89:5234) — сегмент отдельной задачей. Аудит — пейдж «👀 Tab · audit» 463:9568, блоки 0–8, день и ночь на 360, прототип выбора — рабочий компонент «.Tab · прототип» 465:512 на экземплярах; мастер не правился. Текущей версии нет. Переименование сета и оси State ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Tab → ChipSelect: свойство Selected вместо State, подпись одним свойством Label, размеры M и S, добавлены недоступный и фокус, невыбранный — на Buttons/Secondary"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "463:9568",
+    "componentPage": "194:3099",
+    "components": {
+      "tab": "89:5270",
+      "tabs": "89:5279"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6916:46070"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/tab",
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
