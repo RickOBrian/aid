@@ -1,0 +1,44 @@
+{
+  "id": "component-badges",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Badges",
+  "componentId": "badges",
+  "product": "driver",
+  "changeSummary": "Семья бейджей Driver — развитие (designer-27, issue #507, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Девять одиночных мастеров страницы Badges без вариантов, свойств и описаний: small 89:4201 (вход Rows/address), medium/mono 89:4198 (Rows/tarif), medium/color 89:4195 (Rows/options), mini_notification 89:4216 (Tabs 89:5234), без входа — reward 89:4185, big 89:4192, tag 89:4205, notification 89:4209, Counter 89:4214. Код: BadgeCount (Counter) и BadgeDot (mini_notification) — Web в Presentbook, не выпущены; для остальных семи реализаций нет. Отступы, радиусы и шрифты на токенах; хексов-допущений нет. Находки: tag ночью нечитаем — Texts/Secondary Dark Ind (чёрный 54%) на Pastels/Nebula #3E4C45; цифра small на Texts/Tertiary 38% (~2,7:1); красная заливка Counter, notification и mini_notification стоит на токенах поля и иконки (Fields/Warning, Icons/Warning), своего токена заливки нет, Bg/Warning — бледный фон; ночной контраст белого числа 3,2:1 уже записан исключением component-deviation-badge-count-night-contrast; обводка big на Buttons/Secondary; reward — раскладка 360 с локальными фреймами вместо экземпляров; имя big повторяет Buttons/big; в Badges Spec Counter помечен 🚫 при 86 экземплярах в Order. Предложение аудита (ответов ещё нет, все 14 вопросов — «Ждёт решения»): small, medium/mono, medium/color, big → один Badge с осями Size S/M/L и Tone Neutral/Mono/Soft/Color; tag → Tag; Counter → BadgeCount, mini_notification → BadgeDot — как в коде; reward — не компонент, а два Badge Size=L; notification — в архив или BadgeCount с хвостом; свойства Label, Icon, Show icon, Show label, у счётчика Value; длинная подпись — одна строка с многоточием; переполнение «99+». Хозяева: Standards — имена, повтор big, токен заливки; дизайнер — tag ночью, контраст small, переполнение; куратор — остальное. Аудит — пейдж «👀 Badges · audit» 495:1119, блоки 0–8, день и ночь на 360; мастера не правились. Текущей версии нет. Объединение мастеров и переименование ломают экземпляры Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Бейджи: четыре контурных мастера объединены в Badge с размером и тоном; подпись, иконка и число — свойства; tag читается ночью; у счётчика и точки — свой токен заливки"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "495:1119",
+    "componentPage": "194:3102",
+    "components": {
+      "reward": "89:4185",
+      "big": "89:4192",
+      "medium/color": "89:4195",
+      "medium/mono": "89:4198",
+      "small": "89:4201",
+      "tag": "89:4205",
+      "notification": "89:4209",
+      "Counter": "89:4214",
+      "mini_notification": "89:4216"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6976:99952"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-28",
+  "author": "arturuxui"
+}
