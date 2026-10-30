@@ -1,0 +1,77 @@
+{
+  "id": "component-icon-surface",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "IconSurface",
+  "componentId": "icon-surface",
+  "product": "rider",
+  "changeSummary": "IconSurface Rider — развитие (designer-29, AID-81, issue #515), флоу figma-library-workflow §3.1. Вход — мастер 98:9 (пейдж Surfaces; круг 68, pad space-20, иконка 28, фон Pastel/Patty, иконка Icon/Special; одно свойство Icon). В макетах Handoff 5mg6h0oB8yRDoUfTruogca — 13 мест в шапке шторок-разрешений: 3 экземпляра IconSurface с перебитым фоном, 9 legacy Icon 68 (ключ 182ba4d9…), 1 отцепленный фрейм с хексом. Решено: Tone = Accent / Success / Special / Warning / Custom (Neutral переименован в Accent — sergej 30.10) (пара «фон Pastel + цвет иконки» в мастере; Custom — свои фон и цвет иконки из токенов), один размер 68/28, иконка декоративная, замена legacy — после публикации (§3.9), аудит по Figma. Аудит — пейдж «👀 Icon Surface · audit» 1126:3914, блоки 0–8, прототип .IconSurface · audit 1131:256; открыто в блоке 8: Custom как значение Tone (Standards), усиленный цвет иконки для трёх пар с контрастом ниже 3:1 (дизайнер), смысловые вариации тонов (куратор), иконка по умолчанию (дизайнер). Версии нет (Q-22): предложение куратора — принять мастер как 1.0.0, после Tone — 1.1.0 (minor, новое свойство); итог на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "minor",
+    "description": "IconSurface: свойство Tone — Accent, Success, Special, Warning и Custom; пара фона и цвета иконки задана в компоненте"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "1126:3914",
+    "componentPage": "98:2",
+    "components": {
+      "IconSurface": "98:9"
+    },
+    "auditPrototypes": {
+      ".IconSurface · audit": "1131:256"
+    },
+    "input": {
+      "fileKey": "79UryRdexwKAv8vDIV5v4v",
+      "node": "98:9"
+    },
+    "reference": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "permissionsAlert": "2314:23322",
+      "workZone": "2263:18127"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-28",
+  "author": "sergej",
+  "decisions": [
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "Учти правило про Custom — туда разрешается ставить даже хексы голые (фон и иконка), их будет не обязательно выбирать из токенов только. Это обусловлено тем, что custom будут использовать для всяких промо ситуаций и т.п., когда понадобится сделать один раз. Если выбирают Custom и там хексы, то это не считается нарушением стандартов",
+      "status": "ждёт Standards: расходится с решением Standards 28.10 (Custom — только токены); при согласии — exception в products/rider/deviations.json после #329",
+      "figma": "1138:1696"
+    },
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "выбрали вот такие цвета для иконок",
+      "figma": "1354:26863",
+      "status": "новые значения фона и иконки тонов; имена Tint/Icon <Hue> Light|Dark не по naming-conventions и core-color-tokens-guide — ждёт Standards; значения — заявкой в Rider Tokens"
+    },
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "Переименовать в Accent",
+      "about": "тон Neutral стал фиолетовым (Milhouse + Accent) — значение Tone Neutral → Accent; Custom по умолчанию серый",
+      "figma": "1131:256"
+    },
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "И заодно сразу снеси в нем токены на хексы (раздетачь), так будет логичнее. Серый при этом можно оставить",
+      "about": "в Custom прототипа аудита токены отвязаны, цвет тот же: день фон #EEEEEE (был Pastel/Barney), иконка #0F0F1F 38% (был Icon/Tertiary); ночь фон #363636, иконка #FFFFFF 38%. Ночь у Custom больше не переключается сама — значения заданы в каждом варианте Theme",
+      "figma": [
+        "1131:209",
+        "1131:249"
+      ]
+    }
+  ]
+}
