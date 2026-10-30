@@ -1,0 +1,31 @@
+{
+  "id": "component-divider",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "develop",
+  "artifact": "Divider",
+  "componentId": "divider",
+  "product": "rider",
+  "task": "designer-5 (AID-62, #416)",
+  "changeSummary": "Divider Rider — развитие компонента в Rider Components: прежний мастер 210:839 (ключ ec30bdfb…) стал вариантом Orientation=Horizontal, Padding=2 набора Divider (1142:903); свойства Orientation (Horizontal/Vertical), Padding 0/2/4/8 (space-0/2/4/8, по умолчанию 0); цвет — Stroke/Separator (Secondary убран решением sergej 29.10); толщина space-1, скругление убрано. Решения PD 25.10 (вариант Б), sergej 26–27.10 (Padding вместо Inset, 9а), Standards 27.10 (уровень Item). Аудит принят Standards 28.10. До задачи компонент был без версии, поэтому первая записанная версия — 1.0.0. Версия — предложение, итоговая — на границе релиза.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "initial",
+    "description": "Divider: свойства Orientation и Padding (0/2/4/8), значения на токенах, цвет — Stroke/Separator; прежний Divider — вариант Horizontal · 2, цвет линии — Stroke/Separator вместо Background/Separator"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "component": "210:839",
+    "componentSet": "1142:903",
+    "auditSection": "773:31",
+    "constructionPage": "1142:871"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-25",
+  "author": "sergej"
+}
