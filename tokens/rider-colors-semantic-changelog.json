@@ -14,8 +14,28 @@
       "changes": [
         {
           "kind": "added",
-          "description": "Добавлена служебная переменная Theme/Is Dark (boolean, только Figma)",
-          "details": "Theme/Is Dark: Day false, Night true\nНазначение: видимость слоёв по теме, где режим наложения не переключается темой (первое применение — ночной слой фона выбранного таба в TabBar Rider)\nВ код не экспортируется: в коде тему даёт платформа (colorScheme / isSystemInDarkTheme / prefers-color-scheme)"
+          "description": "Добавлена переменная Stroke/Separator Secondary — второй, более плотный вид разделителя (для серых поверхностей Background/Secondary)",
+          "details": "Stroke/Separator Secondary: Day #777788 32%, Night #777788 45%; scopes STROKE_COLOR, FRAME_FILL, SHAPE_FILL"
+        },
+        {
+          "kind": "changed",
+          "description": "У Stroke/Separator расширена область применения: кроме обводок — заливка фреймов и фигур (линия Divider — прямоугольник с заливкой)",
+          "details": "Stroke/Separator: scopes STROKE_COLOR → STROKE_COLOR, FRAME_FILL, SHAPE_FILL"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлены переменные pressed для статусных фонов: Background/Warning Pressed, Background/Attention Pressed, Background/Accent Pressed (компонент Banner Status)",
+          "details": "Background/Warning Pressed: Day #CA2314, Night #C02617\nBackground/Attention Pressed: Day #E0AF00, Night #E0AF00\nBackground/Accent Pressed: Day #7521E0, Night #753FE0\nзатемнение 12 %; scopes FRAME_FILL, SHAPE_FILL"
+        },
+        {
+          "kind": "changed",
+          "description": "Ночные значения Background/Warning и Background/Accent затемнены: белый текст Text/Constant White на них проходит контраст 4,5:1",
+          "details": "Background/Warning: Night #E53828 → #DA2B1A (4,08 → 4,63:1)\nBackground/Accent: Night #884DFF → #8548FF (4,42 → 4,60:1)"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена служебная переменная Theme/Is Dark (boolean, только Figma) — видимость слоёв по теме, где режим наложения не переключается темой",
+          "details": "Theme/Is Dark: Day false, Night true; в код не экспортируется"
         }
       ]
     },
