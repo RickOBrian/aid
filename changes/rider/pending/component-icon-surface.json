@@ -40,5 +40,21 @@
   "sourcePath": null,
   "status": "pending",
   "created": "2026-10-28",
-  "author": "sergej"
+  "author": "sergej",
+  "decisions": [
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "Учти правило про Custom — туда разрешается ставить даже хексы голые (фон и иконка), их будет не обязательно выбирать из токенов только. Это обусловлено тем, что custom будут использовать для всяких промо ситуаций и т.п., когда понадобится сделать один раз. Если выбирают Custom и там хексы, то это не считается нарушением стандартов",
+      "status": "ждёт Standards: расходится с решением Standards 28.10 (Custom — только токены); при согласии — exception в products/rider/deviations.json после #329",
+      "figma": "1138:1696"
+    },
+    {
+      "date": "2026-10-30",
+      "by": "sergej",
+      "quote": "выбрали вот такие цвета для иконок",
+      "figma": "1354:26863",
+      "status": "новые значения фона и иконки тонов; имена Tint/Icon <Hue> Light|Dark не по naming-conventions и core-color-tokens-guide — ждёт Standards; значения — заявкой в Rider Tokens"
+    }
+  ]
 }
