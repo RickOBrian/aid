@@ -3,17 +3,73 @@
   "type": "component",
   "changeType": "changed",
   "taskType": "evolve",
-  "artifact": "balance",
+  "artifact": "ActionBarItem",
   "componentId": "balance",
   "product": "driver",
-  "changeSummary": "Кнопка бара Driver `balance` — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Мастер `balance` 89:2876 (Controls): 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. Web, iOS, Android — реализаций нет. Все цвета на переменных Driver (Light Ind, Icons/Warning), новых токенов для кольца точки не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а 8а»: кольцо точки — Bg/Actions вместо Strokes/Primary (ночью было светлым); точка — экземпляр mini_notification в границах кнопки вместо локального вектора; ось Active → Disabled (True / False); Notification — boolean, подпись — TEXT, иконка — INSTANCE_SWAP; добавить Pressed и Focused, Hover — только Web; длинная подпись — одна строка, многоточие. Ждут Standards: имя по роли (BarButton или ActionBarItem, вопрос 5) и модель недоступного — токены 38% против прозрачности 40% у Switch (вопрос 7). Найдено при сборке аудита, ещё не задавалось: кольцо фокуса на тёмном баре — Strokes/Primary днём не виден, нужен белый токен (вопрос 9, дизайнер); у bar/button в варианте Main подписи и иконки на Texts/Icons Primary Inverted — ночью тёмные на тёмном (вопрос 10, куратор). В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Сборка также: auto layout, слои icon / label / dot, radius-flat снять, описание и ссылки на документацию. Аудит — пейдж «👀 Balance · audit» 452:889, блоки 0–8, день и ночь на 360; мастера не правились. Текущей версии нет. Переименование оси и сета ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза. Сборка 30.10 (этап 6, решения куратора по комментариям frank.daniil 28.10: 1–4, 6, 8–10 приняты; 5 и 7 ждут Standards): страница «🚧 Balance · construction» 541:1568, аудит перенесён на неё секцией «Balance · audit» 544:1569 (id блоков прежние, пустая страница аудита удалена по persefona-figma-pages §7.1). Новый набор под рабочим именем .balance 542:644 (префикс «.» — Publish не берёт): одна ось State Default / Pressed / Disabled (3 варианта; по уточнению arturuxui 30.10 недоступность — значение State, не переключатель; Focused и Hover не делаем — Web не целевая платформа), свойства Label (TEXT), Notification (BOOLEAN), Icon (INSTANCE_SWAP); auto layout 104×56, подпись в одну строку с многоточием, точка — экземпляр mini_notification в кольце Bg/Actions в границах кнопки; только токены Driver, хексов нет. Pressed (белый 12%) — пробел «ждёт токен», вопрос о токенах состояний у PD в RickOBrian/aid#506; токены не создавались. Рабочая копия .bar/button 542:945 на новых кнопках, переопределения Inverted у Type=Main сняты (10а). Мастера 89:2876 и 89:2891 не менялись; правки переносятся в мастера (ключи и связи экземпляров сохраняются) только после согласования с дизайнером и разработчиком, рабочие наборы затем удаляются; публикует arturuxui.",
+  "changeSummary": "Кнопка бара Driver — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы реализации — все (Web, iOS, Android; кода пока нет), флоу figma-library-workflow 0.8.0 §3.1. Вход: мастер `balance` 89:2876 (Controls), 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Аудит — секция «Balance · audit» 544:1569 на странице сборки (блоки 0–8, день и ночь на 360). Итог сборки 30.10 (решения куратора arturuxui 27.10 и 30.10, комментарии frank.daniil 28.10, рабочий ответ Standards 30.10): набор под рабочим именем `.ActionBarItem` 542:644 на странице «🚧 Balance · construction» 541:1568 (префикс «.» — Publish не берёт). Одна ось State: Default / Pressed / Disabled; недоступность — значение State, не переключатель. Свойства Label (TEXT), Notification (BOOLEAN), Icon (INSTANCE_SWAP). Auto layout 104×56, подпись в одну строку с многоточием, точка — экземпляр mini_notification в кольце Bg/Actions в границах кнопки (вместо Strokes/Primary, ночью было светлым). Только токены Driver, хексов нет. Недоступный — токены Texts/Tertiary и Icons/Informative Light Ind (38 %, норма продукта по ADR-036, стандарт 40 % — accessibility.md, ADR-006), прозрачность слоя 100 %, без двойного приглушения. Не поддерживаются: Hovered и Focused — продукт мобильный (states-guide §5, §6.1; решение arturuxui 30.10), отмечено в описании набора; вопрос 9 (кольцо фокуса) снят вместе с Focused. Pressed (белый 12 % на тёмном баре) — пробел «⏳ ждёт токен», токен не подставлен и не создан; решение — PD через token-change-gate в RickOBrian/aid#506 (п. 2, токены состояний Driver). Имя: по naming-conventions §4 — код `ActionBar.Item`, сет Figma `ActionBarItem` (рабочий ответ Standards 30.10). Рабочая копия родителя `.bar/button` 542:945 на новых кнопках, переопределения Inverted у Type=Main сняты (10а). Следующий шаг вне #494: переименовать родитель `bar/button` → `ActionBar`. Миграция экземпляров Figma: ось Active заменяется осью State (Active=False → State=Disabled), Notification становится BOOLEAN, подпись и иконка — свойства, имя сета меняется — переопределения экземпляров слетают, их нужно выставить заново. Мастера 89:2876 и 89:2891 не менялись; перенос правок в мастера (ключи и связи экземпляров сохраняются) — только после согласования с дизайнером и разработчиком и «да» arturuxui, рабочие наборы затем удаляются; публикует arturuxui. Текущей версии нет — initial (release-gate, §3.3).",
   "currentVersion": null,
-  "proposedSemVerImpact": "major",
+  "proposedSemVerImpact": "initial",
   "proposedVersion": null,
   "proposedChangelogEntry": {
-    "kind": "changed",
-    "impact": "major",
-    "description": "Кнопка бара: имя по роли, одна ось State (Default, Pressed, Disabled); подпись, иконка и уведомление — свойства; кольцо точки уведомления не светится ночью"
+    "kind": "added",
+    "impact": "initial",
+    "description": "ActionBarItem (кнопка бара): одна ось State (Default, Pressed, Disabled); подпись, иконка и уведомление — свойства; кольцо точки уведомления не светится ночью"
+  },
+  "proposal": {
+    "componentName": "ActionBarItem",
+    "codeName": "ActionBar.Item",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер balance 89:2876; сборка .ActionBarItem 542:644",
+    "tokensRequired": [
+      "Texts/Primary Light Ind",
+      "Texts/Tertiary Light Ind",
+      "Icons/Primary Light Ind",
+      "Icons/Informative Light Ind",
+      "Bg/Actions",
+      "Icons/Warning"
+    ],
+    "tokenGaps": {
+      "pressedFill": {
+        "value": "белый 12 % на тёмном баре",
+        "status": "gap",
+        "lookup": [
+          "Strokes/Informative Light Ind",
+          "Bg/Overlay"
+        ],
+        "note": "кандидаты из lookup, без выбора; stroke-токен для заливки по смыслу не подходит; решение — PD, token-change-gate, RickOBrian/aid#506 п. 2"
+      }
+    },
+    "variants": {
+      "State": [
+        "Default",
+        "Pressed",
+        "Disabled"
+      ],
+      "properties": {
+        "Label": "TEXT",
+        "Notification": "BOOLEAN",
+        "Icon": "INSTANCE_SWAP"
+      },
+      "unsupportedStates": [
+        "Hovered",
+        "Focused"
+      ],
+      "note": "Disabled — значение оси State, не BOOLEAN; Hovered и Focused не поддерживаются (мобильный продукт, states-guide §5, §6.1)"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "pressedFill": "gap",
+      "disabled": "semantic-token",
+      "colors": "semantic-token",
+      "size104x56": "raw-value",
+      "longLabel": "one-line-ellipsis"
+    },
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
@@ -31,7 +87,7 @@
     "auditSection": "544:1569",
     "constructionPage": "541:1568",
     "construction": {
-      ".balance": "542:644",
+      ".ActionBarItem": "542:644",
       ".bar/button": "542:945"
     }
   },
