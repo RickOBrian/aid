@@ -6,14 +6,14 @@
   "artifact": "Switch",
   "componentId": "switch",
   "product": "driver",
-  "changeSummary": "Switch Driver — развитие (designer-16, issue #482, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `switch` 89:3083 (Controls): 6 вариантов, оси Checked / Active / Loading; Web — Switch.tsx (checked, isDisabled, isLoading). Токены совпадают с каноном Driver (Controls · Checked / Unchecked / Accent, radius-20), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: в Loading цвет трека — по Checked (сейчас перепутан); ось Active → Disabled (True / False), как isDisabled; добавить состояние Focused — кольцо 2px на существующем Strokes · Primary, Hover — только Web; прозрачность недоступного 40%, как в Web и accessibility.md (вместо 50%); компонент 40×24, зона касания 44×44 — в спеке и коде, не в макете; источник Figma в switch.meta.json — AID Driver Components 89:3083 вместо Wilhelm Library 9872:15; имена слоёв track / thumb / loader во всех вариантах. Сборка также: auto layout вместо абсолютных позиций, трек одним типом слоя с радиусом на radius-20, имя сета Switch (находка audit-2026-09-21-switch-standalone-name), описание и ссылки на документацию. Аудит — пейдж «👀 Switch · audit» 425:102, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет (components/switch-changelog.json, currentVersion null; Web 1.0.0 — component-switch-initial, не выпущен). Выпущенной версии нет, поэтому по component-gate §release и release-gate (First approved release) импакт — initial, а не major: переименование оси Active ломает экземпляры Figma, но major применяется только после первого релиза. На границе релиза объединяется с component-switch-initial в одну запись 1.0.0; версию ставит человек через release-gate. Виды значений (token-integrity, «Вид значения»): прозрачность недоступного 40% и зона касания 44×44 — platform-convention, токен не нужен; 40×24 — raw-value, фиксируется в анатомии; цвета, отступы и радиус — semantic-token. Token lookup 30.10: все токены есть в 🚕 AID Driver Tokens & Styles, включая space-2 (коллекция space), пробелов нет.",
+  "changeSummary": "Switch Driver — развитие (designer-16, issue #482, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `switch` 89:3083 (Controls): 6 вариантов, оси Checked / Active / Loading; Web — Switch.tsx (checked, isDisabled, isLoading). Токены совпадают с каноном Driver (Controls · Checked / Unchecked / Accent, radius-20), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: в Loading цвет трека — по Checked (сейчас перепутан); ось Active убирается, недоступность — значение Disabled оси State (решение arturuxui 30.10 через Designer · Rework: одинаково для всех компонентов, без отдельной оси и BOOLEAN; заменяет ответы 2а и 3а); состояния Focused и Hovered в Figma не делаются — фокус и hover остаются только в коде Web; прозрачность недоступного 40%, как в Web и accessibility.md (вместо 50%); компонент 40×24, зона касания 44×44 — в спеке и коде, не в макете; источник Figma в switch.meta.json — AID Driver Components 89:3083 вместо Wilhelm Library 9872:15; имена слоёв track / thumb / loader во всех вариантах. Сборка также: auto layout вместо абсолютных позиций, трек одним типом слоя с радиусом на radius-20, имя сета Switch (находка audit-2026-09-21-switch-standalone-name), описание и ссылки на документацию. Аудит — пейдж «👀 Switch · audit» 425:102, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет (components/switch-changelog.json, currentVersion null; Web 1.0.0 — component-switch-initial, не выпущен). Выпущенной версии нет, поэтому по component-gate §release и release-gate (First approved release) импакт — initial, а не major: переименование оси Active ломает экземпляры Figma, но major применяется только после первого релиза. На границе релиза объединяется с component-switch-initial в одну запись 1.0.0; версию ставит человек через release-gate. Виды значений (token-integrity, «Вид значения»): прозрачность недоступного 40% и зона касания 44×44 — platform-convention, токен не нужен; 40×24 — raw-value, фиксируется в анатомии; цвета, отступы и радиус — semantic-token. Token lookup 30.10: все токены есть в 🚕 AID Driver Tokens & Styles, включая space-2 (коллекция space), пробелов нет.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": null,
   "proposedChangelogEntry": {
     "kind": "added",
     "impact": "initial",
-    "description": "Switch: свойство «недоступен» называется Disabled, как в коде; добавлен фокус; в загрузке трек по включённости; недоступный — 40% прозрачности"
+    "description": "Switch: ось State (Default / Loading / Disabled) вместо оси Active; в загрузке трек по включённости; недоступный — 40% прозрачности"
   },
   "proposal": {
     "componentName": "Switch",
@@ -22,16 +22,25 @@
       "Controls/Checked",
       "Controls/Unchecked",
       "Controls/Accent",
-      "Strokes/Primary",
       "radius-20",
       "space-2"
     ],
     "variants": {
-      "Checked": ["True", "False"],
-      "State": ["Default", "Focused", "Loading", "Disabled"],
-      "note": "Hover — только Web; ось State или булевы свойства — решение Designer · Rework на сборке"
+      "Checked": [
+        "True",
+        "False"
+      ],
+      "State": [
+        "Default",
+        "Loading",
+        "Disabled"
+      ],
+      "note": "Disabled — значение оси State, не отдельная ось и не BOOLEAN; Focused и Hovered в Figma не делаются (решение arturuxui 30.10), как у Balance"
     },
-    "modes": ["day", "night"],
+    "modes": [
+      "day",
+      "night"
+    ],
     "valueKinds": {
       "disabledOpacity40": "platform-convention",
       "touchTarget44x44": "platform-convention",
