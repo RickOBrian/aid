@@ -114,7 +114,7 @@
     "confidence": "high",
     "namingException": false,
     "architectureException": true,
-    "exceptionNote": "Значения Variant расширяют закрытый канон component-standards §8.1 / naming §4 (primary · secondary · ghost · destructive): составные primary-destructive · secondary-destructive · ghost-destructive (вес первым, тон вторым — у Driver destructive бывает в трёх весах, ADR-036). Предложение расширить §8.1 под вес × тон — issue to:ds-standards (Standards). floating → сет ButtonTextFloating (Qualifier), Variant = канон §8.1; arturuxui 30.10 (через Designer · Rework). ButtonIconFloating: обе FAB (89:6194, 89:6177) с тенью над картой → Qualifier Floating, Variant primary · secondary по канону; Standards 30.10.",
+    "exceptionNote": "Значения Variant расширяют закрытый канон component-standards §8.1 / naming §4 (primary · secondary · ghost · destructive): составные primary-destructive · secondary-destructive · ghost-destructive (вес первым, тон вторым — у Driver destructive бывает в трёх весах, ADR-036). Предложение расширить §8.1 под вес × тон — issue RickOBrian/aid#548. floating → сет ButtonTextFloating (Qualifier), Variant = канон §8.1; arturuxui 30.10 (через Designer · Rework). ButtonIconFloating: обе FAB (89:6194, 89:6177) с тенью над картой → Qualifier Floating, Variant primary · secondary по канону; Standards 30.10.",
     "reviewAt": "release"
   },
   "figma": {
