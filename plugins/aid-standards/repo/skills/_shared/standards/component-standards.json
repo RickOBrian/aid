@@ -1,6 +1,6 @@
 {
   "id": "component-standards",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "status": "alpha",
   "humanFile": "component-standards.md",
   "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
@@ -535,7 +535,8 @@
       "10": {
         "applies": "full",
         "reading": "изменение — в changes/<id>/pending/; запись «Не опубликовано» без версии — в таблицу чейнжлога Figma и в JSON, вручную с PD (WORKING-RULES §5); в main JSON-запись только с версией",
-        "releaseBoundary": "release-gate; у библиотек Rider и Driver версию и changelog ставит любой инженер-человек (не AI) в своём PR (CLAUDE.md, «Только PD» п.4)"
+        "releaseBoundary": "release-gate; у библиотек Rider и Driver версию и changelog ставит любой инженер-человек (не AI) в своём PR (CLAUDE.md, «Только PD» п.4)",
+        "figmaChangelogVersion": "этап readyfordev: номер версии называет инженер-человек, принявший сборку; AI-инженер вписывает его в таблицу чейнжлога Figma вместо «Не опубликовано», не дожидаясь публикации (ссылка — на гайд компонента); только minor, patch и 1.0.0 новой сборки; major — человек; JSON — после публикации через release-gate (решение PD 2026-10-30)"
       }
     }
   },

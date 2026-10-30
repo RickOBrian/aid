@@ -3,7 +3,7 @@
   "bundleVersion": "0.1.0-alpha",
   "bundleStatus": "alpha",
   "canonicalRoot": "skills/_shared",
-  "updated": "2026-10-23",
+  "updated": "2026-10-30",
   "note": "Реестр стандартов дизайн-системы. Каждый стандарт версионируется самостоятельно по semver-guide; bundleVersion — версия публикуемого набора целиком. Машинный слой (machineFile) читают инструменты: аудит, линтер, плагины, распознавание компонентов.",
   "statuses": [
     "draft",
@@ -86,7 +86,7 @@
       "kind": "standard",
       "humanFile": "skills/_shared/standards/component-standards.md",
       "machineFile": "component-standards.json",
-      "version": "3.2.0",
+      "version": "3.2.1",
       "status": "alpha",
       "wave": 1,
       "core": true,
