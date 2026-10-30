@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { SpinnerPreviewPage } from './SpinnerPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -158,6 +159,14 @@ export function App() {
   }
   if (managePath === '/manage/team') {
     return <TeamPage />;
+  }
+  // Превью анимации Spinner (AID-61): только по прямой ссылке, без ссылок из меню.
+  if (managePath === '/rider/preview/spinner') {
+    return (
+      <ProductAccentScope productId="rider">
+        <SpinnerPreviewPage />
+      </ProductAccentScope>
+    );
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());

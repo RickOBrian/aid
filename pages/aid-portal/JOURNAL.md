@@ -76,3 +76,4 @@
 | 2026-10-15 | Вход на превью: шлюз presentbook-preview пускает POST на `/{pr}/{path+}` — с 06.10 форма слала POST в `/pr-N/api/login` и получала 405 | — |
 | 2026-10-21 | Гайды на согласовании: поле `publication`, раздел «На согласовании», многоглавный гайд со стороны — «Git for Beginners» | ветка `presentbook/git-guide-preview` |
 | 2026-10-23 | presentbook-6 (AID-52), волна 1: портал на UI Kit Persefona — переменные `--pf-*` из Figma (`persefona/tokens.css`), Badge и текстовые стили (`persefona/kit.css`), Google Sans Code, веса 400/500, акцент вне продукта — графит, фокус `line-focus`, точки 480/768/1024/1280. Где токена нет — прежнее значение с пометкой `pf-gap` (ждёт пачку №0 и заявку §8 спеки) | — |
+| 2026-10-26 | Превью анимации Spinner Rider (AID-61) — `/rider/preview/spinner`, только по прямой ссылке: два варианта, бегунки длительности, спиннер в Button, Button Floating и Map Pin (состояние загрузки из аудитов), токены Rider из данных портала | — |
