@@ -3,17 +3,83 @@
   "type": "component",
   "changeType": "changed",
   "taskType": "evolve",
-  "artifact": "Lane Arrow",
+  "artifact": "ArrowLane",
   "componentId": "lane-arrow",
   "product": "driver",
-  "changeSummary": "Lane_arrow Driver — развитие (designer-24, issue #492, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Lane_arrow` 89:5487 (Pins): 7 вариантов, одна ось Size, но её значения задают не размер, а направление (Lane 18 — прямо, Lane 22 — чуть правее, Lane 28 — прямо и направо, Lane 30 — прямо и направо с разворотом); в одном сете стрелки полос (lane_*, высота 32) и иконки манёвров (ic_maneuver_*, 36×36); в Maneuver 22 — иконка полосы lane_slightly_left_1. Кода нет ни на одной платформе. Токены — канон Driver (Icons/Primary, Icons/Primary Inverted). Для неактивной полосы подходящего токена нет: Icons/Secondary Inverted днём #FFFFFF, как Primary Inverted (ночью #000000 · 54%), Icons/Secondary Light Ind не читается на ночной светлой плашке — вопрос 8 аудита, хозяин Standards (token-change-gate). По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: разделить на Lane Arrow (полосы) и Maneuver Icon (манёвр); направление — свойство замены иконки с предпочтительными иконками семьи (покрывает все lane_* и ic_maneuver_*), а не вариант на направление; Maneuver 22 — ошибка, заменить на ic_maneuver_*; ось активности полосы (Active True / False) — цвет неактивной полосы ждёт решения по токену; цвет по умолчанию — Icons/Primary Inverted (единственный контекст — тёмная плашка); высота манёвра 36, боевой макет поправить; имена Lane Arrow / Maneuver Icon, слой icon — ждёт решения Standards (naming-conventions). Сборка также: убрать бессмысленные привязки space-10 и radius-flat у обёртки с одной иконкой, единые constraints, описание и ссылки на документацию. Потребители: pin_lane_directions 89:5502 (14 экз.), Next maneuver 89:5958 (2 экз.). Аудит — пейдж «👀 Lane Arrow · audit» 472:102, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет. Разделение сета и замена оси Size ломают экземпляры Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "changeSummary": "Lane_arrow Driver — развитие (designer-24, issue #492, задача AID-LU-30), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Lane_arrow` 89:5487 (Pins): 7 вариантов, одна ось Size, но её значения задают не размер, а направление (Lane 18 — прямо, Lane 22 — чуть правее, Lane 28 — прямо и направо, Lane 30 — прямо и направо с разворотом); в одном сете стрелки полос (lane_*, высота 32) и иконки манёвров (ic_maneuver_*, 36×36); в Maneuver 22 — иконка полосы lane_slightly_left_1. Кода нет ни на одной платформе. Токены — канон Driver (Icons/Primary, Icons/Primary Inverted). По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: разделить на два сета — ArrowLane (полосы) и IconManeuver (манёвр); направление — свойство замены иконки с предпочтительными иконками семьи (покрывает все lane_* и ic_maneuver_*), а не вариант на направление; Maneuver 22 — ошибка, заменить на ic_maneuver_*; у ArrowLane ось Active True / False (рекомендуемая полоса / нет); цвет по умолчанию — Icons/Primary Inverted (единственный контекст — тёмная плашка Buttons/Primary); высота манёвра 36, боевой макет поправить. Ответы Standards 30.10 (#506): п.4 — имена сетов ArrowLane и IconManeuver (Role + Entity, без пробелов, naming-conventions §4), слой icon; п.9 — токена для неактивной полосы нет: Icons/Secondary Inverted днём #FFFFFF, как Primary Inverted, Icons/Tertiary тёмный, Icons/Secondary Light Ind не читается на ночной плашке — пробел токена, в pending и сборке без хардкода, новый токен — token-change-gate через PD; до решения PD значение Active=False в сборке не заполняется (хекс-допущение блока 8.1 «#FFFFFF · 54 %» — только иллюстрация варианта, не значение); п.5 — initial: выпущенной версии нет. Сборка также: убрать бессмысленные привязки space-10 и radius-flat у обёртки с одной иконкой (space-0), единые constraints, описание и ссылки на документацию. Потребители: pin_lane_directions 89:5502 (14 экз.), Next maneuver 89:5958 (2 экз.). Аудит — пейдж «👀 Lane Arrow · audit» 472:102, блоки 0–8 и 8.1 «Варианты рядом» 509:1113, день и ночь на 360; мастер не правился. Текущей версии нет. Заметка о миграции: разделение сета и замена оси Size ломают свойства экземпляров Figma — новые мастера ArrowLane и IconManeuver, старый Lane_arrow — в Archive, замена в pin_lane_directions и Next maneuver (§3.9); выпущенной версии нет, поэтому impact initial.",
   "currentVersion": null,
-  "proposedSemVerImpact": "major",
+  "proposedSemVerImpact": "initial",
   "proposedVersion": null,
   "proposedChangelogEntry": {
-    "kind": "changed",
-    "impact": "major",
-    "description": "Lane Arrow: стрелки полос и иконки манёвра разделены; направление выбирается заменой иконки; добавлена неактивная полоса; цвет по умолчанию — для тёмной плашки"
+    "kind": "added",
+    "impact": "initial",
+    "description": "ArrowLane и IconManeuver: стрелки полос и иконки манёвра Driver — отдельные сеты, направление выбирается заменой иконки, у полосы ось Active (рекомендуемая / нет), цвет по умолчанию — для тёмной плашки"
+  },
+  "proposal": {
+    "componentName": "ArrowLane, IconManeuver",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Lane_arrow 89:5487; аудит 472:102, варианты рядом 509:1113",
+    "components": {
+      "ArrowLane": {
+        "anatomy": "icon — экземпляр lane_* (высота 32, ширина по иконке)",
+        "variants": {
+          "Active": [
+            "True",
+            "False"
+          ]
+        },
+        "properties": {
+          "Icon": "instance swap, предпочтительные — семья lane_*"
+        },
+        "tokensRequired": [
+          "Icons/Primary Inverted",
+          "space-0"
+        ],
+        "tokenGaps": [
+          "Неактивная полоса (Active=False) на плашке Buttons/Primary — токена нет (#506 п.9), token-change-gate через PD"
+        ]
+      },
+      "IconManeuver": {
+        "anatomy": "icon — экземпляр ic_maneuver_* (36×36)",
+        "variants": {},
+        "properties": {
+          "Icon": "instance swap, предпочтительные — семья ic_maneuver_*"
+        },
+        "tokensRequired": [
+          "Icons/Primary Inverted",
+          "space-0"
+        ],
+        "tokenGaps": []
+      }
+    },
+    "unsupportedStates": [
+      "Pressed",
+      "Hovered",
+      "Focused",
+      "Disabled"
+    ],
+    "unsupportedStatesNote": "Оба сета — неинтерактивная индикация внутри пина (component-states-guide §5): нажатия, фокуса и недоступности нет. Active=False — не Disabled, а смысл «полоса не рекомендуется», поэтому ось Active, а не значение оси State (#550)",
+    "accessibility": "Иконки информативные, но текст даёт родитель: pin_lane_directions и Next maneuver озвучивают направление словами, сами иконки скрыты от чтения с экрана",
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "colors": "semantic-token",
+      "spacing": "semantic-token",
+      "laneHeight32": "raw-value",
+      "maneuverSize36": "raw-value",
+      "inactiveLaneColor": "token-gap"
+    },
+    "confidence": "medium",
+    "confidenceNote": "medium — до решения PD по токену неактивной полосы",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release",
+    "findings": [
+      "Ось Size мастера 89:5487 задаёт направление, а не размер",
+      "Maneuver 22 содержит иконку полосы lane_slightly_left_1 — ошибка",
+      "Icons/Secondary Inverted днём совпадает с Icons/Primary Inverted (#FFFFFF) — токена неактивной полосы нет"
+    ]
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
@@ -21,6 +87,9 @@
     "componentPage": "194:3106",
     "components": {
       "Lane_arrow": "89:5487"
+    },
+    "auditBlocks": {
+      "8.1 Варианты рядом": "509:1113"
     },
     "input": {
       "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
