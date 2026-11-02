@@ -6,7 +6,7 @@
   "artifact": "Avatar, IconSurface",
   "componentId": "avatar",
   "product": "driver",
-  "changeSummary": "Avatar Driver — развитие (designer-19, issue #487, задача AID-LU-25), флоу figma-library-workflow 0.8.0 §3.1. Мастер `avatar` 89:4931 (Rows): одна ось Type = Photo / No photo / Letters / Icon, все 44×44, без auto layout, без свойств; Web-компонента нет. 20 из 22 экземпляров — Type=Icon как «иконка в цветном круге» (Controls/bar/slider 89:2930 — 16, Rows/line 89:5009 — 4), Photo — 2 (Rows/ActiveOrderClientView 89:4949 растянут до 48, Widgets/instruction/rounded 89:3249 — до 56). Токены мастера на переменных Driver и совпадают с каноном data.ts. По ответам куратора arturuxui 27.10 «1а, 2а, 3а, 4 — оба, 5а, 6а, 7а, 8а»: разделить на Avatar (Photo / Initials / Placeholder) и IconSurface (иконка в круге), bar/slider и line перевести на IconSurface; ось Size 44 / 48 / 56 с таблицей размеров иконки и букв (ряд — за дизайнером); свойства Text initials, Instance swap icon, фото — заливкой слоя image; фон круга IconSurface — фон-токен, не Icons/*; имена Avatar / IconSurface вне группы Rows/; online-бейдж — идеей, не в этой задаче. Вопрос 4 (иконка на пастели ночью: Icons/Primary Light Ind или Icons/Secondary Inverted) ждёт дизайнера: на пейдже оба варианта в обеих темах с контрастом — днём на Corn 1.8:1 в любом варианте, ночью белая лучше на Cobalt и Azure, Secondary Inverted — на Corn. Сборка также: auto layout, круг рамкой с радиусом на токене вместо VECTOR, описание сета вместо «label». Аудит — пейдж «👀 Avatar · audit» 460:889, блоки 0–8, день и ночь на 360; мастер не правился. Ответы Standards 30.10 (#506): п.4 — имена Avatar и IconSurface приняты (naming-conventions §4); п.5 — initial 1.0.0: выпущенной версии нет (currentVersion null, release-gate, component-gate); п.8 — lookup фон-токена IconSurface. Lookup 02.11 (data.ts Driver, контраст иконки WCAG 1.4.11, порог 3:1, полупрозрачные — поверх Bg/Primary ряда): Bg/Tertiary — с Icons/Primary Light Ind день 1.32:1, ночь 17.4:1; с Icons/Secondary Inverted день 1.32:1, ночь 1.13:1; Bg/Primary Light Ind — с Icons/Primary Light Ind 1.0:1 в обеих темах; с Icons/Secondary Inverted день 1.0:1, ночь 4.59:1; текущий Pastels/Corn — день 1.80:1 в обоих вариантах, ночь 2.43:1 (а) / 3.52:1 (б). Ни один существующий фон не даёт 3:1 в обеих темах — пробел токена: в сборке пока текущие Pastels/* без хардкода, новый токен — token-change-gate, решает PD. Для bar/slider (фон сейчас Icons/*): Icons/Positive → Bg/Positive (то же значение #23AD58); у Icons/Special, Icons/Warning, Icons/Inactive Light Ind фон-аналога с тем же значением нет (Bg/Special Pale, Bg/Warning — другие цвета) — тот же пробел, в том же запросе к PD. Текущей версии нет. Заметка о миграции: разделение сета и переименование ломают свойства экземпляров Figma — новые мастеры Avatar и IconSurface, старый avatar 89:4931 — в Archive, замена в bar/slider, line, ActiveOrderClientView, instruction/rounded (§3.9); выпущенной версии нет, поэтому impact initial.",
+  "changeSummary": "Avatar Driver — развитие (designer-19, issue #487, задача AID-LU-25), флоу figma-library-workflow 0.8.0 §3.1. Мастер `avatar` 89:4931 (Rows): одна ось Type = Photo / No photo / Letters / Icon, все 44×44, без auto layout, без свойств; Web-компонента нет. 20 из 22 экземпляров — Type=Icon как «иконка в цветном круге» (Controls/bar/slider 89:2930 — 16, Rows/line 89:5009 — 4), Photo — 2 (Rows/ActiveOrderClientView 89:4949 растянут до 48, Widgets/instruction/rounded 89:3249 — до 56). Токены мастера на переменных Driver и совпадают с каноном data.ts. По ответам куратора arturuxui 27.10 «1а, 2а, 3а, 4 — оба, 5а, 6а, 7а, 8а»: разделить на Avatar (Photo / Initials / Placeholder) и IconSurface (иконка в круге), bar/slider и line перевести на IconSurface; ось Size 44 / 48 / 56 с таблицей размеров иконки и букв (ряд — за дизайнером); свойства Text initials, Instance swap icon, фото — заливкой слоя image; фон круга IconSurface — фон-токен, не Icons/*; имена Avatar / IconSurface вне группы Rows/; online-бейдж — идеей, не в этой задаче. Вопрос 4 (иконка на пастели ночью: Icons/Primary Light Ind или Icons/Secondary Inverted) ждёт дизайнера: на пейдже оба варианта в обеих темах с контрастом — днём на Corn 1.8:1 в любом варианте, ночью белая лучше на Cobalt и Azure, Secondary Inverted — на Corn. Сборка также: auto layout, круг рамкой с радиусом на токене вместо VECTOR, описание сета вместо «label». Аудит — пейдж «👀 Avatar · audit» 460:889, блоки 0–8, день и ночь на 360; мастер не правился. Ответы Standards 30.10 (#506): п.4 — имена Avatar и IconSurface приняты (naming-conventions §4); п.5 — initial 1.0.0: выпущенной версии нет (currentVersion null, release-gate, component-gate); п.8 — lookup фон-токена IconSurface. Lookup 02.11 (data.ts Driver, контраст иконки WCAG 1.4.11, порог 3:1; полупрозрачные иконки — поверх пастели): фон-токены Bg/Tertiary и Bg/Primary Light Ind не проходят (день 1.0–1.32:1); пары «пастель × иконка» — таблица proposal.contrast. Одной иконки на все три пастели в обеих темах нет, но для каждой пастели пара есть: Corn — Icons/Primary Dark Ind 7.72/5.73:1 (Icons/Secondary Dark Ind 3.91/3.52:1); Cobalt — Icons/Primary 4.57/3.78:1, Icons/Primary Light Ind 3.04/3.78:1; Azure — Icons/Primary 3.62/5.12:1, Icons/Primary Light Ind 3.84/5.12:1. Фон остаётся Pastels/*, новый токен не нужен: иконка задаётся парой к тону (вопрос 4 — какую из проходящих пар брать — у дизайнера). Текущей версии нет. Заметка о миграции: разделение сета и переименование ломают свойства экземпляров Figma — новые мастеры Avatar и IconSurface, старый avatar 89:4931 — в Archive, замена в bar/slider, line, ActiveOrderClientView, instruction/rounded (§3.9); выпущенной версии нет, поэтому impact initial.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": null,
@@ -29,7 +29,9 @@
       "Texts/Primary Light Ind",
       "Subtitles/Subtitle 1",
       "Bg/Positive",
-      "radius-flat"
+      "radius-flat",
+      "Icons/Primary",
+      "Icons/Primary Dark Ind"
     ],
     "variants": {
       "Avatar": {
@@ -74,17 +76,89 @@
     "architectureException": false,
     "reviewAt": "release",
     "unsupportedStatesNote": "Avatar и IconSurface — не интерактивны, состояние несёт родитель (ряд, слайдер); Disabled у bar/slider — токеном иконки родителя (Icons/Inactive Light Ind)",
-    "tokenGaps": [
-      "Фон IconSurface с контрастом иконки ≥ 3:1 в обеих темах: Bg/Tertiary, Bg/Primary Light Ind, Pastels/Corn не проходят (замер в changeSummary) — token-change-gate, решает PD",
-      "Фон-аналоги Icons/Special, Icons/Warning, Icons/Inactive Light Ind для bar/slider — нет с тем же значением"
-    ],
     "openQuestions": [
-      "Вопрос 4 — цвет иконки на пастели ночью (Icons/Primary Light Ind или Icons/Secondary Inverted) — ждёт дизайнера; одним токеном 3:1 не проходит"
+      "Вопрос 4 — какая проходящая пара берётся для каждого тона (iconPairing) — ждёт дизайнера; одной иконки на Corn, Cobalt и Azure нет"
     ],
     "findings": [
       "20 из 22 экземпляров avatar — Type=Icon как иконка в круге; фон bar/slider — Icons/* вместо фон-токена",
-      "Круг — VECTOR, без auto layout; описание сета «label»"
-    ]
+      "Круг — VECTOR, без auto layout; описание сета «label»",
+      "bar/slider (другой компонент, в #502 не правится): фон на Icons/* — Icons/Positive → Bg/Positive (то же значение); для Icons/Special, Icons/Warning, Icons/Inactive Light Ind фон-аналога нет"
+    ],
+    "iconPairing": {
+      "rule": "Иконка IconSurface — по тону фона, одной иконки на все тона нет",
+      "Corn": [
+        "Icons/Primary Dark Ind",
+        "Icons/Secondary Dark Ind"
+      ],
+      "Cobalt": [
+        "Icons/Primary",
+        "Icons/Primary Light Ind",
+        "Icons/Primary Inverted",
+        "Icons/Primary Dark Ind",
+        "Icons/Variant"
+      ],
+      "Azure": [
+        "Icons/Primary",
+        "Icons/Primary Light Ind",
+        "Icons/Variant"
+      ]
+    },
+    "contrast": {
+      "method": "WCAG 1.4.11, порог 3:1, день/ночь; data.ts Driver на origin/main; полупрозрачная иконка смешана с пастелью; фон-токены полупрозрачные — поверх Bg/Primary",
+      "backgrounds": {
+        "Bg/Tertiary": {
+          "Icons/Primary Light Ind": "1.32/17.35",
+          "Icons/Secondary Inverted": "1.32/1.13"
+        },
+        "Bg/Primary Light Ind": {
+          "Icons/Primary Light Ind": "1.00/1.00",
+          "Icons/Secondary Inverted": "1.00/4.59"
+        }
+      },
+      "pastels": {
+        "Icons/Primary": {
+          "Corn": "7.72/2.43",
+          "Cobalt": "4.57/3.78",
+          "Azure": "3.62/5.12"
+        },
+        "Icons/Primary Inverted": {
+          "Corn": "1.80/5.73",
+          "Cobalt": "3.04/3.68",
+          "Azure": "3.84/2.72"
+        },
+        "Icons/Secondary": {
+          "Corn": "3.91/1.59",
+          "Cobalt": "3.21/2.08",
+          "Azure": "2.88/2.51"
+        },
+        "Icons/Secondary Inverted": {
+          "Corn": "1.80/3.52",
+          "Cobalt": "3.04/2.91",
+          "Azure": "3.84/2.49"
+        },
+        "Icons/Primary Dark Ind": {
+          "Corn": "7.72/5.73",
+          "Cobalt": "4.57/3.68",
+          "Azure": "3.62/2.72"
+        },
+        "Icons/Secondary Dark Ind": {
+          "Corn": "3.91/3.52",
+          "Cobalt": "3.21/2.91",
+          "Azure": "2.88/2.49"
+        },
+        "Icons/Primary Light Ind": {
+          "Corn": "1.80/2.43",
+          "Cobalt": "3.04/3.78",
+          "Azure": "3.84/5.12"
+        },
+        "Icons/Variant": {
+          "Corn": "7.24/2.26",
+          "Cobalt": "4.28/3.53",
+          "Azure": "3.39/4.77"
+        },
+        "note": "Остальные Icons/* (Informative, Tertiary, Inactive, Accent, Positive, Warning, Special, Special Pale, Attention, *Light Ind кроме Primary) — ни на одной пастели 3:1 в обеих темах"
+      }
+    }
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
