@@ -15,6 +15,59 @@
     "impact": "initial",
     "description": "Comment: пузырь комментария сворачивается осью Collapsed, тон — осью Tone, текст — свойством Text; «общий комментарий» читается ночью и собирается в строке адреса заказа"
   },
+  "proposal": {
+    "componentName": "Comment",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер comment 89:3277; рабочий набор .Comment · рабочий 455:8419",
+    "tokensRequired": [
+      "Messages/Default",
+      "Pastels/Parchment",
+      "Texts/Primary",
+      "Icons/Primary",
+      "body 1",
+      "radius-12",
+      "radius-2",
+      "space-16",
+      "space-10",
+      "space-8"
+    ],
+    "variants": {
+      "Collapsed": [
+        "True",
+        "False"
+      ],
+      "Tone": [
+        "Default",
+        "Parchment"
+      ],
+      "properties": {
+        "Text": "TEXT"
+      },
+      "unsupportedStates": [
+        "Pressed",
+        "Hovered",
+        "Focused",
+        "Disabled"
+      ],
+      "note": "Пузырь только показывает текст; Collapsed=True разворачивается тапом (прототип CHANGE_TO, Smart Animate 200 мс), отдельного состояния нажатия нет; Hovered и Focused не поддерживаются (мобильный продукт, states-guide §5, §6.1); недоступного состояния у пузыря нет. Короткий текст продукт показывает Collapsed=False. Вариант Type=General Order уходит из сета: подпись «Общий комментарий» и пузырь Tone=Parchment собираются в Rows/adresses/order 89:5109"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "colors": "semantic-token",
+      "typography": "semantic-token",
+      "spacing": "semantic-token",
+      "radius": "semantic-token",
+      "width": "fill-parent",
+      "collapsedFadeMask": "raw-value",
+      "collapsedText": "fade-out-with-chevron"
+    },
+    "confidence": "high",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
+  },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
     "auditPage": "455:102",
