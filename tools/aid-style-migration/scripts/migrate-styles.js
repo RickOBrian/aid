@@ -3,9 +3,11 @@
 // Тело для use_figma: в начало вставить
 //   const DRY = true|false;      // true — только счётчики, узлы не меняются
 //   const SHOT = true|false;     // скриншот каждого корня
-//   const ROOTS = ['<id>', ...]; // экраны на странице-копии
-// ID страницы ниже — копия «✅ Taxi for friends — Switched Styles»; для другой страницы заменить.
-const page = await figma.getNodeByIdAsync('4770:4437');
+//   const PAGE_ID = '<id>';      // страница-копия (scripts/clone-page.js)
+//   const ROOTS = ['<id>', ...]; // экраны на странице-копии; [] — все дети страницы
+//   const MAXIDS = 200;          // сколько ID узлов отдавать на каждую причину пропуска
+// Прогон Taxi for friends в DEV: PAGE_ID = '4770:4437'.
+const page = await figma.getNodeByIdAsync(PAGE_ID);
 await figma.setCurrentPageAsync(page);
 const RIDER = 'Rider';
 const cols = await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync();
@@ -15,12 +17,14 @@ for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','
 }
 const vcache = {};
 const getVar = async name => { if (!(name in vcache)) vcache[name] = libVars[name] ? await figma.variables.importVariableByKeyAsync(libVars[name]) : null; return vcache[name]; };
-const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodies/Body 2':'879e5c53e856e0bc15d54d02ad28ba88c8661808','Bodies/Body 3':'ec7ba478b0d45f0e20fb5528ffaa75dcff5aef72','Subtitles/Subtitle 1':'1449afde1d818486460f295669af22fd99a3a6cf','Subtitles/Subtitle 2':'746b9479314cb405d3340bd358049e486ae0f6d6','Subtitles/Subtitle 3':'a033bddf111be09f0149088dcb5c1eaa529ebd04','Titles/Title 4':'9395aad5c31672c7a765e20f36e1b39e00ccbc43','Titles/Title 3':'9a6c623ccfe842d1d9e8d0e428d12e6cf1d0d810','Captions/Caption 1':'97bf66024e167e387564b809893c702b464ddd42','Captions/Caption 1 CAP':'297879960c9a9a1feda979b1b9070563b06d858b','Captions/Caption 2':'0c2e5ea7ad30281d26df7c68b67043c3fa2286e8','Outstanding/Title-title2 (NRD)':'99bb5b186e90da50ee7e4b10fc0f3c13bb11acc0','Outstanding/NRD - Body':'3274cd72b8250998e9c07a468850a85e91046616'};
-const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137'};
+const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodies/Body 2':'879e5c53e856e0bc15d54d02ad28ba88c8661808','Bodies/Body 3':'ec7ba478b0d45f0e20fb5528ffaa75dcff5aef72','Subtitles/Subtitle 1':'1449afde1d818486460f295669af22fd99a3a6cf','Subtitles/Subtitle 2':'746b9479314cb405d3340bd358049e486ae0f6d6','Subtitles/Subtitle 3':'a033bddf111be09f0149088dcb5c1eaa529ebd04','Titles/Title 4':'9395aad5c31672c7a765e20f36e1b39e00ccbc43','Titles/Title 3':'9a6c623ccfe842d1d9e8d0e428d12e6cf1d0d810','Captions/Caption 1':'97bf66024e167e387564b809893c702b464ddd42','Captions/Caption 1 CAP':'297879960c9a9a1feda979b1b9070563b06d858b','Captions/Caption 2':'0c2e5ea7ad30281d26df7c68b67043c3fa2286e8','Outstanding/Title-title2 (NRD)':'99bb5b186e90da50ee7e4b10fc0f3c13bb11acc0','Outstanding/NRD - Body':'3274cd72b8250998e9c07a468850a85e91046616','Outstanding/iOS - Subtitle':'41b59fcc0bdb4acd56c581073e5cd1d1693eca78'};
+const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384'};
 const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
-const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstanding/Title-title2 (NRD)'};
+const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstanding/Title-title2 (NRD)',
+  // final.md §5: draft, п.29а–31а
+  'Bodies/Body 3 Reg':'Bodies/Body 3','iOS / Subtitle':'Outstanding/iOS - Subtitle','iOS / Caption':'Bodies/Body 3','iOS / H3':'Titles/Title 3'};
 const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
-  // Drafts, анкета п.25, 28. Shadows/Small: ключ нового стиля не известен — без него строка пропускается
+  // Drafts, анкета п.25, 28
   'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',
   'Shadows / [day] Brand button':null,'Shadows/Brand button':null,'Shadows/Brand Button':null};
 NEWFX['Shadows/Large Air'] = '5b2d5ab81c5badb00c28c93153a3479d73444229';
@@ -97,8 +101,11 @@ for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, s
 const SPACE = {'Gaps:SPx2':'space-8','Gaps:SPx3':'space-12','Отступы:SPx3':'space-12','Corner radius:BRx6':null};
 const SCOPE_NEED = {text:['TEXT_FILL','ALL_FILLS'], frame:['FRAME_FILL','ALL_FILLS'], shape:['SHAPE_FILL','ALL_FILLS'], stroke:['STROKE_COLOR']};
 const EX = /^(status bar|home indicator( ios)?|map|dark map|light map|car class|car|car icon)$|keyboard/i;
-const done = {}, skipped = {};
+const done = {}, skipped = {}, skipByRoot = {};
 const inc = (o,k) => o[k] = (o[k]||0)+1;
+// пропуск: причина → счётчик и ID узлов (cur — узел в обходе, curRoot — экран)
+let cur = null, curRoot = null;
+const skip = k => { const e = skipped[k] || (skipped[k] = { count: 0, ids: [] }); e.count++; if (e.ids.length < MAXIDS && cur) e.ids.push(cur.id); if (curRoot) inc(skipByRoot, curRoot); };
 const scache = {};
 const getStyle = async id => { if (!id || typeof id !== 'string') return null; if (!(id in scache)) scache[id] = await figma.getStyleByIdAsync(id); return scache[id]; };
 const vncache = {};
@@ -110,11 +117,11 @@ const kindOf = n => n.type === 'TEXT' ? 'text' : ['FRAME','COMPONENT','INSTANCE'
 const okScope = (v, slot) => v.scopes.includes('ALL_SCOPES') || SCOPE_NEED[slot].some(s => v.scopes.includes(s));
 // возвращает переменную или null, записывая причину пропуска
 const resolveTarget = async (target, slot, kind, from) => {
-  if (!target) { inc(skipped, `${from} [${slot}${slot==='stroke'?'':'/'+kind}] — нет правила`); return null; }
-  if (target.startsWith('Background/') && kind !== 'frame') { inc(skipped, `${from} → ${target} [${kind}] — правило 1`); return null; }
+  if (!target) { skip(`${from} [${slot}${slot==='stroke'?'':'/'+kind}] — нет правила`); return null; }
+  if (target.startsWith('Background/') && kind !== 'frame') { skip(`${from} → ${target} [${kind}] — правило 1`); return null; }
   const v = await getVar(target);
-  if (!v) { inc(skipped, `${from} → ${target} — нет в библиотеке`); return null; }
-  if (!okScope(v, slot)) { inc(skipped, `${from} → ${target} [${slot}] — скоуп ${v.scopes.join(',')}`); return null; }
+  if (!v) { skip(`${from} → ${target} — нет в библиотеке`); return null; }
+  if (!okScope(v, slot)) { skip(`${from} → ${target} [${slot}] — скоуп ${v.scopes.join(',')}`); return null; }
   return v;
 };
 const bindPaint = (p, v, opacity = 1) => { const base = { type: 'SOLID', color: p.color || {r:0,g:0,b:0}, opacity, visible: p.visible !== false, blendMode: p.blendMode || 'NORMAL' }; return figma.variables.setBoundVariableForPaint(base, 'color', v); };
@@ -137,14 +144,14 @@ const processPaints = async (n, prop, chain) => {
   const kind = kindOf(n);
   const slot = prop === 'strokes' ? 'stroke' : kind;
   const paints = n[prop];
-  if (paints === figma.mixed) { inc(skipped, `${n.type} смешанные заливки — оставлено`); return; }
+  if (paints === figma.mixed) { skip(`${n.type} смешанные заливки — оставлено`); return; }
   if (!Array.isArray(paints) || !paints.length) return;
   const styleId = prop === 'fills' ? n.fillStyleId : n.strokeStyleId;
   const st = await getStyle(styleId);
   if (st) {
     const rule = C[st.name];
-    if (!rule) { if (!/^\.keyboard/.test(st.name)) inc(skipped, `[${st.name}] [${slot}] — нет в маппинге`); return; }
-    if (n.name === 'Shadow' && rule.shape) { inc(skipped, `[${st.name}] «Shadow» — пробел`); return; }
+    if (!rule) { if (!/^\.keyboard/.test(st.name)) skip(`[${st.name}] [${slot}] — нет в маппинге`); return; }
+    if (n.name === 'Shadow' && rule.shape) { skip(`[${st.name}] «Shadow» — пробел`); return; }
     const v = await resolveTarget(rule[slot], slot, kind, `[${st.name}]`);
     if (!v) return;
     if (!DRY) { const np = paints.map(p => p.type === 'SOLID' ? bindPaint(p, v) : p); if (prop === 'fills') n.fills = np; else n.strokes = np; }
@@ -154,13 +161,14 @@ const processPaints = async (n, prop, chain) => {
   let changed = false;
   const np = [];
   for (const p of paints) {
+    if (p.type.startsWith('GRADIENT') && p.visible !== false) skip(`градиент [${slot}]`);
     if (p.type !== 'SOLID' || p.visible === false) { np.push(p); continue; }
     if (p.boundVariables && p.boundVariables.color) {
       const { label, coll } = await varLabel(p.boundVariables.color.id);
       if (['color-sem'].includes(coll)) { np.push(p); continue; }
       const rule = C[label];
-      if (!rule) { inc(skipped, `{${label}} [${slot}] — нет в маппинге`); np.push(p); continue; }
-      if (n.name === 'Shadow') { inc(skipped, `{${label}} «Shadow» — пробел`); np.push(p); continue; }
+      if (!rule) { skip(`{${label}} [${slot}] — нет в маппинге`); np.push(p); continue; }
+      if (n.name === 'Shadow') { skip(`{${label}} «Shadow» — пробел`); np.push(p); continue; }
       const v = await resolveTarget(rule[slot], slot, kind, `{${label}}`);
       if (!v) { np.push(p); continue; }
       np.push(bindPaint(p, v)); changed = true; inc(done, `{${label}} → ${v.name} (${slot})`);
@@ -168,7 +176,7 @@ const processPaints = async (n, prop, chain) => {
     }
     const h = hex(p.color) + (p.opacity < 1 ? '@' + p.opacity.toFixed(2) : '');
     const t = rawTarget(h, kind, prop, n, chain);
-    if (t === undefined) { np.push(p); continue; }
+    if (t === undefined) { skip(`сырой #${h} [${slot}]`); np.push(p); continue; }
     if (t === 'RADIUS') {
       const v = await resolveTarget('Icon/Accent', slot, kind, `#${h}`);
       if (!v) { np.push(p); continue; }
@@ -194,26 +202,26 @@ const applyTS = async (n, name, from) => {
 };
 const processText = async n => {
   const tsId = n.textStyleId;
-  if (tsId === figma.mixed) { inc(skipped, 'текст со смешанными стилями — оставлено'); return; }
+  if (tsId === figma.mixed) { skip('текст со смешанными стилями — оставлено'); return; }
   const st = await getStyle(tsId);
   if (st) {
     if (NEWKEYS.has(st.key)) return;
     const target = TS_MAP[st.name] || (NEWTS[st.name] ? st.name : null);
     if (target) await applyTS(n, target, `[${st.name}] (стар.)`);
-    else if (!/^\.Status bar/.test(st.name)) inc(skipped, `[${st.name}] — нет в маппинге`);
+    else if (!/^\.Status bar/.test(st.name)) skip(`[${st.name}] — нет в маппинге`);
     return;
   }
   const segs = n.getStyledTextSegments(['fontName','fontSize','lineHeight','textCase']);
   const sig = [...new Set(segs.map(s => `${s.fontName.family} ${s.fontName.style} ${s.fontSize}/${s.lineHeight.value||'auto'}${s.textCase!=='ORIGINAL'?' '+s.textCase:''}`))].join(' + ');
   const RAW = {'SF Pro Text Semibold 17/20':'Outstanding/NRD - Body','SF Pro Text Semibold 12/16 SMALL_CAPS_FORCED':'Captions/Caption 1 CAP','SF Pro Text Regular 14/16':'Bodies/Body 3','SF Pro Display Semibold 22/22':'Titles/Title 4'};
-  if (RAW[sig]) await applyTS(n, RAW[sig], sig); else inc(skipped, `шрифт без стиля: ${sig}`);
+  if (RAW[sig]) await applyTS(n, RAW[sig], sig); else skip(`шрифт без стиля: ${sig}`);
 };
 const processEffect = async n => {
   if (!('effectStyleId' in n)) return;
   const st = await getStyle(n.effectStyleId);
   if (!st) {
     const t = n.effects.length ? RAWFX[fxSig(n)] : undefined;
-    if (!t) return;
+    if (!t) { if (n.effects.some(e => e.visible !== false)) skip(`сырой эффект: ${fxSig(n)}`); return; }
     const s = await figma.importStyleByKeyAsync(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `сырая тень → [${t}]`);
@@ -223,7 +231,7 @@ const processEffect = async n => {
   if (st.name in FX_MAP) {
     const t = FX_MAP[st.name];
     if (t === null) { if (!DRY) { await n.setEffectStyleIdAsync(''); n.effects = []; } inc(done, `[${st.name}] → снята`); return; }
-    if (!NEWFX[t]) { inc(skipped, `[${st.name}] → [${t}] — нет ключа стиля`); return; }
+    if (!NEWFX[t]) { skip(`[${st.name}] → [${t}] — нет ключа стиля`); return; }
     const s = await figma.importStyleByKeyAsync(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] → [${t}]`);
@@ -231,7 +239,7 @@ const processEffect = async n => {
     const s = await figma.importStyleByKeyAsync(NEWFX[st.name]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] (стар.) → [${st.name}]`);
-  } else inc(skipped, `эффект [${st.name}] — нет в маппинге`);
+  } else skip(`эффект [${st.name}] — нет в маппинге`);
 };
 const NUMPROPS = ['itemSpacing','counterAxisSpacing','paddingLeft','paddingRight','paddingTop','paddingBottom','topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius'];
 const processNum = async n => {
@@ -244,7 +252,7 @@ const processNum = async n => {
     const isR = /Radius$/.test(prop);
     const t = SPACE[label] || (typeof val === 'number' ? (isR ? 'radius-' : 'space-') + val : null);
     const v = t ? await getVar(t) : null;
-    if (!v) { inc(skipped, `{${label}}=${val} ${prop} — нет цели`); continue; }
+    if (!v) { skip(`{${label}}=${val} ${prop} — нет цели`); continue; }
     if (!DRY) n.setBoundVariable(prop, v);
     inc(done, `{${label}} → ${v.name}`);
   }
@@ -253,14 +261,21 @@ let nodes = 0;
 const walk = async (n, chain) => {
   if (n.type !== 'TEXT' && EX.test(n.name)) return;
   nodes++;
-  await processPaints(n, 'fills', chain);
-  await processPaints(n, 'strokes', chain);
-  if (n.type === 'TEXT') await processText(n);
-  await processEffect(n);
-  await processNum(n);
+  cur = n;
+  // ошибка на узле (шрифт не грузится, свойство заблокировано в экземпляре) не роняет весь вызов
+  try {
+    await processPaints(n, 'fills', chain);
+    await processPaints(n, 'strokes', chain);
+    if (n.type === 'TEXT') await processText(n);
+    await processEffect(n);
+    await processNum(n);
+  } catch (e) { skip(`ошибка: ${String(e.message || e).split('\n')[0].slice(0, 120)}`); }
   if ('children' in n) for (const c of n.children) await walk(c, chain.concat(n.name));
 };
 const shots = [];
-for (const id of ROOTS) { const r = await figma.getNodeByIdAsync(id); await walk(r, []); if (SHOT) shots.push(await r.screenshot({ scale: 0.5 })); }
+const rootIds = ROOTS.length ? ROOTS : page.children.map(c => c.id);
+const rootNames = {};
+for (const id of rootIds) { const r = await figma.getNodeByIdAsync(id); curRoot = `${r.name} ${r.id}`; rootNames[id] = r.name; await walk(r, []); if (SHOT) shots.push(await r.screenshot({ scale: 0.5 })); }
 const fmt = o => Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${v}× ${k}`);
-return { DRY, roots: ROOTS, nodes, done: fmt(done), skipped: fmt(skipped), mutatedRootIds: ROOTS };
+const fmtSkip = Object.entries(skipped).sort((a,b)=>b[1].count-a[1].count).map(([k,e])=>({ reason: k, count: e.count, ids: e.ids }));
+return { DRY, page: page.name, roots: rootNames, nodes, done: fmt(done), skipped: fmtSkip, skipByRoot: fmt(skipByRoot), mutatedRootIds: DRY ? [] : rootIds };
