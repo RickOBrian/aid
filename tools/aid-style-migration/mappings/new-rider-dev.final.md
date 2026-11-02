@@ -151,6 +151,12 @@
 | {Gaps/SPx3}, {Отступы/SPx3} = 12 | space/space-12 | п.40а |
 | {Corner radius/BRx6} = 24 | radius/radius-24 | п.40а |
 | {System/…}, {Breakpoint/…}, {Locale · Font Family/…} | уходят вместе со стилями §2 | п.41а |
+| Любая старая переменная отступа (gap, padding) со значением N | space/space-N, если такая есть в библиотеке | arturuxui 02.11, скан Drafts |
+| Любая старая переменная радиуса (углы) со значением N | radius/radius-N, если такая есть в библиотеке | arturuxui 02.11, скан Drafts |
+
+Правило «то же значение»: значение старой переменной берётся по первому режиму, алиасы
+раскрываются. Нет `space-N` / `radius-N` с тем же N — не трогаем, в список (в Drafts это
+`Button:Border radius`=18, `System:Magin Top`=54, CRx10=40).
 
 ## 7. Не трогаем
 

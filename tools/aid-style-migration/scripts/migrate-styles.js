@@ -10,7 +10,7 @@ await figma.setCurrentPageAsync(page);
 const RIDER = 'Rider';
 const cols = await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync();
 const libVars = {};
-for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','space'].includes(c.name))) {
+for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','space','radius'].includes(c.name))) {
   for (const v of await figma.teamLibrary.getVariablesInLibraryCollectionAsync(c.key)) libVars[v.name] = v.key;
 }
 const vcache = {};
@@ -71,7 +71,9 @@ const inc = (o,k) => o[k] = (o[k]||0)+1;
 const scache = {};
 const getStyle = async id => { if (!id || typeof id !== 'string') return null; if (!(id in scache)) scache[id] = await figma.getStyleByIdAsync(id); return scache[id]; };
 const vncache = {};
-const varLabel = async id => { if (!(id in vncache)) { const v = await figma.variables.getVariableByIdAsync(id); let cn = '?'; if (v) { const c = await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId); cn = c ? c.name : '?'; } vncache[id] = v ? { label: `${cn}:${v.name}`, coll: cn } : { label: '?', coll: '?' }; } return vncache[id]; };
+const varLabel = async id => { if (!(id in vncache)) { const v = await figma.variables.getVariableByIdAsync(id); let cn = '?'; if (v) { const c = await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId); cn = c ? c.name : '?'; } vncache[id] = v ? { label: `${cn}:${v.name}`, coll: cn, val: await resolveNum(Object.values(v.valuesByMode)[0], 0) } : { label: '?', coll: '?', val: null }; } return vncache[id]; };
+// значение переменной по первому режиму, алиасы раскрываются
+async function resolveNum(x, d) { if (x && x.type === 'VARIABLE_ALIAS' && d < 5) { const a = await figma.variables.getVariableByIdAsync(x.id); return a ? resolveNum(Object.values(a.valuesByMode)[0], d + 1) : null; } return x; }
 const hex = c => [c.r,c.g,c.b].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('');
 const kindOf = n => n.type === 'TEXT' ? 'text' : ['FRAME','COMPONENT','INSTANCE','SECTION'].includes(n.type) ? 'frame' : 'shape';
 const okScope = (v, slot) => v.scopes.includes('ALL_SCOPES') || SCOPE_NEED[slot].some(s => v.scopes.includes(s));
@@ -196,13 +198,15 @@ const processNum = async n => {
   const bv = n.boundVariables || {};
   for (const prop of NUMPROPS) {
     const b = bv[prop]; if (!b || !b.id) continue;
-    const { label } = await varLabel(b.id);
-    if (!(label in SPACE)) continue;
-    const t = SPACE[label];
+    const { label, coll, val } = await varLabel(b.id);
+    if (coll === 'space' || coll === 'radius') continue;
+    // явная строка маппинга, иначе правило «то же значение» (final.md §4)
+    const isR = /Radius$/.test(prop);
+    const t = SPACE[label] || (typeof val === 'number' ? (isR ? 'radius-' : 'space-') + val : null);
     const v = t ? await getVar(t) : null;
-    if (!v) { inc(skipped, `{${label}} ${prop} — нет цели`); continue; }
+    if (!v) { inc(skipped, `{${label}}=${val} ${prop} — нет цели`); continue; }
     if (!DRY) n.setBoundVariable(prop, v);
-    inc(done, `{${label}} → space/${t}`);
+    inc(done, `{${label}} → ${v.name}`);
   }
 };
 let nodes = 0;
