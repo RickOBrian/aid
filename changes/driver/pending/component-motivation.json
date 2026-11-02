@@ -24,7 +24,7 @@
   "proposal": {
     "componentName": "TagMotivation",
     "codeName": "TagMotivation",
-    "nameStatus": "принято Standards 02.11 (рабочее решение)",
+    "nameStatus": "принято Standards 02.11",
     "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Motivation 89:5998; аудит 455:7078",
     "tokensRequired": [
       "Texts/Primary Inverted",
@@ -68,7 +68,18 @@
       "label": "значение словами, не символом U+2212: «минус 12 баллов мотивации»",
       "inParent": "внутри кнопки входит в доступное имя родителя: «<подпись кнопки>, минус 12 баллов мотивации»; отдельным элементом фокуса не становится",
       "status": "рабочее решение Standards 02.11"
-    }
+    },
+    "valueKinds": {
+      "colors": "semantic-token",
+      "disabled": "semantic-token",
+      "typography": "semantic-token",
+      "spacing": "semantic-token",
+      "size24": "raw-value"
+    },
+    "confidence": "high",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
