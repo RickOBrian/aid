@@ -3,17 +3,64 @@
   "type": "component",
   "changeType": "changed",
   "taskType": "evolve",
-  "artifact": "Search Field",
+  "artifact": "FieldSearch",
   "componentId": "search-field",
   "product": "driver",
-  "changeSummary": "Search Field Driver — развитие (designer-22, issue #490, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `search` 89:4037 (Fields): одна ось State = Activated / Focused / Inactive, 3 варианта 328×48; вложен в Headers/center 89:4261 и Headers/small 89:4340 (везде State=Inactive). Web-реализации у Driver нет. Токены совпадают с каноном Driver (Fields · Secondary Inverted / Primary Inverted, Texts · Primary / Tertiary / Disabled, Icons · Primary / Informative / Inactive, radius-12, Bodies/Body 1), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6а 7а»: State = Default / Focused / Disabled (Activated → Default, Inactive → Disabled) и булево Filled — заполнено без фокуса; в шапках Headers/center и Headers/small — Default вместо Inactive (правка мастеров шапок — в их аудите); состояния Error нет — поиск без валидации; крест очистки 20 с зоной касания 44, цвет Icons/Secondary вместо Icons/Informative, виден только при Focused × Filled; длинный текст — без фокуса многоточие, в фокусе прокрутка к каретке, как Rider (AID-65), — ждёт слова Standards по component-standards §10.1 и AID-68; ширина по контейнеру, высота 48; имя сета Search Field, слои icon / input / text / caret / clear. Сборка также: auto layout вместо абсолютных позиций, подсказка — свойством Placeholder, описание и ссылки на документацию. Аудит — пейдж «👀 Search Field · audit» 463:9037, блоки 0–8, день и ночь на 360; прототип — непубликуемый сет .Proto/Search Field · состояния 464:491; мастер не правился. Текущей версии нет. Переименование значений State ломает свойства экземпляров Figma — предложение major; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "changeSummary": "Search Field Driver — развитие (designer-22, issue #490, задача AID-LU-28), флоу figma-library-workflow 0.8.0 §3.1. Мастер `search` 89:4037 (Fields): одна ось State = Activated / Focused / Inactive, 3 варианта 328×48; вложен в Headers/center 89:4261 и Headers/small 89:4340 (везде State=Inactive). Web-реализации у Driver нет. Токены совпадают с каноном Driver (Fields · Secondary Inverted / Primary Inverted, Texts · Primary / Tertiary / Disabled, Icons · Primary / Informative / Inactive, radius-12, Bodies/Body 1), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 6а 7а»: State = Default / Focused / Disabled (Activated → Default, Inactive → Disabled) и булево Filled — заполнено без фокуса; в шапках Headers/center и Headers/small — Default вместо Inactive (правка мастеров шапок — в их аудите); состояния Error нет — поиск без валидации; крест очистки 20 с зоной касания 44, цвет Icons/Secondary вместо Icons/Informative, виден только при Focused × Filled; ширина по контейнеру, высота 48; слои icon / input / text / caret / clear. Ответы Standards 30.10 (#506): п.10 — длинный текст: без фокуса многоточие (значение поля), в фокусе прокрутка к каретке, как в Rider (AID-65), component-standards §10.1, вход для AID-68; п.4 — имя сета FieldSearch (Role Field + Entity Search, без пробелов, naming-conventions §4); п.3 — недоступное токенами продукта Texts/Disabled и Icons/Inactive, без opacity на компоненте (opacity 40 % или токены продукта, не оба; ADR-036); п.5 — initial: выпущенной версии нет. Сборка также: auto layout вместо абсолютных позиций, подсказка — свойством Placeholder, описание и ссылки на документацию. Аудит — пейдж «👀 Search Field · audit» 463:9037, блоки 0–8, день и ночь на 360; прототип — непубликуемый сет .Proto/Search Field · состояния 464:491; мастер не правился. Открыт вопрос 8 (ночной контраст пустого и недоступного поля) — ждёт дизайнера. Текущей версии нет. Заметка о миграции: переименование значений State и сета ломает свойства экземпляров Figma — новый мастер FieldSearch, старый search — в Archive, замена в шапках и макетах (§3.9); выпущенной версии нет, поэтому impact initial.",
   "currentVersion": null,
-  "proposedSemVerImpact": "major",
+  "proposedSemVerImpact": "initial",
   "proposedVersion": null,
   "proposedChangelogEntry": {
-    "kind": "changed",
-    "impact": "major",
-    "description": "Search Field: состояния Default, Focused и Disabled как в стандарте, отдельная настройка «заполнено», крест очистки с зоной касания 44, длинный запрос обрезается многоточием"
+    "kind": "added",
+    "impact": "initial",
+    "description": "FieldSearch: поле поиска Driver — состояния Default, Focused и Disabled, свойство Filled, подсказка свойством Placeholder, крест очистки с зоной касания 44; длинный запрос без фокуса обрезается многоточием, в фокусе прокручивается к каретке"
+  },
+  "proposal": {
+    "componentName": "FieldSearch",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер search 89:4037; аудит 463:9037, прототип .Proto/Search Field · состояния 464:491",
+    "tokensRequired": [
+      "Fields/Secondary Inverted",
+      "Fields/Primary Inverted",
+      "Texts/Primary",
+      "Texts/Tertiary",
+      "Texts/Disabled",
+      "Icons/Primary",
+      "Icons/Informative",
+      "Icons/Secondary",
+      "Icons/Inactive",
+      "radius-12",
+      "Bodies/Body 1",
+      "space-* (lookup на сборке)"
+    ],
+    "variants": {
+      "State": [
+        "Default",
+        "Focused",
+        "Disabled"
+      ],
+      "Filled": [
+        "True",
+        "False"
+      ],
+      "note": "Disabled — значение оси State (#550); Error нет — поиск без валидации; Pressed, Hovered не делаются; крест — только Focused × Filled"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "disabledAppearance": "semantic-token",
+      "touchTarget44x44": "platform-convention",
+      "height48": "raw-value",
+      "colors": "semantic-token",
+      "spacing": "semantic-token",
+      "radius": "semantic-token",
+      "typography": "semantic-token"
+    },
+    "confidence": "high",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
