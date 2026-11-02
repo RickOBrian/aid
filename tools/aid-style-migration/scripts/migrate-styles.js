@@ -19,7 +19,14 @@ const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodie
 const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137'};
 const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
 const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstanding/Title-title2 (NRD)'};
-const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null};
+const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
+  // Drafts, анкета п.25, 28. Shadows/Small: ключ нового стиля не известен — без него строка пропускается
+  'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',
+  'Shadows / [day] Brand button':null,'Shadows/Brand button':null,'Shadows/Brand Button':null};
+NEWFX['Shadows/Large Air'] = '5b2d5ab81c5badb00c28c93153a3479d73444229';
+// сырые тени, совпадающие с новыми стилями (анкета п.26)
+const RAWFX = {'drop 0,6 r20 s0 #000000@0.08':'Shadows/Medium','drop 0,8 r36 s0 #000000@0.16':'Shadows/Large Air','drop 0,3 r5 s0 #000000@0.20 + drop 0,1 r18 s0 #000000@0.08 + drop 0,6 r10 s0 #000000@0.14':'Shadows/Bottom Sheet'};
+const fxSig = n => n.effects.filter(e => e.visible !== false).map(e => e.type === 'DROP_SHADOW' ? `drop ${e.offset.x},${e.offset.y} r${e.radius} s${e.spread || 0} #${hex(e.color)}${e.color.a < 1 ? '@' + e.color.a.toFixed(2) : ''}` : e.type.toLowerCase()).join(' + ');
 // цвет: имя стиля/переменной → {text, frame, shape, stroke}
 const C = {
  'Background [day]/Primary': {frame:'Background/Primary', shape:'Icon/Primary Inverted', stroke:'Stroke/Secondary'},
@@ -61,6 +68,30 @@ const C = {
  'Variable collection:Accent Purple': {text:'Text/Accent', shape:'Icon/Accent'},
  'Variable collection:Neon Green': {text:'Text/Neon', stroke:'Stroke/Neon'},
 };
+// New Rider Drafts — анкета new-rider-drafts.questions.md, ответ arturuxui 02.11 «все ★»
+const setAll = (labels, rule) => { for (const l of labels) C[l] = { ...(C[l] || {}), ...rule }; };
+setAll(['Theme TX:tx-accent/grey/primary','theme:text/primary','Theme:controls/text icon/primary/default','GEO Theme:content/primary'], {text:'Text/Primary', shape:'Icon/Primary'}); // п.1
+setAll(['Color:tx-accent/grey/secondary','theme:text/secondary','Theme:text icon/secondary'], {text:'Text/Secondary', shape:'Icon/Secondary'}); // п.2
+setAll(['Color:tx-accent/grey/tertiary','theme:icon/secondary','Theme:text icon/tertiary','theme:text/tertiary','theme:pageIndicator/standart/noActive','Theme:pageIndicator/accent/noActive'], {text:'Text/Tertiary', shape:'Icon/Tertiary'}); // п.3
+setAll(['Color:tx-accent/grey/quaternary','theme:switch/bg/defaultOff'], {shape:'Icon/Secondary Inverted', stroke:'Stroke/Primary', frame:'Pastel/Hans'}); // п.4
+setAll(['Color:tx-accent/grey/light const','theme:icon/whiteConst','Theme:text icon/whitePrimaryConst','theme:text/whitePrimaryConst','Theme:button/primary/content/primary/default','theme:button/primary/content/defaultPrimary','Theme:additional/buttonBuy/content/defaultPrimary'], {text:'Text/Constant White', shape:'Icon/Constant White'}); // п.5
+setAll(['Theme:bg/whiteConst','theme:switch/circle/default'], {frame:'Background/Constant White', shape:'Icon/Constant White'}); // п.5
+setAll(['Color:tx-accent/grey/dark const','theme:icon/blackConst','Theme:bg/blackConst','theme:bg/blackConst'], {shape:'Icon/Constant Black', frame:'Background/Constant Dark'}); // п.7
+setAll(['Color:tx-accent/grey/dark strong'], {text:'Text/Primary', shape:'Icon/Primary'}); // п.9
+setAll(['Color:tx-accent/grey/light strong','theme:BG/airToCoal','Theme:stroke/forLevel1','theme:stroke/contrasteInverted'], {stroke:'Stroke/Contrast', shape:'Icon/Primary Inverted', frame:'Background/Primary'}); // п.9
+setAll(['Theme:text icon/primaryInverted'], {text:'Text/Primary Inverted', shape:'Icon/Primary Inverted'}); // п.9
+setAll(['Color:tx-accent/grey/primary-Inverted'], {shape:'Icon/Secondary Inverted'}); // п.9
+setAll(['Color:tx-bg/level 1 base','Theme:bg/level 1 base','Theme TX:tx-bg/level 1 base','theme:bg/level 1 base','Theme:bg/level 2 alternative'], {frame:'Background/Primary', shape:'Icon/Primary Inverted'}); // п.11, §8.2
+setAll(['Theme:bg/level 2','theme:bg/level 2','theme:bg/ashToSmoke','Theme:skeleton/forLevel1','Theme:bg/level -1','theme:tx-bg/level −1 muted','Theme TX:tx-bg/level −1 muted'], {frame:'Background/Secondary'}); // п.10, 12
+setAll(['Color:tx-control/neutral/bg/idle'], {frame:'Field/Primary'}); // п.13
+setAll(['theme:promo/secondary/bg/red','Color:tx-control/red/tint/idle'], {frame:'Pastel/Tony'}); // п.14
+setAll(['Variable collection:Accent Purple','Color:tx-accent/purple/fg','Theme TX:tx-accent/purple/fg','Theme:bg/accent','theme:bg/accent','Theme:text icon/accent','theme:text/link','theme:icon/primary','theme:stroke/primary','Theme:pageIndicator/accent/active','theme:pageIndicator/standart/active','theme:notification/brandPrimary','Theme:chips/primary/counter/bg/on/default','Theme TX:tx-control/purple/bg/idle','Color:tx-accent/purple/alt','Color:tx-accent/purple/bg','Theme TX:tx-accent/purple/bg','theme:promo/secondary/content/blackberry'], {text:'Text/Accent', shape:'Icon/Accent', stroke:'Stroke/Accent', frame:'Background/Accent'}); // п.17
+setAll(['theme:button/primary/bg/default','Theme:button/primary/bg/default'], {frame:'Button/Primary'}); // п.17
+setAll(['Color:tx-accent/red/bg','Color:tx-accent/red/fg','Theme TX:tx-accent/red/fg','theme:promo/secondary/content/red','theme:text/danger','theme:icon/danger'], {text:'Text/Warning', shape:'Icon/Warning', stroke:'Stroke/Warning'}); // п.18
+setAll(['Color:tx-control/red/bg/idle'], {frame:'Background/Warning'}); // п.18
+setAll(['Color:tx-control/orange/bg/idle','Theme TX:tx-accent/orange/bg','Navigator Color:Jam/High'], {shape:'Icon/Attention Deep', frame:'Background/Attention Deep'}); // п.19
+setAll(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle'], {shape:'Icon/Attention'}); // п.20 — значение сверить на сухом прогоне
+setAll(['Color:tx-accent/green/bg','Color:tx-accent/green/alt','theme:promo/secondary/content/green','Theme TX:tx-accent/green/bg'], {text:'Text/Success', shape:'Icon/Success', frame:'Background/Success'}); // п.21
 const PASTEL = {Midway:'Pastel/Lenny',Mantle:'Pastel/Ralph',Ralph:'Pastel/Ralph',Liberty:'Pastel/Lisa',Asphalt:'Pastel/Apu',Graylord:'Pastel/Barney',Barney:'Pastel/Barney',Peach:'Pastel/Bart',Jasper:'Pastel/Jasper',Nelson:'Stories/Nelson'};
 for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, shape:v};
 const SPACE = {'Gaps:SPx2':'space-8','Gaps:SPx3':'space-12','Отступы:SPx3':'space-12','Corner radius:BRx6':null};
@@ -180,10 +211,19 @@ const processText = async n => {
 const processEffect = async n => {
   if (!('effectStyleId' in n)) return;
   const st = await getStyle(n.effectStyleId);
-  if (!st || NEWKEYS.has(st.key)) return;
+  if (!st) {
+    const t = n.effects.length ? RAWFX[fxSig(n)] : undefined;
+    if (!t) return;
+    const s = await figma.importStyleByKeyAsync(NEWFX[t]);
+    if (!DRY) await n.setEffectStyleIdAsync(s.id);
+    inc(done, `сырая тень → [${t}]`);
+    return;
+  }
+  if (NEWKEYS.has(st.key)) return;
   if (st.name in FX_MAP) {
     const t = FX_MAP[st.name];
     if (t === null) { if (!DRY) { await n.setEffectStyleIdAsync(''); n.effects = []; } inc(done, `[${st.name}] → снята`); return; }
+    if (!NEWFX[t]) { inc(skipped, `[${st.name}] → [${t}] — нет ключа стиля`); return; }
     const s = await figma.importStyleByKeyAsync(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] → [${t}]`);
