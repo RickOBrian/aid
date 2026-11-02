@@ -3,17 +3,59 @@
   "type": "component",
   "changeType": "changed",
   "taskType": "evolve",
-  "artifact": "Motivation",
+  "artifact": "TagMotivation",
   "componentId": "motivation",
   "product": "driver",
-  "changeSummary": "Motivation Driver — развитие (designer-18, issue #486), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Motivation` 89:5998 (Buttons): одиночный COMPONENT без свойств — текст «–12» (Subtitles/Subtitle 1) и иконка motivation_round из Icons, gap space-4; 48 экземпляров, все внутри кнопок wide / big / floating. Web-реализации нет. Токены — пары color-sem, новых не нужно: Inverted (Texts / Icons · Primary Inverted), Primary, Warning, Disabled (Texts · Disabled + Icons · Inactive). По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6б»: Motivation — отдельный Item вне группы Buttons (имя — на приёмке Standards); цвет — вариант-ось Tone = Inverted / Primary / Warning / Disabled на существующих парах токенов вместо ручной заливки в 30 экземплярах; знак — минус U+2212 везде (сейчас U+2013 в мастере и 13 экземплярах, U+2212 в двух); значение — TEXT-свойство Value; слои value / icon; фирменный тон «+3 Ⓜ» не трогаем — другой компонент, к аудиту reward. Сборка также: убрать лишнюю привязку radius-flat, описание и ссылки. Открыто: имя компонента и чтение в коде («минус 12 баллов мотивации», иконка декоративная) — Standards; ось Icon у кнопок-родителей (на деле — показ Motivation) — аудит Button, designer-17. Аудит — пейдж «👀 Motivation · audit» 455:7078, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет; свойств у компонента не было, новые ось и свойство добавляются со значениями по умолчанию, вид не меняется — предложение minor; итог импакта и версии — на приёмке аудита и границе релиза.",
+  "changeSummary": "Motivation Driver — развитие (designer-18, issue #486), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Motivation` 89:5998 (Buttons): одиночный COMPONENT без свойств — текст «–12» (Subtitles/Subtitle 1) и иконка motivation_round из Icons, gap space-4; 48 экземпляров, все внутри кнопок wide / big / floating. Web-реализации нет. Токены — пары color-sem, новых не нужно: Inverted (Texts / Icons · Primary Inverted), Primary, Warning, Disabled (Texts · Disabled + Icons · Inactive). По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а 6б»: Motivation — отдельный компонент вне группы Buttons; цвет — вариант-ось Tone = Inverted / Primary / Warning / Disabled на существующих парах токенов вместо ручной заливки в 30 экземплярах; знак — минус U+2212 везде (сейчас U+2013 в мастере и 13 экземплярах, U+2212 в двух); значение — TEXT-свойство Value; слои value / icon; фирменный тон «+3 Ⓜ» не трогаем — другой компонент, к аудиту reward. Сборка также: убрать лишнюю привязку radius-flat, описание и ссылки. Имя (RickOBrian/aid#506 п.4): одно слово Motivation не проходит naming-conventions §4 — предложено `TagMotivation` (Role Tag — статичная метка, Entity Motivation; не Badge — это не статус, не Button — без действия); рабочее имя до приёмки Standards. Недоступное (#506 п.3): тон Disabled — только токены продукта Texts/Disabled + Icons/Inactive, прозрачность слоя 100 %, без opacity 40 % поверх и без двойного приглушения от кнопки-родителя. Открыто: чтение в коде («минус 12 баллов мотивации», иконка декоративная) — Standards; ось Icon у кнопок-родителей (на деле — показ Motivation) — аудит Button, designer-17. Аудит — пейдж «👀 Motivation · audit» 455:7078, блоки 0–8, день и ночь на 360; мастер не правился. Текущей версии нет (`currentVersion: null`) — initial 1.0.0 по #506 п.5–6 (release-gate, component-gate, figma-library-workflow §3.3); номер версии ставится на границе релиза. Миграция экземпляров Figma: ручные переопределения цвета заменяются значением Tone, число — свойством Value, знак U+2013 → U+2212; при выносе из Buttons с новым именем ссылки экземпляров нужно перепроверить.",
   "currentVersion": null,
-  "proposedSemVerImpact": "minor",
+  "proposedSemVerImpact": "initial",
   "proposedVersion": null,
   "proposedChangelogEntry": {
-    "kind": "changed",
-    "impact": "minor",
-    "description": "Motivation: отдельный компонент значения мотивации; тон выбирается свойством Tone, число — свойством Value, знак минуса один во всех экземплярах"
+    "kind": "added",
+    "impact": "initial",
+    "description": "TagMotivation (значение мотивации): тон — свойство Tone (Inverted, Primary, Warning, Disabled), число — свойство Value, один знак минуса U+2212 во всех экземплярах"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/motivation",
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui",
+  "proposal": {
+    "componentName": "TagMotivation",
+    "codeName": "TagMotivation",
+    "nameStatus": "proposed — приёмка Standards (RickOBrian/aid#506 п.4)",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Motivation 89:5998; аудит 455:7078",
+    "tokensRequired": [
+      "Texts/Primary Inverted",
+      "Icons/Primary Inverted",
+      "Texts/Primary",
+      "Icons/Primary",
+      "Texts/Warning",
+      "Icons/Warning",
+      "Texts/Disabled",
+      "Icons/Inactive",
+      "Subtitles/Subtitle 1",
+      "space-4"
+    ],
+    "tokenGaps": {},
+    "variants": {
+      "Tone": [
+        "Inverted",
+        "Primary",
+        "Warning",
+        "Disabled"
+      ],
+      "properties": {
+        "Value": "TEXT"
+      },
+      "note": "Disabled — значение Tone на токенах продукта, без opacity слоя (#506 п.3); вопрос Standards: перенести Disabled в ось State по #550 или оставить в Tone — компонент неинтерактивный, недоступность наследуется от кнопки"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "a11y": "иконка декоративная; чтение — «минус 12 баллов мотивации» (вопрос 9 — Standards)"
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
@@ -26,11 +68,5 @@
       "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
       "node": "6976:99952"
     }
-  },
-  "relatedTokenChanges": [],
-  "reviewRoute": "/components/motivation",
-  "sourcePath": null,
-  "status": "pending",
-  "created": "2026-10-27",
-  "author": "arturuxui"
+  }
 }
