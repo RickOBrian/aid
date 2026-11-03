@@ -242,3 +242,17 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 не заменено 98 075; добивка контейнеров, разбитых на детей, — 4 замены (Navigation).
 Новые кандидаты в маппинг (радиусы 0 / full, отступ 18, текстовые стили других систем,
 `{Color:tx-accent/grey/primary}` на обводке) — там же, раздел «Кандидаты в новую анкету».
+
+**Сверка кандидатов п.4–8 (2026-11-03)** — `new-rider-drafts.sverka.md`. **Ответ arturuxui: «да, все ★».**
+Внесено в `scripts/migrate-styles.js`:
+- `{Color:tx-accent/grey/primary}` [stroke] → Stroke/Inverted (#242429/#efeff5 → #393944/#d6d7dc, та же
+  полярность); на «Shadow» пина — пробел, как было.
+- `[Texts day/primary 1]` [text] (#000@0.87, без ночи) → Text/Primary: ночью текст станет светлым.
+- Сырые: #232326 [shape] → Icon/Primary только в иконке (предок `Icon…`, не Status Bar); #242429 [text] → Text/Primary.
+  #000@0.08 [stroke] и #fff@0.05 (декор пина карты) — не трогаем.
+- Текстовые стили: Titles/Title 1 (новый ключ a0002690…), Captions/Caption → Captions/Caption 1,
+  iOS / Subtitle L → Outstanding/iOS - Subtitle L (новый ключ c6696a50…) — полное совпадение.
+- Без стиля: SF Pro Text Regular 15/20 → Bodies/Body 2; Semibold 15/20 → Subtitles/Subtitle 2 (трекинг −0.23 → −0.26).
+- Не трогаем: стили и шрифты ALS Hauss, Factor A (вставки маркетплейса); SF Pro Text Semibold 12/13 — пробел
+  (ближайший 12/16 ломает подписи); WB Sans — нужны новые стили WB / Number L, WB / Tab, WB / Tile
+  (отдельным предложением, с токенами fs-16, fs-19 и трекингом).
