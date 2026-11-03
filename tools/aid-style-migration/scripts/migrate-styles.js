@@ -242,6 +242,8 @@ const processEffect = async n => {
     inc(done, `[${st.name}] (стар.) → [${st.name}]`);
   } else skip(`эффект [${st.name}] — нет в маппинге`);
 };
+// значения без токена с тем же числом (arturuxui 2026-11-03): 0 → flat, 100 (full) → pill, 18 → 16
+const BYVAL = { r: { 0: 'radius-flat', 100: 'radius-pill', 18: 'radius-16' }, s: { 18: 'space-16' } };
 const NUMPROPS = ['itemSpacing','counterAxisSpacing','paddingLeft','paddingRight','paddingTop','paddingBottom','topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius'];
 const processNum = async n => {
   const bv = n.boundVariables || {};
@@ -253,7 +255,7 @@ const processNum = async n => {
     const isR = /Radius$/.test(prop);
     // радиусы на текст не ставим: у TEXT нет такого поля, привязка остаётся от старого макета
     if (isR && n.type === 'TEXT') { skip(`{${label}}=${val} ${prop} на TEXT — не ставим`); continue; }
-    const t = SPACE[label] || (typeof val === 'number' ? (isR ? 'radius-' : 'space-') + val : null);
+    const t = SPACE[label] || (typeof val === 'number' ? (BYVAL[isR ? 'r' : 's'][val] || (isR ? 'radius-' : 'space-') + val) : null);
     const v = t ? await getVar(t) : null;
     if (!v) { skip(`{${label}}=${val} ${prop} — нет цели`); continue; }
     if (!DRY) n.setBoundVariable(prop, v);

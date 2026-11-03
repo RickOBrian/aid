@@ -159,8 +159,18 @@
 `Button:Border radius`=18, `System:Magin Top`=54, CRx10=40).
 
 Радиусы на TEXT не ставим (arturuxui 2026-11-03): у текста нет полей углов, старая привязка
-остаётся и идёт в список. Кандидаты для 0 → `radius-flat` и 100 (full) → `radius-pill` —
-в анкете `drafts-run/SUMMARY.md`, до ответа не ставятся.
+остаётся и идёт в список.
+
+Значения без токена с тем же числом (arturuxui 2026-11-03, анкета `drafts-run/SUMMARY.md` п.1–3):
+
+| Было | Стало |
+|---|---|
+| радиус 0 (CRx0, BRx0) | radius/radius-flat |
+| радиус 100, full (BRfull, CRfull, CRxfull) | radius/radius-pill |
+| радиус 18 (`Button:Border radius`, `button/large`) | radius/radius-16 |
+| отступ 18 (SPx4,5) | space/space-16 |
+
+Отступ и радиус 18 → 16 — сознательный сдвиг на 2 px (в библиотеке нет `*-18`).
 
 ## 7. Не трогаем
 
