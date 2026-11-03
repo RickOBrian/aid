@@ -6,6 +6,7 @@
 //   const PAGE_ID = '<id>';      // страница-копия (scripts/clone-page.js)
 //   const ROOTS = ['<id>', ...]; // экраны на странице-копии; [] — все дети страницы
 //   const MAXIDS = 200;          // сколько ID узлов отдавать на каждую причину пропуска
+//   const SHALLOW = true;        // необязательно: только сами корни, без детей (добивка контейнеров, разбитых на детей)
 // Прогон Taxi for friends в DEV: PAGE_ID = '4770:4437'.
 const page = await figma.getNodeByIdAsync(PAGE_ID);
 await figma.setCurrentPageAsync(page);
@@ -250,6 +251,8 @@ const processNum = async n => {
     if (coll === 'space' || coll === 'radius') continue;
     // явная строка маппинга, иначе правило «то же значение» (final.md §4)
     const isR = /Radius$/.test(prop);
+    // радиусы на текст не ставим: у TEXT нет такого поля, привязка остаётся от старого макета
+    if (isR && n.type === 'TEXT') { skip(`{${label}}=${val} ${prop} на TEXT — не ставим`); continue; }
     const t = SPACE[label] || (typeof val === 'number' ? (isR ? 'radius-' : 'space-') + val : null);
     const v = t ? await getVar(t) : null;
     if (!v) { skip(`{${label}}=${val} ${prop} — нет цели`); continue; }
@@ -270,7 +273,14 @@ const walk = async (n, chain) => {
     await processEffect(n);
     await processNum(n);
   } catch (e) { skip(`ошибка: ${String(e.message || e).split('\n')[0].slice(0, 120)}`); }
-  if ('children' in n) for (const c of n.children) await walk(c, chain.concat(n.name));
+  if (typeof SHALLOW !== 'undefined' && SHALLOW && !chain.length) return;
+  // узел экземпляра может исчезнуть посреди обхода — пропуск, а не падение всего вызова
+  const errWalk = e => skip(`ошибка обхода: ${String(e.message || e).split('\n')[0].slice(0, 120)}`);
+  let kids = [];
+  try { if ('children' in n) kids = n.children; } catch (e) { errWalk(e); }
+  for (const c of kids) {
+    try { await walk(c, chain.concat(n.name)); } catch (e) { cur = c; errWalk(e); }
+  }
 };
 const shots = [];
 const rootIds = ROOTS.length ? ROOTS : page.children.map(c => c.id);
