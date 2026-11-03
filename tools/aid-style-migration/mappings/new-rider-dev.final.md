@@ -256,3 +256,14 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 - Не трогаем: стили и шрифты ALS Hauss, Factor A (вставки маркетплейса); SF Pro Text Semibold 12/13 — пробел
   (ближайший 12/16 ломает подписи); WB Sans — нужны новые стили WB / Number L, WB / Tab, WB / Tile
   (отдельным предложением, с токенами fs-16, fs-19 и трекингом).
+
+**Анкета повторного прогона (2026-11-03)** — `new-rider-drafts.rerun-questions.md`. **Ответ arturuxui: «да, все ★».**
+Внесено в `scripts/migrate-styles.js`:
+- `{theme:bg/level -1}` (коллекция `theme`) [frame] → Background/Secondary — как `Theme:bg/level -1`.
+- Стили заливки: ` Night / White` (ведущий пробел, #fafbff) [text] → Text/Constant White, [shape] → Icon/Constant White
+  только в иконке (`iconOnly`); `Gray / 40%` (#9a99a2) [text] → Text/Tertiary; `Night / Gray 20` — оставить.
+- Текстовые стили: iOS / H4 → Outstanding/NRD - Action Bold (полное, ключ c590f2c5…); iOS / H2 → Titles/Title 3
+  (LH 26 → 28, ls 0 → 0.33); `Title/title2 — pig` → Outstanding/Title-title2 (NRD), `Body/body — horse` → Bodies/Body 2
+  (ALS Hauss → SF Pro, размеры те же).
+- Сырые: #262626 [text] → Text/Primary; #979797 [shape] → Icon/Tertiary только в иконке и не у ребёнка BooleanOp
+  (его заливка не рисуется). Проверка «в иконке» вынесена в `isIcon(chain)` (та же, что для #232326).
