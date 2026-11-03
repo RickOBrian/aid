@@ -140,7 +140,7 @@ const rawTarget = (h, kind, prop, n, chain) => {
     if (kind === 'shape' && h === '8526ff@0.12' && n.name === 'Radius') return 'RADIUS';
     if (kind === 'shape' && h === '000000' && n.name === 'Shadow' && chain.some(c => /pin/i.test(c))) return 'Technical/Visible Deep';
     // сверка п.8: #232326 — только в иконке (не Status Bar); #242429 на тексте
-    if (kind === 'shape' && h === '232326' && chain.some(c => /^icons?/i.test(c)) && !chain.some(c => /status bar/i.test(c))) return 'Icon/Primary';
+    if (kind === 'shape' && h === '232326' && chain.some(c => /^icons?\b/i.test(c)) && !chain.some(c => /status bar/i.test(c))) return 'Icon/Primary';
     if (kind === 'text' && h === '242429') return 'Text/Primary';
     if (kind === 'text' && h === 'ffffff' && chain.includes('ETA') && chain.some(c => /Map Pin/.test(c))) return 'Text/Constant White';
   } else {
