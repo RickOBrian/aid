@@ -535,3 +535,16 @@ boolean в color-sem Rider: Day false / Night true. Варианты имени:
 - удаление веток `standards/role-card`, `standards/product-deviations-draft`
   на GitHub, старых локальных веток и трёх стэшей эпохи Cursor (п. 1
   «Только PD»).
+
+---
+
+## Q-26 · open · 2026-10-28
+**Состояния данных экрана: отдельный гайд и имена.**
+
+Стандарт описывает состояния компонента, но не экрана с данными (пусто,
+сбой, обновление). Разбор и черновик гайда `data-states-guide` 0.1.0 —
+`changes/standards-data-states-review-2026-10-28.md`. Шесть вопросов
+(§6): отдельный гайд; имена `pending · content · empty · failed` вместо
+занятых `loading` / `error`; один `EmptyState` для пусто и сбоя; уровень
+`CollectionView`; пороги времени — токены motion; минимум норм текста.
+Номер Q-25 занят в PR #329. Номер задачи — от Штаба.
