@@ -36,3 +36,30 @@ S	4	сырой #ffffff [stroke]	I5374:886133;1228:7446 I5374:886168;1264:101 I53
 S	4	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:886133;1228:7452 I5374:886168;1264:107 I5374:886386;1228:7452
 S	4	сырой #ffffff@0.05 [shape]	5374:886139 5374:886140 5374:886392
 S	4	сырой #000000@0.08 [stroke]	5374:886139 5374:886140 5374:886392
+#	page=✅ GEO Problems — Switched Styles	id=5374:885750	dry=0	nodes=2184	replaced=65	skipped=412	date=2026-11-06
+D	32	сырая тень → [Shadows/FAB]
+D	21	#000000 → Icon/Primary (shape)
+D	4	сырая тень → [Glass/Navbar]
+D	3	[shadow/diffuse/m] → [Shadows/Small]
+D	2	#000000@0.30 → Background/Overlay (shape)
+D	2	[shadow/diffuse/s] → [Shadows/Small]
+D	1	градиент TX Loading Fade → [Gradients/Shimmer]
+S	47	сырой #000000 [shape]	5374:886149
+S	36	сырой #000000 [text]	5374:885753
+S	36	шрифт без стиля: Roboto Regular 65.25/85	5374:885753
+S	35	сырой #c4c4c4 [shape]	I5374:886133;1228:7454
+S	32	сырой #ff0000 [shape]	5374:886691
+S	30	градиент [shape]	5374:886135
+S	18	сырой #1d354f [shape]	5374:886669
+S	18	сырой #ffb800 [shape]	5374:886669
+S	12	сырой эффект: background_blur	I5374:886133;1228:7439
+S	11	сырой эффект: layer_blur	5374:886148
+S	10	сырой эффект: drop 0,0 r20 s0 #000000@0.06	5374:885794
+S	8	[Gradients [day]/Primary] [frame] — нет в маппинге	5374:885809
+S	8	шрифт без стиля: SF Pro Display Medium 24/26	5374:885948
+S	8	сырой #ffffff@0.25 [shape]	5374:886686
+S	7	сырой #ffffff [text]	5374:885789
+S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:886149
+S	6	шрифт без стиля: Roboto Bold 65.25/85	5374:885789
+S	6	сырой #ffffff@0.30 [shape]	5374:886699
+R	77	остальные причины: 29

@@ -40,3 +40,42 @@ S	40	сырой #ffffff [text]	5374:803094 5374:803264 I5374:803406;400:18443;40
 S	36	градиент [stroke]	I5374:803294;40007495:44585;40007507:35770;40008797:93422;40008797:93159 I5374:803295;40007495:44585;40007507:35770;40008797:93422;40008797:93159 I5374:803296;40007495:44585;40007507:35770;40008797:93422;40008797:93159
 S	32	сырой #00b23c [stroke]	5374:808243 5374:808308 5374:808632
 S	31	сырой эффект: background_blur	5374:803825 5374:803976 5374:804967
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=51608	replaced=1165	skipped=5119	date=2026-11-06
+D	446	[shadow/diffuse/m] → [Shadows/Small]
+D	302	[shadow/diffuse/s] → [Shadows/Small]
+D	87	сырая тень → [Shadows/Knob]
+D	52	{Spacing:SPx3} → space-12
+D	52	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	52	{Gaps:SPx2} → space-8
+D	52	{Color:tx-accent/grey/tertiary} → Icon/Tertiary (shape)
+D	50	#000000 → Icon/Primary (shape)
+D	18	градиент TX Loading Fade → [Gradients/Shimmer]
+D	18	[Title/title2 — pig] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	14	[Body/body — horse] (стар.) → [Bodies/Body 2]
+D	7	сырая тень → [Shadows/FAB]
+D	6	[iOS / H2] (стар.) → [Titles/Title 3]
+D	4	[ Night / White] → Text/Constant White (text)
+D	2	#262626 → Text/Primary (text)
+D	2	[iOS / H4] (стар.) → [Outstanding/NRD - Action Bold]
+D	1	сырая тень → [Glass/Navbar]
+S	393	сырой эффект: layer_blur	I5374:803118;1067:131367
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13	5374:803458
+S	257	{System:Magin Top}=54 paddingTop — нет цели	5374:802550
+S	239	градиент [shape]	5374:803098
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:802560;40000385:8868;40006534:14641;40006534:7699
+S	234	шрифт без стиля: WB Sans Medium 24/100	I5374:802560;40000385:8868;40006534:7701
+S	222	сырой #000000 [shape]	I5374:802792;40007495:32555;20:3349;353:10462
+S	210	сырой #ffffff [stroke]	I5374:802565;40007495:32144;40008793:92370
+S	201	сырой #ff5f00 [shape]	I5374:802565;40007187:67012;40007187:43967;427:17588
+S	201	сырой #eb001b [shape]	I5374:802565;40007187:67012;40007187:43967;427:17589
+S	201	сырой #f79e1b [shape]	I5374:802565;40007187:67012;40007187:43967;427:17590
+S	178	сырой #ffffff [shape]	I5374:803142;40001108:25773;5374:817787;40001611:17557;1937:2777
+S	174	сырой #000000 [stroke]	5374:802557
+S	162	градиент [frame]	I5374:803119;1093:24175
+S	107	сырой #d9d9d9 [shape]	I5374:803140;40001108:25773;5374:817780;427:15332;40001108:28677
+S	96	шрифт без стиля: SF Pro Regular 17/22	I5374:803697;40001403:28636;40001069:17932;126:59452
+S	81	[Action/actionAccent — miniPig] — нет в маппинге	I5374:804228;2781:9134;4202:29304;2671:3648;1289:4780
+S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге	I5374:802669;40001063:14769
+S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге	I5374:803123;2189:195907
+S	62	сырой #000000 [frame]	5374:803278
+R	1413	остальные причины: 226

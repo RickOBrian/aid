@@ -267,3 +267,9 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
   (ALS Hauss → SF Pro, размеры те же).
 - Сырые: #262626 [text] → Text/Primary; #979797 [shape] → Icon/Tertiary только в иконке и не у ребёнка BooleanOp
   (его заливка не рисуется). Проверка «в иконке» вынесена в `isIcon(chain)` (та же, что для #232326).
+
+**Анкета покрытия (2026-11-06)** — `new-rider-drafts.coverage-questions.md`. **Ответ arturuxui: «да, все ★».**
+Внесено в `scripts/migrate-styles.js`: значения §1.4, которых не было в `rawTarget`; сырые тени → Shadows/FAB, Shadows/Knob; Glass/Navbar при полном совпадении;
+#000 на векторе в иконке → Icon/Primary (иконка теперь и `ic`, `ic_*`, `24/Stroke/*`; пины, маски, дети BooleanOp — нет); #0f0f1f@0.87 [text] → Text/Primary;
+#000@0.30 на фрейме и прямоугольнике шириной от 300 → Background/Overlay (исключение из правила 1); `shadow/diffuse/m`, `/s` → Shadows/Small (отменяет questions п.27 б);
+Gradient в TX Loading Fade → Gradients/Shimmer.

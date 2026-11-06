@@ -1,7 +1,7 @@
 // Сводит mappings/drafts-run/results/*.tsv в results/LEDGER.md: таблица страниц и общий список незаменённого.
 // Блок прогона начинается строкой «#»; замены складываются по блокам (кроме DRY), пропуски берутся из последнего блока.
 // node scripts/report.mjs
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,7 +25,25 @@ for (const f of readdirSync(dir).filter(x => x.endsWith('.tsv')).sort()) {
 }
 const n = x => x.toLocaleString('ru-RU');
 const sum = k => pages.reduce((a, p) => a + p[k], 0);
-const out = ['# Сводка прогонов (собрано scripts/report.mjs, руками не править)', '',
+// покрытие: results/coverage.txt, строки M от scripts/measure-page.js; ячейка — покрыто/не покрыто/вне счёта
+const SLOTS = ['fill', 'stroke', 'font', 'effect'], covPath = join(dir, 'coverage.txt');
+const cov = existsSync(covPath) ? readFileSync(covPath, 'utf8').split(/\r?\n/).filter(l => l.startsWith('M\t')).map(l => {
+  const c = l.split('\t'), kv = Object.fromEntries(c.slice(3).map(x => x.split('=')));
+  return { name: c[1], id: c[2], nodes: Number(kv.nodes), ...Object.fromEntries(SLOTS.map(s => [s, kv[s].split('/').map(Number)])) };
+}) : [];
+const pct = (ok, no) => (ok + no ? `${Math.round(ok / (ok + no) * 100)} %` : '—');
+const covRow = (name, r) => {
+  const t = [0, 1, 2].map(i => SLOTS.reduce((a, s) => a + r[s][i], 0));
+  return `| ${name} | ${SLOTS.map(s => pct(r[s][0], r[s][1])).join(' | ')} | **${pct(t[0], t[1])}** | ${n(t[0])} | ${n(t[1])} | ${n(t[2])} |`;
+};
+const covAll = Object.fromEntries(SLOTS.map(s => [s, [0, 1, 2].map(i => cov.reduce((a, r) => a + r[s][i], 0))]));
+const covSection = cov.length ? ['## Покрытие: состояние копий', '',
+  'Считается всё состояние копии, не замены прогона. Единица — заливка, обводка, шрифт, эффект на видимом узле.',
+  'Процент — покрыто / (покрыто + не покрыто). Вне счёта — логотипы, иллюстрации, пины, вставки маркетплейса, определены по именам приближённо.', '',
+  '| страница | заливки | обводки | шрифты | эффекты | всё | покрыто | не покрыто | вне счёта |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|',
+  ...cov.map(r => covRow(r.name, r)), covRow('**Итого**', covAll), ''] : [];
+const out = ['# Сводка прогонов (собрано scripts/report.mjs, руками не править)', '', ...covSection,
+  '## Замены и пропуски по прогонам', '',
   '| страница | копия | заменено | не заменено | последний прогон |', '|---|---|---:|---:|---|',
   ...pages.map(p => `| ${p.name} | \`${p.id}\` | ${n(p.replaced)} | ${n(p.skipped)} | ${p.date} |`),
   `| **Итого** | | **${n(sum('replaced'))}** | **${n(sum('skipped'))}** | |`, '',

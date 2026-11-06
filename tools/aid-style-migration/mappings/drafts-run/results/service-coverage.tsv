@@ -64,3 +64,33 @@ S	8	эффект [Shadows/FAB] — нет в маппинге	I5374:88642;4:1991
 S	7	сырой #b17aff [stroke]	5374:86323 5374:86512 5374:86518
 S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:88454;1535:157209;1398:153776 I5374:88455;1535:157209;1398:153776 I5374:88459;1842:72513;1398:153776
 S	7	{Radius:CRx10}=40 topLeftRadius — нет цели (то же для top-right, bottom-left, bottom-right — по 7)	5374:86855 5374:87818 5374:87819
+#	page=✅ Service coverage — Switched Styles	id=5374:86156	dry=0	nodes=7394	replaced=235	skipped=863	date=2026-11-06
+D	137	сырая тень → [Shadows/FAB]
+D	49	#8f69ff → Stroke/Zone Availability (stroke)
+D	21	#0f0f1f@0.90 → Text/Primary (text)
+D	20	сырая тень → [Glass/Navbar]
+D	3	#000000@0.30 → Background/Overlay (shape)
+D	3	#734edf → Stroke/Zone Availability (stroke)
+D	1	#ededff → Pastel/Milhouse (shape)
+D	1	#000000 → Icon/Primary (shape)
+S	91	градиент [shape]	5374:86175
+S	87	сырой #000000 [shape]	5374:86729
+S	74	сырой #d9d9d9 [shape]	5374:86246
+S	60	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff	5374:86863
+S	59	сырой #c4c4c4 [shape]	I5374:88453;2494:174370;69:109;5374:1042301;1465:154025;1248:7516
+S	47	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:86711
+S	34	градиент [frame]	I5374:88465;1527:45369;1093:24175
+S	29	сырой #ffffff [shape]	5374:86245
+S	24	сырой #000000 [text]	5374:86184
+S	24	сырой #8c7aff@0.30 [shape]	5374:87405
+S	24	эффект [Shadow Up] — нет в маппинге	5374:88797
+S	23	сырой эффект: layer_blur	I5374:88454;1535:157209;1398:153775
+S	20	{Theme TX:tx-bg/map} [frame] — нет в маппинге	5374:88782
+S	19	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:88454;1535:157209;1398:153775
+S	16	сырой эффект: drop 0,0 r250 s0 #ffffff@0.50 + drop 0,0 r100 s0 #ffffff	5374:87054
+S	15	сырой #8c7aff [shape]	5374:86347
+S	11	шрифт без стиля: SF Pro Semibold 22/28	5374:86184
+S	11	шрифт без стиля: SF Pro Regular 17/24	5374:86185
+S	10	сырой #f2bfbf [frame]	5374:86744
+S	10	сырой #f96c88 [shape]	5374:87731
+R	175	остальные причины: 51

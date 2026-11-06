@@ -69,3 +69,34 @@ S	63	сырой #c3ffa6 [shape]	I5374:528040;481:18332;427:14829;5119:209648;427
 S	63	шрифт без стиля: WB Sans Bold 30/100	5374:530283 5374:530299 5374:530320
 S	61	{Color:tx-accent/purple/fg-inverted} [frame] — нет в маппинге	5374:528057 5374:528058 5374:528059
 S	56	[Description/description] — нет в маппинге	5374:528152 5374:528884 5374:528984
+#	page=⌛️ Profile — Switched Styles	id=5374:527493	dry=0	nodes=23130	replaced=644	skipped=6225	date=2026-11-06
+D	352	сырая тень → [Shadows/FAB]
+D	114	#0f0f1f@0.87 → Text/Primary (text)
+D	79	[shadow/diffuse/m] → [Shadows/Small]
+D	45	сырая тень → [Glass/Navbar]
+D	42	#0f0f1f@0.90 → Text/Primary (text)
+D	5	#000000 → Icon/Primary (shape)
+D	4	[shadow/diffuse/s] → [Shadows/Small]
+D	2	[iOS / H4] (стар.) → [Outstanding/NRD - Action Bold]
+D	1	[iOS / H2] (стар.) → [Titles/Title 3]
+S	1062	сырой эффект: layer_blur	5374:527510
+S	874	сырой #d9d9d9 [shape]	5374:527495
+S	507	градиент [stroke]	5374:530807
+S	421	градиент [shape]	5374:528004
+S	170	градиент [frame]	5374:528138
+S	140	сырой #ff10d7 [shape]	5374:533920
+S	132	градиент [text]	5374:530270
+S	114	шрифт без стиля: WB Sans Medium 20/20	5374:530858
+S	106	сырой эффект: background_blur	5374:527501
+S	105	[Titles/Large Title] — нет в маппинге	5374:528107
+S	102	сырой #99ffbb [shape]	I5374:534169;5374:541266;1312:94;2938:20004
+S	102	сырой #014d2d [stroke]	I5374:534169;5374:541266;1312:94;2938:20010
+S	102	сырой #1cc052 [shape]	I5374:534169;5374:541266;1312:94;2938:20011
+S	93	сырой #000000 [text]	5374:530207
+S	90	сырой #ff813b [shape]	5374:533232
+S	86	сырой #ffffff [shape]	5374:529227
+S	82	[1 light yellow] [shape] — нет в маппинге	5374:530206
+S	70	шрифт без стиля: WB Sans Bold 12/120.00000476837158	5374:528574
+S	68	сырой #b066ff [shape]	5374:530842
+S	63	шрифт без стиля: WB Sans Bold 30/100	5374:530283
+R	1736	остальные причины: 244

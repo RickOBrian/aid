@@ -35,3 +35,32 @@ S	9	[Body/Regular] — нет в маппинге	5374:898270 5374:898272 5374:8
 S	9	{System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге	5374:898308 5374:898311 5374:898323
 S	9	сырой #1d354f [shape]	5374:897855 5374:897856 5374:897857
 S	9	сырой #ffb800 [shape]	5374:897855 5374:897856 5374:897857
+#	page=✅ Taxi for friends — Switched Styles	id=5374:894051	dry=0	nodes=3951	replaced=151	skipped=882	date=2026-11-06
+D	71	сырая тень → [Shadows/FAB]
+D	42	#000000 → Icon/Primary (shape)
+D	13	#000000@0.30 → Background/Overlay (shape)
+D	8	#262626 → Text/Primary (text)
+D	8	#0f0f1f@0.90 → Text/Primary (text)
+D	5	сырая тень → [Glass/Navbar]
+D	4	градиент TX Loading Fade → [Gradients/Shimmer]
+S	60	сырой #000000 [shape]	5374:894234
+S	48	сырой эффект: background_blur	5374:894224
+S	45	сырой #ffffff [shape]	5374:895842
+S	42	градиент [shape]	5374:894220
+S	42	сырой #c4c4c4 [shape]	5374:895831
+S	30	сырой #ffffff@0.05 [shape]	5374:894224
+S	30	сырой #000000@0.08 [stroke]	5374:894224
+S	26	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:896938
+S	22	сырой эффект: layer_blur	5374:894233
+S	20	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:894234
+S	18	сырой #000000 [stroke]	5374:895934
+S	16	{System Colors:Labels/Primary} [text] — нет в маппинге	I5374:897665;5374:898318
+S	16	сырой #ff0000 [shape]	5374:897877
+S	16	сырой #979797 [shape]	5374:898039
+S	15	сырой эффект: drop 0,0 r20 s0 #000000@0.06	5374:894053
+S	15	сырой #ffffff@0.10 [shape]	5374:894226
+S	15	сырой #000000@0.03 [stroke]	5374:894226
+S	15	{System Colors:Colors/Blue} [text] — нет в маппинге	I5374:897665;5374:898324
+S	14	сырой #ffffff [text]	5374:897947
+S	12	сырой #f5f5f6 [frame]	5374:897153
+R	365	остальные причины: 115

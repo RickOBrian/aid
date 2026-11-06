@@ -19,7 +19,7 @@ for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','
 const vcache = {};
 const getVar = async name => { if (!(name in vcache)) vcache[name] = libVars[name] ? await figma.variables.importVariableByKeyAsync(libVars[name]) : null; return vcache[name]; };
 const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodies/Body 2':'879e5c53e856e0bc15d54d02ad28ba88c8661808','Bodies/Body 3':'ec7ba478b0d45f0e20fb5528ffaa75dcff5aef72','Subtitles/Subtitle 1':'1449afde1d818486460f295669af22fd99a3a6cf','Subtitles/Subtitle 2':'746b9479314cb405d3340bd358049e486ae0f6d6','Subtitles/Subtitle 3':'a033bddf111be09f0149088dcb5c1eaa529ebd04','Titles/Title 4':'9395aad5c31672c7a765e20f36e1b39e00ccbc43','Titles/Title 3':'9a6c623ccfe842d1d9e8d0e428d12e6cf1d0d810','Captions/Caption 1':'97bf66024e167e387564b809893c702b464ddd42','Captions/Caption 1 CAP':'297879960c9a9a1feda979b1b9070563b06d858b','Captions/Caption 2':'0c2e5ea7ad30281d26df7c68b67043c3fa2286e8','Outstanding/Title-title2 (NRD)':'99bb5b186e90da50ee7e4b10fc0f3c13bb11acc0','Outstanding/NRD - Body':'3274cd72b8250998e9c07a468850a85e91046616','Outstanding/iOS - Subtitle':'41b59fcc0bdb4acd56c581073e5cd1d1693eca78','Titles/Title 1':'a0002690326ec64b856a97c9d41fe5f6df1b0cbb','Outstanding/iOS - Subtitle L':'c6696a50a2857a9359cc8da399263396c46a95ba','Outstanding/NRD - Action Bold':'c590f2c56eab32713a2871abe0a60c727a29ef2b'};
-const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384'};
+const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384','Shadows/FAB':'0dfac2ccdab87fdc913dc307e0b92ab682665cae','Shadows/Knob':'bb489e915a6510dd8c254da1671190b6528eb40a','Glass/Navbar':'5fed574145af7feb54f3d0e5d8df295cbafe4905'};
 const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
 const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstanding/Title-title2 (NRD)',
   // final.md §5: draft, п.29а–31а
@@ -32,10 +32,17 @@ const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstandi
 const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
   // Drafts, анкета п.25, 28
   'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',
-  'Shadows / [day] Brand button':null,'Shadows/Brand button':null,'Shadows/Brand Button':null};
+  'Shadows / [day] Brand button':null,'Shadows/Brand button':null,'Shadows/Brand Button':null,
+  // анкета покрытия (new-rider-drafts.coverage-questions.md) п.7
+  'shadow/diffuse/m':'Shadows/Small','shadow/diffuse/s':'Shadows/Small'};
 NEWFX['Shadows/Large Air'] = '5b2d5ab81c5badb00c28c93153a3479d73444229';
 // сырые тени, совпадающие с новыми стилями (анкета п.26)
-const RAWFX = {'drop 0,6 r20 s0 #000000@0.08':'Shadows/Medium','drop 0,8 r36 s0 #000000@0.16':'Shadows/Large Air','drop 0,3 r5 s0 #000000@0.20 + drop 0,1 r18 s0 #000000@0.08 + drop 0,6 r10 s0 #000000@0.14':'Shadows/Bottom Sheet'};
+const RAWFX = {'drop 0,6 r20 s0 #000000@0.08':'Shadows/Medium','drop 0,8 r36 s0 #000000@0.16':'Shadows/Large Air','drop 0,3 r5 s0 #000000@0.20 + drop 0,1 r18 s0 #000000@0.08 + drop 0,6 r10 s0 #000000@0.14':'Shadows/Bottom Sheet',
+  // анкета покрытия п.1, 2
+  'drop 0,4 r12 s0 #000000@0.10':'Shadows/FAB','drop 0,3 r1 s0 #000000@0.06 + drop 0,3 r8 s0 #000000@0.15':'Shadows/Knob'};
+// анкета покрытия п.3: Glass/Navbar только при полном совпадении, включая inner shadow (fxSig их параметры не показывает)
+const GLASS = 'GLASS 50 + I 0,8 r30 s-40 #e6e6e6 + I 0,-8 r10 s-40 #282828@0.25 + I 0,8 r10 s-40 #282828@0.25 + D 0,8 r15 s0 #000000@0.02 + D 0,0 r0 s0.5 #e8e8e8 + D -1.25,0 r0 s-0.75 #d0d0d0 + D 1.25,0 r0 s-0.75 #d0d0d0';
+const fxFull = n => n.effects.filter(e => e.visible !== false).map(e => e.offset ? `${e.type[0]} ${e.offset.x},${e.offset.y} r${e.radius} s${e.spread || 0} #${hex(e.color)}${e.color.a < 1 ? '@' + e.color.a.toFixed(2) : ''}` : `${e.type} ${e.radius}`).join(' + ');
 const fxSig = n => n.effects.filter(e => e.visible !== false).map(e => e.type === 'DROP_SHADOW' ? `drop ${e.offset.x},${e.offset.y} r${e.radius} s${e.spread || 0} #${hex(e.color)}${e.color.a < 1 ? '@' + e.color.a.toFixed(2) : ''}` : e.type.toLowerCase()).join(' + ');
 // цвет: имя стиля/переменной → {text, frame, shape, stroke}
 const C = {
@@ -130,7 +137,7 @@ const okScope = (v, slot) => v.scopes.includes('ALL_SCOPES') || SCOPE_NEED[slot]
 // возвращает переменную или null, записывая причину пропуска
 const resolveTarget = async (target, slot, kind, from) => {
   if (!target) { skip(`${from} [${slot}${slot==='stroke'?'':'/'+kind}] — нет правила`); return null; }
-  if (target.startsWith('Background/') && kind !== 'frame') { skip(`${from} → ${target} [${kind}] — правило 1`); return null; }
+  if (target.startsWith('Background/') && target !== 'Background/Overlay' && kind !== 'frame') { skip(`${from} → ${target} [${kind}] — правило 1`); return null; }
   const v = await getVar(target);
   if (!v) { skip(`${from} → ${target} — нет в библиотеке`); return null; }
   if (!okScope(v, slot)) { skip(`${from} → ${target} [${slot}] — скоуп ${v.scopes.join(',')}`); return null; }
@@ -138,7 +145,7 @@ const resolveTarget = async (target, slot, kind, from) => {
 };
 const bindPaint = (p, v, opacity = 1) => { const base = { type: 'SOLID', color: p.color || {r:0,g:0,b:0}, opacity, visible: p.visible !== false, blendMode: p.blendMode || 'NORMAL' }; return figma.variables.setBoundVariableForPaint(base, 'color', v); };
 // узел внутри иконки (не iOS Status Bar)
-const isIcon = chain => chain.some(c => /^icons?\b/i.test(c)) && !chain.some(c => /status bar/i.test(c));
+const isIcon = chain => chain.some(c => /^(icons?\b|ic(_|$)|\d+\/(stroke|fill)\/)/i.test(c)) && !chain.some(c => /status bar/i.test(c));
 const rawTarget = (h, kind, prop, n, chain) => {
   if (prop === 'fills') {
     if (kind === 'frame' && h === 'ffffff') return 'Background/Primary';
@@ -153,9 +160,22 @@ const rawTarget = (h, kind, prop, n, chain) => {
     // анкета повторного прогона (new-rider-drafts.rerun-questions.md) п.9, 10
     if (kind === 'text' && h === '262626') return 'Text/Primary';
     if (kind === 'shape' && h === '979797' && isIcon(chain) && n.parent.type !== 'BOOLEAN_OPERATION') return 'Icon/Tertiary';
+    // final §1.4: утверждено, в скрипт не попало (анкета покрытия, раздел А)
+    if (kind === 'text' && (h === '0f0f1f@0.90' || h === '000000@0.87')) return 'Text/Primary';
+    if (kind === 'shape' && (h === '0f0f1f@0.90' || h === '000000@0.87')) return 'Icon/Primary';
+    if (kind === 'shape' && (h === '100f25' || h === '2f2e43') && chain.some(c => /status multiple/i.test(c))) return 'Icon/Primary';
+    if (kind === 'shape' && h === '7e00e6') return 'Icon/Accent';
+    if (kind !== 'text' && h === 'ededff') return 'Pastel/Milhouse';
+    if (kind !== 'text' && h === 'ffefeb') return 'Pastel/Tony';
+    // анкета покрытия п.4, 5, 6
+    if (kind === 'shape' && h === '000000' && isIcon(chain) && !n.isMask && n.parent.type !== 'BOOLEAN_OPERATION' && !chain.some(c => /pin/i.test(c))) return 'Icon/Primary';
+    if (kind === 'text' && h === '0f0f1f@0.87') return 'Text/Primary';
+    if (h === '000000@0.30' && (kind === 'frame' || (n.type === 'RECTANGLE' && n.width >= 300))) return 'Background/Overlay';
     if (kind === 'text' && h === 'ffffff' && chain.includes('ETA') && chain.some(c => /Map Pin/.test(c))) return 'Text/Constant White';
   } else {
     if (h === 'ffffff' && n.name === 'Divider') return 'Stroke/Secondary';
+    if (h === '8f69ff' || h === '734edf') return 'Stroke/Zone Availability'; // final §1.4
+    if (h === 'aaff00') return 'Stroke/Neon'; // final §1.4
   }
   return undefined;
 };
@@ -182,6 +202,13 @@ const processPaints = async (n, prop, chain) => {
   let changed = false;
   const np = [];
   for (const p of paints) {
+    // анкета покрытия п.8: стопы Shimmer в файле чуть отличаются от библиотечных, поэтому правило по имени
+    if (prop === 'fills' && paints.length === 1 && p.type === 'GRADIENT_LINEAR' && n.name === 'Gradient' && chain.some(c => /TX Loading Fade/.test(c))) {
+      const s = await figma.importStyleByKeyAsync('d1fa46fc37e02c5a34fdd2c57f13312a083eb2b3');
+      if (!DRY) await n.setFillStyleIdAsync(s.id);
+      inc(done, 'градиент TX Loading Fade → [Gradients/Shimmer]');
+      return;
+    }
     if (p.type.startsWith('GRADIENT') && p.visible !== false) skip(`градиент [${slot}]`);
     if (p.type !== 'SOLID' || p.visible === false) { np.push(p); continue; }
     if (p.boundVariables && p.boundVariables.color) {
@@ -243,7 +270,7 @@ const processEffect = async n => {
   if (!('effectStyleId' in n)) return;
   const st = await getStyle(n.effectStyleId);
   if (!st) {
-    const t = n.effects.length ? RAWFX[fxSig(n)] : undefined;
+    const t = n.effects.length ? (fxFull(n) === GLASS ? 'Glass/Navbar' : RAWFX[fxSig(n)]) : undefined;
     if (!t) { if (n.effects.some(e => e.visible !== false)) skip(`сырой эффект: ${fxSig(n)}`); return; }
     const s = await figma.importStyleByKeyAsync(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);

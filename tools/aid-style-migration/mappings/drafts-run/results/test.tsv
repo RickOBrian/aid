@@ -35,3 +35,31 @@ S	8	шрифт без стиля: SF Pro Display Regular 22/28	5374:1032882 5374
 S	7	шрифт без стиля: SF Pro Text Medium 14/16	I5374:1030917;471:162338 I5374:1031163;471:162338 I5374:1031417;471:162338
 S	6	сырой #ffffff [stroke]	I5374:1031083;1228:7446 I5374:1031118;1264:101 I5374:1031329;1228:7446
 S	6	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:1031083;1228:7452 I5374:1031118;1264:107 I5374:1031329;1228:7452
+#	page=test — Switched Styles	id=5374:1030847	dry=0	nodes=5880	replaced=377	skipped=1046	date=2026-11-06
+D	208	#000000 → Icon/Primary (shape)
+D	139	сырая тень → [Shadows/FAB]
+D	17	сырая тень → [Glass/Navbar]
+D	7	градиент TX Loading Fade → [Gradients/Shimmer]
+D	4	#000000@0.30 → Background/Overlay (shape)
+D	2	#0f0f1f@0.90 → Text/Primary (text)
+S	110	сырой #000000 [shape]	5374:1031099
+S	107	градиент [shape]	5374:1030851
+S	68	[Background [day]/Secondary] [shape/shape] — нет правила	5374:1030874
+S	66	сырой #ffffff [shape]	I5374:1030890;3872:24490;1562:504
+S	64	сырой #ff0000 [shape]	5374:1032173
+S	56	сырой #c4c4c4 [shape]	I5374:1031083;1228:7454
+S	52	сырой эффект: layer_blur	5374:1031098
+S	42	сырой #ffffff [text]	5374:1031684
+S	36	сырой #1d354f [shape]	5374:1032151
+S	36	сырой #ffb800 [shape]	5374:1032151
+S	24	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I5374:1030858;2645:221737
+S	20	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:1031099
+S	18	сырой эффект: background_blur	I5374:1031083;1228:7439
+S	17	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:1031665;19:89299
+S	16	шрифт без стиля: Google Sans Regular 17/20	5374:1031684
+S	16	сырой #ffffff@0.25 [shape]	5374:1032168
+S	15	сырой #ffffff@0.90 [shape]	I5374:1031083;1228:7440
+S	12	сырой #f5f5f5 [shape]	I5374:1032052;1037:164
+S	12	сырой #ffffff@0.30 [shape]	5374:1032181
+S	10	{Color:tx-bg/level −1 muted} [shape/shape] — нет правила	I5374:1031654;907:124127;578:320
+R	249	остальные причины: 77

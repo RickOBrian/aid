@@ -233,3 +233,45 @@ S	12	[Captions/Caption 3] — нет в маппинге	I5374:904551;40006214:2
 S	12	сырой #ff10d7 [shape]	5871:184640 5871:184641 5871:184642
 S	11	{Safe zones:safe-top}=62 paddingTop — нет цели	5871:183138 5374:926059 5871:187886
 R	382	остальные причины: 121
+#	page=Order Flow — Switched Styles	id=5374:903468	dry=0	nodes=77353	replaced=1186	skipped=6778	date=2026-11-06
+D	427	[shadow/diffuse/m] → [Shadows/Small]
+D	297	[shadow/diffuse/s] → [Shadows/Small]
+D	140	сырая тень → [Shadows/Knob]
+D	129	сырая тень → [Shadows/FAB]
+D	129	#000000 → Icon/Primary (shape)
+D	26	градиент TX Loading Fade → [Gradients/Shimmer]
+D	8	сырая тень → [Glass/Navbar]
+D	8	{Gaps:SPx4} → space-16
+D	6	#0f0f1f@0.87 → Text/Primary (text)
+D	4	#aaff00 → Stroke/Neon (stroke)
+D	4	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	2	#8f69ff → Stroke/Zone Availability (stroke)
+D	2	{Theme:text icon/primary} → Text/Primary (text)
+D	2	{Отступы:SPx2} → space-8
+D	2	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+S	661	сырой эффект: layer_blur	I5871:168780;1074:135167
+S	471	шрифт без стиля: SF Pro Text Semibold 12/13	5374:903752
+S	421	градиент [shape]	I5871:168781;1074:135481
+S	340	сырой #c4c4c4 [shape]	I5374:918263;1228:7454
+S	309	сырой #ffffff [shape]	5374:903698
+S	284	сырой #ff5f00 [shape]	I5374:903770;1093:24503;3072:124505
+S	284	сырой #eb001b [shape]	I5374:903770;1093:24503;3072:124506
+S	284	сырой #f79e1b [shape]	I5374:903770;1093:24503;3072:124507
+S	278	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:903637;40000385:8868;3866:93273;40006534:7699
+S	266	{System:Magin Top}=54 paddingTop — нет цели	5374:903625
+S	198	сырой эффект: background_blur	5374:903698
+S	191	сырой #000000 [shape]	I5374:903780;15:3905;15:3692;15:3250
+S	186	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила	5374:903634
+S	145	градиент [frame]	I5871:168781;1093:24175
+S	125	сырой #ffffff@0.90 [shape]	I5374:918263;1228:7440
+S	124	сырой #ffffff [stroke]	I5871:168795;40008793:92370
+S	111	сырой #00b23c [stroke]	5374:903633
+S	110	шрифт без стиля: WB Sans Medium 24/100	I5871:168783;40000385:8868;40006534:7701
+S	101	градиент [stroke]	I5374:903780;15:3905
+S	100	сырой #000000 [stroke]	5374:904026
+S	1	ошибка: in get_strokes: The node with id "I5374:922110;1095:415;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922110;1095:415;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922111;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922111;1095:809;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922112;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922112;1095:809;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922131;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922131;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457
+R	1784	остальные причины: 152
