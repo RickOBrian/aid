@@ -1,0 +1,80 @@
+{
+  "id": "component-checkbox",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Checkbox",
+  "componentId": "checkbox",
+  "product": "driver",
+  "changeSummary": "Checkbox Driver — развитие (designer-21, issue #489, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `checkbox` 89:3071 (Controls): 5 вариантов 24×24, оси Checked / Active / Loading; вложен в Cards/tariff 89:3384 (42 экз.) и Selection Control 89:2915 (2 экз.); кода нет ни на одной платформе, в Rider нет. Все цвета на переменных Driver, новых токенов не нужно. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 6а 7а 8а 9а 10а»: добавить вариант Checked=True, Loading=True; ось Active убирается, недоступность — значение Disabled оси State: State Default / Loading / Disabled × Checked True / False (ответ 2а «ось Disabled True / False» заменён решением arturuxui 30.10 «одинаково для всех компонентов», конвенция #550, component-states-guide §5; Loading есть в мастере 89:3071 — Checked=False, Loading=True); mixed не добавлять, описать в спеке; Pressed, Focused, Hovered в Figma не делаются — unsupportedStates (component-states-guide §5, §6.1); фокус — кольцо 2px Strokes · Primary в спеке и коде Web, Hover — только Web; компонент 24×24, зона касания 44×44 / 48dp — в спеке и коде; галочка — отдельный слой check на Controls · Accent вместо выреза; неотмеченный — диск Icons · Primary Inverted + кольцо 1px Strokes · Tertiary, как в боевых макетах Driver (сверка 27.10: 25 из 34 Selection Control), ручные переопределения 25 экземпляров в tariff и Selection Control сбросить; слои box / check / loader, auto layout; радиус круга: в мастере сырой 20 на векторе Unchecked без переменной (lookup 02.11, сет — radius-6, варианты — radius-flat), в сборке — radius-20 (есть в Driver, как у Switch); в этой задаче только Figma, код — отдельная задача Developer. Прозрачность недоступного — 40% вместо 50%, как в accessibility.md и ADR-006 (решение Standards 30.10, #506 п.3): opacity на компоненте, токены Disabled не добавляются. Сборка также: имя сета Checkbox — принято Standards рабочим порядком как нативный контрол, исключение оформляется в standaloneNames через #549 (#506 п.4); описание и ссылки на документацию, клик во всех доступных вариантах. Ждёт решения: 11 — цвет отмеченного: Controls · Checked в библиотеке против Buttons · Positive в продукте (куратор с дизайнером). Аудит — пейдж «👀 Checkbox · audit» 454:7720, блоки 0–8, день и ночь на 360; мастер не правился. Выпущенной версии нет (currentVersion null), поэтому по release-gate (First approved release), component-gate §release и figma-library-workflow §3.3 импакт — initial 1.0.0, а не major (решение Standards 30.10, #506 п.5): переименование оси Active ломает свойства экземпляров Figma — это заметка о миграции, major применяется только после первого релиза; версию ставит человек через release-gate. Виды значений (token-integrity): прозрачность недоступного 40% и зона касания 44×44 / 48dp — platform-convention; 24×24 — raw-value, фиксируется в анатомии; цвета и радиус — semantic-token.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Checkbox: ось State (Default / Loading / Disabled) вместо оси Active; добавлена загрузка у отмеченного; неотмеченный — диск с тонким кольцом, как в продукте; галочка своим цветом; недоступный — 40% прозрачности"
+  },
+  "proposal": {
+    "componentName": "Checkbox",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер checkbox 89:3071",
+    "tokensRequired": [
+      "Controls/Checked",
+      "Controls/Accent",
+      "Icons/Primary Inverted",
+      "Strokes/Tertiary",
+      "Strokes/Primary",
+      "radius-20"
+    ],
+    "variants": {
+      "Checked": [
+        "True",
+        "False"
+      ],
+      "State": [
+        "Default",
+        "Loading",
+        "Disabled"
+      ],
+      "note": "Disabled — значение оси State, не отдельная ось и не BOOLEAN (решение arturuxui 30.10, #550); ответ 2а заменён"
+    },
+    "unsupportedStates": [
+      "Pressed",
+      "Focused",
+      "Hovered"
+    ],
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "disabledOpacity40": "platform-convention",
+      "touchTarget44x44": "platform-convention",
+      "size24x24": "raw-value",
+      "colors": "semantic-token",
+      "radius": "semantic-token"
+    },
+    "confidence": "high",
+    "namingException": true,
+    "architectureException": false,
+    "reviewAt": "release"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "454:7720",
+    "componentPage": "194:3098",
+    "components": {
+      "checkbox": "89:3071"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6173:15871"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
