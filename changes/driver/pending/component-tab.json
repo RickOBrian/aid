@@ -1,0 +1,94 @@
+{
+  "id": "component-tab",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Tab",
+  "componentId": "tab",
+  "product": "driver",
+  "changeSummary": "Tab Driver — развитие (designer-25, issue #493, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `Tab` 89:5270 (страница Tabs): 2 варианта, ось State = Active / Normal; родитель — Tabs 89:5279 (ось Quantity 2–5). В Web реализации нет. Токены совпадают с каноном Driver (Buttons/Primary, Buttons/Disabled, Texts/Primary, Texts/Primary Inverted, radius-20, space-2/8/12, Subtitles/Subtitle 1), новых не нужно. По сути это чип выбора смены: подпись «06:00 — 14:00» зашита в три текстовых слоя. По ответам куратора arturuxui 27.10 «1а 2а 3а 4а 5а»: компонент — ChipSelect с осью Selected (имя принято Standards, #506 п.4: Role + Entity, без пробелов); подпись — один слой label со свойством Label; фон невыбранного — Buttons/Secondary вместо Buttons/Disabled (визуал — дизайнеру); ось Selected (True / False) — долгосрочное состояние; недоступность — значение оси State (Default / Disabled), не BOOLEAN (#550): State × Selected × Size (недоступный — прозрачность 40 % на всём компоненте поверх выбранного и невыбранного вида, без токенов Buttons/Disabled и Texts/Disabled: одно из двух, не оба — #506 п.3, accessibility.md, ADR-006), Pressed не поддерживается — отклик на касание — смена Selected; Focused и Hovered не поддерживаются — Driver мобильный, как у Switch, Balance и Button (states-guide §6.1; решение куратора arturuxui 02.11 по замечанию Standards, вместо кольца фокуса и Hover только для Web из ответа 27.10); высота 40, зона касания 44×44 — в спеке. Боевой макет: Copy_New-Driver-DEV XddnBR2XdC4l5HX7pPzTxF, Order History, «Menu / Orders» 6916:47752 → Frame 45 6916:46070 — ряд недель нарисован фреймами 32 px, Subtitle 2, выбранный — хексом; мастер не используется. Предложены в аудите, ответ куратора 28.10 «6а 7а 8а»: ось Size — M 40 · Subtitle 1 и S 32 · Subtitle 2 (S — как в Order History, выбранный на токенах вместо хекса); свой аудит Tabs 89:5279 (прокрутка на 360, слот вместо оси Quantity) — отдельной задачей; развести имена двух сетов Tabs (89:5279 и сегмент 89:5234) — сегмент отдельной задачей. Аудит — пейдж «👀 Tab · audit» 463:9568, блоки 0–8, день и ночь на 360, прототип выбора — рабочий компонент «.Tab · прототип» 465:512 на экземплярах; мастер не правился. Текущей версии нет (currentVersion: null) — impact initial, первая версия 1.0.0 на границе релиза (#506 п.5, release-gate, component-gate). Заметка о миграции экземпляров Figma: сет Tab → ChipSelect, ось State (Active / Normal) → Selected (True / False), три текстовых слоя → свойство Label; в Tabs 89:5279 экземпляры перепривязать.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "ChipSelect (бывший Tab): оси State (Default, Disabled), Selected и Size (M 40, S 32), подпись одним свойством Label, недоступный — прозрачность 40 %, невыбранный — на Buttons/Secondary"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "463:9568",
+    "componentPage": "194:3099",
+    "components": {
+      "tab": "89:5270",
+      "tabs": "89:5279"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6916:46070"
+    }
+  },
+  "proposal": {
+    "componentName": "ChipSelect",
+    "codeName": "ChipSelect",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Tab 89:5270; аудит 463:9568, прототип .Tab · прототип 465:512",
+    "tokensRequired": [
+      "Buttons/Primary",
+      "Buttons/Secondary",
+      "Texts/Primary",
+      "Texts/Primary Inverted",
+      "Subtitles/Subtitle 1",
+      "Subtitles/Subtitle 2",
+      "radius-20",
+      "space-2",
+      "space-8",
+      "space-12"
+    ],
+    "tokenGaps": {},
+    "variants": {
+      "State": [
+        "Default",
+        "Disabled"
+      ],
+      "Selected": [
+        "True",
+        "False"
+      ],
+      "Size": [
+        "M",
+        "S"
+      ],
+      "properties": {
+        "Label": "TEXT"
+      },
+      "unsupportedStates": [
+        "Pressed",
+        "Hovered",
+        "Focused"
+      ],
+      "note": "Disabled — значение оси State, не BOOLEAN (#550); Selected — долгосрочное состояние, своя ось; Pressed не поддерживается — отклик на касание — смена Selected (решение куратора arturuxui 02.11); Hovered и Focused не поддерживаются (мобильный продукт, states-guide §5, §6.1)"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "disabled": "platform-convention",
+      "colors": "semantic-token",
+      "typography": "semantic-token",
+      "sizeM40": "raw-value",
+      "sizeS32": "raw-value",
+      "touchTarget44": "platform-convention"
+    },
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": "/components/tab",
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
