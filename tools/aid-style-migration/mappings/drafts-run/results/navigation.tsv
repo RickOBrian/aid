@@ -1,0 +1,91 @@
+#	page=Navigation	id=5374:207972	dry=0	nodes=0	replaced=2714	skipped=33143	date=2026-11-03
+D	444	{Скругления:BRfull} → radius-pill
+D	236	{borderRadius:BRx0} → radius-flat
+D	215	[iOS / Subtitle L] (стар.) → [Outstanding/iOS - Subtitle L]
+D	203	SF Pro Text Semibold 15/20 → [Subtitles/Subtitle 2]
+D	192	{Скругления:BRx0} → radius-flat
+D	180	[Texts day/primary 1] → Text/Primary (text)
+D	170	SF Pro Text Regular 15/20 → [Bodies/Body 2]
+D	165	#242429 → Text/Primary (text)
+D	158	{Corner Radius:CRx0} → radius-flat
+D	132	[Captions/Caption] (стар.) → [Captions/Caption 1]
+D	110	{Gaps:SPx4,5} → space-16
+D	104	{Corner Radius:CRxfull} → radius-pill
+D	88	{Color:tx-accent/grey/primary} → Stroke/Inverted (stroke)
+D	82	{Скругления:CRx0} → radius-flat
+D	68	#232326 → Icon/Primary (shape)
+D	48	{borderRadius:BRfull} → radius-pill
+D	40	{Скругления:CRxfull} → radius-pill
+D	24	{Corner radius:BRx0} → radius-flat
+D	24	{Variable collection:Test} → radius-16
+D	12	{Corner radius:button/large} → radius-16
+D	8	[Titles/Title 1] (стар.) → [Titles/Title 1]
+D	8	{Скругления:CRfull} → radius-pill
+D	3	{Отступы:SPx4,5} → space-16
+S	3443	сырой #000000 [shape]	I5374:226791;1037:166;1716:341 I5374:226793;1037:166;1710:1385 I5374:226793;1037:166;1710:1386
+S	2190	градиент [shape]	5374:226792 5374:227040 5374:227293
+S	1170	сырой эффект: layer_blur	5374:226805 I5374:226819;1207:219;1248:7581 I5374:226819;1207:219;1248:7583
+S	1122	сырой эффект: drop 0,4 r12 s0 #000000@0.10	5374:226791 5374:226793 5374:226853
+S	1011	сырой #ffffff [shape]	I5374:226834;3:197;1937:2777 I5374:226835;3:197;1937:2777 I5374:227082;3:197;1937:2777
+S	723	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:226814;1242:357 I5374:226815;1244:7534 I5374:226815;1244:7535;589:16
+S	704	сырой #c4c4c4 [shape]	I5374:226790;1228:7454 I5374:226790;1228:7455 I5374:226790;1228:7457
+S	602	сырой #000000 [stroke]	I5374:233343;621:249;1932:113 I5374:233343;621:249;1932:114 I5374:235349;4049:25106;1:2265
+S	584	сырой #000000 [text]	5374:230878 5374:231072 5374:233349
+S	473	сырой #ffffff [text]	I5374:228143;233:106845 5374:228175 5374:228208
+S	445	шрифт без стиля: Factor A TRIAL Medium 10/11	I5374:213195;2199:28009;2199:27995 I5374:213195;2190:27724 I5374:213195;2190:27761
+S	400	сырой #ff0000 [shape]	5374:231373 5374:231374 5374:231378
+S	392	[Description/descriptionAccent — lion] — нет в маппинге	I5374:214490;2165:44685;2064:74823 I5374:214490;2165:44685;2077:29006;346:2660 I5374:214490;2165:44685;2077:29418;346:2660
+S	364	[Description/description] — нет в маппинге	5374:231979 5374:231981 5374:231986
+S	346	градиент [frame]	I5374:227330;471:162372;471:162368 I5374:227576;471:162372;471:162368 I5374:228154;471:162372;471:162368
+S	328	сырой эффект: background_blur	I5374:226790;1228:7439 I5374:226790;1228:7441 I5374:226790;1228:7463
+S	305	[Description/description — puma] — нет в маппинге	I5374:214490;2165:44685;2077:28520;2:17345 I5374:214490;2165:44685;2077:27239;236:177594;2:17344 I5374:214490;2165:44685;2077:27239;236:177594;2:17345
+S	279	[Caption/captionUppercace — chameleon] — нет в маппинге	I5374:214490;2165:44685;2077:28889;97:89691;97:103347;97:99899;30006:1215 I5374:214490;2165:44685;2077:29282;97:89691;100:68987;30006:1215 I5374:214490;2165:44685;2077:29282;97:89691;97:103347;97:99899;30006:1215
+S	299	сырой #a4a4bf [text]	5374:213142 5374:213151 5374:213153
+S	268	сырой #ffffff [stroke]	I5374:226790;1228:7446 I5374:226825;1264:101 I5374:227038;1228:7446
+S	264	шрифт без стиля: WB Sans Regular 16/14	I5374:214490;2165:119370;2015:65232;2015:62794 I5374:214490;2165:119370;2015:65233;2015:62794 I5374:214490;2165:119370;2015:65234;2015:62794
+S	247	эффект [shadow/diffuse/s] — нет в маппинге	5374:231963 I5374:232071;5374:235008 I5374:232071;5374:235031
+S	225	сырой #1d354f [shape]	5374:231351 5374:231352 5374:231353
+S	225	сырой #ffb800 [shape]	5374:231351 5374:231352 5374:231353
+S	221	шрифт без стиля: ALS Hauss VF Medium 17/20	I5374:213414;3084:64672 I5374:213518;3084:64672 I5374:214490;2165:44685;2077:17516;4071:42527;4044:44884
+S	220	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:226806 5374:227054 5374:227307
+S	213	сырой эффект: glass + inner_shadow + inner_shadow + inner_shadow + drop 0,8 r15 s0 #000000@0.02 + drop 0,0 r0 s0.5 #e8e8e8 + drop -1.25,0 r0 s-0.75 #d0d0d0 + drop 1.25,0 r0 s-0.75 #d0d0d0	I5374:228145;5374:243128 I5374:228178;5374:243128 I5374:228211;5374:243128
+S	209	[Paragraph/paragraphAccent] — нет в маппинге	5374:231977 5374:231997 I5374:232071;5374:235010
+S	204	шрифт без стиля: ALS Hauss VF Regular 13/17 UPPER	I5374:214490;2165:46948;37:23209 I5374:214490;2165:46949;37:23209 I5374:214490;2165:46950;37:23209
+S	204	шрифт без стиля: ALS Hauss VF Bold 13/15 + ALS Hauss VF Regular 13/15	I5374:214490;2165:46948;59:23720 I5374:214490;2165:46949;59:23720 I5374:214490;2165:46950;59:23720
+#	page=✅ Navigation 🧭 — Switched Styles	id=5374:207972	dry=0	nodes=108054	replaced=3380	skipped=29660	date=2026-11-06
+D	1597	#000000 → Icon/Primary (shape)
+D	1122	сырая тень → [Shadows/FAB]
+D	236	[shadow/diffuse/s] → [Shadows/Small]
+D	155	сырая тень → [Glass/Navbar]
+D	54	[iOS / H4] (стар.) → [Outstanding/NRD - Action Bold]
+D	48	[iOS / H2] (стар.) → [Titles/Title 3]
+D	39	#000000@0.30 → Background/Overlay (shape)
+D	34	[shadow/diffuse/m] → [Shadows/Small]
+D	22	градиент TX Loading Fade → [Gradients/Shimmer]
+D	16	[Title/title2 — pig] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	15	[Body/body — horse] (стар.) → [Bodies/Body 2]
+D	14	#262626 → Text/Primary (text)
+D	10	сырая тень → [Shadows/Knob]
+D	9	#0f0f1f@0.87 → Text/Primary (text)
+D	9	[ Night / White] → Text/Constant White (text)
+S	2190	градиент [shape]	I5374:208002;1302:19509;1302:19195
+S	1812	сырой #000000 [shape]	I5374:209720;353:10389
+S	1170	сырой эффект: layer_blur	I5374:208023;2296:72450
+S	1011	сырой #ffffff [shape]	I5374:208001;28:443
+S	723	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:214271;1242:357
+S	704	сырой #c4c4c4 [shape]	I5374:211920;1248:7510
+S	602	сырой #000000 [stroke]	I5374:209726;3087:25772;2216:41798
+S	584	сырой #000000 [text]	I5374:209726;3087:25773
+S	473	сырой #ffffff [text]	5374:207974
+S	445	шрифт без стиля: Factor A TRIAL Medium 10/11	I5374:209726;2190:27724
+S	400	сырой #ff0000 [shape]	5374:218318
+S	392	[Description/descriptionAccent — lion] — нет в маппинге	I5374:209839;2015:54412;4502:20761;4522:18967;4482:7422
+S	364	[Description/description] — нет в маппинге	I5374:209745;1269:9517
+S	328	сырой эффект: background_blur	5374:208824
+S	314	градиент [frame]	I5374:208023;2276:25079
+S	305	[Description/description — puma] — нет в маппинге	I5374:208130;23445:60397
+S	299	сырой #a4a4bf [text]	I5374:209726;2190:27761
+S	279	[Caption/captionUppercace — chameleon] — нет в маппинге	I5374:208120;30006:1220
+S	268	сырой #ffffff [stroke]	I5374:209731;2759:51235
+S	264	шрифт без стиля: WB Sans Regular 16/14	5374:208837
+R	16733	остальные причины: 861
