@@ -63,3 +63,36 @@ background_blur, сырая тень drop 0,4 r12 #000000@0.10, цвета Maste
   узлы на месте. Скрипт не заходит в скрытых детей инстансов.
 - Profile: скрытый ребёнок инстанса `I5374:539492;4881:183661` недоступен по id — пропущен.
 - Хвосты малых причин (за пределами топ-30) в отчётах страниц не сохранены.
+
+## Прогон по анкете (2026-11-06)
+
+Правила анкеты `new-rider-drafts.rerun-questions.md` (коммит 890f0d2), 4 копии, по одному агенту Sonnet за раз.
+Ничего не клонировалось, не создавалось и не удалялось; ключи pluginData `mig` очищены; ошибок скрипта нет.
+Отчёты — `rerun/<slug>-2.md`.
+
+| страница | копия | заменено | не заменено | было не заменено |
+|---|---|---:|---:|---:|
+| Illustrations | `5374:721192` | 354 | 3 745 | 4 099 |
+| Service coverage | `5374:86156` | 30 | 1 106 | 1 136 |
+| Errors | `5374:358551` | 24 | 1 638 | 1 662 |
+| Backlog UI | `5371:80571` | 14 | 247 | 261 |
+| **Итого** | | **422** | **6 736** | **7 158** |
+
+| правило | кол-во |
+|---|---:|
+| `[ Night / White]` → Text/Constant White (text) | 102 |
+| `[Gray / 40%]` → Text/Tertiary (text) | 96 |
+| `[iOS / H2]` → Titles/Title 3 | 59 |
+| `[iOS / H4]` → Outstanding/NRD - Action Bold | 58 |
+| `{theme:bg/level -1}` → Background/Secondary (frame) | 30 |
+| `#262626` → Text/Primary (text) | 26 |
+| `[ Night / White]` → Icon/Constant White (shape) | 20 |
+| `[Title/title2 — pig]` → Outstanding/Title-title2 (NRD) | 17 |
+| `[Body/body — horse]` → Bodies/Body 2 | 14 |
+
+Illustrations: счётчик порции 6 не засчитан (сбой агрегатора агента, замены применились). Пропусков стало меньше
+ровно на 354, так что потери в счёте, вероятно, нет; DRY-прогоном не проверялось.
+
+Осталось без правила: `[ Night / White]` [shape] не на иконке 55 (Illustrations), `Action/actionAccent — miniPig` 16
+(Errors), `#979797` [shape] не на иконке 15 (Backlog UI), `[Text [day]/Warning]` [frame] 6, `{theme:bg/accentSecondary}`
+[frame] 6, `[Captions/Caption 3]` 4, `[Gradients/Top]` [shape] 4 (Service coverage). `#979797` в иконке не встретился.
