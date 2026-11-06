@@ -1,0 +1,85 @@
+{
+  "id": "component-driver-arrow",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "ArrowLocation",
+  "componentId": "driver-arrow",
+  "product": "driver",
+  "changeSummary": "Driver arrow small Driver — развитие (designer-23, issue #491, задача AID-LU-29), флоу figma-library-workflow 0.8.0 §3.1, платформы — все (Figma, Web, iOS, Android). Мастер `Driver arrow small` 89:5932 (Pins): одиночный компонент 20×20 без свойств; экземпляры — 3 в Route Progress 89:5939, через него — в Headers/navigation 89:4571. Кода нет ни на одной платформе. Токены: заливка Icons/Accent и обводка Strokes/Primary Inverted совпадают с каноном Driver; три грани — шесть хексов в радиальных градиентах без токенов, ночью стрелка остаётся дневной. Те же хексы и та же форма нарисованы заново в пине Driver 89:5852 (Navigating 2D 89:5881 и 3D). Пробел токена: граням нужен Gradients/Arrow (day / night); вариант «1 или 3» ждёт PD (#506 п.1), до решения — без хардкода в сборке, новый токен — token-change-gate через PD; ночные цвета подбирает дизайнер. Пин Driver в состояниях Navigating берёт экземпляр стрелки. Сборка: один контур с тремя гранями вместо Bounds + маски + трёх слоёв Mask, слои outline / face-top / face-bottom / face-left, обводка внутри габарита 20×20, без привязки radius-flat, описание и ссылка на документацию; пустые переопределения effects/strokes в экземплярах Route Progress сбросить. Ответ куратора arturuxui 27.10 по блоку 8 «1а 2а 3а 4а 5а 6а»: ночные цвета граней — дизайнер; один токен Gradients/Arrow на три грани (ждёт PD); имя — на Standards; обводка внутри габарита 20×20; свойства направления нет, поворот задаёт родитель или код; пустые переопределения в Route Progress сбросить. Ответы Standards 30.10 (#506): п.4 — DriverArrow не подходит, имя продукта в имени компонента не пишется; формула Role + Entity (naming-conventions §4) → ArrowLocation (Role Arrow + Entity Location — стрелка текущего положения водителя на маршруте); п.5–6 — initial 1.0.0: выпущенной версии нет (currentVersion null, release-gate, component-gate, figma-library-workflow §3.3); вынос с переименованием оценивался бы как major, но версии нет. Аудит — пейдж «👀 Driver Arrow · audit» 460:2122, блоки 0–8 и 8.1 «Варианты рядом» 506:5723, день и ночь на 360; мастер не правился. Текущей версии нет. Заметка о миграции: переименование сета и пересборка слоёв ломают пустые переопределения экземпляров Figma — новый мастер ArrowLocation, старый Driver arrow small — в Archive, замена в Route Progress и пине Driver (§3.9); выпущенной версии нет, поэтому impact initial.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "ArrowLocation: стрелка положения водителя Driver 20×20 — грани на токене градиента со своим ночным оттенком, обводка внутри габарита; та же стрелка в Route Progress и в пине Driver; направление задаёт родитель"
+  },
+  "proposal": {
+    "componentName": "ArrowLocation",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Driver arrow small 89:5932; аудит 460:2122, варианты рядом 506:5723",
+    "tokensRequired": [
+      "Icons/Accent",
+      "Strokes/Primary Inverted"
+    ],
+    "tokenGaps": [
+      {
+        "token": "Gradients/Arrow",
+        "modes": ["day", "night"],
+        "use": "три грани стрелки (сейчас шесть хексов в радиальных градиентах)",
+        "status": "ждёт PD — вариант «1 или 3», #506 п.1; token-change-gate",
+        "buildUntilDecision": "без хардкода; грани не собираются до решения PD"
+      }
+    ],
+    "variants": {
+      "note": "свойств нет; направление — поворот родителем или кодом"
+    },
+    "unsupportedStates": [
+      "Pressed",
+      "Hovered",
+      "Focused",
+      "Disabled"
+    ],
+    "unsupportedStatesNote": "декоративный неинтерактивный индикатор положения (component-states-guide §5); смысл передаёт родитель — Route Progress или пин Driver",
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "size20": "raw-value",
+      "colors": "semantic-token",
+      "faces": "token-gap"
+    },
+    "a11y": "декоративная: скрыта от экранного диктора, положение озвучивает родитель",
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release",
+    "findings": [
+      "Грани — шесть хексов в радиальных градиентах без токенов; ночью стрелка дневная",
+      "Форма и хексы продублированы в пине Driver 89:5852 (Navigating 2D 89:5881 и 3D) — заменить экземпляром",
+      "Пустые переопределения effects/strokes в экземплярах Route Progress 89:5939"
+    ]
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "460:2122",
+    "componentPage": "194:3106",
+    "components": {
+      "Driver arrow small": "89:5932"
+    },
+    "auditBlocks": {
+      "8.1 Варианты рядом": "506:5723"
+    },
+    "input": {
+      "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+      "node": "89:5932"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
