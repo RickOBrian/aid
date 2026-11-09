@@ -1,0 +1,85 @@
+{
+  "id": "component-comment",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Comment",
+  "componentId": "comment",
+  "product": "driver",
+  "changeSummary": "Comment Driver (Widgets / comment) — развитие (designer-20, issue #488, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `comment` 89:3277 (Widgets): 4 варианта, оси Type (Address / General Order) и Long (True / False); Web-реализации нет. Токены совпадают с каноном Driver (Messages/Default, Pastels/Parchment, Texts, Icons), новых не нужно. По ответам куратора arturuxui 27.10 «1а 2б 3а 4а 5а 7а 8а 9а 10а»: «общий комментарий» на Pastels/Parchment с Texts/Primary и Icons/Primary вместо Dark Ind — ночью контраст ≈ 1,9:1 → ≈ 10,5:1 (подтверждает Standards); вариант General Order уходит из сета, подпись «Общий комментарий» и пузырь собираются в Rows/adresses/order 89:5109 (заявка его чату); ось Long → Collapsed (True / False); свёрнутый — затухание на auto layout с местом под шеврон, без наезда; ширина FILL по родителю, внешние поля — у родителя; тон — ось Tone = Default / Parchment; текст — TEXT-свойство Text; короткий текст продукт показывает Collapsed=False; тексты-примеры исправить. Имя сета comment → Comment: по ответу Standards в #506 п.4 (naming-conventions §4, Role + Entity + Qualifier) одно слово допустимо, если роль очевидна; у Comment роль — пузырь текста комментария, очевидна из слова, сет «Comment», код Comment; общий список standaloneNames — #549. Аудит — пейдж «👀 Comment · audit» 455:102, блоки 0–8, день и ночь на 360; рабочий компонент .Comment · рабочий 455:8419 не публикуется; мастер не правился. Текущей версии нет (currentVersion null), поэтому по ответу Standards в #506 п.5 (release-gate First approved release, component-gate §release, figma-library-workflow §3.3) импакт — initial 1.0.0, а не major. Заметка о миграции экземпляров Figma: вариант Type=General Order уходит из сета (подпись и пузырь — в Rows/adresses/order 89:5109), ось Long переименована в Collapsed (True / False), добавлены ось Tone и TEXT-свойство Text. Версию 1.0.0 ставит человек через release-gate.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Comment: пузырь комментария сворачивается осью Collapsed, тон — осью Tone, текст — свойством Text; «общий комментарий» читается ночью и собирается в строке адреса заказа"
+  },
+  "proposal": {
+    "componentName": "Comment",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер comment 89:3277; рабочий набор .Comment · рабочий 455:8419",
+    "tokensRequired": [
+      "Messages/Default",
+      "Pastels/Parchment",
+      "Texts/Primary",
+      "Icons/Primary",
+      "Bodies/Body 1",
+      "radius-12",
+      "radius-2",
+      "space-16",
+      "space-10",
+      "space-8"
+    ],
+    "variants": {
+      "Collapsed": [
+        "True",
+        "False"
+      ],
+      "Tone": [
+        "Default",
+        "Parchment"
+      ],
+      "properties": {
+        "Text": "TEXT"
+      },
+      "unsupportedStates": [
+        "Pressed",
+        "Hovered",
+        "Focused",
+        "Disabled"
+      ],
+      "note": "Пузырь только показывает текст; Collapsed=True разворачивается тапом (прототип CHANGE_TO, Smart Animate 200 мс), отдельного состояния нажатия нет; Hovered и Focused не поддерживаются (мобильный продукт, states-guide §5, §6.1); недоступного состояния у пузыря нет. Короткий текст продукт показывает Collapsed=False. Вариант Type=General Order уходит из сета: подпись «Общий комментарий» и пузырь Tone=Parchment собираются в Rows/adresses/order 89:5109"
+    },
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "colors": "semantic-token",
+      "typography": "semantic-token",
+      "spacing": "semantic-token",
+      "radius": "semantic-token",
+      "width": "fill-parent",
+      "collapsedFadeMask": "raw-value",
+      "collapsedText": "fade-out-with-chevron"
+    },
+    "confidence": "high",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "455:102",
+    "componentPage": "194:3105",
+    "components": {
+      "comment": "89:3277"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
