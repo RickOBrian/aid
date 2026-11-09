@@ -10,8 +10,22 @@
   "created": "2026-11-09",
   "author": "sergej",
   "decisions": [
-    {"date": "2026-11-09", "by": "sergej", "quote": "Проверь, что эти решения по цветам применены в аудите. Если нужны токены — заводим в файлах либы по всем правилам"},
-    {"date": "2026-11-09", "by": "sergej", "about": "анкета: фон — «Новые токены Tint/*»; иконки — «Поменять Icon/Success, Special, Warning»; Tint/Warning — «Днем этот токен будет FFEFEB, ночью 482725»"}
+    {
+      "date": "2026-11-09",
+      "by": "sergej",
+      "quote": "Проверь, что эти решения по цветам применены в аудите. Если нужны токены — заводим в файлах либы по всем правилам"
+    },
+    {
+      "date": "2026-11-09",
+      "by": "sergej",
+      "about": "анкета: фон — «Новые токены Tint/*»; иконки — «Поменять Icon/Success, Special, Warning»; Tint/Warning — «Днем этот токен будет FFEFEB, ночью 482725»"
+    },
+    {
+      "date": "2026-11-09",
+      "by": "sergej",
+      "quote": "1.13.0",
+      "about": "номер версии Rider Colors/Semantic назван человеком; строка вписана в таблицу 31:66 (1763:188). JSON tokens/rider-colors-semantic-changelog.json и currentVersion — PR release-gate после публикации"
+    }
   ],
   "figma": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
@@ -22,10 +36,11 @@
       "Tint/Warning": "17a6de417f9004ba9b55c531bd1869175c505324"
     },
     "showcase": "1761:187",
-    "changelogTable": "31:66"
+    "changelogTable": "31:66",
+    "changelogRow": "1763:188"
   },
   "proposedSemVerImpact": "minor",
-  "proposedVersion": null,
+  "proposedVersion": "1.13.0",
   "proposedChangelogEntry": {
     "type": "minor",
     "changes": [
