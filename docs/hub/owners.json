@@ -97,27 +97,27 @@
       "curator": "RickOBrian",
       "instances": [
         {
-          "chat": "AID · Developer · Presentbook",
+          "chat": "Developer · Presentbook",
           "product": "presentbook"
         },
         {
-          "chat": "AID · Developer · Token Comparator",
+          "chat": "Developer · Token Comparator",
           "product": "token-comparator"
         },
         {
-          "chat": "AID · Developer · Style Migration",
+          "chat": "Developer · Style Migration",
           "product": "style-migration"
         },
         {
-          "chat": "AID · Developer · MCP",
+          "chat": "Developer · MCP",
           "product": "mcp"
         },
         {
-          "chat": "AID · Developer · Bot",
+          "chat": "Developer · Bot",
           "product": "bot-request"
         },
         {
-          "chat": "AID · Developer · Team Service",
+          "chat": "Developer · Team Service",
           "product": "team"
         }
       ]
@@ -137,19 +137,19 @@
       "curator": "RickOBrian",
       "instances": [
         {
-          "chat": "AID · DevOps",
+          "chat": "DevOps",
           "contour": "duty"
         },
         {
-          "chat": "AID · DevOps · Presentbook",
+          "chat": "DevOps · Presentbook",
           "contour": "presentbook"
         },
         {
-          "chat": "AID · DevOps · Registry API",
+          "chat": "DevOps · Registry API",
           "contour": "registry-api"
         },
         {
-          "chat": "AID · DevOps · Team Service",
+          "chat": "DevOps · Team Service",
           "contour": "team-tasks"
         }
       ]
