@@ -134,7 +134,7 @@ Background/Secondary ×2. Остальное — служебные фоны и 
 
 - No car, Checkbox·Medium: расхождения нет. На копии и в оригинале по 8 узлов с одинаковой структурой; 7 — счёт `findAll` без корня.
 - `{BG Dark}` на Selector: оригинал #393944 (`2596:211058`), копия Background/Constant Dark #202024 (`5374:1031683`) — темнее. Точное совпадение — Background/Constant Dark Secondary (#393944 / #393944, значение по Presentbook). Решение arturuxui 2026-11-09: перевести. Переведено 153 узла по копиям: Navigation 119, test 16, Illustrations 10, Taxi 4, Where 2, Where - Migration 2. Отбор — по тому же месту в оригинале, `dark const` и `blackConst` не тронуты. Контроль на этих страницах: узлов из BG Dark на старом токене 0. Слои Logo и Color внутри библиотечных инстансов Navigation (13) оставлены: это содержимое библиотеки, не наша замена.
-- `{tx-control/yellow/bg/idle}` на Jam: оригинал #ffe400 (`4037:165820`), копия Icon/Attention #ffc700 (`5374:903675`) — сдвиг к оранжевому. Другого жёлтого токена Icon среди найденных нет. Решение — за arturuxui.
+- `{tx-control/yellow/bg/idle}` на Jam: оригинал #ffe400 (`4037:165820`), копия Icon/Attention #ffc700 (`5374:903675`) — сдвиг к оранжевому. Другого жёлтого токена Icon среди найденных нет. Решение arturuxui 2026-11-09: записать пробел токена (`new-rider-dev.final.md` §9); Icon/Attention остаётся до появления токена.
 
 ## Ответы arturuxui на п.4–8 (2026-11-03)
 

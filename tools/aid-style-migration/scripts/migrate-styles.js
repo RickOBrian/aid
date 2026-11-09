@@ -113,7 +113,7 @@ setAll(['theme:button/primary/bg/default','Theme:button/primary/bg/default'], {f
 setAll(['Color:tx-accent/red/bg','Color:tx-accent/red/fg','Theme TX:tx-accent/red/fg','theme:promo/secondary/content/red','theme:text/danger','theme:icon/danger'], {text:'Text/Warning', shape:'Icon/Warning', stroke:'Stroke/Warning'}); // п.18
 setAll(['Color:tx-control/red/bg/idle'], {frame:'Background/Warning'}); // п.18
 setAll(['Color:tx-control/orange/bg/idle','Theme TX:tx-accent/orange/bg','Navigator Color:Jam/High'], {shape:'Icon/Attention Deep', frame:'Background/Attention Deep'}); // п.19
-setAll(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle'], {shape:'Icon/Attention'}); // п.20 — значение сверить на сухом прогоне
+setAll(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle'], {shape:'Icon/Attention'}); // п.20 — временно: #ffc700 вместо #ffe400, пробел токена (final.md §9)
 setAll(['Color:tx-accent/green/bg','Color:tx-accent/green/alt','theme:promo/secondary/content/green','Theme TX:tx-accent/green/bg'], {text:'Text/Success', shape:'Icon/Success', frame:'Background/Success'}); // п.21
 const PASTEL = {Midway:'Pastel/Lenny',Mantle:'Pastel/Ralph',Ralph:'Pastel/Ralph',Liberty:'Pastel/Lisa',Asphalt:'Pastel/Apu',Graylord:'Pastel/Barney',Barney:'Pastel/Barney',Peach:'Pastel/Bart',Jasper:'Pastel/Jasper',Nelson:'Stories/Nelson'};
 for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, shape:v};
