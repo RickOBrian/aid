@@ -84,7 +84,7 @@ const C = {
  'Color:tx-accent/grey/primary': {text:'Text/Primary', shape:'Icon/Primary'},
  'Color:tx-accent/grey/light strong': {shape:'Icon/Constant White'},
  'Color:tx-accent/red/fg': {shape:'Icon/Warning'},
- 'Variable collection:BG Dark': {frame:'Background/Constant Dark'},
+ 'Variable collection:BG Dark': {frame:'Background/Constant Dark Secondary'}, // #393944, сверено 09.11
  'Variable collection:Accent Purple': {text:'Text/Accent', shape:'Icon/Accent'},
  'Variable collection:Neon Green': {text:'Text/Neon', stroke:'Stroke/Neon'},
 };

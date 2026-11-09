@@ -92,7 +92,7 @@
 | {Color/tx-notifications/bg-error} | Background/Zone Warning (не-фрейм — §8) | draft |
 | {Variable collection/Accent Purple} — текст / вектор | Text/Accent / Icon/Accent | draft |
 | {Variable collection/Neon Green} — текст / stroke | Text/Neon / Stroke/Neon | draft |
-| {Variable collection/BG Dark} — Selector | Background/Constant Dark | п.20а |
+| {Variable collection/BG Dark} — Selector | Background/Constant Dark Secondary | п.20б, решение arturuxui 2026-11-09 |
 
 ### 1.4. Сырые значения (меняем только эти)
 
@@ -233,7 +233,7 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 - `Color:tx-accent/grey/light strong` на векторе теперь Icon/Primary Inverted (было Icon/Constant White, §1.3):
   переменная инвертируется ночью (п.9).
 - Лиловый a73afd → токены Accent AID 8526ff (п.17) — заметная смена оттенка.
-- Icon/Attention (жёлтый, п.20) и Background/Constant Dark (п.7) сверены 2026-11-09, значения расходятся с исходными: `drafts-run/SUMMARY.md`, «Сверено 2026-11-09». Правила пока прежние.
+- Icon/Attention (жёлтый, п.20) и Background/Constant Dark (п.7) сверены 2026-11-09, значения расходятся с исходными: `drafts-run/SUMMARY.md`, «Сверено 2026-11-09». BG Dark переведён на Constant Dark Secondary; Icon/Attention ждёт решения.
 - Shadows/Small: ключ нового стиля — 647aa3864c4c1801f9363745ef570bc175e98384 (найден 2026-11-02).
 - Не трогаем: тонированные фоны, бренд-зелёный, синий, оверлей на векторах, iOS-системные,
   карта, тени без аналога, размытия, градиенты.
