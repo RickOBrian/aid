@@ -129,8 +129,12 @@ Background/Secondary ×2. Остальное — служебные фоны и 
 - ID узлов в таблицах части отчётов урезаны (Tariffs — без ID; test, Illustrations, Where,
   Where - Migration, Show my location, Order Flow, Navigation — по 2–26 на причину).
   Полные списки — DRY-прогоном по запросу (тяжело: сотни вызовов на все страницы).
-- No car: Checkbox·Medium — 7 узлов на копии против 8 в оригинале, не сверено.
-- Глазами: Icon/Attention и Background/Constant Dark на копиях (§9).
+
+## Сверено 2026-11-09 (только чтение)
+
+- No car, Checkbox·Medium: расхождения нет. На копии и в оригинале по 8 узлов с одинаковой структурой; 7 — счёт `findAll` без корня.
+- `{BG Dark}` на Selector: оригинал #393944 (`2596:211058`), копия Background/Constant Dark #202024 (`5374:1031683`) — темнее. Точное совпадение — Background/Constant Dark Secondary (#393944 / #393944, значение по Presentbook). Решение — за arturuxui.
+- `{tx-control/yellow/bg/idle}` на Jam: оригинал #ffe400 (`4037:165820`), копия Icon/Attention #ffc700 (`5374:903675`) — сдвиг к оранжевому. Другого жёлтого токена Icon среди найденных нет. Решение — за arturuxui.
 
 ## Ответы arturuxui на п.4–8 (2026-11-03)
 

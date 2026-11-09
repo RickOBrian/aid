@@ -233,7 +233,7 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 - `Color:tx-accent/grey/light strong` на векторе теперь Icon/Primary Inverted (было Icon/Constant White, §1.3):
   переменная инвертируется ночью (п.9).
 - Лиловый a73afd → токены Accent AID 8526ff (п.17) — заметная смена оттенка.
-- Icon/Attention (жёлтый, п.20) и Background/Constant Dark (п.7) не сверены: сверить на сухом прогоне.
+- Icon/Attention (жёлтый, п.20) и Background/Constant Dark (п.7) сверены 2026-11-09, значения расходятся с исходными: `drafts-run/SUMMARY.md`, «Сверено 2026-11-09». Правила пока прежние.
 - Shadows/Small: ключ нового стиля — 647aa3864c4c1801f9363745ef570bc175e98384 (найден 2026-11-02).
 - Не трогаем: тонированные фоны, бренд-зелёный, синий, оверлей на векторах, iOS-системные,
   карта, тени без аналога, размытия, градиенты.
