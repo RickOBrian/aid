@@ -15,15 +15,14 @@
 
 ## Чаты
 
-Имена — по `ORCHESTRATION.md` §1a: приставка `AID ·` — только у Штаба.
+Имена — по `ORCHESTRATION.md` §1a: приставка `AID ·` — только у Штаба. Гайд по git (`Guide · Git for Beginners`) передан PD (AID-LU-11), его чат в архиве.
 
 | Чат | Папка | Что правит | Вход в контекст |
 |---|---|---|---|
 | AID · Hub · Штаб | `<рабочая папка>/AID/aid-hub` | `docs/hub/boards/lu.md` | `docs/hub/ORCHESTRATION.md` → эта доска |
 | Plugin · Library Updater | клон `arturuxui/figma-library-updater` | весь репозиторий плагина | его `CLAUDE.md` → `docs/PLAN.md` |
 | Plugin · Components Swapper | `<рабочая папка>/Figma Plugin - Components Swapper`; клон `arturuxui/figma-components-swapper` | весь продукт | первое сообщение чата → его план |
-| Guide · Git for Beginners | клон `arturuxui/aid-git-guide` | весь репозиторий гайда | его `CLAUDE.md` → `docs/PLAN.md` |
-| Components · Rework | `<рабочая папка>/Components Rework` (без git) | файлы Figma: аудит локальных компонентов дизайнеров и перенос в библиотеки компонентов Rider/Driver по скиллу `wb-aid-migration` | первая задача — от `arturuxui` в чате |
+| Designer · Rework | `<рабочая папка>/Components Rework` (без git) | файлы Figma: аудит локальных компонентов дизайнеров и перенос в библиотеки компонентов Rider/Driver по скиллу `wb-aid-migration` | первая задача — от `arturuxui` в чате |
 
 Код плагина — во внешнем репозитории `arturuxui/figma-library-updater`.
 
@@ -36,19 +35,42 @@
 - issues в `RickOBrian/aid` с меткой `to:plugin-library-updater` — после
   регистрации продукта (AID-LU-2).
 
+## Чаты дизайнеров под задачу
+
+Чат сборки одного компонента — `Designer · 💠 <Компонент> · AID-<n>`
+(и 🖼, 🎨; `ORCHESTRATION.md` §1a). Открывает его Штаб LU, он же вписывает
+это правило в бриф (решение `arturuxui` 2026-10-27):
+
+- такой чат подчинён постоянному Designer · Rework: по рутине ему не пишет и
+  не отчитывается;
+- самые спорные дизайн-вопросы — Designer · Rework, одним сообщением со
+  всем контекстом (что решить, варианты, что видно в Figma);
+- отход от стандарта — по-прежнему Standards, вопрос к PD — через Штаб LU.
+
 ## Активные
 
 | ID | Чат | Задача | Статус |
 |---|---|---|---|
-| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота ([#98](https://github.com/RickOBrian/aid/issues/98)). 7а–7в готовы (#24–#26); бот подключён к серверу LU — AID-BOT-4 готово 2026-10-08. #98 открыт, Штаб LU ведёт там 7г . Проверка на живом сервере 2026-10-09: бот забрал тестовое `proposal.created` за 28 с, сообщение в Telegram пришло; тестовые записи удалены . 7г — «Подключить Telegram» — [#35](https://github.com/arturuxui/figma-library-updater/pull/35) (`6cb6e9c`), проверено `arturuxui` на живом сервере 2026-10-09: `/link`, `proposal.created`, `proposal.resolved` доходят. Релиз [v1.1.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.1.0) | этап 7 со стороны LU готов; ждёт @username бота для кнопки «Открыть бота» ([вопрос в #98](https://github.com/RickOBrian/aid/issues/98#issuecomment-6077785298)) |
-| AID-LU-12 | Plugin · Library Updater + Bot · Request | Этап 9 — уведомление о паблише Rider/Driver в канал DS: вебхук Figma `LIBRARY_PUBLISH` (тариф Enterprise) → сервер LU → событие `library.published`, `to: "channel"` — [arturuxui/figma-library-updater#37](https://github.com/arturuxui/figma-library-updater/pull/37) (смержен, `60f0520`). Решение `arturuxui` 2026-10-09 (в чате продукта). Нужно от бота: поддержать `to: "channel"`; до ответа на сервере `PUBLISH_NOTIFY = "off"` — запрос боту [#174](https://github.com/RickOBrian/aid/issues/174). Сервер выложен, вебхуки на Rider и Driver созданы `arturuxui` 2026-10-09; исправление скрипта вебхуков — [#38](https://github.com/arturuxui/figma-library-updater/pull/38) | ждёт владельца бота: `to: "channel"` и канал DS; затем `PUBLISH_NOTIFY = "on"` и проверка настоящим паблишем |
+| AID-LU-6 | Plugin · Library Updater + Bot · Request | Этап 7 плагина — предложения изменений через бота ([#98](https://github.com/RickOBrian/aid/issues/98)). 7а–7в готовы (#24–#26); бот подключён к серверу LU — AID-BOT-4 готово 2026-10-08. #98 открыт, Штаб LU ведёт там 7г . Проверка на живом сервере 2026-10-09: бот забрал тестовое `proposal.created` за 28 с, сообщение в Telegram пришло; тестовые записи удалены . 7г — «Подключить Telegram» — [#35](https://github.com/arturuxui/figma-library-updater/pull/35) (`6cb6e9c`), проверено `arturuxui` на живом сервере 2026-10-09: `/link`, `proposal.created`, `proposal.resolved` доходят. Релиз [v1.1.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.1.0) . Username бота — `@AID_ds_bot` (#98, 2026-10-26) | LU — поле `bot` и кнопка «Открыть бота»; слияние после проверки `arturuxui` |
+| AID-LU-12 | Plugin · Library Updater + Bot · Request | Этап 9 — уведомление о паблише Rider/Driver в канал DS: вебхук Figma `LIBRARY_PUBLISH` (тариф Enterprise) → сервер LU → событие `library.published`, `to: "channel"` — [arturuxui/figma-library-updater#37](https://github.com/arturuxui/figma-library-updater/pull/37) (смержен, `60f0520`). Решение `arturuxui` 2026-10-09 (в чате продукта). Нужно от бота: поддержать `to: "channel"`; до ответа на сервере `PUBLISH_NOTIFY = "off"` — запрос боту [#174](https://github.com/RickOBrian/aid/issues/174). Сервер выложен, вебхуки на Rider и Driver созданы `arturuxui` 2026-10-09; исправление скрипта вебхуков — [#38](https://github.com/arturuxui/figma-library-updater/pull/38) . `to: "channel"` у бота готов — PR #12 бота (#174, 2026-10-26) | id канала DS и бот в нём администратором — спрошено у PD в [#174](https://github.com/RickOBrian/aid/issues/174#issuecomment-6411423041); после «готово» бота — `PUBLISH_NOTIFY = "on"` и проверка настоящим паблишем |
 | AID-LU-13 | Components · Rework | Аудит локальных компонентов дизайнеров в Figma (проблемы и ошибки) и перенос в библиотеки компонентов Rider/Driver по скиллу `wb-aid-migration`. Тип `Components` в §1a нет — уточнить. Пересечения: Style Migration (PD), этапы 4–5 Components Swapper и вопрос #185; новые компоненты в библиотеках — через `component-gate` . Аудит 2026-10-13 (5 страниц Rider/Driver): 0,2 % экземпляров из AID, 86 % — старая библиотека; Driver — 76–87 % одноимённых аналогов, Rider — в библиотеке 19 компонентов; ошибки в библиотеках AID (дубли, опечатки). Отчёт — в папке чата . Второй вид работы — ревью качества локальных компонентов дизайнеров по чек-листу на стандартах AID, только чтение . Вариант Error у `Search / Field` в Rider Components сделан, не опубликован — дорабатывает `arturuxui` | отчёт передан Swapper; по библиотекам — [#191](https://github.com/RickOBrian/aid/issues/191) ждёт PD; черновик `.Map Pin · draft` — смотрит `arturuxui` |
 | AID-LU-14 | Все чаты продуктов `arturuxui` | Правило в `CLAUDE.md` каждого продукта: решение `arturuxui`, переданное Штабом LU с номером задачи и цитатой, — разрешение в пределах продукта. Вносит сам `arturuxui` в каждом чате (рассылка Штабом заблокирована как смена правил чужих сессий). Components Swapper — готово, [#19](https://github.com/arturuxui/figma-components-swapper/pull/19) | Library Updater — готово (#39 в плагине), Components Swapper — #19; Rework — вносит `arturuxui` |
 | AID-LU-16 | Hub | Library Updater для PD: что умеет, модули и что можно переиспользовать в Token Comparator — [#280](https://github.com/RickOBrian/aid/issues/280) | ждёт PD |
-| AID-LU-19 | Plugin · Components Swapper | Замер внедрения AID одной кнопкой по методике standards-2 (`aid-adoption-measurement.md`): счёт aid / legacy / local / other, JSON по §5; сверка с аудитом AID-LU-13 — [#33](https://github.com/arturuxui/figma-components-swapper/pull/33): где макет не правили — совпадает. Точки 2026-10-23 сняты (Rider, Driver; Order — Claude тем же кодом). Старые библиотеки в `product.json` — [#347](https://github.com/RickOBrian/aid/pull/347), список неполный ; точки отправлены PD в [#205](https://github.com/RickOBrian/aid/issues/205#issuecomment-6356344574) с вопросами к методике | #347 ждёт Standards; ответ PD по методике; деление legacy/other в замере — решение `arturuxui` |
-| AID-LU-20 | Plugin · Library Updater, Plugin · Components Swapper, Components · Rework | Стандарты AID во внешних репозиториях (решение PD 2026-10-22, #280; `external-repo-standards.md`): фрагмент §7 в `CLAUDE.md`, плагин `aid-standards@aid` . Swapper — [#37](https://github.com/arturuxui/figma-components-swapper/pull/37) смержен; LU — противоречия с release-gate и semver-guide, ждёт решения `arturuxui` . Плагин `aid-standards@aid` установлен; на Windows `repo/` в кэше — ссылки-заглушки, обход — копия маркетплейса, issue [#348](https://github.com/RickOBrian/aid/issues/348) . LU: фрагмент — [#45](https://github.com/arturuxui/figma-library-updater/pull/45); переработка под release-gate — этап А (запись «Не опубликовано»), этап Б (экран «Релиз»); вопросы к стандартам — [#349](https://github.com/RickOBrian/aid/issues/349) ; этап А — [#46](https://github.com/arturuxui/figma-library-updater/pull/46) (смержен, проверен в Figma). #349 п.0 снят: релиз Rider и Driver подтверждает инженер-человек в своём PR, major — только люди (Решения PD 2026-10-21/22) ; этап Б — экран «Релиз» — [#47](https://github.com/arturuxui/figma-library-updater/pull/47) (смержен, проверен в Figma): плагин пишет CHANGELOG и версию по release-gate и semver-guide; релиз [v1.3.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.3.0) | LU — выгрузка записи в `tokens/*-changelog.json` после #349 п.1–4; Rework — `arturuxui` |
-| AID-LU-21 | Hub и все чаты `arturuxui` | Экономия токенов по #351 (ORCHESTRATION §12): `CLAUDE.local.md`, модель и хук context-guard в `settings.local.json`, правила п.5–7 в `CLAUDE.md`. Штаб — готово 2026-10-23 | LU, Swapper, Rework — по «да» `arturuxui` в своих чатах; итог — комментарий в #351 |
+| AID-LU-19 | Plugin · Components Swapper | Замер внедрения AID одной кнопкой по методике standards-2 (`aid-adoption-measurement.md`): счёт aid / legacy / local / other, JSON по §5; сверка с аудитом AID-LU-13 — [#33](https://github.com/arturuxui/figma-components-swapper/pull/33): где макет не правили — совпадает. Точки 2026-10-23 сняты (Rider, Driver; Order — Claude тем же кодом). Старые библиотеки в `product.json` — [#347](https://github.com/RickOBrian/aid/pull/347), список неполный ; точки отправлены PD в [#205](https://github.com/RickOBrian/aid/issues/205#issuecomment-6356344574) с вопросами к методике . #347 смержен. Order: снимок старых библиотек покрывает 15 из 172 внешних ключей — Swapper ищет третью библиотеку по именам 157 ключей | Swapper — третья библиотека; затем сервер LU отдаёт ключи старых библиотек (как карту переименований); ответ PD по методике; JSON четырёх страниц — `arturuxui` |
+| AID-LU-20 | Plugin · Library Updater, Plugin · Components Swapper, Components · Rework | Стандарты AID во внешних репозиториях (решение PD 2026-10-22, #280; `external-repo-standards.md`): фрагмент §7 в `CLAUDE.md`, плагин `aid-standards@aid` . Swapper — [#37](https://github.com/arturuxui/figma-components-swapper/pull/37) смержен; LU — противоречия с release-gate и semver-guide, ждёт решения `arturuxui` . Плагин `aid-standards@aid` установлен; на Windows `repo/` в кэше — ссылки-заглушки, обход — копия маркетплейса, issue [#348](https://github.com/RickOBrian/aid/issues/348) . LU: фрагмент — [#45](https://github.com/arturuxui/figma-library-updater/pull/45); переработка под release-gate — этап А (запись «Не опубликовано»), этап Б (экран «Релиз»); вопросы к стандартам — [#349](https://github.com/RickOBrian/aid/issues/349) ; этап А — [#46](https://github.com/arturuxui/figma-library-updater/pull/46) (смержен, проверен в Figma). #349 п.0 снят: релиз Rider и Driver подтверждает инженер-человек в своём PR, major — только люди (Решения PD 2026-10-21/22) ; этап Б — экран «Релиз» — [#47](https://github.com/arturuxui/figma-library-updater/pull/47) (смержен, проверен в Figma): плагин пишет CHANGELOG и версию по release-gate и semver-guide; релиз [v1.3.0](https://github.com/arturuxui/figma-library-updater/releases/tag/v1.3.0) . #349 отвечен ([#369](https://github.com/RickOBrian/aid/pull/369) смержен): главный чейнжлог — JSON в AID, таблица в Figma — копия; «Применить» и «Релиз» пишут в оба места одним шагом и сверяют — v1.3.0 доделать. Плагин стандартов на Windows починен в [#353](https://github.com/RickOBrian/aid/pull/353) | LU — план записи в AID (PR из плагина) на решение `arturuxui`; LU — правка Q-18 в Rider Tokens по «да»; `arturuxui` — проверить `ds-*` после `/plugin marketplace update aid`, затем закрыть #348; Rework — `arturuxui` |
 | AID-LU-9 | Plugin · Components Swapper | Новый продукт: замена компонентов и иконок из чужих библиотек на наши с сохранением контента. Решение PD в [#156](https://github.com/RickOBrian/aid/issues/156): «а» — отдельный продукт, владелец — инженер LU; регистрация — RickOBrian/aid#159. PD планирует позже объединить плагины — замену держать отдельным модулем (`src/core` без UI). Репозиторий [arturuxui/figma-components-swapper](https://github.com/arturuxui/figma-components-swapper); этап 0 — каркас, индекс, скан, библиотеки Rider и спайк API — #1, #2 (смержены); этап 1 — замена по имени с отменой и вложенными, #3, #5, #6 (смержены; на ✅ Driver App • Order 229/229 уверенных пар + 52 вложенных, 0 потерянных текстов); «Растянут» и этап 2а — отвязанные фреймы, #7, #8; этап 2б — ручные фреймы, [#9](https://github.com/arturuxui/figma-components-swapper/pull/9); этап 2в — составные компоненты, [#11](https://github.com/arturuxui/figma-components-swapper/pull/11) (на «New Driver DEV» ~500 кандидатов → 2 верных предложения, 0 ложных); всё проверено `arturuxui` в Figma. Находки для этапа 5: в Driver нет «строки выбора с радио-кружком», у `tarif` нет места для иконок опций заказа Замер полноты 2б на «New Driver DEV» — около 45 % ручных копий, [#12](https://github.com/arturuxui/figma-components-swapper/pull/12) . Полнота 2б на базе 96 ручных копий: 39 % → 44 % (способ 1, [#13](https://github.com/arturuxui/figma-components-swapper/pull/13), смержен) → 61 % (способ 2, [#14](https://github.com/arturuxui/figma-components-swapper/pull/14)) → 71 % (способ 3, текст в кривых, [#15](https://github.com/arturuxui/figma-components-swapper/pull/15)), ложных 1 → 1; 28 пропусков оставлены . Вопросы PD по этапам 3–5 (код иконок Token Comparator, куда отправлять предложения) — [#185](https://github.com/RickOBrian/aid/issues/185) . Этап 4: поиск повторов и кандидаты — [#16](https://github.com/arturuxui/figma-components-swapper/pull/16); черновики `.Черновик / …` на странице предложений в файле (не публикуются), внутри — наши компоненты — [#17](https://github.com/arturuxui/figma-components-swapper/pull/17); варианты кандидата — набор с осью «Вид» — [#18](https://github.com/arturuxui/figma-components-swapper/pull/18) . Этап 5: копий «лучше нашего» на «New Driver DEV» нет; расхождения в переопределениях экземпляров показываются запросом «ошибка макета / перенести / нужен вариант» (решение `arturuxui` 2026-10-13), шаги 1–4 — выбор, применение при замене, карточки доработок, расхождения у наших экземпляров — #20–#23 (смержены). Стили и токены — за Style Migration (решение `arturuxui`). Прогон на New Rider DEV / Where: продукт определён верно, пары Driver не предлагаются; замена на копии — 247 мест; найдена и исправлена потеря текстов при замене, три пары имён для Rider — [#26](https://github.com/arturuxui/figma-components-swapper/pull/26) ; #26 смержен; перепроверка текстов на Driver и таблица пар для Where — [#27](https://github.com/arturuxui/figma-components-swapper/pull/27); пары имён Rider по таблице — [#28](https://github.com/arturuxui/figma-components-swapper/pull/28) ; `Alert` — вариант по устройству и перенос иконки, тексты 1 544 из 1 552 — [#29](https://github.com/arturuxui/figma-components-swapper/pull/29), 4 места — предупреждением  (смержен) . Этап 3 — иконки по рисунку: свой модуль `src/core/icon-shape.ts`, на Rider 22 пары из 30 против 16 у подхода Token Comparator при той же точности — [#30](https://github.com/arturuxui/figma-components-swapper/pull/30) (смержен); сравнение и предложение для TC — задача PD [#276](https://github.com/RickOBrian/aid/issues/276) . Релиз [v1.0.0](https://github.com/arturuxui/figma-components-swapper/releases/tag/v1.0.0) — 2026-10-22, #32; [v1.1.0](https://github.com/arturuxui/figma-components-swapper/releases/tag/v1.1.0) — замер внедрения и карта переименований, #35 | выпущен; #276 ждёт PD |
+| AID-LU-22 | Designer · 💠 Switch | Аудит компонента Driver ([#482](https://github.com/RickOBrian/aid/issues/482)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#484](https://github.com/RickOBrian/aid/pull/484) | аудит и сборка приняты Standards (сборка — 2026-10-30); `arturuxui` — перенос в мастер `89:3083`, публикация, номер в бейдж 425:222 |
+| AID-LU-23 | Designer · 💠 Button | Аудит компонента Driver ([#485](https://github.com/RickOBrian/aid/issues/485)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#498](https://github.com/RickOBrian/aid/pull/498) | «соответствует» Standards; токены Pressed и Loading — PD (#506 п.2); §8.1 — #548 |
+| AID-LU-24 | Designer · 💠 Button Motivation | Аудит компонента Driver ([#486](https://github.com/RickOBrian/aid/issues/486)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#499](https://github.com/RickOBrian/aid/pull/499) | ждёт приёмки Standards; версия — initial (#506 п.5–6) |
+| AID-LU-25 | Designer · 💠 Row Avatar | Аудит компонента Driver ([#487](https://github.com/RickOBrian/aid/issues/487)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#502](https://github.com/RickOBrian/aid/pull/502) | ждёт приёмки Standards; фон-токен IconSurface — lookup Standards, новый токен — PD (#506 п.8) |
+| AID-LU-26 | Designer · 💠 Comment | Аудит компонента Driver ([#488](https://github.com/RickOBrian/aid/issues/488)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#503](https://github.com/RickOBrian/aid/pull/503) | ждёт приёмки Standards |
+| AID-LU-27 | Designer · 💠 Checkbox | Аудит компонента Driver ([#489](https://github.com/RickOBrian/aid/issues/489)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#497](https://github.com/RickOBrian/aid/pull/497) | ждёт приёмки Standards; имя — исключение через #549 |
+| AID-LU-28 | Designer · 💠 Search Field | Аудит компонента Driver ([#490](https://github.com/RickOBrian/aid/issues/490)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#501](https://github.com/RickOBrian/aid/pull/501) | ждёт приёмки Standards; длинный текст — решён (#506 п.10) |
+| AID-LU-29 | Designer · 💠 Driver Arrow | Аудит компонента Driver ([#491](https://github.com/RickOBrian/aid/issues/491)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#500](https://github.com/RickOBrian/aid/pull/500) | ждёт приёмки Standards; Gradients/Arrow — PD (#506 п.1) |
+| AID-LU-30 | Designer · 💠 Lane Arrow | Аудит компонента Driver ([#492](https://github.com/RickOBrian/aid/issues/492)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#505](https://github.com/RickOBrian/aid/pull/505) | ждёт приёмки Standards; токен неактивной полосы — PD (#506 п.9) |
+| AID-LU-31 | Designer · 💠 Tab | Аудит компонента Driver ([#493](https://github.com/RickOBrian/aid/issues/493)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#504](https://github.com/RickOBrian/aid/pull/504) | ждёт приёмки Standards |
+| AID-LU-32 | Designer · 💠 Balance | Аудит компонента Driver ([#494](https://github.com/RickOBrian/aid/issues/494)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#495](https://github.com/RickOBrian/aid/pull/495) | «соответствует» Standards; Pressed — PD (#506 п.2); метка `ready-to-publish` на #494 — PD (#547) |
+| AID-LU-33 | Designer · 💠 Badges | Аудит компонента Driver ([#507](https://github.com/RickOBrian/aid/issues/507)) и сборка по протоколу `figma-library-workflow`, pending «Развитие» — [#508](https://github.com/RickOBrian/aid/pull/508) | ждёт приёмки Standards |
 
 ## Вопросы инженера
 
@@ -191,6 +213,53 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 5 | P3 | AID-LU-6, 12 | Бот молчит: а — напомнить, б — через PD, в — ждать | закрыт — «Решения» |
 | 6 | P3 | AID-LU-18 | Library Updater v1.2.0: а — выпустить, б — позже | закрыт — «Решения» |
 
+### PLAN-2026-10-26
+
+Собран утренней задачей.
+
+| # | P | Задача | Вопрос | Статус |
+|---|---|---|---|---|
+| 1 | P1 | AID-LU-20 | v1.3.0 доделать под #369: а — сразу, б — сначала план, в — позже | закрыт — «Решения» |
+| 2 | P1 | AID-LU-12 | Канал DS для бота: а — сам, б — спросить PD, в — позже | закрыт — «Решения» |
+| 3 | P2 | AID-LU-6 | Username бота в LU: а — передать, б — позже | закрыт — «Решения» |
+| 4 | P2 | AID-LU-19 | Swapper ищет третью старую библиотеку: да / нет / позже | закрыт — «Решения» |
+| 5 | P2 | AID-LU-19 | Ключи старых библиотек с сервера LU: а — сейчас, б — после п.4, в — нет | закрыт — «Решения» |
+| 6 | P2 | Hub | PR доски из форка: а — открыть, б — ждать | закрыт — «Решения» |
+| 7 | P3 | AID-LU-20 | Проверить плагин стандартов (#353): а — проверю, б — позже | закрыт — «Решения» |
+| 8 | P3 | AID-LU-20 | Q-18 в Rider Tokens: а — сам, б — чат LU по «да», в — позже | закрыт — «Решения» |
+| 9 | P3 | AID-LU-13 | Варианты `Divider` кандидатами в Rider: да / нет / позже | закрыт — «Решения» — позже |
+
+### PLAN-2026-11-06
+
+Собран утренней задачей.
+
+| # | P | Задача | Вопрос | Статус |
+|---|---|---|---|---|
+| 1 | P1 | AID-LU-20 | Токен для чейнжлога (#547): а — напомнить PD, б — ждать, в — JSON только на «Выпустить» | закрыт — «Решения» |
+| 2 | P1 | AID-LU-22…33 | Токены Driver (#506): а — напомнить, б — ждать | закрыт — «Решения» |
+| 3 | P1 | AID-LU-12 | Канал DS (#174): а — написать владельцу бота, б — ждать, в — отложить этап 9 | закрыт — «Решения» |
+| 4 | P2 | Hub | Мерж #455: а — напомнить, б — ждать | закрыт — «Решения» |
+| 5 | P2 | AID-LU-22…33 | #561 и 12 PR аудитов: а — ничего, б — упомянуть в напоминании | закрыт — «Решения» |
+| 6 | P3 | AID-LU-6 | Закрыть #98 со ссылкой на #174: да / нет | закрыт — «Решения» |
+| 7 | P3 | AID-LU-20 | Сообщить в #349 про Q-18: да / нет | закрыт — «Решения» |
+| 8 | P3 | AID-LU-20 | Проверить карту переименований после 1.12.0: да / позже | закрыт — «Решения» |
+| 9 | P3 | AID-LU-19 | `other` в замере: а — отложено, б — вернуться | закрыт — «Решения» — отложено |
+| 10 | P3 | Hub | #280, #276, #191, #185: а — напоминание пачкой, б — ждать | закрыт — «Решения» |
+
+### PLAN-2026-11-09
+
+Собран по запросу инженера.
+
+| # | P | Задача | Вопрос | Статус |
+|---|---|---|---|---|
+| 1 | P1 | AID-LU-22…33 | PD не отвечает по #426, #506, #547, #455, #561: а — написать лично, б — задача через `/task`, в — ждать | закрыт — «Решения» |
+| 2 | P1 | AID-LU-22…33 | #426, красная проверка «Документы»: а — разобрать причину, б — ждать | закрыт — «Решения» |
+| 3 | P1 | AID-LU-12 | Канал DS (#174): а — задача владельцу бота через `/task`, б — ждать | закрыт — «Решения» |
+| 4 | P2 | AID-LU-20 | Запись чейнжлога (#52 LU): а — ждать токен PD, б — через форк инженера | закрыт — «Решения» |
+| 5 | P2 | Style Migration | Анкета, п.7 `diffuse → Shadows/Small`: а — инженер смотрит сам в чате Style Migration | закрыт — «Решения» |
+| 6 | P3 | AID-LU-25, AID-LU-33 | Вопросы дизайнеру и куратору (Row Avatar, Badges): а — сейчас, б — после #426 | закрыт — «Решения» — отложено |
+| 7 | P3 | AID-LU-29 | Переименование страницы Driver Arrow под `ArrowLocation`: сейчас / позже | закрыт — «Решения» — отложено |
+
 ## Решения инженера
 
 Формулировка — дословно. Запись на `main` — разрешение начать работу.
@@ -282,6 +351,17 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | 2026-10-23 | AID-LU-20 | Hub | «да, публикуй» — в #349 п.0 снят со ссылкой на решения PD |
 | 2026-10-23 | AID-LU-20 | Plugin · Library Updater | «да, выпускаем v1.3.0» |
 | 2026-10-23 | AID-LU-21 | Hub | «а» — применить правила экономии токенов #351 в Штабе и всех чатах |
+| 2026-10-26 | AID-LU-20, 12, 6, 19, 13 | Hub | PLAN-2026-10-26: «1б, 2б, 3а, 4 да, 5б, 6а, 7а, 8б, 9 позже» |
+| 2026-11-06 | AID-LU-20, AID-LU-22…33 | Hub | PLAN-2026-11-06: «1 а, 2 напиши ему сам, 3 напиши ему сам, 4 а, 5 б, 6 да, 7 да, 8 да, 9 а, 10 а» → «1 а», «2 напиши ему сам», «4 а», «5 б», «10 а» — одно напоминание PD в [#506](https://github.com/RickOBrian/aid/issues/506#issuecomment-6675121494) |
+| 2026-11-06 | AID-LU-12 | Hub | PLAN-2026-11-06 п.3: «напиши ему сам» — владельцу бота в [#174](https://github.com/RickOBrian/aid/issues/174#issuecomment-6675122027) |
+| 2026-11-06 | AID-LU-6 | Hub | PLAN-2026-11-06 п.6: «да» — #98 закрыт, остаток в #174 |
+| 2026-11-06 | AID-LU-20 | Plugin · Library Updater | PLAN-2026-11-06 п.7: «да» — Q-18 сообщён в [#349](https://github.com/RickOBrian/aid/issues/349#issuecomment-6675122512); п.8: «да» — LU проверяет карту переименований после паблиша 30.10 |
+| 2026-11-06 | AID-LU-19 | Hub | PLAN-2026-11-06 п.9: «а» — вопрос про `other` остаётся отложенным |
+| 2026-11-09 | AID-LU-22…33 | Hub | PLAN-2026-11-09: «1 б, 2 а, 3 а, 4 б, 5 а, 6 б, 7 похже» → «1 б» — задача PD [#564](https://github.com/RickOBrian/aid/issues/564); «2 а» — причина в [#426](https://github.com/RickOBrian/aid/pull/426#issuecomment-6729009662), нужно обновить ветку от `main` |
+| 2026-11-09 | AID-LU-12 | Hub | PLAN-2026-11-09 п.3: «а» — задача владельцу бота [#565](https://github.com/RickOBrian/aid/issues/565) |
+| 2026-11-09 | AID-LU-20 | Plugin · Library Updater | PLAN-2026-11-09 п.4: «б» — запись #52 LU через форк инженера; токен выпускает и вводит инженер |
+| 2026-11-09 | Style Migration | Style Migration | PLAN-2026-11-09 п.5: «а» — п.7 `diffuse → Shadows/Small` смотрит инженер в чате Style Migration |
+| 2026-11-09 | AID-LU-25, AID-LU-29, AID-LU-33 | Hub | PLAN-2026-11-09 п.6: «б» — вопросы Row Avatar и Badges после #426; п.7: «похже» — переименование страницы Driver Arrow позже |
 
 ## Закрыто
 
@@ -298,4 +378,5 @@ P0–P3, источник. Пункт закрывается ссылкой на
 | AID-LU-15 | Hub | Задача PD AID-21 (#205): обезличенная копия аудита AID-LU-13 | Готово 2026-10-15: [#225](https://github.com/RickOBrian/aid/pull/225) смержен; «Готово» в #205 2026-10-19 |
 | AID-LU-17 | Plugin · Library Updater | Архив релиза v1.1.0 с «\» в путях | Готово 2026-10-22: архив перепакован из тега с «/» и заменён в релизе; `npm run release:zip` — [#40](https://github.com/arturuxui/figma-library-updater/pull/40). Архив v1.0.0 не трогали |
 | AID-LU-18 | Plugin · Library Updater + Plugin · Components Swapper | Карта переименований «старое имя → новое» по каждой публикации | Готово 2026-10-22: сервер LU (#41, #42), CHANGELOG для переименований мимо плагина (#43), вебхуки на 6 библиотеках; Swapper читает карту (#34, v1.1.0); замер Rider: пары по имени 29 → 46, исправлена ложная автозамена `ic_done` (#36) |
+| AID-LU-21 | Hub и все чаты `arturuxui` | Экономия токенов по #351 (ORCHESTRATION §12) | Готово 2026-10-23: Штаб, LU (LU#49), Rework, Swapper (Swapper#39); итог — [комментарий в #351](https://github.com/RickOBrian/aid/issues/351#issuecomment-6361039323) |
 | AID-LU-11 | Guide · Git for Beginners | Гайд по git для новичков | Передан чатам PD 2026-10-22 (#172, #314); репозиторий `arturuxui/aid-git-guide` и v0.1.0 остаются; #172 закрыт |
