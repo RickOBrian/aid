@@ -1,0 +1,205 @@
+{
+  "id": "component-avatar",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Avatar, IconSurface",
+  "componentId": "avatar",
+  "product": "driver",
+  "changeSummary": "Avatar Driver — развитие (designer-19, issue #487, задача AID-LU-25), флоу figma-library-workflow 0.8.0 §3.1. Мастер `avatar` 89:4931 (Rows): одна ось Type = Photo / No photo / Letters / Icon, все 44×44, без auto layout, без свойств; Web-компонента нет. 20 из 22 экземпляров — Type=Icon как «иконка в цветном круге» (Controls/bar/slider 89:2930 — 16, Rows/line 89:5009 — 4), Photo — 2 (Rows/ActiveOrderClientView 89:4949 растянут до 48, Widgets/instruction/rounded 89:3249 — до 56). Токены мастера на переменных Driver и совпадают с каноном data.ts. По ответам куратора arturuxui 27.10 «1а, 2а, 3а, 4 — оба, 5а, 6а, 7а, 8а»: разделить на Avatar (Photo / Initials / Placeholder) и IconSurface (иконка в круге), bar/slider и line перевести на IconSurface; ось Size 44 / 48 / 56 с таблицей размеров иконки и букв (ряд — за дизайнером); свойства Text initials, Instance swap icon, фото — заливкой слоя image; фон круга IconSurface — фон-токен, не Icons/*; имена Avatar / IconSurface вне группы Rows/; online-бейдж — идеей, не в этой задаче. Вопрос 4 (иконка на пастели ночью: Icons/Primary Light Ind или Icons/Secondary Inverted) ждёт дизайнера: на пейдже оба варианта в обеих темах с контрастом — днём на Corn 1.8:1 в любом варианте, ночью белая лучше на Cobalt и Azure, Secondary Inverted — на Corn. Сборка также: auto layout, круг рамкой с радиусом на токене вместо VECTOR, описание сета вместо «label». Аудит — пейдж «👀 Avatar · audit» 460:889, блоки 0–8, день и ночь на 360; мастер не правился. Ответы Standards 30.10 (#506): п.4 — имена Avatar и IconSurface приняты (naming-conventions §4); п.5 — initial 1.0.0: выпущенной версии нет (currentVersion null, release-gate, component-gate); п.8 — lookup фон-токена IconSurface. Lookup 02.11 (data.ts Driver, контраст иконки WCAG 1.4.11, порог 3:1; полупрозрачные иконки — поверх пастели): фон-токены Bg/Tertiary и Bg/Primary Light Ind не проходят (день 1.0–1.32:1); пары «пастель × иконка» — таблица proposal.contrast. Одной иконки на все три пастели в обеих темах нет, но для каждой пастели пара есть: Corn — Icons/Primary Dark Ind 7.72/5.73:1 (Icons/Secondary Dark Ind 3.91/3.52:1); Cobalt — Icons/Primary 4.57/3.78:1, Icons/Primary Light Ind 3.04/3.78:1; Azure — Icons/Primary 3.62/5.12:1, Icons/Primary Light Ind 3.84/5.12:1. Фон остаётся Pastels/*, новый токен не нужен: иконка задаётся парой к тону: у IconSurface ось Tone (Corn / Cobalt / Azure) × Size, в каждом тоне фон и иконка привязаны в мастере (proposal.toneBindings), кандидат — Corn → Icons/Primary Dark Ind, Cobalt и Azure → Icons/Primary Light Ind; выбор иконки на тон — у дизайнера (вопрос 4). Текущей версии нет. Заметка о миграции: разделение сета и переименование ломают свойства экземпляров Figma — новые мастеры Avatar и IconSurface, старый avatar 89:4931 — в Archive, замена в bar/slider, line, ActiveOrderClientView, instruction/rounded (§3.9); выпущенной версии нет, поэтому impact initial.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Avatar: аватар Driver — фото, инициалы и заглушка, размеры 44 / 48 / 56. IconSurface: иконка в цветном круге для рядов и слайдера — тона Corn, Cobalt, Azure и размеры 44 / 48 / 56"
+  },
+  "proposal": {
+    "componentName": "Avatar, IconSurface",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер avatar 89:4931; аудит 460:889, блок 8.1 «Варианты рядом» 507:15697",
+    "tokensRequired": [
+      "Pastels/Concrete",
+      "Pastels/Azure",
+      "Pastels/Corn",
+      "Pastels/Cobalt",
+      "Icons/Secondary",
+      "Icons/Secondary Inverted",
+      "Icons/Primary Light Ind",
+      "Texts/Primary Light Ind",
+      "Subtitles/Subtitle 1",
+      "Bg/Positive",
+      "radius-flat",
+      "Icons/Primary",
+      "Icons/Primary Dark Ind"
+    ],
+    "variants": {
+      "Avatar": {
+        "Type": [
+          "Photo",
+          "Initials",
+          "Placeholder"
+        ],
+        "Size": [
+          "44",
+          "48",
+          "56"
+        ]
+      },
+      "IconSurface": {
+        "Tone": [
+          "Corn",
+          "Cobalt",
+          "Azure"
+        ],
+        "Size": [
+          "44",
+          "48",
+          "56"
+        ]
+      },
+      "note": "Свойства: Text initials, Instance swap icon, фото — заливкой слоя image; размеры иконки и букв по Size — ряд за дизайнером; IconSurface — ось Tone × Size, в каждом тоне фон и иконка привязаны в мастере (toneBindings), без переопределений экземпляров"
+    },
+    "unsupportedStates": [
+      "Pressed",
+      "Hovered",
+      "Focused",
+      "Disabled"
+    ],
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "colors": "semantic-token",
+      "radius": "semantic-token",
+      "typography": "semantic-token",
+      "size": "raw-value"
+    },
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release",
+    "unsupportedStatesNote": "Avatar и IconSurface — не интерактивны, состояние несёт родитель (ряд, слайдер); Disabled у bar/slider — токеном иконки родителя (Icons/Inactive Light Ind)",
+    "openQuestions": [
+      "Вопрос 4 — подтвердить иконку на тон в toneBindings (кандидат: Corn → Icons/Primary Dark Ind, Cobalt и Azure → Icons/Primary Light Ind; альтернативы — iconPairing) — ждёт дизайнера"
+    ],
+    "findings": [
+      "20 из 22 экземпляров avatar — Type=Icon как иконка в круге; фон bar/slider — Icons/* вместо фон-токена",
+      "Круг — VECTOR, без auto layout; описание сета «label»",
+      "bar/slider (другой компонент, в #502 не правится): фон на Icons/* — Icons/Positive → Bg/Positive (то же значение); для Icons/Special, Icons/Warning, Icons/Inactive Light Ind фон-аналога нет"
+    ],
+    "iconPairing": {
+      "rule": "Иконка IconSurface — по тону фона, одной иконки на все тона нет; выбранная на тон — в toneBindings",
+      "Corn": [
+        "Icons/Primary Dark Ind",
+        "Icons/Secondary Dark Ind"
+      ],
+      "Cobalt": [
+        "Icons/Primary",
+        "Icons/Primary Light Ind",
+        "Icons/Primary Inverted",
+        "Icons/Primary Dark Ind",
+        "Icons/Variant"
+      ],
+      "Azure": [
+        "Icons/Primary",
+        "Icons/Primary Light Ind",
+        "Icons/Variant"
+      ]
+    },
+    "contrast": {
+      "method": "WCAG 1.4.11, порог 3:1, день/ночь; data.ts Driver на origin/main; полупрозрачная иконка смешана с пастелью; фон-токены полупрозрачные — поверх Bg/Primary",
+      "backgrounds": {
+        "Bg/Tertiary": {
+          "Icons/Primary Light Ind": "1.32/17.35",
+          "Icons/Secondary Inverted": "1.32/1.13"
+        },
+        "Bg/Primary Light Ind": {
+          "Icons/Primary Light Ind": "1.00/1.00",
+          "Icons/Secondary Inverted": "1.00/4.59"
+        }
+      },
+      "pastels": {
+        "Icons/Primary": {
+          "Corn": "7.72/2.43",
+          "Cobalt": "4.57/3.78",
+          "Azure": "3.62/5.12"
+        },
+        "Icons/Primary Inverted": {
+          "Corn": "1.80/5.73",
+          "Cobalt": "3.04/3.68",
+          "Azure": "3.84/2.72"
+        },
+        "Icons/Secondary": {
+          "Corn": "3.91/1.59",
+          "Cobalt": "3.21/2.08",
+          "Azure": "2.88/2.51"
+        },
+        "Icons/Secondary Inverted": {
+          "Corn": "1.80/3.52",
+          "Cobalt": "3.04/2.91",
+          "Azure": "3.84/2.49"
+        },
+        "Icons/Primary Dark Ind": {
+          "Corn": "7.72/5.73",
+          "Cobalt": "4.57/3.68",
+          "Azure": "3.62/2.72"
+        },
+        "Icons/Secondary Dark Ind": {
+          "Corn": "3.91/3.52",
+          "Cobalt": "3.21/2.91",
+          "Azure": "2.88/2.49"
+        },
+        "Icons/Primary Light Ind": {
+          "Corn": "1.80/2.43",
+          "Cobalt": "3.04/3.78",
+          "Azure": "3.84/5.12"
+        },
+        "Icons/Variant": {
+          "Corn": "7.24/2.26",
+          "Cobalt": "4.28/3.53",
+          "Azure": "3.39/4.77"
+        },
+        "note": "Остальные Icons/* (Informative, Tertiary, Inactive, Accent, Positive, Warning, Special, Special Pale, Attention, *Light Ind кроме Primary) — ни на одной пастели 3:1 в обеих темах"
+      }
+    },
+    "toneBindings": {
+      "status": "Кандидат по iconPairing — выбор иконки за дизайнером (вопрос 4), по одной на тон",
+      "Corn": {
+        "background": "Pastels/Corn",
+        "icon": "Icons/Primary Dark Ind",
+        "contrast": "7.72/5.73"
+      },
+      "Cobalt": {
+        "background": "Pastels/Cobalt",
+        "icon": "Icons/Primary Light Ind",
+        "contrast": "3.04/3.78"
+      },
+      "Azure": {
+        "background": "Pastels/Azure",
+        "icon": "Icons/Primary Light Ind",
+        "contrast": "3.84/5.12"
+      },
+      "note": "Тоны — Pastels/*, что используются в IconSurface: Corn и Cobalt — Rows/line 89:5009, Azure — кандидат аудита (блок 6, вопрос 4). Тоны bar/slider (фон на Icons/*) в ось не входят до решения по их фон-токенам (findings)"
+    }
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "460:889",
+    "componentPage": "194:3103",
+    "components": {
+      "avatar": "89:4931"
+    },
+    "input": {
+      "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+      "node": "89:4931"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
