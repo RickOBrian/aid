@@ -1,0 +1,32 @@
+{
+  "id": "component-button-floating-legacy-deprecated",
+  "type": "component",
+  "changeType": "deprecated",
+  "taskType": "evolve",
+  "artifact": "Button Floating (238:25)",
+  "componentId": "button-floating",
+  "product": "rider",
+  "changeSummary": "Прежний Button Floating 238:25 (Rider Components, пейдж Buttons 231:1272) помечается устаревшим: замена — новый Button Floating 1076:5989 (component-button-floating). Новый ключ — новый компонент (протокол §3.3), поэтому устаревание — отдельной строкой. Перенос 238:25 на пейдж Archive 465:630 — после приёмки сборки нового (sergej 28.10, вопрос 2а); сборка принята Standards 28.10; перенесён 28.10 по «да» куратора sergej, в описание добавлена пометка «Устарел…» (имя и ключ прежние). Способ пометки устаревания в Figma не решён — пробел 1 протокола.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "deprecated",
+    "impact": "minor",
+    "description": "Button Floating (старый ключ): устарел, замена — новый Button Floating"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "componentPage": "465:630",
+    "components": {
+      "Button Floating (legacy)": "238:25"
+    },
+    "replacement": "1076:5989"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-28",
+  "author": "sergej"
+}
