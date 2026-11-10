@@ -6,7 +6,7 @@
   "artifact": "Dialog",
   "componentId": "dialog",
   "product": "rider",
-  "changeSummary": "Dialog Rider — создание (designer-31, AID-90, issue #562), флоу figma-library-workflow §3.1. Вход — макет PD 05.11 «Островные диалоговые окна» (Rider Components, Archive, 1406:22154): шесть экранов, окна собраны из шторки Bottom sheet / Sheet State=Wrapped (69:106) переопределениями — ширина 358, radius-32, тень задвоена, крестик сырым фреймом снаружи окна, серая кнопка — legacy standard с хексом, отступ снизу 30 положением, ночи нет. Решено: отдельный компонент Dialog (Structural View: HeaderDialog + Body + Footer, показ снаружи); затемнение внутри компонента, Show Overlay по умолчанию вкл.; обязательны заголовок и одна кнопка; IconSurface (AID-81) — Show Icon, вкл.; крестик — служебный .ButtonClose, Show Close, выкл.; тап по затемнению — свойство Dismiss On Overlay Tap, по умолчанию закрывает, выключают при обязательном решении (в коде dismiss on outside tap); низ острова — safe area платформы (34 не токен и в мастере не задаётся), на Android с кнопочной панелью и iPhone с кнопкой Home — space-16 (в гайде, не в мастере); кнопки — Button (AID-74): одна Primary, Secondary или Destructive, две — сверху Primary или Destructive, под ней Secondary. Новых токенов нет. Аудит — пейдж «👀 Dialog · audit» 1469:3737, секция 1469:3152, блоки 0–8; прототипы .Proto/Dialog · аудит 1471:154 (Buttons One/Two + Show Overlay/Close/Icon/Subtitle) и .Proto/Dialog · экран 1471:709 (Theme × State, Smart Animate), служебный .ButtonClose 1471:79. Открыто в блоке 8: замена окон Handoff на всю ширину островом (куратор). «Создание» — предложение 1.0.0 (initial); итоговый номер — на границе релиза, называет человек на приёмке сборки.",
+  "changeSummary": "Dialog Rider — создание (designer-31, AID-90, issue #562), флоу figma-library-workflow §3.1. Вход — макет PD 05.11 «Островные диалоговые окна» (Rider Components, Archive, 1406:22154): шесть экранов, окна собраны из шторки Bottom sheet / Sheet State=Wrapped (69:106) переопределениями — ширина 358, radius-32, тень задвоена, крестик сырым фреймом снаружи окна, серая кнопка — legacy standard с хексом, отступ снизу 30 положением, ночи нет. Решено: отдельный компонент Dialog (Structural View: HeaderDialog + Body + Footer, показ снаружи); затемнение внутри компонента, Show Overlay по умолчанию вкл.; обязательны заголовок и одна кнопка; IconSurface (AID-81) — Show Icon, вкл.; крестик — служебный .ButtonClose, Show Close, выкл.; тап по затемнению — свойство Dismiss On Overlay Tap, по умолчанию закрывает, выключают при обязательном решении (в коде dismiss on outside tap); низ острова — safe area платформы (34 не токен и в мастере не задаётся), на Android с кнопочной панелью и iPhone с кнопкой Home — space-16 (в гайде, не в мастере); кнопки — Button (AID-74): одна Primary, Secondary или Destructive, две — сверху Primary или Destructive, под ней Secondary. Новых токенов нет. Аудит — пейдж «👀 Dialog · audit» 1469:3737, секция 1469:3152, блоки 0–8; прототипы .Proto/Dialog · аудит 1471:154 (Buttons — пять допустимых комбинаций + Show Overlay/Close/Icon/Subtitle, Dismiss On Overlay Tap) и .Proto/Dialog · экран 1471:709 (Theme × State, Smart Animate), служебный .ButtonClose 1471:79. Открыто в блоке 8: замена окон Handoff на всю ширину островом (куратор). «Создание» — предложение 1.0.0 (initial); итоговый номер — на границе релиза, называет человек на приёмке сборки.",
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
@@ -96,6 +96,12 @@
       "by": "sergej",
       "quote": "кнопки используй master из сборки, а не из аудита",
       "about": "вложенные кнопки Dialog — мастер Button 1513:3772; аудит принят Standards 10.11"
+    },
+    {
+      "date": "2026-11-10",
+      "by": "sergej",
+      "quote": "Давай в пропсах сделаем комбинации предустановленные, чтобы дизайнер случайно не поставил две красных, например, или красную под серой (только если прям специально полезет)",
+      "about": "свойство Buttons: Primary + Secondary (по умолчанию), Destructive + Secondary, Primary, Secondary, Destructive вместо One/Two"
     }
   ]
 }
