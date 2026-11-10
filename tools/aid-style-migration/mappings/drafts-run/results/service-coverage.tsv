@@ -94,3 +94,66 @@ S	11	шрифт без стиля: SF Pro Regular 17/24	5374:86185
 S	10	сырой #f2bfbf [frame]	5374:86744
 S	10	сырой #f96c88 [shape]	5374:87731
 R	175	остальные причины: 51
+#	page=✅ Service coverage — Switched Styles	id=5374:86156	dry=0	nodes=7394	replaced=6	skipped=857	date=2026-11-10
+D	6	[Text [day]/Warning] → Background/Warning (frame)
+S	91	градиент [shape]
+S	87	сырой #000000 [shape]
+S	74	сырой #d9d9d9 [shape]
+S	60	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff
+S	59	сырой #c4c4c4 [shape]
+S	47	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15
+S	34	градиент [frame]
+S	29	сырой #ffffff [shape]
+S	24	сырой #000000 [text]
+S	24	сырой #8c7aff@0.30 [shape]
+S	24	эффект [Shadow Up] — нет в маппинге
+S	23	сырой эффект: layer_blur
+S	20	{Theme TX:tx-bg/map} [frame] — нет в маппинге
+S	19	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	16	сырой эффект: drop 0,0 r250 s0 #ffffff@0.50 + drop 0,0 r100 s0 #ffffff
+S	15	сырой #8c7aff [shape]
+S	11	шрифт без стиля: SF Pro Semibold 22/28
+S	11	шрифт без стиля: SF Pro Regular 17/24
+S	10	сырой #f2bfbf [frame]
+S	10	сырой #f96c88 [shape]
+S	9	сырой #ffffff@0.10 [stroke]
+S	8	сырой эффект: drop 0,8 r20 s0 #2d2d53@0.12
+S	7	сырой #b17aff [stroke]
+S	7	{Radius:CRx10}=40 topLeftRadius — нет цели
+S	7	{Radius:CRx10}=40 topRightRadius — нет цели
+S	7	{Radius:CRx10}=40 bottomLeftRadius — нет цели
+S	7	{Radius:CRx10}=40 bottomRightRadius — нет цели
+S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	6	сырой #e4e4ff [shape]
+S	6	сырой #ededff@0.70 [shape]
+S	6	{theme:bg/accentSecondary} [frame] — нет в маппинге
+S	5	шрифт без стиля: SF Pro Medium 14/16
+S	5	шрифт без стиля: SF Pro Regular 14/16
+S	5	сырой #444444 [frame]
+S	5	сырой #ff6e8b [shape]
+S	5	сырой #ec5171 [stroke]
+S	5	сырой #19191d@0.50 [shape]
+S	5	сырой #000000@0.38 [shape]
+S	4	[Gradients/Top] [shape] — нет в маппинге
+S	4	[Captions/Caption 3] — нет в маппинге
+S	3	сырой #000000 [stroke]
+S	3	сырой #000000 [frame]
+S	3	сырой #1c1c1c [shape]
+S	3	[Background [day]/Secondary] [shape/shape] — нет правила
+S	3	сырой эффект: inner_shadow
+S	3	сырой #1d1c1e [frame]
+S	2	сырой #b8a1ff [stroke]
+S	2	шрифт без стиля: Roboto Bold 32.25/43
+S	2	[Blue] [shape] — нет в маппинге
+S	2	сырой #8526ff@0.20 [shape]
+S	2	сырой #0e2623 [frame]
+S	2	сырой #19221d [frame]
+S	2	сырой #17171b [shape]
+S	1	сырой #5f5f5f [frame]
+S	1	сырой #e7daf2 [shape]
+S	1	сырой #b8a1ff [shape]
+S	1	сырой #e6e6e6 [frame]
+S	1	сырой #3458e9@0.10 [shape]
+S	1	сырой эффект: drop 0,2 r4 s0 #1d162d@0.14
+S	1	[Day / Gray 4] [frame] — нет в маппинге
+R	10	остальные причины: 10

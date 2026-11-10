@@ -105,3 +105,80 @@ S	79	[Description/descriptionAccent — lion] — нет в маппинге	I53
 S	76	сырой #ffffff@0.10 [shape]	5374:421887
 S	76	сырой #000000@0.03 [stroke]	5374:421887
 R	1892	остальные причины: 239
+#	page=✅ Where 🗺️ — Switched Styles	id=5374:421690	dry=0	nodes=42240	replaced=208	skipped=7153	date=2026-11-10
+D	129	[Action/actionAccent — miniPig] (стар.) → [Outstanding/NRD - Body]
+D	28	{Скругления:BRx4} → radius-16
+D	12	{Spacing:SPx2} → space-8
+D	7	{theme:stroke/contrasteInverted} → Stroke/Contrast (stroke)
+D	6	[Text [day]/Warning] → Background/Warning (frame)
+D	6	{Spacing:SPx1} → space-4
+D	4	{Spacing:SPx0,5} → space-2
+D	4	{theme:stroke/contrasteInverted} → Icon/Primary Inverted (shape)
+D	3	{Spacing:SPx1,5} → space-6
+D	2	{theme:text/danger} → Text/Warning (text)
+D	2	{theme:text/whitePrimaryConst} → Text/Constant White (text)
+D	2	{theme:icon/whiteConst} → Icon/Constant White (shape)
+D	1	{theme:bg/level 1 base} → Icon/Primary Inverted (shape)
+D	1	{theme:stroke/primary} → Stroke/Accent (stroke)
+D	1	[Body/body — horse] (стар.) → [Bodies/Body 2]
+S	1182	сырой #c4c4c4 [shape]
+S	507	сырой эффект: background_blur
+S	477	сырой #000000 [shape]
+S	440	градиент [shape]
+S	410	сырой #ffffff@0.90 [shape]
+S	399	сырой эффект: layer_blur
+S	329	[Background [day]/Secondary] [shape/shape] — нет правила
+S	201	сырой #ffffff [stroke]
+S	166	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL
+S	154	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	152	сырой #ffffff@0.05 [shape]
+S	152	сырой #000000@0.08 [stroke]
+S	142	сырой #ffffff [shape]
+S	129	градиент [frame]
+S	95	сырой эффект: drop 0,0 r20 s0 #000000@0.06
+S	86	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur
+S	79	[Description/descriptionAccent — lion] — нет в маппинге
+S	76	сырой #ffffff@0.10 [shape]
+S	76	сырой #000000@0.03 [stroke]
+S	72	{theme:icon/contraste} [shape] — нет в маппинге
+S	64	[Text [day]/Primary] [stroke] — нет правила
+S	55	эффект [Shadow Up] — нет в маппинге
+S	54	сырой #ffc800 [stroke]
+S	49	[Body/body] — нет в маппинге
+S	46	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	43	[Captions/Caption 3] — нет в маппинге
+S	40	градиент [stroke]
+S	39	[Action/action— capybara] — нет в маппинге
+S	36	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15
+S	32	сырой #979797 [shape]
+S	32	шрифт без стиля: ALS Hauss VF Regular 15/20
+S	30	сырой #000000 [stroke]
+S	30	сырой #ffffff [text]
+S	30	градиент [text]
+S	28	сырой #232326 [shape]
+S	27	сырой #ffc800 [shape]
+S	27	сырой #fffbdd [shape]
+S	26	эффект [/Input shadow] — нет в маппинге
+S	26	шрифт без стиля: SF Pro Regular 14/16
+S	26	шрифт без стиля: SF Pro Text Regular 17/24
+S	26	[Display/display — whale] — нет в маппинге
+S	25	{Theme TX:tx-button/blurring/solid/bg/default} [frame] — нет в маппинге
+S	25	TEXT смешанные заливки — оставлено
+S	24	сырой #fff7e2 [frame]
+S	24	шрифт без стиля: Roboto Regular 15/20
+S	22	{theme:separator/default} [shape] — нет в маппинге
+S	20	шрифт без стиля: SF Pro Medium 16/16
+S	20	[Blue] [shape] — нет в маппинге
+S	19	сырой эффект: drop 0,1 r2 s0 #000000@0.20
+S	18	[Day / Black] [stroke] — нет правила
+S	18	[Action/actionAccent] — нет в маппинге
+S	16	сырой #ffffff@0.31 [frame]
+S	16	эффект [Background Blur/Ultra Thin] — нет в маппинге
+S	15	[Icon [day]/Primary] [text/text] — нет правила
+S	15	шрифт без стиля: SF Pro Bold 15/18
+S	15	шрифт без стиля: SF Pro Semibold 15/18
+S	15	[Gradients/Shimmer] [frame] — нет в маппинге
+S	14	[Gradients [day]/Primary] [frame] — нет в маппинге
+S	14	сырой #cacacc [shape]
+S	13	[Bodies / Body 1] — нет в маппинге
+R	715	остальные причины: 198

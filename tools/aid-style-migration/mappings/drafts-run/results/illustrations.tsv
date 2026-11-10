@@ -106,3 +106,66 @@ S	28	[Orange] [shape] — нет в маппинге	5374:721291
 S	28	сырой эффект: inner_shadow	I5374:727362;4270:112359
 S	26	[Gradients [day]/Primary] [frame] — нет в маппинге	I5374:722033;16654:175213
 R	1544	остальные причины: 273
+#	page=✅ Illustrations Request 💅🏻 — Switched Styles	id=5374:721192	dry=0	nodes=11438	replaced=2	skipped=3252	date=2026-11-10
+D	2	[Action/actionAccent — miniPig] (стар.) → [Outstanding/NRD - Body]
+S	333	сырой #000000 [shape]
+S	259	градиент [shape]
+S	172	сырой #c4c4c4 [shape]
+S	161	сырой #ffffff [shape]
+S	115	сырой эффект: layer_blur
+S	98	сырой #ff0000 [shape]
+S	61	сырой эффект: background_blur
+S	58	[Background [day]/Secondary] [shape/shape] — нет правила
+S	54	сырой #1d354f [shape]
+S	54	сырой #ffb800 [shape]
+S	44	сырой #232326 [shape]
+S	40	шрифт без стиля: SF Pro Text Semibold 17/24
+S	40	сырой #ffffff@0.90 [shape]
+S	38	сырой #000000 [stroke]
+S	34	сырой #cacacc [shape]
+S	34	[Day / Black] [frame/frame] — нет правила
+S	29	сырой #ffffff [text]
+S	28	[Orange] [shape] — нет в маппинге
+S	28	сырой эффект: inner_shadow
+S	26	[Gradients [day]/Primary] [frame] — нет в маппинге
+S	25	[ Night / White] [shape] — не иконка
+S	24	шрифт без стиля: SF Pro Display Regular 12/28
+S	24	шрифт без стиля: SF Pro Display Regular 17/28
+S	24	шрифт без стиля: SF Pro Display Regular 21/28
+S	24	[Stroke [day]/Primary] [stroke] — нет в маппинге
+S	24	[Night / Gray 40] [shape] — нет в маппинге
+S	24	сырой #ffffff@0.25 [shape]
+S	22	[Day / Gray 4] [stroke] — нет в маппинге
+S	22	сырой эффект: drop 0,4 r12 s0 #000000@0.15
+S	22	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	20	сырой #ffffff@0.05 [shape]
+S	20	сырой #000000@0.08 [stroke]
+S	19	[Day / White] [text/text] — нет правила
+S	18	сырой #ffffff [stroke]
+S	18	сырой #ffffff@0.30 [shape]
+S	18	[Text [night]/Primary] [text] — нет в маппинге
+S	18	сырой #ffe2f1 [frame]
+S	18	градиент [frame]
+S	16	сырой #ff7200 [shape]
+S	16	сырой #000518@0.08 [shape]
+S	16	[Button day/Secondary] [shape] — нет в маппинге
+S	16	шрифт без стиля: SF Pro Display Regular 6.5/28
+S	16	сырой эффект: drop 0,3 r5 s0 #000000@0.20 + drop 0,1 r18 s0 #000000@0.18 + drop 0,6 r10 s0 #000000@0.14
+S	16	[Background [night]/Primary] [shape] — нет в маппинге
+S	16	[Background [night]/Primary] [frame] — нет в маппинге
+S	15	градиент [stroke]
+S	14	сырой эффект: drop 0,0 r20 s0 #000000@0.06
+S	14	сырой #fbe5f9 [shape]
+S	14	[Pastel [day]/Bart] [frame] — нет в маппинге
+S	14	[Background day/Primary] [frame] — нет в маппинге
+S	12	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	12	сырой #262626 [shape]
+S	12	[Day / Gray 4] [shape] — нет в маппинге
+S	12	сырой #ebecf0 [shape]
+S	12	[Gray / 70%] [text] — нет в маппинге
+S	12	шрифт без стиля: SF Pro Display Regular 23/28
+S	12	[Button [day]/Disabled] [frame] — нет в маппинге
+S	12	[Text [day]/Disabled] [text] — нет в маппинге
+S	12	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL
+S	12	сырой #d62347 [shape]
+R	859	остальные причины: 233

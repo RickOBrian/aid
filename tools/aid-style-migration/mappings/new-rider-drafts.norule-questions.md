@@ -48,3 +48,31 @@
 2. DRY `TOP=200` по 17 копиям (id — `LEDGER.md`), строки в `results/<slug>.tsv`, `CLEAN=true`, `report.mjs`. По хвосту п.4 — короткая анкета.
 3. Боевой прогон (DRY=false) на копиях, где DRY показал miniPig / Text [day]/Warning (Where, Where - Migration, Show my location, Errors + найденные), затем контрольный DRY.
 4. DEV-копия `4770:4437`, разовым вызовом только на копию, оригинал не трогать: Counter `4770:4725` (п.5а); Bottom sheet `4770:4685` — отступы SPx3/SPx2 и стили из маппинга, сырые и `.blur tiny` не трогать (п.6а); Sender 372 `4770:4698` и 427 `4770:5024` — всё, что есть в маппинге (п.7б). Alert/Push не трогать (8а). Снимки до/после.
+
+## Исполнение 10.11
+
+- Шаг 1: тело на Drafts, HASH 1247608780.
+- Шаг 2: DRY `TOP=200` на 17 копиях (в tsv не писался: узлы не меняются, боевые блоки ниже).
+- Шаг 3: боевой прогон на 9 копиях, блоки в `results/*.tsv` (TOP=60, без столбца id), `report.mjs`.
+  miniPig → Outstanding/NRD - Body: Navigation 198, Where 129, Where - Migration 129, Show my location 81, Errors 16, Tariffs 4, Illustrations 2 (559).
+  `Text [day]/Warning` на фрейме → Background/Warning: Where 6, Where - Migration 6, Service coverage 6, Permissions 1 (19).
+  Контрольный DRY: 0 на 7 копиях; на Where и Where - Migration по 74 — прежние 73 плюс один miniPig («4 мин») в том же вложенном инстансе `I…429115`, это не заменить.
+  Планы и итоги `mig` со всех 17 копий сняты. Шаг 4 (DEV) — не начат.
+
+## Хвост п.4 — короткая анкета (2026-11-10)
+
+Счёт — DRY `TOP=200` 10.11; на Navigation 680 причин ниже порога, там могут быть ещё.
+
+9. **`[Captions/Caption 3]`** (стиль текста) — 159: Where 43, Where - Migration 43, Navigation 35, Show my location 22, Order Flow 12, Service coverage 4.
+   Плюс в Profile `[Caption 3/Regular]` 4 и `[Caption 3/Medium]` 3. Значение: SF Pro Semibold 12/16, трекинг 0 (образец «Где я» в Badge Map `5374:88737`).
+   В библиотеке такого нет: Caption 1 — SF Pro Text **Regular** 12/16, Caption 1 CAP — Semibold 12/16, но капителью, Caption 2 — Medium 11/14.
+   а) не трогать, записать пробел типографики (Semibold 12/16) ★ · б) Captions/Caption 1 (вес падает до Regular) · в) Captions/Caption 1 CAP (регистр меняется).
+10. **`{theme:bg/accentSecondary}`** на фрейме — 30: Where 11, Where - Migration 11, Service coverage 6, Errors 2. Значение `f2e6fe` / ночь `2f2640`, образец — Chip `5374:89096` (выбранный чип).
+    Кандидаты: Tint/Accent `f9edff / 3c235b` (тот же фиолетовый оттенок и ночью) · Pastel/Milhouse `efe7f9 / 3f3d42` (днём ближе, ночью серый).
+    а) Tint/Accent ★ · б) Pastel/Milhouse · в) пробел токена.
+    Рядом в Profile `{Theme:controls/bg/accentSecondaryLight/pressed}` 2 — а) туда же, Tint/Accent ★ · б) оставить.
+11. **`[Gradients/Top]`** на shape — 4, только Service coverage. Белая растушёвка сверху `ffffff@0.78 → 0` на прямоугольнике «Whitener» 390×116 `5374:88636`.
+    Стиль удалённый, в нашей библиотеке из градиентов знаю только Gradients/Shimmer.
+    а) оставить, записать пробел ★ · б) искать соответствие в библиотеке градиентов отдельно.
+12. **`[Button [day]/Warning]`** на фрейме — 2, Taxi for friends (`5374:895587`, `5374:897379`).
+    а) Background/Warning, как п.4 ★ · б) оставить.
