@@ -101,7 +101,7 @@
       "date": "2026-11-10",
       "by": "sergej",
       "quote": "Давай в пропсах сделаем комбинации предустановленные, чтобы дизайнер случайно не поставил две красных, например, или красную под серой (только если прям специально полезет)",
-      "about": "свойство Buttons: Primary + Secondary (по умолчанию), Destructive + Secondary, Primary, Secondary, Destructive вместо One/Two"
+      "about": "свойство Buttons — пять допустимых комбинаций вместо One/Two; порядок по sergej 10.11: Primary (по умолчанию), Secondary, Primary + Secondary, Destructive + Secondary, Destructive"
     }
   ]
 }
