@@ -11,13 +11,18 @@
 const page = await figma.getNodeByIdAsync(PAGE_ID);
 await figma.setCurrentPageAsync(page);
 const RIDER = 'Rider';
-const cols = await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync();
-const libVars = {};
-for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','space','radius'].includes(c.name))) {
-  for (const v of await figma.teamLibrary.getVariablesInLibraryCollectionAsync(c.key)) libVars[v.name] = v.key;
+// кэш импорта на весь вызов use_figma (globalThis живёт между порциями run-page): импорт стиля ~0,4 с, переменной ~0,9 с (RUNBOOK, 06.11)
+const MC = globalThis.__migCache || (globalThis.__migCache = { lib: null, v: {}, st: {} });
+if (!MC.lib) {
+  const cols = await figma.teamLibrary.getAvailableLibraryVariableCollectionsAsync();
+  const lib = {};
+  for (const c of cols.filter(c => c.libraryName.includes(RIDER) && ['color-sem','space','radius'].includes(c.name))) {
+    for (const v of await figma.teamLibrary.getVariablesInLibraryCollectionAsync(c.key)) lib[v.name] = v.key;
+  }
+  MC.lib = lib;
 }
-const vcache = {};
-const getVar = async name => { if (!(name in vcache)) vcache[name] = libVars[name] ? await figma.variables.importVariableByKeyAsync(libVars[name]) : null; return vcache[name]; };
+const libVars = MC.lib;
+const getVar = name => MC.v[name] || (MC.v[name] = libVars[name] ? figma.variables.importVariableByKeyAsync(libVars[name]) : Promise.resolve(null));
 const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodies/Body 2':'879e5c53e856e0bc15d54d02ad28ba88c8661808','Bodies/Body 3':'ec7ba478b0d45f0e20fb5528ffaa75dcff5aef72','Subtitles/Subtitle 1':'1449afde1d818486460f295669af22fd99a3a6cf','Subtitles/Subtitle 2':'746b9479314cb405d3340bd358049e486ae0f6d6','Subtitles/Subtitle 3':'a033bddf111be09f0149088dcb5c1eaa529ebd04','Titles/Title 4':'9395aad5c31672c7a765e20f36e1b39e00ccbc43','Titles/Title 3':'9a6c623ccfe842d1d9e8d0e428d12e6cf1d0d810','Captions/Caption 1':'97bf66024e167e387564b809893c702b464ddd42','Captions/Caption 1 CAP':'297879960c9a9a1feda979b1b9070563b06d858b','Captions/Caption 2':'0c2e5ea7ad30281d26df7c68b67043c3fa2286e8','Outstanding/Title-title2 (NRD)':'99bb5b186e90da50ee7e4b10fc0f3c13bb11acc0','Outstanding/NRD - Body':'3274cd72b8250998e9c07a468850a85e91046616','Outstanding/iOS - Subtitle':'41b59fcc0bdb4acd56c581073e5cd1d1693eca78','Titles/Title 1':'a0002690326ec64b856a97c9d41fe5f6df1b0cbb','Outstanding/iOS - Subtitle L':'c6696a50a2857a9359cc8da399263396c46a95ba','Outstanding/NRD - Action Bold':'c590f2c56eab32713a2871abe0a60c727a29ef2b'};
 const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384','Shadows/FAB':'0dfac2ccdab87fdc913dc307e0b92ab682665cae','Shadows/Knob':'bb489e915a6510dd8c254da1671190b6528eb40a','Glass/Navbar':'5fed574145af7feb54f3d0e5d8df295cbafe4905'};
 const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
@@ -204,7 +209,7 @@ const processPaints = async (n, prop, chain) => {
   for (const p of paints) {
     // анкета покрытия п.8: стопы Shimmer в файле чуть отличаются от библиотечных, поэтому правило по имени
     if (prop === 'fills' && paints.length === 1 && p.type === 'GRADIENT_LINEAR' && n.name === 'Gradient' && chain.some(c => /TX Loading Fade/.test(c))) {
-      const s = await figma.importStyleByKeyAsync('d1fa46fc37e02c5a34fdd2c57f13312a083eb2b3');
+      const s = await importStyle('d1fa46fc37e02c5a34fdd2c57f13312a083eb2b3');
       if (!DRY) await n.setFillStyleIdAsync(s.id);
       inc(done, 'градиент TX Loading Fade → [Gradients/Shimmer]');
       return;
@@ -237,8 +242,8 @@ const processPaints = async (n, prop, chain) => {
   }
   if (changed && !DRY) { if (prop === 'fills') n.fills = np; else n.strokes = np; }
 };
-const tsCache = {};
-const importTS = async name => { if (!(name in tsCache)) tsCache[name] = await figma.importStyleByKeyAsync(NEWTS[name]); return tsCache[name]; };
+const importStyle = key => MC.st[key] || (MC.st[key] = figma.importStyleByKeyAsync(key));
+const importTS = name => importStyle(NEWTS[name]);
 const applyTS = async (n, name, from) => {
   const s = await importTS(name);
   if (!DRY) {
@@ -272,7 +277,7 @@ const processEffect = async n => {
   if (!st) {
     const t = n.effects.length ? (fxFull(n) === GLASS ? 'Glass/Navbar' : RAWFX[fxSig(n)]) : undefined;
     if (!t) { if (n.effects.some(e => e.visible !== false)) skip(`сырой эффект: ${fxSig(n)}`); return; }
-    const s = await figma.importStyleByKeyAsync(NEWFX[t]);
+    const s = await importStyle(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `сырая тень → [${t}]`);
     return;
@@ -282,11 +287,11 @@ const processEffect = async n => {
     const t = FX_MAP[st.name];
     if (t === null) { if (!DRY) { await n.setEffectStyleIdAsync(''); n.effects = []; } inc(done, `[${st.name}] → снята`); return; }
     if (!NEWFX[t]) { skip(`[${st.name}] → [${t}] — нет ключа стиля`); return; }
-    const s = await figma.importStyleByKeyAsync(NEWFX[t]);
+    const s = await importStyle(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] → [${t}]`);
   } else if (NEWFX[st.name]) {
-    const s = await figma.importStyleByKeyAsync(NEWFX[st.name]);
+    const s = await importStyle(NEWFX[st.name]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] (стар.) → [${st.name}]`);
   } else skip(`эффект [${st.name}] — нет в маппинге`);
