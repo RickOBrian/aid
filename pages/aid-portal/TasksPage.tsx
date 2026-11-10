@@ -3,8 +3,6 @@ import { isSafeLinkUrl, isTaskBoard, type Task, type TaskBoard } from './api/_li
 import { apiUrl, currentAppPath, withBase } from './base';
 import { DS_PORTAL_LAYOUT_TOKENS } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
-import { ProductAccentScope } from './ProductAccentScope';
-import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { parseReleaseNotes, type NoteInline } from './releaseNotes';
 import {
   STATUS_LABEL,
@@ -34,106 +32,131 @@ const PAGE_STYLE = `
 ${DS_PRODUCT_ACCENT_STYLE}
 .tsk, .tsk *, .tsk *::before, .tsk *::after { box-sizing: border-box; }
 .tsk {
-  font-family: ${T.fontFamily}; color: ${T.textPrimary}; background: ${T.surface};
-  min-height: 100vh; padding: ${T.pagePaddingDesktop}; font-size: 14px; line-height: 20px;
+  font: var(--pf-font-body-m); color: ${T.textPrimary}; background: ${T.surface};
+  min-height: 100vh; padding: ${T.pagePaddingDesktop};
 }
-.tsk-shell { max-width: 1440px; margin: 0 auto; display: grid; gap: 24px; }
+.tsk-shell { max-width: 1440px; margin: 0 auto; display: grid; gap: var(--pf-spacing-24); }
 .tsk-shell > * { min-width: 0; }
-.tsk h1, .tsk h2, .tsk h3 { margin: 0; font-weight: 500; }
-.tsk h1 { font-size: 32px; line-height: 40px; }
-.tsk-eyebrow { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: ${T.tableHeadLetterSpacing}; text-transform: uppercase; color: ${T.textSecondary}; }
+.tsk h1, .tsk h2, .tsk h3 { margin: 0; font-weight: var(--pf-type-weight-500); }
+.tsk h1 { font: var(--pf-font-heading-l); letter-spacing: var(--pf-tracking-heading-l); }
+.tsk-eyebrow { font: var(--pf-font-label-xs-caps); letter-spacing: var(--pf-tracking-label-xs-caps); text-transform: uppercase; color: ${T.textSecondary}; }
 .tsk-eyebrow a { color: inherit; text-decoration: none; }
 .tsk-eyebrow a:hover { text-decoration: underline; }
+.tsk-eyebrow a:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; }
 .tsk-muted { color: ${T.textSecondary}; }
-.tsk-head { display: grid; gap: 8px; }
-.tsk-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
-.tsk-example { padding: 3px 8px; border: 1px dashed ${T.textSecondary}; border-radius: 4px; font-size: 12px; line-height: 16px; color: ${T.textSecondary}; }
-.tsk-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.tsk-filters label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: ${T.textSecondary}; }
+.tsk-head { display: grid; gap: var(--pf-spacing-8); }
+.tsk-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pf-spacing-8) var(--pf-spacing-12); }
+/* «Пример» — Badge Neutral (без пунктира) */
+.tsk-example {
+  display: inline-flex; align-items: center; padding: var(--pf-spacing-4) var(--pf-spacing-8); border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s); background: var(--pf-bg-accent-status-neutral-main); color: var(--pf-text-neutral);
+}
+.tsk-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pf-spacing-8) var(--pf-spacing-16); }
+.tsk-filters label { display: inline-flex; align-items: center; gap: var(--pf-spacing-8); font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+/* Поле выбора — FieldSelect (§7.2): line-default → line-hover, radius-m */
 .tsk select {
-  min-height: 36px; max-width: 100%; padding: 6px 10px; font: inherit; font-size: 14px;
-  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+  min-height: 36px; max-width: 100%; padding: var(--pf-spacing-6) var(--pf-spacing-10);
+  font: var(--pf-font-body-m); font-size: 14px; line-height: 20px; font-weight: var(--pf-type-weight-500); /* pf-gap: label-m (14/20·500) */
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m);
+  transition: border-color 150ms ease;
 }
+.tsk select:hover { border-color: ${T.borderHover}; }
+.tsk select:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; }
 .tsk input[type='checkbox'] { accent-color: var(--ds-accent); width: 16px; height: 16px; margin: 0; }
-.tsk-filter-label { font-size: 13px; color: ${T.textSecondary}; }
-.tsk-picker { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+.tsk-filter-label { font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+.tsk-picker { position: relative; display: inline-flex; align-items: center; gap: var(--pf-spacing-8); }
 .tsk-picker-button {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 10px; font: inherit; font-size: 14px; cursor: pointer;
-  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+  display: inline-flex; align-items: center; gap: var(--pf-spacing-8); min-height: 36px; padding: var(--pf-spacing-6) var(--pf-spacing-10); cursor: pointer;
+  font: var(--pf-font-body-m); font-size: 14px; line-height: 20px; font-weight: var(--pf-type-weight-500); /* pf-gap: label-m (14/20·500) */
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m);
+  transition: border-color 150ms ease;
 }
-.tsk-picker-button[aria-expanded='true'], .tsk-picker-button:hover { border-color: var(--ds-accent); }
-.tsk-picker-chevron { font-size: 10px; color: ${T.textSecondary}; }
+.tsk-picker-button[aria-expanded='true'], .tsk-picker-button:hover { border-color: ${T.borderHover}; }
+.tsk-picker-chevron { font-size: 10px; /* размер глифа-шеврона, не текстовый стиль */ color: var(--pf-icon-secondary); }
+.tsk-picker-button:hover .tsk-picker-chevron { color: var(--pf-icon-primary); }
 .tsk-picker-panel {
-  position: absolute; top: calc(100% + 4px); left: 0; z-index: 10; display: grid; gap: 2px; min-width: 220px; max-height: 320px; overflow-y: auto;
-  padding: 6px; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; box-shadow: 0 8px 24px color-mix(in srgb, ${T.toastBackground} 16%, transparent);
+  position: absolute; top: calc(100% + var(--pf-spacing-4)); left: 0; z-index: 10; display: grid; gap: var(--pf-spacing-2); min-width: 220px; max-height: 320px; overflow-y: auto;
+  padding: var(--pf-spacing-6); background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m); box-shadow: ${T.shadow1};
 }
-.tsk-picker-option { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 14px; color: ${T.textPrimary}; }
-.tsk-picker-option:hover { background: ${T.surfaceMuted}; }
-.tsk-picker-reset { margin-top: 4px; padding: 6px 8px; font: inherit; font-size: 13px; text-align: left; cursor: pointer; color: var(--ds-accent); background: none; border: 0; border-top: 1px solid ${T.border}; }
-.tsk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.tsk-picker-option { display: flex; align-items: center; gap: var(--pf-spacing-8); min-height: 32px; padding: var(--pf-spacing-4) var(--pf-spacing-8); border-radius: var(--pf-radius-s); cursor: pointer; font: var(--pf-font-body-s); color: ${T.textPrimary}; }
+.tsk-picker-option:hover { background: #f5f5f5; /* pf-gap: bg-accent-states-hover (пачка №0) */ }
+.tsk-picker-reset { margin-top: var(--pf-spacing-4); padding: var(--pf-spacing-6) var(--pf-spacing-8); font: var(--pf-font-body-s); text-align: left; cursor: pointer; color: var(--ds-accent); text-decoration: var(--ds-link-decoration); background: none; border: 0; border-top: 1px solid ${T.border}; }
+.tsk-picker-reset:hover { text-decoration: underline; }
+/* Чипы исполнителей — Chip (§7.2) */
+.tsk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pf-spacing-6); }
 .tsk-chip {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer;
-  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: var(--pf-spacing-6); min-height: 32px; padding: var(--pf-spacing-4) var(--pf-spacing-10); font: var(--pf-font-body-s); cursor: pointer;
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-pill);
+  transition: background-color 150ms ease;
 }
-.tsk-chip:hover { border-color: var(--ds-accent); }
-.tsk-chip[aria-pressed='true'] { background: var(--ds-accent-bg); border-color: var(--ds-accent); color: var(--ds-accent); }
-.tsk-chip-count { font-size: 12px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.tsk-chip:hover { background: #f5f5f5; /* pf-gap: bg-accent-states-hover (пачка №0) */ }
+.tsk-chip[aria-pressed='true'] { background: var(--ds-selected-bg); border-color: var(--ds-selected-bg); color: var(--ds-selected-text); }
+.tsk-chip-count { font: var(--pf-font-body-s); font-size: 12px; line-height: 16px; /* pf-gap: body-xs (12/16·400) */ color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
 .tsk-chip[aria-pressed='true'] .tsk-chip-count { color: inherit; }
-.tsk-picker-button:focus-visible, .tsk-chip:focus-visible, .tsk-picker-reset:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
-.tsk-updated { margin-left: auto; font-size: 12px; color: ${T.textSecondary}; }
-.tsk-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 8px; }
-.tsk-col { display: grid; align-content: start; gap: 8px; padding: 12px; border-radius: ${T.tableWrapRadius}; background: ${T.surfaceZebra}; border: 1px solid ${T.border}; min-height: 160px; }
-.tsk-col-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 4px 4px; }
-.tsk-col-head h2 { font-size: 14px; line-height: 20px; }
-.tsk-col-head span { font-size: 12px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
-.tsk-empty { padding: 8px 4px; font-size: 13px; color: ${T.textSecondary}; }
+.tsk-picker-button:focus-visible, .tsk-chip:focus-visible, .tsk-picker-reset:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; }
+.tsk-updated { margin-left: auto; font: var(--pf-font-body-s); font-size: 12px; line-height: 16px; /* pf-gap: body-xs (12/16·400) */ color: ${T.textSecondary}; }
+/* Колонка канбана */
+.tsk-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: var(--pf-spacing-12); overflow-x: auto; padding-bottom: var(--pf-spacing-8); }
+.tsk-col { display: grid; align-content: start; gap: var(--pf-spacing-8); padding: var(--pf-spacing-12); border-radius: var(--pf-radius-m); background: ${T.surfaceZebra}; border: 1px solid ${T.border}; min-height: 160px; }
+.tsk-col-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--pf-spacing-8); padding: 0 var(--pf-spacing-4) var(--pf-spacing-4); }
+.tsk-col-head h2 { font-size: 14px; line-height: 20px; font-weight: var(--pf-type-weight-500); /* pf-gap: label-m (14/20·500) */ }
+.tsk-col-head span { font: var(--pf-font-body-s); color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.tsk-empty { padding: var(--pf-spacing-8) var(--pf-spacing-4); font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+/* Карточка задачи — IslandLink (§7.2) */
 .tsk-card {
-  display: grid; gap: 6px; width: 100%; padding: 12px; text-align: left; font: inherit; color: inherit; cursor: pointer;
-  background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+  display: grid; gap: var(--pf-spacing-6); width: 100%; padding: var(--pf-spacing-12); text-align: left; font: inherit; color: inherit; cursor: pointer;
+  background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m);
+  transition: border-color 150ms ease;
 }
-.tsk-card:hover { border-color: var(--ds-accent); }
-.tsk-card:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
-.tsk-id { font-size: 12px; line-height: 16px; color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
-.tsk-card-title { font-size: 14px; line-height: 20px; font-weight: 500; }
-.tsk-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-.tsk-tag { padding: 2px 6px; border-radius: 4px; background: ${T.surfaceMuted}; color: ${T.textSecondary}; font-size: 11px; line-height: 16px; font-weight: 500; }
-.tsk-tag-main { background: var(--ds-accent-bg); color: var(--ds-accent); }
-.tsk-meta { display: grid; gap: 2px; font-size: 12px; line-height: 16px; color: ${T.textSecondary}; }
-.tsk-meta b { font-weight: 500; color: ${T.textPrimary}; }
+.tsk-card:hover { border-color: ${T.borderHover}; }
+.tsk-card:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; }
+.tsk-id { font: var(--pf-font-code-s); color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.tsk-card-title { font-size: 14px; line-height: 20px; font-weight: var(--pf-type-weight-500); /* pf-gap: label-m (14/20·500) */ }
+.tsk-tags { display: flex; flex-wrap: wrap; gap: var(--pf-spacing-4); }
+/* Теги — Badge Neutral; главный — Badge Vivid Soft */
+.tsk-tag {
+  display: inline-flex; align-items: center; padding: var(--pf-spacing-4) var(--pf-spacing-8); border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s); background: var(--pf-bg-accent-status-neutral-main); color: var(--pf-text-neutral);
+}
+.tsk-tag-main { background: var(--pf-bg-accent-vivid-fade); color: var(--pf-text-accent-vivid); }
+.tsk-meta { display: grid; gap: var(--pf-spacing-2); font-size: 12px; line-height: 16px; font-weight: var(--pf-type-weight-400); /* pf-gap: body-xs (12/16·400) */ color: ${T.textSecondary}; }
+.tsk-meta b { font-weight: var(--pf-type-weight-500); color: ${T.textPrimary}; }
 .tsk-waiting { color: ${T.textPrimary}; }
-.tsk-status { max-width: 560px; margin: 80px auto; display: grid; gap: 12px; }
-.tsk-status a { color: var(--ds-accent); }
+.tsk-status { max-width: 560px; margin: 80px auto; display: grid; gap: var(--pf-spacing-12); }
+.tsk-status a { color: var(--ds-accent); text-decoration: var(--ds-link-decoration); }
+/* Диалог задачи — Dialog (§7.2) */
 .tsk dialog {
   width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 0;
-  border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; color: ${T.textPrimary}; background: ${T.surface};
+  border: 1px solid ${T.border}; border-radius: var(--pf-radius-xl); box-shadow: ${T.shadow2}; color: ${T.textPrimary}; background: ${T.surface};
 }
-.tsk dialog::backdrop { background: color-mix(in srgb, ${T.toastBackground} 40%, transparent); }
-.tsk-dialog { display: grid; gap: 16px; padding: 24px; }
-.tsk-dialog-head { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
-.tsk-dialog-head h2 { font-size: 22px; line-height: 28px; }
+.tsk dialog::backdrop { background: color-mix(in srgb, ${T.toastBackground} 40%, transparent); /* pf-gap: bg-overlay */ }
+.tsk-dialog { display: grid; gap: var(--pf-spacing-16); padding: var(--pf-spacing-24); }
+.tsk-dialog-head { display: flex; justify-content: space-between; align-items: start; gap: var(--pf-spacing-16); }
+.tsk-dialog-head h2 { font: var(--pf-font-heading-m); }
 .tsk-close {
-  flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0 12px; font: inherit; font-size: 14px; cursor: pointer;
-  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius};
+  flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0 var(--pf-spacing-12); cursor: pointer;
+  font: var(--pf-font-body-m); font-size: 14px; line-height: 20px; font-weight: var(--pf-type-weight-500); /* pf-gap: label-m (14/20·500) */
+  color: ${T.textPrimary}; background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m);
 }
-.tsk-close:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
-.tsk-fields { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; font-size: 14px; }
+.tsk-close:hover { background: #f5f5f5; /* pf-gap: bg-accent-states-hover (пачка №0) */ }
+.tsk-close:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; }
+.tsk-fields { display: grid; grid-template-columns: max-content 1fr; gap: var(--pf-spacing-6) var(--pf-spacing-16); margin: 0; font: var(--pf-font-body-m); }
 .tsk-fields dt { color: ${T.textSecondary}; }
 .tsk-fields dd { margin: 0; }
-.tsk-desc p, .tsk-desc ul, .tsk-desc ol { margin: 0 0 8px; }
-.tsk-desc ul, .tsk-desc ol { padding-left: 20px; }
-.tsk-desc h3 { margin: 12px 0 6px; font-size: 15px; }
-.tsk-desc code { padding: 1px 4px; border-radius: 4px; background: ${T.surfaceMuted}; font-size: 13px; }
-.tsk-section h3 { margin: 0 0 8px; font-size: 15px; }
-.tsk-links { margin: 0; padding-left: 20px; }
-.tsk-links a { color: var(--ds-accent); }
-.tsk-history { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13px; }
-.tsk-history time { color: ${T.textSecondary}; font-variant-numeric: tabular-nums; margin-right: 8px; }
-@media (max-width: 768px) {
+.tsk-desc p, .tsk-desc ul, .tsk-desc ol { margin: 0 0 var(--pf-spacing-8); }
+.tsk-desc ul, .tsk-desc ol { padding-left: var(--pf-spacing-20); }
+.tsk-desc h3 { margin: var(--pf-spacing-12) 0 var(--pf-spacing-6); font: var(--pf-font-heading-s); }
+.tsk-desc code { padding: var(--pf-spacing-2) var(--pf-spacing-4); border-radius: var(--pf-radius-s); background: ${T.surfaceMuted}; font: var(--pf-font-code-s); }
+.tsk-section h3 { margin: 0 0 var(--pf-spacing-8); font: var(--pf-font-heading-s); }
+.tsk-links { margin: 0; padding-left: var(--pf-spacing-20); }
+.tsk-links a { color: var(--ds-accent); text-decoration: var(--ds-link-decoration); }
+.tsk-history { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--pf-spacing-6); font: var(--pf-font-body-s); }
+.tsk-history time { color: ${T.textSecondary}; font-variant-numeric: tabular-nums; margin-right: var(--pf-spacing-8); }
+@media (max-width: 767px) {
   .tsk { padding: ${T.pagePaddingMobile}; }
-  .tsk h1 { font-size: 26px; line-height: 32px; }
   .tsk-updated { margin-left: 0; }
-  .tsk-fields { grid-template-columns: 1fr; gap: 2px; }
-  .tsk-fields dd { margin-bottom: 8px; }
+  .tsk-fields { grid-template-columns: 1fr; gap: var(--pf-spacing-2); }
+  .tsk-fields dd { margin-bottom: var(--pf-spacing-8); }
 }
 `;
 
@@ -590,24 +613,22 @@ export function TasksPage() {
   }, []);
 
   return (
-    <ProductAccentScope productId={DEFAULT_PRODUCT_ID}>
-      <div className="tsk">
-        <style>{PAGE_STYLE}</style>
-        <main className="tsk-shell">
-          <header className="tsk-head">
-            <div className="tsk-eyebrow">
-              <a href={withBase('/manage')}>Управление</a>
-            </div>
-            <div className="tsk-title-row">
-              <h1>Задачи</h1>
-              {state.kind === 'ready' && state.board.example && (
-                <span className="tsk-example">Пример — вымышленные задачи, настоящие появятся после подключения сервиса задач</span>
-              )}
-            </div>
-          </header>
-          {state.kind === 'ready' ? <Board board={state.board} loadedAt={state.loadedAt} /> : <Status state={state} />}
-        </main>
-      </div>
-    </ProductAccentScope>
+    <div className="tsk">
+      <style>{PAGE_STYLE}</style>
+      <main className="tsk-shell">
+        <header className="tsk-head">
+          <div className="tsk-eyebrow">
+            <a href={withBase('/manage')}>Управление</a>
+          </div>
+          <div className="tsk-title-row">
+            <h1>Задачи</h1>
+            {state.kind === 'ready' && state.board.example && (
+              <span className="tsk-example">Пример — вымышленные задачи, настоящие появятся после подключения сервиса задач</span>
+            )}
+          </div>
+        </header>
+        {state.kind === 'ready' ? <Board board={state.board} loadedAt={state.loadedAt} /> : <Status state={state} />}
+      </main>
+    </div>
   );
 }

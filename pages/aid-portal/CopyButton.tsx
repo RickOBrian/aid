@@ -4,31 +4,29 @@ export const COPY_BUTTON_STYLE = `
 .ds-copy-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--pf-spacing-4);
   margin: 0;
-  padding: 2px 8px;
-  border: 1px solid #ebedf0;
-  border-radius: 6px;
-  background: #ffffff;
-  font: inherit;
-  font-size: 11px;
-  line-height: 16px;
-  color: rgba(0, 0, 0, 0.54);
+  padding: var(--pf-spacing-2) var(--pf-spacing-8);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-s);
+  background: var(--pf-bg-surface-main);
+  font: var(--pf-font-label-s);
+  color: var(--pf-text-secondary);
   cursor: pointer;
   white-space: nowrap;
 }
 .ds-copy-btn:hover {
-  color: #2d2c2e;
-  border-color: #d7dade;
+  color: var(--pf-text-primary);
+  border-color: var(--pf-line-hover);
 }
 .ds-copy-btn:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-copy-btn[data-copied="true"] {
-  color: #1f7a3f;
-  border-color: #b9e6c9;
-  background: #eef8f1;
+  color: var(--pf-text-success);
+  border-color: var(--pf-bg-accent-status-success-main);
+  background: var(--pf-bg-accent-status-success-main);
 }
 `;
 

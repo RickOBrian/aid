@@ -12,7 +12,7 @@ export const DS_COLOR_SWATCH_STYLE = `
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
   min-width: 0;
 }
 .ds-color-mode-cell-meta {
@@ -38,7 +38,7 @@ export const DS_COLOR_SWATCH_STYLE = `
   padding: 0;
   border: none;
   background: none;
-  border-radius: 4px;
+  border-radius: var(--pf-radius-s);
   cursor: pointer;
 }
 .ds-color-swatch-btn:hover {
@@ -48,14 +48,14 @@ export const DS_COLOR_SWATCH_STYLE = `
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #ffffff;
+  border-radius: var(--pf-radius-s);
+  border: 1px solid var(--pf-line-default);
+  background-color: var(--pf-bg-surface-main);
   background-image:
-    linear-gradient(45deg, #eeeeee 25%, transparent 25%),
-    linear-gradient(-45deg, #eeeeee 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #eeeeee 75%),
-    linear-gradient(-45deg, transparent 75%, #eeeeee 75%);
+    linear-gradient(45deg, var(--pf-bg-surface-muted) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--pf-bg-surface-muted) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--pf-bg-surface-muted) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--pf-bg-surface-muted) 75%);
   background-size: 8px 8px;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0;
   overflow: hidden;

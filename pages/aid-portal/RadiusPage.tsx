@@ -25,18 +25,17 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   box-sizing: border-box;
 }
 .drp {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 40px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .drp-search-empty {
   margin: 0;
-  padding: 24px 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  line-height: 20px;
+  padding: var(--pf-spacing-24) 0;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-m);
 }
 .drp-table-wrap {
   min-width: 0;
@@ -45,64 +44,64 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   min-width: 440px;
 }
 .drp-table td {
-  padding: 12px 16px;
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
 }
 .drp-col-name {
   min-width: 200px;
 }
 .drp-name {
+  /* pf-gap: label-m 14/20·500 — имя токена; размер прежний */
   font-size: 14px;
   line-height: 20px;
-  color: #2d2c2e;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
 }
 .drp-col-visual {
   width: 120px;
 }
 .drp-col-value {
   min-width: 120px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
 }
 .drp-visual {
   width: 48px;
   height: 48px;
-  background: var(--ds-accent-bg);
-  border-top: 4px solid var(--ds-accent);
-  border-right: 4px solid var(--ds-accent);
+  background: var(--pf-bg-surface-muted);
+  border-top: 4px solid var(--pf-line-hover);
+  border-right: 4px solid var(--pf-line-hover);
   border-bottom: none;
   border-left: none;
 }
 .drp-cards {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .drp-card {
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 14px 16px;
-  background: #ffffff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-16) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
 }
 .drp-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: var(--pf-spacing-12);
+  margin-bottom: var(--pf-spacing-12);
 }
 .drp-card-value {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #2d2c2e;
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-primary);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .drp {
-    padding: 32px 24px 48px;
+    padding: var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48);
   }
 }
 @media (max-width: 767px) {
   .drp {
-    padding: 20px 16px 40px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .drp-table-wrap {
     display: none;

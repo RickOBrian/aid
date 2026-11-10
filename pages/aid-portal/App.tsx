@@ -19,6 +19,7 @@ import { BadgeDotPage } from './BadgeDotPage';
 import { GuidesHubPage } from './GuidesHubPage';
 import { ToolsHubPage } from './ToolsHubPage';
 import { TokenComparatorPluginPage } from './TokenComparatorPluginPage';
+import { MapShimmerPage } from './MapShimmerPage';
 import { GuidePage, findGuideByPath } from './GuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
@@ -109,6 +110,10 @@ function resolveSectionKey(remainder: string) {
     return 'toolsTokenComparator' as const;
   }
 
+  if (path === HUB_ROUTES.toolsMapShimmer) {
+    return 'toolsMapShimmer' as const;
+  }
+
   return 'not-found' as const;
 }
 
@@ -120,16 +125,16 @@ function NotFoundPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: "'Google Sans', system-ui, sans-serif",
-        color: '#2d2c2e',
-        background: '#f5f5f5',
-        padding: 24,
+        fontFamily: 'var(--pf-type-family-sans-1)',
+        color: 'var(--pf-text-primary)',
+        background: 'var(--pf-bg-surface-main)',
+        padding: 'var(--pf-spacing-24)',
         textAlign: 'center',
       }}
     >
       <div>
-        <p style={{ margin: '0 0 12px', fontSize: 18 }}>Страница не найдена</p>
-        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: '#2d2c2e' }}>
+        <p style={{ margin: '0 0 var(--pf-spacing-12)', font: 'var(--pf-font-heading-m)' }}>Страница не найдена</p>
+        <a href={withBase(productHubPath(resolveProductId(currentAppPath())))} style={{ color: 'var(--pf-text-accent)', textDecoration: 'underline' }}>
           Перейти на главную
         </a>
       </div>
@@ -167,7 +172,7 @@ export function App() {
     // Гайд не принадлежит продукту и ставит свой заголовок сам. Эффект
     // родителя выполняется после эффекта потомка, поэтому без этой проверки
     // он бы перезаписал название гайда меткой продукта.
-    if (page !== 'not-found' && page !== 'guide') {
+    if (page !== 'not-found' && page !== 'guide' && page !== 'toolsMapShimmer') {
       document.title = getProductLabel(productId);
     }
   }, [productId, page]);
@@ -202,6 +207,8 @@ export function App() {
     content = <ToolsHubPage />;
   } else if (page === 'toolsTokenComparator') {
     content = <TokenComparatorPluginPage />;
+  } else if (page === 'toolsMapShimmer') {
+    content = <MapShimmerPage />;
   } else if (productId !== DEFAULT_PRODUCT_ID) {
     content = <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
   } else if (page === 'icons') {
@@ -224,5 +231,12 @@ export function App() {
     content = <NotFoundPage />;
   }
 
+  // Гайды, инструменты и «не найдено» не зависят от продукта: хром у них —
+  // графит Kit из `:root`, без цвета продукта (приёмка #384, п. 1).
+  const productNeutral =
+    page === 'not-found' || page === 'guides' || page === 'guide' || page === 'tools' || page === 'toolsTokenComparator' || page === 'toolsMapShimmer';
+  if (productNeutral || content.type === NotFoundPage) {
+    return content;
+  }
   return <ProductAccentScope productId={productId}>{content}</ProductAccentScope>;
 }

@@ -9,6 +9,13 @@
       "sourcePath": "tools/figma-token-comparator/",
       "downloadUrl": "https://github.com/RickOBrian/aid/releases/latest/download/token-comparator.zip",
       "downloadLabel": "Скачать плагин для Figma"
+    },
+    {
+      "pluginId": "map-shimmer",
+      "canonicalName": "Map Loading Shimmer",
+      "reviewRoute": "/tools/map-shimmer",
+      "pluginsGroup": "Rider",
+      "description": "Настройщик блика и приглушения карты Rider в состоянии Loading: полосы, угол, цикл, цвета — JSON для чата Map"
     }
   ]
 }

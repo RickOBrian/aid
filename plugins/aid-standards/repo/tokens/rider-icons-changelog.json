@@ -1,0 +1,139 @@
+{
+  "artifact": "Icons/Rider",
+  "currentVersion": "1.7.0",
+  "figmaTable": {
+    "fileKey": "n6LppQbTv85yI29h6u30DI",
+    "nodeId": "3703:4"
+  },
+  "entries": [
+    {
+      "version": "1.7.0",
+      "date": "2026-10-25",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_chat_call_fill\nic_chat_call_outline"
+        }
+      ]
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-10-22",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_delivery_fill\nic_medicine_case_fill"
+        }
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-10-21",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлено 60 иконок и 3 новые категории: Road Events, Payments, Theme.",
+          "details": "Controls: ic_done_bold, ic_done_double, ic_done_double_bold, ic_done_small, ic_chevron_large_left, ic_chevron_large_right, ic_close_large, ic_repeat\nActions: ic_call_off_outline, ic_call_off_fill, ic_chat_duo_fill, ic_message_balloon_outline, ic_message_balloon_fill, ic_lightning_off_outline, ic_exit, ic_external_link, ic_map_outline, ic_download, ic_update\ninformative: ic_pin_fill, ic_pin_outline, ic_done_outline, ic_taxi_fill, ic_time_outline, ic_envelope_outline, ic_document_outline, ic_info_outline, ic_search_car, ic_search_taxi, ic_pet, ic_support, ic_chart, ic_safety_warning, ic_lifebuoy, ic_clipboard_outline\nAddresses: ic_house_tree_fill\nBrands: ic_watermelon_outline, ic_watermelon_color, ic_whatsapp_outline, ic_whatsapp_fill, ic_telegram_fill, ic_viber_outline\nPayments (новая): ic_cash_fill, ic_cash_outline, ic_card_outline, ic_wallet_fill, ic_nfc, ic_receipt_outline, ic_receipt_fill\nRoad Events (новая): ic_snail_fill, ic_cow_fill, ic_railway_fill, ic_police_post_fill, ic_barrier, ic_no_turn, ic_danger_fill, ic_bumps, ic_roadworks\nTheme (новая): ic_theme_system, ic_theme_dark, ic_theme_light"
+        },
+        {
+          "kind": "changed",
+          "description": "Заменён вектор у 47 иконок; переименованы 26 иконок; ic_card и ic_cash перенесены в Payments.",
+          "details": "Новый вектор: ic_back, ic_lock, ic_location, ic_search, ic_attention, ic_delete, ic_wait, ic_chat, ic_question, ic_refresh, ic_attach, ic_done, ic_forbidden (informative), ic_minus, ic_plus, ic_share_ios, ic_close, ic_loading, ic_wheel, ic_route, ic_lightning, ic_transport_airport, ic_walkman, ic_people, ic_safety, ic_info, ic_discount, ic_options, ic_drag, ic_surge, ic_history, ic_person (informative)\nНовый вектор + имя: ic_done (informative) → ic_done_fill, ic_share _android → ic_share_android, ic_call → ic_call_fill, ic_trash → ic_trash_fill, ic_documents → ic_document_fill, ic_settings → ic_settings_fill, ic_card → ic_card_fill, ic_add_circle → ic_add_circle_fill, ic_delete_circle → ic_delete_circle_fill, ic_menu → ic_menu_outline, ic_scan_qr → ic_scan_card, ic_person (Addresses) → ic_person_circle, ic_copy → ic_copy_outline, ic_taxi → ic_taxi_outline, ic_envelope → ic_envelope_fill\nТолько имя: ic_arrow_left → ic_chevron_left, ic_arrow_up → ic_chevron_up, ic_arrow_right → ic_chevron_right, ic_arrow_down → ic_chevron_down, ic_set_on_map → ic_pin_fill_city, ic_favorite (Actions) → ic_favorite_fill, ic_cash → ic_cash_city, ic_circle → ic_circle_stop\nИсправлены повторы имён: ic_spasibo_color (монохромная) → ic_spasibo, ic_mirbg_color (монохромная) → ic_mirbg, ic_forbidden (Scooters) → ic_scooter_forbidden"
+        },
+        {
+          "kind": "removed",
+          "description": "Удалена иконка.",
+          "details": "ic_ride_experience"
+        }
+      ]
+    },
+    {
+      "version": "1.4.0",
+      "date": "2026-10-14",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_question_smooth"
+        }
+      ]
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-10-13",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_placeholder"
+        },
+        {
+          "kind": "changed",
+          "description": "ic_favorite — изменился вектор иконки",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-09-11",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые иконки.",
+          "details": "ic_no_location\nic_passenger\nic_finish_flag\nic_addresse_home\nic_addresse_work\nic_tree\nic_circle\nic_drag"
+        },
+        {
+          "kind": "changed",
+          "description": "Изменился верктор в иконке ic_location",
+          "details": ""
+        }
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-09-10",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены новые иконки.",
+          "details": "ic_forbidden\nic_question"
+        },
+        {
+          "kind": "removed",
+          "description": "Удалена иконка Radiobutton.",
+          "details": "Radiobutton"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-27",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Полный набор иконок дизайн-системы, сгруппированных по категориям.",
+          "details": "Actions (21):\n  • ic_send\n  • ic_add_home\n  • ic_pencil\n  • ic_trash\n  • ic_set_photo\n  • ic_call\n  • ic_chat\n  • ic_copy\n  • ic_options\n  • ic_schedule\n  • ic_share_ios\n  • ic_share _android\n  • ic_attach\n  • ic_search\n  • ic_favorite\n  • ic_more\n  • ic_add_person\n  • ic_add_circle\n  • ic_settings\n  • ic_more_vert\n  • ic_scan_qr\n\nAddresses (6):\n  • ic_home\n  • ic_work\n  • ic_countryside\n  • ic_default\n  • ic_favorite\n  • ic_person\n\nControls (17):\n  • ic_back\n  • ic_arrow_right\n  • ic_arrow_left\n  • ic_arrow_up\n  • ic_arrow_down\n  • ic_change\n  • ic_plus\n  • ic_minus\n  • ic_close\n  • ic_menu\n  • ic_done\n  • ic_refresh\n  • Radiobutton\n  • ic_delete\n  • ic_delete_circle\n  • ic_plus_mini\n  • ic_delete_mini\n\nInformative (54):\n  • ic_taxi\n  • ic_scooter\n  • ic_eco\n  • ic_people\n  • ic_surge_down\n  • ic_finish\n  • ic_lightning\n  • ic_luggage\n  • ic_gift\n  • ic_price\n  • ic_set_on_map\n  • ic_ride_experience\n  • ic_safety\n  • ic_number\n  • ic_seat\n  • ic_documents\n  • ic_wheel\n  • ic_info\n  • ic_faq\n  • ic_attention\n  • ic_lock\n  • ic_unlock\n  • ic_road\n  • ic_walkman\n  • ic_route\n  • ic_assistant\n  • ic_discount\n  • ic_location\n  • ic_magic\n  • ic_streaming\n  • ic_star\n  • ic_star_outlined\n  • ic_surge\n  • ic_discount_min\n  • ic_heart\n  • ic_person\n  • ic_police\n  • ic_shared_account\n  • ic_loading\n  • ic_food\n  • ic_tips\n  • ic_network_offline\n  • ic_done\n  • ic_wait\n  • ic_squircle_wait\n  • ic_history\n  • ic_business\n  • ic_squircle_star\n  • ic_sand_clock\n  • ic_envelope\n  • ic_card\n  • ic_cash\n  • ic_phone\n  • ic_house\n\nBrands (30):\n  • ic_vk_color\n  • ic_sber_color\n  • ic_citycoin_color\n  • ic_spasibo_color\n  • ic_dc_color\n  • ic_apple_color\n  • ic_vk\n  • ic_sber\n  • ic_citycoin\n  • ic_spasibo_color\n  • ic_dc\n  • ic_apple\n  • ic_mastercard_color\n  • ic_maestro_color\n  • ic_visa_color\n  • ic_visabg_color\n  • ic_mir_color\n  • ic_mirbg_color\n  • ic_applepay_color\n  • ic_googlepay_color\n  • ic_sberpay_color\n  • ic_mastercard\n  • ic_maestro\n  • ic_visa\n  • ic_visabg\n  • ic_mir\n  • ic_mirbg_color\n  • ic_applepay\n  • ic_googlepay\n  • ic_sberpay\n\nStatus (2):\n  • ic_succes\n  • ic_error\n\nMarkers (30):\n  • ic_accommodation_main\n  • ic_business_atm\n  • ic_business_main\n  • ic_business_petrolstation\n  • ic_business_touristinformation\n  • ic_eatdrink_barpub\n  • ic_eatdrink_coffee\n  • ic_eatdrink_main\n  • ic_facilities_bank\n  • ic_facilities_education\n  • ic_facilities_hospital\n  • ic_sights_attraction\n  • ic_sights_religious\n  • ic_transport_aerial\n  • ic_transport_airport\n  • ic_transport_bus\n  • ic_transport_ferry\n  • ic_transport_inclined\n  • ic_transport_rail_regional\n  • ic_facilities_parking\n  • ic_goingout_cinema\n  • ic_goingout_main\n  • ic_leisure_amusement\n  • ic_leisure_sport\n  • ic_leisure_zoo\n  • ic_natural_main\n  • ic_shopping_main\n  • ic_shopping_pharmacy\n  • ic_adress\n  • ic_adress_to\n\nScooters (5):\n  • ic_forbidden\n  • ic_parking\n  • ic_no_parking\n  • ic_parking_tarif\n  • ic_speed"
+        }
+      ]
+    }
+  ]
+}

@@ -4,8 +4,6 @@ import { isTaskBoard, type TaskBoard } from './api/_lib/tasks';
 import { apiUrl, withBase } from './base';
 import { DS_PORTAL_LAYOUT_TOKENS } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
-import { ProductAccentScope } from './ProductAccentScope';
-import { DEFAULT_PRODUCT_ID } from './productRegistry';
 import { personName } from './tasksModel';
 import { agentSummary, agentTags, personTags } from './teamModel';
 
@@ -22,41 +20,48 @@ const T = DS_PORTAL_LAYOUT_TOKENS;
 const PAGE_STYLE = `
 ${DS_PRODUCT_ACCENT_STYLE}
 .tm, .tm *, .tm *::before, .tm *::after { box-sizing: border-box; }
-.tm { font-family: ${T.fontFamily}; color: ${T.textPrimary}; background: ${T.surface}; min-height: 100vh; padding: ${T.pagePaddingDesktop}; font-size: 14px; line-height: 20px; }
-.tm-shell { max-width: 1200px; margin: 0 auto; display: grid; gap: 32px; }
+.tm { font: var(--pf-font-body-m); color: ${T.textPrimary}; background: ${T.surface}; min-height: 100vh; padding: ${T.pagePaddingDesktop}; }
+.tm-shell { max-width: 1200px; margin: 0 auto; display: grid; gap: var(--pf-spacing-32); }
 .tm-shell > * { min-width: 0; }
-.tm h1, .tm h2, .tm h3 { margin: 0; font-weight: 500; }
-.tm h1 { font-size: 32px; line-height: 40px; }
-.tm h2 { font-size: 20px; line-height: 28px; }
-.tm-eyebrow { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: ${T.tableHeadLetterSpacing}; text-transform: uppercase; color: ${T.textSecondary}; }
+.tm h1, .tm h2, .tm h3 { margin: 0; font-weight: var(--pf-type-weight-500); }
+.tm h1 { font: var(--pf-font-heading-l); letter-spacing: var(--pf-tracking-heading-l); }
+.tm h2 { font: var(--pf-font-heading-m); }
+.tm-eyebrow { font: var(--pf-font-label-xs-caps); letter-spacing: var(--pf-tracking-label-xs-caps); text-transform: uppercase; color: ${T.textSecondary}; }
 .tm-eyebrow a { color: inherit; text-decoration: none; }
 .tm-eyebrow a:hover { text-decoration: underline; }
-.tm-head { display: grid; gap: 8px; }
+.tm-head { display: grid; gap: var(--pf-spacing-8); }
 .tm-muted { color: ${T.textSecondary}; }
-.tm-section { display: grid; gap: 12px; }
-.tm-section-head { display: flex; align-items: baseline; gap: 8px; }
-.tm-section-head span { color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
-.tm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
-.tm-card { display: grid; align-content: start; gap: 8px; height: 100%; padding: 16px; border: 1px solid ${T.border}; border-radius: ${T.tableWrapRadius}; }
-.tm-name { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
-.tm-name h3 { font-size: 16px; line-height: 24px; }
-.tm-login { font-size: 12px; color: ${T.textSecondary}; }
-.tm-badge { padding: 1px 6px; border-radius: 4px; font-size: 11px; line-height: 16px; font-weight: 500; background: ${T.surfaceMuted}; color: ${T.textSecondary}; }
-.tm-badge-ai { background: var(--ds-accent-bg); color: var(--ds-accent); }
+.tm-section { display: grid; gap: var(--pf-spacing-12); }
+.tm-section-head { display: flex; align-items: baseline; gap: var(--pf-spacing-8); }
+.tm-section-head span { font: var(--pf-font-body-s); color: ${T.textSecondary}; font-variant-numeric: tabular-nums; }
+.tm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--pf-spacing-12); margin: 0; padding: 0; list-style: none; }
+.tm-card { display: grid; align-content: start; gap: var(--pf-spacing-8); height: 100%; padding: var(--pf-spacing-16); background: ${T.surface}; border: 1px solid ${T.border}; border-radius: var(--pf-radius-m); }
+.tm-name { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pf-spacing-6) var(--pf-spacing-8); }
+.tm-name h3 { font: var(--pf-font-heading-s); }
+.tm-login { font: var(--pf-font-code-s); color: ${T.textSecondary}; }
+/* Бейдж «менеджер» — Badge Neutral; «AI» — Badge Vivid Soft */
+.tm-badge {
+  display: inline-flex; align-items: center; padding: var(--pf-spacing-4) var(--pf-spacing-8); border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s); background: var(--pf-bg-accent-status-neutral-main); color: var(--pf-text-neutral);
+}
+.tm-badge-ai { background: var(--pf-bg-accent-vivid-fade); color: var(--pf-text-accent-vivid); }
 .tm-summary { margin: 0; color: ${T.textSecondary}; }
-.tm-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-.tm-tag { padding: 2px 6px; border-radius: 4px; background: ${T.surfaceMuted}; color: ${T.textSecondary}; font-size: 11px; line-height: 16px; font-weight: 500; }
-.tm-meta { display: grid; gap: 2px; font-size: 13px; color: ${T.textSecondary}; }
-.tm-meta b { font-weight: 500; color: ${T.textPrimary}; }
-.tm-links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 4px; font-size: 13px; }
-.tm-links a { color: var(--ds-accent); text-decoration: none; }
+.tm-tags { display: flex; flex-wrap: wrap; gap: var(--pf-spacing-4); }
+/* Тег — Badge Neutral */
+.tm-tag {
+  display: inline-flex; align-items: center; padding: var(--pf-spacing-4) var(--pf-spacing-8); border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s); background: var(--pf-bg-accent-status-neutral-main); color: var(--pf-text-neutral);
+}
+.tm-meta { display: grid; gap: var(--pf-spacing-2); font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+.tm-meta b { font-weight: var(--pf-type-weight-500); color: ${T.textPrimary}; }
+.tm-links { display: flex; flex-wrap: wrap; gap: var(--pf-spacing-4) var(--pf-spacing-16); margin-top: var(--pf-spacing-4); font: var(--pf-font-body-s); }
+.tm-links a { color: var(--ds-accent); text-decoration: var(--ds-link-decoration); }
 .tm-links a:hover { text-decoration: underline; }
-.tm a:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; border-radius: 2px; }
+.tm a:focus-visible { outline: ${T.focusRing}; outline-offset: ${T.focusOffset}; border-radius: var(--pf-radius-s); }
 .tm-status { max-width: 560px; margin: 80px auto; }
-.tm-status a { color: var(--ds-accent); }
-@media (max-width: 768px) {
+.tm-status a { color: var(--ds-accent); text-decoration: var(--ds-link-decoration); }
+@media (max-width: 767px) {
   .tm { padding: ${T.pagePaddingMobile}; }
-  .tm h1 { font-size: 26px; line-height: 32px; }
 }
 `;
 
@@ -180,59 +185,57 @@ export function TeamPage() {
   }, []);
 
   return (
-    <ProductAccentScope productId={DEFAULT_PRODUCT_ID}>
-      <div className="tm">
-        <style>{PAGE_STYLE}</style>
-        <main className="tm-shell">
-          <header className="tm-head">
-            <div className="tm-eyebrow">
-              <a href={withBase('/manage')}>Управление</a>
-            </div>
-            <h1>Команда</h1>
-            <p className="tm-muted">Живые инженеры и AI-инженеры AID. У каждого AI-инженера есть куратор — живой инженер, без его «да» задача не мержится.</p>
-          </header>
-          {state.kind === 'ready' ? (
-            <>
-              <section className="tm-section" aria-labelledby="tm-people">
-                <div className="tm-section-head">
-                  <h2 id="tm-people">Люди</h2>
-                  <span>{state.owners.people.length}</span>
-                </div>
-                <ul className="tm-grid">
-                  {state.owners.people.map((person) => (
-                    <li key={person.github}>
-                      <PersonCard person={person} people={people} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <section className="tm-section" aria-labelledby="tm-agents">
-                <div className="tm-section-head">
-                  <h2 id="tm-agents">AI-инженеры</h2>
-                  <span>{state.owners.agents.length}</span>
-                </div>
-                <ul className="tm-grid">
-                  {state.owners.agents.map((agent) => (
-                    <li key={agent.id}>
-                      <AgentCard agent={agent} people={people} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </>
-          ) : (
-            <div className="tm-status" role="status">
-              {state.kind === 'loading' && <p className="tm-muted">Загружаем команду…</p>}
-              {state.kind === 'unauthorized' && (
-                <p className="tm-muted">
-                  Сессия закончилась. <a href={withBase('/login')}>Войти снова</a>
-                </p>
-              )}
-              {state.kind === 'unavailable' && <p className="tm-muted">Список команды сейчас недоступен. Попробуйте обновить страницу позже.</p>}
-            </div>
-          )}
-        </main>
-      </div>
-    </ProductAccentScope>
+    <div className="tm">
+      <style>{PAGE_STYLE}</style>
+      <main className="tm-shell">
+        <header className="tm-head">
+          <div className="tm-eyebrow">
+            <a href={withBase('/manage')}>Управление</a>
+          </div>
+          <h1>Команда</h1>
+          <p className="tm-muted">Живые инженеры и AI-инженеры AID. У каждого AI-инженера есть куратор — живой инженер, без его «да» задача не мержится.</p>
+        </header>
+        {state.kind === 'ready' ? (
+          <>
+            <section className="tm-section" aria-labelledby="tm-people">
+              <div className="tm-section-head">
+                <h2 id="tm-people">Люди</h2>
+                <span>{state.owners.people.length}</span>
+              </div>
+              <ul className="tm-grid">
+                {state.owners.people.map((person) => (
+                  <li key={person.github}>
+                    <PersonCard person={person} people={people} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <section className="tm-section" aria-labelledby="tm-agents">
+              <div className="tm-section-head">
+                <h2 id="tm-agents">AI-инженеры</h2>
+                <span>{state.owners.agents.length}</span>
+              </div>
+              <ul className="tm-grid">
+                {state.owners.agents.map((agent) => (
+                  <li key={agent.id}>
+                    <AgentCard agent={agent} people={people} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </>
+        ) : (
+          <div className="tm-status" role="status">
+            {state.kind === 'loading' && <p className="tm-muted">Загружаем команду…</p>}
+            {state.kind === 'unauthorized' && (
+              <p className="tm-muted">
+                Сессия закончилась. <a href={withBase('/login')}>Войти снова</a>
+              </p>
+            )}
+            {state.kind === 'unavailable' && <p className="tm-muted">Список команды сейчас недоступен. Попробуйте обновить страницу позже.</p>}
+          </div>
+        )}
+      </main>
+    </div>
   );
 }

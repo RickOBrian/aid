@@ -1,0 +1,89 @@
+{
+  "file": "AwRpEGfyeNjRbZP8KGG1wy",
+  "page": "0:88 Icons",
+  "date": "2026-10-26",
+  "method": "verify-icons.js; у экземпляров не считаются скрытые свойства; чейнжлог — методом «до» (все свойства)",
+  "blocks": {
+    "3465:68 Page 3 (Правила иконок)": {
+      "n": 5,
+      "hash": "2f34ef32"
+    },
+    "4:186 alternative": {
+      "n": 1,
+      "hash": "1ced93b2"
+    },
+    "732:917 informative": {
+      "n": 1,
+      "hash": "8396aabb"
+    },
+    "653:1418 action": {
+      "n": 1,
+      "hash": "94118e3b"
+    },
+    "732:919 controls": {
+      "n": 1,
+      "hash": "13d954d1"
+    },
+    "732:920 operations": {
+      "n": 1,
+      "hash": "7018463"
+    },
+    "2641:4 navigator": {
+      "n": 1,
+      "hash": "b9a8f5ba"
+    },
+    "5503:18 CHANGELOG": {
+      "n": 16,
+      "hash": "cfd50982"
+    }
+  },
+  "new_shell_texts": [
+    "Принято",
+    "Driver",
+    "Subtitle HeaderPage",
+    "Содержание: 7 пунктов со ссылками"
+  ],
+  "shell": {
+    "raw_paints": 0,
+    "effects": 0,
+    "text_segments_without_persefona_style": 0,
+    "non_persefona_variables": 0
+  },
+  "header_section_y": [
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48
+  ],
+  "masters": 315,
+  "verify": {
+    "links": [
+      "3465:68",
+      "4:186",
+      "732:917",
+      "653:1418",
+      "732:919",
+      "732:920",
+      "2641:4"
+    ],
+    "badges": [
+      "Принято·Success",
+      "Driver·Neutral"
+    ],
+    "text_segments_restyled": 59,
+    "changelog": {
+      "section": "5612:46 Changelog · Icons",
+      "Changes Row": 2,
+      "__Changelog Badge": 2
+    },
+    "sections": [
+      "5608:62 Icons",
+      "5612:46 Changelog · Icons"
+    ],
+    "overlaps_with_strays": 0,
+    "not_checked": "цвета внутри экземпляров HeaderPage/HeaderSection — они из Kit"
+  }
+}

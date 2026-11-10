@@ -24,7 +24,7 @@ ${DS_DROPDOWN_BUTTON_STYLE}
 .ds-product-switcher__row {
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
 .ds-product-switcher__title-wrap {
   position: relative;
@@ -47,8 +47,9 @@ ${DS_DROPDOWN_BUTTON_STYLE}
   outline: none;
 }
 .ds-product-switcher__name-trigger:focus-visible {
-  border-radius: 4px;
-  box-shadow: 0 0 0 2px rgba(45, 44, 46, 0.24);
+  border-radius: var(--pf-radius-s);
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-product-switcher__trigger {
   display: inline-flex;
@@ -56,21 +57,26 @@ ${DS_DROPDOWN_BUTTON_STYLE}
   justify-content: center;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--pf-radius-m);
   background: transparent;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--pf-icon-secondary);
   cursor: pointer;
   flex-shrink: 0;
+  transition: background-color 150ms ease, color 150ms ease;
 }
-.ds-product-switcher__trigger:hover,
+.ds-product-switcher__trigger:hover {
+  color: var(--pf-icon-primary);
+  background: #f5f5f5; /* pf-gap: bg-accent-states-hover (пачка №0) */
+}
 .ds-product-switcher__trigger:focus-visible {
-  background: #f5f5f5;
-  outline: none;
+  color: var(--pf-icon-primary);
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-product-switcher--hub .ds-product-switcher__trigger {
   width: 48px;
   height: 48px;
-  margin-left: 4px;
+  margin-left: var(--pf-spacing-4);
 }
 .ds-product-switcher--hub .ds-product-switcher__chevron {
   width: 28px;
@@ -79,13 +85,13 @@ ${DS_DROPDOWN_BUTTON_STYLE}
 .ds-product-switcher--header .ds-product-switcher__trigger {
   width: 36px;
   height: 36px;
-  margin-left: 2px;
+  margin-left: var(--pf-spacing-2);
 }
 .ds-product-switcher--header .ds-product-switcher__chevron {
   width: 20px;
   height: 20px;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .ds-product-switcher--hub .ds-product-switcher__trigger {
     width: 36px;
     height: 36px;
@@ -95,7 +101,7 @@ ${DS_DROPDOWN_BUTTON_STYLE}
     height: 21px;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .ds-product-switcher--header .ds-product-switcher__trigger {
     width: 31px;
     height: 31px;
@@ -110,12 +116,12 @@ ${DS_DROPDOWN_BUTTON_STYLE}
   z-index: 1001;
 }
 .ds-product-switcher--open .ds-product-switcher__prefix {
-  filter: blur(2px);
-  opacity: 0.55;
+  filter: blur(2px); /* pf-gap: bg-overlay (затемнение без размытия) */
+  opacity: 0.55; /* pf-gap: bg-overlay */
 }
 .ds-product-switcher--header.ds-product-switcher--open .ds-product-switcher__title-wrap > :is(h1, h2, h3, h4, h5, h6) {
-  filter: blur(2px);
-  opacity: 0.55;
+  filter: blur(2px); /* pf-gap: bg-overlay (затемнение без размытия) */
+  opacity: 0.55; /* pf-gap: bg-overlay */
 }
 .ds-product-switcher__backdrop {
   position: fixed;
@@ -124,11 +130,11 @@ ${DS_DROPDOWN_BUTTON_STYLE}
   border: none;
   margin: 0;
   padding: 0;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12); /* pf-gap: bg-overlay (Core graphite-100-a40, без размытия) */
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   cursor: default;
-  animation: ds-product-switcher-backdrop-in 0.18s ease;
+  animation: ds-product-switcher-backdrop-in 150ms ease;
 }
 @keyframes ds-product-switcher-backdrop-in {
   from {
@@ -144,52 +150,52 @@ ${DS_DROPDOWN_BUTTON_STYLE}
 }
 .ds-product-switcher__chevron {
   flex-shrink: 0;
-  transition: transform 0.15s ease;
+  transition: transform 150ms ease;
 }
 .ds-product-switcher__chevron--open {
   transform: rotate(180deg);
 }
 .ds-product-switcher__menu {
   position: absolute;
-  top: calc(100% + 16px);
+  top: calc(100% + var(--pf-spacing-16));
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  padding: 12px 0;
+  padding: var(--pf-spacing-12) 0;
   list-style: none;
-  background: #ffffff;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
-  border-radius: 16px;
+  background: var(--pf-bg-surface-main);
+  box-shadow: var(--pf-shadow-2);
+  border-radius: var(--pf-radius-xl);
   z-index: 1002;
   white-space: nowrap;
 }
 .ds-product-switcher__item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
   margin: 0;
-  padding: 8px 32px;
+  padding: var(--pf-spacing-8) var(--pf-spacing-32);
   border: none;
   background: transparent;
   text-decoration: none;
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 56px;
-  letter-spacing: -0.02em;
-  color: rgba(0, 0, 0, 0.38);
+  font: var(--pf-font-display-l);
+  letter-spacing: var(--pf-tracking-display-l);
+  color: var(--pf-text-secondary);
   text-align: left;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 150ms ease;
 }
 .ds-product-switcher__item:hover,
 .ds-product-switcher__item:focus-visible {
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--pf-text-primary);
   background: transparent;
-  outline: none;
+}
+.ds-product-switcher__item:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: calc(-1 * var(--pf-focus-offset));
 }
 .ds-product-switcher__item[aria-current="true"] {
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--pf-text-primary);
   background: transparent;
 }
 .ds-product-switcher__check {
@@ -199,17 +205,17 @@ ${DS_DROPDOWN_BUTTON_STYLE}
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--pf-icon-primary);
 }
 .ds-product-switcher__check svg {
   width: 28px;
   height: 28px;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .ds-product-switcher__item {
-    font-size: 36px;
-    line-height: 44px;
-    padding: 6px 24px;
+    font-size: 36px; /* pf-gap: мобильный display-l (стиля 36/44 в Kit нет) */
+    line-height: 44px; /* pf-gap: мобильный display-l */
+    padding: var(--pf-spacing-6) var(--pf-spacing-24);
   }
   .ds-product-switcher__check {
     width: 32px;

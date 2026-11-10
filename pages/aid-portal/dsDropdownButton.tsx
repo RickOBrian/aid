@@ -14,17 +14,17 @@ export const DS_DROPDOWN_BUTTON_STYLE = `
 .ds-dropdown-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--pf-spacing-6);
 }
 .ds-dropdown-trigger__chevron {
   flex-shrink: 0;
-  transition: transform 0.15s ease;
+  transition: transform 150ms ease;
 }
 .ds-dropdown-trigger__chevron--open {
   transform: rotate(180deg);
 }
 .ds-dropdown-trigger:disabled .ds-dropdown-trigger__chevron {
-  opacity: 0.38;
+  color: var(--pf-icon-disabled);
 }
 `;
 

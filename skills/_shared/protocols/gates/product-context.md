@@ -2,7 +2,7 @@
 destination: skills/_shared/protocols/gates/
 name: product-context
 metadata:
-  version: "1.0.1"
+  version: "1.2.0"
   kind: protocol
   status: stable
   platforms: [web, ios, android]
@@ -14,7 +14,7 @@ description: >
 
 # Product Context Gate
 
-> Статус: Stable · v1.0.1 · обновлено 2026-09-21
+> Статус: Stable · v1.2.0 · обновлено 2026-10-23
 
 ---
 
@@ -36,8 +36,17 @@ utilities, non-UI refactoring or infrastructure that does not affect those artif
 
 Before applicable work, read `products/registry.json`.
 
-Only products with status `active` or `onboarding` participate in the
-component/token pipeline.
+Only products with status `active`, `onboarding` or `internal` participate in
+the component/token pipeline.
+
+Status `internal` marks a UI Kit of AID itself, not a business product —
+today Persefona (`products/persefona/`): the visual language of AID's own
+working surfaces (Figma audit and build pages, library file decoration,
+Presentbook UI, guides, changelogs, plugins). It follows the same gates and
+global standards as Driver and Rider, with its own visual language. It is
+**not** shown in the Presentbook product switcher (only `active` and
+`onboarding` are) and is never selected for Driver or Rider work. Decision
+PD 2026-10-22, clarified 2026-10-23.
 
 Products with any other status, including `stable`, `legacy`, `prototype` or
 `archived`, are historical/reference products. Do not automatically select,
@@ -167,7 +176,7 @@ After product context is confirmed, still follow these rules for the same task:
 
 Читать оттуда: `tokensRoot`, `tokenDataFiles`, `componentsRoot`,
 `componentRegistry`, `changelogFiles`, `releaseRoot`, `presentbookRoot`,
-`platformModel`, `colorModeMapping`.
+`platformModel`, `colorModeMapping`, `figmaFiles` (§9.1).
 
 Если поле `null` или `declared: false` — это не повод подставить умолчание.
 Спросить.
@@ -175,17 +184,68 @@ After product context is confirmed, still follow these rules for the same task:
 Ниже — правила, которых в манифесте нет и быть не может:
 
 - UI самого портала (`ChangelogTable`, `ComponentReleaseStatus` и подобные)
-  **не является** компонентом дизайн-системы продукта: версия и changelog
-  компонента ему не назначаются;
+  **не является** компонентом Driver или Rider: версия и changelog
+  компонента продукта ему не назначаются. Его визуальный язык — Persefona
+  (`internal`); компонентом Persefona он становится только через
+  Component Gate в контексте `persefona`;
 - версия компонента и финальная запись changelog обновляются **только** на
   Release Gate — не во время реализации, превью или обновления sandbox;
 - данные одного продукта не смешиваются с данными другого: токены,
   компоненты, changelog и release-очереди изолированы по продукту.
 
+### 9.1. Три файла библиотеки Figma
+
+Библиотека каждого продукта в пайплайне (`active`, `onboarding`, `internal`)
+хранится в Figma **тремя файлами**: токены, иконки, компоненты. Образец —
+Driver. Решение PD 2026-10-23: «давай примем стандарт, что токены, иконки и
+компоненты хранятся в трех файлах (как сейчас драйвер устроен)».
+
+| Файл | Ключ в `figmaFiles` | Что хранит |
+|---|---|---|
+| Токены | `tokens` | Переменные и стили, их страницы и витрины |
+| Иконки | `icons` | Иконки |
+| Компоненты | `components` | Компоненты; своих переменных и стилей нет |
+
+**Запись.** `figmaFiles` в `products/<id>/product.json` — объект с тремя
+ключами `tokens`, `icons`, `components`, у каждого `fileKey` и `url`. Ключ
+есть всегда. Пока файла нет, значение — `null`: файл другого вида вместо
+него не подставляется (§9). Ключи читают `scripts/check-changelogs.mjs`
+(`figmaTable.fileKey`) и замер внедрения (`external-repo-standards` §8).
+
+**Направление зависимостей** (по Driver, проверено в Figma 2026-10-23):
+
+- Токены — ни от кого не зависят;
+- Иконки — ни от кого не зависят: к переменным не привязаны;
+- Компоненты — привязаны к переменным и стилям Токенов и используют
+  экземпляры Иконок. Своих переменных и стилей нет.
+
+Другая связь между тремя файлами — отличие продукта и записывается в его
+правилах с причиной. Подключение UI Kit Persefona для служебных страниц
+(шапки, страницы аудита и сборки, чейнжлог) — не связь между тремя файлами
+продукта и отличием не считается. Служебные шапки из DS Ui Kit — legacy.
+
+**Оговорка для `internal`.** Витрины токенов UI Kit AID собираются из его же
+компонентов, поэтому файл токенов Kit может использовать файл компонентов
+Kit: зависимость получается взаимной. Это допустимо; порядок публикации при
+взаимной зависимости и раскладка — в правилах Kit
+(`products/persefona/rules/`).
+
+**Перенос в три файла.** Продукт, у которого библиотека в одном или двух
+файлах, разносится с сохранением связей: экземпляры и привязки к переменным
+после переноса указывают на опубликованные файлы-библиотеки, отвязанных
+экземпляров нет. Порядок переноса — в правилах продукта.
+
 ---
 
 ## 10. Changelog
 
+- **1.2.0** — 2026-10-23. §9.1: библиотека продукта — три файла Figma
+  (токены, иконки, компоненты), ключи `figmaFiles`, направление зависимостей
+  по Driver, оговорка для `internal`. Решение PD 2026-10-23.
+
+- **1.1.0** — 2026-10-23. Статус `internal` (Persefona — UI Kit самого AID):
+  в пайплайне, вне переключателя Presentbook; UI портала — визуальный язык
+  Persefona, не Driver и не Rider.
 - **1.0.1** — 2026-09-21. Убрано правило об исключении трёх легаси-продуктов:
   продукты удалены из репозитория (ADR-037).
 - **1.0.0** — 2026-09-20. Перенесено из .cursor/rules/product-context.mdc. Cursor объявлен легаси; правило переписано инструмент-нейтрально и живёт теперь там, где его читает рабочий агент. Прежний файл оставлен указателем.

@@ -13,11 +13,11 @@ ${PRODUCT_SWITCHER_STYLE}
   box-sizing: border-box;
 }
 .dsh {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 48px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dsh-shell {
   max-width: 1200px;
@@ -27,65 +27,66 @@ ${PRODUCT_SWITCHER_STYLE}
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 8px;
-  margin: 0 0 64px;
+  gap: var(--pf-spacing-8);
+  margin: 0 0 var(--pf-spacing-64);
 }
 .dsh-title {
   margin: 0;
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 56px;
-  letter-spacing: -0.02em;
+  font: var(--pf-font-display-l);
+  letter-spacing: var(--pf-tracking-display-l);
   text-align: center;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--pf-text-primary);
 }
 .dsh-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 48px 64px;
+  gap: var(--pf-spacing-48) var(--pf-spacing-64);
   align-items: start;
 }
 .dsh-section-title {
-  margin: 0 0 24px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.08em;
+  margin: 0 0 var(--pf-spacing-24);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-secondary);
 }
 .dsh-items {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--pf-spacing-24);
 }
+/* IslandLink, плоский вид (без рамки) — спека presentbook-6 §3.1 */
 .dsh-item {
   display: block;
   text-decoration: none;
   color: inherit;
-  border-radius: 12px;
-  padding: 4px 0;
-  transition: background-color 0.15s ease;
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-4) 0;
+  transition: background-color 150ms ease;
 }
 .dsh-item--link {
   cursor: pointer;
 }
 .dsh-item--link:hover {
-  background: rgba(245, 245, 245, 0.72);
+  background: rgba(245, 245, 245, 0.72); /* pf-gap: bg-accent-states-hover (пачка №0) */
 }
 .dsh-item--link:focus-visible {
-  outline: 2px solid rgba(45, 44, 46, 0.32);
-  outline-offset: 4px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dsh-item--soon {
-  opacity: 0.52;
   cursor: not-allowed;
+}
+.dsh-item--soon .dsh-item-icon,
+.dsh-item--soon .dsh-item-title,
+.dsh-item--soon .dsh-item-description {
+  color: var(--pf-text-disabled);
 }
 .dsh-item-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: var(--pf-spacing-10);
+  margin-bottom: var(--pf-spacing-8);
 }
 .dsh-item-icon {
   flex-shrink: 0;
@@ -96,58 +97,52 @@ ${PRODUCT_SWITCHER_STYLE}
   justify-content: center;
   font-size: 16px;
   line-height: 1;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 .dsh-item-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
   min-width: 0;
 }
 .dsh-item-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
-  color: rgba(0, 0, 0, 0.87);
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
+/* Badge Neutral */
 .dsh-soon-badge {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f5f5f5;
-  border: 1px solid #ebedf0;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.02em;
-  color: rgba(0, 0, 0, 0.54);
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  background: var(--pf-bg-accent-status-neutral-main);
+  font: var(--pf-font-label-s);
+  color: var(--pf-text-neutral);
 }
 .dsh-item-description {
   margin: 0;
-  padding-left: 38px;
-  font-size: 14px;
-  line-height: 20px;
-  color: rgba(0, 0, 0, 0.54);
+  padding-left: calc(28px + var(--pf-spacing-10));
+  font: var(--pf-font-body-m);
+  color: var(--pf-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .dsh {
-    padding: 24px 16px 48px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .dsh-title-row {
-    margin-bottom: 40px;
+    margin-bottom: var(--pf-spacing-40);
   }
   .dsh-title {
-    font-size: 36px;
-    line-height: 44px;
+    font-size: 36px; /* pf-gap: мобильный display-l (стиля 36/44 в Kit нет) */
+    line-height: 44px; /* pf-gap: мобильный display-l */
   }
   .dsh-grid {
-    gap: 32px;
+    gap: var(--pf-spacing-32);
   }
   .dsh-item-description {
     white-space: normal;

@@ -1,4 +1,6 @@
 import './fonts';
+import './persefona/tokens.css';
+import './persefona/kit.css';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { AuthGate } from './AuthGate';

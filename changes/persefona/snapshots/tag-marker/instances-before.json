@@ -1,0 +1,284 @@
+{
+ "taken": "2026-10-25, до публикации Components (TagMarker Set=Main|Neutral)",
+ "componentSetKey": "3783c758dc6188233f333ad0373270d9ef0e7ab7",
+ "rider389_47": [
+  {
+   "id": "673:4092",
+   "Number": "1",
+   "Leader": "Top",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4097",
+   "Number": "2",
+   "Leader": "Right",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4102",
+   "Number": "3",
+   "Leader": "Bottom",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4062",
+   "Number": "4",
+   "Leader": "Right",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4067",
+   "Number": "5",
+   "Leader": "Left",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4072",
+   "Number": "6",
+   "Leader": "Right",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4077",
+   "Number": "7",
+   "Leader": "Bottom",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4082",
+   "Number": "8",
+   "Leader": "Bottom",
+   "overrides": "нет"
+  },
+  {
+   "id": "673:4087",
+   "Number": "9",
+   "Leader": "Top",
+   "overrides": "нет"
+  },
+  {
+   "id": "691:4960",
+   "Number": "10",
+   "Leader": "Right",
+   "overrides": "нет"
+  },
+  {
+   "id": "691:4965",
+   "Number": "11",
+   "Leader": "Top",
+   "overrides": "нет"
+  }
+ ],
+ "tokens141_19": [
+  {
+   "id": "142:263",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "142:268",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "142:273",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "142:353",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "1",
+   "Leader": "Right"
+  },
+  {
+   "id": "142:358",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "2",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "142:363",
+   "colors": "accent-vivid",
+   "outline": false,
+   "Number": "3",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:198",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:203",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:208",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:231",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:236",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:241",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:282",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:287",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:292",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:333",
+   "colors": "annotation",
+   "outline": false,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:338",
+   "colors": "annotation",
+   "outline": false,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:343",
+   "colors": "annotation",
+   "outline": false,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:502",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:507",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:512",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:569",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:574",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:579",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:630",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Top"
+  },
+  {
+   "id": "144:635",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:640",
+   "colors": "annotation",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:697",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "1",
+   "Leader": "Right"
+  },
+  {
+   "id": "144:702",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "2",
+   "Leader": "Bottom"
+  },
+  {
+   "id": "144:707",
+   "colors": "annotation-neutral",
+   "outline": true,
+   "Number": "3",
+   "Leader": "Top"
+  }
+ ]
+}

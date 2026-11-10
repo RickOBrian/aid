@@ -21,28 +21,24 @@ export const GUIDE_PUBLICATION_STYLE = `
   align-items: center;
   padding: ${T.badgePadding};
   border-radius: ${T.badgeRadius};
-  border: 1px solid ${T.statusPendingBorder};
+  border: none;
   background: ${T.statusPendingSurface};
   color: ${T.statusPendingText};
-  font-size: ${T.badgeFontSize};
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.02em;
+  font: var(--pf-font-label-s);
   white-space: nowrap;
 }
 .ds-publication-note {
-  margin: 0 0 24px;
-  padding: 16px 20px;
-  border: 1px solid ${T.statusPendingBorder};
-  border-radius: ${T.cardRadius};
+  margin: 0 0 var(--pf-spacing-24);
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
+  border: none;
+  border-radius: var(--pf-radius-m);
   background: ${T.statusPendingSurfaceSubtle};
-  font-size: 13px;
-  line-height: 20px;
-  color: ${T.textPrimary};
+  font: var(--pf-font-body-s);
+  color: ${T.statusPendingText};
 }
 .ds-publication-note-title {
-  margin: 0 0 4px;
-  font-weight: 500;
+  margin: 0 0 var(--pf-spacing-4);
+  font-weight: var(--pf-type-weight-500);
   color: ${T.statusPendingText};
 }
 .ds-publication-note p { margin: 0; }

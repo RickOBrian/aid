@@ -1,0 +1,36 @@
+{
+  "artifact": "Icons/Wilhelm",
+  "currentVersion": "1.1.0",
+  "figmaTable": {
+    "fileKey": "AwRpEGfyeNjRbZP8KGG1wy",
+    "nodeId": "5503:18"
+  },
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-09-18",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена новая иконка info_filled",
+          "details": "info_filled"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-18",
+      "author": "Артур",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Созданы наборы иконок для дизайн-системы",
+          "details": "Alternative\nInformative\nAction\nControls\nOperations\nNavigator"
+        }
+      ]
+    }
+  ]
+}

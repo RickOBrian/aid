@@ -1,0 +1,40 @@
+/*
+ * Persefona Kit — блоки, которые уже есть в Figma Persefona Components
+ * (`X8DoqKC0SKfxb8SoKboo3N`), и текстовые стили классами. Только `--pf-*`.
+ * Интерактивные блоки (кнопки, сегменты, табы, меню, тост, диалог) — после их
+ * сборки в Kit (спека presentbook-6 §7.2).
+ */
+
+/* Текстовые стили persefona/* */
+.pf-display-l { font: var(--pf-font-display-l); letter-spacing: var(--pf-tracking-display-l); }
+.pf-heading-l { font: var(--pf-font-heading-l); letter-spacing: var(--pf-tracking-heading-l); }
+.pf-heading-m { font: var(--pf-font-heading-m); }
+.pf-heading-s { font: var(--pf-font-heading-s); }
+.pf-body-m { font: var(--pf-font-body-m); }
+.pf-body-s { font: var(--pf-font-body-s); }
+.pf-label-s { font: var(--pf-font-label-s); }
+.pf-label-xs-caps {
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
+  text-transform: uppercase;
+}
+.pf-code-m { font: var(--pf-font-code-m); }
+.pf-code-s { font: var(--pf-font-code-s); }
+
+/* Badge (3:90): Tone — мягкий, без рамки */
+.pf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pf-spacing-4);
+  padding: var(--pf-spacing-4) var(--pf-spacing-8);
+  border-radius: var(--pf-radius-pill);
+  font: var(--pf-font-label-s);
+  white-space: nowrap;
+  background: var(--pf-bg-accent-status-neutral-main);
+  color: var(--pf-text-neutral);
+}
+.pf-badge--warning { background: var(--pf-bg-accent-status-warning-main); color: var(--pf-text-warning); }
+.pf-badge--success { background: var(--pf-bg-accent-status-success-main); color: var(--pf-text-success); }
+.pf-badge--error { background: var(--pf-bg-accent-status-error-main); color: var(--pf-text-error); }
+.pf-badge--info { background: var(--pf-bg-accent-status-info-main); color: var(--pf-text-info); }
+.pf-badge--vivid-soft { background: var(--pf-bg-accent-vivid-fade); color: var(--pf-text-accent-vivid); }

@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DS_CHANGELOG_TABLE_STYLE, DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
 import { DS_PRODUCT_ACCENT_STYLE } from './dsProductAccent';
-import { ProductAccentScope } from './ProductAccentScope';
 import { HUB_ROUTES } from './hubData';
 import { resolveProductId } from './productRegistry';
 import toolsRegistry from './tools-registry.json';
@@ -88,133 +87,126 @@ ${DS_TOKEN_TABLE_STYLE}
   margin: 0 auto;
 }
 .dstp-lede {
-  margin: 0 0 40px;
-  font-size: 16px;
-  line-height: 26px;
+  margin: 0 0 var(--pf-spacing-40);
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
 .dstp-section {
-  margin-bottom: 48px;
+  margin-bottom: var(--pf-spacing-48);
 }
 .dstp-section-title {
-  margin: 0 0 20px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
+  margin: 0 0 var(--pf-spacing-20);
+  font: var(--pf-font-heading-m);
 }
 .dstp-download {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 0 12px;
-  padding: 10px 20px;
-  border-radius: ${T.tableWrapRadius};
+  margin: 0 0 var(--pf-spacing-12);
+  padding: var(--pf-spacing-10) var(--pf-spacing-20);
+  border-radius: var(--pf-radius-m);
   background: var(--ds-accent);
-  color: ${T.toastText};
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
+  color: var(--pf-text-inverse);
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 14px; /* pf-gap: label-m 14/20·500 */
+  font-weight: var(--pf-type-weight-500);
+  line-height: 20px; /* pf-gap: label-m */
   text-decoration: none;
+  transition: filter 150ms ease;
 }
 .dstp-download-version {
-  margin-left: 8px;
-  opacity: 0.8;
+  margin-left: var(--pf-spacing-8);
+  opacity: 0.8; /* pf-gap: вторичный текст на заливке ButtonText Primary */
   font-variant-numeric: tabular-nums;
 }
 .dstp-download:hover {
-  filter: brightness(0.95);
+  filter: brightness(0.95); /* pf-gap: bg-accent-states-hover (пачка №0) */
   text-decoration: none;
 }
 .dstp-download:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: 2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dstp-download-note {
-  margin: 0 0 24px;
-  font-size: 13px;
-  line-height: 20px;
+  margin: 0 0 var(--pf-spacing-24);
+  font: var(--pf-font-body-s);
   color: ${T.textSecondary};
 }
 .dstp-install-steps {
   margin: 0;
-  padding: 20px 20px 20px 36px;
+  padding: var(--pf-spacing-20) var(--pf-spacing-20) var(--pf-spacing-20) 36px;
   border: 1px solid ${T.border};
-  border-radius: ${T.tableWrapRadius};
+  border-radius: var(--pf-radius-m);
   background: ${T.surfaceZebra};
-  font-size: 14px;
-  line-height: 22px;
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
 .dstp-install-steps li + li {
-  margin-top: 8px;
+  margin-top: var(--pf-spacing-8);
 }
 .dstp-unavailable {
   margin: 0;
-  padding: 24px;
+  padding: var(--pf-spacing-24);
   border: 1px solid ${T.border};
-  border-radius: ${T.tableWrapRadius};
+  border-radius: var(--pf-radius-m);
   background: ${T.surfaceZebra};
 }
 .dstp-unavailable-title {
-  margin: 0 0 12px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
+  margin: 0 0 var(--pf-spacing-12);
+  font: var(--pf-font-heading-m);
 }
 .dstp-unavailable-text {
   margin: 0;
-  font-size: 14px;
-  line-height: 22px;
+  font: var(--pf-font-body-m);
   color: ${T.textSecondary};
 }
 .dstp-notes {
-  font-size: 14px;
-  line-height: 22px;
+  font: var(--pf-font-body-m);
   color: ${T.textPrimary};
 }
 .dstp-notes p,
 .dstp-notes ul,
 .dstp-notes ol {
-  margin: 0 0 12px;
+  margin: 0 0 var(--pf-spacing-12);
 }
 .dstp-notes ul,
 .dstp-notes ol {
-  padding-left: 20px;
+  padding-left: var(--pf-spacing-20);
 }
 .dstp-notes li + li {
-  margin-top: 6px;
+  margin-top: var(--pf-spacing-6);
 }
 .dstp-notes h3 {
-  margin: 24px 0 8px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  margin: var(--pf-spacing-24) 0 var(--pf-spacing-8);
+  font: var(--pf-font-heading-s);
 }
 .dstp-notes code {
-  padding: 1px 4px;
-  border-radius: 4px;
+  padding: var(--pf-spacing-2) var(--pf-spacing-4);
+  border-radius: var(--pf-radius-s);
   background: ${T.surfaceMuted};
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
+  font: var(--pf-font-code-s);
 }
 .dstp-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 24px;
-  margin: 20px 0 0;
-  padding: 16px 0 0;
+  gap: var(--pf-spacing-8) var(--pf-spacing-24);
+  margin: var(--pf-spacing-20) 0 0;
+  padding: var(--pf-spacing-16) 0 0;
   border-top: 1px solid ${T.border};
-  font-size: 14px;
-  line-height: 20px;
+  font: var(--pf-font-body-m);
 }
 .dstp-links a {
   color: var(--ds-accent);
-  text-decoration: none;
+  text-decoration: var(--ds-link-decoration);
+}
+.dstp-links a:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .dstp-links a:hover {
   text-decoration: underline;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .dstp {
     padding: ${T.pagePaddingMobile};
   }
@@ -280,7 +272,7 @@ export function TokenComparatorPluginPage() {
   const version = release?.version ?? null;
 
   return (
-    <ProductAccentScope productId={productId}>
+    <>
       <div className="dstp">
         <style>{PAGE_STYLE}</style>
         <main className="dstp-shell">
@@ -352,6 +344,6 @@ export function TokenComparatorPluginPage() {
           )}
         </main>
       </div>
-    </ProductAccentScope>
+    </>
   );
 }

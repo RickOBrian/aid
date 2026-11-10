@@ -1,0 +1,9 @@
+{
+  "artifact": "BadgeCount",
+  "componentId": "badge-count",
+  "product": "driver",
+  "currentVersion": null,
+  "releaseStatus": "pending",
+  "reviewRoute": "/components/badge-count",
+  "entries": []
+}

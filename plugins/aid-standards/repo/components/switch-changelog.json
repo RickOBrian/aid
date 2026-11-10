@@ -1,0 +1,9 @@
+{
+  "artifact": "Switch",
+  "componentId": "switch",
+  "product": "driver",
+  "currentVersion": null,
+  "releaseStatus": "pending",
+  "reviewRoute": "/components/switch",
+  "entries": []
+}

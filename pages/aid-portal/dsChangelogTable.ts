@@ -9,37 +9,48 @@
  * Канон layout-токенов — `DS_PORTAL_LAYOUT_TOKENS`. Не дублировать значения inline.
  */
 
-/** Канонические layout-/visual-токены портала aid-ds. */
+/**
+ * Layout-/visual-токены портала — ссылки на Persefona Kit (`persefona/tokens.css`,
+ * спека presentbook-6). Ключи прежние, значения — только `var(--pf-*)`.
+ */
 export const DS_PORTAL_LAYOUT_TOKENS = {
-  fontFamily: "'Google Sans', system-ui, sans-serif",
-  textPrimary: '#2d2c2e',
-  textSecondary: 'rgba(0, 0, 0, 0.54)',
-  textMuted: 'rgba(0, 0, 0, 0.38)',
-  surface: '#ffffff',
-  surfaceMuted: '#f5f5f5',
-  surfaceZebra: '#fafafa',
-  border: '#ebedf0',
-  toastBackground: '#2d2c2e',
-  toastText: '#ffffff',
-  pagePaddingDesktop: '40px 48px 64px',
-  pagePaddingTablet: '32px 24px 48px',
-  pagePaddingMobile: '20px 16px 40px',
-  tableFontSize: '13px',
-  tableLineHeight: '16px',
-  tableHeadFontSize: '11px',
-  tableHeadLetterSpacing: '0.06em',
-  tableCellPadding: '10px 16px',
-  tableWrapRadius: '8px',
-  /* Статус «ждёт / не выпущено» — те же значения, что у бейджа Pending
-     на странице компонента (`ComponentReleaseStatus.tsx`). */
-  statusPendingSurface: '#fff8e6',
-  statusPendingSurfaceSubtle: '#fffdf5',
-  statusPendingBorder: '#f0d48a',
-  statusPendingText: '#8a6a00',
-  badgeRadius: '999px',
-  badgeFontSize: '11px',
-  badgePadding: '2px 10px',
-  cardRadius: '12px',
+  fontFamily: 'var(--pf-type-family-sans-1)',
+  fontMono: 'var(--pf-type-family-mono-1)',
+  textPrimary: 'var(--pf-text-primary)',
+  textSecondary: 'var(--pf-text-secondary)',
+  textMuted: 'var(--pf-text-muted)',
+  textDisabled: 'var(--pf-text-disabled)',
+  surface: 'var(--pf-bg-surface-main)',
+  surfaceMuted: 'var(--pf-bg-surface-muted)',
+  surfaceZebra: 'var(--pf-bg-surface-zebra)',
+  border: 'var(--pf-line-default)',
+  borderHover: 'var(--pf-line-hover)',
+  toastBackground: 'var(--pf-bg-inverse-main)',
+  toastText: 'var(--pf-text-inverse)',
+  pagePaddingDesktop: 'var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64)',
+  pagePaddingTablet: 'var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48)',
+  pagePaddingMobile: 'var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40)',
+  /* TableCell (Kit 2:118): Default — body-s, Header — label-xs-caps */
+  tableFontSize: 'var(--pf-type-size-13)',
+  tableLineHeight: 'var(--pf-type-lh-20)',
+  tableHeadFontSize: 'var(--pf-type-size-11)',
+  tableHeadLetterSpacing: 'var(--pf-tracking-label-xs-caps)',
+  tableCellPadding: 'var(--pf-spacing-12) var(--pf-spacing-16)',
+  tableWrapRadius: 'var(--pf-radius-m)',
+  /* Статус «ждёт / не выпущено» — Badge Warning и Banner Warning: мягкие, без рамки
+     (рамка — цветом фона, чтобы не сдвигать раскладку). */
+  statusPendingSurface: 'var(--pf-bg-accent-status-warning-main)',
+  statusPendingSurfaceSubtle: 'var(--pf-bg-accent-status-warning-main)',
+  statusPendingBorder: 'var(--pf-bg-accent-status-warning-main)',
+  statusPendingText: 'var(--pf-text-warning)',
+  badgeRadius: 'var(--pf-radius-pill)',
+  badgeFontSize: 'var(--pf-type-size-12)',
+  badgePadding: 'var(--pf-spacing-4) var(--pf-spacing-8)',
+  cardRadius: 'var(--pf-radius-l)',
+  shadow1: 'var(--pf-shadow-1)',
+  shadow2: 'var(--pf-shadow-2)',
+  focusRing: 'var(--pf-focus-ring)',
+  focusOffset: 'var(--pf-focus-offset)',
 } as const;
 
 /** Кнопки копирования значений/токенов. На новых страницах — класс `ds-copyable`. */
@@ -65,7 +76,7 @@ export const DS_COPYABLE_STYLE = `
 .dsp-copyable:hover,
 .drp-copyable:hover,
 .dps-copyable:hover {
-  opacity: 0.72;
+  opacity: 0.72; /* pf-gap: состояние hover — bg-accent-states-hover (пачка №0) */
 }
 `;
 
@@ -79,16 +90,15 @@ export const DS_TOAST_STYLE = `
 .dps-toast {
   position: fixed;
   left: 50%;
-  bottom: 24px;
+  bottom: var(--pf-spacing-24);
   transform: translateX(-50%);
   z-index: 1000;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: var(--pf-spacing-10) var(--pf-spacing-16);
+  border-radius: var(--pf-radius-m);
   background: ${DS_PORTAL_LAYOUT_TOKENS.toastBackground};
   color: ${DS_PORTAL_LAYOUT_TOKENS.toastText};
-  font-size: 13px;
-  line-height: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  font: var(--pf-font-body-s);
+  box-shadow: var(--pf-shadow-1);
 }
 `;
 
@@ -103,18 +113,17 @@ export const DS_TOKEN_TABLE_STYLE = `
 .ds-token-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: ${DS_PORTAL_LAYOUT_TOKENS.tableFontSize};
-  line-height: ${DS_PORTAL_LAYOUT_TOKENS.tableLineHeight};
+  font: var(--pf-font-body-s);
+  color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
 .ds-token-table thead th {
   text-align: left;
   padding: ${DS_PORTAL_LAYOUT_TOKENS.tableCellPadding};
   background: ${DS_PORTAL_LAYOUT_TOKENS.surfaceMuted};
-  font-size: ${DS_PORTAL_LAYOUT_TOKENS.tableHeadFontSize};
-  font-weight: 500;
-  letter-spacing: ${DS_PORTAL_LAYOUT_TOKENS.tableHeadLetterSpacing};
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
+  color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
   border-bottom: 1px solid ${DS_PORTAL_LAYOUT_TOKENS.border};
   white-space: nowrap;
   vertical-align: bottom;
@@ -138,15 +147,14 @@ ${DS_TOKEN_TABLE_STYLE}
   overflow: visible;
 }
 .dctp-changelog {
-  margin-top: 16px;
-  padding-top: 48px;
+  margin-top: var(--pf-spacing-16);
+  padding-top: var(--pf-spacing-48);
   border-top: 1px solid ${DS_PORTAL_LAYOUT_TOKENS.border};
 }
 .dctp-changelog-heading {
-  margin: 0 0 16px;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
+  margin: 0 0 var(--pf-spacing-16);
+  font: var(--pf-font-heading-m);
+  color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
 .dctp-changelog-table {
   min-width: 720px;
@@ -181,19 +189,15 @@ ${DS_TOKEN_TABLE_STYLE}
   border-left: 1px solid ${DS_PORTAL_LAYOUT_TOKENS.border};
 }
 .dctp-changelog-version {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
+  font: var(--pf-font-code-s);
   color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
 .dctp-changelog-version--unreleased {
-  font-family: inherit;
+  font: var(--pf-font-body-s);
   white-space: nowrap;
 }
 .dctp-changelog-date {
-  font-size: 13px;
-  line-height: 16px;
+  font: var(--pf-font-body-s);
   color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
 }
 .dctp-changelog-col-author {
@@ -205,35 +209,33 @@ ${DS_TOKEN_TABLE_STYLE}
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
 .dctp-changelog-change {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 20px;
+  gap: var(--pf-spacing-10);
+  font: var(--pf-font-body-s);
   color: ${DS_PORTAL_LAYOUT_TOKENS.textPrimary};
 }
 .dctp-changelog-change-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
   min-width: 0;
 }
 .dctp-changelog-kind {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  margin-top: 6px;
-  border-radius: 50%;
+  width: var(--pf-spacing-8);
+  height: var(--pf-spacing-8);
+  margin-top: var(--pf-spacing-6);
+  border-radius: var(--pf-radius-pill);
 }
 .dctp-changelog-change-text {
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
-  font-size: 14px;
-  line-height: normal;
+  font: var(--pf-font-body-s);
 }
 .dctp-changelog-change-details {
   margin: 0;
@@ -241,28 +243,26 @@ ${DS_TOKEN_TABLE_STYLE}
   overflow-wrap: anywhere;
   word-break: break-word;
   white-space: pre-wrap;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: normal;
+  font: var(--pf-font-body-s);
+  color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
 }
 .dctp-changelog-empty {
   margin: 0;
-  padding: 16px 20px;
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
   border: 1px dashed ${DS_PORTAL_LAYOUT_TOKENS.border};
   border-radius: ${DS_PORTAL_LAYOUT_TOKENS.tableWrapRadius};
-  font-size: 13px;
-  line-height: 20px;
+  font: var(--pf-font-body-s);
   color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
 }
 .dctp-changelog-cards {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dctp-changelog-card {
   border: 1px solid ${DS_PORTAL_LAYOUT_TOKENS.border};
   border-radius: ${DS_PORTAL_LAYOUT_TOKENS.tableWrapRadius};
-  padding: 14px 16px;
+  padding: var(--pf-spacing-16);
   background: ${DS_PORTAL_LAYOUT_TOKENS.surface};
 }
 .dctp-changelog-card-head {
@@ -270,18 +270,19 @@ ${DS_TOKEN_TABLE_STYLE}
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--pf-spacing-8);
+  margin-bottom: var(--pf-spacing-8);
 }
 .dctp-changelog-card-author {
-  margin: 0 0 12px;
+  margin: 0 0 var(--pf-spacing-12);
+  /* pf-gap: body-xs 12/16 ещё не в Kit (спека §7.1, п. 6а) — прежний размер */
   font-size: 11px;
   line-height: 14px;
   color: ${DS_PORTAL_LAYOUT_TOKENS.textSecondary};
 }
 @media (max-width: 767px) {
   .dctp-changelog {
-    padding-top: 32px;
+    padding-top: var(--pf-spacing-32);
   }
   .dctp-changelog-table-wrap {
     display: none;

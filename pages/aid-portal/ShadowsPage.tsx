@@ -37,44 +37,44 @@ ${DS_TOKEN_TABLE_STYLE}
   box-sizing: border-box;
 }
 .dsp {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 40px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dsp-search-empty {
   margin: 0;
-  padding: 24px 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  line-height: 20px;
+  padding: var(--pf-spacing-24) 0;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-m);
 }
 .dsp-data {
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
   overflow: hidden;
 }
 .dsp-group-head {
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-top: 1px solid #ebedf0;
-  border-bottom: 1px solid #ebedf0;
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-muted);
+  border-top: 1px solid var(--pf-line-default);
+  border-bottom: 1px solid var(--pf-line-default);
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13/16 */
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
   line-height: 16px;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 .dsp-data > .dsp-group-head:first-child {
   border-top: none;
 }
 .dsp-style-row {
   display: flex;
-  gap: 48px;
+  gap: var(--pf-spacing-48);
   align-items: flex-start;
-  padding: 24px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #ebedf0;
+  padding: var(--pf-spacing-24) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
+  border-bottom: 1px solid var(--pf-line-default);
 }
 .dsp-style-row:last-child {
   border-bottom: none;
@@ -84,26 +84,27 @@ ${DS_TOKEN_TABLE_STYLE}
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--pf-spacing-16);
 }
 .dsp-sample__label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
-  color: rgba(0, 0, 0, 0.54);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
+  text-transform: uppercase;
+  color: var(--pf-text-secondary);
 }
 .dsp-sample__preview {
   width: 200px;
   height: 80px;
-  border-radius: 16px;
-  background: #ffffff;
+  border-radius: var(--pf-radius-xl);
+  background: var(--pf-bg-surface-main);
 }
 .dsp-sample__caption {
   margin: 0;
+  /* pf-gap: body-xs 12/16·400 — до него прежний размер 11/14 */
   font-size: 11px;
   line-height: 14px;
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-secondary);
   white-space: pre-wrap;
 }
 .dsp-token-table-wrap {
@@ -111,88 +112,91 @@ ${DS_TOKEN_TABLE_STYLE}
   min-width: 0;
 }
 .ds-token-table tbody tr:nth-child(even):not(.dsp-token-table__level) td {
-  background: #fafafa;
+  background: var(--pf-bg-surface-zebra);
 }
 .dsp-token-table__level td {
-  background: #f5f5f5;
+  background: var(--pf-bg-surface-muted);
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13 */
   font-size: 13px;
-  font-weight: 500;
-  color: #2d2c2e;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
 }
 .dsp-col-param {
   width: 160px;
   min-width: 120px;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 .dsp-col-value {
   width: 130px;
   min-width: 100px;
-  font-weight: 500;
-  color: #2d2c2e;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
 }
 .dsp-col-token {
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--pf-text-secondary);
   white-space: nowrap;
 }
 .dsp-mode-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--pf-spacing-4);
 }
 .dsp-mode-field span {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--pf-text-secondary);
 }
 .dsp-mode-segment {
   display: inline-flex;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-main);
 }
+.dsp-mode-segment > button:first-child { border-top-left-radius: inherit; border-bottom-left-radius: inherit; }
+.dsp-mode-segment > button:last-child { border-top-right-radius: inherit; border-bottom-right-radius: inherit; }
+.dsp-mode-segment > button:focus-visible { position: relative; z-index: 1; }
 .dsp-mode-segment button {
   margin: 0;
-  padding: 6px 12px;
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
   border: none;
-  border-right: 1px solid #ebedf0;
+  border-right: 1px solid var(--pf-line-default);
   background: transparent;
   font: inherit;
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13 */
   font-size: 13px;
   cursor: pointer;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--pf-text-primary);
 }
 .dsp-mode-segment button:last-child {
   border-right: none;
 }
 .dsp-mode-segment button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  color: var(--ds-accent);
-  font-weight: 500;
+  background: var(--ds-selected-bg);
+  color: var(--ds-selected-text);
+  font-weight: var(--pf-type-weight-500);
 }
 .dsp-mode-segment button:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: -2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .dsp {
-    padding: 32px 24px 48px;
+    padding: var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48);
   }
   .dsp-style-row {
-    gap: 24px;
-    padding: 20px 16px;
+    gap: var(--pf-spacing-24);
+    padding: var(--pf-spacing-20) var(--pf-spacing-16);
   }
 }
 @media (max-width: 767px) {
   .dsp {
-    padding: 20px 16px 40px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .dsp-style-row {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    gap: var(--pf-spacing-16);
+    padding: var(--pf-spacing-16);
   }
   .dsp-sample {
     flex-basis: auto;

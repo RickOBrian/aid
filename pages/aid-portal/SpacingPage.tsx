@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { ChangelogTable } from './ChangelogTable';
 import { DsPageHeader } from './DsPageHeader';
 import { DS_TOKEN_JSON_ACTIONS_STYLE, TokenJsonActions } from './dsTokenJsonActions';
@@ -22,18 +22,17 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   box-sizing: border-box;
 }
 .dps {
-  font-family: 'Google Sans', system-ui, sans-serif;
-  color: #2d2c2e;
-  background: #ffffff;
+  font-family: var(--pf-type-family-sans-1);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
   min-height: 100vh;
-  padding: 40px 48px 64px;
+  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
 }
 .dps-search-empty {
   margin: 0;
-  padding: 24px 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 14px;
-  line-height: 20px;
+  padding: var(--pf-spacing-24) 0;
+  color: var(--pf-text-secondary);
+  font: var(--pf-font-body-m);
 }
 .dps-table-wrap {
   min-width: 0;
@@ -42,15 +41,17 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
   min-width: 560px;
 }
 .dps-table td {
-  padding: 12px 16px;
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
 }
 .dps-col-name {
   min-width: 200px;
 }
 .dps-name {
+  /* pf-gap: label-m 14/20·500 — имя токена; размер прежний */
   font-size: 14px;
   line-height: 20px;
-  color: #2d2c2e;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
 }
 .dps-col-visual {
   width: 120px;
@@ -58,7 +59,7 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dps-col-px,
 .dps-col-rem {
   min-width: 96px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
 }
 .dps-visual {
   display: flex;
@@ -73,47 +74,45 @@ ${DS_TOKEN_JSON_ACTIONS_STYLE}
 .dps-visual__bar-line {
   flex-shrink: 0;
   height: 2px;
-  background: var(--dps-accent-line, #2c64e3);
+  background: var(--pf-bg-accent-vivid-main);
 }
 .dps-visual__bar-fill {
   flex-shrink: 0;
   width: 100%;
-  background: var(--dps-accent-fill, rgba(141, 185, 253, 0.24));
+  background: var(--pf-bg-accent-vivid-fade);
 }
 .dps-cards {
   display: none;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dps-card {
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 14px 16px;
-  background: #ffffff;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-16) var(--pf-spacing-16);
+  background: var(--pf-bg-surface-main);
 }
 .dps-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: var(--pf-spacing-12);
+  margin-bottom: var(--pf-spacing-12);
 }
 .dps-card-values {
   display: flex;
-  gap: 12px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-  color: #2d2c2e;
+  gap: var(--pf-spacing-12);
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-primary);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .dps {
-    padding: 32px 24px 48px;
+    padding: var(--pf-spacing-32) var(--pf-spacing-24) var(--pf-spacing-48);
   }
 }
 @media (max-width: 767px) {
   .dps {
-    padding: 20px 16px 40px;
+    padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40);
   }
   .dps-table-wrap {
     display: none;
@@ -285,7 +284,7 @@ function SpacingCards({
 export function SpacingPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: string }) {
   const [searchQuery, setSearchQuery] = useState('');
   const { copyText, copyNotice } = useCopyNotice();
-  const { tokens, collection, previewLineColor, previewFillColor } = useMemo(
+  const { tokens, collection } = useMemo(
     () => getProductSpacingContent(productId),
     [productId],
   );
@@ -310,13 +309,8 @@ export function SpacingPage({ productId = DEFAULT_PRODUCT_ID }: { productId?: st
       }),
     [collection, tokens],
   );
-  const pageStyleVars = {
-    '--dps-accent-line': previewLineColor,
-    '--dps-accent-fill': previewFillColor,
-  } as CSSProperties;
-
   return (
-    <div className="dps" style={pageStyleVars}>
+    <div className="dps">
       <style>{PAGE_STYLE}</style>
 
       <DsPageHeader

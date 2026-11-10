@@ -64,54 +64,50 @@ export interface ComponentApiSpec {
 
 export const COMPONENT_API_SUMMARY_STYLE = `
 .ds-capi {
-  margin-bottom: 32px;
+  margin-bottom: var(--pf-spacing-32);
 }
 .ds-capi-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: var(--pf-spacing-12);
+  margin-bottom: var(--pf-spacing-10);
 }
 .ds-capi-head h2 {
   margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--pf-text-secondary);
 }
 .ds-capi-code {
   margin: 0;
-  padding: 14px 18px;
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
-  background: #fafafa;
+  padding: var(--pf-spacing-16);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-zebra);
   overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  line-height: 20px;
-  color: #2d2c2e;
+  font: var(--pf-font-code-m);
+  color: var(--pf-text-primary);
   tab-size: 2;
 }
 .ds-capi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--pf-spacing-16);
+  margin-top: var(--pf-spacing-16);
 }
 .ds-capi-card {
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-l);
+  padding: var(--pf-spacing-12) var(--pf-spacing-16);
 }
 .ds-capi-card h3 {
-  margin: 0 0 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  margin: 0 0 var(--pf-spacing-8);
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--pf-text-secondary);
 }
 .ds-capi-list {
   list-style: none;
@@ -119,42 +115,38 @@ export const COMPONENT_API_SUMMARY_STYLE = `
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
-  line-height: 18px;
+  gap: var(--pf-spacing-6);
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 12px; /* pf-gap: body-xs 12/16·400 */
+  line-height: 18px; /* pf-gap: body-xs */
 }
 .ds-capi-list li {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
   flex-wrap: wrap;
 }
 .ds-capi-list code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  color: #2d2c2e;
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-primary);
 }
+/* Флаг supported — Badge Success / Neutral (.pf-badge в разметке) */
 .ds-capi-flag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.ds-capi-flag[data-supported="true"] {
-  color: #1f7a3f;
-}
-.ds-capi-flag[data-supported="false"] {
-  color: rgba(0, 0, 0, 0.32);
+  align-self: center;
 }
 .ds-capi-note {
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 11px;
+  color: var(--pf-text-secondary);
+  font-size: 11px; /* pf-gap: body-xs 12/16·400 */
+}
+.ds-capi-list code.ds-capi-note {
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-secondary);
 }
 .ds-capi-empty {
   margin: 0;
-  font-size: 12px;
-  line-height: 18px;
-  color: rgba(0, 0, 0, 0.38);
+  font-size: 12px; /* pf-gap: body-xs 12/16·400 */
+  line-height: 18px; /* pf-gap: body-xs */
+  color: var(--pf-text-secondary);
 }
 `;
 
@@ -194,7 +186,10 @@ export function ComponentApiSummary({ spec }: { spec: ComponentApiSpec }) {
             {spec.states.map((state) => (
               <li key={state.name}>
                 <code>{state.name}</code>
-                <span className="ds-capi-flag" data-supported={state.supported}>
+                <span
+                  className={`ds-capi-flag pf-badge${state.supported ? ' pf-badge--success' : ''}`}
+                  data-supported={state.supported}
+                >
                   {state.supported ? 'yes' : 'no'}
                 </span>
                 {state.note && <span className="ds-capi-note">{state.note}</span>}

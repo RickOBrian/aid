@@ -29,9 +29,9 @@
 /pages/aid-portal/iconsData.ts
 /pages/aid-portal/guides-preview/
 
-# Зона arturuxui: версия и чейнжлог библиотек Rider и Driver (запись PD
-# 2026-10-21 о версии и чейнжлоге). Копия в pages/aid-portal/tokens/ — её
-# переписывает сборка из корневых tokens/.
+# Версия и чейнжлог библиотек Rider и Driver — любой инженер-человек
+# (решение PD, #306). Копия в pages/aid-portal/tokens/ — её переписывает
+# сборка из корневых tokens/.
 /tokens/rider-*-changelog.json
 /tokens/driver-*-changelog.json
 /pages/aid-portal/tokens/rider-*-changelog.json
@@ -45,3 +45,12 @@
 /products/*/product.json                      @RickOBrian
 /standards-registry.json                      @RickOBrian
 /.github/                                     @RickOBrian
+
+# Стандарты Persefona — PD и arturuxui на равных (решение PD 2026-10-26,
+# #476, devops-4). Строки без владельца: правку arturuxui подтверждает он
+# сам, о каждой его правке здесь PD получает issue (workflow
+# persefona-notify.yml). Включая паспорт продукта и зеркало в плагине.
+# Общие стандарты AID (skills/_shared/) в зону не входят.
+/products/persefona/
+/products/persefona/product.json
+/plugins/aid-standards/repo/products/persefona/

@@ -58,9 +58,9 @@ ${DS_VALUE_META_STYLE}
 }
 .dgp-style-row {
   display: flex;
-  gap: 48px;
+  gap: var(--pf-spacing-48);
   align-items: flex-start;
-  padding: 24px 16px;
+  padding: var(--pf-spacing-24) var(--pf-spacing-16);
   border-bottom: 1px solid ${T.border};
 }
 .dgp-style-row:last-child {
@@ -70,17 +70,17 @@ ${DS_VALUE_META_STYLE}
   flex: 0 0 200px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
 }
 .dgp-sample__label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
+  text-transform: uppercase;
   color: ${T.textSecondary};
 }
 .dgp-sample__stage {
-  padding: 16px;
+  padding: var(--pf-spacing-16);
   border: 1px solid ${T.border};
   border-radius: ${T.tableWrapRadius};
   background: ${T.surfaceMuted};
@@ -88,13 +88,14 @@ ${DS_VALUE_META_STYLE}
 .dgp-sample__preview {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 12px;
+  border-radius: var(--pf-radius-l);
 }
 .dgp-sample__caption {
   margin: 0;
+  /* pf-gap: body-xs 12/16·400 — до него прежний размер 11/14 */
   font-size: 11px;
   line-height: 14px;
-  color: ${T.textMuted};
+  color: ${T.textSecondary};
 }
 .dgp-token-table-wrap {
   flex: 1 1 580px;
@@ -113,24 +114,23 @@ ${DS_VALUE_META_STYLE}
 .dgp-color {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
 .dgp-color__swatch {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
   border: 1px solid ${T.border};
-  border-radius: 4px;
+  border-radius: var(--pf-radius-s);
 }
 .dgp-mode-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--pf-spacing-4);
 }
 .dgp-mode-field span {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
   color: ${T.textSecondary};
 }
@@ -138,16 +138,19 @@ ${DS_VALUE_META_STYLE}
   display: inline-flex;
   border: 1px solid ${T.border};
   border-radius: ${T.tableWrapRadius};
-  overflow: hidden;
   background: ${T.surface};
 }
+.dgp-mode-segment > button:first-child { border-top-left-radius: inherit; border-bottom-left-radius: inherit; }
+.dgp-mode-segment > button:last-child { border-top-right-radius: inherit; border-bottom-right-radius: inherit; }
+.dgp-mode-segment > button:focus-visible { position: relative; z-index: 1; }
 .dgp-mode-segment button {
   margin: 0;
-  padding: 6px 12px;
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
   border: none;
   border-right: 1px solid ${T.border};
   background: transparent;
   font: inherit;
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13 */
   font-size: 13px;
   cursor: pointer;
   color: ${T.textSecondary};
@@ -156,20 +159,20 @@ ${DS_VALUE_META_STYLE}
   border-right: none;
 }
 .dgp-mode-segment button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  color: var(--ds-accent);
-  font-weight: 500;
+  background: var(--ds-selected-bg);
+  color: var(--ds-selected-text);
+  font-weight: var(--pf-type-weight-500);
 }
 .dgp-mode-segment button:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: -2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .dgp {
     padding: ${T.pagePaddingTablet};
   }
   .dgp-style-row {
-    gap: 24px;
+    gap: var(--pf-spacing-24);
   }
 }
 @media (max-width: 767px) {
@@ -178,8 +181,8 @@ ${DS_VALUE_META_STYLE}
   }
   .dgp-style-row {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    gap: var(--pf-spacing-16);
+    padding: var(--pf-spacing-16);
   }
   .dgp-sample,
   .dgp-token-table-wrap {

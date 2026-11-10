@@ -33,94 +33,91 @@ export interface CodeSnippetPlatform {
 
 export const COMPONENT_CODE_SNIPPET_STYLE = `
 .ds-ccode {
-  margin-bottom: 40px;
+  margin-bottom: var(--pf-spacing-40);
 }
 .ds-ccode-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--pf-spacing-12);
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: var(--pf-spacing-10);
 }
 .ds-ccode-head h2 {
   margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--pf-text-secondary);
 }
 .ds-ccode-selection {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  font: var(--pf-font-code-s);
+  color: var(--pf-text-secondary);
 }
 .ds-ccode-platforms {
   display: inline-flex;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
   overflow: hidden;
-  background: #fff;
-  margin-bottom: 10px;
+  background: var(--pf-bg-surface-main);
+  margin-bottom: var(--pf-spacing-10);
 }
 .ds-ccode-platforms button {
   margin: 0;
-  padding: 5px 12px;
+  padding: 5px var(--pf-spacing-12); /* pf-gap: высота сегмента — SegmentedControl (§7.2) */
   border: none;
-  border-right: 1px solid #ebedf0;
+  border-right: 1px solid var(--pf-line-default);
   background: transparent;
-  font: inherit;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.54);
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 12px; /* pf-gap: label-m (сегмент) */
+  font-weight: var(--pf-type-weight-400);
+  color: var(--pf-text-secondary);
   cursor: pointer;
 }
 .ds-ccode-platforms button:last-child {
   border-right: none;
 }
 .ds-ccode-platforms button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  color: var(--ds-accent);
-  font-weight: 500;
+  background: var(--ds-selected-bg);
+  color: var(--ds-selected-text);
+  font-weight: var(--pf-type-weight-500);
 }
 .ds-ccode-platforms button:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: -2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-ccode-body {
   margin: 0;
-  padding: 14px 18px;
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
-  background: #fafafa;
+  padding: var(--pf-spacing-16);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-surface-zebra);
   overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  line-height: 20px;
-  color: #2d2c2e;
+  font: var(--pf-font-code-m);
+  color: var(--pf-text-primary);
   tab-size: 2;
 }
 .ds-ccode-unavailable {
   margin: 0;
-  padding: 14px 18px;
-  border: 1px dashed #ebedf0;
-  border-radius: 12px;
-  font-size: 12px;
-  line-height: 18px;
-  color: rgba(0, 0, 0, 0.38);
+  padding: var(--pf-spacing-16);
+  border: 1px dashed var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  font-family: var(--pf-type-family-sans-1);
+  font-size: 12px; /* pf-gap: body-xs 12/16·400 */
+  line-height: 18px; /* pf-gap: body-xs */
+  color: var(--pf-text-secondary);
 }
 .ds-ccode-source {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--pf-type-family-mono-1);
 }
 .ds-ccode-banner {
-  margin: 0 0 8px;
-  padding: 8px 12px;
-  border: 1px solid #f0d48a;
-  border-radius: 8px;
-  background: #fffdf5;
-  font-size: 11px;
-  line-height: 16px;
-  color: #8a6a00;
+  margin: 0 0 var(--pf-spacing-8);
+  padding: var(--pf-spacing-8) var(--pf-spacing-12);
+  border: none;
+  border-radius: var(--pf-radius-m);
+  background: var(--pf-bg-accent-status-warning-main);
+  font: var(--pf-font-body-s);
+  color: var(--pf-text-warning);
 }
 `;
 

@@ -1,11 +1,60 @@
 {
   "artifact": "Icons/Rider",
-  "currentVersion": "1.4.0",
+  "currentVersion": "1.7.0",
   "figmaTable": {
     "fileKey": "n6LppQbTv85yI29h6u30DI",
     "nodeId": "3703:4"
   },
   "entries": [
+    {
+      "version": "1.7.0",
+      "date": "2026-10-25",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_chat_call_fill\nic_chat_call_outline"
+        }
+      ]
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-10-22",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены две новые иконки.",
+          "details": "ic_delivery_fill\nic_medicine_case_fill"
+        }
+      ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-10-21",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлено 60 иконок и 3 новые категории: Road Events, Payments, Theme.",
+          "details": "Controls: ic_done_bold, ic_done_double, ic_done_double_bold, ic_done_small, ic_chevron_large_left, ic_chevron_large_right, ic_close_large, ic_repeat\nActions: ic_call_off_outline, ic_call_off_fill, ic_chat_duo_fill, ic_message_balloon_outline, ic_message_balloon_fill, ic_lightning_off_outline, ic_exit, ic_external_link, ic_map_outline, ic_download, ic_update\ninformative: ic_pin_fill, ic_pin_outline, ic_done_outline, ic_taxi_fill, ic_time_outline, ic_envelope_outline, ic_document_outline, ic_info_outline, ic_search_car, ic_search_taxi, ic_pet, ic_support, ic_chart, ic_safety_warning, ic_lifebuoy, ic_clipboard_outline\nAddresses: ic_house_tree_fill\nBrands: ic_watermelon_outline, ic_watermelon_color, ic_whatsapp_outline, ic_whatsapp_fill, ic_telegram_fill, ic_viber_outline\nPayments (новая): ic_cash_fill, ic_cash_outline, ic_card_outline, ic_wallet_fill, ic_nfc, ic_receipt_outline, ic_receipt_fill\nRoad Events (новая): ic_snail_fill, ic_cow_fill, ic_railway_fill, ic_police_post_fill, ic_barrier, ic_no_turn, ic_danger_fill, ic_bumps, ic_roadworks\nTheme (новая): ic_theme_system, ic_theme_dark, ic_theme_light"
+        },
+        {
+          "kind": "changed",
+          "description": "Заменён вектор у 47 иконок; переименованы 26 иконок; ic_card и ic_cash перенесены в Payments.",
+          "details": "Новый вектор: ic_back, ic_lock, ic_location, ic_search, ic_attention, ic_delete, ic_wait, ic_chat, ic_question, ic_refresh, ic_attach, ic_done, ic_forbidden (informative), ic_minus, ic_plus, ic_share_ios, ic_close, ic_loading, ic_wheel, ic_route, ic_lightning, ic_transport_airport, ic_walkman, ic_people, ic_safety, ic_info, ic_discount, ic_options, ic_drag, ic_surge, ic_history, ic_person (informative)\nНовый вектор + имя: ic_done (informative) → ic_done_fill, ic_share _android → ic_share_android, ic_call → ic_call_fill, ic_trash → ic_trash_fill, ic_documents → ic_document_fill, ic_settings → ic_settings_fill, ic_card → ic_card_fill, ic_add_circle → ic_add_circle_fill, ic_delete_circle → ic_delete_circle_fill, ic_menu → ic_menu_outline, ic_scan_qr → ic_scan_card, ic_person (Addresses) → ic_person_circle, ic_copy → ic_copy_outline, ic_taxi → ic_taxi_outline, ic_envelope → ic_envelope_fill\nТолько имя: ic_arrow_left → ic_chevron_left, ic_arrow_up → ic_chevron_up, ic_arrow_right → ic_chevron_right, ic_arrow_down → ic_chevron_down, ic_set_on_map → ic_pin_fill_city, ic_favorite (Actions) → ic_favorite_fill, ic_cash → ic_cash_city, ic_circle → ic_circle_stop\nИсправлены повторы имён: ic_spasibo_color (монохромная) → ic_spasibo, ic_mirbg_color (монохромная) → ic_mirbg, ic_forbidden (Scooters) → ic_scooter_forbidden"
+        },
+        {
+          "kind": "removed",
+          "description": "Удалена иконка.",
+          "details": "ic_ride_experience"
+        }
+      ]
+    },
     {
       "version": "1.4.0",
       "date": "2026-10-14",

@@ -1,0 +1,46 @@
+{
+  "id": "component-card-service",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Card Service",
+  "componentId": "card-service",
+  "product": "rider",
+  "changeSummary": "Card Service Rider — развитие (designer-8, AID-69, issue #441), флоу figma-library-workflow §3.1. Вход — согласованное «стало» аудита rider-1 (копия bL4jeQWMvn3GKVNRPnmJMj, секция 5019:3458, ряд 1 — 5019:3462; находки 4 и 7, решение PD 19.10): размеры бенто S 148, M 198, L 358 × 164; фоны Pastel; на тёмных Pastel — Text/Constant White и Constant White Secondary; строки заголовка и подзаголовка не ограничены; иллюстрация — нижний слой у своего угла, текст сверху со своей шириной; зазор между карточками 12. Предложение аудита: Size = S / M / L вместо S-M / L; новое свойство Tone = Light / Dark; Show Body вместо Body; иллюстрация — слот под компоненты иллюстраций S, M, L с прозрачным фоном вместо картинки-заливки; maxLines 2 снять. Аудит — пейдж «👀 Card Service · audit» 845:903, блоки 0–7, прототип «.Proto/Card Service · аудит» 847:1221; ждёт ответов на блок 7 (размеры, тон, иллюстрация, длинный текст, контраст подзаголовка 3,4–4,4 : 1, нажатие, имя против роли Island, Service Grid). Текущей версии нет (Q-22); смена значений Size и новые свойства ломают API — предложение major, итог на приёмке аудита и границе релиза.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "major",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "changed",
+    "impact": "major",
+    "description": "Card Service: три размера S, M, L, тон для тёмных карточек, иллюстрация нижним слоем — текст может на неё заходить, строки не ограничены"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "845:903",
+    "componentPage": "261:4130",
+    "components": {
+      "Card Service": "266:60",
+      "Service Grid": "266:129"
+    },
+    "auditPrototypes": {
+      ".Proto/Card Service · аудит": "847:1221"
+    },
+    "input": {
+      "fileKey": "bL4jeQWMvn3GKVNRPnmJMj",
+      "node": "5019:3462",
+      "decisions": "products/rider/audits/rider-1/navigation.json (ветка standards/rider-1-audit-navigation), находки 4 и 7"
+    },
+    "reference": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "illustrations": "3589:27637",
+      "bento": "3589:27640"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-26",
+  "author": "sergej"
+}

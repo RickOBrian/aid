@@ -1,12 +1,14 @@
 /**
  * Минимальная заглушка Figma API для unit-тестов.
  *
- * Покрывает ровно две вещи, без которых чистые модули не запускаются:
+ * Покрывает ровно то, без которых чистые модули не запускаются:
  *
  * - `figma.mixed` — символ, с которым сравниваются смешанные свойства
  *   текстовой ноды (typographyUtils.isPluginMixed);
  * - `figma.clientStorage` — key-value хранилище в памяти, на котором
- *   работает src/lib/storage.ts (история решений, отправленные подписи).
+ *   работает src/lib/storage.ts (история решений, отправленные подписи);
+ * - `figma.loadFontAsync` — пустышка для правки текста в поддельных узлах
+ *   (test/changelogTable.test.ts).
  *
  * Всё, что реально ходит в документ (scanner, apply-to-layout), юнит-тестами
  * не покрывается — для него нужен настоящий Figma-рантайм. Если появится
@@ -35,6 +37,8 @@ const clientStorage = {
 const figmaStub = {
   mixed: Symbol("figma.mixed"),
   clientStorage,
+  /** Шрифты в тестах не грузятся — достаточно, что вызов не падает. */
+  async loadFontAsync(): Promise<void> {},
 };
 
 (globalThis as unknown as { figma: typeof figmaStub }).figma = figmaStub;

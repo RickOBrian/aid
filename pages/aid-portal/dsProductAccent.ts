@@ -1,7 +1,12 @@
 import type { CSSProperties } from 'react';
 import { DEFAULT_PRODUCT_ID } from './productRegistry';
 
-/** Portal chrome accent — Driver blue / Rider purple (not DS semantic tokens). */
+/**
+ * Цвет продукта в хроме разделов Driver и Rider (PD п. 9 #354: «хром портала не
+ * меняется»). pf-gap: в Kit это будут `text-accent-product-<продукт>` и
+ * `bg-accent-product-<продукт>-fade` (спека presentbook-6 §7.1, п. 1а) — до их
+ * заведения значения здесь. Вне разделов продукта — графит Kit (`persefona/tokens.css`).
+ */
 export const PRODUCT_ACCENT = {
   driver: {
     text: '#3D6AFE',
@@ -27,19 +32,22 @@ export function productAccentCssVars(productId: string): CSSProperties {
     ['--ds-accent' as string]: accent.text,
     ['--ds-accent-bg' as string]: accent.bg,
     ['--ds-accent-rgb' as string]: accent.textRgb,
+    ['--ds-selected-bg' as string]: accent.bg,
+    ['--ds-selected-text' as string]: accent.text,
+    ['--ds-link-decoration' as string]: 'none',
   };
 }
 
 /** Shared accent patterns — parent must set `--ds-accent*` via `ProductAccentScope`. */
 export const DS_PRODUCT_ACCENT_STYLE = `
 .ds-accent-segment button[aria-pressed="true"] {
-  background: var(--ds-accent-bg);
-  color: var(--ds-accent);
-  font-weight: 500;
+  background: var(--ds-selected-bg);
+  color: var(--ds-selected-text);
+  font-weight: var(--pf-type-weight-500);
 }
 .ds-accent-segment button:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: -2px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-accent-tab[aria-selected="true"] {
   color: var(--ds-accent);
@@ -47,14 +55,14 @@ export const DS_PRODUCT_ACCENT_STYLE = `
 }
 .ds-accent-link {
   color: var(--ds-accent);
-  text-decoration: none;
+  text-decoration: var(--ds-link-decoration);
 }
 .ds-accent-link:hover {
   text-decoration: underline;
 }
 .ds-accent-link:focus-visible {
-  outline: 2px solid var(--ds-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
+  border-radius: var(--pf-radius-s);
 }
 `;

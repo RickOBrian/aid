@@ -6,37 +6,42 @@ export const DS_TOKEN_JSON_ACTIONS_STYLE = `
   flex-shrink: 0;
 }
 .ds-token-json-btn {
-  font-family: 'Google Sans', system-ui, sans-serif;
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13/16 */
+  font-family: var(--pf-type-family-sans-1);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--pf-type-weight-500);
   line-height: 16px;
-  color: #2d2c2e;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  padding: 8px 12px;
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
+  border: 1px solid var(--pf-line-default);
+  padding: var(--pf-spacing-8) var(--pf-spacing-12);
   cursor: pointer;
 }
 .ds-token-json-btn--view {
-  border-radius: 8px 0 0 8px;
+  border-radius: var(--pf-radius-m) 0 0 var(--pf-radius-m);
   border-right: none;
 }
 .ds-token-json-btn--download {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 8px 8px 0;
-  border-left: 1px solid #ebedf0;
-  padding: 8px 10px;
+  border-radius: 0 var(--pf-radius-m) var(--pf-radius-m) 0;
+  border-left: 1px solid var(--pf-line-default);
+  padding: var(--pf-spacing-8) var(--pf-spacing-10);
 }
 .ds-token-json-btn:hover:not(:disabled) {
-  background: #f5f5f5;
+  background: #f5f5f5; /* pf-gap: bg-accent-states-hover */
+}
+.ds-token-json-btn:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-token-json-btn:disabled {
-  color: rgba(0, 0, 0, 0.26);
+  color: var(--pf-text-disabled);
   cursor: not-allowed;
 }
 .ds-token-json-btn:disabled svg {
-  opacity: 0.38;
+  color: var(--pf-icon-disabled);
 }
 .ds-token-json-modal {
   position: fixed;
@@ -45,12 +50,12 @@ export const DS_TOKEN_JSON_ACTIONS_STYLE = `
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: var(--pf-spacing-24);
 }
 .ds-token-json-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.38);
+  background: rgba(0, 0, 0, 0.38); /* pf-gap: bg-overlay */
 }
 .ds-token-json-modal-panel {
   position: relative;
@@ -58,54 +63,56 @@ export const DS_TOKEN_JSON_ACTIONS_STYLE = `
   max-height: min(80vh, 900px);
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  border-radius: 12px;
+  background: var(--pf-bg-surface-main);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-xl);
   overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
+  box-shadow: var(--pf-shadow-2);
 }
 .ds-token-json-modal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 20px;
-  border-bottom: 1px solid #ebedf0;
+  gap: var(--pf-spacing-16);
+  padding: var(--pf-spacing-16) var(--pf-spacing-20);
+  border-bottom: 1px solid var(--pf-line-default);
 }
 .ds-token-json-modal-head h3 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  font: var(--pf-font-heading-s);
+  color: var(--pf-text-primary);
 }
 .ds-token-json-modal-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--pf-spacing-8);
 }
 .ds-token-json-modal-btn {
-  font-family: 'Google Sans', system-ui, sans-serif;
+  /* pf-gap: label-m 14/20·500 — до него прежний размер 13 */
+  font-family: var(--pf-type-family-sans-1);
   font-size: 13px;
-  font-weight: 500;
-  color: #2d2c2e;
-  background: #ffffff;
-  border: 1px solid #ebedf0;
-  border-radius: 8px;
-  padding: 6px 12px;
+  font-weight: var(--pf-type-weight-500);
+  color: var(--pf-text-primary);
+  background: var(--pf-bg-surface-main);
+  border: 1px solid var(--pf-line-default);
+  border-radius: var(--pf-radius-m);
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
   cursor: pointer;
 }
 .ds-token-json-modal-btn:hover {
-  background: #f5f5f5;
+  background: #f5f5f5; /* pf-gap: bg-accent-states-hover */
+}
+.ds-token-json-modal-btn:focus-visible {
+  outline: var(--pf-focus-ring);
+  outline-offset: var(--pf-focus-offset);
 }
 .ds-token-json-modal-body {
   margin: 0;
-  padding: 20px;
+  padding: var(--pf-spacing-20);
   overflow: auto;
-  font-family: 'Google Sans', system-ui, sans-serif;
-  font-size: 12px;
-  line-height: 18px;
+  font: var(--pf-font-code-m);
   white-space: pre-wrap;
   word-break: break-word;
-  color: #2d2c2e;
+  color: var(--pf-text-primary);
 }
 @media (max-width: 767px) {
   .ds-token-json-btn--view {
@@ -122,7 +129,7 @@ export const DS_TOKEN_JSON_ACTIONS_STYLE = `
   .ds-token-json-modal-panel {
     width: 100%;
     max-height: 92vh;
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--pf-radius-xl) var(--pf-radius-xl) 0 0;
   }
   .ds-token-json-modal-head {
     flex-direction: column;
@@ -135,15 +142,14 @@ export const DS_TOKEN_JSON_ACTIONS_STYLE = `
     flex: 1 1 0;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .ds-token-json-btn {
-    font-size: 12px;
-    padding: 8px 10px;
+    font-size: 12px; /* pf-gap: label-m — прежний мобильный размер */
+    padding: var(--pf-spacing-8) var(--pf-spacing-10);
   }
   .ds-token-json-modal-body {
-    padding: 16px;
-    font-size: 11px;
-    line-height: 16px;
+    padding: var(--pf-spacing-16);
+    font: var(--pf-font-code-s);
   }
 }
 `;

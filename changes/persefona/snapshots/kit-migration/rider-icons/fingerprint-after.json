@@ -1,0 +1,23 @@
+{
+  "file": "n6LppQbTv85yI29h6u30DI",
+  "page": "0:1 Icons",
+  "date": "2026-10-26",
+  "method": "как в fingerprint-before.json; у экземпляров не считаются скрытые свойства (Subtitle при Show Subtitle = false, How to Read при Show How to Read = false)",
+  "blocks": {
+    "18:52 Description → 3954:126 HeaderPage (Title + Subtitle)": { "n": 2, "hash": "df0079cb" },
+    "1562:375 Brands": { "n": 37, "hash": "ba4b65f3" },
+    "494:10 Controls": { "n": 26, "hash": "e27d3182" },
+    "541:37 informative": { "n": 74, "hash": "7237d0de" },
+    "463:34 Actions": { "n": 36, "hash": "dd0aab79" },
+    "905:4 Addresses": { "n": 14, "hash": "ab72e051" },
+    "1:1699 Status": { "n": 1, "hash": "c5df0d51" },
+    "1:1710 Markers": { "n": 1, "hash": "4f3744f4" },
+    "1:1704 Scooters": { "n": 1, "hash": "b7d50c65" },
+    "3867:222 Road Events": { "n": 10, "hash": "6ab89cf0" },
+    "3867:228 Payments": { "n": 10, "hash": "c76f18a" },
+    "3867:234 Theme": { "n": 4, "hash": "95079fc9" },
+    "3703:4 CHANGELOG (методом «до»)": { "n": 54, "hash": "a926460e" }
+  },
+  "new_shell_texts": ["Принято", "Rider", "Содержание: 1. Brands … 11. Theme (11 ссылок на карточки)"],
+  "shell": { "raw_paints": 0, "texts_without_persefona_style": 0, "non_persefona_variables": 0, "effects": 0 }
+}

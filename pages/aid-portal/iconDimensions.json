@@ -1287,6 +1287,14 @@
     "width": 24,
     "height": 24
   },
+  "rider/actions/chat_call_fill": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/actions/chat_call_outline": {
+    "width": 24,
+    "height": 24
+  },
   "rider/actions/chat_duo_fill": {
     "width": 24,
     "height": 24
@@ -1703,6 +1711,10 @@
     "width": 24,
     "height": 24
   },
+  "rider/informative/delivery_fill": {
+    "width": 24,
+    "height": 24
+  },
   "rider/informative/discount": {
     "width": 24,
     "height": 24
@@ -1804,6 +1816,10 @@
     "height": 24
   },
   "rider/informative/magic": {
+    "width": 24,
+    "height": 24
+  },
+  "rider/informative/medicine_case_fill": {
     "width": 24,
     "height": 24
   },
