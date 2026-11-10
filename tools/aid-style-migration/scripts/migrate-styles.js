@@ -25,7 +25,9 @@ const libVars = MC.lib;
 const getVar = name => MC.v[name] || (MC.v[name] = libVars[name] ? figma.variables.importVariableByKeyAsync(libVars[name]) : Promise.resolve(null));
 const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodies/Body 2':'879e5c53e856e0bc15d54d02ad28ba88c8661808','Bodies/Body 3':'ec7ba478b0d45f0e20fb5528ffaa75dcff5aef72','Subtitles/Subtitle 1':'1449afde1d818486460f295669af22fd99a3a6cf','Subtitles/Subtitle 2':'746b9479314cb405d3340bd358049e486ae0f6d6','Subtitles/Subtitle 3':'a033bddf111be09f0149088dcb5c1eaa529ebd04','Titles/Title 4':'9395aad5c31672c7a765e20f36e1b39e00ccbc43','Titles/Title 3':'9a6c623ccfe842d1d9e8d0e428d12e6cf1d0d810','Captions/Caption 1':'97bf66024e167e387564b809893c702b464ddd42','Captions/Caption 1 CAP':'297879960c9a9a1feda979b1b9070563b06d858b','Captions/Caption 2':'0c2e5ea7ad30281d26df7c68b67043c3fa2286e8','Outstanding/Title-title2 (NRD)':'99bb5b186e90da50ee7e4b10fc0f3c13bb11acc0','Outstanding/NRD - Body':'3274cd72b8250998e9c07a468850a85e91046616','Outstanding/iOS - Subtitle':'41b59fcc0bdb4acd56c581073e5cd1d1693eca78','Titles/Title 1':'a0002690326ec64b856a97c9d41fe5f6df1b0cbb','Outstanding/iOS - Subtitle L':'c6696a50a2857a9359cc8da399263396c46a95ba','Outstanding/NRD - Action Bold':'c590f2c56eab32713a2871abe0a60c727a29ef2b',
   // анкета norule п.9 (10.11): создан в библиотеке, ключ работает после публикации; до неё importStyle падает, узел идёт в пропуск
-  'Captions/Caption 1 Semibold':'5ef7e054f947aab99fce088cee9e2ed25465f776'};
+  'Captions/Caption 1 Semibold':'5ef7e054f947aab99fce088cee9e2ed25465f776',
+  // arturuxui 10.11: SF Pro Text 10/16 вместо ALS Hauss; ключи работают после публикации библиотеки
+  'Captions/Caption 3':'0ef7069b3e53687e26689565e2596e45d8312cfe','Captions/Caption 3 Medium':'1e8270a4e9882df354b5d44debaa19452abc2029'};
 const GRAD_TOP = '60768af36ab7413fa8e0b2bdb8f5c47a01d4893f'; // Gradients/Top, библиотека Rider (п.11)
 const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384','Shadows/FAB':'0dfac2ccdab87fdc913dc307e0b92ab682665cae','Shadows/Knob':'bb489e915a6510dd8c254da1671190b6528eb40a','Glass/Navbar':'5fed574145af7feb54f3d0e5d8df295cbafe4905'};
 const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
@@ -40,7 +42,9 @@ const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstandi
   // анкета norule п.3а (arturuxui 2026-11-10): ALS Hauss Medium 17/20 → NRD - Body (SF Pro Semibold 17/20)
   'Action/actionAccent — miniPig':'Outstanding/NRD - Body',
   // п.9: Caption 3 = SF Pro Semibold 12/16, трекинг 0. Caption 3/Regular и /Medium (ALS Hauss 10/16) — не маппить
-  'Captions/Caption 3':'Captions/Caption 1 Semibold'};
+  'Captions/Caption 3':'Captions/Caption 1 Semibold',
+  // старые Caption 3/Regular и /Medium (ALS Hauss VF 10/16) → наши SF Pro Text 10/16
+  'Caption 3/Regular':'Captions/Caption 3','Caption 3/Medium':'Captions/Caption 3 Medium'};
 const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
   // Drafts, анкета п.25, 28
   'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',

@@ -97,3 +97,17 @@
 **Прогон (HASH 1347609489):** DRY → CLEAN → боевой → контрольный DRY → CLEAN.
 Заменено: `theme:bg/accentSecondary` → Tint/Accent: Where 11, Where - Migration 11, Navigation 6, Service coverage 6, Errors 2 (36); `accentSecondaryLight/pressed` → Tint/Accent: Profile 2; `Button [day]/Warning` → Background/Warning: Taxi for friends 2. Итого 40. Show my location и Order Flow боевым прогоном не гонялись: по DRY новых замен 0 (только Caption 3 до публикации).
 Контроль: 0 на Navigation, Service coverage, Errors, Profile, Taxi for friends; на Where и Where - Migration по 74 (тот же остаток во вложенном инстансе `I…429115`).
+
+## Стили для старых Caption 3/Regular и Caption 3/Medium (2026-11-10)
+
+Задача arturuxui: старые `Caption 3/Regular` и `Caption 3/Medium` из Profile (ALS Hauss VF 10/16, трекинг 0 %, регистр обычный) заменить нашими стилями с теми же метриками, но гарнитурой Caption 1 (SF Pro Text на iOS, Roboto на Android — переменная font-family, как у Caption 1).
+
+Имена `Captions/Caption 3` и `Captions/Caption 3 Medium` в библиотеке были свободны (ни стиля, ни переменных). Оговорка: на копиях всё ещё висит прежний стиль с тем же именем `Captions/Caption 3` (ключ `a51b3a21…`, SF Pro Semibold 12/16, удалён из библиотеки), и по п.9 он маппится на `Captions/Caption 1 Semibold`. Новый `Captions/Caption 3` (Regular 10/16) — другой стиль под тем же именем; правила различают их по ключу и имени-источнику, но людям это путать не стоит.
+
+**Создано в библиотеке Rider, не опубликовано:**
+- `Captions/Caption 3` — SF Pro Text Regular 10/16, трекинг 0, ключ `0ef7069b3e53687e26689565e2596e45d8312cfe`.
+- `Captions/Caption 3 Medium` — SF Pro Text Medium 10/16, трекинг 0, ключ `1e8270a4e9882df354b5d44debaa19452abc2029`.
+- `typography-core`: новая `Font Size/fs-10` = 10 (id `1778:195`, скоуп FONT_SIZE, скрыта от публикации, как fs-11). Размера 10 в core не было; остальные значения — существующие: ff-sf-pro-text (3:29) / ff-roboto (3:27), fw-400 (3:39) / fw-500 (3:40), lh-16 (3:43), ls-0 (3:54), ps-0 (3:61).
+- `typography-sem` (iOS/Android), по 6 переменных на стиль, скоупы по образцу Caption 1 Semibold, скрыты от публикации: `Captions/Caption 3/{font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing}` и `Captions/Caption 3 Medium/{…}`.
+
+**Правила `migrate-styles.js`:** `Caption 3/Regular` → `Captions/Caption 3`, `Caption 3/Medium` → `Captions/Caption 3 Medium`. Ключи в NEWTS. Тело залито на figma.root Drafts, HASH 1839953805. Копии не гонялись: сначала публикация библиотеки (вместе с `Captions/Caption 1 Semibold`), потом прогон.
