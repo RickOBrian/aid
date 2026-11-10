@@ -33,7 +33,9 @@ const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstandi
   'Captions/Caption':'Captions/Caption 1','iOS / Subtitle L':'Outstanding/iOS - Subtitle L',
   // анкета повторного прогона (new-rider-drafts.rerun-questions.md) п.5–8
   'iOS / H4':'Outstanding/NRD - Action Bold','iOS / H2':'Titles/Title 3',
-  'Title/title2 — pig':'Outstanding/Title-title2 (NRD)','Body/body — horse':'Bodies/Body 2'};
+  'Title/title2 — pig':'Outstanding/Title-title2 (NRD)','Body/body — horse':'Bodies/Body 2',
+  // анкета norule п.3а (arturuxui 2026-11-10): ALS Hauss Medium 17/20 → NRD - Body (SF Pro Semibold 17/20)
+  'Action/actionAccent — miniPig':'Outstanding/NRD - Body'};
 const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
   // Drafts, анкета п.25, 28
   'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',
@@ -61,6 +63,8 @@ const C = {
  'Text [day]/Secondary': {text:'Text/Secondary', stroke:'Stroke/Separator'},
  'Text [day]/Tertiary': {text:'Text/Tertiary'}, 'Texts day/Tertiary': {text:'Text/Tertiary'},
  'Text [day]/Accent': {text:'Text/Accent'},
+ // анкета norule п.4 (arturuxui 2026-11-10): на фрейме → Background/Warning
+ 'Text [day]/Warning': {frame:'Background/Warning'},
  'Text [day]/Constant White': {text:'Text/Constant White', shape:'Icon/Constant White'},
  'Text [day]/Constant White Secondary': {text:'Text/Constant White Secondary'},
  'Texts night/Primary': {shape:'Icon/Constant White'},

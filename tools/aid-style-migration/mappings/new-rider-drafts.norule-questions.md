@@ -36,3 +36,15 @@
    а) оставить, п.44б в силе ★ · б) перенести по маппингу то, что в нём есть.
 8. **Alert** ×2 и **Push Notification** — системные компоненты iOS: `System Colors:*`, `[Material Blur]`, `[Headline/Regular]` и т. п.
    а) оставить: это платформенный UI, не Rider ★ · б) искать соответствия.
+
+## Ответ arturuxui (2026-11-10)
+
+1а · 2а · 3а · 4 — `Text [day]/Warning` на фрейме → Background/Warning сразу; DRY с `TOP=200` на всех копиях, потом решить по каждому · 5а · 6а · 7б · 8а.
+
+Правила в `migrate-styles.js` внесены 10.11: `Action/actionAccent — miniPig` → Outstanding/NRD - Body, `Text [day]/Warning` {frame} → Background/Warning.
+
+План исполнения:
+1. `build-kit` → залить тело на Drafts (новый HASH; runner тот же, можно заливкой только тела).
+2. DRY `TOP=200` по 17 копиям (id — `LEDGER.md`), строки в `results/<slug>.tsv`, `CLEAN=true`, `report.mjs`. По хвосту п.4 — короткая анкета.
+3. Боевой прогон (DRY=false) на копиях, где DRY показал miniPig / Text [day]/Warning (Where, Where - Migration, Show my location, Errors + найденные), затем контрольный DRY.
+4. DEV-копия `4770:4437`, разовым вызовом только на копию, оригинал не трогать: Counter `4770:4725` (п.5а); Bottom sheet `4770:4685` — отступы SPx3/SPx2 и стили из маппинга, сырые и `.blur tiny` не трогать (п.6а); Sender 372 `4770:4698` и 427 `4770:5024` — всё, что есть в маппинге (п.7б). Alert/Push не трогать (8а). Снимки до/после.
