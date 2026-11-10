@@ -1,0 +1,107 @@
+{
+  "id": "component-dialog",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Dialog",
+  "componentId": "dialog",
+  "product": "rider",
+  "changeSummary": "Dialog Rider — создание (designer-31, AID-90, issue #562), флоу figma-library-workflow §3.1. Вход — макет PD 05.11 «Островные диалоговые окна» (Rider Components, Archive, 1406:22154): шесть экранов, окна собраны из шторки Bottom sheet / Sheet State=Wrapped (69:106) переопределениями — ширина 358, radius-32, тень задвоена, крестик сырым фреймом снаружи окна, серая кнопка — legacy standard с хексом, отступ снизу 30 положением, ночи нет. Решено: отдельный компонент Dialog (Structural View: HeaderDialog + Body + Footer, показ снаружи); затемнение внутри компонента, Show Overlay по умолчанию вкл.; обязательны заголовок и одна кнопка; IconSurface (AID-81) — Show Icon, вкл.; крестик — служебный .ButtonClose, Show Close, выкл.; тап по затемнению — свойство Dismiss On Overlay Tap, по умолчанию закрывает, выключают при обязательном решении (в коде dismiss on outside tap); низ острова — safe area платформы (34 не токен и в мастере не задаётся), на Android с кнопочной панелью и iPhone с кнопкой Home — space-16 (в гайде, не в мастере); кнопки — Button (AID-74): одна Primary, Secondary или Destructive, две — сверху Primary или Destructive, под ней Secondary. Новых токенов нет. Аудит — пейдж «👀 Dialog · audit» 1469:3737, секция 1469:3152, блоки 0–8; прототипы .Proto/Dialog · аудит 1471:154 (Buttons — пять допустимых комбинаций + Show Overlay/Close/Icon/Subtitle, Dismiss On Overlay Tap) и .Proto/Dialog · экран 1471:709 (Theme × State, Smart Animate), служебный .ButtonClose 1471:79. Открыто в блоке 8: замена окон Handoff на всю ширину островом (куратор). «Создание» — предложение 1.0.0 (initial); итоговый номер — на границе релиза, называет человек на приёмке сборки.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Dialog: островное диалоговое окно — затемнение, иконка, заголовок, подпись, одна или две кнопки, крестик по желанию"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "1469:3737",
+    "auditSection": "1469:3152",
+    "componentPage": null,
+    "components": {},
+    "auditPrototypes": {
+      ".Proto/Dialog · аудит": "1471:154",
+      ".Proto/Dialog · экран": "1471:709",
+      ".ButtonClose": "1471:79"
+    },
+    "input": {
+      "fileKey": "79UryRdexwKAv8vDIV5v4v",
+      "node": "1406:22154"
+    },
+    "reference": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "permissions": [
+        "2314:23333",
+        "2314:23343"
+      ],
+      "taxiForFriends": "2314:18209",
+      "whereAddress": "3775:36608"
+    }
+  },
+  "relatedComponents": {
+    "IconSurface": "AID-81, аудит 1126:3914",
+    "Button": "AID-74, аудит 902:11590",
+    "BottomSheet": "AID-79, аудит 1093:353",
+    "Overlay": "69:220"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-09",
+  "author": "sergej",
+  "decisions": [
+    {
+      "date": "2026-11-05",
+      "by": "sergej",
+      "quote": "Мне нужно собрать аудит такого диалогового окна",
+      "about": "вход задачи, 1406:22154"
+    },
+    {
+      "date": "2026-11-05",
+      "by": "sergej",
+      "quote": "1А (затемнение опционально, крест закрытия опционален) 2 Обязательные только заголовок и минимум одна кнопка (может быть как фиолетовая, так и серая) 3а (будет использован подкомпонент IconSurface, который сейчас на аудите) 4 Закрытием может быть как кнопка (с подходящей по смысла надписью), так и крест закрытия. Решает какие кнопки и есть ли крест дизайнер по требованиям бизнеса. Крест по умолчанию не показываем, его дизайнер будет включать только если кнопки про другое 5А, но он может быть использован только для некоторых компонентов такого типа, поэтому не публикуемый. С .Clear Field Button не смешиваем, потому что тот компонент похож, но отвечает за другое 6 Опционально, в зависимости от кейса 7 Б, затемнение показываем по умолчанию, но можно скрыть 8А, но если это андроид где не хоуминдикатор, а нижняя панель с кнопками управления, то там делаем space-16. Кроме этого, делаем space-16 если это айфон не с хоуминдикатором, а физической кнопкой (в компонент это не вшиваем, а прописываем в гайдах компонента) 9а покажи что ты имеешь ввиду (не совсем понял визуально)",
+      "about": "анкета предаудита; п.9 показан в блоке 7 и задан повторно (блок 8, вопрос 1)"
+    },
+    {
+      "date": "2026-11-05",
+      "by": "sergej",
+      "quote": "Добавляем вариант \"только с одной красной кнопкой\" как допустимый",
+      "about": "правило кнопок: одна — Primary, Secondary или Destructive"
+    },
+    {
+      "date": "2026-11-05",
+      "by": "Standards",
+      "about": "имя Dialog без формулы (гайд архитектуры §9), шапка HeaderDialog, Footer — слот; крестик — служебный .ButtonClose, общий для окон такого типа; Show Overlay boolean True, Background/Overlay; space-16 для Android и iPhone с Home — в гайд"
+    },
+    {
+      "date": "2026-11-09",
+      "by": "sergej",
+      "about": "красная кнопка Button — Variant = Destructive (код variant = destructive), токены Button/Warning Default/Pressed; сообщение чата Button AID-74"
+    },
+    {
+      "date": "2026-11-09",
+      "by": "Standards",
+      "about": "блок 8 №3 — а: по умолчанию тап по затемнению закрывает, не закрывает при обязательном решении (подтверждение Destructive, необратимое действие); свойство, не вариант; в коде dismiss on outside tap; в «Поведение» для web, iOS, Android. №5 — а: 34 — safe area Home Indicator, токен не нужен, в мастере 34 не задаётся, в гайде «safe area снизу + space-16». «Было» только днём — допустимо, пометка в блоке 0"
+    },
+    {
+      "date": "2026-11-10",
+      "by": "sergej",
+      "quote": "2а 4а",
+      "about": "блок 8: отступы — текст space-20, кнопки space-16 (как в макете); заголовок без ограничения строк, окно растёт вверх"
+    },
+    {
+      "date": "2026-11-10",
+      "by": "sergej",
+      "quote": "кнопки используй master из сборки, а не из аудита",
+      "about": "вложенные кнопки Dialog — мастер Button 1513:3772; аудит принят Standards 10.11"
+    },
+    {
+      "date": "2026-11-10",
+      "by": "sergej",
+      "quote": "Давай в пропсах сделаем комбинации предустановленные, чтобы дизайнер случайно не поставил две красных, например, или красную под серой (только если прям специально полезет)",
+      "about": "свойство Buttons — пять допустимых комбинаций вместо One/Two; порядок по sergej 10.11: Primary (по умолчанию), Secondary, Primary + Secondary, Destructive + Secondary, Destructive"
+    }
+  ]
+}
