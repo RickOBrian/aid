@@ -157,3 +157,20 @@ S	4	[Description/descriptionAccent] — нет в маппинге
 S	4	эффект [Shadow Up] — нет в маппинге
 S	4	[Display/display — whale] — нет в маппинге
 R	101	остальные причины: 52
+#	page=Errors — Switched Styles	id=5374:358551	dry=0	nodes=3110	replaced=2	skipped=1574	date=2026-11-10
+D	2	{theme:bg/accentSecondary} → Tint/Accent (frame)
+S	455	градиент [shape]
+S	122	сырой эффект: layer_blur
+S	98	градиент [frame]
+S	89	градиент [stroke]
+S	62	сырой #ffffff [shape]
+S	55	сырой эффект: inner_shadow
+S	48	сырой #18181b [shape]
+S	40	сырой #000000 [shape]
+S	24	сырой #d85d00 [shape]
+S	24	сырой эффект: drop 0,7 r9 s0 #ffffff
+S	24	сырой эффект: inner_shadow + inner_shadow
+S	24	сырой #eaeaea [shape]
+S	22	сырой #ffc800 [stroke]
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/22
+R	272	остальные причины: 81

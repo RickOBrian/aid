@@ -100,3 +100,26 @@ S	70	шрифт без стиля: WB Sans Bold 12/120.00000476837158	5374:52857
 S	68	сырой #b066ff [shape]	5374:530842
 S	63	шрифт без стиля: WB Sans Bold 30/100	5374:530283
 R	1736	остальные причины: 244
+#	page=⌛️ Profile — Switched Styles	id=5374:527493	dry=0	nodes=23130	replaced=2	skipped=6223	date=2026-11-10
+D	2	{Theme:controls/bg/accentSecondaryLight/pressed} → Tint/Accent (frame)
+S	1062	сырой эффект: layer_blur
+S	874	сырой #d9d9d9 [shape]
+S	507	градиент [stroke]
+S	421	градиент [shape]
+S	170	градиент [frame]
+S	140	сырой #ff10d7 [shape]
+S	132	градиент [text]
+S	114	шрифт без стиля: WB Sans Medium 20/20
+S	106	сырой эффект: background_blur
+S	105	[Titles/Large Title] — нет в маппинге
+S	102	сырой #99ffbb [shape]
+S	102	сырой #014d2d [stroke]
+S	102	сырой #1cc052 [shape]
+S	93	сырой #000000 [text]
+S	90	сырой #ff813b [shape]
+S	86	сырой #ffffff [shape]
+S	82	[1 light yellow] [shape] — нет в маппинге
+S	70	шрифт без стиля: WB Sans Bold 12/120.00000476837158
+S	68	сырой #b066ff [shape]
+S	63	шрифт без стиля: WB Sans Bold 30/100
+R	1734	остальные причины: 243

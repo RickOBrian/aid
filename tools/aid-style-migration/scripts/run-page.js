@@ -14,6 +14,7 @@ if (plan && plan.dry !== DRY) return { error: `на странице план с
 if (!plan) {
   const units = [], shallow = [];
   const add = n => {
+    if (n.name.startsWith('❌')) return; // узел с «❌ » в имени — референс, не сканируем (arturuxui 10.11)
     const size = 'findAll' in n ? n.findAll().length + 1 : 1;
     if (size > SPLIT && 'children' in n && n.children.length) { shallow.push(n.id); n.children.forEach(add); } else units.push([n.id, size]);
   };

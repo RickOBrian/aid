@@ -157,3 +157,26 @@ S	1	сырой #3458e9@0.10 [shape]
 S	1	сырой эффект: drop 0,2 r4 s0 #1d162d@0.14
 S	1	[Day / Gray 4] [frame] — нет в маппинге
 R	10	остальные причины: 10
+#	page=✅ Service coverage — Switched Styles	id=5374:86156	dry=0	nodes=7394	replaced=6	skipped=847	date=2026-11-10
+D	6	{theme:bg/accentSecondary} → Tint/Accent (frame)
+S	91	градиент [shape]
+S	87	сырой #000000 [shape]
+S	74	сырой #d9d9d9 [shape]
+S	60	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff
+S	59	сырой #c4c4c4 [shape]
+S	47	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15
+S	34	градиент [frame]
+S	29	сырой #ffffff [shape]
+S	24	сырой #000000 [text]
+S	24	сырой #8c7aff@0.30 [shape]
+S	24	эффект [Shadow Up] — нет в маппинге
+S	23	сырой эффект: layer_blur
+S	20	{Theme TX:tx-bg/map} [frame] — нет в маппинге
+S	19	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	16	сырой эффект: drop 0,0 r250 s0 #ffffff@0.50 + drop 0,0 r100 s0 #ffffff
+S	15	сырой #8c7aff [shape]
+S	11	шрифт без стиля: SF Pro Semibold 22/28
+S	11	шрифт без стиля: SF Pro Regular 17/24
+S	10	сырой #f2bfbf [frame]
+S	10	сырой #f96c88 [shape]
+S	4	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold] — стиль не импортируется (не опубликован)

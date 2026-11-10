@@ -76,3 +76,24 @@
     а) оставить, записать пробел ★ · б) искать соответствие в библиотеке градиентов отдельно.
 12. **`[Button [day]/Warning]`** на фрейме — 2, Taxi for friends (`5374:895587`, `5374:897379`).
     а) Background/Warning, как п.4 ★ · б) оставить.
+
+## Ответ arturuxui на п.9–12 и исполнение (2026-11-10)
+
+Ответ: 9 — создать `Captions/Caption 1 Semibold` (SF Pro Semibold 12/16, трекинг 0) и привязать `Captions/Caption 3`; 10а; 11 — использовать библиотечный `Gradients/Top`; 12а. Дополнительно: узлы с именем, начинающимся на «❌», не сканируются (узел и всё поддерево).
+
+**Библиотека Rider (`yrfG6u9osujKX8e1B14lpT`), создано, не опубликовано:**
+- Текстовый стиль `Captions/Caption 1 Semibold`, ключ `5ef7e054f947aab99fce088cee9e2ed25465f776`: SF Pro Text Semibold 12/16, трекинг 0, регистр обычный.
+- Шесть переменных в `typography-sem` (режимы iOS/Android), скрыты от публикации, как у Caption 1 CAP: `Captions/Caption 1 Semibold/{font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing}`. Алиасы на typography-core те же, что у Caption 1 CAP: семейство 3:29/3:27, размер 3:30 (12), вес 3:41 (Semibold), интерлиньяж 3:43 (16), трекинг 3:54, абзац 3:61. Новых core-значений не понадобилось.
+- Публиковать библиотеку нужно человеку. Пока не опубликована, `importStyleByKeyAsync` падает («Style with key … not found»), поэтому на копиях `Captions/Caption 3` не заменён: правило внесено, узел попадает в пропуски с причиной «стиль не импортируется (не опубликован)» (Where 43, Where - Migration 43, Service coverage 4, Navigation, Show my location, Order Flow — часть ниже порога). После публикации — повторный прогон на этих копиях.
+- `Caption 3/Regular` и `Caption 3/Medium` (Profile) — не Semibold 12/16, а ALS Hauss VF 10/16 (Regular и Medium): не маппятся, остаются без правила.
+
+**Правила `migrate-styles.js`:**
+- `Captions/Caption 3` → `Captions/Caption 1 Semibold` (ждёт публикации).
+- `{theme:bg/accentSecondary}` и `{Theme:controls/bg/accentSecondaryLight/pressed}` на фрейме → Tint/Accent.
+- `[Button [day]/Warning]` на фрейме → Background/Warning.
+- `[Gradients/Top]`: стиль на 4 прямоугольниках «Whitener» в Service coverage — уже библиотечный (ключ `60768af36ab7413fa8e0b2bdb8f5c47a01d4893f`, удалённым не был). Замены не нужно: правило (импорт по ключу и `setFillStyleIdAsync`) оставлено на случай копий с другим ключом, на совпадающий ключ молчит. Прежняя причина «[Gradients/Top] — нет в маппинге» ушла.
+- Пропуск узла и поддерева с именем на «❌» — в обходе `migrate-styles.js` и в разбиении корней `run-page.js`.
+
+**Прогон (HASH 1347609489):** DRY → CLEAN → боевой → контрольный DRY → CLEAN.
+Заменено: `theme:bg/accentSecondary` → Tint/Accent: Where 11, Where - Migration 11, Navigation 6, Service coverage 6, Errors 2 (36); `accentSecondaryLight/pressed` → Tint/Accent: Profile 2; `Button [day]/Warning` → Background/Warning: Taxi for friends 2. Итого 40. Show my location и Order Flow боевым прогоном не гонялись: по DRY новых замен 0 (только Caption 3 до публикации).
+Контроль: 0 на Navigation, Service coverage, Errors, Profile, Taxi for friends; на Where и Where - Migration по 74 (тот же остаток во вложенном инстансе `I…429115`).

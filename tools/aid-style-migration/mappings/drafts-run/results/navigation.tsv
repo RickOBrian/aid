@@ -152,3 +152,26 @@ S	89	шрифт без стиля: SF Pro Bold 21.760000228881836/100
 S	86	сырой #ffc800 [stroke]
 S	86	[Icon [day]/Special] [shape] — нет в маппинге
 R	10729	остальные причины: 820
+#	page=✅ Navigation 🧭 — Switched Styles	id=5374:207972	dry=0	nodes=104773	replaced=6	skipped=26998	date=2026-11-10
+D	6	{theme:bg/accentSecondary} → Tint/Accent (frame)
+S	2104	градиент [shape]
+S	1692	сырой #000000 [shape]
+S	1111	сырой эффект: layer_blur
+S	896	сырой #ffffff [shape]
+S	723	[Background [day]/Secondary] [shape/shape] — нет правила
+S	704	сырой #c4c4c4 [shape]
+S	428	сырой #000000 [text]
+S	412	сырой #ffffff [text]
+S	400	сырой #ff0000 [shape]
+S	392	[Description/descriptionAccent — lion] — нет в маппинге
+S	391	сырой #000000 [stroke]
+S	350	шрифт без стиля: Factor A TRIAL Medium 10/11
+S	314	[Description/description] — нет в маппинге
+S	305	[Description/description — puma] — нет в маппинге
+S	288	сырой эффект: background_blur
+S	279	[Caption/captionUppercace — chameleon] — нет в маппинге
+S	264	шрифт без стиля: WB Sans Regular 16/14
+S	244	сырой #a4a4bf [text]
+S	232	градиент [frame]
+S	225	сырой #1d354f [shape]
+R	15244	остальные причины: 812
