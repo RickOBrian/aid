@@ -5,7 +5,7 @@
   "artifact": "Rider Colors/Semantic",
   "collectionName": "color-sem",
   "product": "rider",
-  "changeSummary": "Цвета тонов IconSurface (AID-81, решение sergej 30.10 и 09.11, секция «Решение по цветам» 1354:26863 в Rider Components). В Rider Tokens yrfG6u9osujKX8e1B14lpT 09.11 заведены Tint/Accent, Tint/Success, Tint/Special, Tint/Warning и изменены значения Icon/Success, Icon/Special (ночь), Icon/Warning (ночь); витрина — колонка Tint 1761:187 и хексы в колонке Icon. Библиотека не опубликована; строка в таблице 31:66 и запись в tokens/rider-colors-semantic-changelog.json — одним шагом на границе релиза, номер называет инженер-человек (ожидается minor 1.13.0: новые токены + намеренная смена значений, semver-guide §3).",
+  "changeSummary": "Цвета тонов IconSurface (AID-81, решение sergej 30.10 и 09.11, секция «Решение по цветам» 1354:26863 в Rider Components). В Rider Tokens yrfG6u9osujKX8e1B14lpT 09.11 заведены Background/Accent Tint, Background/Success Tint, Background/Special Tint, Background/Warning Tint и изменены значения Icon/Success, Icon/Special (ночь), Icon/Warning (ночь); витрина — колонка Tint 1761:187 и хексы в колонке Icon. Библиотека не опубликована; строка в таблице 31:66 и запись в tokens/rider-colors-semantic-changelog.json — одним шагом на границе релиза, номер называет инженер-человек (ожидается minor 1.13.0: новые токены + намеренная смена значений, semver-guide §3).",
   "status": "pending",
   "created": "2026-11-09",
   "author": "sergej",
@@ -18,7 +18,7 @@
     {
       "date": "2026-11-09",
       "by": "sergej",
-      "about": "анкета: фон — «Новые токены Tint/*»; иконки — «Поменять Icon/Success, Special, Warning»; Tint/Warning — «Днем этот токен будет FFEFEB, ночью 482725»"
+      "about": "анкета: фон — «Новые токены Background/* Tint»; иконки — «Поменять Icon/Success, Special, Warning»; Background/Warning Tint — «Днем этот токен будет FFEFEB, ночью 482725»"
     },
     {
       "date": "2026-11-09",
@@ -30,10 +30,10 @@
   "figma": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "variables": {
-      "Tint/Accent": "f5e84b0a3598b9e2a454bbb1f65428dabb0f6235",
-      "Tint/Success": "e05232cf25f6915b97124b599790c733266067a6",
-      "Tint/Special": "b5919f89666a25baa6ca7fd76f8d9e7cfdd05a4d",
-      "Tint/Warning": "17a6de417f9004ba9b55c531bd1869175c505324"
+      "Background/Accent Tint": "f5e84b0a3598b9e2a454bbb1f65428dabb0f6235",
+      "Background/Success Tint": "e05232cf25f6915b97124b599790c733266067a6",
+      "Background/Special Tint": "b5919f89666a25baa6ca7fd76f8d9e7cfdd05a4d",
+      "Background/Warning Tint": "17a6de417f9004ba9b55c531bd1869175c505324"
     },
     "showcase": "1761:187",
     "changelogTable": "31:66",
@@ -46,8 +46,8 @@
     "changes": [
       {
         "kind": "added",
-        "description": "Добавлены переменные Tint/* — тонированные подложки для иконки в круге (компонент IconSurface)",
-        "details": "Tint/Accent: Day #F9EDFF, Night #3C235B\nTint/Success: Day #EAFCF0, Night #0F3821\nTint/Special: Day #E9F5FB, Night #203450\nTint/Warning: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
+        "description": "Добавлены переменные Background/* Tint — тонированные подложки для иконки в круге (компонент IconSurface)",
+        "details": "Background/Accent Tint: Day #F9EDFF, Night #3C235B\nBackground/Success Tint: Day #EAFCF0, Night #0F3821\nBackground/Special Tint: Day #E9F5FB, Night #203450\nBackground/Warning Tint: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
       },
       {
         "kind": "changed",
