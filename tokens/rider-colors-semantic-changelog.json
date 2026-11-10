@@ -1,11 +1,29 @@
 {
   "artifact": "Rider Colors/Semantic",
-  "currentVersion": "1.12.0",
+  "currentVersion": "1.13.0",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "31:66"
   },
   "entries": [
+    {
+      "version": "1.13.0",
+      "date": "2026-11-09",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Background/* Tint — тонированные подложки для иконки в круге (компонент IconSurface)",
+          "details": "Background/Accent Tint: Day #F9EDFF, Night #3C235B\nBackground/Success Tint: Day #EAFCF0, Night #0F3821\nBackground/Special Tint: Day #E9F5FB, Night #203450\nBackground/Warning Tint: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
+        },
+        {
+          "kind": "changed",
+          "description": "Изменены значения Icon/Success, Icon/Special и Icon/Warning — новое решение по цветам иконок во всём Rider",
+          "details": "Icon/Success: Day #23AD58 → #10A236, Night #D2FF73 → #05B047\nIcon/Special: Night #005AFF → #4F89FF\nIcon/Warning: Night #E53828 → #FF4730"
+        }
+      ]
+    },
     {
       "version": "1.12.0",
       "date": "2026-10-30",
