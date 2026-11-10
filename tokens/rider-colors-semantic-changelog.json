@@ -14,8 +14,8 @@
       "changes": [
         {
           "kind": "added",
-          "description": "Добавлены переменные Tint/* — тонированные подложки для иконки в круге (компонент IconSurface)",
-          "details": "Tint/Accent: Day #F9EDFF, Night #3C235B\nTint/Success: Day #EAFCF0, Night #0F3821\nTint/Special: Day #E9F5FB, Night #203450\nTint/Warning: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
+          "description": "Добавлены переменные Background/* Tint — тонированные подложки для иконки в круге (компонент IconSurface)",
+          "details": "Background/Accent Tint: Day #F9EDFF, Night #3C235B\nBackground/Success Tint: Day #EAFCF0, Night #0F3821\nBackground/Special Tint: Day #E9F5FB, Night #203450\nBackground/Warning Tint: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
         },
         {
           "kind": "changed",
