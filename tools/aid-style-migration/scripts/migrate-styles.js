@@ -136,6 +136,15 @@ setAll(['Color:tx-control/red/bg/idle'], {frame:'Background/Warning'}); // п.18
 setAll(['Color:tx-control/orange/bg/idle','Theme TX:tx-accent/orange/bg','Navigator Color:Jam/High'], {shape:'Icon/Attention Deep', frame:'Background/Attention Deep'}); // п.19
 setAll(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle'], {shape:'Route/Traffic Slow', stroke:'Route/Traffic Slow'}); // п.20 — пробки; сдвиг #ffe400 → #ffc700, решение Standards 11.11 (final.md §9). frame не ставим: Banner Bookmart — не пробка
 setAll(['Color:tx-accent/green/bg','Color:tx-accent/green/alt','theme:promo/secondary/content/green','Theme TX:tx-accent/green/bg'], {text:'Text/Success', shape:'Icon/Success', frame:'Background/Success'}); // п.21
+// Пробки — по уровню, не по оттенку (решение Standards 11.11, final.md §9). Только на узлах пробок:
+// «Jam» (виджет и линии Jams) и линии маршрута в Map Interface (Route, Vector 10x). Вне пробок — обычные правила.
+const TRAFFIC_LEVEL = {};
+const setTraffic = (keys, t) => { for (const k of keys) TRAFFIC_LEVEL[k] = t; };
+setTraffic(['Color:tx-accent/green/bg','Color:tx-accent/green/alt','theme:promo/secondary/content/green','Theme TX:tx-accent/green/bg','Navigator Color:Jam/Low','#00b23c'], 'Route/Traffic Free');
+setTraffic(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle','#ffe400'], 'Route/Traffic Slow');
+setTraffic(['Color:tx-control/orange/bg/idle','Theme TX:tx-accent/orange/bg','Navigator Color:Jam/High','Color:tx-accent/red/bg','Color:tx-accent/red/fg','Theme TX:tx-accent/red/fg','theme:promo/secondary/content/red','theme:text/danger','theme:icon/danger'], 'Route/Traffic Congested');
+const isTraffic = (n, chain) => n.type !== 'TEXT' && (n.name === 'Jam' || (chain.includes('Map Interface') && (n.name === 'Route' || chain[chain.length - 1] === 'Route')));
+const trafficTarget = (key, n, chain) => isTraffic(n, chain) ? TRAFFIC_LEVEL[key] : undefined;
 const PASTEL = {Midway:'Pastel/Lenny',Mantle:'Pastel/Ralph',Ralph:'Pastel/Ralph',Liberty:'Pastel/Lisa',Asphalt:'Pastel/Apu',Graylord:'Pastel/Barney',Barney:'Pastel/Barney',Peach:'Pastel/Bart',Jasper:'Pastel/Jasper',Nelson:'Stories/Nelson'};
 for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, shape:v};
 const SPACE = {'Gaps:SPx2':'space-8','Gaps:SPx3':'space-12','Отступы:SPx3':'space-12','Corner radius:BRx6':null};
@@ -217,6 +226,14 @@ const processPaints = async (n, prop, chain) => {
       inc(done, '[Gradients/Top] → [Gradients/Top] (библиотечный)');
       return;
     }
+    const tr = trafficTarget(st.name, n, chain);
+    if (tr) {
+      const v = await resolveTarget(tr, slot, kind, `[${st.name}] (пробки)`);
+      if (!v) return;
+      if (!DRY) { const np = paints.map(p => p.type === 'SOLID' ? bindPaint(p, v) : p); if (prop === 'fills') n.fills = np; else n.strokes = np; }
+      inc(done, `[${st.name}] → ${v.name} (${slot}, пробки)`);
+      return;
+    }
     const rule = C[st.name];
     if (!rule) { if (!/^\.keyboard/.test(st.name)) skip(`[${st.name}] [${slot}] — нет в маппинге`); return; }
     if (n.name === 'Shadow' && rule.shape) { skip(`[${st.name}] «Shadow» — пробел`); return; }
@@ -242,6 +259,13 @@ const processPaints = async (n, prop, chain) => {
     if (p.boundVariables && p.boundVariables.color) {
       const { label, coll } = await varLabel(p.boundVariables.color.id);
       if (['color-sem'].includes(coll)) { np.push(p); continue; }
+      const tr = trafficTarget(label, n, chain);
+      if (tr) {
+        const v = await resolveTarget(tr, slot, kind, `{${label}} (пробки)`);
+        if (!v) { np.push(p); continue; }
+        np.push(bindPaint(p, v)); changed = true; inc(done, `{${label}} → ${v.name} (${slot}, пробки)`);
+        continue;
+      }
       const rule = C[label];
       if (!rule) { skip(`{${label}} [${slot}] — нет в маппинге`); np.push(p); continue; }
       if (n.name === 'Shadow') { skip(`{${label}} «Shadow» — пробел`); np.push(p); continue; }
@@ -251,7 +275,7 @@ const processPaints = async (n, prop, chain) => {
       continue;
     }
     const h = hex(p.color) + (p.opacity < 1 ? '@' + p.opacity.toFixed(2) : '');
-    const t = rawTarget(h, kind, prop, n, chain);
+    const t = trafficTarget('#' + h, n, chain) || rawTarget(h, kind, prop, n, chain);
     if (t === undefined) { skip(`сырой #${h} [${slot}]`); np.push(p); continue; }
     if (t === 'RADIUS') {
       const v = await resolveTarget('Icon/Accent', slot, kind, `#${h}`);
