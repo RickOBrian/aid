@@ -179,12 +179,13 @@
       },
       {
         "id": "destructive-pressed-contrast",
-        "role": "пара фон × контент destructive-кнопки (Buttons/Warning и подпись на ней; Texts/* destructive на Buttons/Secondary и на поверхности) в Pressed и частично в Default",
+        "role": "пара фон × контент destructive-кнопки в Pressed (заливка + слой 12 % цвета содержимого × подпись)",
         "kind": "color pair",
         "value": null,
-        "evidence": "Pressed день / ночь: primary-destructive 4,34 / 2,79, secondary-destructive 3,56 / 3,51, ghost-destructive 4,15 / 4,48; уже в Default ниже 4,5: primary-destructive ночью 3,15, secondary-destructive 4,26 / 4,05",
+        "evidence": "Pressed день / ночь: primary-destructive 4,34 / 2,79, secondary-destructive 3,56 / 3,51, ghost-destructive 4,15 / 4,48",
         "decision": "PD — через token-change-gate, той же анкетой, что loading-spinner-cycle",
-        "source": "проверка Pressed 11.11 по переменным файла AID Driver Components"
+        "source": "проверка Pressed 11.11 по переменным файла AID Driver Components",
+        "dependsOn": "changes/driver/pending/audit-2026-11-11-destructive-default-contrast.json — после правки пары Default цифры Pressed пересчитать; может хватить той же правки или понадобится отдельный токен"
       }
     ]
   },

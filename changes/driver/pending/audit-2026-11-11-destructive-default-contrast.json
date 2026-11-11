@@ -1,0 +1,37 @@
+{
+  "id": "audit-2026-11-11-destructive-default-contrast",
+  "type": "component",
+  "changeType": "audit-finding",
+  "artifact": "ButtonText (Variant primary-destructive, secondary-destructive)",
+  "product": "driver",
+  "changeSummary": "Подпись destructive-кнопки Driver в состоянии Default не даёт контраста 4,5:1 с заливкой: primary-destructive ночью 3,15 (Buttons/Warning × Texts/Primary Light Ind), secondary-destructive днём 4,26 и ночью 4,05 (Buttons/Secondary × текст destructive). Токены есть, проблема в значениях пары; так было и в старом мастере default 89:6001 (Destructive=True). С решением #506 п.2 по Pressed не связано; найдено при проверке Pressed 11.11.",
+  "auditFinding": {
+    "category": "contrast",
+    "disposition": "decision:pd",
+    "source": "аудит Button Driver (designer-17, PR #498), проверка 2026-11-11 по переменным color-sem day / night файла AID Driver Components o0IUYIS7vadbmXPXd81ql9",
+    "pairs": [
+      {
+        "variant": "primary-destructive",
+        "background": "Buttons/Warning",
+        "content": "Texts/Primary Light Ind (night)",
+        "day": 5.01,
+        "night": 3.15
+      },
+      {
+        "variant": "secondary-destructive",
+        "background": "Buttons/Secondary",
+        "content": "текст destructive (переменная подписи варианта)",
+        "day": 4.26,
+        "night": 4.05
+      }
+    ],
+    "threshold": "4.5:1 (accessibility)",
+    "proposedFix": "PD правит значения пары фон × контент через token-change-gate, одной анкетой с #506 п.9 и пробелами Button; хексы не подбираются",
+    "affects": "tokenGaps[destructive-pressed-contrast] в component-button: после правки Default цифры Pressed пересчитать"
+  },
+  "proposedSemVerImpact": "undetermined",
+  "relatedTokenChanges": [],
+  "status": "pending",
+  "created": "2026-11-11",
+  "author": "arturuxui"
+}
