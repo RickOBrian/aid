@@ -57,10 +57,6 @@
         "Notification": "BOOLEAN",
         "Icon": "INSTANCE_SWAP"
       },
-      "unsupportedStates": [
-        "Hovered",
-        "Focused"
-      ],
       "note": "Disabled — значение оси State, не BOOLEAN; Hovered и Focused не поддерживаются (мобильный продукт, states-guide §5, §6.1)"
     },
     "modes": [
