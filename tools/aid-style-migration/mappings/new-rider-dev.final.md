@@ -241,7 +241,7 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
   - Order Flow: 624 shape (сейчас `Icon/Attention`) и 186 обводок (`tx-control/yellow/bg/idle`) — все на пробках («Jam», «Route»);
   - Show my location: 532 shape и 56 обводок — тоже все на пробках;
   - остальные 15 копий — 0.
-  Итого 1 156 shape и 242 обводки → `Route/Traffic Slow`. Правило п.20 в `migrate-styles.js` изменено; на копиях `Icon/Attention` → `Route/Traffic Slow` — разовым вызовом по «да» arturuxui.
+  Итого 1 156 shape и 242 обводки → `Route/Traffic Slow`. Правило п.20 в `migrate-styles.js` изменено; на копиях переведено 11.11 по «да» arturuxui разовым вызовом (`setBoundVariableForPaint`, ключ `7306feaa…`): Order Flow 624 shape и 186 обводок, Show my location 532 shape и 56 обводок. Контрольное чтение: `Icon/Attention` и старых источников на пробках — 0.
   **Не пробки — 2 узла:** вложенные инстансы «Banner Bookmart» (`I5374:804808;40004841:67361`, `I5374:816770;40004841:67361`, Show my location, «In Trip > Interface > BS»). Это промо-баннер 390×104 из внешней библиотеки, заливка `#ffe400` и радиальный градиент. На `Route/Traffic Slow` не ставим, цели frame в правиле п.20 нет. Нужен отдельный lookup: ближайший `Background/Attention` (`#ffc700`) по роли — предупреждения, не промо, поэтому не подходит. Пока не тронуты.
 - Shadows/Small: ключ нового стиля — 647aa3864c4c1801f9363745ef570bc175e98384 (найден 2026-11-02).
 - Не трогаем: тонированные фоны, бренд-зелёный, синий, оверлей на векторах, iOS-системные,
