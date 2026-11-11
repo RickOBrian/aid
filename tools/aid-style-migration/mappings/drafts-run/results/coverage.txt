@@ -2,7 +2,7 @@ M	Backlog UI — Switched Styles	5371:80571	nodes=320	hidden=25	fill=105/56/11	s
 M	Errors — Switched Styles	5374:358551	nodes=2483	hidden=226	fill=741/174/416	stroke=7/31/68	font=156/25/64	effect=70/16/149
 M	✅ GEO Problems — Switched Styles	5374:885750	nodes=1709	hidden=205	fill=642/62/45	stroke=12/11/1	font=212/0/6	effect=57/23/22
 M	✅ Illustrations Request 💅🏻 — Switched Styles	5374:721192	nodes=9119	hidden=783	fill=2674/1119/214	stroke=23/149/12	font=1161/110/60	effect=178/198/72
-M	✅ Navigation 🧭 — Switched Styles	5374:207972	nodes=92665	hidden=7478	fill=30012/10028/1876	stroke=491/1469/62	font=7284/2179/4227	effect=2140/2123/545
+M	✅ Navigation 🧭 — Switched Styles	5374:207972	nodes=89983	hidden=7258	fill=29710/9044/1871	stroke=491/1213/62	font=7482/2130/3651	effect=2140/1956/545
 M	✅ No car — Switched Styles	5374:1040241	nodes=1284	hidden=162	fill=396/233/25	stroke=6/38/0	font=161/37/0	effect=46/47/4
 M	✅ not work — Switched Styles	5374:738087	nodes=571	hidden=30	fill=223/54/33	stroke=1/2/0	font=63/0/0	effect=29/4/14
 M	Order Flow — Switched Styles	5374:903468	nodes=65325	hidden=4960	fill=24196/1722/1414	stroke=1125/594/0	font=8278/202/75	effect=1763/659/274

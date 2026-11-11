@@ -70,6 +70,7 @@ const measure = async (n, out) => {
   }
 };
 const walk = async (n, out, shallow) => {
+  if (n.name.startsWith('❌')) return; // референс, помеченный «❌ » (arturuxui 10.11)
   if (n.type !== 'TEXT' && SKIP.test(n.name)) return;
   if (n.visible === false || n.isMask === true || n.parent.type === 'BOOLEAN_OPERATION') { agg.hidden++; return; }
   const o = out || OUTNAME.test(n.name);
@@ -82,7 +83,7 @@ while (plan.i < plan.units.length && Date.now() - t0 < BUDGET) {
   const n = await figma.getNodeByIdAsync(id);
   if (n) {
     let up = n.parent, ok = true, out = false;
-    while (up && up.type !== 'PAGE') { if (up.visible === false) ok = false; if (OUTNAME.test(up.name)) out = true; if (SKIP.test(up.name)) ok = false; up = up.parent; }
+    while (up && up.type !== 'PAGE') { if (up.visible === false) ok = false; if (OUTNAME.test(up.name)) out = true; if (SKIP.test(up.name) || up.name.startsWith('❌')) ok = false; up = up.parent; }
     if (ok) await walk(n, out, !!shallow);
   }
   plan.i++;
