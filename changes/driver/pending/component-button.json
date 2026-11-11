@@ -6,7 +6,7 @@
   "artifact": "ButtonText",
   "componentId": "button",
   "product": "driver",
-  "changeSummary": "Button Driver — развитие и объединение семьи кнопок (designer-17, issue #485, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `default` 89:6001 (Buttons): 18 вариантов, оси Type (Primary / Secondary / Transparent) / Active / Icon / Destructive; Web, iOS, Android — реализации нет. Токены совпадают с каноном Driver (Buttons · Primary / Secondary / Disabled / Warning / Floating, Texts · *, radius-12 / radius-16, space-8 / 12 / 16, Subtitle 1, Headline 6), хардкода нет; токенов pressed нет — и не нужно (решение Standards основного, #506 п.2, 10.11). Границы (ответ arturuxui 27.10 «3а»): default, wide 89:6029, floating 89:6211, кнопка из big 89:6054, fab/primary 89:6194, fab/secondary 89:6177; вне — full, fab/zoom, set, slider, selector. По ответам куратора arturuxui 27.10 «1а … 12а» и 28.10 «13а»: ось Icon — только иконка, Motivation — слот Badge (вопрос 8 аудита Motivation, #499); ось Active → значение State=Disabled (решение arturuxui 30.10 вместо оси Disabled True / False, одинаково для всех компонентов, как у Balance); иконка — слот Icon (BOOLEAN) + смена иконки (INSTANCE_SWAP), подпись — свойство Label (TEXT); бейдж Motivation — отдельный слот Badge (BOOLEAN), тон от Variant, контракт со стыком designer-18; состояния Pressed / Loading по решению Standards основного 10.11 (#506 п.2, issuecomment-6765041661): Pressed — слой цвета содержимого варианта (Texts/* или Icons/*) с прозрачностью 12 % поверх заливки, вид значения platform-convention, новых токенов нет; Loading — спиннер Driver цвета содержимого (Hovered и Focused не делаем — Web нет в целевых платформах, решение arturuxui 30.10, подтверждено Standards основным); Size md 48 / lg 52 и Width Hug / Fill вместо сетов wide и big, отступы по размеру; floating — отдельный сет ButtonTextFloating (Qualifier; Standards 30.10 — floating не вес действия, решение Designer · Rework 30.10); fab/primary и fab/secondary — один ButtonIconFloating (Variant primary / secondary × Label; обе с тенью над картой — Qualifier Floating, Standards 30.10), фон — один фрейм с радиусом; подложка big с градиентом — вне кнопки; длинная подпись не обрезается, в Width=Fill — перенос до 2 строк. Решения куратора 30.10 по комментариям дизайнера (frank.daniil, 28.10): Destructive — значение оси Variant: primary · secondary · ghost · primary-destructive · secondary-destructive · ghost-destructive (вопрос 2, вариант дизайнера; destructive — значение Variant по component-standards §8.1, отклонение «bool» не записывается); destructive + disabled — disabled поглощает (component-states-guide); в Night текст на красной кнопке белый — существующий токен Texts/Primary Light Ind. Ответ Standards 30.10 (рабочий): вопрос 2 — составные значения допустимы (lowercase, через дефис, вес первым, тон вторым), расширение канона §8.1 записано как architectureException; вопрос 3 — Transparent → ghost, да (§8.1, naming §4); вопрос 7 — ButtonText и ButtonIcon, да (Role+Entity, naming §4), floating — Qualifier: ButtonTextFloating и ButtonIconFloating, точка-префикс снимается после приёмки; #506 п.7 — BOOLEAN снят, расширение канона оформлено записью; #506 п.5 — initial (release-gate, figma-library-workflow §3.3: выпущенной версии нет). Вопрос 6 (токены состояний) снят: Pressed и Loading — не цветовые токены, анкета token-change-gate не открывается (Standards основной 10.11, #506 п.2). Пробел компонента: в Driver нет Spinner. Пробел токена: время цикла спиннера Loading (motion, в Driver нет Duration/*) — tokenGaps, решение PD одной анкетой с #506 п.9. Аудит — пейдж «👀 Button · audit» 449:1497, блоки 0–8, день и ночь на 360; мастера не правились. Сборка 30.10 (по «продолжай» arturuxui, план предсборки): страница «🚧 Button · construction» 550:102 — сет .ButtonText 550:520 (48 вариантов: Variant × Size md / lg × Width Hug / Fill × State Default / Disabled; свойства Label, Icon + IconSwap, Badge), сет .ButtonTextFloating 564:4159 (4 варианта: Width × State, только md; те же свойства) и сет .ButtonIconFloating 551:118 (4 варианта: Variant primary / secondary × Label Off / On; свойства Text, IconSwap); только существующие токены и стили Driver, хексов нет; сцены 360 day / night, таблица свойств, маппинг «старый мастер → новые оси». Рабочие имена с «.» — до приёмки (вопрос 7). Подтверждено куратором arturuxui 30.10 («да на все»): иконка на primary-destructive — Icons/Primary Light Ind (по аналогии с текстом); floating в State=Disabled — Buttons/Disabled с Shadow 2; в Width=Fill иконка и бейдж у правого края. Старые мастера не менялись. Текущей версии нет. Заметка о миграции: слияние сетов и переименование осей (Type → Variant, Destructive → значения Variant, Transparent → ghost, Active → State=Disabled, wide/big → Size и Width) ломают экземпляры Figma — новый мастер, старые — в Archive, замена в макетах (§3.9); выпущенной версии нет, поэтому impact initial.",
+  "changeSummary": "Button Driver — развитие и объединение семьи кнопок (designer-17, issue #485, номер AID ждёт ai-tasks), флоу figma-library-workflow 0.8.0 §3.1. Мастер `default` 89:6001 (Buttons): 18 вариантов, оси Type (Primary / Secondary / Transparent) / Active / Icon / Destructive; Web, iOS, Android — реализации нет. Токены совпадают с каноном Driver (Buttons · Primary / Secondary / Disabled / Warning / Floating, Texts · *, radius-12 / radius-16, space-8 / 12 / 16, Subtitle 1, Headline 6), хардкода нет; токенов pressed нет — и не нужно (решение Standards основного, #506 п.2, 10.11). Границы (ответ arturuxui 27.10 «3а»): default, wide 89:6029, floating 89:6211, кнопка из big 89:6054, fab/primary 89:6194, fab/secondary 89:6177; вне — full, fab/zoom, set, slider, selector. По ответам куратора arturuxui 27.10 «1а … 12а» и 28.10 «13а»: ось Icon — только иконка, Motivation — слот Badge (вопрос 8 аудита Motivation, #499); ось Active → значение State=Disabled (решение arturuxui 30.10 вместо оси Disabled True / False, одинаково для всех компонентов, как у Balance); иконка — слот Icon (BOOLEAN) + смена иконки (INSTANCE_SWAP), подпись — свойство Label (TEXT); бейдж Motivation — отдельный слот Badge (BOOLEAN), тон от Variant, контракт со стыком designer-18; состояния Pressed / Loading по решению Standards основного 10.11 (#506 п.2, issuecomment-6765041661): Pressed — слой цвета содержимого варианта (Texts/* или Icons/*) с прозрачностью 12 % поверх заливки, вид значения platform-convention, новых токенов нет; Loading — спиннер Driver цвета содержимого (Hovered и Focused не делаем — Web нет в целевых платформах, решение arturuxui 30.10, подтверждено Standards основным); Size md 48 / lg 52 и Width Hug / Fill вместо сетов wide и big, отступы по размеру; floating — отдельный сет ButtonTextFloating (Qualifier; Standards 30.10 — floating не вес действия, решение Designer · Rework 30.10); fab/primary и fab/secondary — один ButtonIconFloating (Variant primary / secondary × Label; обе с тенью над картой — Qualifier Floating, Standards 30.10), фон — один фрейм с радиусом; подложка big с градиентом — вне кнопки; длинная подпись не обрезается, в Width=Fill — перенос до 2 строк. Решения куратора 30.10 по комментариям дизайнера (frank.daniil, 28.10): Destructive — значение оси Variant: primary · secondary · ghost · primary-destructive · secondary-destructive · ghost-destructive (вопрос 2, вариант дизайнера; destructive — значение Variant по component-standards §8.1, отклонение «bool» не записывается); destructive + disabled — disabled поглощает (component-states-guide); в Night текст на красной кнопке белый — существующий токен Texts/Primary Light Ind. Ответ Standards 30.10 (рабочий): вопрос 2 — составные значения допустимы (lowercase, через дефис, вес первым, тон вторым), расширение канона §8.1 записано как architectureException; вопрос 3 — Transparent → ghost, да (§8.1, naming §4); вопрос 7 — ButtonText и ButtonIcon, да (Role+Entity, naming §4), floating — Qualifier: ButtonTextFloating и ButtonIconFloating, точка-префикс снимается после приёмки; #506 п.7 — BOOLEAN снят, расширение канона оформлено записью; #506 п.5 — initial (release-gate, figma-library-workflow §3.3: выпущенной версии нет). Вопрос 6 (токены состояний) снят: Pressed и Loading — не цветовые токены, анкета token-change-gate не открывается (Standards основной 10.11, #506 п.2). Пробел компонента: в Driver нет Spinner. Pressed нарисован 11.11 по «да» arturuxui (слой 12 % цвета содержимого, ButtonText 72 / ButtonTextFloating 6 / ButtonIconFloating 8 вариантов); контраст destructive-значений ниже 4,5:1 — пробел токена (tokenGaps). Пробел токена: время цикла спиннера Loading (motion, в Driver нет Duration/*) — tokenGaps, решение PD одной анкетой с #506 п.9. Аудит — пейдж «👀 Button · audit» 449:1497, блоки 0–8, день и ночь на 360; мастера не правились. Сборка 30.10 (по «продолжай» arturuxui, план предсборки): страница «🚧 Button · construction» 550:102 — сет .ButtonText 550:520 (48 вариантов: Variant × Size md / lg × Width Hug / Fill × State Default / Disabled, с 11.11 + Pressed — 72; свойства Label, Icon + IconSwap, Badge), сет .ButtonTextFloating 564:4159 (4 варианта: Width × State, только md; те же свойства) и сет .ButtonIconFloating 551:118 (4 варианта: Variant primary / secondary × Label Off / On; свойства Text, IconSwap); только существующие токены и стили Driver, хексов нет; сцены 360 day / night, таблица свойств, маппинг «старый мастер → новые оси». Рабочие имена с «.» — до приёмки (вопрос 7). Подтверждено куратором arturuxui 30.10 («да на все»): иконка на primary-destructive — Icons/Primary Light Ind (по аналогии с текстом); floating в State=Disabled — Buttons/Disabled с Shadow 2; в Width=Fill иконка и бейдж у правого края. Старые мастера не менялись. Текущей версии нет. Заметка о миграции: слияние сетов и переименование осей (Type → Variant, Destructive → значения Variant, Transparent → ghost, Active → State=Disabled, wide/big → Size и Width) ломают экземпляры Figma — новый мастер, старые — в Archive, замена в макетах (§3.9); выпущенной версии нет, поэтому impact initial.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": null,
@@ -61,7 +61,8 @@
         ],
         "State": [
           "Default",
-          "Disabled"
+          "Disabled",
+          "Pressed"
         ]
       },
       "ButtonTextFloating": {
@@ -74,7 +75,8 @@
         ],
         "State": [
           "Default",
-          "Disabled"
+          "Disabled",
+          "Pressed"
         ]
       },
       "ButtonIconFloating": {
@@ -85,9 +87,13 @@
         "Label": [
           "Off",
           "On"
+        ],
+        "State": [
+          "Default",
+          "Pressed"
         ]
       },
-      "note": "Disabled — значение оси State (states-guide §5: disabled поглощает); destructive + Disabled — disabled поглощает. Не поддерживаются: Hovered и Focused (Web нет в целевых платформах, решение arturuxui 30.10); Pressed и Loading — по решению Standards основного 10.11 (#506 п.2), описание в statesSpec; в сетах Figma пока не нарисованы. ButtonTextFloating — только md, без destructive, State=Disabled — Buttons/Disabled + Shadow 2; слоты те же, что у ButtonText. Свойства ButtonText и ButtonTextFloating: Label (TEXT), Icon (BOOLEAN) + IconSwap (INSTANCE_SWAP), Badge (BOOLEAN, слот Motivation); ButtonIconFloating: Text, IconSwap; оси State нет — недоступной FAB в старых мастерах не было."
+      "note": "Disabled — значение оси State (states-guide §5: disabled поглощает); destructive + Disabled — disabled поглощает. Не поддерживаются: Hovered и Focused (Web нет в целевых платформах, решение arturuxui 30.10); Pressed и Loading — по решению Standards основного 10.11 (#506 п.2), описание в statesSpec. Pressed нарисован 11.11 (по «да» arturuxui): в каждом варианте слой «State layer» — цвет содержимого (переменная подписи или иконки) с прозрачностью 12 %, радиус на тех же переменных; .ButtonText 72 варианта, .ButtonTextFloating 6, .ButtonIconFloating 8. Loading не нарисован — нет Spinner в Driver. ButtonTextFloating — только md, без destructive, State=Disabled — Buttons/Disabled + Shadow 2; слоты те же, что у ButtonText. Свойства ButtonText и ButtonTextFloating: Label (TEXT), Icon (BOOLEAN) + IconSwap (INSTANCE_SWAP), Badge (BOOLEAN, слот Motivation); ButtonIconFloating: Text, IconSwap; State — Default / Pressed, Disabled не поддерживается (недоступной FAB в старых мастерах не было)."
     },
     "modes": [
       "day",
@@ -129,7 +135,23 @@
           "web": "слой 12 %"
         },
         "duration": "держится 100–200 мс: потолок задан стандартом состояний (skills/_shared/standards/component-states.json, pressed maxDurationMs 200; component-states-guide §3 п.4); valueKind platform-convention, пока в Driver нет motion-токенов; отдельного токена не заводим",
-        "check": "контраст подписи на нажатой заливке ≥ 4,5:1 днём и ночью — проверить при отрисовке Pressed в сборке"
+        "check": {
+          "rule": "контраст подписи на нажатой заливке ≥ 4,5:1 днём и ночью; считается по переменным color-sem day / night (подпись поверх заливки + слой 12 %; ghost — поверх поверхности сцены)",
+          "checked": "2026-11-11",
+          "pass": {
+            "primary": "9,50 / 13,67",
+            "secondary": "11,17 / 7,10",
+            "ghost": "12,79 / 9,04",
+            "ButtonTextFloating": "12,79 / 9,04",
+            "ButtonIconFloating": "9,50–12,79 / 9,04–13,67"
+          },
+          "fail": {
+            "primary-destructive": "4,34 / 2,79 (Default 5,01 / 3,15)",
+            "secondary-destructive": "3,56 / 3,51 (Default 4,26 / 4,05)",
+            "ghost-destructive": "4,15 / 4,48 (Default 5,01 / 5,22)"
+          },
+          "result": "destructive-значения не проходят — пробел токена tokenGaps[destructive-pressed-contrast], хексы не подбирались"
+        }
       },
       "Loading": {
         "mechanism": "спиннер Driver цвета содержимого варианта по центру; подпись, иконка и бейдж — opacity 0; ширина кнопки сохраняется; нажатия заблокированы",
@@ -154,6 +176,15 @@
         "value": null,
         "decision": "PD — через token-change-gate, одной анкетой с #506 п.9 и пробелами 2–5 из списка 02.11",
         "source": "Standards 11.11 (сверка PR #498): в Driver нет Duration/* и motion-токенов"
+      },
+      {
+        "id": "destructive-pressed-contrast",
+        "role": "пара фон × контент destructive-кнопки (Buttons/Warning и подпись на ней; Texts/* destructive на Buttons/Secondary и на поверхности) в Pressed и частично в Default",
+        "kind": "color pair",
+        "value": null,
+        "evidence": "Pressed день / ночь: primary-destructive 4,34 / 2,79, secondary-destructive 3,56 / 3,51, ghost-destructive 4,15 / 4,48; уже в Default ниже 4,5: primary-destructive ночью 3,15, secondary-destructive 4,26 / 4,05",
+        "decision": "PD — через token-change-gate, той же анкетой, что loading-spinner-cycle",
+        "source": "проверка Pressed 11.11 по переменным файла AID Driver Components"
       }
     ]
   },
