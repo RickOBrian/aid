@@ -275,3 +275,66 @@ S	1	ошибка: in get_strokes: The node with id "I5374:922112;1095:809;599:28
 S	1	ошибка: in get_strokes: The node with id "I5374:922131;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922131;599:2880;599:2845;599:2809;3867:457
 S	1	ошибка: in get_strokes: The node with id "I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457
 R	1784	остальные причины: 152
+#	page=Order Flow — Switched Styles	id=5374:903468	dry=0	nodes=75162	replaced=12	skipped=6821	date=2026-11-11
+D	12	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+S	661	сырой эффект: layer_blur
+S	471	шрифт без стиля: SF Pro Text Semibold 12/13
+S	421	градиент [shape]
+S	350	сырой #ffffff [shape]
+S	340	сырой #c4c4c4 [shape]
+S	284	сырой #ff5f00 [shape]
+S	284	сырой #eb001b [shape]
+S	284	сырой #f79e1b [shape]
+S	278	{Color:tx-brand/green/green} [shape] — нет в маппинге
+S	266	{System:Magin Top}=54 paddingTop — нет цели
+S	198	сырой эффект: background_blur
+S	191	сырой #000000 [shape]
+S	186	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила
+S	145	градиент [frame]
+S	125	сырой #ffffff@0.90 [shape]
+S	124	сырой #ffffff [stroke]
+S	111	сырой #00b23c [stroke]
+S	110	шрифт без стиля: WB Sans Medium 24/100
+S	101	градиент [stroke]
+S	100	сырой #000000 [stroke]
+S	99	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге
+S	97	сырой #d9d9d9 [shape]
+S	89	эффект [Shadow S] — нет в маппинге
+S	84	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	75	{Color:tx-bg/level −1 muted} [stroke] — нет правила
+S	75	{Color:tx-accent/green/bg} [stroke] — нет правила
+S	75	[Background [day]/Secondary] [shape/shape] — нет правила
+S	59	сырой #000000 [text]
+S	53	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	50	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL
+S	50	сырой #ffffff@0.05 [shape]
+S	50	сырой #000000@0.08 [stroke]
+S	49	сырой #f3f3f3 [frame]
+S	44	сырой #ffffff [text]
+S	44	[Bodies/Body Large] — нет в маппинге
+S	40	сырой #ff661a [shape]
+S	36	сырой #ffffff@0.10 [stroke]
+S	29	сырой #000000 [frame]
+S	26	сырой #0f013e@0.16 [shape]
+S	26	[Gradients/Shimmer] [frame] — нет в маппинге
+S	25	сырой эффект: drop 0,0 r20 s0 #000000@0.06
+S	25	сырой #ffffff@0.10 [shape]
+S	25	сырой #000000@0.03 [stroke]
+S	25	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur
+S	21	TEXT смешанные заливки — оставлено
+S	20	сырой #505050 [frame]
+S	18	шрифт без стиля: Inter Bold 16/16
+S	17	сырой #cacad1 [shape]
+S	17	градиент [text]
+S	14	шрифт без стиля: SF Pro Text Regular 12/16
+S	14	{Color:tx-accent/grey/secondary} [stroke] — нет правила
+S	14	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass
+S	14	{theme:promo/primary/bg/neutralPrimary} [shape] — нет в маппинге
+S	12	эффект [shadow/close/s] — нет в маппинге
+S	12	сырой #ff10d7 [shape]
+S	11	{Safe zones:safe-top}=62 paddingTop — нет цели
+S	10	сырой эффект: drop 3,4 r10 s0 #1d361b@0.08
+S	10	сырой эффект: drop 0,0 r20 s0 #9925ff@0.32 + drop 0,0 r4 s0 #9925ff@0.50
+S	10	сырой #ffffff@0.62 [shape]
+S	9	сырой #cacad1@0.72 [shape]
+R	318	остальные причины: 112

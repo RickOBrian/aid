@@ -123,3 +123,68 @@ S	70	шрифт без стиля: WB Sans Bold 12/120.00000476837158
 S	68	сырой #b066ff [shape]
 S	63	шрифт без стиля: WB Sans Bold 30/100
 R	1734	остальные причины: 243
+#	page=⌛️ Profile — Switched Styles	id=5374:527493	dry=0	nodes=23130	replaced=8	skipped=6215	date=2026-11-11
+D	4	[Caption 3/Regular] (стар.) → [Captions/Caption 3]
+D	3	[Caption 3/Medium] (стар.) → [Captions/Caption 3 Medium]
+D	1	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+S	1062	сырой эффект: layer_blur
+S	874	сырой #d9d9d9 [shape]
+S	507	градиент [stroke]
+S	421	градиент [shape]
+S	170	градиент [frame]
+S	140	сырой #ff10d7 [shape]
+S	132	градиент [text]
+S	114	шрифт без стиля: WB Sans Medium 20/20
+S	106	сырой эффект: background_blur
+S	105	[Titles/Large Title] — нет в маппинге
+S	102	сырой #99ffbb [shape]
+S	102	сырой #014d2d [stroke]
+S	102	сырой #1cc052 [shape]
+S	93	сырой #000000 [text]
+S	90	сырой #ff813b [shape]
+S	86	сырой #ffffff [shape]
+S	82	[1 light yellow] [shape] — нет в маппинге
+S	70	шрифт без стиля: WB Sans Bold 12/120.00000476837158
+S	68	сырой #b066ff [shape]
+S	63	шрифт без стиля: WB Sans Bold 30/100
+S	61	{Color:tx-accent/purple/fg-inverted} [frame] — нет в маппинге
+S	55	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15
+S	51	шрифт без стиля: WB Sans Bold 22/auto
+S	51	сырой #000000@0.20 [shape]
+S	51	сырой #002f0f [shape]
+S	51	сырой #c3ffa6 [shape]
+S	48	шрифт без стиля: Google Sans Medium 11/14
+S	46	шрифт без стиля: WB Sans Medium 20/auto
+S	45	шрифт без стиля: WB Sans Bold 14.58742904663086/auto
+S	43	текст со смешанными стилями — оставлено
+S	42	сырой эффект: drop 0,0 r8.699999809265137 s0 #000000@0.20
+S	39	шрифт без стиля: WB Sans Medium 22/100
+S	36	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	30	сырой #000000 [stroke]
+S	28	шрифт без стиля: WB Sans Bold 11/auto
+S	28	шрифт без стиля: WB Sans Bold 20/auto
+S	27	сырой #c4c4c4 [shape]
+S	26	[Button [day]/Constant White] [frame] — нет в маппинге
+S	25	шрифт без стиля: SF Pro Text Regular 15.357471466064453/21.681137084960938
+S	22	[Description/description] — нет в маппинге
+S	22	[Gray Scale/Gray 900] [text] — нет в маппинге
+S	20	шрифт без стиля: WB Sans Medium 14/120.00000476837158
+S	19	[Description/descriptionAccent] — нет в маппинге
+S	19	шрифт без стиля: WB Sans Bold 15.918210983276367/auto
+S	18	эффект [Shadows/Mini] — нет в маппинге
+S	17	{Theme:text icon/whiteSecondaryConst} [text] — нет в маппинге
+S	17	шрифт без стиля: WB Sans Logo Regular 17.15379524230957/auto
+S	17	сырой #a73afd [shape]
+S	17	[pink/WB pink 500] [shape] — нет в маппинге
+S	16	шрифт без стиля: WBGS Medium 24/29
+S	16	шрифт без стиля: WB Sans Bold 18/auto
+S	16	[Caption 2/Regular] — нет в маппинге
+S	15	сырой #ffffff@0.10 [stroke]
+S	15	сырой #e0e0eb [frame]
+S	15	[Action/actionAccent] — нет в маппинге
+S	14	сырой #ffffff [text]
+S	14	{Theme:skeleton/whiteConstOpacity} [frame] — нет в маппинге
+S	14	сырой #ffffff@0.10 [frame]
+S	14	сырой #a76feb [frame]
+S	14	сырой эффект: drop 0,0.9033806920051575 r1.806761384010315 s0 #000000@0.12 + drop 0,0 r0.9033806920051575 s0 #000000@0.15
+R	592	остальные причины: 200

@@ -142,3 +142,66 @@ S	10	сырой #0f013e@0.16 [shape]
 S	10	сырой #ff7200 [shape]
 S	9	{System Colors:Colors/Blue} [text] — нет в маппинге
 R	587	остальные причины: 186
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=50992	replaced=22	skipped=5034	date=2026-11-11
+D	22	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+S	393	сырой эффект: layer_blur
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13
+S	257	{System:Magin Top}=54 paddingTop — нет цели
+S	239	градиент [shape]
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге
+S	234	шрифт без стиля: WB Sans Medium 24/100
+S	222	сырой #000000 [shape]
+S	210	сырой #ffffff [stroke]
+S	201	сырой #ff5f00 [shape]
+S	201	сырой #eb001b [shape]
+S	201	сырой #f79e1b [shape]
+S	178	сырой #ffffff [shape]
+S	174	сырой #000000 [stroke]
+S	162	градиент [frame]
+S	107	сырой #d9d9d9 [shape]
+S	96	шрифт без стиля: SF Pro Regular 17/22
+S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге
+S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге
+S	62	сырой #000000 [frame]
+S	60	[Caption2/Regular] — нет в маппинге
+S	56	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила
+S	45	сырой #000000 [text]
+S	40	сырой #ffffff [text]
+S	36	градиент [stroke]
+S	32	сырой #00b23c [stroke]
+S	31	сырой эффект: background_blur
+S	26	эффект [shadow/close/s] — нет в маппинге
+S	25	сырой #ffffff@0.10 [stroke]
+S	24	шрифт без стиля: SF Pro Text Regular 12/14
+S	24	{Color:tx-bg/level −1 muted} [stroke] — нет правила
+S	24	{Color:tx-accent/green/bg} [stroke] — нет правила
+S	24	эффект [Shadow S] — нет в маппинге
+S	23	{Color:tx-control/purple/tint/idle} [frame] — нет в маппинге
+S	20	сырой #ff0000 [shape]
+S	19	сырой #f6f6f9 [frame]
+S	18	сырой #100f25 [shape]
+S	18	[Gradients/Shimmer] [frame] — нет в маппинге
+S	18	шрифт без стиля: SF Pro Text Medium 14/110.00000238418579
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/20
+S	17	{Color:tx-accent/grey/primary-Inverted} [frame/frame] — нет правила
+S	16	сырой эффект: inner_shadow + inner_shadow + inner_shadow
+S	15	шрифт без стиля: SF Pro Text Regular 12/16
+S	13	{Color:tx-accent/grey/tertiary} [frame/frame] — нет правила
+S	13	сырой #505050 [frame]
+S	12	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	12	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	12	сырой #ff661a [shape]
+S	12	{Color:tx-bg/level 1 base} [stroke] — нет правила
+S	12	сырой #ffc800 [stroke]
+S	12	{Theme TX:tx-accent/orange/tint} [text] — нет в маппинге
+S	12	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass
+S	11	сырой #26013e@0.25 [shape]
+S	11	{Color:tx-accent/grey/dark strong} [stroke] — нет правила
+S	11	{Color:tx-accent/grey/secondary} [stroke] — нет правила
+S	11	сырой эффект: drop 0,-10 r80 s0 #ffffff
+S	10	сырой эффект: drop 0,-4 r16 s0 #000000@0.12 + noise
+S	10	сырой #0f013e@0.16 [shape]
+S	10	сырой #ff7200 [shape]
+S	9	{System Colors:Colors/Blue} [text] — нет в маппинге
+S	9	сырой #1d354f [shape]
+R	578	остальные причины: 185

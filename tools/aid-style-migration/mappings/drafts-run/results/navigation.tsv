@@ -175,3 +175,66 @@ S	244	сырой #a4a4bf [text]
 S	232	градиент [frame]
 S	225	сырой #1d354f [shape]
 R	15244	остальные причины: 812
+#	page=✅ Navigation 🧭 — Switched Styles	id=5374:207972	dry=0	nodes=104773	replaced=35	skipped=26963	date=2026-11-11
+D	35	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+S	2104	градиент [shape]
+S	1692	сырой #000000 [shape]
+S	1111	сырой эффект: layer_blur
+S	896	сырой #ffffff [shape]
+S	723	[Background [day]/Secondary] [shape/shape] — нет правила
+S	704	сырой #c4c4c4 [shape]
+S	428	сырой #000000 [text]
+S	412	сырой #ffffff [text]
+S	400	сырой #ff0000 [shape]
+S	392	[Description/descriptionAccent — lion] — нет в маппинге
+S	391	сырой #000000 [stroke]
+S	350	шрифт без стиля: Factor A TRIAL Medium 10/11
+S	314	[Description/description] — нет в маппинге
+S	305	[Description/description — puma] — нет в маппинге
+S	288	сырой эффект: background_blur
+S	279	[Caption/captionUppercace — chameleon] — нет в маппинге
+S	264	шрифт без стиля: WB Sans Regular 16/14
+S	244	сырой #a4a4bf [text]
+S	232	градиент [frame]
+S	225	сырой #1d354f [shape]
+S	225	сырой #ffb800 [shape]
+S	220	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	216	шрифт без стиля: ALS Hauss VF Medium 17/20
+S	209	[Paragraph/paragraphAccent] — нет в маппинге
+S	204	шрифт без стиля: ALS Hauss VF Regular 13/17 UPPER
+S	204	шрифт без стиля: ALS Hauss VF Bold 13/15 + ALS Hauss VF Regular 13/15
+S	198	сырой #ffffff [stroke]
+S	183	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	180	сырой #d34dc6@0.30 [shape]
+S	180	сырой #232326 [shape]
+S	174	эффект [Shadow Tabbar] — нет в маппинге
+S	174	[Body/bodyAccent — buffalo] — нет в маппинге
+S	156	[Caption/caption — cat] — нет в маппинге
+S	156	[Day / White] [text/text] — нет правила
+S	154	{Theme:bg/level 2} [shape/shape] — нет правила
+S	152	шрифт без стиля: ALS Hauss VF Medium 15/18
+S	147	сырой #ffffff@0.90 [shape]
+S	138	[Day / Gray 20] [shape] — нет в маппинге
+S	116	шрифт без стиля: Factor A TRIAL Bold 15/17
+S	115	[Day / Gray 4] [frame] — нет в маппинге
+S	114	{theme:promo/secondary/bg/blackberry} [frame] — нет в маппинге
+S	114	[BG/bgAirToCoal (day)] [shape] — нет в маппинге
+S	114	шрифт без стиля: Factor A TRIAL Black 15/17
+S	110	шрифт без стиля: Factor A TRIAL Black 10/11 + Factor A TRIAL Medium 10/11
+S	110	{Color:tx-accent/grey/secondary} [stroke] — нет правила
+S	109	шрифт без стиля: SF Pro Semibold 18/28
+S	108	сырой #f18a00 [text]
+S	104	шрифт без стиля: Google Sans Regular 17/20
+S	103	градиент [text]
+S	102	[Description/descriptionUppercace — hamster] — нет в маппинге
+S	100	сырой #ffffff@0.25 [shape]
+S	97	сырой #cacacc [shape]
+S	91	[Icon [day]/Primary Opposite] [shape] — нет в маппинге
+S	90	сырой #ff0000@0.21 [shape]
+S	89	шрифт без стиля: SF Pro Bold 21.760000228881836/100
+S	86	сырой #ffc800 [stroke]
+S	86	[Icon [day]/Special] [shape] — нет в маппинге
+S	86	[Icon [day]/Primary Opposite] [stroke] — нет в маппинге
+S	85	{Theme:text icon/blackPrimaryConst} [text] — нет в маппинге
+S	84	[Uppercace/captionUppercace — chameleon] — нет в маппинге
+R	9726	остальные причины: 771

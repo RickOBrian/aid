@@ -111,3 +111,17 @@
 - `typography-sem` (iOS/Android), по 6 переменных на стиль, скоупы по образцу Caption 1 Semibold, скрыты от публикации: `Captions/Caption 3/{font-family, font-size, font-weight, line-height, letter-spacing, paragraph-spacing}` и `Captions/Caption 3 Medium/{…}`.
 
 **Правила `migrate-styles.js`:** `Caption 3/Regular` → `Captions/Caption 3`, `Caption 3/Medium` → `Captions/Caption 3 Medium`. Ключи в NEWTS. Тело залито на figma.root Drafts, HASH 1839953805. Копии не гонялись: сначала публикация библиотеки (вместе с `Captions/Caption 1 Semibold`), потом прогон.
+
+## Прогон Caption после публикации библиотеки (2026-11-11)
+
+arturuxui опубликовал библиотеку Rider: `Captions/Caption 1 Semibold`, `Captions/Caption 3`, `Captions/Caption 3 Medium` импортируются по ключу. Тело на Drafts — HASH 1839953805. Порядок: CLEAN → DRY → CLEAN → боевой (TOP=60, столбец id срезан) → CLEAN → контрольный DRY → CLEAN, по 7 копиям.
+
+Заменено (всего 160 + 7 = 167):
+- `[Captions/Caption 3]` → Captions/Caption 1 Semibold: Where 43, Where - Migration 43, Navigation 35, Show my location 22, Order Flow 12, Service coverage 4, Profile 1 (159 + 1 = 160).
+- `[Caption 3/Regular]` → Captions/Caption 3: Profile 4.
+- `[Caption 3/Medium]` → Captions/Caption 3 Medium: Profile 3.
+- Прочее в блоках (Where и Where - Migration по 74) — прежние замены, которые не удержались во вложенном инстансе (в «replaced» они входят, как раньше).
+
+Контроль (DRY после прогона): 0 на Navigation, Show my location, Order Flow, Service coverage, Profile; на Where и Where - Migration по 74 — прежний остаток во вложенном инстансе `I…429115`.
+Navigation: экраны «❌ Главная страница» (5 узлов) пропускаются обходом; счёт узлов и пропусков там 104 773 / 26 963 (без Caption 3 было 26 998), прежнее падение уже учтено в прогоне 10.11.
+Планы `mig` на страницах сняты; на figma.root Drafts остаются body/runner/hash.
