@@ -179,7 +179,7 @@
       },
       {
         "id": "destructive-pressed-contrast",
-        "role": "пара фон × контент destructive-кнопки в Pressed (заливка + слой 12 % цвета содержимого × подпись)",
+        "role": "пара фон × контент destructive-кнопки в Pressed (заливка + слой 12 % цвета содержимого × подпись): Buttons/Warning × Texts/Primary Light Ind; Buttons/Secondary × Texts/Warning; поверхность × Texts/Warning",
         "kind": "color pair",
         "value": null,
         "evidence": "Pressed день / ночь: primary-destructive 4,34 / 2,79, secondary-destructive 3,56 / 3,51, ghost-destructive 4,15 / 4,48",
