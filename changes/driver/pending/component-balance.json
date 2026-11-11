@@ -6,7 +6,7 @@
   "artifact": "ActionBarItem",
   "componentId": "balance",
   "product": "driver",
-  "changeSummary": "Кнопка бара Driver — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы реализации — все (Web, iOS, Android; кода пока нет), флоу figma-library-workflow 0.8.0 §3.1. Вход: мастер `balance` 89:2876 (Controls), 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Аудит — секция «Balance · audit» 544:1569 на странице сборки (блоки 0–8, день и ночь на 360). Итог сборки 30.10 (решения куратора arturuxui 27.10 и 30.10, комментарии frank.daniil 28.10, рабочий ответ Standards 30.10): набор под рабочим именем `.ActionBarItem` 542:644 на странице «🚧 Balance · construction» 541:1568 (префикс «.» — Publish не берёт). Одна ось State: Default / Pressed / Disabled; недоступность — значение State, не переключатель. Свойства Label (TEXT), Notification (BOOLEAN), Icon (INSTANCE_SWAP). Auto layout 104×56, подпись в одну строку с многоточием, точка — экземпляр mini_notification в кольце Bg/Actions в границах кнопки (вместо Strokes/Primary, ночью было светлым). Только токены Driver, хексов нет. Недоступный — токены Texts/Tertiary и Icons/Informative Light Ind (38 %, норма продукта по ADR-036, стандарт 40 % — accessibility.md, ADR-006), прозрачность слоя 100 %, без двойного приглушения. Не поддерживаются: Hovered и Focused — продукт мобильный (states-guide §5, §6.1; решение arturuxui 30.10), отмечено в описании набора; вопрос 9 (кольцо фокуса) снят вместе с Focused. Pressed (белый 12 % на тёмном баре) — пробел «⏳ ждёт токен», токен не подставлен и не создан; решение — PD через token-change-gate в RickOBrian/aid#506 (п. 2, токены состояний Driver). Имя: по naming-conventions §4 — код `ActionBar.Item`, сет Figma `ActionBarItem` (рабочий ответ Standards 30.10). Рабочая копия родителя `.bar/button` 542:945 на новых кнопках, переопределения Inverted у Type=Main сняты (10а). Следующий шаг вне #494: переименовать родитель `bar/button` → `ActionBar`. Миграция экземпляров Figma: ось Active заменяется осью State (Active=False → State=Disabled), Notification становится BOOLEAN, подпись и иконка — свойства, имя сета меняется — переопределения экземпляров слетают, их нужно выставить заново. Мастера 89:2876 и 89:2891 не менялись; перенос правок в мастера (ключи и связи экземпляров сохраняются) — только после согласования с дизайнером и разработчиком и «да» arturuxui, рабочие наборы затем удаляются; публикует arturuxui. Текущей версии нет — initial (release-gate, §3.3).",
+  "changeSummary": "Кнопка бара Driver — развитие (designer-26, issue #494, номер AID ждёт ai-tasks), платформы реализации — все (Web, iOS, Android; кода пока нет), флоу figma-library-workflow 0.8.0 §3.1. Вход: мастер `balance` 89:2876 (Controls), 4 варианта 104×56, оси Active / Notification; родитель `bar/button` 89:2891 (8 экземпляров); точка — `mini_notification` 89:4216. В боевом макете Order кнопка «Деньги» — отвязанный фрейм 6173:16552. Аудит — секция «Balance · audit» 544:1569 на странице сборки (блоки 0–8, день и ночь на 360). Итог сборки 30.10 (решения куратора arturuxui 27.10 и 30.10, комментарии frank.daniil 28.10, рабочий ответ Standards 30.10): набор под рабочим именем `.ActionBarItem` 542:644 на странице «🚧 Balance · construction» 541:1568 (префикс «.» — Publish не берёт). Одна ось State: Default / Pressed / Disabled; недоступность — значение State, не переключатель. Свойства Label (TEXT), Notification (BOOLEAN), Icon (INSTANCE_SWAP). Auto layout 104×56, подпись в одну строку с многоточием, точка — экземпляр mini_notification в кольце Bg/Actions в границах кнопки (вместо Strokes/Primary, ночью было светлым). Только токены Driver, хексов нет. Недоступный — токены Texts/Tertiary и Icons/Informative Light Ind (38 %, норма продукта по ADR-036, стандарт 40 % — accessibility.md, ADR-006), прозрачность слоя 100 %, без двойного приглушения. Не поддерживаются: Hovered и Focused — продукт мобильный (states-guide §5, §6.1; решение arturuxui 30.10), отмечено в описании набора; вопрос 9 (кольцо фокуса) снят вместе с Focused. Pressed — слой цвета содержимого варианта (Texts/Primary Light Ind) с прозрачностью 12 % поверх Bg/Actions; вид значения 12 % — platform-convention, как disabled 40 % (ADR-006); «белый 12 % на тёмном баре» — это и есть этот слой. Решение Standards (основной) в RickOBrian/aid#506 п. 2 от 10.11: новых токенов нет, token-change-gate не открывается, вопрос к PD снят. Android — ripple цвета содержимого, iOS и web — слой 12 %; держится 100–200 мс (component-states-guide §3 п. 4). Контраст подписи на нажатой заливке: день 9,5:1, ночь 11,3:1 (≥ 4,5:1). Имя: по naming-conventions §4 — код `ActionBar.Item`, сет Figma `ActionBarItem` (рабочий ответ Standards 30.10). Рабочая копия родителя `.bar/button` 542:945 на новых кнопках, переопределения Inverted у Type=Main сняты (10а). Следующий шаг вне #494: переименовать родитель `bar/button` → `ActionBar`. Миграция экземпляров Figma: ось Active заменяется осью State (Active=False → State=Disabled), Notification становится BOOLEAN, подпись и иконка — свойства, имя сета меняется — переопределения экземпляров слетают, их нужно выставить заново. Мастера 89:2876 и 89:2891 не менялись; перенос правок в мастера (ключи и связи экземпляров сохраняются) — только после согласования с дизайнером и разработчиком и «да» arturuxui, рабочие наборы затем удаляются; публикует arturuxui. Текущей версии нет — initial (release-gate, §3.3).",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": null,
@@ -27,17 +27,6 @@
       "Bg/Actions",
       "Icons/Warning"
     ],
-    "tokenGaps": {
-      "pressedFill": {
-        "value": "белый 12 % на тёмном баре",
-        "status": "gap",
-        "lookup": [
-          "Strokes/Informative Light Ind",
-          "Bg/Overlay"
-        ],
-        "note": "кандидаты из lookup, без выбора; stroke-токен для заливки по смыслу не подходит; решение — PD, token-change-gate, RickOBrian/aid#506 п. 2"
-      }
-    },
     "variants": {
       "State": [
         "Default",
@@ -60,16 +49,30 @@
       "night"
     ],
     "valueKinds": {
-      "pressedFill": "gap",
+      "pressedFill": "platform-convention",
       "disabled": "semantic-token",
       "colors": "semantic-token",
       "size104x56": "raw-value",
       "longLabel": "one-line-ellipsis"
     },
-    "confidence": "medium",
+    "confidence": "high",
     "namingException": false,
     "architectureException": false,
-    "reviewAt": "release"
+    "reviewAt": "release",
+    "stateLayers": {
+      "pressed": {
+        "color": "Texts/Primary Light Ind",
+        "opacity": 0.12,
+        "valueKind": "platform-convention",
+        "android": "ripple цвета содержимого",
+        "durationMs": "100–200",
+        "contrast": {
+          "day": "9.5:1",
+          "night": "11.3:1"
+        },
+        "source": "RickOBrian/aid#506 п. 2, Standards 10.11"
+      }
+    }
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
@@ -97,5 +100,5 @@
   "status": "pending",
   "created": "2026-10-27",
   "author": "arturuxui",
-  "updated": "2026-10-30"
+  "updated": "2026-11-11"
 }
