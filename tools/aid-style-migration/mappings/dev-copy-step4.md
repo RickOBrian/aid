@@ -37,3 +37,7 @@
 ## Что видно на снимках
 Sender 372: подпись кнопки «Заказать» стала крупнее и жирнее (iOS / Subtitle 16/16 → Outstanding/iOS - Subtitle), подписи «Подъезд» светлее. Bottom sheet, Counter, Sender 427 визуально те же.
 Снимков в репозиторий не сохранял: лежат в `tool-results` сессии.
+
+## BG Dark → Constant Dark Secondary (2026-11-11)
+Основание: «да» arturuxui на DEV-копию `4770:4437` (п.20б, final.md §1, решение 2026-11-09). Чтение перед правкой: привязок к `{Variable collection/BG Dark}` на копии уже не было — 4 узла Selector (`4770:4970`, `4770:4994`, `4770:5010`, `4770:5272`, FRAME, внутри Taxi < ГОТОВО) стояли на `Background/Constant Dark` (#202024; вариант а из прежнего прогона). Все четыре с `visible=false`. Заливка fills[0] перепривязана через `setBoundVariableForPaint` к `Background/Constant Dark Secondary` (color-sem, ключ 163f19bd879a77288195d84fb25f660ff5a12c25).
+Контроль: ошибок 0; на копии привязок к BG Dark — 0, к Constant Dark Secondary — ровно эти 4. `Background/Constant Dark` на копии осталось 0 из 4. Рядом лежит сырой #393944 на VECTOR `4770:4860` (Rectangle 4155, Bottom sheet) — не трогался (по п.6а сырые остаются; пробел Constant Dark Secondary на не-фреймах). Снимки до/после не информативны: Selector скрыты, get_screenshot отдаёт 1×1 px.
