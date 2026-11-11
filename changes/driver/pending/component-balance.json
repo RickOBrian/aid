@@ -27,6 +27,25 @@
       "Bg/Actions",
       "Icons/Warning"
     ],
+    "unsupportedStates": [
+      "Hovered",
+      "Focused"
+    ],
+    "statesSpec": {
+      "source": "RickOBrian/aid#506 issuecomment-6765041661 (Standards основной, п. 2, 2026-11-10)",
+      "Pressed": {
+        "color": "Texts/Primary Light Ind",
+        "opacity": 0.12,
+        "valueKind": "platform-convention",
+        "android": "ripple цвета содержимого",
+        "contrast": {
+          "day": "9.5:1",
+          "night": "11.3:1"
+        },
+        "maxDurationMs": 200,
+        "durationSource": "skills/_shared/standards/component-states.json (pressed maxDurationMs 200), component-states-guide §3 п. 4; motion-токенов в Driver нет — не пробел"
+      }
+    },
     "variants": {
       "State": [
         "Default",
@@ -58,21 +77,7 @@
     "confidence": "high",
     "namingException": false,
     "architectureException": false,
-    "reviewAt": "release",
-    "stateLayers": {
-      "pressed": {
-        "color": "Texts/Primary Light Ind",
-        "opacity": 0.12,
-        "valueKind": "platform-convention",
-        "android": "ripple цвета содержимого",
-        "durationMs": "100–200",
-        "contrast": {
-          "day": "9.5:1",
-          "night": "11.3:1"
-        },
-        "source": "RickOBrian/aid#506 п. 2, Standards 10.11"
-      }
-    }
+    "reviewAt": "release"
   },
   "figma": {
     "fileKey": "o0IUYIS7vadbmXPXd81ql9",
