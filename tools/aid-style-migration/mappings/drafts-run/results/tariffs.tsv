@@ -131,3 +131,22 @@ S	3	[Fill / Light] [shape] — нет в маппинге
 S	3	[Day / Gray 40] [shape/shape] — нет правила
 S	3	сырой эффект: drop 0,2 r12 s0 #ab01e0@0.05 + drop 2,2 r12 s0 #ab01e0@0.12
 R	91	остальные причины: 64
+#	page=⌛️ Tariffs — Switched Styles	id=5374:563482	dry=0	nodes=2455	replaced=39	skipped=778	date=2026-11-12
+D	15	[Orange] → Icon/Attention Deep (shape)
+D	6	#8526ff → Stroke/Accent (stroke) w1.5
+D	4	#232326 → Text/Primary (text)
+D	3	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	3	#e9e9ed → Stroke/Primary (stroke) w1
+D	3	[Day / Gray 40] → Icon/Tertiary (shape)
+D	2	градиент ... → [Gradients/Shimmer] (анкета А)
+D	2	#6d6f75 → Text/Secondary (text)
+D	1	[Purple] → Icon/Accent (shape)
+S	92	сырой #000000 [shape]	5374:563588
+S	91	сырой #ffffff [shape]	5374:563561
+S	47	сырой #979797 [shape]	5374:563976
+S	30	#000000 → Route/Primary [stroke] — не w4 (w4.5)	I5374:564637;5374:564702;5374:564954;647:102191;647:102121
+S	27	шрифт без стиля: SF Pro Text Semibold 17/24	I5374:564637;5374:564702;5374:564954;647:102187
+S	20	сырой #232326 [shape]	I5374:563780;619:1373
+S	19	#000000 → Route/Primary [stroke] — не w4 (w2)	I5374:563864;1932:113
+S	15	сырой #ffffff [text]	5374:563587
+R	437	остальные причины (TOP=8): 112

@@ -63,3 +63,21 @@ S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:886
 S	6	шрифт без стиля: Roboto Bold 65.25/85	5374:885789
 S	6	сырой #ffffff@0.30 [shape]	5374:886699
 R	77	остальные причины: 29
+#	page=✅ GEO Problems — Switched Styles	id=5374:885750	dry=0	nodes=2184	replaced=58	skipped=355	date=2026-11-12
+D	36	#000000 → Text/Primary (text) [шрифт >= 40: подпись доски?]
+D	10	сырая тень (анкета А) → [Shadows/Medium]
+D	9	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	1	[shadow/close/s] → [Shadows/Mini]
+D	1	градиент ... → [Gradients/Shimmer] (анкета А)
+D	1	#000000 → Route/Primary (stroke) w4
+S	47	сырой #000000 [shape]	5374:886149
+S	36	шрифт без стиля: Roboto Regular 65.25/85	5374:885753
+S	35	сырой #c4c4c4 [shape]	I5374:886133;1228:7454
+S	32	сырой #ff0000 [shape]	5374:886691
+S	21	градиент [shape]	I5374:886217;1074:135481
+S	18	сырой #1d354f [shape]	5374:886669
+S	18	сырой #ffb800 [shape]	5374:886669
+S	12	сырой эффект: background_blur	I5374:886133;1228:7439
+S	11	сырой эффект: layer_blur	5374:886148
+S	8	[Gradients [day]/Primary] [frame] — нет в маппинге	5374:885809
+R	137	остальные причины (в консоли TOP=20): 16

@@ -338,3 +338,49 @@ S	10	сырой эффект: drop 0,0 r20 s0 #9925ff@0.32 + drop 0,0 r4 s0 #992
 S	10	сырой #ffffff@0.62 [shape]
 S	9	сырой #cacad1@0.72 [shape]
 R	318	остальные причины: 112
+#	page=Order Flow — Switched Styles	id=5374:903468	dry=0	nodes=75222	replaced=655	skipped=5809	date=2026-11-12
+D	100	#000000 → Route/Primary (stroke) w4
+D	89	[Shadow S] → [Shadows/Small]
+D	60	#ffffff → Stroke/Secondary (stroke) w4
+D	56	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	54	#000000 → Text/Primary (text)
+D	49	#f3f3f3 → Background/Secondary (frame)
+D	40	#ff661a → Icon/Attention Deep (shape)
+D	25	сырая тень (анкета А) → [Shadows/Medium]
+D	21	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	20	SF Pro Text Regular 12/16 + 12/14 (анкета А) → [Captions/Caption 1]
+D	14	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	12	[shadow/close/s] → [Shadows/Mini]
+D	12	#ffffff → Stroke/Secondary (stroke) w2.72
+D	14	#ffffff@0.62/0.80/0.32, #f6f6f9@0.54/0.30 → Icon/Constant White Secondary (shape)
+D	9	#cacad1@0.72 → Icon/Disabled (shape)
+D	9	Google Sans Medium 11/14 (анкета А) → [Captions/Caption 2]
+D	8	#e52817 → Stroke/Warning (stroke) w3
+D	7	градиент ... → [Gradients/Shimmer] (анкета А)
+D	6	{Color:tx-accent/grey/dark strong} → Route/Primary (stroke)
+D	5	{Color:tx-accent/grey/tertiary} → Icon/Tertiary (shape)
+D	10	{Spacing:SPx3}→space-12 5; {Gaps:SPx2}→space-8 5
+D	4	#232326 → Text/Primary (text)
+D	4	сырая тень (анкета А) → [Shadows/Brand Button]
+D	3	{Color:tx-accent/grey/primary-Inverted} → Background/Secondary (frame)
+D	3	{Color:tx-accent/grey/tertiary} → Background/Tertiary (frame)
+D	3	SF Pro Text Medium 14/14 (анкета А) → [Subtitles/Subtitle 3]
+D	3	{Theme TX:tx-control/neutral/bg/idle} → Field/Primary (frame)
+D	2	{Color:tx-control/purple/tint/idle} → Background/Pill Accent (frame)
+D	2	#6d6f75 → Text/Secondary (text)
+D	1	#ffffff → Stroke/Secondary (stroke) w6
+D	1	[Purple] → Icon/Accent (shape)
+D	1	[Orange] → Icon/Attention Deep (shape)
+D	1	#8526ff → Stroke/Accent (stroke) w1.5
+D	1	[Day / Gray 40] → Icon/Tertiary (shape)
+D	1	#e9e9ed → Stroke/Primary (stroke) w1
+D	1	{Color:tx-control/purple/bg/idle} → Button/Primary (frame)
+S	661	сырой эффект: layer_blur	I5871:168780;1074:135167
+S	471	шрифт без стиля: SF Pro Text Semibold 12/13	5374:903752
+S	350	сырой #ffffff [shape]	5374:903698
+S	344	градиент [shape]	I5871:168781;1074:135481
+S	340	сырой #c4c4c4 [shape]	I5374:918263;1228:7454
+S	284	сырой #ff5f00 [shape]	I5374:903770;1093:24503;3072:124505
+S	284	сырой #eb001b [shape]	I5374:903770;1093:24503;3072:124506
+S	284	сырой #f79e1b [shape]	I5374:903770;1093:24503;3072:124507
+R	2791	остальные причины (TOP=8): 129

@@ -238,3 +238,33 @@ S	86	[Icon [day]/Primary Opposite] [stroke] — нет в маппинге
 S	85	{Theme:text icon/blackPrimaryConst} [text] — нет в маппинге
 S	84	[Uppercace/captionUppercace — chameleon] — нет в маппинге
 R	9726	остальные причины: 771
+#	page=✅ Navigation 🧭 — Switched Styles	id=5374:207972	dry=0	nodes=104773	replaced=1474	skipped=25489	date=2026-11-12
+D	425	#000000 → Text/Primary (text)
+D	394	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	277	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	110	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	59	сырая тень (анкета А) → [Shadows/Medium]
+D	58	[Orange] → Icon/Attention Deep (shape)
+D	49	[Day / Gray 40] → Icon/Tertiary (shape)
+D	17	#232326 → Text/Primary (text)
+D	14	[Shadow S] → [Shadows/Small]
+D	12	#8526ff → Stroke/Accent (stroke) w1.5
+D	11	#ffffff → Stroke/Secondary (stroke) w2
+D	8	#ffffff → Stroke/Secondary (stroke) w1.75
+D	7	SF Pro Text Regular 12/14 (анкета А) → [Captions/Caption 1]
+D	6	{Theme TX:tx-control/neutral/bg/idle} → Field/Primary (frame)
+D	6	градиент ... → [Gradients/Shimmer] (анкета А)
+D	6	#ffffff → Stroke/Secondary (stroke) w4
+D	4	Google Sans Medium 11/14 (анкета А) → [Captions/Caption 2]
+D	4	[Purple] → Icon/Accent (shape)
+D	3	#000000 → Text/Primary (text) [шрифт >= 40: подпись доски?]
+D	2	#ffffff → Stroke/Secondary (stroke) w51
+D	1	#ffffff → Stroke/Secondary (stroke) w3
+D	1	сырая тень (анкета А) → [Shadows/Brand Button]
+S	1692	сырой #000000 [shape]	I5374:209720;353:10389
+S	1405	градиент [shape]	I5374:208059;2274:67423
+S	1111	сырой эффект: layer_blur	I5374:208023;2296:72450
+S	896	сырой #ffffff [shape]	I5374:208001;28:443
+S	723	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:214271;1242:357
+S	704	сырой #c4c4c4 [shape]	I5374:211920;1248:7510
+R	18958	остальные причины (TOP=6): 826

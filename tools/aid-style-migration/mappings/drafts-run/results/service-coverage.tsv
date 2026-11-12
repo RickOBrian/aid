@@ -243,3 +243,18 @@ S	1	[Pastel [day]/Homer] [frame] — нет в маппинге
 S	1	сырой эффект: drop 0,0 r20 s0 #000000@0.06
 S	1	[Gradients [day]/Primary] [frame] — нет в маппинге
 R	7	остальные причины: 7
+#	page=✅ Service coverage — Switched Styles	id=5374:86156	dry=0	nodes=7394	replaced=81	skipped=762	date=2026-11-12
+D	30	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	25	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	24	#000000 → Text/Primary (text)
+D	1	#000000 → Route/Primary (stroke) w4
+D	1	сырая тень (анкета А) → [Shadows/Medium]
+S	87	сырой #000000 [shape]	5374:86729
+S	74	сырой #d9d9d9 [shape]	5374:86246
+S	60	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff	5374:86863
+S	59	сырой #c4c4c4 [shape]	I5374:88453;2494:174370
+S	47	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:86711
+S	36	градиент [shape]	5374:86993
+S	34	градиент [frame]	I5374:88465;1527:45369;1093:24175
+S	29	сырой #ffffff [shape]	5374:86245
+R	425	остальные причины (TOP=12): 54

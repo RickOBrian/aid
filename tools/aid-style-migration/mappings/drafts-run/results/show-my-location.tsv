@@ -205,3 +205,34 @@ S	10	сырой #ff7200 [shape]
 S	9	{System Colors:Colors/Blue} [text] — нет в маппинге
 S	9	сырой #1d354f [shape]
 R	578	остальные причины: 185
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=50992	replaced=624	skipped=4293	date=2026-11-12
+D	163	#000000 → Route/Primary (stroke) w4
+D	148	#ffffff → Stroke/Secondary (stroke) w4
+D	45	#000000 → Text/Primary (text)
+D	31	#ffffff → Stroke/Secondary (stroke) w2.72
+D	31	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	26	[shadow/close/s] → [Shadows/Mini]
+D	39	SF Pro Text Regular 12/14 + 12/16 (анкета А) → [Captions/Caption 1]
+D	24	[Shadow S] → [Shadows/Small]
+D	23	{Color:tx-control/purple/tint/idle} → Background/Pill Accent (frame)
+D	17	{Color:tx-accent/grey/primary-Inverted} → Background/Secondary (frame)
+D	13	{Color:tx-accent/grey/tertiary} → Background/Tertiary (frame)
+D	12	#ffffff → Stroke/Secondary (stroke) w6
+D	12	#ff661a → Icon/Attention Deep (shape)
+D	11	{Color:tx-accent/grey/dark strong} → Route/Primary (stroke)
+D	11	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	5	{Theme TX:tx-control/neutral/bg/idle} → Field/Primary (frame)
+D	5	SF Pro Text Medium 14/14 (анкета А) → [Subtitles/Subtitle 3]
+D	4	#ffffff → Stroke/Secondary (stroke) w3
+D	2	[Orange] → Icon/Attention Deep (shape)
+D	1	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	1	#232326 → Text/Primary (text)
+S	393	сырой эффект: layer_blur	I5374:803118;1067:131367
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13	5374:803458
+S	257	{System:Magin Top}=54 paddingTop — нет цели	5374:802550
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:802560;40000385:8868;40006534:14641;40006534:7699
+S	234	шрифт без стиля: WB Sans Medium 24/100	I5374:802560;40000385:8868;40006534:7701
+S	222	сырой #000000 [shape]	I5374:802792;40007495:32555;20:3349;353:10462
+S	207	градиент [shape]	I5374:803119;1074:135481
+S	201	сырой #ff5f00 [shape]	I5374:802565;40007187:67012;40007187:43967;427:17588
+R	2229	остальные причины (TOP=8): 218

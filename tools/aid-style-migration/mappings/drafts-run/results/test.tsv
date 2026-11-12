@@ -63,3 +63,18 @@ S	12	сырой #f5f5f5 [shape]	I5374:1032052;1037:164
 S	12	сырой #ffffff@0.30 [shape]	5374:1032181
 S	10	{Color:tx-bg/level −1 muted} [shape/shape] — нет правила	I5374:1031654;907:124127;578:320
 R	249	остальные причины: 77
+#	page=test — Switched Styles	id=5374:1030847	dry=0	nodes=5880	replaced=73	skipped=980	date=2026-11-12
+D	38	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	25	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	4	сырая тень (анкета А) → [Shadows/Medium]
+D	4	[Orange] → Icon/Attention Deep (shape)
+D	2	#8526ff → Stroke/Accent (stroke) w1.5
+S	110	сырой #000000 [shape]	5374:1031099
+S	68	[Background [day]/Secondary] [shape/shape] — нет правила	5374:1030874
+S	66	сырой #ffffff [shape]	I5374:1030890;3872:24490;1562:504
+S	64	сырой #ff0000 [shape]	5374:1032173
+S	56	сырой #c4c4c4 [shape]	I5374:1031083;1228:7454
+S	52	сырой эффект: layer_blur	5374:1031098
+S	44	градиент [shape]	5374:1032163
+S	42	сырой #ffffff [text]	5374:1031684
+R	478	остальные причины (TOP=8): 87

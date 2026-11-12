@@ -87,3 +87,25 @@ S	15	{System Colors:Colors/Blue} [text] — нет в маппинге
 S	14	сырой #ffffff [text]
 S	12	сырой #f5f5f6 [frame]
 R	367	остальные причины: 115
+#	page=✅ Taxi for friends — Switched Styles	id=5374:894051	dry=0	nodes=3951	replaced=65	skipped=819	date=2026-11-12
+D	21	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	15	сырая тень (анкета А) → [Shadows/Medium]
+D	7	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	6	[Purple] → Icon/Accent (shape)
+D	4	#000000 → Text/Primary (text) [шрифт >= 40: подпись доски?]
+D	4	#232326 → Text/Primary (text)
+D	2	#000000 → Text/Primary (text)
+D	2	#6d6f75 → Text/Secondary (text)
+D	1	[Orange] → Icon/Attention Deep (shape)
+D	1	#8526ff → Stroke/Accent (stroke) w1.5
+D	1	[Day / Gray 40] → Icon/Tertiary (shape)
+D	1	#e9e9ed → Stroke/Primary (stroke) w1
+S	60	сырой #000000 [shape]	5374:894234
+S	48	сырой эффект: background_blur	5374:894224
+S	45	сырой #ffffff [shape]	5374:895842
+S	42	сырой #c4c4c4 [shape]	5374:895831
+S	30	сырой #ffffff@0.05 [shape]	5374:894224
+S	30	сырой #000000@0.08 [stroke]	5374:894224
+S	26	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:896938
+S	22	сырой эффект: layer_blur	5374:894233
+R	516	остальные причины (TOP=8): 120

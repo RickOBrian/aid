@@ -188,3 +188,19 @@ S	14	сырой #ffffff@0.10 [frame]
 S	14	сырой #a76feb [frame]
 S	14	сырой эффект: drop 0,0.9033806920051575 r1.806761384010315 s0 #000000@0.12 + drop 0,0 r0.9033806920051575 s0 #000000@0.15
 R	592	остальные причины: 200
+#	page=⌛️ Profile — Switched Styles	id=5374:527493	dry=0	nodes=22473	replaced=127	skipped=5940	date=2026-11-12
+D	72	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	42	Google Sans Medium 11/14 (анкета А) → [Captions/Caption 2]
+D	9	#000000 → Text/Primary (text)
+D	2	{Color:tx-accent/grey/primary-Inverted} → Background/Secondary (frame)
+D	1	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	1	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+S	1059	сырой эффект: layer_blur	5374:527510
+S	872	сырой #d9d9d9 [shape]	5374:527495
+S	503	градиент [stroke]	5374:530807
+S	334	градиент [shape]	5374:533257
+S	168	градиент [frame]	5374:528138
+S	140	сырой #ff10d7 [shape]	5374:533920
+S	128	градиент [text]	5374:530270
+S	110	шрифт без стиля: WB Sans Medium 20/20	5374:530858
+R	2626	остальные причины (TOP=8): 236

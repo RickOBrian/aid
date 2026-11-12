@@ -307,3 +307,30 @@ S	14	[Gradients [day]/Primary] [frame] — нет в маппинге
 S	14	сырой #cacacc [shape]
 S	13	[Bodies / Body 1] — нет в маппинге
 R	751	остальные причины: 200
+#	page=✅ Where 🗺️ - Migration — Switched Styles	id=5374:623349	dry=0	nodes=42240	replaced=520	skipped=6359	date=2026-11-12
+D	153	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	132	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	95	сырая тень (анкета А) → [Shadows/Medium]
+D	28	{Скругления:BRx4} → radius-16
+D	26	градиент ... → [Gradients/Shimmer] (анкета А)
+D	12	{Spacing:SPx2} → space-8
+D	8	#232326 → Text/Primary (text)
+D	7	{theme:stroke/contrasteInverted} → Stroke/Contrast (stroke)
+D	6	{Spacing:SPx1} → space-4
+D	9	#000000 → Text/Primary (text) (5 с пометкой подпись доски)
+D	4	#6d6f75 → Text/Secondary (text)
+D	3	[Shadow S] → [Shadows/Small]
+D	2	[Purple]→Icon/Accent; 2 [Orange]→Icon/Attention Deep; 2 #8526ff→Stroke/Accent; 2 [Day / Gray 40]→Icon/Tertiary; 2 #e9e9ed→Stroke/Primary
+D	2	[shadow/close/s] → [Shadows/Mini]
+D	2	#000000 → Route/Primary (stroke) w4
+D	1	{Color:tx-accent/grey/primary-Inverted} → Background/Secondary (frame)
+D	1	{Navigator Color:Jam/Low} → Route/Traffic Free (stroke, пробки)
+S	1182	сырой #c4c4c4 [shape]	I5374:623366;1207:219;1248:7510
+S	507	сырой эффект: background_blur	I5374:623539;1228:7439
+S	410	сырой #ffffff@0.90 [shape]	I5374:623539;1228:7440
+S	399	сырой эффект: layer_blur	I5374:623355;19:89299
+S	384	сырой #000000 [shape]	I5374:625546;619:1370
+S	201	сырой #ffffff [stroke]	I5374:623539;1228:7446
+S	166	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:623539;1228:7452
+S	155	градиент [shape]	I5374:626722;2785:78496;98:376;2064:2693
+R	2955	остальные причины (TOP=8): 244

@@ -169,3 +169,22 @@ S	12	[Text [day]/Disabled] [text] — нет в маппинге
 S	12	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL
 S	12	сырой #d62347 [shape]
 R	859	остальные причины: 233
+#	page=✅ Illustrations Request 💅🏻 — Switched Styles	id=5374:721192	dry=0	nodes=11438	replaced=99	skipped=3153	date=2026-11-12
+D	30	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	28	[Orange] → Icon/Attention Deep (shape)
+D	14	сырая тень (анкета А) → [Shadows/Medium]
+D	8	#000000 → Text/Primary (text)
+D	6	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	6	SF Pro Text Regular 12/16 (анкета А) → [Captions/Caption 1]
+D	4	[Day / Gray 40] → Icon/Tertiary (shape)
+D	2	#232326 → Text/Primary (text)
+D	1	#8526ff → Stroke/Accent (stroke) w1.5
+S	333	сырой #000000 [shape]	5374:721217
+S	223	градиент [shape]	I5374:721303;684:146;5506:14695
+S	172	сырой #c4c4c4 [shape]	5374:721262
+S	161	сырой #ffffff [shape]	5374:721206
+S	115	сырой эффект: layer_blur	I5374:721530;19:89299
+S	98	сырой #ff0000 [shape]	5374:722382
+S	61	сырой эффект: background_blur	I5374:722037;1228:7439
+S	58	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:721536;1242:357
+R	1932	остальные причины (TOP=8): 282

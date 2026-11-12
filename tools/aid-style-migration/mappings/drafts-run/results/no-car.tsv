@@ -64,3 +64,27 @@ S	13	градиент [shape]	I5374:1040425;257:2574
 S	12	сырой #989898 [shape]	5374:1040380
 S	11	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:1040438
 R	190	остальные причины: 43
+#	page=✅ No car — Switched Styles	id=5374:1040241	dry=0	nodes=1717	replaced=84	skipped=628	date=2026-11-12
+D	28	#232326 → Text/Primary (text)
+D	14	#6d6f75 → Text/Secondary (text)
+D	9	#e9e9ed → Stroke/Primary (stroke) w1
+D	7	[Purple] → Icon/Accent (shape)
+D	7	[Orange] → Icon/Attention Deep (shape)
+D	7	#8526ff → Stroke/Accent (stroke) w1.5
+D	5	[Day / Gray 40] → Icon/Tertiary (shape)
+D	4	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	2	#000000 → Text/Primary (text)
+D	1	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+S	117	сырой #ffffff [shape]	5374:1040250
+S	90	сырой #979797 [shape]	5374:1040280
+S	35	сырой #00579f [shape]	5374:1040339
+S	35	сырой #000000 [shape]	5374:1040386
+S	25	сырой #ffffff [stroke]	5374:1040245
+S	19	сырой эффект: layer_blur	I5374:1040915;40006663:32110
+S	18	сырой #d8d8d8 [shape]	5374:1040281
+S	18	сырой #979797 [stroke]	5374:1040281
+S	16	шрифт без стиля: SF Pro Text Medium 16/16	5374:1040337
+S	15	сырой #ffffff [text]	5374:1040270
+S	15	[Green] [shape] — нет в маппинге	I5374:1040311;1945:3103
+S	14	сырой эффект: drop 0,1 r2 s0 #000000@0.20	5374:1040247
+R	211	остальные причины (TOP=12): 44
