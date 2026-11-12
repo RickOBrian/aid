@@ -1,17 +1,17 @@
-M	Backlog UI — Switched Styles	5371:80571	nodes=320	hidden=25	fill=105/56/11	stroke=0/11/0	font=47/9/0	effect=11/7/3
-M	Errors — Switched Styles	5374:358551	nodes=2483	hidden=226	fill=743/172/416	stroke=7/31/68	font=172/25/48	effect=70/16/149
-M	✅ GEO Problems — Switched Styles	5374:885750	nodes=1709	hidden=205	fill=642/62/45	stroke=12/11/1	font=212/0/6	effect=57/23/22
-M	✅ Illustrations Request 💅🏻 — Switched Styles	5374:721192	nodes=9119	hidden=783	fill=2674/1119/214	stroke=23/149/12	font=1163/110/58	effect=178/198/72
-M	✅ Navigation 🧭 — Switched Styles	5374:207972	nodes=89983	hidden=7258	fill=29710/9044/1871	stroke=491/1213/62	font=7482/2130/3651	effect=2140/1956/545
-M	✅ No car — Switched Styles	5374:1040241	nodes=1274	hidden=162	fill=393/233/25	stroke=6/38/0	font=160/37/0	effect=46/47/4
-M	✅ not work — Switched Styles	5374:738087	nodes=571	hidden=30	fill=223/54/33	stroke=1/2/0	font=63/0/0	effect=29/4/14
-M	Order Flow — Switched Styles	5374:903468	nodes=63134	hidden=4960	fill=23443/1756/1414	stroke=1346/373/0	font=8091/202/75	effect=1722/659/274
-M	✅ Permissions — Switched Styles	5374:1019808	nodes=1844	hidden=175	fill=683/119/65	stroke=23/14/0	font=231/10/11	effect=68/34/36
-M	⌛️ Profile — Switched Styles	5374:527493	nodes=10914	hidden=1450	fill=3881/1282/68	stroke=52/403/0	font=894/408/17	effect=267/249/6
-M	✅ Service coverage — Switched Styles	5374:86156	nodes=4651	hidden=182	fill=1765/50/320	stroke=31/2/0	font=572/0/49	effect=161/23/73
-M	✅ Show my location — Switched Styles	5374:802548	nodes=43431	hidden=3582	fill=16185/1231/797	stroke=450/543/4	font=5271/532/56	effect=1229/390/40
-M	⌛️ Tariffs — Switched Styles	5374:563482	nodes=2098	hidden=239	fill=658/268/34	stroke=3/86/1	font=236/85/11	effect=43/56/0
-M	✅ Taxi for friends — Switched Styles	5374:894051	nodes=2622	hidden=209	fill=957/181/45	stroke=14/28/0	font=381/56/13	effect=80/36/16
-M	test — Switched Styles	5374:1030847	nodes=5103	hidden=414	fill=1902/389/131	stroke=32/21/3	font=692/49/40	effect=236/78/46
-M	✅ Where 🗺️ - Migration — Switched Styles	5374:623349	nodes=34724	hidden=4728	fill=12641/1850/1244	stroke=222/422/27	font=3941/282/463	effect=858/1118/504
-M	✅ Where 🗺️ — Switched Styles	5374:421690	nodes=34724	hidden=4728	fill=12398/2093/1244	stroke=242/402/27	font=3941/282/463	effect=858/1118/504
+M	Backlog UI — Switched Styles	5371:80571	nodes=320	hidden=25	fill=123/38/11	stroke=4/7/0	font=47/9/0	effect=11/7/3
+M	Errors — Switched Styles	5374:358551	nodes=2483	hidden=226	fill=753/162/416	stroke=7/31/68	font=172/25/48	effect=70/16/149
+M	✅ GEO Problems — Switched Styles	5374:885750	nodes=1709	hidden=205	fill=651/53/45	stroke=13/10/1	font=212/0/6	effect=60/20/22
+M	✅ Illustrations Request 💅🏻 — Switched Styles	5374:721192	nodes=9119	hidden=783	fill=2736/1057/214	stroke=24/148/12	font=1169/104/58	effect=192/184/72
+M	✅ Navigation 🧭 — Switched Styles	5374:207972	nodes=89983	hidden=7258	fill=30603/8151/1871	stroke=521/1183/62	font=7493/2119/3651	effect=2214/1882/545
+M	✅ No car — Switched Styles	5374:1040241	nodes=1274	hidden=162	fill=461/165/25	stroke=22/22/0	font=160/37/0	effect=46/47/4
+M	✅ not work — Switched Styles	5374:738087	nodes=571	hidden=30	fill=224/53/33	stroke=2/1/0	font=63/0/0	effect=29/4/14
+M	Order Flow — Switched Styles	5374:903468	nodes=63194	hidden=4960	fill=23711/1508/1414	stroke=1530/189/0	font=8128/170/75	effect=1776/605/274
+M	✅ Permissions — Switched Styles	5374:1019808	nodes=1844	hidden=175	fill=696/106/65	stroke=23/14/0	font=231/10/11	effect=70/32/36
+M	⌛️ Profile — Switched Styles	5374:527493	nodes=10914	hidden=1450	fill=3932/1231/68	stroke=52/403/0	font=936/366/17	effect=267/249/6
+M	✅ Service coverage — Switched Styles	5374:86156	nodes=4651	hidden=182	fill=1772/43/320	stroke=31/2/0	font=572/0/49	effect=161/23/73
+M	✅ Show my location — Switched Styles	5374:802548	nodes=43431	hidden=3582	fill=16303/1113/797	stroke=813/180/4	font=5315/488/56	effect=1255/364/40
+M	⌛️ Tariffs — Switched Styles	5374:563482	nodes=2098	hidden=239	fill=680/246/34	stroke=12/77/1	font=236/85/11	effect=43/56/0
+M	✅ Taxi for friends — Switched Styles	5374:894051	nodes=2622	hidden=209	fill=982/156/45	stroke=16/26/0	font=381/56/13	effect=81/35/16
+M	test — Switched Styles	5374:1030847	nodes=5103	hidden=414	fill=1961/330/131	stroke=34/19/3	font=692/49/40	effect=240/74/46
+M	✅ Where 🗺️ - Migration — Switched Styles	5374:623349	nodes=34724	hidden=4728	fill=12822/1669/1244	stroke=228/416/27	font=3941/282/463	effect=958/1018/504
+M	✅ Where 🗺️ — Switched Styles	5374:421690	nodes=34724	hidden=4728	fill=12565/1926/1244	stroke=244/400/27	font=3941/282/463	effect=958/1018/504

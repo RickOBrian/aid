@@ -7,24 +7,24 @@
 
 | страница | заливки | обводки | шрифты | эффекты | всё | покрыто | не покрыто | вне счёта |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Backlog UI — Switched Styles | 65 % | 0 % | 84 % | 61 % | **66 %** | 163 | 83 | 14 |
-| Errors — Switched Styles | 81 % | 18 % | 87 % | 81 % | **80 %** | 992 | 244 | 681 |
-| ✅ GEO Problems — Switched Styles | 91 % | 52 % | 100 % | 71 % | **91 %** | 923 | 96 | 74 |
-| ✅ Illustrations Request 💅🏻 — Switched Styles | 70 % | 13 % | 91 % | 47 % | **72 %** | 4 038 | 1 576 | 356 |
-| ✅ Navigation 🧭 — Switched Styles | 77 % | 29 % | 78 % | 52 % | **74 %** | 39 823 | 14 343 | 6 129 |
-| ✅ No car — Switched Styles | 63 % | 14 % | 81 % | 49 % | **63 %** | 605 | 355 | 29 |
-| ✅ not work — Switched Styles | 81 % | 33 % | 100 % | 88 % | **84 %** | 316 | 60 | 47 |
-| Order Flow — Switched Styles | 93 % | 78 % | 98 % | 72 % | **92 %** | 34 602 | 2 990 | 1 763 |
-| ✅ Permissions — Switched Styles | 85 % | 62 % | 96 % | 67 % | **85 %** | 1 005 | 177 | 112 |
-| ⌛️ Profile — Switched Styles | 75 % | 11 % | 69 % | 52 % | **69 %** | 5 094 | 2 342 | 91 |
-| ✅ Service coverage — Switched Styles | 97 % | 94 % | 100 % | 88 % | **97 %** | 2 529 | 75 | 442 |
-| ✅ Show my location — Switched Styles | 93 % | 45 % | 91 % | 76 % | **90 %** | 23 135 | 2 696 | 897 |
-| ⌛️ Tariffs — Switched Styles | 71 % | 3 % | 74 % | 43 % | **66 %** | 940 | 495 | 46 |
-| ✅ Taxi for friends — Switched Styles | 84 % | 33 % | 87 % | 69 % | **83 %** | 1 432 | 301 | 74 |
-| test — Switched Styles | 83 % | 60 % | 93 % | 75 % | **84 %** | 2 862 | 537 | 220 |
-| ✅ Where 🗺️ - Migration — Switched Styles | 87 % | 34 % | 93 % | 43 % | **83 %** | 17 662 | 3 672 | 2 238 |
-| ✅ Where 🗺️ — Switched Styles | 86 % | 38 % | 93 % | 43 % | **82 %** | 17 439 | 3 895 | 2 238 |
-| **Итого** | 85 % | 44 % | 89 % | 57 % | **82 %** | 153 560 | 33 937 | 15 451 |
+| Backlog UI — Switched Styles | 76 % | 36 % | 84 % | 61 % | **75 %** | 185 | 61 | 14 |
+| Errors — Switched Styles | 82 % | 18 % | 87 % | 81 % | **81 %** | 1 002 | 234 | 681 |
+| ✅ GEO Problems — Switched Styles | 92 % | 57 % | 100 % | 75 % | **92 %** | 936 | 83 | 74 |
+| ✅ Illustrations Request 💅🏻 — Switched Styles | 72 % | 14 % | 92 % | 51 % | **73 %** | 4 121 | 1 493 | 356 |
+| ✅ Navigation 🧭 — Switched Styles | 79 % | 31 % | 78 % | 54 % | **75 %** | 40 831 | 13 335 | 6 129 |
+| ✅ No car — Switched Styles | 74 % | 50 % | 81 % | 49 % | **72 %** | 689 | 271 | 29 |
+| ✅ not work — Switched Styles | 81 % | 67 % | 100 % | 88 % | **85 %** | 318 | 58 | 47 |
+| Order Flow — Switched Styles | 94 % | 89 % | 98 % | 75 % | **93 %** | 35 145 | 2 472 | 1 763 |
+| ✅ Permissions — Switched Styles | 87 % | 62 % | 96 % | 69 % | **86 %** | 1 020 | 162 | 112 |
+| ⌛️ Profile — Switched Styles | 76 % | 11 % | 72 % | 52 % | **70 %** | 5 187 | 2 249 | 91 |
+| ✅ Service coverage — Switched Styles | 98 % | 94 % | 100 % | 88 % | **97 %** | 2 536 | 68 | 442 |
+| ✅ Show my location — Switched Styles | 94 % | 82 % | 92 % | 78 % | **92 %** | 23 686 | 2 145 | 897 |
+| ⌛️ Tariffs — Switched Styles | 73 % | 13 % | 74 % | 43 % | **68 %** | 971 | 464 | 46 |
+| ✅ Taxi for friends — Switched Styles | 86 % | 38 % | 87 % | 70 % | **84 %** | 1 460 | 273 | 74 |
+| test — Switched Styles | 86 % | 64 % | 93 % | 76 % | **86 %** | 2 927 | 472 | 220 |
+| ✅ Where 🗺️ - Migration — Switched Styles | 88 % | 35 % | 93 % | 48 % | **84 %** | 17 949 | 3 385 | 2 238 |
+| ✅ Where 🗺️ — Switched Styles | 87 % | 38 % | 93 % | 48 % | **83 %** | 17 708 | 3 626 | 2 238 |
+| **Итого** | 86 % | 53 % | 89 % | 60 % | **84 %** | 156 671 | 30 851 | 15 451 |
 
 ## Замены и пропуски по прогонам
 
