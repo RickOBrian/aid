@@ -142,3 +142,87 @@ S	11	#000000 → Route/Primary [stroke] — не w4 (w3)	5374:1020391
 S	11	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:1019810
 S	10	сырой #000000 [stroke]	5374:1019809
 R	197	остальные причины (TOP=12): 71
+#	page=✅ Permissions — Switched Styles	id=5374:1019808	dry=1	nodes=2714	replaced=0	skipped=471	date=2026-11-12
+S	52	сырой #c4c4c4 [shape]	I5374:1020937;2498:9996;69:109;5429:84197;1465:154025;1248:7516
+S	46	сырой #ffffff [shape]	5374:1019928
+S	42	сырой #000000 [shape]	5374:1020112
+S	25	сырой эффект: background_blur	5374:1020102
+S	19	сырой эффект: layer_blur	5374:1020111
+S	18	градиент [shape]	5374:1020520
+S	15	эффект [Shadow Up] — нет в маппинге	5374:1020561
+S	13	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:1020112
+S	12	градиент [frame]	5374:1020529
+S	11	#000000 → Route/Primary [stroke] — не w4 (w3)	5374:1020391
+S	11	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:1019810
+S	10	сырой #000000 [stroke]	5374:1019809
+S	10	{Theme TX:tx-bg/map} [frame] — нет в маппинге	5374:1020492
+S	10	сырой #ffffff@0.90 [shape]	I5374:1020975;2194:200015;1228:7440
+S	9	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:1020937;2189:196066;2189:196058
+S	8	сырой #ffffff@0.05 [shape]	5374:1020102
+S	8	сырой #000000@0.08 [stroke]	5374:1020102
+S	6	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:1020975;2194:200039;1242:357
+S	5	сырой #f2bfbf [frame]	5374:1019810
+S	5	сырой эффект: drop 0,8 r20 s0 #2d2d53@0.12	5374:1020578
+S	5	[.auto tint/white] [shape] — нет в маппинге	5374:1020970
+S	5	эффект [.blur tiny] — нет в маппинге	5374:1020970
+S	5	сырой #ff0000 [shape]	5374:1020971
+S	5	сырой #ffffff [stroke]	I5374:1020975;2194:200015;1228:7446
+S	5	{System Colors:Colors/Blue} [text] — нет в маппинге	I5374:1021196;2189:194713
+S	4	[Gradients [day]/Primary] [frame] — нет в маппинге	5374:1019862
+S	4	сырой #ffffff@0.10 [shape]	5374:1020104
+S	4	сырой #000000@0.03 [stroke]	5374:1020104
+S	4	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:1020975;2194:200015;1228:7452
+S	4	сырой #232326 [shape]	I5374:1021053;619:1373
+S	4	{System Colors:Labels/Primary} [text] — нет в маппинге	I5374:1021196;2189:194705
+S	4	[Body/Regular] — нет в маппинге	I5374:1021196;2189:194713
+S	3	[Body/body] — нет в маппинге	5374:1020791
+S	3	градиент [stroke]	5374:1020537
+S	2	[Pastel [day]/Bart] [frame] — нет в маппинге	5374:1019871
+S	2	[Bg day/secondary] [frame] — нет в маппинге	5374:1020145
+S	2	[Buttons day/fab] [frame] — нет в маппинге	5374:1020148
+S	2	эффект [Shadow 2] — нет в маппинге	5374:1020148
+S	2	[Day / Gray 4] [frame] — нет в маппинге	5374:1020158
+S	2	[Titles/Large Title] — нет в маппинге	5374:1020415
+S	2	сырой #1d1c1e [frame]	5374:1020491
+S	2	сырой #a73afd [shape]	5374:1020519
+S	2	{Theme:stroke/primary} [stroke] — нет в маппинге	5374:1020525
+S	2	сырой #ff22e2 [frame]	5374:1020527
+S	2	сырой #000000@0.32 [frame]	5374:1020532
+S	2	сырой #500000 [frame]	5374:1020532
+S	2	сырой #9800ff [shape]	5374:1020538
+S	2	сырой #7204bc [shape]	5374:1020546
+S	2	сырой #d9d9d9 [shape]	5374:1020553
+S	2	сырой эффект: inner_shadow + drop 0,2 r1 s0 #f844ff + drop 0,1 r1 s0 #ffffff@0.90	5374:1020554
+S	2	{System Colors:Overlays/Default} [frame] — нет в маппинге	5374:1020835
+S	2	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I5374:1020975;2194:200050;1264:96
+S	2	сырой #cacacc [shape]	I5374:1021053;619:1369
+S	2	[Blue] [shape] — нет в маппинге	I5374:1021084;1609:1657
+S	2	#000000 → Route/Primary [stroke] — не w4 (w2)	I5374:1021157;1932:113
+S	2	сырой #b3b3b3@0.82 [frame]	I5374:1021196;2189:194703;510:79117
+S	2	сырой #383838 [frame]	I5374:1021196;2189:194703;510:79117
+S	2	эффект [Material Blur] — нет в маппинге	I5374:1021196;2189:194703;510:79117
+S	2	[Headline/Regular] — нет в маппинге	I5374:1021196;2189:194705
+S	2	[Footnote/Regular] — нет в маппинге	I5374:1021196;2189:194706
+S	2	{System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге	I5374:1021196;2189:194712
+S	2	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге	I5374:1021285;2189:195907
+S	1	[Pastel [day]/Lenny] [frame] — нет в маппинге	5374:1019855
+S	1	сырой #fff7e2 [frame]	5374:1020421
+S	1	[Text [day]/Success] [frame] — нет в маппинге	5374:1020484
+S	1	сырой #3458e9@0.10 [shape]	5374:1020486
+S	1	сырой эффект: drop 0,2 r4 s0 #1d162d@0.14	5374:1020488
+S	1	{theme:bg/airToCoal} [frame] — нет в маппинге	5374:1020788
+S	1	сырой #000000@0.10 [stroke]	5374:1020798
+S	1	эффект [Shadow Down] — нет в маппинге	5374:1020829
+S	1	сырой #000000 [frame]	5374:1020935
+S	1	сырой #ffffff@0.10 [stroke]	5374:1020935
+S	1	сырой эффект: drop 0,-4 r8 s0 #000000@0.10	5374:1021069
+S	1	сырой #ff5f00 [shape]	I5374:1021072;1944:7
+S	1	сырой #eb001b [shape]	I5374:1021072;1944:8
+S	1	сырой #f79e1b [shape]	I5374:1021072;1944:9
+S	1	сырой #000518@0.08 [shape]	5374:1021073
+S	1	шрифт без стиля: SF Pro Text Medium 16/16	5374:1021075
+S	1	[Buttons day/Primary] [shape] — нет в маппинге	I5374:1021079;5254:269
+S	1	[Day / White] [text/text] — нет правила	5374:1021082
+S	1	[Buttons day/Pressed] [stroke] — нет в маппинге	5374:1021105
+S	1	сырой эффект: drop 0,2 r8 s0 #000518@0.10	5374:1021105
+S	1	[Body/Emphasized] — нет в маппинге	I5374:1021196;2189:194711

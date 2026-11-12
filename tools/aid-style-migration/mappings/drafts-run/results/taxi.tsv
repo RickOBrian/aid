@@ -109,3 +109,133 @@ S	30	сырой #000000@0.08 [stroke]	5374:894224
 S	26	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:896938
 S	22	сырой эффект: layer_blur	5374:894233
 R	516	остальные причины (TOP=8): 120
+#	page=✅ Taxi for friends — Switched Styles	id=5374:894051	dry=1	nodes=3951	replaced=0	skipped=826	date=2026-11-12
+S	60	сырой #000000 [shape]	5374:894234
+S	48	сырой эффект: background_blur	5374:894224
+S	45	сырой #ffffff [shape]	5374:895842
+S	42	сырой #c4c4c4 [shape]	5374:895831
+S	30	сырой #ffffff@0.05 [shape]	5374:894224
+S	30	сырой #000000@0.08 [stroke]	5374:894224
+S	26	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:896938
+S	22	сырой эффект: layer_blur	5374:894233
+S	20	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	5374:894234
+S	16	{System Colors:Labels/Primary} [text] — нет в маппинге	I5374:897665;5374:898318
+S	16	сырой #ff0000 [shape]	5374:897877
+S	16	сырой #979797 [shape]	5374:898039
+S	15	сырой #ffffff@0.10 [shape]	5374:894226
+S	15	сырой #000000@0.03 [stroke]	5374:894226
+S	15	#000000 → Route/Primary [stroke] — не w4 (w3)	5374:895934
+S	15	{System Colors:Colors/Blue} [text] — нет в маппинге	I5374:897665;5374:898324
+S	14	градиент [shape]	5374:897867
+S	14	сырой #ffffff [text]	5374:897947
+S	12	сырой #f5f5f6 [frame]	5374:897153
+S	10	[Gradients [day]/Primary] [frame] — нет в маппинге	5374:894264
+S	10	сырой #ffffff [stroke]	5374:895828
+S	10	шрифт без стиля: SF Pro Medium 16/16	5374:898057
+S	9	{System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге	I5374:897665;5374:898323
+S	9	[Body/Regular] — нет в маппинге	I5374:897665;5374:898324
+S	9	сырой #1d354f [shape]	5374:897855
+S	9	сырой #ffb800 [shape]	5374:897855
+S	8	[Stroke [day]/Primary] [stroke] — нет в маппинге	5374:894262
+S	8	сырой #f2bfbf [frame]	5374:897386
+S	8	TEXT смешанные заливки — оставлено	I5374:897666;1895:188848;69:114;5374:898461;1093:24504;1093:24535;5374:898496
+S	8	сырой #232326 [shape]	I5374:897678;619:1373
+S	7	сырой #b3b3b3@0.82 [frame]	I5374:897665;5374:898316;510:79117
+S	7	сырой #383838 [frame]	I5374:897665;5374:898316;510:79117
+S	7	эффект [Material Blur] — нет в маппинге	I5374:897665;5374:898316;510:79117
+S	7	[Headline/Regular] — нет в маппинге	I5374:897665;5374:898318
+S	7	[Footnote/Regular] — нет в маппинге	I5374:897665;5374:898319
+S	7	[Gradients/Fade Horizontal] [shape] — нет в маппинге	I5374:898228;835:111436
+S	6	[Text [day]/Accent] [shape/shape] — нет правила	5374:896691
+S	6	сырой #fff7e2 [frame]	5374:896938
+S	6	сырой #f5f5f6 [shape]	5374:897159
+S	6	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:897604;1242:357
+S	6	[Body/Emphasized] — нет в маппинге	I5374:897665;5374:898326
+S	6	шрифт без стиля: SF Pro Regular 14/16	5374:898018
+S	5	градиент [frame]	5374:895807
+S	5	градиент [stroke]	5374:895829
+S	5	сырой #ffffff@0.90 [shape]	I5374:897580;1228:7440
+S	5	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:897653;1067:131367
+S	5	сырой #00579f [shape]	5374:898098
+S	5	{System Colors:Miscellaneous/Text Field - BG} [frame] — нет в маппинге	5374:898267
+S	5	{System Colors:Miscellaneous/Text Field - Outline} [stroke] — нет в маппинге	5374:898267
+S	5	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге	5374:898269
+S	4	шрифт без стиля: Roboto Bold 65.25/87	5374:897392
+S	4	сырой #cacacc [shape]	I5374:897678;619:1369
+S	4	сырой #ffffff@0.25 [shape]	5374:897872
+S	4	шрифт без стиля: Google Sans Regular 17/20	5374:897947
+S	4	[Gradients/Shimmer] [frame] — нет в маппинге	I5374:897994;613:195392;471:162368
+S	4	сырой эффект: drop 0,4 r12 s0 #000000@0.15	5374:898035
+S	4	сырой #d8d8d8 [shape]	5374:898040
+S	4	сырой #979797 [stroke]	5374:898040
+S	3	сырой эффект: drop 0,-4 r8 s0 #000000@0.10	5374:895842
+S	3	сырой #000518@0.08 [shape]	5374:895846
+S	3	шрифт без стиля: SF Pro Text Medium 16/16	5374:895848
+S	3	[Day / White] [text/text] — нет правила	5374:895855
+S	3	[Buttons day/Pressed] [stroke] — нет в маппинге	5374:895878
+S	3	сырой эффект: drop 0,2 r8 s0 #000518@0.10	5374:895878
+S	3	сырой #ffffff@0.30 [shape]	5374:897885
+S	3	шрифт без стиля: SF Pro Semibold 16/16	5374:898019
+S	3	[Green] [shape] — нет в маппинге	I5374:898070;1945:3103
+S	2	[Bg day/secondary] [frame] — нет в маппинге	5374:896678
+S	2	[Buttons day/fab] [frame] — нет в маппинге	5374:896681
+S	2	эффект [Shadow 2] — нет в маппинге	5374:896681
+S	2	[Day / Gray 4] [frame] — нет в маппинге	5374:896688
+S	2	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:897580;1228:7452
+S	2	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I5374:897649;2645:221737
+S	2	сырой #000000@0.12 [shape]	5374:897656
+S	2	[Blue] [shape] — нет в маппинге	I5374:897709;1609:1657
+S	2	#000000 → Route/Primary [stroke] — не w4 (w2)	I5374:897782;1932:113
+S	2	сырой #d62347 [shape]	5374:897898
+S	2	сырой #d9d9d9 [shape]	I5374:897999;40004746:24141;40004730:30965
+S	2	сырой эффект: drop 0,1 r2 s0 #000000@0.20	5374:898005
+S	2	[Night / Gray 20] [shape] — нет в маппинге	5374:898026
+S	2	сырой эффект: drop 0,7 r24 s0 #000000@0.29	5374:898028
+S	2	сырой #545665 [shape]	5374:898032
+S	2	сырой #ebecf0 [shape]	5374:898062
+S	2	[Fill / Light Grey] [shape] — нет в маппинге	5374:898107
+S	2	сырой #989898 [shape]	5374:898139
+S	1	сырой #d1d5db [frame]	5374:895808
+S	1	шрифт без стиля: SF Pro Text Regular 17/24	5374:895811
+S	1	[Titles/Large Title] — нет в маппинге	5374:897380
+S	1	сырой #000000 [frame]	5374:897414
+S	1	сырой #ffffff@0.10 [stroke]	5374:897414
+S	1	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I5374:897615;1264:96
+S	1	сырой #ff5f00 [shape]	I5374:897697;1944:7
+S	1	сырой #eb001b [shape]	I5374:897697;1944:8
+S	1	сырой #f79e1b [shape]	I5374:897697;1944:9
+S	1	[Buttons day/Primary] [shape] — нет в маппинге	I5374:897704;5254:269
+S	1	сырой эффект: drop 0,4 r20 s0 #000000@0.06	5374:897796
+S	1	[Background [day]/Attention] [shape/shape] — нет правила	5374:897805
+S	1	сырой #0f754e [shape]	I5374:897829;3872:24490;1562:500
+S	1	[Background [day]/Constant Dark Secondary] [shape/shape] — нет правила	5374:897836
+S	1	сырой #000000@0.05 [shape]	5374:897861
+S	1	сырой #24444f [shape]	5374:897896
+S	1	сырой #ff0e3e [shape]	5374:897897
+S	1	сырой #000000@0.10 [shape]	5374:897900
+S	1	сырой #000000@0.44 [shape]	5374:897901
+S	1	сырой #ffffff@0.31 [frame]	I5374:897999;40004730:30943
+S	1	эффект [Background Blur/Ultra Thin] — нет в маппинге	I5374:897999;40004730:30943
+S	1	сырой #661aff [frame]	I5374:897999;40004746:24141
+S	1	сырой #ff00ff [shape]	I5374:897999;40004746:24141;40004730:30963
+S	1	[Subheadline/Emphasized] — нет в маппинге	I5374:897999;40004730:30953
+S	1	[Vibrant Labels/Vibrant Secondary] [text] — нет в маппинге	I5374:897999;40004730:30961
+S	1	шрифт без стиля: SF Pro Regular 13/20	I5374:897999;40004730:30961
+S	1	[Subheadline/Regular] — нет в маппинге	I5374:897999;40004730:30956
+S	1	сырой #3458e8 [shape]	5374:898011
+S	1	шрифт без стиля: SF Pro Regular 16/19	5374:898029
+S	1	шрифт без стиля: SF Pro Regular 16/18	5374:898033
+S	1	шрифт без стиля: Scada Regular 28/18	5374:898047
+S	1	сырой #ff7200 [shape]	5374:898048
+S	1	[Day / Gray 20] [stroke] — нет в маппинге	I5374:898064;625:810
+S	1	шрифт без стиля: SF Pro Regular 16/22	5374:898073
+S	1	сырой #faa61a [shape]	5374:898105
+S	1	[Fill / Light] [shape] — нет в маппинге	5374:898123
+S	1	шрифт без стиля: SF Pro Bold 16/16	5374:898153
+S	1	сырой #ff7200 [text]	5374:898154
+S	1	сырой #787878 [frame]	5374:898215
+S	1	{Color:tx-bg/level −1 muted} [shape/shape] — нет правила	I5374:898257;907:124127;578:320
+S	1	{System Colors:Miscellaneous/_Kit Section Fill} [shape] — нет в маппинге	5374:898258
+S	1	сырой #9747ff [stroke]	5374:898258
+S	1	{System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [frame] — нет в маппинге	5374:898310
+S	1	сырой #000000 [stroke]	5374:894052

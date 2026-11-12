@@ -258,3 +258,71 @@ S	36	градиент [shape]	5374:86993
 S	34	градиент [frame]	I5374:88465;1527:45369;1093:24175
 S	29	сырой #ffffff [shape]	5374:86245
 R	425	остальные причины (TOP=12): 54
+#	page=✅ Service coverage — Switched Styles	id=5374:86156	dry=1	nodes=7394	replaced=0	skipped=792	date=2026-11-12
+S	87	сырой #000000 [shape]	5374:86729
+S	74	сырой #d9d9d9 [shape]	5374:86246
+S	60	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff	5374:86863
+S	59	сырой #c4c4c4 [shape]	I5374:88453;2494:174370;69:109;5374:1042301;1465:154025;1248:7516
+S	47	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	5374:86711
+S	36	градиент [shape]	5374:86993
+S	34	градиент [frame]	I5374:88465;1527:45369;1093:24175
+S	30	[Gradients/Fade Horizontal] [shape] — нет в маппинге	5374:88880
+S	29	сырой #ffffff [shape]	5374:86245
+S	24	сырой #8c7aff@0.30 [shape]	5374:87405
+S	24	эффект [Shadow Up] — нет в маппинге	5374:88797
+S	23	сырой эффект: layer_blur	I5374:88454;1535:157209;1398:153775
+S	20	{Theme TX:tx-bg/map} [frame] — нет в маппинге	5374:88782
+S	19	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:88454;1535:157209;1398:153775
+S	16	сырой эффект: drop 0,0 r250 s0 #ffffff@0.50 + drop 0,0 r100 s0 #ffffff	5374:87054
+S	15	сырой #8c7aff [shape]	5374:86347
+S	11	шрифт без стиля: SF Pro Semibold 22/28	5374:86184
+S	11	шрифт без стиля: SF Pro Regular 17/24	5374:86185
+S	10	сырой #f2bfbf [frame]	5374:86744
+S	10	сырой #f96c88 [shape]	5374:87731
+S	9	сырой #ffffff@0.10 [stroke]	5374:86221
+S	8	сырой эффект: drop 0,8 r20 s0 #2d2d53@0.12	5374:88803
+S	7	сырой #b17aff [stroke]	5374:86323
+S	7	{Radius:CRx10}=40 topLeftRadius — нет цели	5374:86855
+S	7	{Radius:CRx10}=40 topRightRadius — нет цели	5374:86855
+S	7	{Radius:CRx10}=40 bottomLeftRadius — нет цели	5374:86855
+S	7	{Radius:CRx10}=40 bottomRightRadius — нет цели	5374:86855
+S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:88454;1535:157209;1398:153776
+S	6	сырой #e4e4ff [shape]	5374:86999
+S	6	сырой #ededff@0.70 [shape]	I5374:88620;1738:82100
+S	5	шрифт без стиля: SF Pro Medium 14/16	5374:86287
+S	5	шрифт без стиля: SF Pro Regular 14/16	5374:86288
+S	5	сырой #444444 [frame]	5374:86236
+S	5	сырой #ff6e8b [shape]	5374:87736
+S	5	сырой #ec5171 [stroke]	5374:87737
+S	5	сырой #19191d@0.50 [shape]	I5374:88621;1738:82100
+S	5	сырой #000000@0.38 [shape]	5374:88845
+S	3	сырой #000000 [frame]	5374:86221
+S	3	сырой #1c1c1c [shape]	5374:86965
+S	3	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:88585;1242:357
+S	3	сырой эффект: inner_shadow	I5374:88641;1067:131368
+S	3	сырой #1d1c1e [frame]	5374:88781
+S	2	сырой #b8a1ff [stroke]	5374:86353
+S	2	шрифт без стиля: Roboto Bold 32.25/43	5374:86739
+S	2	[Blue] [shape] — нет в маппинге	5374:86777
+S	2	сырой #8526ff@0.20 [shape]	5374:87437
+S	2	сырой #0e2623 [frame]	5374:86961
+S	2	сырой #19221d [frame]	5374:87693
+S	2	сырой #17171b [shape]	5374:87697
+S	1	сырой #5f5f5f [frame]	5374:86233
+S	1	сырой #e7daf2 [shape]	5374:86380
+S	1	сырой #b8a1ff [shape]	5374:86650
+S	1	сырой #e6e6e6 [frame]	5374:86738
+S	1	сырой #000000 [stroke]	5374:86738
+S	1	#000000 → Route/Primary [stroke] — не w4 (w1)	5374:86741
+S	1	сырой #3458e9@0.10 [shape]	5374:86776
+S	1	сырой эффект: drop 0,2 r4 s0 #1d162d@0.14	5374:86778
+S	1	[Day / Gray 4] [frame] — нет в маппинге	5374:86801
+S	1	[Pastel [day]/Homer] [frame] — нет в маппинге	5374:86823
+S	1	[Gradients [day]/Primary] [frame] — нет в маппинге	5374:86849
+S	1	сырой #152410 [frame]	5374:87658
+S	1	сырой #a69eda [shape]	5374:88054
+S	1	{Theme TX:tx-danger/red/solid} [frame] — нет в маппинге	5374:88994
+S	1	сырой #f33b2a [frame]	5374:89016
+S	1	сырой #3b334d [frame]	5374:89724
+S	1	сырой #b089ff [text]	5374:89726
+S	1	сырой #6b49d0 [stroke]	5374:89760
