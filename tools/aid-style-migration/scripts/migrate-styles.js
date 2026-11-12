@@ -30,7 +30,7 @@ const NEWTS = {'Bodies/Body 1':'efedd6ccce9601aed048863321ec05f65e587b30','Bodie
   'Captions/Caption 3':'0ef7069b3e53687e26689565e2596e45d8312cfe','Captions/Caption 3 Medium':'1e8270a4e9882df354b5d44debaa19452abc2029'};
 const GRAD_TOP = '60768af36ab7413fa8e0b2bdb8f5c47a01d4893f'; // Gradients/Top, библиотека Rider (п.11)
 const NEWFX = {'Shadows/Medium':'24e56e6c62ec393588115cc830067695312b5f3f','Shadows/Large':'2a1e49f9eeaff377e4ae4c15604af5c70adca4f5','Shadows/Bottom Sheet':'4f1d0ff4979eced4e144c149ac11c18267dba137','Shadows/Small':'647aa3864c4c1801f9363745ef570bc175e98384','Shadows/FAB':'0dfac2ccdab87fdc913dc307e0b92ab682665cae','Shadows/Knob':'bb489e915a6510dd8c254da1671190b6528eb40a','Glass/Navbar':'5fed574145af7feb54f3d0e5d8df295cbafe4905'};
-const NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
+let NEWKEYS = new Set([...Object.values(NEWTS), ...Object.values(NEWFX), '5b2d5ab81c5badb00c28c93153a3479d73444229']); // + Shadows/Large Air (новый)
 const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstanding/Title-title2 (NRD)',
   // final.md §5: draft, п.29а–31а
   'Bodies/Body 3 Reg':'Bodies/Body 3','iOS / Subtitle':'Outstanding/iOS - Subtitle','iOS / Caption':'Bodies/Body 3','iOS / H3':'Titles/Title 3',
@@ -45,19 +45,24 @@ const TS_MAP = {'Caption/caption':'Captions/Caption 2','Title/title2':'Outstandi
   'Captions/Caption 3':'Captions/Caption 1 Semibold',
   // старые Caption 3/Regular и /Medium (ALS Hauss VF 10/16) → наши SF Pro Text 10/16
   'Caption 3/Regular':'Captions/Caption 3','Caption 3/Medium':'Captions/Caption 3 Medium'};
-const FX_MAP = {'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
+const FX_MAP = {'Shadow S':'Shadows/Small','shadow/close/s':'Shadows/Mini', // анкета А
+  'Shadows/[day] Medium':'Shadows/Medium','Shadows/[day] Large':'Shadows/Large','Shadow 6':'Shadows/Bottom Sheet','Shadows / Brand button':null,
   // Drafts, анкета п.25, 28
   'Shadows / [day] Small':'Shadows/Small','Shadows/[day] Small':'Shadows/Small','[day] Small':'Shadows/Small','Shadows / Bottom-sheet':'Shadows/Small','Shadows/[day] Mini':'Shadows/Small',
   'Shadows / [day] Brand button':null,'Shadows/Brand button':null,'Shadows/Brand Button':null,
   // анкета покрытия (new-rider-drafts.coverage-questions.md) п.7
   'shadow/diffuse/m':'Shadows/Small','shadow/diffuse/s':'Shadows/Small'};
 NEWFX['Shadows/Large Air'] = '5b2d5ab81c5badb00c28c93153a3479d73444229';
+// анкета А (ответ arturuxui 2026-11-12): ключи библиотеки Rider
+NEWFX['Shadows/Mini'] = '76009ef2086ca3f90e645a3af2a38e29de170f1a'; NEWFX['Shadows/Brand Button'] = 'e4b79782d9cde7419400b2136ec0e9cd2db1dd07';
+const GRAD_FADE = '851eb7b21722a2574d26d5a5025a216c5fa57662', GRAD_SHIMMER = 'd1fa46fc37e02c5a34fdd2c57f13312a083eb2b3';
 // сырые тени, совпадающие с новыми стилями (анкета п.26)
 const RAWFX = {'drop 0,6 r20 s0 #000000@0.08':'Shadows/Medium','drop 0,8 r36 s0 #000000@0.16':'Shadows/Large Air','drop 0,3 r5 s0 #000000@0.20 + drop 0,1 r18 s0 #000000@0.08 + drop 0,6 r10 s0 #000000@0.14':'Shadows/Bottom Sheet',
   // анкета покрытия п.1, 2
   'drop 0,4 r12 s0 #000000@0.10':'Shadows/FAB','drop 0,3 r1 s0 #000000@0.06 + drop 0,3 r8 s0 #000000@0.15':'Shadows/Knob'};
 // анкета покрытия п.3: Glass/Navbar только при полном совпадении, включая inner shadow (fxSig их параметры не показывает)
 const GLASS = 'GLASS 50 + I 0,8 r30 s-40 #e6e6e6 + I 0,-8 r10 s-40 #282828@0.25 + I 0,8 r10 s-40 #282828@0.25 + D 0,8 r15 s0 #000000@0.02 + D 0,0 r0 s0.5 #e8e8e8 + D -1.25,0 r0 s-0.75 #d0d0d0 + D 1.25,0 r0 s-0.75 #d0d0d0';
+NEWKEYS = new Set([...NEWKEYS, NEWFX['Shadows/Mini'], NEWFX['Shadows/Brand Button']]);
 const fxFull = n => n.effects.filter(e => e.visible !== false).map(e => e.offset ? `${e.type[0]} ${e.offset.x},${e.offset.y} r${e.radius} s${e.spread || 0} #${hex(e.color)}${e.color.a < 1 ? '@' + e.color.a.toFixed(2) : ''}` : `${e.type} ${e.radius}`).join(' + ');
 const fxSig = n => n.effects.filter(e => e.visible !== false).map(e => e.type === 'DROP_SHADOW' ? `drop ${e.offset.x},${e.offset.y} r${e.radius} s${e.spread || 0} #${hex(e.color)}${e.color.a < 1 ? '@' + e.color.a.toFixed(2) : ''}` : e.type.toLowerCase()).join(' + ');
 // цвет: имя стиля/переменной → {text, frame, shape, stroke}
@@ -145,6 +150,23 @@ setTraffic(['Color:tx-control/yellow/bg/idle','Navigator Color:Jam/Middle','#ffe
 setTraffic(['Color:tx-control/orange/bg/idle','Theme TX:tx-accent/orange/bg','Navigator Color:Jam/High','Color:tx-accent/red/bg','Color:tx-accent/red/fg','Theme TX:tx-accent/red/fg','theme:promo/secondary/content/red','theme:text/danger','theme:icon/danger'], 'Route/Traffic Congested');
 const isTraffic = (n, chain) => n.type !== 'TEXT' && (n.name === 'Jam' || (chain.includes('Map Interface') && (n.name === 'Route' || chain[chain.length - 1] === 'Route')));
 const trafficTarget = (key, n, chain) => isTraffic(n, chain) ? TRAFFIC_LEVEL[key] : undefined;
+// анкета А (ответ arturuxui 2026-11-12, new-rider-dev.final.md §9): добавляются слоты к уже известным меткам
+setAll(['Color:tx-accent/grey/secondary'], {stroke:'Stroke/Disabled'});
+setAll(['Color:tx-accent/grey/dark strong'], {stroke:'Route/Primary'});
+setAll(['Color:tx-accent/grey/primary-Inverted'], {frame:'Background/Secondary'});
+setAll(['Theme TX:tx-control/neutral/bg/idle'], {frame:'Field/Primary'});
+setAll(['Color:tx-control/purple/tint/idle'], {frame:'Background/Pill Accent'});
+setAll(['Color:tx-accent/grey/tertiary'], {frame:'Background/Tertiary'});
+setAll(['Color:tx-control/purple/bg/idle'], {frame:'Button/Primary'});
+setAll(['Purple'], {shape:'Icon/Accent'}); setAll(['Orange'], {shape:'Icon/Attention Deep'}); setAll(['Day / Gray 40'], {shape:'Icon/Tertiary'});
+const ANKC = new Set(['Color:tx-accent/grey/secondary|stroke','Color:tx-accent/grey/dark strong|stroke','Color:tx-accent/grey/primary-Inverted|frame','Theme TX:tx-control/neutral/bg/idle|frame','Color:tx-control/purple/tint/idle|frame','Color:tx-accent/grey/tertiary|frame','Color:tx-control/purple/bg/idle|frame','Purple|shape','Orange|shape','Day / Gray 40|shape']);
+// вне переноса (как в скане аудита): логотипы, иллюстрации, пины, маркетплейс — правила анкеты А там не действуют
+const OUTNAME = /logo|illustration|mastercard|visa\b|\bpin\b|map pin|marketplace|маркетплейс/i;
+const isOut = (n, chain) => OUTNAME.test(n.name) || chain.some(c => OUTNAME.test(c));
+// примеры узлов под правилами анкеты А (до 4 на правило) — для проверки контекста в DRY
+const SAMPL = {}; let ANK = false;
+const A = t => { ANK = true; return t; };
+const samp = (label, n, chain) => { const a = SAMPL[label] || (SAMPL[label] = []); if (a.length >= 4) return; let t = '', ex = ''; try { if (n.type === 'TEXT') t = ' "' + n.characters.slice(0, 24) + '"'; if (typeof n.strokeWeight === 'number') ex += ' w' + n.strokeWeight; ex += ' ' + Math.round(n.width) + 'x' + Math.round(n.height); } catch (e) {} a.push(`${n.id} «${n.name.slice(0, 22)}» < ${(chain[chain.length - 1] || '').slice(0, 22)}${t}${ex}`); };
 const PASTEL = {Midway:'Pastel/Lenny',Mantle:'Pastel/Ralph',Ralph:'Pastel/Ralph',Liberty:'Pastel/Lisa',Asphalt:'Pastel/Apu',Graylord:'Pastel/Barney',Barney:'Pastel/Barney',Peach:'Pastel/Bart',Jasper:'Pastel/Jasper',Nelson:'Stories/Nelson'};
 for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, shape:v};
 const SPACE = {'Gaps:SPx2':'space-8','Gaps:SPx3':'space-12','Отступы:SPx3':'space-12','Corner radius:BRx6':null};
@@ -202,10 +224,28 @@ const rawTarget = (h, kind, prop, n, chain) => {
     if (kind === 'text' && h === '0f0f1f@0.87') return 'Text/Primary';
     if (h === '000000@0.30' && (kind === 'frame' || (n.type === 'RECTANGLE' && n.width >= 300))) return 'Background/Overlay';
     if (kind === 'text' && h === 'ffffff' && chain.includes('ETA') && chain.some(c => /Map Pin/.test(c))) return 'Text/Constant White';
+    // анкета А (arturuxui 2026-11-12). Скоупы: Icon/* — на фигурах, Text/* — на тексте, Background/* — на фреймах
+    if (!isOut(n, chain)) {
+      if (kind === 'text' && h === '000000' && !/^(beta|васаби|минск)$/i.test(n.characters.trim())) return A('Text/Primary');
+      if (kind === 'text' && h === '232326') return A('Text/Primary');
+      if (kind === 'text' && h === '6d6f75') return A('Text/Secondary');
+      if (kind === 'shape' && h === 'ff661a') return A('Icon/Attention Deep');
+      if (kind === 'frame' && h === 'f3f3f3') return A('Background/Secondary');
+      if (kind === 'shape' && /^(ffffff@0\.(32|62|8\d)|f6f6f9@0\.(54|3\d))$/.test(h)) return A('Icon/Constant White Secondary');
+      if (kind === 'shape' && h === 'cacad1@0.72') return A('Icon/Disabled');
+    }
   } else {
     if (h === 'ffffff' && n.name === 'Divider') return 'Stroke/Secondary';
     if (h === '8f69ff' || h === '734edf') return 'Stroke/Zone Availability'; // final §1.4
     if (h === 'aaff00') return 'Stroke/Neon'; // final §1.4
+    // анкета А (arturuxui 2026-11-12); #fff на фрейме — кольцо Avatar, Stroke/Contrast в библиотеке нет
+    if (!isOut(n, chain)) {
+      if (kind === 'frame' && h === 'ffffff') return A('Stroke/Secondary');
+      if (h === 'e52817') return A('Stroke/Warning');
+      if (h === '8526ff') return A('Stroke/Accent');
+      if (h === 'e9e9ed') return A('Stroke/Primary');
+      if (kind === 'shape' && h === '000000') return A('Route/Primary');
+    }
   }
   return undefined;
 };
@@ -242,6 +282,7 @@ const processPaints = async (n, prop, chain) => {
     if (!v) return;
     if (!DRY) { const np = paints.map(p => p.type === 'SOLID' ? bindPaint(p, v) : p); if (prop === 'fills') n.fills = np; else n.strokes = np; }
     inc(done, `[${st.name}] → ${v.name} (${slot})`);
+    if (ANKC.has(st.name + '|' + slot)) samp(`[${st.name}] → ${v.name} (${slot})`, n, chain);
     return;
   }
   let changed = false;
@@ -253,6 +294,19 @@ const processPaints = async (n, prop, chain) => {
       if (!DRY) await n.setFillStyleIdAsync(s.id);
       inc(done, 'градиент TX Loading Fade → [Gradients/Shimmer]');
       return;
+    }
+    // анкета А: сырые белые градиенты → Gradients/Top, Fade Horizontal, Shimmer (одна заливка на узле, вне логотипов/пинов)
+    if (prop === 'fills' && paints.length === 1 && p.type === 'GRADIENT_LINEAR' && p.visible !== false && p.gradientStops && !isOut(n, chain)) {
+      const al = o => (o === undefined || o >= 0.995) ? '' : '@' + (Math.round(o * 100) / 100);
+      const gs = p.gradientStops.map(s => hex(s.color) + al(s.color.a)).join('>');
+      const gk = gs === 'ffffff@0.78>ffffff@0' ? ['Gradients/Top', GRAD_TOP] : (gs === 'ffffff>ffffff@0' && kind === 'shape') ? ['Gradients/Fade Horizontal', GRAD_FADE] : /^ffffff@0>ffffff@0\.29(>|$)/.test(gs) ? ['Gradients/Shimmer', GRAD_SHIMMER] : null;
+      if (gk) {
+        const s = await importStyle(gk[1]);
+        if (!DRY) await n.setFillStyleIdAsync(s.id);
+        inc(done, `градиент ${gs} → [${gk[0]}] (анкета А)`);
+        samp(`градиент ${gs} → [${gk[0]}]`, n, chain);
+        return;
+      }
     }
     if (p.type.startsWith('GRADIENT') && p.visible !== false) skip(`градиент [${slot}]`);
     if (p.type !== 'SOLID' || p.visible === false) { np.push(p); continue; }
@@ -269,13 +323,18 @@ const processPaints = async (n, prop, chain) => {
       const rule = C[label];
       if (!rule) { skip(`{${label}} [${slot}] — нет в маппинге`); np.push(p); continue; }
       if (n.name === 'Shadow') { skip(`{${label}} «Shadow» — пробел`); np.push(p); continue; }
+      if (slot === 'stroke' && rule.stroke === 'Route/Primary' && label === 'Color:tx-accent/grey/dark strong' && n.strokeWeight !== 4) { skip(`{${label}} → Route/Primary [stroke] — не w4 (w${n.strokeWeight})`); np.push(p); continue; }
       const v = await resolveTarget(rule[slot], slot, kind, `{${label}}`);
       if (!v) { np.push(p); continue; }
       np.push(bindPaint(p, v)); changed = true; inc(done, `{${label}} → ${v.name} (${slot})`);
+      if (ANKC.has(label + '|' + slot)) samp(`{${label}} → ${v.name} (${slot})`, n, chain);
       continue;
     }
     const h = hex(p.color) + (p.opacity < 1 ? '@' + p.opacity.toFixed(2) : '');
+    ANK = false;
     const t = trafficTarget('#' + h, n, chain) || rawTarget(h, kind, prop, n, chain);
+    const ankHit = ANK;
+    if (t === 'Route/Primary' && n.strokeWeight !== 4) { skip(`#${h} → Route/Primary [stroke] — не w4 (w${n.strokeWeight})`); np.push(p); continue; }
     if (t === undefined) { skip(`сырой #${h} [${slot}]`); np.push(p); continue; }
     if (t === 'RADIUS') {
       const v = await resolveTarget('Icon/Accent', slot, kind, `#${h}`);
@@ -285,7 +344,9 @@ const processPaints = async (n, prop, chain) => {
     }
     const v = await resolveTarget(t, slot, kind, `#${h}`);
     if (!v) { np.push(p); continue; }
-    np.push(bindPaint(p, v)); changed = true; inc(done, `#${h} → ${v.name} (${slot})`);
+    const sfx = ankHit ? (slot === 'stroke' ? ` w${n.strokeWeight}` : (kind === 'text' && n.fontSize >= 40 ? ' [шрифт >= 40: подпись доски?]' : '')) : '';
+    np.push(bindPaint(p, v)); changed = true; inc(done, `#${h} → ${v.name} (${slot})${sfx}`);
+    if (ankHit) samp(`#${h} → ${v.name} (${slot})${sfx}`, n, chain);
   }
   if (changed && !DRY) { if (prop === 'fills') n.fills = np; else n.strokes = np; }
 };
@@ -301,7 +362,8 @@ const applyTS = async (n, name, from) => {
   }
   inc(done, `${from} → [${name}]`);
 };
-const processText = async n => {
+const ANKFONT = {'SF Pro Text Regular 12/16':'Captions/Caption 1','SF Pro Text Regular 12/14':'Captions/Caption 1','SF Pro Text Medium 14/14':'Subtitles/Subtitle 3','Google Sans Medium 11/14':'Captions/Caption 2'}; // анкета А
+const processText = async (n, chain) => {
   const tsId = n.textStyleId;
   if (tsId === figma.mixed) { skip('текст со смешанными стилями — оставлено'); return; }
   const st = await getStyle(tsId);
@@ -317,13 +379,20 @@ const processText = async n => {
   const RAW = {'SF Pro Text Semibold 17/20':'Outstanding/NRD - Body','SF Pro Text Semibold 12/16 SMALL_CAPS_FORCED':'Captions/Caption 1 CAP','SF Pro Text Regular 14/16':'Bodies/Body 3','SF Pro Display Semibold 22/22':'Titles/Title 4',
     // сверка п.6: Body 2 — полное совпадение; Subtitle 2 — трекинг −0.23 → −0.26
     'SF Pro Text Regular 15/20':'Bodies/Body 2','SF Pro Text Semibold 15/20':'Subtitles/Subtitle 2'};
+  if (ANKFONT[sig] && !isOut(n, chain)) { await applyTS(n, ANKFONT[sig], sig + ' (анкета А)'); samp(sig + ' → [' + ANKFONT[sig] + ']', n, chain); return; }
   if (RAW[sig]) await applyTS(n, RAW[sig], sig); else skip(`шрифт без стиля: ${sig}`);
 };
-const processEffect = async n => {
+const processEffect = async (n, chain) => {
   if (!('effectStyleId' in n)) return;
   const st = await getStyle(n.effectStyleId);
   if (!st) {
-    const t = n.effects.length ? (fxFull(n) === GLASS ? 'Glass/Navbar' : RAWFX[fxSig(n)]) : undefined;
+    let t = n.effects.length ? (fxFull(n) === GLASS ? 'Glass/Navbar' : RAWFX[fxSig(n)]) : undefined;
+    // анкета А: точное совпадение всего списка эффектов узла, вне логотипов/пинов
+    if (!t && n.effects.length && !isOut(n, chain)) {
+      const ff = fxFull(n);
+      const at = /^D 0,4 r20 s0 #8526ff(@[\d.]+)? \+ D 0,8 r14 s0 #003dac(@[\d.]+)?$/.test(ff) ? 'Shadows/Brand Button' : ff === 'D 0,0 r20 s0 #000000@0.06' ? 'Shadows/Medium' : null;
+      if (at) { const s = await importStyle(NEWFX[at]); if (!DRY) await n.setEffectStyleIdAsync(s.id); inc(done, `сырая тень (анкета А) → [${at}]`); samp(`сырая тень → [${at}]`, n, chain); return; }
+    }
     if (!t) { if (n.effects.some(e => e.visible !== false)) skip(`сырой эффект: ${fxSig(n)}`); return; }
     const s = await importStyle(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
@@ -338,6 +407,7 @@ const processEffect = async n => {
     const s = await importStyle(NEWFX[t]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
     inc(done, `[${st.name}] → [${t}]`);
+    if (st.name === 'Shadow S' || st.name === 'shadow/close/s') samp(`[${st.name}] → [${t}]`, n, chain);
   } else if (NEWFX[st.name]) {
     const s = await importStyle(NEWFX[st.name]);
     if (!DRY) await n.setEffectStyleIdAsync(s.id);
@@ -374,8 +444,8 @@ const walk = async (n, chain) => {
   try {
     await processPaints(n, 'fills', chain);
     await processPaints(n, 'strokes', chain);
-    if (n.type === 'TEXT') await processText(n);
-    await processEffect(n);
+    if (n.type === 'TEXT') await processText(n, chain);
+    await processEffect(n, chain);
     await processNum(n);
   } catch (e) { skip(`ошибка: ${String(e.message || e).split('\n')[0].slice(0, 120)}`); }
   if (typeof SHALLOW !== 'undefined' && SHALLOW && !chain.length) return;
@@ -393,4 +463,4 @@ const rootNames = {};
 for (const id of rootIds) { const r = await figma.getNodeByIdAsync(id); curRoot = `${r.name} ${r.id}`; rootNames[id] = r.name; await walk(r, []); if (SHOT) shots.push(await r.screenshot({ scale: 0.5 })); }
 const fmt = o => Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${v}× ${k}`);
 const fmtSkip = Object.entries(skipped).sort((a,b)=>b[1].count-a[1].count).map(([k,e])=>({ reason: k, count: e.count, ids: e.ids }));
-return { DRY, page: page.name, roots: rootNames, nodes, done: fmt(done), skipped: fmtSkip, skipByRoot: fmt(skipByRoot), mutatedRootIds: DRY ? [] : rootIds };
+return { DRY, page: page.name, roots: rootNames, nodes, done: fmt(done), skipped: fmtSkip, skipByRoot: fmt(skipByRoot), samples: SAMPL, mutatedRootIds: DRY ? [] : rootIds };

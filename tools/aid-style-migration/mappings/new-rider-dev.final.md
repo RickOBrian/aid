@@ -306,3 +306,15 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 #000 на векторе в иконке → Icon/Primary (иконка теперь и `ic`, `ic_*`, `24/Stroke/*`; пины, маски, дети BooleanOp — нет); #0f0f1f@0.87 [text] → Text/Primary;
 #000@0.30 на фрейме и прямоугольнике шириной от 300 → Background/Overlay (исключение из правила 1); `shadow/diffuse/m`, `/s` → Shadows/Small (отменяет questions п.27 б);
 Gradient в TX Loading Fade → Gradients/Shimmer.
+
+**Анкета группы А (2026-11-12)** — `.claude/archive/order-flow-audit-2026-11-09.md`, «Подборы "что близко"». **Ответ arturuxui: предложения верны**, пробки не входят (закрыты 11.11). Внесено в `scripts/migrate-styles.js` (замен на копиях ещё нет, только DRY: `drafts-run/anketa-a-dry-2026-11-12.md`):
+- Текст: #000 → Text/Primary (кроме текстов «beta», «васаби», «минск» по `characters`, без регистра); #232326 → Text/Primary; #6d6f75 → Text/Secondary.
+- Обводки: #fff на фрейме (кольцо Avatar) → Stroke/Secondary (Stroke/Contrast в библиотеке нет); #e52817 → Stroke/Warning; #8526ff → Stroke/Accent; #e9e9ed → Stroke/Primary; `{Color:tx-accent/grey/secondary}` → Stroke/Disabled.
+- Маршрут: #000 на фигуре и `{Color:tx-accent/grey/dark strong}`, только обводка w4 → Route/Primary (остальные веса — в пропуск «не w4»).
+- Заливки: #ff661a на фигуре → Icon/Attention Deep; #f3f3f3 на фрейме → Background/Secondary; белые драгеры (#fff @0.32/0.62/0.8x, #f6f6f9 @0.54/0.3x) на фигуре → Icon/Constant White Secondary; #cacad1@0.72 на фигуре → Icon/Disabled.
+- Переменные на фреймах: `primary-Inverted` → Background/Secondary; `Theme TX:tx-control/neutral/bg/idle` → Field/Primary; `purple/tint/idle` → Background/Pill Accent; `grey/tertiary` → Background/Tertiary; `purple/bg/idle` → Button/Primary. Стили `[Purple]` → Icon/Accent, `[Orange]` → Icon/Attention Deep, `[Day / Gray 40]` → Icon/Tertiary (только на фигурах).
+- Градиенты (стиль заливки, одна заливка на узле): `ffffff@0.78>ffffff@0` → Gradients/Top, `ffffff>ffffff@0` на фигуре → Gradients/Fade Horizontal (ключ 851eb7b2…), 33-стоповый белый `ffffff@0>ffffff@0.29…` → Gradients/Shimmer.
+- Эффекты: точный список D 0,4 r20 #8526ff + D 0,8 r14 #003dac → Shadows/Brand Button (ключ e4b79782…); одиночная D 0,0 r20 #000@0.06 → Shadows/Medium; стиль `Shadow S` → Shadows/Small; `shadow/close/s` → Shadows/Mini (ключ 76009ef2…).
+- Шрифты без стиля: SF Pro Text Regular 12/16 и 12/14 → Captions/Caption 1; SF Pro Text Medium 14/14 → Subtitles/Subtitle 3; Google Sans Medium 11/14 → Captions/Caption 2.
+- Вне переноса, как в скане аудита: узлы с `logo|illustration|mastercard|visa|pin|map pin|marketplace|маркетплейс` в имени узла или предка.
+- Не внесено: шрифты «по участкам» (смешанные начертания 17/20, 16/16, 15/20, iOS - Body) — скрипт ставит стиль на весь текст, по диапазонам (`setRangeTextStyleIdAsync`) не умеет, и для смешанных участков не определено, какой стиль какому участку.
