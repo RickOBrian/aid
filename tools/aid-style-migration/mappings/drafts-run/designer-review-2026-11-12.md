@@ -127,3 +127,14 @@ arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропуск
 - Отдельные пункты анкеты: вес 100 (в Core только 400–700, core-guide §5 — крайние веса при реальной необходимости, нужен type-weight-100 и подтверждение PD); семейство на Android (SF Pro Display и WB Sans) или «только iOS»; стиль задаётся всеми пятью параметрами (family, size, LH, weight, tracking — guide §11); «20/auto» не годится — LH числом.
 - LH и LS для 90 Thin — из слоя дизайнера (ссылка на узел), а не со скриншота. Если Валентина задала только шрифт — наше предложение LH кратно 4 (96 или равно кеглю, проверить обрезку), tracking — «предложение, решает PD».
 - Копию Order Flow (y=16267) не трогаем; статус строки — «пробел → анкета PD». Standards готов проверить анкету перед отправкой.
+
+### 5.3 Lookup Outstanding сделан Standards (2026-11-13, Figma чтением)
+
+Подбора нет, пробел подтверждён (Rider Tokens `yrfG6u9osujKX8e1B14lpT`):
+- 28 локальных текстовых стилей, самый крупный — Titles/Large Title: SF Pro Display Semibold 44/48. В Outstanding 9 стилей, самый крупный — NRD - H1: SF Pro Display Bold 30/34. Начертаний Thin и Light нет.
+- Стилей на WB Sans нет; в typography-core семейства `ff-wb-sans` («WB Sans») и `ff-wb-font` («WB-Font») уже есть → для WB Sans пробел только в стилях.
+- Веса в core — `fw-400…fw-700`; для 90 Thin нужен новый Core-токен `fw-100` — пункт анкеты.
+- Android: переменные Outstanding в режиме Android ставят Roboto, в iOS — SF Pro Display. Прецедент → в анкете предлагаем Android = Roboto (Thin 100 есть); решает PD.
+- Новый стиль в Outstanding предлагаем сразу со ссылками на Core (`ff-sf-pro-display` / `ff-roboto`, `fw-100`). Сырые значения в typography-sem-out — находка Standards, на наш пробел не влияет.
+
+Шаг (1) «lookup» закрыт. Дальше без изменений: ответы Валентины в 3 тредах (LH/LS из слоя, Android, WB Sans) → одна анкета PD (90 Thin + WB Sans) → проверка Standards → PD. Копию не трогаем.
