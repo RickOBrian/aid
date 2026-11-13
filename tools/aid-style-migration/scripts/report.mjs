@@ -31,7 +31,7 @@ for (const f of readdirSync(dir).filter(x => x.endsWith('.tsv')).sort()) {
 const n = x => x.toLocaleString('ru-RU');
 const sum = (k, ps = pages) => ps.reduce((a, p) => a + p[k], 0);
 const work = pages.filter(p => p.st === 'work'), stById = Object.fromEntries(pages.map(p => [p.id, p.st]));
-const ST = { work: 'в работе', rows: 'по строкам (дизайнер)', skip: 'пропущена (дизайнер)' };
+const ST = { work: 'в работе', rows: 'по строкам (дизайнер)', skip: 'пропущена' };
 // покрытие: results/coverage.txt, строки M от scripts/measure-page.js; ячейка — покрыто/не покрыто/вне счёта
 const SLOTS = ['fill', 'stroke', 'font', 'effect'], covPath = join(dir, 'coverage.txt');
 const cov = existsSync(covPath) ? readFileSync(covPath, 'utf8').split(/\r?\n/).filter(l => l.startsWith('M\t')).map(l => {

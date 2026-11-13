@@ -12,7 +12,11 @@
     "illustrations": "скипаем полностью страницу",
     "tariffs": "Пропускаем секцию, её дизайн отложен",
     "backlog-ui": "Пропускаем секцию, она техническая",
-    "test": "Пропускаем секцию"
+    "test": "Пропускаем секцию",
+    "profile": "arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропускаем» (комментариев дизайнера не было)",
+    "not-work": "arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропускаем» (комментариев дизайнера не было)",
+    "no-car": "arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропускаем» (комментариев дизайнера не было)",
+    "errors": "arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропускаем» (комментариев дизайнера не было)"
   },
   "rows": {
     "order-flow": "по строкам: всё «не трогать», кроме Text/Primary и Body 2 (сделано 13.11); SF Pro Display 90 Thin — пробел типографики"
