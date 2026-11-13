@@ -14,6 +14,7 @@ if (plan && plan.dry !== DRY) return { error: `на странице план с
 if (!plan) {
   const units = [], shallow = [];
   const add = n => {
+    if (n.name.startsWith('❌')) return; // узел с «❌ » в имени — референс, не сканируем (arturuxui 10.11)
     const size = 'findAll' in n ? n.findAll().length + 1 : 1;
     if (size > SPLIT && 'children' in n && n.children.length) { shallow.push(n.id); n.children.forEach(add); } else units.push([n.id, size]);
   };
@@ -27,7 +28,7 @@ if (!plan) {
   plan = { dry: DRY, i: 0, batches: batches.map(x => ({ ids: x.ids, shallow: !!x.shallow })) };
   put('plan', JSON.stringify(plan)); put('agg', '');
 }
-const agg = JSON.parse(get('agg') || '{"nodes":0,"done":{},"skip":{}}');
+const agg = JSON.parse(get('agg') || '{"nodes":0,"done":{},"skip":{},"samp":{}}');
 const saveAgg = () => {
   let s = JSON.stringify(agg);
   // у записи pluginData предел 100 КБ: при переполнении ID остаются только у частых причин
@@ -48,6 +49,8 @@ while (plan.i < plan.batches.length && Date.now() - t0 < BUDGET) {
     const e = agg.skip[s.reason] || (agg.skip[s.reason] = { count: 0, ids: [] });
     e.count += s.count; e.ids = e.ids.concat(s.ids).slice(0, MAXIDS);
   }
+  agg.samp = agg.samp || {};
+  for (const [k, a] of Object.entries(r.samples || {})) agg.samp[k] = (agg.samp[k] || []).concat(a).slice(0, 5); // примеры узлов (анкета А)
   plan.i++;
   saveAgg(); put('plan', JSON.stringify(plan));
 }
@@ -62,5 +65,6 @@ const rest = skips.slice(top).filter(([k]) => !errs.includes(k));
 const lines = [`#\tpage=${clean(page.name)}\tid=${page.id}\tdry=${DRY ? 1 : 0}\tnodes=${agg.nodes}\treplaced=${replaced}\tskipped=${skipped}\tdate=${new Date().toISOString().slice(0, 10)}`];
 for (const [k, v] of Object.entries(agg.done).sort((a, b) => b[1] - a[1])) lines.push(`D\t${v}\t${clean(k)}`);
 for (const [k, e] of skips) if (!rest.some(x => x[0] === k)) lines.push(`S\t${e.count}\t${clean(k)}\t${e.ids.join(' ')}`);
+for (const [k, a] of Object.entries(agg.samp || {})) lines.push(`X	${k}	${a.join(" ¦ ")}`);
 if (rest.length) lines.push(`R\t${rest.reduce((a, x) => a + x[1].count, 0)}\tостальные причины: ${rest.length}`);
 return lines.join('\n');

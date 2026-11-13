@@ -235,6 +235,38 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 - Лиловый a73afd → токены Accent AID 8526ff (п.17) — заметная смена оттенка.
 - Icon/Attention (жёлтый, п.20) и Background/Constant Dark (п.7) сверены 2026-11-09, значения расходятся с исходными: `drafts-run/SUMMARY.md`, «Сверено 2026-11-09». BG Dark переведён на Constant Dark Secondary.
 - **Пробел токена (arturuxui, 2026-11-09):** жёлтый `#ffe400 / #ffe400` (`Color:tx-control/yellow/bg/idle`, `Navigator Color:Jam/Middle`) — точного `Icon/*` в библиотеке нет. По инвентаризации: на shape 1 118 и 51, обводка 217 и фрейм 2 под правило не попадают. Пока стоит ближайший Icon/Attention `#ffc700 / #ffc700`, замены на копиях не откатывались. Токен — предложением в Standards, в общую анкету пробелов; после появления поменять цель правила и точечно перевести копии.
+  **Разбор 2026-11-11:** оба источника стоят только на пробках. Это `Jam` в виджете маршрута (`Island > Block > Route`, напр. `5374:903675`) и линии маршрута в `Map Layer > Map Interface > Route` (Order Flow, Show my location: `5374:903479`, `5374:808304`). По назначению это уже существующий `Route/Traffic Slow` (скоупы SHAPE_FILL, STROKE_COLOR; День/Ночь `#ffc700`; описание «Цвет пробок», семья Free / Slow / Congested / Blocked). Новый токен не нужен, расходится только значение: `#ffe400` у старого Navigator против `#ffc700` в библиотеке.   **Решение Standards 2026-11-11 (вариант а):** пробела токена нет, запись о пробеле снята. Источник истины — целевая библиотека; менять `Route/Traffic Slow` на `#ffe400` — это token-change библиотеки Rider, не задача миграции.
+  **Сдвиг значения:** `#ffe400` → `Route/Traffic Slow` (`#ffc700`), День и Ночь. Источники: `Color:tx-control/yellow/bg/idle` и `Navigator Color:Jam/Middle`. Жёлтый пробок на макетах станет теплее.
+  **Проверено по всем узлам, не по выборке** (чтение 17 копий Drafts 11.11, предки до страницы):
+  - Order Flow: 624 shape (сейчас `Icon/Attention`) и 186 обводок (`tx-control/yellow/bg/idle`) — все на пробках («Jam», «Route»);
+  - Show my location: 532 shape и 56 обводок — тоже все на пробках;
+  - остальные 15 копий — 0.
+  Итого 1 156 shape и 242 обводки → `Route/Traffic Slow`. Правило п.20 в `migrate-styles.js` изменено; на копиях переведено 11.11 по «да» arturuxui разовым вызовом (`setBoundVariableForPaint`, ключ `7306feaa…`): Order Flow 624 shape и 186 обводок, Show my location 532 shape и 56 обводок. Контрольное чтение: `Icon/Attention` и старых источников на пробках — 0.
+  **Остальная семья пробок (чтение 17 копий Drafts 2026-11-11, только чтение, ничего не менялось).** Библиотека: `Route/Traffic Free` `#23ad58`, `Slow` `#ffc700`, `Congested` `#fc3434`, `Blocked` `#a12806`, у всех День = Ночь, скоупы SHAPE_FILL и STROKE_COLOR. Сейчас на пробках стоит:
+
+  | где | сейчас | узлов (OF + SML) | кандидат | сдвиг |
+  |---|---|---|---|---|
+  | `Route > Jam`, заливка (виджет, оранжевый) | `Icon/Attention Deep` (п.19, источники `tx-control/orange/bg/idle`, `Jam/High`) | 480 + 410 | Congested | `#f24f18`/`#ff5413` → `#fc3434`, оранжевый → красный |
+  | `Jam`, обводка, и `Vector 109` (линия, красный) | `Stroke/Warning` | 75 + 24, 106 + 32 | Congested | `#e52817` → `#fc3434` |
+  | `Route > Jam`, заливка (виджет, зелёный) | `Icon/Success` | 48 + 37 | Free | |
+  | `Jam`, обводка (зелёный) | `tx-accent/green/bg`, правила нет | 75 + 24 | Free | |
+  | `Vector 106` и `Route`, обводка | сырой `#00b23c` | 106 + 32, 5 | Free | `#00b23c` → `#23ad58` |
+  | `Jam`, заливка | `Navigator Color:Jam/Low`, правила нет | 0 + 4 | Free | |
+  | `Jam`, обводка (вложенный инстанс) | `Jam/High` 1 + `Jam/Low` 1 на SML, Where и Where - Migration | 3 + 3 | — | на Where это `I…429115`, привязка не встаёт |
+  | `Jam`, заливка | сырой `#ffe400`, правило п.20 его не взяло | 0 + 1 (`I5374:804310;2328:3346;1212:2017`) | Slow | |
+
+  У старого Navigator три уровня: зелёный, жёлтый и оранжевый в виджете или красный на линии. У библиотеки четыре: Free, Slow, Congested, Blocked. Кандидат — оранжевый и красный оба на Congested, Blocked не используется. Значение заметно сдвигается: оранжевый виджет станет красным. Это тот же вопрос, что п.20, поэтому решение за Standards и arturuxui.
+  **Решение Standards 2026-11-11:** раскладка по уровню пробки, не по оттенку. Зелёные идут в Free, жёлтый в Slow, высокий уровень в Congested, Blocked не используется. Оранжевый оттенок не сохраняем: это не пробел и не token-change из миграции. Если оранжевый нужен, это token-change у владельца библиотеки Rider.
+  **Сдвиг значения:** оранжевый виджета `#f24f18`/`#ff5413` (сейчас `Icon/Attention Deep` `#ff7200`/`#ff661a`) станет `Route/Traffic Congested` `#fc3434`, то есть красным. Красная линия `#e52817` станет `#fc3434`. Зелёный `#00b23c` станет `#23ad58`.
+  **Красная линия — тот же уровень High** (проверено 11.11 по соседям). Каждая группа пробок трёхцветная: линия в `Map Interface > Route` (`Vector 106` зелёный, `108` жёлтый, `109` красный; `107` — основа маршрута `Stroke/Primary`), обводки `Jams > Jam` (зелёный, жёлтый, красный), виджет `Route > Jam` (зелёный, жёлтый, оранжевый). Четвёртого уровня нет ни в одной группе, поэтому кандидата в Blocked нет.
+  **Правила:** `TRAFFIC_LEVEL` в `migrate-styles.js` срабатывает только на узлах пробок: `Jam` и линии маршрута в `Map Interface` (`Route`, дети `Route`). Вне пробок действуют обычные п.18–21. Сюда же входят `tx-accent/green/bg` на обводке, `Navigator Color:Jam/Low`, сырые `#00b23c` и `#ffe400` (последний дописан к п.20).
+  **Исключено (запись):** 6 обводок `Jam/High`/`Jam/Low` во вложенных инстансах (SML, Where `I…429115`, Where - Migration), привязка на них не встаёт. Узлы не тронуты.
+  **Копии — переведено 2026-11-11 по «да» arturuxui,** разовым вызовом (`setBoundVariableForPaint`; ключи Congested `28d605d6…`, Free `15b14729…`, Slow `7306feaa…`), ошибок 0:
+  - Order Flow: Congested 480 заливок + 181 обводка; Free 48 заливок + 75 обводок + 111 сырых `#00b23c`;
+  - Show my location: Congested 410 + 56; Free 37 + 4 (`Jam/Low`) заливки + 24 + 32 обводки; Slow 1 (сырой `#ffe400`).
+  Итого: Congested 1 127, Free 331, Slow 1. Контрольное чтение: на пробках OF и SML нет ни `Icon/Attention Deep`, ни `Stroke/Warning`, ни `Icon/Success`, ни `tx-accent/green/bg`, ни `Jam/*`, ни сырых `#00b23c` и `#ffe400`. Остались только `Stroke/Primary` (основа маршрута) и сырой `#000000` на `Route` — это не уровни пробки. LEDGER этот разовый вызов не учитывает.
+  `Icon/Attention Deep` **не на пробках** не трогаем: звёзды рейтинга (`Background/Attention Deep`, OF 168, SML 18), обводки Stories (`Stroke/Attention Deep`, OF 18, Profile 285), огонь Demand (Navigation 39), иконки (OF 8, SML 2, Profile 13) и др.
+  **Не пробки — 2 узла:** вложенные инстансы «Banner Bookmart» (`I5374:804808;40004841:67361`, `I5374:816770;40004841:67361`, Show my location, «In Trip > Interface > BS»). Это промо-баннер 390×104 из внешней библиотеки, заливка `#ffe400` и радиальный градиент. На `Route/Traffic Slow` не ставим, цели frame в правиле п.20 нет. **Исключено (Standards 2026-11-11):** вложенный инстанс внешней библиотеки (Banner Bookmart), значение принадлежит её компоненту; узлы не тронуты. Это не пробел токена Rider, в анкету пробелов не вносится. Override не делаем ни токеном, ни хексом. Пробел появится, только если баннер перенесут в Rider (свой компонент или детач): тогда нужен lookup пары фон × контент для промо-роли. `Background/Attention` не подходит — это роль предупреждений.
 - Shadows/Small: ключ нового стиля — 647aa3864c4c1801f9363745ef570bc175e98384 (найден 2026-11-02).
 - Не трогаем: тонированные фоны, бренд-зелёный, синий, оверлей на векторах, iOS-системные,
   карта, тени без аналога, размытия, градиенты.
@@ -274,3 +306,15 @@ Icon/* не ставим — предлагаю Background/Constant White (#fff 
 #000 на векторе в иконке → Icon/Primary (иконка теперь и `ic`, `ic_*`, `24/Stroke/*`; пины, маски, дети BooleanOp — нет); #0f0f1f@0.87 [text] → Text/Primary;
 #000@0.30 на фрейме и прямоугольнике шириной от 300 → Background/Overlay (исключение из правила 1); `shadow/diffuse/m`, `/s` → Shadows/Small (отменяет questions п.27 б);
 Gradient в TX Loading Fade → Gradients/Shimmer.
+
+**Анкета группы А (2026-11-12)** — `.claude/archive/order-flow-audit-2026-11-09.md`, «Подборы "что близко"». **Ответ arturuxui: предложения верны**, пробки не входят (закрыты 11.11). Внесено в `scripts/migrate-styles.js` (замен на копиях ещё нет, только DRY: `drafts-run/anketa-a-dry-2026-11-12.md`):
+- Текст: #000 → Text/Primary (кроме текстов «beta», «васаби», «минск» по `characters`, без регистра); #232326 → Text/Primary; #6d6f75 → Text/Secondary.
+- Обводки: #fff на фрейме (кольцо Avatar) → Stroke/Secondary (Stroke/Contrast в библиотеке нет); #e52817 → Stroke/Warning; #8526ff → Stroke/Accent; #e9e9ed → Stroke/Primary; `{Color:tx-accent/grey/secondary}` → Stroke/Disabled.
+- Маршрут: #000 на фигуре и `{Color:tx-accent/grey/dark strong}`, только обводка w4 → Route/Primary (остальные веса — в пропуск «не w4»).
+- Заливки: #ff661a на фигуре → Icon/Attention Deep; #f3f3f3 на фрейме → Background/Secondary; белые драгеры (#fff @0.32/0.62/0.8x, #f6f6f9 @0.54/0.3x) на фигуре → Icon/Constant White Secondary; #cacad1@0.72 на фигуре → Icon/Disabled.
+- Переменные на фреймах: `primary-Inverted` → Background/Secondary; `Theme TX:tx-control/neutral/bg/idle` → Field/Primary; `purple/tint/idle` → Background/Pill Accent; `grey/tertiary` → Background/Tertiary; `purple/bg/idle` → Button/Primary. Стили `[Purple]` → Icon/Accent, `[Orange]` → Icon/Attention Deep, `[Day / Gray 40]` → Icon/Tertiary (только на фигурах).
+- Градиенты (стиль заливки, одна заливка на узле): `ffffff@0.78>ffffff@0` → Gradients/Top, `ffffff>ffffff@0` на фигуре → Gradients/Fade Horizontal (ключ 851eb7b2…), 33-стоповый белый `ffffff@0>ffffff@0.29…` → Gradients/Shimmer.
+- Эффекты: точный список D 0,4 r20 #8526ff + D 0,8 r14 #003dac → Shadows/Brand Button (ключ e4b79782…); одиночная D 0,0 r20 #000@0.06 → Shadows/Medium; стиль `Shadow S` → Shadows/Small; `shadow/close/s` → Shadows/Mini (ключ 76009ef2…).
+- Шрифты без стиля: SF Pro Text Regular 12/16 и 12/14 → Captions/Caption 1; SF Pro Text Medium 14/14 → Subtitles/Subtitle 3; Google Sans Medium 11/14 → Captions/Caption 2.
+- Вне переноса, как в скане аудита: узлы с `logo|illustration|mastercard|visa|pin|map pin|marketplace|маркетплейс` в имени узла или предка.
+- Не внесено: шрифты «по участкам» (смешанные начертания 17/20, 16/16, 15/20, iOS - Body) — скрипт ставит стиль на весь текст, по диапазонам (`setRangeTextStyleIdAsync`) не умеет, и для смешанных участков не определено, какой стиль какому участку.
