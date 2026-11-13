@@ -137,4 +137,10 @@ arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропуск
 - Android: переменные Outstanding в режиме Android ставят Roboto, в iOS — SF Pro Display. Прецедент → в анкете предлагаем Android = Roboto (Thin 100 есть); решает PD.
 - Новый стиль в Outstanding предлагаем сразу со ссылками на Core (`ff-sf-pro-display` / `ff-roboto`, `fw-100`). Сырые значения в typography-sem-out — находка Standards, на наш пробел не влияет.
 
+**В анкету PD — отдельным блоком «Техдолг» (не пробел токена, ставить после пробелов)** — по просьбе Standards 13.11, со слов Standards согласовано arturuxui:
+
+> Outstanding 1.1.0: заодно перевести переменные typography-sem-out с сырых значений на ссылки на typography-core (font-family → ff-sf-pro-display / ff-roboto, font-weight → fw-*). Значения совпадают, вид стилей не меняется — patch в составе того же выпуска, а не отдельный релиз.
+
+Исправляет дизайнер в выпуске 1.1.0 через release-gate; Standards при приёмке проверяет, что переменные стали ссылками. Отдельный issue не заводим.
+
 Шаг (1) «lookup» закрыт. Дальше без изменений: ответы Валентины в 3 тредах (LH/LS из слоя, Android, WB Sans) → одна анкета PD (90 Thin + WB Sans) → проверка Standards → PD. Копию не трогаем.
