@@ -1,6 +1,6 @@
 # Ответ Валентине — Pre-final Order Flow (черновик, 2026-11-18)
 
-Не отправлено. Отправка — только по «да» arturuxui. Цифры — `prefinal-order-flow-dry-2026-11-18.md`.
+Опубликовано 18.11 по «да» arturuxui: комментарий #680 в Figma (New Rider Drafts, стр. «Order Flow », внутри секции 6991:303670), аккаунт «Sergey AI», абзацы склеены, без markdown. Без @-упоминания. Цифры — `prefinal-order-flow-dry-2026-11-18.md`.
 
 ---
 
