@@ -1,13 +1,13 @@
 {
   "artifact": "Rider Space",
-  "currentVersion": "1.0.2",
+  "currentVersion": "1.1.0",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "208:54"
   },
   "entries": [
     {
-      "version": null,
+      "version": "1.1.0",
       "date": "2026-11-18",
       "author": "Sergey AI",
       "type": "minor",
