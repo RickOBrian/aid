@@ -7,6 +7,7 @@
 //   const ROOTS = ['<id>', ...]; // экраны на странице-копии; [] — все дети страницы
 //   const MAXIDS = 200;          // сколько ID узлов отдавать на каждую причину пропуска
 //   const SHALLOW = true;        // необязательно: только сами корни, без детей (добивка контейнеров, разбитых на детей)
+//   const NODISPUTE = true;      // необязательно: спорные п.1–3 ответа Валентине 18.11 не применять (arturuxui 18.11, Pre-final)
 // Прогон Taxi for friends в DEV: PAGE_ID = '4770:4437'.
 const page = await figma.getNodeByIdAsync(PAGE_ID); // страница или секция (оригинал правится на месте, Валентина 17.11)
 let pageNode = page; while (pageNode.type !== 'PAGE') pageNode = pageNode.parent;
@@ -167,6 +168,8 @@ const isOut = (n, chain) => OUTNAME.test(n.name) || chain.some(c => OUTNAME.test
 // примеры узлов под правилами анкеты А (до 4 на правило) — для проверки контекста в DRY
 const SAMPL = {}; let ANK = false;
 const A = t => { ANK = true; return t; };
+const NOD = typeof NODISPUTE !== 'undefined' && NODISPUTE; let DISP = false;
+const SP = t => { DISP = true; return A(t); }; // спорное: п.1 белые обводки аватарок, п.2 #000 текст
 const samp = (label, n, chain) => { const a = SAMPL[label] || (SAMPL[label] = []); if (a.length >= 4) return; let t = '', ex = ''; try { if (n.type === 'TEXT') t = ' "' + n.characters.slice(0, 24) + '"'; if (typeof n.strokeWeight === 'number') ex += ' w' + n.strokeWeight; ex += ' ' + Math.round(n.width) + 'x' + Math.round(n.height); } catch (e) {} a.push(`${n.id} «${n.name.slice(0, 22)}» < ${(chain[chain.length - 1] || '').slice(0, 22)}${t}${ex}`); };
 const PASTEL = {Midway:'Pastel/Lenny',Mantle:'Pastel/Ralph',Ralph:'Pastel/Ralph',Liberty:'Pastel/Lisa',Asphalt:'Pastel/Apu',Graylord:'Pastel/Barney',Barney:'Pastel/Barney',Peach:'Pastel/Bart',Jasper:'Pastel/Jasper',Nelson:'Stories/Nelson'};
 for (const [k,v] of Object.entries(PASTEL)) C[`Pastel [day]/${k}`] = {frame:v, shape:v};
@@ -227,7 +230,7 @@ const rawTarget = (h, kind, prop, n, chain) => {
     if (kind === 'text' && h === 'ffffff' && chain.includes('ETA') && chain.some(c => /Map Pin/.test(c))) return 'Text/Constant White';
     // анкета А (arturuxui 2026-11-12). Скоупы: Icon/* — на фигурах, Text/* — на тексте, Background/* — на фреймах
     if (!isOut(n, chain)) {
-      if (kind === 'text' && h === '000000' && !/^(beta|васаби|минск)$/i.test(n.characters.trim())) return A('Text/Primary');
+      if (kind === 'text' && h === '000000' && !/^(beta|васаби|минск)$/i.test(n.characters.trim())) return SP('Text/Primary');
       if (kind === 'text' && h === '232326') return A('Text/Primary');
       if (kind === 'text' && h === '6d6f75') return A('Text/Secondary');
       if (kind === 'shape' && h === 'ff661a') return A('Icon/Attention Deep');
@@ -241,7 +244,7 @@ const rawTarget = (h, kind, prop, n, chain) => {
     if (h === 'aaff00') return 'Stroke/Neon'; // final §1.4
     // анкета А (arturuxui 2026-11-12); #fff на фрейме — кольцо Avatar, Stroke/Contrast в библиотеке нет
     if (!isOut(n, chain)) {
-      if (kind === 'frame' && h === 'ffffff') return A('Stroke/Secondary');
+      if (kind === 'frame' && h === 'ffffff') return SP('Stroke/Secondary');
       if (h === 'e52817') return A('Stroke/Warning');
       if (h === '8526ff') return A('Stroke/Accent');
       if (h === 'e9e9ed') return A('Stroke/Primary');
@@ -301,6 +304,7 @@ const processPaints = async (n, prop, chain) => {
       const al = o => (o === undefined || o >= 0.995) ? '' : '@' + (Math.round(o * 100) / 100);
       const gs = p.gradientStops.map(s => hex(s.color) + al(s.color.a)).join('>');
       const gk = gs === 'ffffff@0.78>ffffff@0' ? ['Gradients/Top', GRAD_TOP] : (gs === 'ffffff>ffffff@0' && kind === 'shape') ? ['Gradients/Fade Horizontal', GRAD_FADE] : /^ffffff@0>ffffff@0\.29(>|$)/.test(gs) ? ['Gradients/Shimmer', GRAD_SHIMMER] : null;
+      if (gk && NOD) { skip(`градиент ${gs} → [${gk[0]}] — спорное, не применено (18.11)`); return; }
       if (gk) {
         const s = await importStyle(gk[1]);
         if (!DRY) await n.setFillStyleIdAsync(s.id);
@@ -332,9 +336,10 @@ const processPaints = async (n, prop, chain) => {
       continue;
     }
     const h = hex(p.color) + (p.opacity < 1 ? '@' + p.opacity.toFixed(2) : '');
-    ANK = false;
+    ANK = false; DISP = false;
     const t = trafficTarget('#' + h, n, chain) || rawTarget(h, kind, prop, n, chain);
     const ankHit = ANK;
+    if (NOD && DISP) { skip(`#${h} → ${t} [${slot}] — спорное, не применено (18.11)`); np.push(p); continue; }
     if (t === 'Route/Primary' && n.strokeWeight !== 4) { skip(`#${h} → Route/Primary [stroke] — не w4 (w${n.strokeWeight})`); np.push(p); continue; }
     if (t === undefined) { skip(`сырой #${h} [${slot}]`); np.push(p); continue; }
     if (t === 'RADIUS') {
