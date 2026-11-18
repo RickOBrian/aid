@@ -3,13 +3,14 @@
 // Тело для use_figma: в начало вставить
 //   const DRY = true|false;      // true — только счётчики, узлы не меняются
 //   const SHOT = true|false;     // скриншот каждого корня
-//   const PAGE_ID = '<id>';      // страница-копия (scripts/clone-page.js)
+//   const PAGE_ID = '<id>';      // страница-копия (scripts/clone-page.js) или секция — корни берутся из её детей
 //   const ROOTS = ['<id>', ...]; // экраны на странице-копии; [] — все дети страницы
 //   const MAXIDS = 200;          // сколько ID узлов отдавать на каждую причину пропуска
 //   const SHALLOW = true;        // необязательно: только сами корни, без детей (добивка контейнеров, разбитых на детей)
 // Прогон Taxi for friends в DEV: PAGE_ID = '4770:4437'.
-const page = await figma.getNodeByIdAsync(PAGE_ID);
-await figma.setCurrentPageAsync(page);
+const page = await figma.getNodeByIdAsync(PAGE_ID); // страница или секция (оригинал правится на месте, Валентина 17.11)
+let pageNode = page; while (pageNode.type !== 'PAGE') pageNode = pageNode.parent;
+await figma.setCurrentPageAsync(pageNode);
 const RIDER = 'Rider';
 // кэш импорта на весь вызов use_figma (globalThis живёт между порциями run-page): импорт стиля ~0,4 с, переменной ~0,9 с (RUNBOOK, 06.11)
 const MC = globalThis.__migCache || (globalThis.__migCache = { lib: null, v: {}, st: {} });

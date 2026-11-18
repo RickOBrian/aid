@@ -8,7 +8,7 @@ const page = await figma.getNodeByIdAsync(PAGE_ID);
 const get = k => page.getSharedPluginData(NS, k), put = (k, v) => page.setSharedPluginData(NS, k, v);
 if (typeof CLEAN !== 'undefined' && CLEAN) { put('plan', ''); put('agg', ''); return { cleaned: page.getSharedPluginDataKeys(NS).filter(get).length === 0 }; }
 if (figma.root.getSharedPluginData(NS, 'hash') !== String(HASH)) return { error: 'на файле другая версия скрипта: залить заново (build-kit)' };
-await page.loadAsync();
+{ let p = page; while (p.type !== 'PAGE') p = p.parent; await p.loadAsync(); } // PAGE_ID может быть секцией
 let plan = JSON.parse(get('plan') || 'null');
 if (plan && plan.dry !== DRY) return { error: `на странице план с DRY=${plan.dry}: сначала CLEAN` };
 if (!plan) {
