@@ -7,6 +7,19 @@
   },
   "entries": [
     {
+      "version": null,
+      "date": "2026-11-18",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлена переменная space-56",
+          "details": "space-56: 56"
+        }
+      ]
+    },
+    {
       "version": "1.0.2",
       "date": "2026-10-26",
       "author": "Sergey AI",
