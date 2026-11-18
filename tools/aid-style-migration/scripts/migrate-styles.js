@@ -8,6 +8,7 @@
 //   const MAXIDS = 200;          // сколько ID узлов отдавать на каждую причину пропуска
 //   const SHALLOW = true;        // необязательно: только сами корни, без детей (добивка контейнеров, разбитых на детей)
 //   const NODISPUTE = true;      // необязательно: спорные п.1–3 ответа Валентине 18.11 не применять (arturuxui 18.11, Pre-final)
+//   const SKIP = ['<id>', ...]; // необязательно: узлы с поддеревом не трогать (исключения дизайнера)
 // Прогон Taxi for friends в DEV: PAGE_ID = '4770:4437'.
 const page = await figma.getNodeByIdAsync(PAGE_ID); // страница или секция (оригинал правится на месте, Валентина 17.11)
 let pageNode = page; while (pageNode.type !== 'PAGE') pageNode = pageNode.parent;
@@ -443,6 +444,7 @@ const processNum = async n => {
 let nodes = 0;
 const walk = async (n, chain) => {
   if (n.name.startsWith('❌')) return; // референс, помеченный «❌ » (arturuxui 10.11)
+  if (typeof SKIP !== 'undefined' && SKIP.includes(n.id)) return; // исключение дизайнера
   if (n.type !== 'TEXT' && EX.test(n.name)) return;
   nodes++;
   cur = n;

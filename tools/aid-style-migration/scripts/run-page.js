@@ -2,7 +2,8 @@
 // состояние хранит в shared pluginData страницы, следующий такой же вызов продолжает с места остановки.
 // Заливается на figma.root вместе с телом migrate-styles.js (scripts/build-kit.mjs), вызов — mappings/drafts-run/RUNBOOK.md.
 // Параметры вызова: PAGE_ID, DRY, HASH; необязательно CLEAN = true (снять ключи страницы), TOP (сколько причин отдать),
-// NODISPUTE = true (спорные п.1–3 не применять, Pre-final 18.11).
+// NODISPUTE = true (спорные п.1–3 не применять, Pre-final 18.11); SKIP = ['<id>', …] — узлы с поддеревом не трогать
+// (исключения дизайнера, «Макеты для примерки» 18.11); SKIP запоминается в плане, в следующих вызовах можно не передавать.
 const NS = 'mig', BUDGET = 25000, LIMIT = 1000, SPLIT = 1500, MAXUNITS = 30, MAXIDS = 3;
 const top = typeof TOP === 'undefined' ? 60 : TOP;
 const nod = typeof NODISPUTE !== 'undefined' && !!NODISPUTE;
@@ -14,9 +15,9 @@ if (figma.root.getSharedPluginData(NS, 'hash') !== String(HASH)) return { error:
 let plan = JSON.parse(get('plan') || 'null');
 if (plan && (plan.dry !== DRY || !!plan.nod !== nod)) return { error: `на странице план с DRY=${plan.dry}, NODISPUTE=${!!plan.nod}: сначала CLEAN` };
 if (!plan) {
-  const units = [], shallow = [];
+  const units = [], shallow = [], skipIds = typeof SKIP === 'undefined' ? [] : SKIP;
   const add = n => {
-    if (n.name.startsWith('❌')) return; // узел с «❌ » в имени — референс, не сканируем (arturuxui 10.11)
+    if (n.name.startsWith('❌') || skipIds.includes(n.id)) return; // узел с «❌ » в имени — референс, не сканируем (arturuxui 10.11)
     const size = 'findAll' in n ? n.findAll().length + 1 : 1;
     if (size > SPLIT && 'children' in n && n.children.length) { shallow.push(n.id); n.children.forEach(add); } else units.push([n.id, size]);
   };
@@ -27,7 +28,7 @@ if (!plan) {
     b.ids.push(id); b.size += size;
   }
   if (shallow.length) batches.push({ ids: shallow, size: shallow.length, shallow: true });
-  plan = { dry: DRY, nod, i: 0, batches: batches.map(x => ({ ids: x.ids, shallow: !!x.shallow })) };
+  plan = { dry: DRY, nod, skip: skipIds, i: 0, batches: batches.map(x => ({ ids: x.ids, shallow: !!x.shallow })) };
   put('plan', JSON.stringify(plan)); put('agg', '');
 }
 const agg = JSON.parse(get('agg') || '{"nodes":0,"done":{},"skip":{},"samp":{}}');
@@ -42,7 +43,7 @@ const body = figma.root.getSharedPluginData(NS, 'body');
 const t0 = Date.now();
 while (plan.i < plan.batches.length && Date.now() - t0 < BUDGET) {
   const b = plan.batches[plan.i];
-  const head = `const DRY=${DRY},SHOT=false,PAGE_ID=${JSON.stringify(PAGE_ID)},ROOTS=${JSON.stringify(b.ids)},MAXIDS=${MAXIDS},SHALLOW=${b.shallow},NODISPUTE=${nod};`;
+  const head = `const DRY=${DRY},SHOT=false,PAGE_ID=${JSON.stringify(PAGE_ID)},ROOTS=${JSON.stringify(b.ids)},MAXIDS=${MAXIDS},SHALLOW=${b.shallow},NODISPUTE=${nod},SKIP=${JSON.stringify(plan.skip || [])};`;
   let r;
   try { r = await new AF(head + body)(); } catch (e) { return { error: String(e.message || e).slice(0, 200), batch: plan.i, of: plan.batches.length }; }
   agg.nodes += r.nodes;

@@ -66,6 +66,7 @@
 | Order Flow — Switched Styles | по строкам (дизайнер) | `5374:903468` | 21 257 | 5 837 | 2026-11-12 |
 | ✅ Permissions — Switched Styles | пропущена | `5374:1019808` | 162 | 471 | 2026-11-12 |
 | Pre-final for Style Switch | в работе | `6991:303670` | 11 566 | 3 516 | 2026-11-18 |
+| Макеты для примерки цветов и шрифтов — Switched Styles | в работе | `7151:54574` | 2 214 | 1 556 | 2026-11-18 |
 | ⌛️ Profile — Switched Styles | пропущена | `5374:527493` | 4 749 | 5 941 | 2026-11-12 |
 | ✅ Service coverage — Switched Styles | пропущена | `5374:86156` | 398 | 792 | 2026-11-12 |
 | ✅ Show my location — Switched Styles | пропущена | `5374:802548` | 6 112 | 4 324 | 2026-11-12 |
@@ -74,66 +75,83 @@
 | test — Switched Styles | пропущена | `5374:1030847` | 617 | 1 018 | 2026-11-12 |
 | ✅ Where 🗺️ - Migration — Switched Styles | пропущена | `5374:623349` | 2 839 | 6 517 | 2026-11-12 |
 | ✅ Where 🗺️ — Switched Styles | пропущена | `5374:421690` | 2 958 | 6 827 | 2026-11-12 |
-| **Итого, в работе** | | | **11 566** | **3 516** | |
-| Итого, все 17 | | | 60 805 | 62 524 | |
+| **Итого, в работе** | | | **13 780** | **5 072** | |
+| Итого, все 17 | | | 63 019 | 64 080 | |
 
 ## Незаменённое по страницам в работе
 
 | причина | кол-во | страниц | где | ID |
 |---|---:|---:|---|---|
-| сырой эффект: layer_blur | 309 | 1 | prefinal-order-flow | I7037:305294;74255:11661 I6606:221925;40006663:32110 I6606:221925;40006663:32111 |
-| градиент [shape] | 213 | 1 | prefinal-order-flow | 4365:206480 4365:206486 4365:206487 |
-| сырой #c4c4c4 [shape] | 208 | 1 | prefinal-order-flow | I6606:223062;1228:7454 I6606:223062;1228:7455 I6606:223062;1228:7457 |
-| сырой #ffffff [shape] | 185 | 1 | prefinal-order-flow | I6981:198689;15:3905;15:3692;15:3252 I6606:221925;40006663:32112 I6606:221925;40006663:32116 |
+| сырой #c4c4c4 [shape] | 536 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7454 I6606:223062;1228:7455 I6606:223062;1228:7457 |
+| сырой эффект: layer_blur | 425 | 2 | prefinal-order-flow, primerka-switched | I7037:305294;74255:11661 I6606:221925;40006663:32110 I6606:221925;40006663:32111 |
+| градиент [shape] | 267 | 2 | prefinal-order-flow, primerka-switched | 4365:206480 4365:206486 4365:206487 |
+| сырой #ffffff [shape] | 255 | 2 | prefinal-order-flow, primerka-switched | I6981:198689;15:3905;15:3692;15:3252 I6606:221925;40006663:32112 I6606:221925;40006663:32116 |
+| сырой #000000 [shape] | 223 | 2 | prefinal-order-flow, primerka-switched | I3888:119296;3292:39610 I4010:153755;40000574:9419;3292:39610 I6981:198689;15:3905;15:3692;15:3250 |
+| сырой эффект: background_blur | 188 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7439 I6606:223062;1228:7441 I6606:223062;1228:7463 |
 | сырой #d3d3d8 [stroke] | 148 | 1 | prefinal-order-flow | 6900:185573 6900:185919 I6991:224359;6900:185573 |
-| сырой #000000 [shape] | 145 | 1 | prefinal-order-flow | I3888:119296;3292:39610 I4010:153755;40000574:9419;3292:39610 I6981:198689;15:3905;15:3692;15:3250 |
 | {Color:tx-brand/green/green} [shape] — нет в маппинге | 133 | 1 | prefinal-order-flow | I3866:93273;40006534:7699 I6606:221738;40006214:22340;40006535:17778;40000385:8868;3866:93273;40006534:7699 I6981:197467;40000385:8868;3866:93273;40006534:7699 |
 | {System:Magin Top}=54 paddingTop — нет цели | 130 | 1 | prefinal-order-flow | I6606:221738;40006214:22340 6981:197463 6981:197691 |
 | #ffffff → Stroke/Secondary [stroke] — спорное, не применено (18.11) | 128 | 1 | prefinal-order-flow | I3888:101735;40008793:92370 I5796:97908;5796:97058;40008793:92370 I6981:197468;5958:191033 |
 | сырой #ec6a2c [shape] | 126 | 1 | prefinal-order-flow | I3888:119294;3072:124505 I3374:165305;1093:24503;3072:124505 I6606:221990;3374:165305;1093:24503;3072:124505 |
 | сырой #d82e2b [shape] | 126 | 1 | prefinal-order-flow | I3888:119294;3072:124506 I3374:165305;1093:24503;3072:124506 I6606:221990;3374:165305;1093:24503;3072:124506 |
 | сырой #eaa240 [shape] | 126 | 1 | prefinal-order-flow | I3888:119294;3072:124507 I3374:165305;1093:24503;3072:124507 I6606:221990;3374:165305;1093:24503;3072:124507 |
-| сырой #ffffff [text] | 98 | 1 | prefinal-order-flow | 6606:221730 6606:221731 6606:221732 |
-| сырой эффект: background_blur | 98 | 1 | prefinal-order-flow | I6606:223062;1228:7439 I6606:223062;1228:7441 I6606:223062;1228:7463 |
+| сырой #ffffff [text] | 114 | 2 | prefinal-order-flow, primerka-switched | 6606:221730 6606:221731 6606:221732 |
+| сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow | 98 | 2 | prefinal-order-flow, primerka-switched | I6606:222601;1074:135168 I6606:222721;1067:131368 I6606:222762;218:101 |
+| градиент [frame] | 91 | 2 | prefinal-order-flow, primerka-switched | I6606:222602;1093:24175 I6606:222649;1093:24175 I6606:222675;1093:24175 |
+| сырой #ffffff@0.90 [shape] | 85 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7440 I6606:223062;1228:7482 I6606:223062;1228:7464 |
 | сырой #4faf4d [stroke] | 84 | 1 | prefinal-order-flow | 6606:222598 6606:222646 6606:222672 |
-| сырой #ffffff@0.90 [shape] | 80 | 1 | prefinal-order-flow | I6606:223062;1228:7440 I6606:223062;1228:7482 I6606:223062;1228:7464 |
-| градиент [frame] | 61 | 1 | prefinal-order-flow | I6606:222602;1093:24175 I6606:222649;1093:24175 I6606:222675;1093:24175 |
-| сырой #7b2df5@0.12 [shape] | 60 | 1 | prefinal-order-flow | I6606:222602;1074:135478 I6606:222649;1074:135478 I6606:222675;1074:135478 |
-| градиент [stroke] | 57 | 1 | prefinal-order-flow | 3355:159166 I6981:198689;15:3905 I6606:222849;69:109;6606:231521;3355:159166 |
+| сырой #7b2df5@0.12 [shape] | 71 | 2 | prefinal-order-flow, primerka-switched | I6606:222602;1074:135478 I6606:222649;1074:135478 I6606:222675;1074:135478 |
+| [Background [day]/Secondary] [shape/shape] — нет правила | 69 | 2 | prefinal-order-flow, primerka-switched | I6606:223086;1242:357 I6606:223087;1244:7534 I6606:223087;1244:7535;589:16 |
+| сырой #ffffff [stroke] | 68 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7446 I6606:223097;1264:101 I6606:223690;1228:7446 |
+| градиент [stroke] | 63 | 2 | prefinal-order-flow, primerka-switched | 3355:159166 I6981:198689;15:3905 I6606:222849;69:109;6606:231521;3355:159166 |
+| [Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL | 62 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7452 I6606:223097;1264:107 I6606:223690;1228:7452 |
+| сырой #ffffff@0.05 [shape] | 62 | 2 | prefinal-order-flow, primerka-switched | 6606:223068 6606:223069 6606:223696 |
+| сырой #000000@0.08 [stroke] | 62 | 2 | prefinal-order-flow, primerka-switched | 6606:223068 6606:223069 6606:223696 |
+| сырой #7b2df5 [shape] | 60 | 2 | prefinal-order-flow, primerka-switched | I6606:223062;1228:7445 I6606:223097;1264:100 I6606:223690;1228:7445 |
 | шрифт без стиля: SF Pro Text Semibold 12/13 | 54 | 1 | prefinal-order-flow | 6606:221980 6606:221984 6606:221988 |
 | {Color:tx-bg/level −1 muted} [stroke] — нет правила | 48 | 1 | prefinal-order-flow | 6606:222637 6606:222663 6606:223254 |
-| [Background [day]/Secondary] [shape/shape] — нет правила | 48 | 1 | prefinal-order-flow | I6606:223086;1242:357 I6606:223087;1244:7534 I6606:223087;1244:7535;589:16 |
-| сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow | 39 | 1 | prefinal-order-flow | I6606:222601;1074:135168 I6606:222721;1067:131368 I6606:222762;218:101 |
+| TEXT смешанные заливки — оставлено | 45 | 2 | prefinal-order-flow, primerka-switched | I6606:223171;1093:24504;1093:24530 I6606:223173;1093:24504;1093:24530 I6606:223175;1093:24504;1093:24530 |
+| сырой #d9d9d9 [shape] | 42 | 2 | prefinal-order-flow, primerka-switched | 5796:97957 5796:97976 5796:97995 |
+| сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15 | 37 | 1 | primerka-switched | 7151:56429 |
 | [Bodies/Body Large] — нет в маппинге | 36 | 1 | prefinal-order-flow | 6981:198690 6606:221933 6606:222004 |
-| сырой #7b2df5 [shape] | 32 | 1 | prefinal-order-flow | I6606:223062;1228:7445 I6606:223097;1264:100 I6606:223690;1228:7445 |
-| сырой #ffffff [stroke] | 32 | 1 | prefinal-order-flow | I6606:223062;1228:7446 I6606:223097;1264:101 I6606:223690;1228:7446 |
-| [Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL | 32 | 1 | prefinal-order-flow | I6606:223062;1228:7452 I6606:223097;1264:107 I6606:223690;1228:7452 |
-| сырой #ffffff@0.05 [shape] | 32 | 1 | prefinal-order-flow | 6606:223068 6606:223069 6606:223696 |
-| сырой #000000@0.08 [stroke] | 32 | 1 | prefinal-order-flow | 6606:223068 6606:223069 6606:223696 |
 | градиент ffffff@0.78>ffffff@0 → [Gradients/Top] — спорное, не применено (18.11) | 31 | 1 | prefinal-order-flow | 6606:222687 6606:222728 6606:222769 |
+| сырой #ffffff@0.10 [shape] | 31 | 2 | prefinal-order-flow, primerka-switched | 6606:223070 6606:223698 6606:223921 |
+| сырой #000000@0.03 [stroke] | 31 | 2 | prefinal-order-flow, primerka-switched | 6606:223070 6606:223698 6606:223921 |
+| сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur | 31 | 2 | prefinal-order-flow, primerka-switched | I6606:223097;1264:96 I6606:223725;1264:96 I6606:223948;1264:96 |
 | градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] — спорное, не применено (18.11) | 27 | 1 | prefinal-order-flow | I6981:197690;69:114;6981:197566 I6981:197690;69:114;6981:197572 I6981:197690;69:114;6981:197642 |
 | #000000 → Text/Primary [text] — спорное, не применено (18.11) | 26 | 1 | prefinal-order-flow | 6606:221969 6606:221970 6606:222040 |
+| {Color:tx-accent/grey/primary} «Shadow» — пробел | 26 | 2 | prefinal-order-flow, primerka-switched | I6606:222601;1074:135167 I6606:222721;1067:131367 I6606:222845;1067:131367 |
 | сырой #000000@0.35 [frame] | 23 | 1 | prefinal-order-flow | 6606:222653 6606:228375 6606:228377 |
-| {Color:tx-accent/grey/primary} «Shadow» — пробел | 21 | 1 | prefinal-order-flow | I6606:222601;1074:135167 I6606:222721;1067:131367 I6606:222845;1067:131367 |
-| сырой #d9d9d9 [shape] | 20 | 1 | prefinal-order-flow | 5796:97957 5796:97976 5796:97995 |
+| сырой #ea3323 [shape] | 21 | 1 | primerka-switched | I7151:54629;349:4028;244:1424 |
 | [Label Color/Light/Primary] [text] — нет в маппинге | 19 | 1 | prefinal-order-flow | 6616:280349 I6616:280362;24:1311 I6616:280363;24:1291 |
-| TEXT смешанные заливки — оставлено | 17 | 1 | prefinal-order-flow | I6606:223171;1093:24504;1093:24530 I6606:223173;1093:24504;1093:24530 I6606:223175;1093:24504;1093:24530 |
-| сырой #ffffff@0.10 [shape] | 16 | 1 | prefinal-order-flow | 6606:223070 6606:223698 6606:223921 |
-| сырой #000000@0.03 [stroke] | 16 | 1 | prefinal-order-flow | 6606:223070 6606:223698 6606:223921 |
-| сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur | 16 | 1 | prefinal-order-flow | I6606:223097;1264:96 I6606:223725;1264:96 I6606:223948;1264:96 |
+| сырой #000000 [frame] | 17 | 2 | prefinal-order-flow, primerka-switched | I6606:221925;40006663:32103 I6606:221996;40006663:32103 I6606:222067;40006663:32103 |
+| {System Colors:Labels/Primary} [text] — нет в маппинге | 16 | 2 | prefinal-order-flow, primerka-switched | I6606:228203;295:1397 I6606:228203;295:1399 I6606:228348;295:1397 |
+| сырой #979797 [shape] | 16 | 1 | primerka-switched | 7151:56531 |
 | {theme:promo/primary/bg/neutralPrimary} [shape] — нет в маппинге | 15 | 1 | prefinal-order-flow | 5796:97959 5796:97978 5796:97997 |
 | сырой эффект: drop 0,0 r20 s0 #8d2ff5@0.32 + drop 0,0 r4 s0 #8d2ff5@0.50 | 15 | 1 | prefinal-order-flow | 5249:422070 5796:86334 5877:157710 |
 | сырой #0d013c@0.16 [shape] | 13 | 1 | prefinal-order-flow | 6606:221924 6606:221995 6606:222066 |
-| сырой #000000 [frame] | 13 | 1 | prefinal-order-flow | I6606:221925;40006663:32103 I6606:221996;40006663:32103 I6606:222067;40006663:32103 |
+| шрифт без стиля: Inter Regular 14/20 | 13 | 1 | primerka-switched | 7151:57052 |
+| шрифт без стиля: Inter Regular 11/auto | 13 | 1 | primerka-switched | 7151:57053 |
+| сырой #ffffff@0.10 [stroke] | 12 | 2 | prefinal-order-flow, primerka-switched | 4010:152831 6606:228587 7151:54575 |
+| сырой #fefae5 [frame] | 12 | 1 | primerka-switched | 7151:57051 |
 | сырой #252526 [frame] | 11 | 1 | prefinal-order-flow | 6606:221728 6606:221737 6981:197462 |
 | шрифт без стиля: Inter Regular 22/auto | 10 | 1 | prefinal-order-flow | 6632:182490 6632:182230 6616:280666 |
 | {Safe zones:safe-top}=62 paddingTop — нет цели | 10 | 1 | prefinal-order-flow | 6606:223442 6606:223469 6606:223496 |
-| {System Colors:Labels/Primary} [text] — нет в маппинге | 10 | 1 | prefinal-order-flow | I6606:228203;295:1397 I6606:228203;295:1399 I6606:228348;295:1397 |
 | [Caption2/Regular] — нет в маппинге | 10 | 1 | prefinal-order-flow | I6616:280362;24:1311 I6616:280363;24:1291 I6616:280364;24:1476 |
 | [Body/Regular] — нет в маппинге | 10 | 1 | prefinal-order-flow | I6616:280374;1066:7921;1066:7758 I6616:280375;1066:7921;1066:7758 I6616:280375;1066:7921;1066:7813 |
+| шрифт без стиля: SF Pro Medium 16/16 | 10 | 1 | primerka-switched | 7151:56549 |
 | сырой #1a1919 [frame] | 9 | 1 | prefinal-order-flow | 6606:222681 6606:228124 6606:228204 |
 | сырой эффект: drop 3,4 r10 s0 #311717@0.08 + glass | 9 | 1 | prefinal-order-flow | I6606:223496;1376:22172 I6606:224456;15:3905 I6606:224967;1376:22172 |
+| сырой #23354d [shape] | 9 | 1 | primerka-switched | 7151:56347 |
+| сырой #f4bb40 [shape] | 9 | 1 | primerka-switched | 7151:56347 |
 | [System Background/Light/Primary] [frame] — нет в маппинге | 8 | 1 | prefinal-order-flow | I6616:280362;24:1304 6616:280374 I6616:280374;1066:7921 |
+| шрифт без стиля: WB Sans Bold 30/100 | 8 | 1 | primerka-switched | I7151:55867;3131:32917;3131:30431 |
+| сырой #232326 [shape] | 8 | 1 | primerka-switched | I7151:56170;619:1373 |
+| сырой #0f0f1e@0.90 [text] | 8 | 1 | primerka-switched | I7151:56689;1284:42181 |
+| сырой #242428 [text] | 8 | 1 | primerka-switched | I7151:56749;907:124131;859:104820 |
+| сырой #000000@0.12 [shape] | 8 | 1 | primerka-switched | 7151:56148 |
+| сырой эффект: drop 0,1 r2 s0 #000000@0.20 | 8 | 1 | primerka-switched | 7151:56497 |
+| сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff | 8 | 1 | primerka-switched | 7151:57742 |
 | {Color:tx-bg/level 1 base} [stroke] — нет правила | 7 | 1 | prefinal-order-flow | I6606:221738;40006214:22340;40001478:11677;6606:230528;40003372:84930 I6606:228408;40001478:11677;6606:234356;40003372:84930 I6606:228847;40001478:11677;6606:234597;40003372:84930 |
 | сырой #dc723e [shape] | 7 | 1 | prefinal-order-flow | I6606:221738;40006214:22340;40001478:11677;6606:230540;427:15332;427:17588 I6606:228408;40001478:11677;6606:234368;427:15332;427:17588 I6606:228847;40001478:11677;6606:234609;427:15332;427:17588 |
 | сырой #c73f35 [shape] | 7 | 1 | prefinal-order-flow | I6606:221738;40006214:22340;40001478:11677;6606:230540;427:15332;427:17589 I6606:228408;40001478:11677;6606:234368;427:15332;427:17589 I6606:228847;40001478:11677;6606:234609;427:15332;427:17589 |
@@ -148,6 +166,8 @@
 | сырой #6ca152 [shape] | 6 | 1 | prefinal-order-flow | I6981:197690;69:114;6981:197610;427:17606 I6981:197930;69:114;6981:197850;427:17606 I6981:198136;69:114;6981:198056;427:17606 |
 | сырой #5288c7 [shape] | 6 | 1 | prefinal-order-flow | I6981:197690;69:114;6981:197610;427:17607 I6981:197930;69:114;6981:197850;427:17607 I6981:198136;69:114;6981:198056;427:17607 |
 | шрифт без стиля: Inter Semi Bold 34/auto | 6 | 1 | prefinal-order-flow | 6632:182489 6632:182229 6616:280665 |
+| сырой #444444 [frame] | 6 | 1 | primerka-switched | 7151:54575 |
+| шрифт без стиля: SF Pro Regular 14/16 | 6 | 1 | primerka-switched | 7151:56510 |
 | сырой #8c8c8c [text] | 5 | 1 | prefinal-order-flow | 6632:182231 6616:280667 6632:182499 |
 | шрифт без стиля: Inter Regular 18/auto | 5 | 1 | prefinal-order-flow | 6632:182231 6616:280667 6632:182499 |
 | градиент Shimmer (ffffff@0>ffffff@0.29>…, 33 стопа) → [Gradients/Shimmer] — спорное, не применено (18.11) | 5 | 1 | prefinal-order-flow | I6606:223273;69:109;6606:231825;1075:43848 I6606:223301;69:109;6606:231866;1075:43848 I6606:225585;69:109;6606:232893;1075:43848 |
@@ -157,17 +177,33 @@
 | {Color:tx-notifications/bg-error} [frame] — нет в маппинге | 5 | 1 | prefinal-order-flow | I6606:223496;1376:22172 I6606:224967;1376:22172 I6606:225697;1376:22172 |
 | сырой эффект: drop 0,0 r6 s0 #000000@0.05 | 5 | 1 | prefinal-order-flow | I6616:280362;24:1304 I6616:280363;24:1289 I6616:280364;24:1473 |
 | шрифт без стиля: Inter Semi Bold 18/auto | 5 | 1 | prefinal-order-flow | 6622:182429 6623:182229 6627:182229 |
+| эффект [.blur tiny] — нет в маппинге | 5 | 1 | primerka-switched | I7151:54629;349:4028;244:1423 |
+| сырой #23569a [shape] | 5 | 1 | primerka-switched | 7151:56590 |
+| шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED | 5 | 1 | primerka-switched | I7151:56141;2645:221737 |
 | сырой эффект: inner_shadow + background_blur | 4 | 1 | prefinal-order-flow | I7037:305294;74255:11664 I7037:305294;74255:11665 I6900:152971;74255:11664 |
 | сырой #bdfd50 [stroke] | 4 | 1 | prefinal-order-flow | 6606:224232 6606:224903 6606:226413 |
 | сырой #1d1d1e@0.87 [frame] | 4 | 1 | prefinal-order-flow | 6606:227928 6606:228973 6606:229548 |
 | сырой #e4e4e7 [text] | 4 | 1 | prefinal-order-flow | I6606:228568;69:109;6606:234425 I6606:228584;69:109;6606:234449 I6616:281606;69:109;6616:281592 |
+| шрифт без стиля: WB Sans Bold 22/auto | 4 | 1 | primerka-switched | I7151:55867;3122:27197 |
+| сырой #b1fcc0 [shape] | 4 | 1 | primerka-switched |  |
+| сырой #5abd5f [shape] | 4 | 1 | primerka-switched |  |
+| сырой #000000 [text] | 4 | 1 | primerka-switched | 7151:57053 |
+| {System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге | 4 | 1 | primerka-switched |  |
+| {System Colors:Colors/Blue} [text] — нет в маппинге | 4 | 1 | primerka-switched |  |
+| сырой #cacacc [shape] | 4 | 1 | primerka-switched | 7151:56650 |
+| сырой #ffffff@0.25 [shape] | 4 | 1 | primerka-switched | 7151:56364 |
+| шрифт без стиля: Google Sans Regular 17/20 | 4 | 1 | primerka-switched | 7151:56439 |
+| сырой эффект: drop 0,4 r12 s0 #000000@0.15 | 4 | 1 | primerka-switched | 7151:56527 |
+| сырой #d8d8d8 [shape] | 4 | 1 | primerka-switched | 7151:56532 |
+| сырой #979797 [stroke] | 4 | 1 | primerka-switched | 7151:56532 |
+| шрифт без стиля: SF Pro Text Medium 12/auto | 4 | 1 | primerka-switched | 7151:57074 |
+| шрифт без стиля: SF Pro Text Semibold 16/16 | 4 | 1 | primerka-switched | 7151:57075 |
 | сырой #8d4bf6 [stroke] | 3 | 1 | prefinal-order-flow | 3327:145594 5394:123262 5796:97953 |
 | {Safe zones:safe-top}=42 paddingTop — нет цели | 3 | 1 | prefinal-order-flow | 6981:198689 6606:229048 6616:280346 |
 | сырой эффект: drop 3,4 r10 s0 #22351e@0.08 | 3 | 1 | prefinal-order-flow | I6981:198689;15:3905 I6606:228409;15:3905 I6606:229048;15:3905 |
 | [Subheadline/Regular] — нет в маппинге | 3 | 1 | prefinal-order-flow | I6606:228203;295:1399 I6606:228348;295:1399 I6606:228972;295:1399 |
 | {Color:tx-control/neutral/bg/idle} [shape/shape] — нет правила | 3 | 1 | prefinal-order-flow | I6616:280343;400:18439;400:16501;353:1275 I6616:280343;400:18440;400:16501;353:1275 I6616:280343;400:18441;400:16501;353:1275 |
 | [Separator Color/Light/With Transparency] [stroke] — нет в маппинге | 3 | 1 | prefinal-order-flow | I6616:280375;1066:7926 I6616:280375;1066:7946 I6616:280375;1066:7941 |
-| сырой #ffffff@0.10 [stroke] | 2 | 1 | prefinal-order-flow | 4010:152831 6606:228587 |
 | сырой #75fb4e@0.05 [frame] | 2 | 1 | prefinal-order-flow | 6606:230515 6606:222500 |
 | сырой #b4fd4f@0.50 [stroke] | 2 | 1 | prefinal-order-flow | 6606:230515 6606:222500 |
 | текст со смешанными стилями — оставлено | 2 | 1 | prefinal-order-flow | 6606:230518 6606:222503 |
