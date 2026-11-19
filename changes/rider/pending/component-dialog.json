@@ -57,7 +57,13 @@
       ],
       "taxiForFriends": "2314:18209",
       "whereAddress": "3775:36608"
-    }
+    },
+    "auditArchive": {
+      "page": "465:630",
+      "section": "1469:3152",
+      "name": "Dialog · audit · 2026-11-19"
+    },
+    "componentPageName": "✅ Dialog · readyfordev"
   },
   "relatedComponents": {
     "IconSurface": "AID-81, аудит 1126:3914",
