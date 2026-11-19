@@ -42,7 +42,7 @@ const SLOTS = ['fill', 'stroke', 'font', 'effect'], covPath = join(dir, 'coverag
 const cov = existsSync(covPath) ? readFileSync(covPath, 'utf8').split(/\r?\n/).filter(l => l.startsWith('M\t')).map(l => {
   const c = l.split('\t'), kv = Object.fromEntries(c.slice(3).map(x => x.split('=')));
   const p = pageById[c[2]];
-  return { name: c[1], id: c[2], by: p ? p.by : 'open', st: p?.st, nodes: Number(kv.nodes), ...Object.fromEntries(SLOTS.map(s => [s, kv[s].split('/').map(Number)])) };
+  return { name: c[1], id: c[2], by: p ? p.by : 'open', st: p?.st, extra: Boolean(p?.extra), nodes: Number(kv.nodes), ...Object.fromEntries(SLOTS.map(s => [s, kv[s].split('/').map(Number)])) };
 }) : [];
 const pct = (ok, no) => (ok + no ? `${Math.round(ok / (ok + no) * 100)} %` : '—');
 const tot = r => [0, 1, 2].map(i => SLOTS.reduce((a, s) => a + r[s][i], 0));
@@ -51,9 +51,11 @@ const covRow = (name, r) => {
   return `| ${name} | ${SLOTS.map(s => pct(r[s][0], r[s][1])).join(' | ')} | **${pct(t[0], t[1])}** | ${n(t[0])} | ${n(t[1])} | ${n(t[2])} |`;
 };
 const covSum = rs => Object.fromEntries(SLOTS.map(s => [s, [0, 1, 2].map(i => rs.reduce((a, r) => a + r[s][i], 0))]));
-const covAll = covSum(cov), covWork = covSum(cov.filter(r => r.by === 'open'));
+// страницы не из 17 копий (extra) — отдельными строками, в итоги и «кто закрыл» не входят
+const cov17 = cov.filter(r => !r.extra), covExtra = cov.filter(r => r.extra);
+const covAll = covSum(cov17), covWork = covSum(cov17.filter(r => r.by === 'open'));
 // «не покрыто» по тому, кто его закрыл
-const closed = k => cov.filter(r => r.by === k).reduce((a, r) => a + tot(r)[1], 0);
+const closed = k => cov17.filter(r => r.by === k).reduce((a, r) => a + tot(r)[1], 0);
 const [cOk, cNo] = tot(covAll), cDes = closed('des'), cArt = closed('art'), cOpen = closed('open');
 const closedSection = cov.length ? ['### Не покрыто: кто закрыл', '',
   '«Закрыто» — не покрыто на странице, которую пропустили или решили по строкам: менять её не будем, хотя подбор мог бы найтись.',
@@ -69,8 +71,9 @@ const covSection = cov.length ? ['## Покрытие: состояние коп
   'Считается всё состояние копии, не замены прогона. Единица — заливка, обводка, шрифт, эффект на видимом узле.',
   'Процент — покрыто / (покрыто + не покрыто). Вне счёта — логотипы, иллюстрации, пины, вставки маркетплейса, определены по именам приближённо.', '',
   '| страница | заливки | обводки | шрифты | эффекты | всё | покрыто | не покрыто | вне счёта |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|',
-  ...cov.map(r => covRow(r.name + (r.st && r.st !== 'work' ? ` · ${ST[r.st]}, ${BY[r.by]}` : ''), r)),
-  covRow('**Итого, в работе**', covWork), covRow('Итого, все 17', covAll), '', ...closedSection] : [];
+  ...cov17.map(r => covRow(r.name + (r.st && r.st !== 'work' ? ` · ${ST[r.st]}, ${BY[r.by]}` : ''), r)),
+  covRow('**Итого, в работе**', covWork), covRow('Итого, все 17', covAll),
+  ...covExtra.map(r => covRow(`${r.name} · не из 17`, r)), '', ...closedSection] : [];
 const decSection = ['## Решения дизайнера', '',
   `Источник — \`mappings/drafts-run/designer-decisions.json\`. ${dec.source || ''}`,
   'Пропущенные и решённые по строкам страницы в «Незаменённое» и итог «в работе» не входят; сделанные на них замены остаются.', '',
