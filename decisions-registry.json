@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
-  "registryVersion": 2,
-  "updatedAt": "2026-09-08T10:10:54.185Z",
+  "registryVersion": 3,
+  "updatedAt": "2026-10-29T12:11:30.229Z",
   "entries": [
     {
       "signature": "4qlpbs",
@@ -26,6 +26,780 @@
       "targetVariableName": "Text/Primary",
       "proposedBy": "Sergey AI",
       "proposedAt": "2026-09-08T10:10:54.185Z"
+    },
+    {
+      "signature": "1vshi2d",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:24",
+      "targetVariableName": "Icon/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1088bim",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "section",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1rkc76t",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "section",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1yjw2j2",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "15aakz4",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:3",
+      "targetVariableName": "Text/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1q8jiwv",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:4",
+      "targetVariableName": "Text/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1j255yh",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:59",
+      "targetVariableName": "Button/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "ym9f3i",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:16",
+      "targetVariableName": "Text/Constant White",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1g3wbm6",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:106",
+      "targetVariableName": "Technical/Visible Deep",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1s5p2su",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1gobyhb",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:53",
+      "targetVariableName": "Background/Constant Dark",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "j3vmp2",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:33",
+      "targetVariableName": "Icon/Constant White",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "6in6j9",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1wa7xt3",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:24",
+      "targetVariableName": "Icon/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "19b54pr",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1klerw",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "11zfbct",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1pv4ikb",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1gbnbni",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1d6ry7h",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "ygbdl4",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:33",
+      "targetVariableName": "Icon/Constant White",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "19o9ya",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:33",
+      "targetVariableName": "Icon/Constant White",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1nldplk",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1xdjplv",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:578:6769",
+      "targetVariableName": "Stroke/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1ttqvbe",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:1529:3917",
+      "targetVariableName": "Pastel/Tony",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1q8uklq",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "native",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1q9onxx",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:578:6769",
+      "targetVariableName": "Stroke/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "2o1kz7",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:86",
+      "targetVariableName": "Pastel/Apu",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "kxczz9",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:5",
+      "targetVariableName": "Text/Tertiary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "wwg0fe",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:3",
+      "targetVariableName": "Text/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "ht2i1z",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:24",
+      "targetVariableName": "Icon/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "14q9pgf",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:86",
+      "targetVariableName": "Pastel/Apu",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "10x7pye",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1rfuols",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:20",
+      "targetVariableName": "Icon/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "15j12gm",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:68:12",
+      "targetVariableName": "Background/Navbar",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "999a86",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:24",
+      "targetVariableName": "Icon/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "efl5qi",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "ignore",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1j146l8",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "ignore",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1xgy0n2",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "ignore",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "mspfzr",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "ignore",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1i5u4m8",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:7",
+      "targetVariableName": "Text/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "125qvma",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:3",
+      "targetVariableName": "Text/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "15uvc87",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:67",
+      "targetVariableName": "Field/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1twvzu4",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:21",
+      "targetVariableName": "Icon/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1pd0olm",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:4",
+      "targetVariableName": "Text/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "vlyybh",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:38",
+      "targetVariableName": "Background/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "fe7mso",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:22",
+      "targetVariableName": "Icon/Tertiary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1wqb7q6",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:29",
+      "targetVariableName": "Icon/Primary Inverted",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1r3qz0p",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:83",
+      "targetVariableName": "Pastel/Lenny",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "95jr81",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:87",
+      "targetVariableName": "Pastel/Ralph",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "15emhnk",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:17",
+      "targetVariableName": "Text/Constant White Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "12d0ztl",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:84",
+      "targetVariableName": "Pastel/Lisa",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "12ohvow",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:86",
+      "targetVariableName": "Pastel/Apu",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "pe3xkt",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:82",
+      "targetVariableName": "Pastel/Barney",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1qwyb8t",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:85",
+      "targetVariableName": "Pastel/Bart",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1p2u98c",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:113:20",
+      "targetVariableName": "Background/Overlay",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "tbbcxu",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:141:21",
+      "targetVariableName": "Text/Neon",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1xjqbke",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:57",
+      "targetVariableName": "Background/Zone Warning",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1gqsgx",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:25",
+      "targetVariableName": "Icon/Warning",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "qtxjwf",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:3",
+      "targetVariableName": "Text/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "yfn6sv",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:24",
+      "targetVariableName": "Icon/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1hszhl",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:141:23",
+      "targetVariableName": "Stroke/Neon",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "5wz01y",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:82",
+      "targetVariableName": "Pastel/Barney",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1e8g0ix",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:87",
+      "targetVariableName": "Pastel/Ralph",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1e7558q",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:68:12",
+      "targetVariableName": "Background/Navbar",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "yj6yvj",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:1545:2058",
+      "targetVariableName": "Background/Tab Selected",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1hub0t3",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:7",
+      "targetVariableName": "Text/Accent",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "189gslc",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:20",
+      "targetVariableName": "Icon/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "24bkji",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:12",
+      "targetVariableName": "Text/Primary Inverted",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "hhhzo6",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1rjgrwr",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1muhrge",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1k18scz",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "17ffc6l",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "8t108l",
+      "decision": "ignored",
+      "category": "colors",
+      "comment": "car",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "u0z9lw",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:37",
+      "targetVariableName": "Background/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "14wet7i",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:20",
+      "targetVariableName": "Icon/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1p9oyiy",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:20",
+      "targetVariableName": "Icon/Primary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "t3djlo",
+      "decision": "candidate",
+      "category": "colors",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1pgo17a",
+      "decision": "candidate",
+      "category": "colors",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "1lo54yw",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:29",
+      "targetVariableName": "Icon/Primary Inverted",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
+    },
+    {
+      "signature": "xtoxjb",
+      "decision": "mapped",
+      "category": "colors",
+      "targetVariableId": "VariableID:23:4",
+      "targetVariableName": "Text/Secondary",
+      "targetLibraryFileKey": "yrfG6u9osujKX8e1B14lpT",
+      "proposedBy": "Sergey AI",
+      "proposedAt": "2026-10-29T12:11:30.229Z"
     }
   ]
 }
