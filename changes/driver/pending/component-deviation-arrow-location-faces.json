@@ -1,0 +1,18 @@
+{
+  "id": "component-deviation-arrow-location-faces",
+  "type": "component",
+  "exceptionType": "token-integrity",
+  "artifact": "arrow_location",
+  "product": "driver",
+  "standard": "skills/_shared/standards/token-integrity.md §10–11 — цвет не может быть raw-value; хекс — только при явном одобрении конкретных значений",
+  "actual": "Три грани стрелки, шесть хексов в радиальных градиентах без токенов: #C166F9→#9542FF, #7941C0→#8526FF, #6203DC→#9937FB (Figma o0IUYIS7vadbmXPXd81ql9, 89:5936, 89:5937, 89:5938; те же хексы — в пине Driver 89:5852). По теме не переключаются.",
+  "reason": "Стрелка — по сути иллюстрация, переезжает в файл иконок Driver; отдельные токены на градиенты не заводятся. Решение arturuxui 2026-11-09 после обсуждения с Сергеем. Вида «иллюстрация» в стандарте нет; решение по записи — decision:pd (issue заводит Standards).",
+  "recommendation": null,
+  "recommendationPending": "Условие снятия пишется после ответа дизайнера, меняется ли оттенок граней между днём и ночью: при «да» одной иллюстрацией с хексами не решить — два ассета или токен.",
+  "status": "temporary",
+  "reviewAt": "release",
+  "pendingRef": "changes/driver/pending/component-deviation-arrow-location-faces.json",
+  "decidedBy": "arturuxui, 2026-11-09; ждёт decision:pd",
+  "created": "2026-11-09",
+  "author": "arturuxui"
+}
