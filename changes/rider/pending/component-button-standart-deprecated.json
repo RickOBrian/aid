@@ -1,0 +1,32 @@
+{
+  "id": "component-button-standart-deprecated",
+  "type": "component",
+  "changeType": "deprecated",
+  "taskType": "evolve",
+  "artifact": "Button Standart (257:2549)",
+  "componentId": "button",
+  "product": "rider",
+  "changeSummary": "Прежний Button Standart 257:2549 (Rider Components, пейдж Buttons 231:1272, key 46bed278…) устаревает: замена — новый Button 1513:3772 (component-button). Новый ключ — новый компонент (протокол §3.3), поэтому устаревание — отдельной строкой. Соответствие для замены — блок 11 гайда сборки: Appearance → Variant (Primary Overlay и Secondary Overlay → Inverted), State=Loading → State=Pending, Description → Show Description, ширина 200 → Width Hug / Fill. Перенос 257:2549 на пейдж Archive 465:630 и пометка «Устарел…» в описании — после приёмки сборки нового, как у Button Floating 238:25. Способ пометки устаревания в Figma не решён — пробел 1 протокола.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "deprecated",
+    "impact": "minor",
+    "description": "Button Standart: устарел, замена — Button"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "componentPage": "231:1272",
+    "components": {
+      "Button Standart (legacy)": "257:2549"
+    },
+    "replacement": "1513:3772"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-09",
+  "author": "sergej"
+}
