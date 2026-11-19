@@ -224,4 +224,6 @@ export const SHEET_ICONS = {
   passenger: '/icons/rider/addresses/passenger.svg',
   plus: '/icons/rider/controls/plus.svg',
   placeholder: '/icons/rider/actions/placeholder.svg',
+  /** ic_delete — иконка `.ButtonClose`. */
+  close: '/icons/rider/controls/delete.svg',
 } as const;

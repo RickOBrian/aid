@@ -175,6 +175,33 @@ function SheetContent({ mode }: { mode: SheetMode }) {
   );
 }
 
+/**
+ * `.ButtonClose` (Rider Components 1576:8284) — тот же крест, что в Dialog. Веб-реализации Dialog
+ * в портале нет — первая здесь. Зона нажатия 44×44 абсолютом от правого верхнего угла шторки:
+ * сверху 12, справа 8; круг 28 (Background/Secondary, отступ space-2, radius-pill), ic_delete Icon/Tertiary.
+ */
+function ButtonClose({ mode, onClick }: { mode: SheetMode; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className="bsx-close"
+      aria-label="Закрыть"
+      onClick={onClick}
+      style={{ top: sheetSpace('space-12'), right: sheetSpace('space-8') }}
+    >
+      <span
+        style={{
+          padding: sheetSpace('space-2'),
+          borderRadius: sheetRadius('radius-pill'),
+          background: sheetColor('Background/Secondary', mode),
+        }}
+      >
+        <Icon src={SHEET_ICONS.close} color={sheetColor('Icon/Tertiary', mode)} />
+      </span>
+    </button>
+  );
+}
+
 function HomeIndicator({ mode }: { mode: SheetMode }) {
   return (
     <div className="bsx-home" aria-hidden="true" style={{ height: HOME_INDICATOR_HEIGHT }}>
@@ -198,46 +225,66 @@ export function BottomSheetPreviewPage() {
   const [width, setWidth] = useState<(typeof SCREEN_WIDTHS)[number]>(390);
   const [detent, setDetent] = useState<Detent>('default');
   const [dragTop, setDragTop] = useState<number | null>(null);
+  /** Show Close — крест закрытия (по умолчанию выключен, как в Figma). */
+  const [showClose, setShowClose] = useState(false);
+  /** Шторка закрыта крестом (допущение до решения дизайнера: тап закрывает, как в Dialog). */
+  const [closed, setClosed] = useState(false);
+  const reopenRef = useRef<HTMLButtonElement>(null);
   const dragRef = useRef<DragState | null>(null);
   const suppressClickUntilRef = useRef(0);
   const sheetRef = useRef<HTMLDivElement>(null);
   const draggerRef = useRef<HTMLButtonElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
-  const prevDetentRef = useRef<Detent>(detent);
+  const fullOpen = detent === 'full' && !closed;
+  const prevFullOpenRef = useRef(fullOpen);
 
   useEffect(() => {
     document.title = 'BottomSheet · демо';
   }, []);
 
   const tops = useMemo(() => detentTops(SCREEN_HEIGHT, COLLAPSED_HEIGHT, CONTENT_HEIGHT), []);
-  const top = dragTop ?? tops[detent];
-  const progress = overlayProgress(top, tops);
+  const top = closed ? SCREEN_HEIGHT : (dragTop ?? tops[detent]);
+  const progress = closed ? 0 : overlayProgress(top, tops);
   const raised = progress >= 0.5;
 
   // Full-Screen: фокус в шторке, после выхода — на прежнее место.
   useEffect(() => {
-    const prev = prevDetentRef.current;
-    prevDetentRef.current = detent;
-    if (detent === 'full' && prev !== 'full') {
+    const prev = prevFullOpenRef.current;
+    prevFullOpenRef.current = fullOpen;
+    if (fullOpen && !prev) {
       const active = document.activeElement as HTMLElement | null;
       returnFocusRef.current = active && !sheetRef.current?.contains(active) ? active : null;
       if (!sheetRef.current?.contains(document.activeElement)) {
         draggerRef.current?.focus();
       }
-    } else if (prev === 'full' && detent !== 'full' && returnFocusRef.current) {
-      returnFocusRef.current.focus();
-      returnFocusRef.current = null;
+    } else if (prev && !fullOpen) {
+      if (returnFocusRef.current) {
+        returnFocusRef.current.focus();
+        returnFocusRef.current = null;
+      } else if (closed) {
+        reopenRef.current?.focus();
+      }
     }
-  }, [detent]);
+  }, [fullOpen, closed]);
 
   const goTo = useCallback((next: Detent) => {
     setDragTop(null);
+    setClosed(false);
     setDetent(next);
   }, []);
 
+  const closeSheet = () => {
+    setDragTop(null);
+    setClosed(true);
+    if (sheetRef.current?.contains(document.activeElement) && !fullOpen) {
+      window.setTimeout(() => reopenRef.current?.focus(), 0);
+    }
+  };
+
   // Движение и отпускание слушаем на window: указатель быстро уходит за край шторки.
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0 || dragRef.current) return;
+    if (e.button !== 0 || dragRef.current || closed) return;
+    if ((e.target as HTMLElement).closest('.bsx-close')) return;
     const from = detent;
     const drag: DragState = {
       pointerId: e.pointerId,
@@ -306,7 +353,7 @@ export function BottomSheetPreviewPage() {
       goTo('default');
       return;
     }
-    if (e.key !== 'Tab' || detent !== 'full' || !sheetRef.current) return;
+    if (e.key !== 'Tab' || !fullOpen || !sheetRef.current) return;
     const items = Array.from(sheetRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));
     if (items.length === 0) return;
     const first = items[0];
@@ -374,14 +421,23 @@ export function BottomSheetPreviewPage() {
               </label>
             ))}
           </fieldset>
+          <fieldset className="bsx-switch">
+            <legend className="pf-label-s bsx-muted">Крест · Show Close</legend>
+            {[false, true].map((on) => (
+              <label key={String(on)} className={`bsx-option pf-label-s${showClose === on ? ' is-active' : ''}`}>
+                <input type="radio" name="bsx-close" checked={showClose === on} onChange={() => setShowClose(on)} />
+                {on ? 'Вкл' : 'Выкл'}
+              </label>
+            ))}
+          </fieldset>
           <fieldset className="bsx-switch bsx-switch--column">
             <legend className="pf-label-s bsx-muted">В остановку</legend>
             {[...DETENTS].reverse().map((d) => (
               <button
                 key={d}
                 type="button"
-                className={`bsx-option pf-label-s${detent === d && !dragging ? ' is-active' : ''}`}
-                aria-pressed={detent === d}
+                className={`bsx-option pf-label-s${detent === d && !dragging && !closed ? ' is-active' : ''}`}
+                aria-pressed={detent === d && !closed}
                 onClick={() => goTo(d)}
               >
                 {DETENT_LABELS[d]}
@@ -391,13 +447,20 @@ export function BottomSheetPreviewPage() {
           <dl className="bsx-facts pf-body-s">
             <div>
               <dt className="bsx-muted">Сейчас</dt>
-              <dd className="pf-code-s">{dragging ? 'тянется' : DETENT_LABELS[detent]} · верх {Math.round(top)}</dd>
+              <dd className="pf-code-s">
+                {closed ? 'закрыта' : dragging ? 'тянется' : DETENT_LABELS[detent]} · верх {Math.round(top)}
+              </dd>
             </div>
             <div>
               <dt className="bsx-muted">Анимация</dt>
               <dd className="pf-code-s">{ANIMATION_MS} мс ease-in-out</dd>
             </div>
           </dl>
+          {closed && (
+            <button ref={reopenRef} type="button" className="bsx-option pf-label-s" onClick={() => goTo('default')}>
+              Открыть шторку снова
+            </button>
+          )}
           <p className="pf-body-s bsx-muted">
             При «уменьшении движения» в системе шторка встаёт в остановку без анимации.
           </p>
@@ -421,10 +484,11 @@ export function BottomSheetPreviewPage() {
             <div
               ref={sheetRef}
               className={`bsx-sheet${dragging ? ' is-dragging' : ''}`}
-              role={detent === 'full' ? 'dialog' : 'region'}
-              aria-modal={detent === 'full' ? true : undefined}
+              role={fullOpen ? 'dialog' : 'region'}
+              aria-modal={fullOpen ? true : undefined}
+              aria-hidden={closed ? true : undefined}
               aria-label="Шторка: куда поедем"
-              style={{ top }}
+              style={{ top, visibility: closed ? 'hidden' : undefined, transition: closed ? 'top var(--bsx-ms) ease-in-out, visibility 0s var(--bsx-ms)' : undefined }}
               onPointerDown={onPointerDown}
               onClickCapture={onSheetClickCapture}
               onKeyDown={onSheetKeyDown}
@@ -463,6 +527,7 @@ export function BottomSheetPreviewPage() {
                 <SheetContent mode={mode} />
               </div>
               <HomeIndicator mode={mode} />
+              {showClose && <ButtonClose mode={mode} onClick={closeSheet} />}
             </div>
           </div>
         </div>
@@ -480,6 +545,11 @@ export function BottomSheetPreviewPage() {
           ней на затемнении (день #FFFFFF, ночь #0F0F1F 54 %) — допущение аудита; фон карты-заглушки; Background/Tab Selected
           (есть в Rider Tokens, ещё не в данных портала). Источник — Rider Components, пейдж «👀 Bottom Sheet · audit»
           1093:353.
+        </p>
+        <p>
+          Крест (Show Close, по умолчанию выключен) — открыто у дизайнера: с крестом он перекрывает правую иконку строки
+          поиска, как резервировать место справа — не решено. Тап по кресту закрывает шторку, как в Dialog, — допущение до
+          решения (вариант — свернуть в Collapsed). Ночная полоска над листом на затемнении — решается на приёмке аудита.
         </p>
       </section>
     </div>
@@ -605,6 +675,9 @@ const BOTTOM_SHEET_PREVIEW_STYLE = `
 .bsx-row-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .bsx-search-input:focus-visible, .bsx-row:focus-visible, .bsx-icon-button:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: -2px; }
 .bsx-icon { display: block; flex: 0 0 auto; width: 24px; height: 24px; -webkit-mask-size: 24px 24px; mask-size: 24px 24px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.bsx-close { position: absolute; z-index: 2; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.bsx-close span { display: flex; }
+.bsx-close:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: -2px; border-radius: 50%; }
 .bsx-home { position: relative; flex: 0 0 auto; }
 .bsx-home span { position: absolute; left: 50%; bottom: 8px; width: 144px; height: 5px; border-radius: 5px; transform: translateX(-50%); }
 
