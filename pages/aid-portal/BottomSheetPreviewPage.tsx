@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { withBase } from './base';
+import { DsPageHeader } from './DsPageHeader';
+import { DS_PORTAL_LAYOUT_TOKENS as T } from './dsChangelogTable';
+import { HUB_ROUTES } from './hubData';
 import {
   DETENTS,
   DETENT_LABELS,
@@ -202,6 +205,34 @@ function ButtonClose({ mode, onClick }: { mode: SheetMode; onClick: () => void }
   );
 }
 
+function Segment<T extends string | number | boolean>({
+  label,
+  options,
+  value,
+  onChange,
+  wrap = false,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T | null;
+  onChange: (value: T) => void;
+  wrap?: boolean;
+}) {
+  const id = `bsx-seg-${label.replace(/[^a-zа-я0-9]+/gi, '-').toLowerCase()}`;
+  return (
+    <div className="bsx-field">
+      <span id={id}>{label}</span>
+      <div className={`bsx-segment${wrap ? ' bsx-segment--wrap' : ''}`} role="group" aria-labelledby={id}>
+        {options.map((option) => (
+          <button key={String(option.value)} type="button" aria-pressed={value === option.value} onClick={() => onChange(option.value)}>
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function HomeIndicator({ mode }: { mode: SheetMode }) {
   return (
     <div className="bsx-home" aria-hidden="true" style={{ height: HOME_INDICATOR_HEIGHT }}>
@@ -388,83 +419,74 @@ export function BottomSheetPreviewPage() {
   } as CSSProperties;
 
   return (
-    <div className="bsx-page">
+    <div className="bsx">
       <style>{BOTTOM_SHEET_PREVIEW_STYLE}</style>
-      <header className="bsx-header">
-        <p className="pf-label-xs-caps bsx-muted">Rider · AID-79 · аудит · presentbook-11</p>
-        <h1 className="pf-heading-l bsx-h1">BottomSheet · демо</h1>
-        <p className="pf-body-m bsx-muted bsx-lead">
-          Тяните шторку мышью или пальцем — при отпускании она доводится до ближайшей остановки с учётом скорости. Тап по
-          затемнению возвращает в Default. Полоска — кнопка: Enter разворачивает или сворачивает, стрелки вверх и вниз
-          меняют остановку, Esc из Expanded и Full-Screen — в Default.
-        </p>
-        <span className="pf-badge pf-badge--warning">Не опубликовано · только по прямой ссылке</span>
-      </header>
-
-      <div className="bsx-layout">
-        <section className="bsx-controls" aria-label="Настройки демо">
-          <fieldset className="bsx-switch">
-            <legend className="pf-label-s bsx-muted">Тема</legend>
-            {MODES.map((m) => (
-              <label key={m.mode} className={`bsx-option pf-label-s${mode === m.mode ? ' is-active' : ''}`}>
-                <input type="radio" name="bsx-mode" checked={mode === m.mode} onChange={() => setMode(m.mode)} />
-                {m.label}
-              </label>
-            ))}
-          </fieldset>
-          <fieldset className="bsx-switch">
-            <legend className="pf-label-s bsx-muted">Ширина экрана</legend>
-            {SCREEN_WIDTHS.map((w) => (
-              <label key={w} className={`bsx-option pf-label-s${width === w ? ' is-active' : ''}`}>
-                <input type="radio" name="bsx-width" checked={width === w} onChange={() => setWidth(w)} />
-                {w}
-              </label>
-            ))}
-          </fieldset>
-          <fieldset className="bsx-switch">
-            <legend className="pf-label-s bsx-muted">Крест · Show Close</legend>
-            {[false, true].map((on) => (
-              <label key={String(on)} className={`bsx-option pf-label-s${showClose === on ? ' is-active' : ''}`}>
-                <input type="radio" name="bsx-close" checked={showClose === on} onChange={() => setShowClose(on)} />
-                {on ? 'Вкл' : 'Выкл'}
-              </label>
-            ))}
-          </fieldset>
-          <fieldset className="bsx-switch bsx-switch--column">
-            <legend className="pf-label-s bsx-muted">В остановку</legend>
-            {[...DETENTS].reverse().map((d) => (
-              <button
-                key={d}
-                type="button"
-                className={`bsx-option pf-label-s${detent === d && !dragging && !closed ? ' is-active' : ''}`}
-                aria-pressed={detent === d && !closed}
-                onClick={() => goTo(d)}
-              >
-                {DETENT_LABELS[d]}
-              </button>
-            ))}
-          </fieldset>
-          <dl className="bsx-facts pf-body-s">
-            <div>
-              <dt className="bsx-muted">Сейчас</dt>
-              <dd className="pf-code-s">
-                {closed ? 'закрыта' : dragging ? 'тянется' : DETENT_LABELS[detent]} · верх {Math.round(top)}
-              </dd>
-            </div>
-            <div>
-              <dt className="bsx-muted">Анимация</dt>
-              <dd className="pf-code-s">{ANIMATION_MS} мс ease-in-out</dd>
-            </div>
-          </dl>
-          {closed && (
-            <button ref={reopenRef} type="button" className="bsx-option pf-label-s" onClick={() => goTo('default')}>
-              Открыть шторку снова
-            </button>
-          )}
-          <p className="pf-body-s bsx-muted">
-            При «уменьшении движения» в системе шторка встаёт в остановку без анимации.
+      <main className="bsx-shell">
+        <DsPageHeader
+          title="BottomSheet · демо"
+          backHref={HUB_ROUTES.components}
+          backAriaLabel="Назад к Components"
+          showSearch={false}
+        />
+        <div className="bsx-intro">
+          <p>
+            Шторка Rider из аудита AID-79. Тяните её мышью или пальцем — при отпускании она встаёт в ближайшую остановку с
+            учётом скорости. Тап по затемнению возвращает в Default. Полоска — кнопка: Enter разворачивает или сворачивает,
+            стрелки вверх и вниз меняют остановку, Esc из Expanded и Full-Screen — в Default.
           </p>
-        </section>
+          <span className="pf-badge pf-badge--warning">Не опубликовано · только по прямой ссылке</span>
+        </div>
+
+        <div className="bsx-layout">
+          <section className="bsx-panel" aria-labelledby="bsx-controls-title">
+            <h2 id="bsx-controls-title">Настройки</h2>
+            <Segment
+              label="Тема"
+              options={MODES.map((m) => ({ value: m.mode, label: m.label }))}
+              value={mode}
+              onChange={setMode}
+            />
+            <Segment
+              label="Ширина экрана"
+              options={SCREEN_WIDTHS.map((w) => ({ value: w, label: String(w) }))}
+              value={width}
+              onChange={setWidth}
+            />
+            <Segment
+              label="Крест · Show Close"
+              options={[
+                { value: false, label: 'Выкл' },
+                { value: true, label: 'Вкл' },
+              ]}
+              value={showClose}
+              onChange={setShowClose}
+            />
+            <Segment
+              label="Остановка"
+              options={DETENTS.map((d) => ({ value: d, label: DETENT_LABELS[d] }))}
+              value={closed || dragging ? null : detent}
+              onChange={goTo}
+              wrap
+            />
+            {closed && (
+              <button ref={reopenRef} type="button" className="bsx-btn" onClick={() => goTo('default')}>
+                Открыть шторку снова
+              </button>
+            )}
+            <dl className="bsx-facts">
+              <div>
+                <dt>Сейчас</dt>
+                <dd>
+                  {closed ? 'закрыта' : dragging ? 'тянется' : DETENT_LABELS[detent]} · верх {Math.round(top)}
+                </dd>
+              </div>
+              <div>
+                <dt>Анимация</dt>
+                <dd>{ANIMATION_MS} мс ease-in-out</dd>
+              </div>
+            </dl>
+            <p className="bsx-note">При «уменьшении движения» в системе шторка встаёт в остановку без анимации.</p>
+          </section>
 
         <div className="bsx-stage">
           <div className={`bsx-screen bsx-screen--${mode}`} style={screenStyle}>
@@ -533,7 +555,8 @@ export function BottomSheetPreviewPage() {
         </div>
       </div>
 
-      <section className="bsx-notes pf-body-s bsx-muted" aria-label="Пояснения">
+      <section className="bsx-panel bsx-notes" aria-labelledby="bsx-notes-title">
+        <h2 id="bsx-notes-title">Что показано и что открыто</h2>
         <p>
           Остановки по аудиту: Collapsed — по содержимому (полоска и строка поиска), Default — около половины экрана (верх
           ≈410 из 844), Expanded — по содержимому, верх не выше ≈186, карта видна полосой, Full-Screen — до статус-бара. В
@@ -552,74 +575,104 @@ export function BottomSheetPreviewPage() {
           решения (вариант — свернуть в Collapsed). Ночная полоска над листом на затемнении — решается на приёмке аудита.
         </p>
       </section>
+      </main>
     </div>
   );
 }
 
 const BOTTOM_SHEET_PREVIEW_STYLE = `
-.bsx-page {
+.bsx, .bsx *, .bsx *::before, .bsx *::after { box-sizing: border-box; }
+.bsx {
+  font-family: ${T.fontFamily};
+  color: ${T.textPrimary};
+  background: ${T.surface};
   min-height: 100vh;
-  box-sizing: border-box;
-  background: var(--pf-bg-surface-muted);
-  color: var(--pf-text-primary);
-  font-family: var(--pf-type-family-sans-1);
-  padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
-  display: flex;
-  flex-direction: column;
-  gap: var(--pf-spacing-24);
-  max-width: 1280px;
-  margin: 0 auto;
+  padding: ${T.pagePaddingDesktop};
 }
-@media (max-width: 767px) {
-  .bsx-page { padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40); }
-}
-.bsx-header { display: flex; flex-direction: column; align-items: flex-start; gap: var(--pf-spacing-8); }
-.bsx-h1, .bsx-header p { margin: 0; }
-.bsx-lead { max-width: 72ch; }
-.bsx-muted { color: var(--pf-text-secondary); margin: 0; }
+.bsx-shell { max-width: 1180px; margin: 0 auto; display: grid; gap: var(--pf-spacing-24); }
+.bsx-shell > .ds-page-header { margin-bottom: 0; }
+.bsx-intro { display: flex; flex-direction: column; align-items: flex-start; gap: var(--pf-spacing-12); }
+.bsx-intro p { margin: 0; font: var(--pf-font-body-m); color: ${T.textSecondary}; max-width: 70ch; }
 .bsx-layout { display: flex; flex-wrap: wrap; gap: var(--pf-spacing-24); align-items: flex-start; }
-.bsx-controls {
-  flex: 1 1 260px;
-  max-width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--pf-spacing-20);
-  background: var(--pf-bg-surface-main);
-  border: 1px solid var(--pf-line-default);
+.bsx-panel {
+  border: 1px solid ${T.border};
   border-radius: var(--pf-radius-l);
-  padding: var(--pf-spacing-20);
+  padding: var(--pf-spacing-16);
+  display: grid;
+  gap: var(--pf-spacing-16);
+  align-content: start;
 }
-.bsx-switch { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--pf-spacing-8); }
-.bsx-switch legend { margin-bottom: var(--pf-spacing-8); padding: 0; }
-.bsx-switch--column { flex-direction: column; }
-.bsx-option {
+.bsx-panel h2 { margin: 0; font: var(--pf-font-heading-s); }
+.bsx-layout > .bsx-panel { flex: 1 1 280px; max-width: 360px; }
+.bsx-field { display: flex; flex-direction: column; gap: var(--pf-spacing-6); }
+.bsx-field > span {
+  font: var(--pf-font-label-xs-caps);
+  letter-spacing: var(--pf-tracking-label-xs-caps);
+  text-transform: uppercase;
+  color: ${T.textSecondary};
+}
+.bsx-segment {
   display: inline-flex;
-  align-items: center;
-  gap: var(--pf-spacing-8);
-  padding: var(--pf-spacing-8) var(--pf-spacing-12);
-  border: 1px solid var(--pf-line-default);
+  align-self: flex-start;
+  border: 1px solid ${T.border};
   border-radius: var(--pf-radius-m);
-  background: var(--pf-bg-surface-main);
-  color: var(--pf-text-primary);
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
+  background: ${T.surface};
 }
-.bsx-option:hover { border-color: var(--pf-line-hover); }
-.bsx-option.is-active { background: var(--pf-bg-inverse-main); color: var(--pf-text-inverse); border-color: var(--pf-bg-inverse-main); }
-.bsx-option input { position: absolute; opacity: 0; pointer-events: none; }
-.bsx-option:focus-within, .bsx-option:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: 2px; }
-.bsx-facts { margin: 0; display: flex; flex-direction: column; gap: var(--pf-spacing-8); }
+.bsx-segment > button:first-child { border-top-left-radius: inherit; border-bottom-left-radius: inherit; }
+.bsx-segment > button:last-child { border-top-right-radius: inherit; border-bottom-right-radius: inherit; border-right: none; }
+.bsx-segment button {
+  margin: 0;
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
+  border: none;
+  border-right: 1px solid ${T.border};
+  background: transparent;
+  font: var(--pf-font-label-s);
+  color: ${T.textPrimary};
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.bsx-segment button[aria-pressed="true"] { background: var(--ds-selected-bg); color: var(--ds-selected-text); }
+.bsx-segment button:focus-visible { position: relative; z-index: 1; outline: var(--pf-focus-ring); outline-offset: var(--pf-focus-offset); }
+.bsx-segment--wrap { display: grid; grid-template-columns: 1fr 1fr; align-self: stretch; }
+.bsx-segment--wrap > button { border-radius: 0; border-bottom: 1px solid ${T.border}; }
+.bsx-segment--wrap > button:nth-child(2n) { border-right: none; }
+.bsx-segment--wrap > button:nth-last-child(-n + 2) { border-bottom: none; }
+.bsx-segment--wrap > button:first-child { border-top-left-radius: inherit; }
+.bsx-segment--wrap > button:nth-child(2) { border-top-right-radius: inherit; }
+.bsx-segment--wrap > button:nth-last-child(2) { border-bottom-left-radius: inherit; }
+.bsx-segment--wrap > button:last-child { border-bottom-right-radius: inherit; border-top-right-radius: 0; }
+.bsx-btn {
+  justify-self: start;
+  margin: 0;
+  padding: var(--pf-spacing-6) var(--pf-spacing-12);
+  border: 1px solid ${T.border};
+  border-radius: var(--pf-radius-s);
+  background: ${T.surface};
+  color: ${T.textPrimary};
+  font: var(--pf-font-label-s);
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+.bsx-btn:hover { border-color: ${T.borderHover}; }
+.bsx-btn:focus-visible { outline: var(--pf-focus-ring); outline-offset: var(--pf-focus-offset); }
+.bsx-facts { margin: 0; display: grid; gap: var(--pf-spacing-8); }
 .bsx-facts div { display: flex; justify-content: space-between; gap: var(--pf-spacing-12); }
-.bsx-facts dd { margin: 0; }
-.bsx-stage { flex: 0 1 auto; max-width: 100%; overflow-x: auto; }
-.bsx-notes { display: flex; flex-direction: column; gap: var(--pf-spacing-8); max-width: 80ch; }
+.bsx-facts dt { font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+.bsx-facts dd { margin: 0; font: var(--pf-font-code-s); font-variant-numeric: tabular-nums; }
+.bsx-note { margin: 0; font: var(--pf-font-body-s); color: ${T.textSecondary}; }
+.bsx-stage { flex: 0 1 auto; max-width: 100%; overflow-x: auto; padding: 1px; }
+.bsx-notes { max-width: 80ch; }
+.bsx-notes p { margin: 0; font: var(--pf-font-body-m); color: ${T.textSecondary}; }
+@media (max-width: 767px) {
+  .bsx { padding: ${T.pagePaddingMobile}; }
+}
 
 .bsx-screen {
   position: relative;
   overflow: hidden;
-  border-radius: 44px;
-  box-shadow: 0 0 0 1px var(--pf-line-default);
+  border-radius: var(--pf-radius-xl);
+  /* Обводка тенью, а не border: при border-box рамка съела бы 2 px ширины экрана 390/360. */
+  box-shadow: 0 0 0 1px ${T.border};
   user-select: none;
   -webkit-user-select: none;
   font-family: 'SF Pro Text', -apple-system, system-ui, sans-serif;
@@ -657,7 +710,7 @@ const BOTTOM_SHEET_PREVIEW_STYLE = `
   cursor: inherit;
 }
 .bsx-dragger span { display: block; }
-.bsx-dragger:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: -2px; border-radius: 8px; }
+.bsx-dragger:focus-visible { outline: var(--pf-focus-ring); outline-offset: -2px; border-radius: var(--pf-radius-m); }
 .bsx-sheet-content { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 .bsx-search { display: flex; align-items: center; box-sizing: border-box; flex: 0 0 auto; }
 .bsx-search-input, .bsx-row, .bsx-icon-button {
@@ -673,11 +726,11 @@ const BOTTOM_SHEET_PREVIEW_STYLE = `
 .bsx-icon-button { display: flex; }
 .bsx-row { display: flex; align-items: center; width: 100%; box-sizing: border-box; flex: 0 0 auto; }
 .bsx-row-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
-.bsx-search-input:focus-visible, .bsx-row:focus-visible, .bsx-icon-button:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: -2px; }
+.bsx-search-input:focus-visible, .bsx-row:focus-visible, .bsx-icon-button:focus-visible { outline: var(--pf-focus-ring); outline-offset: -2px; }
 .bsx-icon { display: block; flex: 0 0 auto; width: 24px; height: 24px; -webkit-mask-size: 24px 24px; mask-size: 24px 24px; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
 .bsx-close { position: absolute; z-index: 2; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; padding: 0; background: transparent; cursor: pointer; }
 .bsx-close span { display: flex; }
-.bsx-close:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: -2px; border-radius: 50%; }
+.bsx-close:focus-visible { outline: var(--pf-focus-ring); outline-offset: -2px; border-radius: var(--pf-radius-pill); }
 .bsx-home { position: relative; flex: 0 0 auto; }
 .bsx-home span { position: absolute; left: 50%; bottom: 8px; width: 144px; height: 5px; border-radius: 5px; transform: translateX(-50%); }
 
