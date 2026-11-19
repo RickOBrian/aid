@@ -19,6 +19,18 @@
     "errors": "arturuxui 13.11: «Profile, not work, No car, Errors — тоже пропускаем» (комментариев дизайнера не было)"
   },
   "rows": {
-    "order-flow": "по строкам: всё «не трогать», кроме Text/Primary и Body 2 (сделано 13.11); SF Pro Display 90 Thin — пробел типографики"
+    "order-flow": "по строкам: всё «не трогать», кроме Text/Primary и Body 2 (сделано 13.11); SF Pro Display 90 Thin и WB Sans — шрифты заводятся отдельной задачей (Валентина 17.11)"
+  },
+  "decidedBy": {
+    "_": "кто закрыл пропуск, если не дизайнер; по умолчанию — дизайнер",
+    "profile": "arturuxui",
+    "not-work": "arturuxui",
+    "no-car": "arturuxui",
+    "errors": "arturuxui"
+  },
+  "extra": {
+    "_": "не из 17 копий Drafts — в итог «17 копий» не входят",
+    "prefinal-order-flow": "Секция «Pre-final for Style Switch» 6991:303670 на стр. «Order Flow » — правка на месте (Валентина 17.11)",
+    "primerka-switched": "Копия «Макеты для примерки цветов и шрифтов» 7151:54574 (задача arturuxui 18.11)"
   }
 }
