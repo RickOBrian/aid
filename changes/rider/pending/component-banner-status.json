@@ -1,0 +1,40 @@
+{
+  "id": "component-banner-status",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "BannerStatus",
+  "componentId": "banner-status",
+  "product": "rider",
+  "changeSummary": "BannerStatus Rider (Figma «Banner Status») — новый компонент: плашка статуса вверху экрана вместо слоя Status Info внутри NavBar Complex 349:4025 (designer-14, AID-76, issue #469), флоу figma-library-workflow §3.1–3.8. Structural View, Role Banner, Entity Status (Standards 26.10). Свойства: Tone = Warning / Attention / Accent (бывший Neutral); Title; Show Description, Description; Show Chevron (слот Trailing, со Spacer 24 слева для центровки); Show Fade (фейд space-24 в конце второй строки, одно свойство на обе строки). Без Pressed и Disabled: с шевроном — кнопка с системным откликом платформы, без шеврона — статус (Standards 09.11, вопрос 3 «а»). Title и Description — до двух строк, без многоточия (sergej 09.11). Углы прямые, верх space-2 (sergej 09.11, вопрос 1 «б»), низ space-12, бока space-16, промежутки space-4 / space-2, Spacer и шеврон — Icon Size 24. Текст и шеврон: Warning и Accent — Text/Icon Constant White, Attention — Text/Icon Constant Black; контраст ночью 4,63 / 4,60 после Rider Colors/Semantic 1.12.0. Литералы-справки: maxHeight строк 40 / 32 и высота Fade 20 / 16 (= line-height стиля). Safe area и фон под Status Bar — у DockNavBar (AID-75). Аудит принят Standards 09.11, правка фейда — 10.11; пейдж аудита 1482:466 переименован в «🚧 Banner Status · construction», секция «Banner Status · audit» 1482:467 осталась на нём (id сохранены, 1259 = 1259 узлов). Сборка ждёт приёмки Standards.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "BannerStatus: плашка статуса Rider вверху экрана — три тона, заголовок и подпись до двух строк, шеврон для перехода; ночью текст читается на всех тонах"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "1482:467",
+    "constructionPage": "1482:466",
+    "components": {
+      "Banner Status": "1561:13612"
+    },
+    "masterSection": "1561:13611",
+    "guideSection": "1561:5282",
+    "changelogSection": "1561:5855",
+    "auditPrototypes": {
+      ".Proto/Banner Status · audit": "1483:808"
+    }
+  },
+  "relatedTokenChanges": [
+    "Rider Colors/Semantic 1.12.0 (PR #558) — ночные Background/Warning и Background/Accent"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-10",
+  "author": "sergej"
+}
