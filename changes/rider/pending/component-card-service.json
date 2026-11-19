@@ -1,19 +1,19 @@
 {
   "id": "component-card-service",
   "type": "component",
-  "changeType": "changed",
-  "taskType": "evolve",
-  "artifact": "Card Service",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "CardService",
   "componentId": "card-service",
   "product": "rider",
-  "changeSummary": "Card Service Rider — развитие (designer-8, AID-69, issue #441), флоу figma-library-workflow §3.1. Вход — согласованное «стало» аудита rider-1 (копия bL4jeQWMvn3GKVNRPnmJMj, секция 5019:3458, ряд 1 — 5019:3462; находки 4 и 7, решение PD 19.10): размеры бенто S 148, M 198, L 358 × 164; фоны Pastel; на тёмных Pastel — Text/Constant White и Constant White Secondary; строки заголовка и подзаголовка не ограничены; иллюстрация — нижний слой у своего угла, текст сверху со своей шириной; зазор между карточками 12. Предложение аудита: Size = S / M / L вместо S-M / L; новое свойство Tone = Light / Dark; Show Body вместо Body; иллюстрация — слот под компоненты иллюстраций S, M, L с прозрачным фоном вместо картинки-заливки; maxLines 2 снять. Аудит — пейдж «👀 Card Service · audit» 845:903, блоки 0–7, прототип «.Proto/Card Service · аудит» 847:1221; ждёт ответов на блок 7 (размеры, тон, иллюстрация, длинный текст, контраст подзаголовка 3,4–4,4 : 1, нажатие, имя против роли Island, Service Grid). Текущей версии нет (Q-22); смена значений Size и новые свойства ломают API — предложение major, итог на приёмке аудита и границе релиза.",
+  "changeSummary": "Card Service Rider — развитие (designer-8, AID-69, issue #441), флоу figma-library-workflow §3.1. Вход — согласованное «стало» аудита rider-1 (копия bL4jeQWMvn3GKVNRPnmJMj, секция 5019:3458, ряд 1 — 5019:3462; находки 4 и 7, решение PD 19.10): размеры бенто S 148, M 198, L 358 × 164; фоны Pastel; на тёмных Pastel — Text/Constant White и Constant White Secondary; строки заголовка и подзаголовка не ограничены; иллюстрация — нижний слой у своего угла, текст сверху со своей шириной; зазор между карточками 12. Правило ширины (PD 26.10): S — всегда 148; M — в одном ряду с S, тянется на остаток ряда; L — на всю ширину; при адаптиве меняется только ширина M и L, высота всегда 164. Иллюстрации — наборы small / mid / big библиотеки Taxi с прозрачным фоном (эталон _Cards 918:16535 на пейдже аудита). Предложение аудита: Size = S / M / L вместо S-M / L; новое свойство Tone = Light / Dark; Show Body вместо Body; иллюстрация — вложенный экземпляр набора своего размера (Img на карточке) вместо картинки-заливки; maxLines 2 снять. Аудит — пейдж «👀 Card Service · audit» 845:903, блоки 0–7 и 4.1 «Размеры и адаптив» (1081:3944), прототип «.Proto/Card Service · аудит» 847:1221. Ответы PD: 1 — 26.10 (правило ширины), 2а–9а — 28.10: Tone Light/Dark; наборы иллюстраций переносим в Rider отдельной заявкой (Standards 28.10: файл Rider Icons, отдельные пейджи графики; имена — как в Taxi); строки без ограничения, высота 164, предел для редакторов в описании; контраст подзаголовка — исключением через Standards; pressed платформенный, Loading (скелетон) добавляем, disabled нет; имя сохраняем, отличие от роли Island — записью, мастер — CardService (Standards 28.10); зазор бенто 12, Service Grid — отдельная заявка; иллюстрация M 198, прижата к краю главного предмета. Текущей версии нет (Q-22); смена значений Size и новые свойства ломают API — предложение major, итог на границе релиза. Предсборка (ответ sergej 09.11 «все по ★»): новый мастер CardService с новым ключом — «Создание» 1.0.0, старый Card Service 266:60 — устаревание и Archive после публикации (как ButtonFloating); State = Default / Loading (Loading — пустая карточка Pastel + Loading Fade 260:4111), pressed — платформенный отклик в блоке «Поведение»; перенос наборов графики в Rider Icons — попутный объект этим чатом до сборки, публикует человек; блок 8 — шторка экрана 492 из компонентов Rider с бенто.",
   "currentVersion": null,
-  "proposedSemVerImpact": "major",
-  "proposedVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
-    "kind": "changed",
-    "impact": "major",
-    "description": "Card Service: три размера S, M, L, тон для тёмных карточек, иллюстрация нижним слоем — текст может на неё заходить, строки не ограничены"
+    "kind": "added",
+    "impact": "initial",
+    "description": "CardService: карточка сервиса в трёх размерах S, M, L с тоном для тёмных карточек, иллюстрацией нижним слоем и состоянием загрузки; заменяет устаревший Card Service"
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
@@ -24,7 +24,8 @@
       "Service Grid": "266:129"
     },
     "auditPrototypes": {
-      ".Proto/Card Service · аудит": "847:1221"
+      ".Proto/Card Service · аудит": "847:1221",
+      "_Cards (эталон PD)": "918:16535"
     },
     "input": {
       "fileKey": "bL4jeQWMvn3GKVNRPnmJMj",
@@ -35,6 +36,12 @@
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "illustrations": "3589:27637",
       "bento": "3589:27640"
+    },
+    "illustrationSets": {
+      "library": "Taxi (remote)",
+      "small": "816a0f0565be6c89ae4229f017be7ed2c974ea5a",
+      "mid": "9f7f8f0e4102600f4d7cb28b6b4ce73a64c3da6d",
+      "big": "bc99308a0b6a3a699d31f4bb1e15ce4f5292d99b"
     }
   },
   "relatedTokenChanges": [],
