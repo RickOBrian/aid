@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { BottomSheetPreviewPage } from './BottomSheetPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -163,6 +164,14 @@ export function App() {
   }
   if (managePath === '/manage/team') {
     return <TeamPage />;
+  }
+  // Веб-демо шторки BottomSheet (AID-79, presentbook-11): только по прямой ссылке, без ссылок из меню.
+  if (managePath === '/rider/preview/bottom-sheet') {
+    return (
+      <ProductAccentScope productId="rider">
+        <BottomSheetPreviewPage />
+      </ProductAccentScope>
+    );
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());
