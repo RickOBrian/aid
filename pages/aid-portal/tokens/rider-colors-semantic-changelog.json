@@ -1,11 +1,60 @@
 {
   "artifact": "Rider Colors/Semantic",
-  "currentVersion": "1.12.0",
+  "currentVersion": "2.1.0",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "31:66"
   },
   "entries": [
+    {
+      "version": "2.1.0",
+      "date": "2026-11-12",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Pastel/Tony, Text/Constant Black Loading, Text/Primary Loading, Text/Constant White Loading; служебные Map/Dark и Mode Switch — только Figma, в код не выгружаются",
+          "details": "Pastel/Tony: Day #FFEFEB, Night #3A1B19\nText/Constant Black Loading: Day #0F0F1F 20%, Night #0F0F1F 20% — постоянный тёмный цвет текста на белых кнопках в сторисах\nText/Primary Loading: Day #0F0F1F 20%, Night #F8FAFF 20% — основной текст в состоянии загрузки\nText/Constant White Loading: Day #FFFFFF 20%, Night #F8FAFF 20% — постоянный белый текст в состоянии загрузки (Button, State=Pending)\nscopes TEXT_FILL; Pastel/Tony — FRAME_FILL, SHAPE_FILL\nMap/Dark (только Figma): Day false, Night true — видимость тёмной картинки в Map\nMode Switch (только Figma): Day \"Day\", Night \"Night\" — переключение элементов в инстансах по теме"
+        },
+        {
+          "kind": "changed",
+          "description": "Изменены значения Background/Overlay — фон под модалками",
+          "details": "Background/Overlay: Day #000000 30% → #242429 40%, Night #000000 30% → #000000 64%"
+        }
+      ]
+    },
+    {
+      "version": "2.0.0",
+      "date": "2026-11-10",
+      "author": "arturuxui",
+      "type": "major",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "Переименовано 4 переменные",
+          "details": "Tint/Warning → Background/Warning Tint\nTint/Special → Background/Special Tint\nTint/Success → Background/Success Tint\nTint/Accent → Background/Accent Tint\nКак мигрировать: в коде заменить Tint/X на Background/X Tint; в Figma ключи переменных прежние, привязки в макетах не ломаются"
+        }
+      ]
+    },
+    {
+      "version": "1.13.0",
+      "date": "2026-11-09",
+      "author": "Sergey AI",
+      "type": "minor",
+      "changes": [
+        {
+          "kind": "added",
+          "description": "Добавлены переменные Tint/* — тонированные подложки для иконки в круге (компонент IconSurface)",
+          "details": "Tint/Accent: Day #F9EDFF, Night #3C235B\nTint/Success: Day #EAFCF0, Night #0F3821\nTint/Special: Day #E9F5FB, Night #203450\nTint/Warning: Day #FFEFEB, Night #482725\nscopes FRAME_FILL, SHAPE_FILL"
+        },
+        {
+          "kind": "changed",
+          "description": "Изменены значения Icon/Success, Icon/Special и Icon/Warning — новое решение по цветам иконок во всём Rider",
+          "details": "Icon/Success: Day #23AD58 → #10A236, Night #D2FF73 → #05B047\nIcon/Special: Night #005AFF → #4F89FF\nIcon/Warning: Night #E53828 → #FF4730"
+        }
+      ]
+    },
     {
       "version": "1.12.0",
       "date": "2026-10-30",
