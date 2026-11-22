@@ -296,7 +296,7 @@
       "kind": "standard",
       "humanFile": "skills/_shared/standards/semantic-space-tokens-guide.md",
       "machineFile": null,
-      "version": "1.1.0",
+      "version": "1.1.1",
       "status": "draft",
       "wave": null,
       "core": false,

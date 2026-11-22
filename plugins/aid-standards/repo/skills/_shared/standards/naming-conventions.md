@@ -321,7 +321,8 @@ Platform-specific детали — **внутри shared-гайда** (секц�
 ## 8. Changelog
 
 - **1.3.3** — 2026-11-22. Машинный слой: в канон слотов добавлен `overline`
-  вслед за `ds-component-architecture-guide.md` 1.7.0 §9. Текст гайда не менялся:
+  вслед за `ds-component-architecture-guide.md` 1.7.0 §9; из примеров
+  Row убран `BottomSheetRow` (не заводится). Текст гайда не менялся:
   своего списка слотов он не держит.
 - **1.3.2** — 2026-10-23. §4: пример Structural View `RowList` заменён на `ListRow`, добавлено исключение Row со ссылкой на `ds-component-architecture-guide` §9 — md расходился с гайдом архитектуры и с `naming-conventions.json` `legacyExceptions.Row` (вопрос Standards · Persefona).
 - **1.3.1** — 2026-10-09. Убрана ссылка на дамп `src/pages/FigmaStyles/`: артефакт легаси-Storybook, удаляется (ADR-044).

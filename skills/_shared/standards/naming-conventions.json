@@ -56,7 +56,6 @@
       "examples": [
         "ListRow",
         "MenuRow",
-        "BottomSheetRow",
         "IslandRow",
         "TableRow"
       ]
