@@ -1,6 +1,6 @@
 {
   "id": "naming-conventions",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "status": "alpha",
   "humanFile": "naming-conventions.md",
   "note": "Машинный слой правил именования. Паттерны даны как регулярные выражения для аудита чужих библиотек и распознавания компонентов.",
@@ -130,6 +130,7 @@
       "badge",
       "header",
       "footer",
+      "overline",
       "title",
       "subtitle",
       "action"

@@ -2,9 +2,9 @@
 destination: skills/_shared/standards/
 name: ds-component-architecture-guide
 metadata:
-  version: "1.6.0"
+  version: "1.7.0"
   status: alpha
-  lastReviewed: "2026-10-22"
+  lastReviewed: "2026-11-22"
   machineFile: component-architecture.json
   kind: standard
   owner: design-system-team
@@ -17,7 +17,7 @@ description: >
 
 # Архитектура компонентов дизайн-системы
 
-> Статус: Alpha · v1.6.0 · обновлено 2026-10-22
+> Статус: Alpha · v1.7.0 · обновлено 2026-11-22
 
 ---
 
@@ -144,10 +144,31 @@ Structural View имеет два и более именованных слот�
 | Компонент | Назначение |
 |-----------|-----------|
 | ListRow | Строка списка |
-| BottomSheetRow | Строка в шторке |
 | IslandRow | Строка в Island |
 | MenuRow | Строка меню |
 | TableRow | Строка таблицы (repeatable cell-слот, см. раздел 9 «Исключение: Row-компоненты») |
+
+`BottomSheetRow` не заводится: строка в шторке — `ListRow` (решение по
+аудиту BottomSheet, AID-79, вопрос 4).
+
+#### ListRow — строка списка (Rider, Driver)
+
+Правила действуют в Rider и Driver. Основание — решение sergej (Standards)
+2026-11-22 до сборки строки списка Rider (Rider Components, пейдж
+«List Item», набор 259:3755).
+
+| Правило | Уровень |
+|---|---|
+| Имя — `ListRow`, и в Figma тоже. «List Item» не используется: `Item` — уровень 1 (§4), а `List.Item` — только вложенный элемент коллекции в коде | `must` |
+| Зоны — `leading` · `content` · `trailing`; в `content` — `overline`, `title`, `subtitle` (слоты §9). Свойства и слои Figma — по тем же именам: Leading, Show Leading, Trailing, Show Trailing, Overline, Show Overline, Title, Subtitle, Show Subtitle. «Left» и «Right» не используются: при письме справа налево зеркалятся `leading` и `trailing`, а не лево и право | `must` |
+| Число строк: `overline` — 1, `title` — до 2, `subtitle` — до 2. Обрезка — затухание (fade) в конце последней строки, маской прозрачности текста (`component-standards.md` §10.1 п.4); многоточия нет, поэтому свойства выбора способа обрезки нет (§10.1 п.6) | `must` |
+| `leading` и `trailing` выравниваются по первой строке текста `content`, а не по центру строки: на многострочной строке центр смещается | `should` |
+| В `leading` — Icon 24 (размер — токен Icon Size) или IconSurface. В `trailing` — один элемент: шеврон, текст значения, Switch, Checkbox, Radio или служебный элемент продукта. `trailing` не сжимается, `content` занимает остаток ширины | `should` |
+| Одна цель нажатия. Если в `trailing` контрол, нажатие на строку переключает его, и роль строки — роль контрола. Отдельная кнопка в `trailing` — только у строки без собственного действия | `must` |
+| Разделитель не часть строки. Если нужен — отдельный элемент Divider между строками; у `ListRow` нет ни слоя, ни свойства разделителя | `must` |
+| Горизонтальные отступы — у строки: слой нажатия идёт от края до края. Высота — по содержимому (Hug), отступы — токены; минимальная высота — не ниже области нажатия платформы (`component-standards.md` §7.7) | `must` |
+| Состояния в Figma — Default, Pressed, Disabled, Skeleton. Pressed — слой цвета содержимого 12 % (`component-states-guide.md`, раздел «Pressed — слой состояния», PR #577), не отдельная заливка. Строка без действия — не кнопка, у неё нет Pressed. Выбранность — значение контрола в `trailing`, а не состояние строки; focused — только в коде Web | `must` |
+| Доступность: строка — один элемент для скринридера; подпись — `overline`, `title`, `subtitle` подряд, полным текстом без обрезки; декоративная иконка `leading` и шеврон скрыты; текст значения в `trailing` читается как значение (`accessibilityValue` / `aria-describedby`); роль — кнопка, ссылка или роль контрола из `trailing` | `must` |
 
 ### Field-компоненты
 
@@ -331,7 +352,7 @@ Dock против вложенного компонента (TabBar, NavBar): к
 
 ### Исключение: Row-компоненты
 
-Устоявшиеся Row-компоненты (`ListRow`, `MenuRow`, `BottomSheetRow`, `IslandRow`,
+Устоявшиеся Row-компоненты (`ListRow`, `MenuRow`, `IslandRow`,
 `TableRow`) сохраняют legacy-формулу Entity+Role (Row — в конце имени) и не
 переименовываются в формат RoleX. `RowList`/`RowMenu` в таблице Role-семей
 выше — иллюстративный пример формулы, не действующее имя компонента.
@@ -350,6 +371,7 @@ Dock против вложенного компонента (TabBar, NavBar): к
 | `badge`    | Оверлейный бейдж                    |
 | `header`   | Заголовочная зона                   |
 | `footer`   | Нижняя зона                         |
+| `overline` | Надзаголовок: строка над `title`    |
 | `title`    | Заголовок компонента                |
 | `subtitle` | Подзаголовок                        |
 | `action`   | Зона действий                       |
@@ -457,6 +479,14 @@ Repeatable Slot — слот, который повторяется переме
 
 ## 12. Changelog
 
+- **1.7.0** — 2026-11-22. §6, Row-компоненты: правила `ListRow` для Rider и
+  Driver — имя (не «List Item»), зоны и имена свойств Figma, число строк и
+  затухание, выравнивание по первой строке, содержимое `leading` и
+  `trailing`, одна цель нажатия, разделитель — отдельный элемент, отступы и
+  высота, состояния, доступность. `BottomSheetRow` убран из списка
+  Row-компонентов: строка в шторке — `ListRow` (AID-79, вопрос 4). §9: новый
+  канонический слот `overline` — строка над `title`. Основание — решение
+  sergej (Standards) 2026-11-22 по анкете до сборки строки списка Rider.
 - **1.6.0** — 2026-10-22. Новая Role-семья `Dock` (Structural View):
   панель, закреплённая у края экрана, с системными отступами (safe area).
   Первый компонент — `DockTabBar` (TabBar Rider, designer-2). В §3 сказано,
