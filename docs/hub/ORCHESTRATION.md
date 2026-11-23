@@ -321,7 +321,7 @@ Vercel и из корневого `CLAUDE.md`.
 | Plugin · Library Updater | `arturuxui` | `to:plugin-library-updater` |
 | Plugin · Components Swapper | `arturuxui` | `to:plugin-components-swapper` |
 | Ops · Team | PD | `to:ops-team` |
-| Product Logic (база — приватный `aid-productlogic`) | PD и `slnTeT`; записи базы — PD (решение PD 2026-11-23) | `to:product-logic` |
+| Product Logic (база — приватный `aid-product-logic`) | PD и `slnTeT`; записи базы — PD (решение PD 2026-11-23) | `to:product-logic` |
 
 Остальные продукты — PD. У каждого в `owners.json` — `tool`: `claude`
 или `cursor` (решение PD 2026-10-06). Учитывается везде, где важен
