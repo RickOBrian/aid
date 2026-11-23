@@ -61,7 +61,17 @@ function walk(o, c, inM, pairs, t) {
   noteMiss(t, miss); t.extraC += c.children.length - res.length;
   for (const [x, y] of res) walk(x, y, inM || (isMaster(x) && y.type === 'INSTANCE'), pairs, t);
 }
-expand(O.type === 'PAGE' || O.type === 'SECTION' ? O.children : [O], C.type === 'PAGE' || C.type === 'SECTION' ? C.children : [C], false);
+// SCREENS = true (вызвать с const SCREENS = true, EXCL = ['<id секции>', …]): экраны сопоставляются поверх секций
+// по имени, типу, размеру и именам детей — для страниц, где экраны переложены в другие секции (Order Flow 23.11)
+if (typeof SCREENS !== 'undefined' && SCREENS) {
+  const flat = (n, out) => { for (const k of n.children) { if (!alive(k) || EXCL.includes(k.id)) continue; if (k.type === 'SECTION') flat(k, out); else out.push(k); } return out; };
+  const so = flat(O, []), sc = flat(C, []);
+  const fp = n => N(n.name) + '|' + T(n.type) + '|' + Math.round(n.width) + 'x' + Math.round(n.height) + '|' + ('children' in n ? n.children.filter(alive).map(x => N(x.name)).join(',') : '');
+  const g = new Map(); for (const y of sc) { const f = fp(y); if (!g.has(f)) g.set(f, []); g.get(f).push(y); }
+  const miss = [];
+  for (const x of so) { const l = g.get(fp(x)); if (l && l.length) units.push([x, l.shift(), isMaster(x), false]); else miss.push(x); }
+  noteMiss(st, miss);
+} else expand(O.type === 'PAGE' || O.type === 'SECTION' ? O.children : [O], C.type === 'PAGE' || C.type === 'SECTION' ? C.children : [C], false);
 
 // ---------- подписи ----------
 const r = v => Math.round(v * 1000) / 1000;
@@ -195,7 +205,7 @@ while (u < units.length && Date.now() - t0 < BUDGET) {
   const [o, c, inM, sh] = units[u];
   const pairs = [], loc = { missO: 0, missOex: [], extraC: 0, missIds: [] };
   if (sh) pairs.push([o, c, inM]); else walk(o, c, inM, pairs, loc);
-  if (k === 0) { acc.missO += loc.missO; acc.extraC += loc.extraC; acc.missIds = acc.missIds.concat(loc.missIds).slice(0, 400); acc.missOex = acc.missOex.concat(loc.missOex).slice(0, 20); }
+  if (k === 0) { acc.missO += loc.missO; acc.extraC += loc.extraC; acc.missIds = acc.missIds.concat(loc.missIds).slice(0, 2000); acc.missOex = acc.missOex.concat(loc.missOex).slice(0, 20); }
   for (; k < pairs.length; k++) {
     if (Date.now() - t0 > BUDGET) break;
     try { await doPair(pairs[k][0], pairs[k][1], pairs[k][2]); } catch (e) { acc.gone = (acc.gone || 0) + 1; } acc.pairs++;
@@ -219,7 +229,7 @@ const top = m => Object.entries(m).sort((a, b) => b[1] - a[1]);
 const aggT = top(acc.agg), noT = top(acc.noTok);
 return {
   dry: DRY, pairs: acc.pairs, missInCopy: st.missO + acc.missO, missEx: st.missOex.concat(acc.missOex).slice(0, 20),
-  missRoots: st.missIds.concat(acc.missIds).slice(0, 400), extraInCopy: st.extraC + acc.extraC,
+  missRoots: st.missIds.concat(acc.missIds).slice(0, 2000), extraInCopy: st.extraC + acc.extraC,
   diffs: aggT.reduce((s, x) => s + x[1], 0), applied: acc.applied, masterPairs: acc.masterHits, textLenDiff: acc.textSkip, gone: acc.gone || 0,
   errs: acc.errs, kinds: aggT.length, top: aggT.slice(0, 60).map(x => x[1] + ' | ' + x[0]),
   drift: Object.keys(acc.drift).slice(0, 30), driftTotal: Object.keys(acc.drift).length,
