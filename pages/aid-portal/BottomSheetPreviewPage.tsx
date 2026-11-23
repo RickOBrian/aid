@@ -10,6 +10,7 @@ import {
   DOCK_TABS,
   DRAGGER_LABEL,
   NO_TOKEN,
+  PENDING_TOKENS,
   SCREEN_HEIGHT,
   SCREEN_WIDTHS,
   SHEET_ADDRESSES,
@@ -409,7 +410,7 @@ export function BottomSheetPreviewPage() {
     }
   };
 
-  const dragger = raised ? NO_TOKEN.draggerOutside[mode] : NO_TOKEN.draggerInside[mode];
+  const draggerColor = PENDING_TOKENS[raised ? 'Background/Handle On Overlay' : 'Background/Handle'][mode];
   const dragging = dragTop !== null;
 
   const screenStyle = {
@@ -540,8 +541,7 @@ export function BottomSheetPreviewPage() {
                     width: sheetSpace('space-24'),
                     height: sheetSpace('space-4'),
                     borderRadius: sheetRadius('radius-pill'),
-                    background: dragger.color,
-                    mixBlendMode: dragger.blend,
+                    background: draggerColor,
                   }}
                 />
               </button>
@@ -564,15 +564,16 @@ export function BottomSheetPreviewPage() {
           Home Indicator один — у шторки, вплотную к низу.
         </p>
         <p>
-          Без токена — показаны как в Figma: полоска Dragger внутри шторки (день #CACAD1 72 % multiply, ночь #FFFFFF 32 %) и над
-          ней на затемнении (день #FFFFFF, ночь #0F0F1F 54 %) — допущение аудита; фон карты-заглушки; Background/Tab Selected
+          Полоска Dragger — новые токены Rider: Background/Handle поверх шторки (день #000039 87 %, ночь #4A4A59) и
+          Background/Handle On Overlay над шторкой на затемнении (день #FFFFFF, ночь #6A6A80). Они заведены в Rider Tokens, но
+          библиотека ещё не опубликована — значения взяты из Figma. Без токена — фон карты-заглушки; Background/Tab Selected
           (есть в Rider Tokens, ещё не в данных портала). Источник — Rider Components, пейдж «👀 Bottom Sheet · audit»
           1093:353.
         </p>
         <p>
           Крест (Show Close, по умолчанию выключен) — открыто у дизайнера: с крестом он перекрывает правую иконку строки
           поиска, как резервировать место справа — не решено. Тап по кресту закрывает шторку, как в Dialog, — допущение до
-          решения (вариант — свернуть в Collapsed). Ночная полоска над листом на затемнении — решается на приёмке аудита.
+          решения (вариант — свернуть в Collapsed).
         </p>
       </section>
       </main>

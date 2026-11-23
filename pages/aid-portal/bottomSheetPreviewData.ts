@@ -75,20 +75,19 @@ export function sheetType(name: string): { font: string; letterSpacing: string }
 }
 
 /**
- * Значения аудита без токена в данных портала — показаны как в Figma, с пометкой.
- * Полоска Dragger — «допущение аудита» (блок 8 аудита, токены ещё не заведены).
+ * Токены полоски Dragger (sergej 23.11): заведены в Rider Tokens & Styles, color-sem
+ * (VariableID 1857:207 / 1857:208), scope пустой, библиотека ещё не опубликована —
+ * в данных портала их пока нет, значения взяты из Figma под именами токенов.
  */
+export const PENDING_TOKENS = {
+  /** Background/Handle — полоска поверх шторки (Collapsed, Default). */
+  'Background/Handle': { day: 'rgba(0, 0, 57, 0.87)', night: 'rgb(74, 74, 89)' },
+  /** Background/Handle On Overlay — полоска над шторкой на затемнении (Expanded, Full-Screen). */
+  'Background/Handle On Overlay': { day: 'rgb(255, 255, 255)', night: 'rgb(106, 106, 128)' },
+} as const;
+
+/** Значения аудита без токена в данных портала — показаны как в Figma, с пометкой. */
 export const NO_TOKEN = {
-  /** Полоска внутри шторки (Collapsed, Default). */
-  draggerInside: {
-    day: { color: 'rgba(202, 202, 209, 0.72)', blend: 'multiply' as const },
-    night: { color: 'rgba(255, 255, 255, 0.32)', blend: 'normal' as const },
-  },
-  /** Полоска над шторкой на затемнении (Expanded, Full-Screen). */
-  draggerOutside: {
-    day: { color: 'rgb(255, 255, 255)', blend: 'normal' as const },
-    night: { color: 'rgba(15, 15, 31, 0.54)', blend: 'normal' as const },
-  },
   /** Фон карты-заглушки (заливка инстанса Map в прототипе). */
   mapFill: { day: '#EEF0F2', night: '#1C1D22' },
   /**
