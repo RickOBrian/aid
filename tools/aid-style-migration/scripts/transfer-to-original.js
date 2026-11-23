@@ -5,7 +5,7 @@
 // Подставить: __O__ (страница/узел оригинала), __C__ (копия), __DRY__ (true|false), __MASTERS__ (true — трогать
 // и мастер-компоненты оригинала, у которых в копии инстанс; правка мастера уходит во все его инстансы).
 // Бюджет ~45 с, продолжение — повторным вызовом (позиция в sharedPluginData 'mig2' на оригинале). CLEAN — снять.
-const O_ID = '__O__', C_ID = '__C__', DRY = __DRY__, MASTERS = __MASTERS__, CLEAN = __CLEAN__, BUDGET = 45000;
+const O_ID = '__O__', C_ID = '__C__', DRY = __DRY__, MASTERS = __MASTERS__, CLEAN = __CLEAN__, BUDGET = 40000;
 const t0 = Date.now();
 const O = await figma.getNodeByIdAsync(O_ID), C = await figma.getNodeByIdAsync(C_ID);
 if (CLEAN) { O.setSharedPluginData('mig2', 'pos', ''); O.setSharedPluginData('mig2', 'acc', ''); return { clean: true }; }
@@ -17,7 +17,9 @@ const key = n => N(n.name) + '|' + T(n.type);
 const isMaster = n => n.type === 'COMPONENT' || n.type === 'COMPONENT_SET';
 
 // ---------- сопоставление ----------
+const alive = n => { try { n.name; return true; } catch (e) { return false; } };
 function pairKids(a, b) {
+  a = a.filter(alive); b = b.filter(alive);
   const gb = new Map(), ga = new Map();
   for (const k of b) { const kk = key(k); if (!gb.has(kk)) gb.set(kk, []); gb.get(kk).push(k); }
   for (const k of a) { const kk = key(k); if (!ga.has(kk)) ga.set(kk, []); ga.get(kk).push(k); }
@@ -38,26 +40,28 @@ function pairKids(a, b) {
   }
   return { res, miss };
 }
-const st = { pairs: 0, missO: 0, missOex: [], extraC: 0 };
-const pairs = [];
-function walk(o, c, inM) {
+// единицы: пары под секциями (секции разворачиваются, сами секции — отдельной единицей без детей);
+// прогресс — «единица, пара внутри неё», поэтому продолжение сопоставляет заново только текущую единицу
+const st = { missO: 0, missOex: [], extraC: 0, missIds: [] };
+const noteMiss = (t, miss) => { t.missO += miss.length; for (const m of miss) { t.missIds.push(m.id); if (t.missOex.length < 20) t.missOex.push(m.id + ' ' + m.type + ' ' + m.name.slice(0, 40)); } };
+const units = [];
+function expand(kO, kC, inM) {
+  const { res, miss } = pairKids(kO, kC);
+  noteMiss(st, miss); st.extraC += kC.length - res.length;
+  for (const [x, y] of res) {
+    const m = inM || (isMaster(x) && y.type === 'INSTANCE');
+    if (x.type === 'SECTION' && y.type === 'SECTION') { units.push([x, y, m, true]); expand(x.children, y.children, m); }
+    else units.push([x, y, m, false]);
+  }
+}
+function walk(o, c, inM, pairs, t) {
   pairs.push([o, c, inM]);
   if (!('children' in o) || !('children' in c)) return;
   const { res, miss } = pairKids(o.children, c.children);
-  st.missO += miss.length;
-  for (const m of miss) if (st.missOex.length < 20) st.missOex.push(m.id + ' ' + m.type + ' ' + m.name.slice(0, 40));
-  st.extraC += c.children.length - res.length;
-  for (const [x, y] of res) walk(x, y, inM || (isMaster(x) && y.type === 'INSTANCE'));
+  noteMiss(t, miss); t.extraC += c.children.length - res.length;
+  for (const [x, y] of res) walk(x, y, inM || (isMaster(x) && y.type === 'INSTANCE'), pairs, t);
 }
-{
-  const kidsO = O.type === 'PAGE' || O.type === 'SECTION' ? O.children : [O];
-  const kidsC = C.type === 'PAGE' || C.type === 'SECTION' ? C.children : [C];
-  const { res, miss } = pairKids(kidsO, kidsC);
-  st.missO += miss.length;
-  for (const m of miss) st.missOex.push(m.id + ' ' + m.type + ' ' + m.name.slice(0, 40));
-  for (const [x, y] of res) walk(x, y, isMaster(x) && y.type === 'INSTANCE');
-}
-st.pairs = pairs.length;
+expand(O.type === 'PAGE' || O.type === 'SECTION' ? O.children : [O], C.type === 'PAGE' || C.type === 'SECTION' ? C.children : [C], false);
 
 // ---------- подписи ----------
 const r = v => Math.round(v * 1000) / 1000;
@@ -119,7 +123,7 @@ async function styleFont(id) { const s = await figma.getStyleByIdAsync(id); if (
 const clonePaints = a => JSON.parse(JSON.stringify(a));
 
 async function doPair(o, c, inM) {
-  if (o.type === 'PAGE' || o.type === 'SECTION' && false) return;
+  if (o.type === 'PAGE') return;
   if (inM) masterHits++;
   const allow = !inM || MASTERS;
   const todo = [];
@@ -129,9 +133,10 @@ async function doPair(o, c, inM) {
     const a = arrSig(o, prop, sp), b = arrSig(c, prop, sp);
     if (b.mixed) { if (prop === 'fills' && o.type === 'TEXT' && c.type === 'TEXT') todo.push(['tfills']); continue; }
     if (a.sig === b.sig) continue;
-    if (!b.tok) { bump(noTok, prop + ': ' + (await lab(o, prop, sp)) + ' → ' + (await lab(c, prop, sp))); continue; }
+    const bb = prop === 'effects' && b.sig === '' && a.style && /brand button/i.test(await sName(a.style));
+    if (!b.tok && !bb) { bump(noTok, prop + ': ' + (await lab(o, prop, sp)) + ' → ' + (await lab(c, prop, sp))); continue; }
     const k = prop + ': ' + (a.mixed ? 'mixed' : await lab(o, prop, sp)) + ' → ' + (await lab(c, prop, sp)) + (inM ? ' (мастер)' : '');
-    todo.push([prop, k, async () => { if (b.style) await o[setS](b.style); else o[prop] = clonePaints(c[prop]); }]);
+    todo.push([prop, k, async () => { if (b.style) await o[setS](b.style); else { if (bb) await o.setEffectStyleIdAsync(''); o[prop] = clonePaints(c[prop]); } }]);
   }
   // стиль текста
   if (o.type === 'TEXT' && c.type === 'TEXT') {
@@ -171,7 +176,7 @@ async function doPair(o, c, inM) {
     const k = f + ': ' + (ov && ov.id ? '{' + await vName(ov.id) + '}' : r(o[f] ?? 0)) + ' → {' + await vName(cv.id) + '}' + (inM ? ' (мастер)' : '');
     const vv = await figma.variables.getVariableByIdAsync(cv.id);
     const rv = vv ? vv.resolveForConsumer(o).value : null;
-    if (typeof rv === 'number' && typeof o[f] === 'number' && Math.abs(rv - o[f]) > 0.5) { bump(drift, o.id + ' ' + k + ' (в оригинале ' + r(o[f]) + ')'); continue; }
+    if (!(ov && ov.id) && typeof rv === 'number' && typeof o[f] === 'number' && Math.abs(rv - o[f]) > 0.5) { bump(drift, o.id + ' ' + k + ' (в оригинале ' + r(o[f]) + ')'); continue; }
     todo.push(['bv', k, async () => { const v = await figma.variables.getVariableByIdAsync(cv.id); o.setBoundVariable(f, v); }]);
   }
   const real = todo.filter(t => t[1]);
@@ -184,28 +189,39 @@ async function doPair(o, c, inM) {
   }
 }
 
-let pos = +(O.getSharedPluginData('mig2', 'pos') || 0);
-const acc = JSON.parse(O.getSharedPluginData('mig2', 'acc') || '{"agg":{},"noTok":{},"drift":{},"applied":0,"masterHits":0,"textSkip":0,"errs":[]}');
-for (; pos < pairs.length; pos++) {
-  if (Date.now() - t0 > BUDGET) break;
-  const [o, c, inM] = pairs[pos];
-  await doPair(o, c, inM);
+let [u, k] = (O.getSharedPluginData('mig2', 'pos') || '0,0').split(',').map(Number);
+const acc = JSON.parse(O.getSharedPluginData('mig2', 'acc') || '{"agg":{},"noTok":{},"drift":{},"applied":0,"masterHits":0,"textSkip":0,"errs":[],"pairs":0,"missO":0,"missOex":[],"missIds":[],"extraC":0}');
+while (u < units.length && Date.now() - t0 < BUDGET) {
+  const [o, c, inM, sh] = units[u];
+  const pairs = [], loc = { missO: 0, missOex: [], extraC: 0, missIds: [] };
+  if (sh) pairs.push([o, c, inM]); else walk(o, c, inM, pairs, loc);
+  if (k === 0) { acc.missO += loc.missO; acc.extraC += loc.extraC; acc.missIds = acc.missIds.concat(loc.missIds).slice(0, 400); acc.missOex = acc.missOex.concat(loc.missOex).slice(0, 20); }
+  for (; k < pairs.length; k++) {
+    if (Date.now() - t0 > BUDGET) break;
+    try { await doPair(pairs[k][0], pairs[k][1], pairs[k][2]); } catch (e) { acc.gone = (acc.gone || 0) + 1; } acc.pairs++;
+  }
+  if (k < pairs.length) break;
+  u++; k = 0;
 }
-for (const [k, v] of agg) acc.agg[k] = (acc.agg[k] || 0) + v;
-for (const [k, v] of drift) acc.drift[k] = (acc.drift[k] || 0) + v;
-for (const [k, v] of noTok) acc.noTok[k] = (acc.noTok[k] || 0) + v;
+for (const [k2, v] of agg) acc.agg[k2] = (acc.agg[k2] || 0) + v;
+for (const [k2, v] of drift) acc.drift[k2] = (acc.drift[k2] || 0) + v;
+for (const [k2, v] of noTok) acc.noTok[k2] = (acc.noTok[k2] || 0) + v;
 acc.applied += applied; acc.masterHits += masterHits; acc.textSkip += textSkip; acc.errs = acc.errs.concat(errs).slice(0, 40);
-if (pos < pairs.length) {
-  O.setSharedPluginData('mig2', 'pos', String(pos)); O.setSharedPluginData('mig2', 'acc', JSON.stringify(acc));
-  return { left: pairs.length - pos, of: pairs.length };
+if (u < units.length) {
+  O.setSharedPluginData('mig2', 'pos', u + ',' + k);
+  let sa = JSON.stringify(acc);
+  if (sa.length > 90000) { acc.noTok = Object.fromEntries(Object.entries(acc.noTok).sort((x, y) => y[1] - x[1]).slice(0, 100)); acc.drift = Object.fromEntries(Object.entries(acc.drift).slice(0, 100)); sa = JSON.stringify(acc); }
+  O.setSharedPluginData('mig2', 'acc', sa);
+  return { left: units.length - u, of: units.length, pairsDone: acc.pairs };
 }
 O.setSharedPluginData('mig2', 'pos', ''); O.setSharedPluginData('mig2', 'acc', '');
 const top = m => Object.entries(m).sort((a, b) => b[1] - a[1]);
 const aggT = top(acc.agg), noT = top(acc.noTok);
 return {
-  dry: DRY, pairs: st.pairs, missInCopy: st.missO, missEx: st.missOex, extraInCopy: st.extraC,
-  diffs: aggT.reduce((s, x) => s + x[1], 0), applied: acc.applied, masterPairs: acc.masterHits, textLenDiff: acc.textSkip,
-  errs: acc.errs, kinds: aggT.length, top: aggT.slice(0, 60).map(x => x[1] + '\t' + x[0]),
+  dry: DRY, pairs: acc.pairs, missInCopy: st.missO + acc.missO, missEx: st.missOex.concat(acc.missOex).slice(0, 20),
+  missRoots: st.missIds.concat(acc.missIds).slice(0, 400), extraInCopy: st.extraC + acc.extraC,
+  diffs: aggT.reduce((s, x) => s + x[1], 0), applied: acc.applied, masterPairs: acc.masterHits, textLenDiff: acc.textSkip, gone: acc.gone || 0,
+  errs: acc.errs, kinds: aggT.length, top: aggT.slice(0, 60).map(x => x[1] + ' | ' + x[0]),
   drift: Object.keys(acc.drift).slice(0, 30), driftTotal: Object.keys(acc.drift).length,
-  noTokTotal: noT.reduce((s, x) => s + x[1], 0), noTok: noT.slice(0, 20).map(x => x[1] + '\t' + x[0]),
+  noTokTotal: noT.reduce((s, x) => s + x[1], 0), noTok: noT.slice(0, 20).map(x => x[1] + ' | ' + x[0]),
 };
