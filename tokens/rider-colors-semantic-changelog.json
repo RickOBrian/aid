@@ -16,6 +16,11 @@
           "kind": "added",
           "description": "Добавлены переменные Background/Handle и Background/Handle On Overlay — полоска Dragger шторки (BottomSheet); scope пустой, в панелях не видны",
           "details": "Background/Handle: Day #000039 87%, Night #4A4A59 — поверх шторки\nBackground/Handle On Overlay: Day #FFFFFF, Night #6A6A80 — над шторкой, на затемнении\nscopes — нет (только .Dragger в BottomSheet)"
+        },
+        {
+          "kind": "added",
+          "description": "Добавлена переменная Background/Attention Tint — тонированная подложка тона внимания для иконки в круге (IconSurface Tone=Attention)",
+          "details": "Background/Attention Tint: Day #FF7200 10%, Night #FF7200 10% (значения как у Background/Zone Attention)\nscopes FRAME_FILL, SHAPE_FILL"
         }
       ]
     },
