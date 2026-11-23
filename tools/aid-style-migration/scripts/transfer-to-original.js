@@ -50,7 +50,7 @@ function expand(kO, kC, inM) {
   noteMiss(st, miss); st.extraC += kC.length - res.length;
   for (const [x, y] of res) {
     const m = inM || (isMaster(x) && y.type === 'INSTANCE');
-    if (x.type === 'SECTION' && y.type === 'SECTION') { units.push([x, y, m, true]); expand(x.children, y.children, m); }
+    if ((x.type === 'SECTION' && y.type === 'SECTION') || ((x.type === 'FRAME' || x.type === 'GROUP') && y.type === x.type && x.children.length > 15)) { units.push([x, y, m, true]); expand(x.children, y.children, m); }
     else units.push([x, y, m, false]);
   }
 }
