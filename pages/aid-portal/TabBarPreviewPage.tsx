@@ -25,7 +25,6 @@ import {
   riderColor,
   riderRadius,
   springSettleMs,
-  stretchedRect,
   totalMs,
   type Phase,
   type Rect,
@@ -102,11 +101,10 @@ interface TabBarProps {
   plusDarker: boolean;
   pillRef?: (el: HTMLDivElement | null) => void;
   onSelect?: (index: number) => void;
-  interactive?: boolean;
   label: string;
 }
 
-function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect, interactive = true, label }: TabBarProps) {
+function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect, label }: TabBarProps) {
   const type = caption2();
   const inset = capsuleInset();
   const color = riderColor('Text/Primary', theme);
@@ -179,13 +177,6 @@ function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect
           </>
         );
         const style: CSSProperties = { padding: `${TAB.padY}px ${TAB.padX}px`, gap: TAB.gap };
-        if (!interactive) {
-          return (
-            <span key={tab.id} className="tbx-tab" style={style}>
-              {content}
-            </span>
-          );
-        }
         return (
           <button
             key={tab.id}
@@ -359,12 +350,6 @@ export function TabBarPreviewPage() {
     }
   };
 
-  const restNow = restRect(selected, motion.tabs);
-  const demoFrom = restRect(0, motion.tabs);
-  const demoTo = restRect(2, motion.tabs);
-  const demoStretched = stretchedRect(demoFrom, demoTo, motion.growPx);
-  const inset = capsuleInset();
-
   return (
     <div className="tbx-page">
       <style>{TAB_BAR_PREVIEW_STYLE}</style>
@@ -444,46 +429,6 @@ export function TabBarPreviewPage() {
           Сейчас: растяжение {motion.stretchMs} мс + пружина ≈ {settle} мс = <b>≈ {total} мс</b>. В гайде: {GUIDE_MOTION.stretchMs} мс +
           ≈ {guideTotal - GUIDE_MOTION.stretchMs} мс = ≈ {guideTotal} мс. Пружина считается до 0,5 % от пути.
         </p>
-      </section>
-
-      <section className="tbx-card" aria-labelledby="tbx-grow-title">
-        <h2 id="tbx-grow-title" className="pf-heading-s tbx-h2">
-          Отступ 4 в покое, {Math.max(inset - motion.growPx, 0)} на растяжении
-        </h2>
-        <p className="pf-body-s tbx-muted">
-          Ответ на вопрос дизайнера 23.11: да, на фазе растяжения подложка расширяется по высоте — на {motion.growPx} px сверху и
-          снизу (бегунок «Расширение по высоте»). В покое отступ от края капсулы {inset}, высота {restNow.h}; на растяжении отступ{' '}
-          {Math.max(inset - motion.growPx, 0)}, высота {demoStretched.h}.
-        </p>
-        <div className="tbx-frames">
-          {[
-            { title: 'Покой', note: `отступ ${inset} · высота ${demoFrom.h}`, rect: demoFrom, sel: 0 },
-            {
-              title: 'Фаза 1 · растяжение',
-              note: `отступ ${Math.max(inset - motion.growPx, 0)} · высота ${demoStretched.h}`,
-              rect: demoStretched,
-              sel: 0,
-            },
-            { title: 'Фаза 2 · пружина → покой', note: `отступ ${inset} · высота ${demoTo.h}`, rect: demoTo, sel: 2 },
-          ].map((f) => (
-            <figure key={f.title} className="tbx-frame">
-              <div className="tbx-frame-bg">
-                <TabBar
-                  theme="day"
-                  tabs={motion.tabs}
-                  selected={f.sel}
-                  pillRect={f.rect}
-                  plusDarker={plusDarker}
-                  interactive={false}
-                  label={f.title}
-                />
-              </div>
-              <figcaption className="pf-label-s">
-                {f.title} <span className="pf-code-s tbx-muted">{f.note}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
       </section>
 
       <section className="tbx-card" aria-labelledby="tbx-knobs-title">
@@ -694,14 +639,8 @@ const TAB_BAR_PREVIEW_STYLE = `
   touch-action: manipulation;
   user-select: none;
 }
-span.tbx-tab { cursor: default; }
 .tbx-icon { display: block; flex-shrink: 0; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
 .tbx-tab-label { display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tbx-frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: var(--pf-spacing-16); }
-.tbx-frame { margin: 0; display: flex; flex-direction: column; gap: var(--pf-spacing-8); min-width: 0; overflow-x: auto; }
-.tbx-frame figcaption { display: flex; flex-wrap: wrap; gap: var(--pf-spacing-8); }
-.tbx-frame-bg { padding: var(--pf-spacing-12); border-radius: var(--pf-radius-m); background: #FFFFFF; border: 1px solid var(--pf-line-default); display: flex; justify-content: center; }
-.tbx-frame-bg .tbx-pill { outline: 1px dashed rgba(255, 0, 0, 0.6); }
 .tbx-section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--pf-spacing-12); }
 .tbx-knobs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--pf-spacing-16) var(--pf-spacing-24); align-items: end; }
 .tbx-knob { display: grid; gap: var(--pf-spacing-4); }
