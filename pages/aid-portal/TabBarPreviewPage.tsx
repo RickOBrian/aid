@@ -17,7 +17,8 @@ import {
   caption2,
   capsuleInset,
   motionExport,
-  navbarGlassShadow,
+  cssBlend,
+  navbarGlassLayers,
   parseStoredMotion,
   pillFrame,
   restRect,
@@ -70,12 +71,16 @@ function prefersReducedMotion(): boolean {
   }
 }
 
-function supportsPlusDarker(): boolean {
+function supportsBlend(mode: string): boolean {
   try {
-    return typeof CSS !== 'undefined' && CSS.supports('mix-blend-mode', 'plus-darker');
+    return typeof CSS !== 'undefined' && CSS.supports('mix-blend-mode', mode);
   } catch {
     return false;
   }
+}
+
+function supportsPlusDarker(): boolean {
+  return supportsBlend('plus-darker');
 }
 
 function rectStyle(r: Rect): CSSProperties {
@@ -108,19 +113,41 @@ function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect
   const iconColor = riderColor('Icon/Primary', theme);
   const sel = TAB_SELECTED[theme];
   const blend = sel.blend === 'plus-darker' ? (plusDarker ? 'plus-darker' : 'multiply') : 'normal';
+  const radius = riderRadius('radius-pill');
   const capsuleStyle: CSSProperties = {
     width: CAPSULE.width,
     height: CAPSULE.height,
     padding: inset,
     gap: inset,
-    borderRadius: riderRadius('radius-pill'),
-    background: riderColor('Background/Navbar', theme),
-    boxShadow: navbarGlassShadow(),
-    backdropFilter: `blur(${GLASS_BLUR_PX}px)`,
-    WebkitBackdropFilter: `blur(${GLASS_BLUR_PX}px)`,
+    borderRadius: radius,
   };
+  const support = { plusDarker, plusLighter: supportsBlend('plus-lighter') };
+  const layers = navbarGlassLayers(theme);
+  // Каждый эффект — свой слой с наложением; капсула не создаёт контекст наложения,
+  // поэтому слои смешиваются с картой под TabBar, а не с белым.
+  const layer = (l: (typeof layers)[number]) => (
+    <span
+      key={l.id}
+      className="tbx-glass-fx"
+      data-effect={l.id}
+      aria-hidden="true"
+      style={{ borderRadius: radius, boxShadow: l.shadow, mixBlendMode: cssBlend(l.blend, support) as CSSProperties['mixBlendMode'] }}
+    />
+  );
   return (
     <div className="tbx-capsule" style={capsuleStyle} role="group" aria-label={label}>
+      {layers.filter((l) => !l.inner).map(layer)}
+      <span
+        className="tbx-glass"
+        aria-hidden="true"
+        style={{
+          borderRadius: radius,
+          background: riderColor('Background/Navbar', theme),
+          backdropFilter: `blur(${GLASS_BLUR_PX}px)`,
+          WebkitBackdropFilter: `blur(${GLASS_BLUR_PX}px)`,
+        }}
+      />
+      {layers.filter((l) => l.inner).map(layer)}
       <div
         className="tbx-pill"
         ref={pillRef}
@@ -536,8 +563,12 @@ export function TabBarPreviewPage() {
         </h2>
         <ul className="pf-body-s">
           <li>
-            <b>Приближение стекла Figma.</b> Glass/Navbar (Figma GLASS, frost 50) в вебе — размытие фона {GLASS_BLUR_PX} px и внешние
-            тени стиля (мягкая 0 8 15 и тонкий кант 0,5). Преломления, дисперсии и внутренних теней нет.
+            <b>Приближение стекла Figma.</b> Glass/Navbar (Figma GLASS, frost 50) в вебе — размытие фона {GLASS_BLUR_PX} px и семь
+            теней стиля отдельными слоями со своим наложением, как в Figma: кант и внутренняя тень Linear Burn →{' '}
+            <code>plus-darker</code>
+            {plusDarker ? '' : ' (в этом браузере нет — multiply)'}, блики Linear Dodge → <code>plus-lighter</code>
+            {supportsBlend('plus-lighter') ? '' : ' (в этом браузере нет — screen)'}. Поэтому кант только затемняет то, что под
+            капсулой: ночью на тёмной карте он почти не виден, светлого кольца нет. Преломления и дисперсии нет.
           </li>
           <li>
             <b>Plus darker.</b> Днём подложка Background/Tab Selected (#D9D9D9 50 %) ложится с наложением Plus darker.{' '}
@@ -644,6 +675,7 @@ const TAB_BAR_PREVIEW_STYLE = `
 .tbx-home { display: flex; align-items: flex-end; justify-content: center; width: 100%; }
 .tbx-home span { display: block; border-radius: 100px; }
 .tbx-capsule { position: relative; box-sizing: border-box; display: flex; flex-shrink: 0; }
+.tbx-glass, .tbx-glass-fx { position: absolute; inset: 0; pointer-events: none; }
 .tbx-pill { position: absolute; left: 0; top: 0; will-change: transform, width, height; pointer-events: none; }
 .tbx-tab {
   position: relative;

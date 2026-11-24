@@ -9,7 +9,8 @@ import {
   caption2,
   ease,
   motionExport,
-  navbarGlassShadow,
+  cssBlend,
+  navbarGlassLayers,
   parseStoredMotion,
   pillFrame,
   restRect,
@@ -29,7 +30,25 @@ describe('превью TabBar Rider (presentbook-10)', () => {
     expect(riderColor('Icon/Primary', 'night')).toBe('rgb(248, 250, 255)');
     expect(riderRadius('radius-pill')).toBe('9999px');
     expect(caption2().font).toContain('500 11px/14px');
-    expect(navbarGlassShadow()).toContain('0px 8px 15px 0px rgba(0,0,0,0.02)');
+  });
+
+  it('стекло: семь эффектов, кант — Linear Burn, блики — Linear Dodge, ночью так же', () => {
+    for (const theme of ['day', 'night'] as const) {
+      const layers = navbarGlassLayers(theme);
+      expect(layers).toHaveLength(7);
+      const byId = Object.fromEntries(layers.map((l) => [l.id, l]));
+      expect(byId['drop-shadow-1']).toMatchObject({ blend: 'normal', shadow: '0px 8px 15px 0px rgba(0,0,0,0.02)' });
+      expect(byId['drop-shadow-2']).toMatchObject({ blend: 'linear-burn', shadow: '0px 0px 0px 0.5px rgba(232,232,232,1)' });
+      expect(byId['drop-shadow-3'].shadow).toBe('-1.25px 0px 0px -0.75px rgba(208,208,208,1)');
+      expect(byId['inner-shadow-1']).toMatchObject({ inner: true, blend: 'linear-burn' });
+      expect(byId['inner-shadow-2']).toMatchObject({ inner: true, blend: 'linear-dodge', shadow: 'inset 0px -8px 10px -40px rgba(40,40,40,0.25)' });
+      // светлый кант ни в одном слое не ложится обычным наложением
+      expect(layers.filter((l) => l.blend === 'normal').map((l) => l.id)).toEqual(['drop-shadow-1']);
+    }
+    expect(cssBlend('linear-burn', { plusDarker: false, plusLighter: false })).toBe('multiply');
+    expect(cssBlend('linear-burn', { plusDarker: true, plusLighter: false })).toBe('plus-darker');
+    expect(cssBlend('linear-dodge', { plusDarker: false, plusLighter: true })).toBe('plus-lighter');
+    expect(cssBlend('linear-dodge', { plusDarker: false, plusLighter: false })).toBe('screen');
   });
 
   it('геометрия: капсула 358, отступ 4, gap 4, подложка 56 в покое', () => {

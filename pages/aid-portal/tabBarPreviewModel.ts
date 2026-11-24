@@ -114,22 +114,60 @@ export function caption2(): { font: string; letterSpacing: string } {
   };
 }
 
+export type GlassBlend = 'normal' | 'linear-burn' | 'linear-dodge';
+
 /**
- * Glass/Navbar в вебе — приближение: размытие фона и внешние тени стиля
- * (Drop Shadow 1 — мягкая тень, Drop Shadow 2 — тонкий кант). Преломление,
- * дисперсия и внутренние тени Figma GLASS в CSS не повторяются.
+ * Режимы наложения эффектов Glass/Navbar в Figma (коллекция effects, Day и
+ * Night одинаковы). В данных портала режимов нет — только значения теней.
  */
-export function navbarGlassShadow(): string {
+export const NAVBAR_GLASS_BLEND: Record<string, GlassBlend> = {
+  'drop-shadow-1': 'normal',
+  'drop-shadow-2': 'linear-burn',
+  'drop-shadow-3': 'linear-burn',
+  'drop-shadow-4': 'linear-burn',
+  'inner-shadow-1': 'linear-burn',
+  'inner-shadow-2': 'linear-dodge',
+  'inner-shadow-3': 'linear-dodge',
+};
+
+export interface GlassLayer {
+  id: string;
+  inner: boolean;
+  blend: GlassBlend;
+  /** CSS box-shadow одного эффекта. */
+  shadow: string;
+}
+
+/**
+ * Glass/Navbar в вебе — приближение: каждый эффект стиля (значения — данные
+ * портала) — отдельный слой со своим наложением. Внешние тени — под стеклом,
+ * внутренние — над заливкой и под содержимым, как в Figma. Преломление и
+ * дисперсия Figma GLASS в CSS не повторяются.
+ */
+export function navbarGlassLayers(theme: TabBarTheme): GlassLayer[] {
   const style = riderGlassStyles.find((s) => s.id === 'navbar');
   if (!style) throw new Error('Rider glass style not found: navbar');
-  const parts: string[] = [];
-  for (const id of ['drop-shadow-1', 'drop-shadow-2']) {
-    const group = style.groups.find((g) => g.id === id);
-    if (!group) continue;
-    const v = (p: string) => group.parameters.find((x) => x.id === p)?.day ?? '0';
-    parts.push(`${v('offset-x')}px ${v('offset-y')}px ${v('blur')}px ${v('spread')}px ${v('color')}`);
+  const layers: GlassLayer[] = [];
+  for (const group of style.groups) {
+    const blend = NAVBAR_GLASS_BLEND[group.id];
+    if (!blend) continue;
+    const inner = group.id.startsWith('inner-shadow');
+    const v = (p: string) => group.parameters.find((x) => x.id === p)?.[theme] ?? '0';
+    layers.push({
+      id: group.id,
+      inner,
+      blend,
+      shadow: `${inner ? 'inset ' : ''}${v('offset-x')}px ${v('offset-y')}px ${v('blur')}px ${v('spread')}px ${v('color')}`,
+    });
   }
-  return parts.join(', ');
+  return layers;
+}
+
+/** CSS-наложение для режима Figma: точное, если браузер умеет, иначе ближайшее. */
+export function cssBlend(blend: GlassBlend, support: { plusDarker: boolean; plusLighter: boolean }): string {
+  if (blend === 'linear-burn') return support.plusDarker ? 'plus-darker' : 'multiply';
+  if (blend === 'linear-dodge') return support.plusLighter ? 'plus-lighter' : 'screen';
+  return 'normal';
 }
 
 /** Размытие фона для Glass/Navbar (Figma GLASS frost 50) — подобрано на глаз. */
