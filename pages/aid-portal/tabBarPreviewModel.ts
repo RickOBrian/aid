@@ -282,14 +282,20 @@ export type Phase = 'stretch' | 'spring' | 'rest';
  * Кадр подложки через `tMs` после нажатия: из `from` (там, где подложка была
  * в момент нажатия, — допускается прерванная анимация) на таб `toIndex`.
  */
-export function pillFrame(tMs: number, from: Rect, toIndex: number, m: TabBarMotion): { rect: Rect; phase: Phase } {
+export function pillFrame(
+  tMs: number,
+  from: Rect,
+  toIndex: number,
+  m: TabBarMotion,
+  settleMs: number = springSettleMs(m),
+): { rect: Rect; phase: Phase } {
   const to = restRect(toIndex, m.tabs);
   const stretched = stretchedRect(from, to, m.growPx);
   if (tMs < m.stretchMs) {
     return { rect: lerpRect(from, stretched, ease(m.stretchEasing, tMs / m.stretchMs)), phase: 'stretch' };
   }
   const springT = tMs - m.stretchMs;
-  if (springT >= springSettleMs(m)) return { rect: to, phase: 'rest' };
+  if (springT >= settleMs) return { rect: to, phase: 'rest' };
   return { rect: lerpRect(stretched, to, springProgress(springT, m)), phase: 'spring' };
 }
 

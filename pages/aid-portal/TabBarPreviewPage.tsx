@@ -120,7 +120,7 @@ function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect
     WebkitBackdropFilter: `blur(${GLASS_BLUR_PX}px)`,
   };
   return (
-    <div className="tbx-capsule" style={capsuleStyle} role={interactive ? 'tablist' : undefined} aria-label={label}>
+    <div className="tbx-capsule" style={capsuleStyle} role="group" aria-label={label}>
       <div
         className="tbx-pill"
         ref={pillRef}
@@ -163,8 +163,7 @@ function TabBar({ theme, tabs, selected, pillRect, plusDarker, pillRef, onSelect
           <button
             key={tab.id}
             type="button"
-            role="tab"
-            aria-selected={index === selected}
+            aria-pressed={index === selected}
             className="tbx-tab"
             style={style}
             // Нажатие сразу переносит выделение (гайд, блок 5); клавиатура — через click.
@@ -259,11 +258,14 @@ export function TabBarPreviewPage() {
         return;
       }
       const from = current.current;
+      // Параметры фиксируются на старте перетекания: бегунок во время прогона не дёргает подложку.
+      const frozen = { ...m };
+      const settleMs = springSettleMs(frozen);
       const t0 = performance.now();
       const scale = slow ? SLOW_FACTOR : 1;
       let lastPhase: Phase | null = null;
       const tick = (now: number) => {
-        const res = pillFrame((now - t0) / scale, from, index, motionRef.current);
+        const res = pillFrame((now - t0) / scale, from, index, frozen, settleMs);
         paint(res.rect);
         if (res.phase !== lastPhase) {
           lastPhase = res.phase;
@@ -373,7 +375,7 @@ export function TabBarPreviewPage() {
               </label>
             ))}
           </fieldset>
-          <span className="pf-code-s tbx-phase" role="status">
+          <span className="pf-code-s tbx-phase" aria-live="off">
             {PHASE_LABEL[phase]}
           </span>
         </div>
