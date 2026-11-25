@@ -7,9 +7,12 @@
 #
 # Повторяет только ошибки соединения, при которых запрос ещё не ушёл на
 # сервер: TLS handshake timeout, dial tcp, отказ в соединении, нет DNS.
-# Поэтому повтор безопасен и для пишущих команд (pr create, issue comment):
-# двойной записи не будет. Остальные ошибки (401, 404, 422, сброс уже
-# открытого соединения) возвращаются сразу, с кодом `gh`.
+# Команда из одного запроса (`issue comment`, `api -X POST`) при таком сбое
+# не записала ничего — повтор безопасен. Команды из нескольких запросов
+# (`pr create` с --label/--reviewer, `release create`, `pr merge`) могут
+# упасть на втором запросе после первого: повтор вызовет «already exists»
+# или дубль — после такой команды проверить результат. Остальные ошибки
+# (401, 404, 422, сброс уже открытого соединения) возвращаются сразу.
 #
 # Настройки: GH_RETRY_ATTEMPTS — попыток всего (по умолчанию 4, от 1 до 5);
 # GH_RETRY_DELAY — пауза перед первым повтором, с (по умолчанию 5; дальше
@@ -19,8 +22,10 @@
 # в сообщении о повторе — только подкоманда `gh` и номер попытки. Вывод `gh`
 # отдаётся как есть, один раз — от последней попытки.
 #
-# Ограничение: stdin не буферизуется. Команды, читающие stdin
-# (`--body-file -`, `--input -`), передавайте через файл.
+# Ограничения: stdin не буферизуется — команды, читающие stdin
+# (`--body-file -`, `--input -`), передавайте через файл. Вывод `gh` идёт
+# через временный файл, у `gh` нет TTY: для интерактивных и потоковых
+# команд (`run watch`, `pr checks --watch`, `auth login`) не использовать.
 
 set -u
 
@@ -28,6 +33,7 @@ attempts="${GH_RETRY_ATTEMPTS:-4}"
 delay="${GH_RETRY_DELAY:-5}"
 case "$attempts" in ''|*[!0-9]*) attempts=4 ;; esac
 case "$delay" in ''|*[!0-9]*) delay=5 ;; esac
+attempts=$((10#$attempts)); delay=$((10#$delay))
 [ "$attempts" -lt 1 ] && attempts=1
 [ "$attempts" -gt 5 ] && attempts=5
 
@@ -40,14 +46,18 @@ if ! command -v gh >/dev/null 2>&1; then
   exit 127
 fi
 
-# Подкоманда для сообщений: первые слова без флагов (pr list, api …) —
-# без значений, которые могут быть секретом.
-label="$1"
-case "${2:-}" in ''|-*) ;; *) [ "$1" != "api" ] && label="$1 $2" ;; esac
+# Для сообщений — только подкоманда (pr, issue, api …): первое слово из
+# строчных латинских букв; значения флагов и аргументы не печатаются.
+label=""
+for a in "$@"; do
+  case "$a" in -*|*[!a-z-]*) ;; *) label="$a"; break ;; esac
+done
 
+umask 077
 out="$(mktemp)" || exit 1
 err="$(mktemp)" || { rm -f "$out"; exit 1; }
 trap 'rm -f "$out" "$err"' EXIT
+trap 'exit 130' INT TERM
 
 transient='TLS handshake timeout|dial tcp|connection refused|no such host|network is unreachable|i/o timeout.*dial'
 
@@ -61,7 +71,7 @@ while :; do
     exit "$code"
   fi
   pause=$((delay * n))
-  echo "gh-retry: gh $label — сбой соединения, попытка $n из $attempts; повтор через ${pause} с" >&2
+  echo "gh-retry: gh $label … — сбой соединения, попытка $n из $attempts; повтор через ${pause} с" >&2
   sleep "$pause"
   n=$((n + 1))
 done
