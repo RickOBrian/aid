@@ -1,7 +1,7 @@
 // ds-component-check · автопроверка пейджа аудита или сборки — только чтение.
 // Запуск: use_figma, fileKey — файл библиотеки; перед вызовом заменить CONFIG.
 // Скрипт ничего не меняет в файле. Вывод — JSON { meta, findings[], inventory }.
-// Правила — skills/ds-component-check/SKILL.md §4 (коды D1…D14).
+// Правила — skills/ds-component-check/SKILL.md §3 (коды D1…D14).
 
 const CONFIG = {
   PAGE_ID: '__PAGE_ID__',          // id пейджа: 👀 X · audit или 🚧 X · construction
@@ -14,7 +14,7 @@ const CONFIG = {
     { re: '(^|[^A-Za-z ])Tint/', why: 'Tint/* переименованы в Background/* Tint (Rider Colors 2.0.0)' },
     { re: 'neutral-[xy]', why: 'старая служебная палитра (persefona-figma-pages §6.6)' },
     { re: 'text icon/', why: 'старые токены text icon/*' },
-    { re: '(^|[^A-Za-z])Line/', why: 'Line/* к устареванию, Stroke/Separator*' },
+    { re: '(^|[^A-Za-z ])Line/', why: 'Line/* к устареванию, Stroke/Separator*' },
   ],
   // Фразы, которых нет на пейдже аудита и сборки (протокол §3.1 п.1, §3.8 п.3).
   FORBIDDEN_PHRASES: [
@@ -41,7 +41,9 @@ if (!page || page.type !== 'PAGE') return { error: 'pageNotFound', id: CONFIG.PA
 await figma.setCurrentPageAsync(page);
 
 let mode = CONFIG.MODE;
-if (mode === 'auto' || mode.startsWith('__')) mode = / · construction$/.test(page.name) ? 'construction' : 'audit';
+if (mode === 'auto' || mode.startsWith('__')) mode = / · (construction|readyfordev)$/.test(page.name) ? 'construction' : 'audit';
+// readyfordev: проверки сборки, но аудит уже в Archive — его секции здесь быть не должно
+const rfd = / · readyfordev$/.test(page.name);
 out.meta = { page: page.name, pageId: page.id, mode, file: figma.root.name };
 
 // ── D1 имя пейджа ─────────────────────────────────────────────────────
@@ -60,7 +62,8 @@ const top = page.children;
 out.inventory.top = top.slice(0, 40).map(n => ({ id: n.id, type: n.type, name: n.name.slice(0, 60), children: 'children' in n ? n.children.length : 0 }));
 const auditSections = top.filter(n => / · audit( · \d{4}-\d{2}-\d{2})?$/.test(n.name));
 if (mode === 'construction') {
-  if (!auditSections.length) add('D2', 'пейдж', page, 'нет секции «<Компонент> · audit» на пейдже сборки', '§3.1 п.6 (PD 2026-10-28, #532): до readyfordev аудит — секцией здесь, в Archive — только на readyfordev');
+  if (rfd && auditSections.length) add('D2', 'пейдж', auditSections[0], 'на readyfordev секция аудита осталась на пейдже', 'аудит — в Archive (§3.8 п.6)');
+  if (!rfd && !auditSections.length) add('D2', 'пейдж', page, 'нет секции «<Компонент> · audit» на пейдже сборки', '§3.1 п.6 (PD 2026-10-28, #532): до readyfordev аудит — секцией здесь, в Archive — только на readyfordev');
   const sameAudit = figma.root.children.find(p => p.id !== page.id && / · audit$/.test(p.name) &&
     p.name.replace(/^\S+ /, '').replace(/ · audit$/, '') === page.name.replace(/^\S+ /, '').replace(/ · construction$/, ''));
   if (sameAudit) add('D2', 'пейдж', sameAudit, 'отдельный пейдж аудита остался рядом с пейджем сборки', 'аудит — секцией на пейдже сборки, пустой пейдж удалить после сверки (§3.1 п.6)');
@@ -81,7 +84,7 @@ for (const mm of masters) {
 }
 
 // ── D3 варианты и свойства ────────────────────────────────────────────
-function relPath(node, root) { const a = []; let p = node; while (p && p !== root) { a.unshift(p.name); p = p.parent; } return a.join(' / '); }
+function relPath(node, root) { const a = []; let p = node; while (p && p !== root) { const i = p.parent ? p.parent.children.indexOf(p) : 0; a.unshift(`${p.name}[${i}]`); p = p.parent; } return a.join(' / '); }
 function bindSig(n) {
   const r = n.componentPropertyReferences ? Object.entries(n.componentPropertyReferences).map(([k, v]) => `${k}=${v}`).sort() : [];
   const bv = n.boundVariables ? Object.keys(n.boundVariables).sort() : [];
@@ -102,10 +105,11 @@ for (const set of sets) {
   out.inventory.sets.push({ id: set.id, name: set.name, variants: variants.length, expected,
     props: Object.entries(defs).map(([k, d]) => `${k}:${d.type}${d.type === 'VARIANT' ? '[' + d.variantOptions.join('|') + ']' : ''}`) });
   if (variants.length !== expected) {
-    const have = new Set(variants.map(v => JSON.stringify(v.variantProperties)));
+    const key = o => JSON.stringify(Object.entries(o || {}).sort());
+    const have = new Set(variants.map(v => key(v.variantProperties)));
     const missing = [];
     const combos = variantProps.reduce((acc, [k, d]) => acc.flatMap(c => d.variantOptions.map(o => ({ ...c, [k]: o }))), [{}]);
-    for (const c of combos) if (!have.has(JSON.stringify(c))) missing.push(Object.values(c).join('/'));
+    for (const c of combos) if (!have.has(key(c))) missing.push(Object.values(c).join('/'));
     add('D3', 'набор', set, `вариантов ${variants.length} из ${expected}; нет: ${missing.slice(0, 8).join(', ')}${missing.length > 8 ? '…' : ''}`, 'полная матрица вариантов или объяснение в описании', 'warn');
   }
   // имена свойств и значений
@@ -217,7 +221,9 @@ for (const mm of masters) {
 // ── D9 описания: оба поля, экранирование, первая строка ────────────────
 for (const mm of masters) {
   const d = mm.description || '', dm = mm.descriptionMarkdown || '';
-  if (!d.trim() && !dm.trim()) { add('D9', 'описание', mm, 'описания нет', 'описание у мастера (§3.8 блок 1)'); continue; }
+  const cyr = mm.findAll(n => CYR.test(n.name) && n.type !== 'TEXT').slice(0, 3);
+  for (const n of cyr) add('D10', 'мастер', n, `слой «${n.name}» кириллицей`, 'имена слоёв — латиницей, как в коде (§3.8 п.3)', 'warn');
+  if (!d.trim() && !dm.trim()) { add('D9', 'описание', mm, 'описания нет', 'описание у мастера (§3.8 блок 1)', mm.name.startsWith('.') ? 'warn' : 'error'); continue; }
   if (ENT.test(d)) add('D9', 'описание', mm, `description: HTML-сущность «${d.match(ENT)[0]}»`, 'символы как есть: " > < (урок BannerStatus 2026-11-10)');
   if (ENT.test(dm)) add('D9', 'описание', mm, `descriptionMarkdown: HTML-сущность «${dm.match(ENT)[0]}»`, 'символы как есть — проверять оба поля');
   if (mode === 'construction' && !inAudit(mm) && !mm.name.startsWith('.')) {
@@ -225,8 +231,6 @@ for (const mm of masters) {
     if (!/ · \d+\.\d+\.\d+/.test(first)) add('D9', 'описание', mm, `первая строка «${first.slice(0, 50)}» без версии`, '«<Компонент> · <версия>», до релиза «· не опубликовано» (§3.8 блок 1)');
   }
   // слои мастера — латиницей
-  const cyr = mm.findAll(n => CYR.test(n.name) && n.type !== 'TEXT').slice(0, 3);
-  for (const n of cyr) add('D10', 'мастер', n, `слой «${n.name}» кириллицей`, 'имена слоёв — латиницей, как в коде (§3.8 п.3)', 'warn');
 }
 
 // ── D11 тексты пейджа: устаревшие имена, сущности, запрещённые фразы ───
@@ -236,7 +240,7 @@ for (const t of texts) {
   if (!t.visible) continue;
   const s = t.characters;
   for (const d of CONFIG.DEPRECATED) if (new RegExp(d.re).test(s)) add('D11', blockOf(t), t, `«${s.slice(0, 70)}»: ${d.why}`, 'действующее имя токена');
-  for (const d of CONFIG.FORBIDDEN_PHRASES) if (new RegExp(d.re).test(s)) add('D12', blockOf(t), t, `«${s.slice(0, 70)}»: ${d.why}`, 'только факт', 'warn');
+  for (const d of CONFIG.FORBIDDEN_PHRASES) if (new RegExp(d.re).test(s) && !/› 8\. /.test(blockOf(t))) add('D12', blockOf(t), t, `«${s.slice(0, 70)}»: ${d.why}`, 'только факт', 'warn');
   if (ENT.test(s)) add('D11', blockOf(t), t, `HTML-сущность в тексте «${s.slice(0, 50)}»`, 'символы как есть');
 }
 
@@ -261,7 +265,7 @@ for (const i of allInsts) {
 out.inventory.instances = allInsts.length;
 out.inventory.usage = [...usage.entries()].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${k} ×${v}`);
 out.inventory.tagMarkers = tagMarkers;
-if (!tagMarkers) add('D13', 'анатомия', page, 'нет ни одного TagMarker', 'схема анатомии — номера TagMarker (Kit, Set=Main) поверх компонента (persefona-figma-pages §6.6)');
+if (!tagMarkers) add('D13', 'анатомия', page, 'нет ни одного TagMarker', 'схема анатомии — номера TagMarker (Kit, Set=Main) поверх компонента (persefona-figma-pages §6.6)', mode === 'audit' ? 'warn' : 'error');
 out.inventory.exampleTexts = [...exampleTexts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(([k, v]) => `${v}× ${k}`);
 
 // ── D14 темы: режимы переменных на пейдже ─────────────────────────────
