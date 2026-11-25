@@ -78,6 +78,10 @@
       "source": "skills/ds-component-build"
     },
     {
+      "path": "skills/ds-component-check",
+      "source": "skills/ds-component-check"
+    },
+    {
       "path": "skills/ds-component-migration",
       "source": "skills/ds-component-migration"
     },
