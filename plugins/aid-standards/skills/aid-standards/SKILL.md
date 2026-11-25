@@ -81,7 +81,7 @@ ${CLAUDE_PLUGIN_ROOT}/repo/
 ## Скиллы плагина
 
 `/aid-standards:ds-component-spec`, `ds-component-build`,
-`ds-component-audit`, `ds-component-check`, `ds-component-migration`, `ds-ui-review`,
+`ds-component-audit`, `ds-component-check`, `ds-acceptance-request`, `ds-component-migration`, `ds-ui-review`,
 `ds-developer-guide`, `ds-import`, `guide-lint`. Пути внутри них — тоже
 от `repo/`, по правилу выше.
 
