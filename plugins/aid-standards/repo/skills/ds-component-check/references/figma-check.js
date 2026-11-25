@@ -4,6 +4,7 @@
 // Правила — skills/ds-component-check/SKILL.md §3 (коды D1…D14).
 
 const CONFIG = {
+  FILE_KEY: '__FILE_KEY__',       // для отчёта: figma.root.name в use_figma имени файла не даёт
   PAGE_ID: '__PAGE_ID__',          // id пейджа: 👀 X · audit или 🚧 X · construction
   MODE: '__MODE__',                // 'audit' | 'construction' | 'auto' (по имени пейджа)
   // Тон, у которого хекс допустим (правило sergej 2026-10-30, IconSurface Custom).
@@ -44,7 +45,7 @@ let mode = CONFIG.MODE;
 if (mode === 'auto' || mode.startsWith('__')) mode = / · (construction|readyfordev)$/.test(page.name) ? 'construction' : 'audit';
 // readyfordev: проверки сборки, но аудит уже в Archive — его секции здесь быть не должно
 const rfd = / · readyfordev$/.test(page.name);
-out.meta = { page: page.name, pageId: page.id, mode, file: figma.root.name };
+out.meta = { page: page.name, pageId: page.id, mode, file: CONFIG.FILE_KEY };
 
 // ── D1 имя пейджа ─────────────────────────────────────────────────────
 {
@@ -256,7 +257,7 @@ for (const i of allInsts) {
   const owner = mc.parent && mc.parent.type === 'COMPONENT_SET' ? mc.parent : mc;
   usage.set(owner.name, (usage.get(owner.name) || 0) + 1);
   if (/TagMarker/.test(owner.name)) tagMarkers++;
-  if (localMasterIds.has(owner.id)) {
+  if (localMasterIds.has(owner.id) || /IslandExample/.test(owner.name)) {
     for (const t of i.findAllWithCriteria({ types: ['TEXT'] })) if (t.visible && t.characters.trim()) {
       const k = t.characters.trim().slice(0, 60); exampleTexts.set(k, (exampleTexts.get(k) || 0) + 1);
     }
@@ -267,6 +268,43 @@ out.inventory.usage = [...usage.entries()].sort((a, b) => b[1] - a[1]).slice(0, 
 out.inventory.tagMarkers = tagMarkers;
 if (!tagMarkers) add('D13', 'анатомия', page, 'нет ни одного TagMarker', 'схема анатомии — номера TagMarker (Kit, Set=Main) поверх компонента (persefona-figma-pages §6.6)', mode === 'audit' ? 'warn' : 'error');
 out.inventory.exampleTexts = [...exampleTexts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(([k, v]) => `${v}× ${k}`);
+
+// ── D15 состав и нумерация блоков против таблицы протокола ─────────────
+{
+  const want = mode === 'audit' ? [0, 1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 5, 6, 7, 8, 10, 11];
+  const scope = mode === 'audit' ? top : top.filter(n => !auditSections.includes(n));
+  const nums = [];
+  // блок — фрейм «N. Имя» с HeaderSection внутри (Kit §6.6); пронумерованные пункты внутри блоков не считаются
+  const isBlock = f => (f.type === 'FRAME' || f.type === 'SECTION') && /^\d{1,2}\. /.test(f.name) &&
+    f.children.some(c => c.type === 'INSTANCE' && /^HeaderSection/.test(c.name));
+  const names = {};
+  for (const sec of scope) for (const f of sec.findAll(isBlock)) { const k = parseInt(f.name, 10); nums.push(k); names[k] = f.name; }
+  out.inventory.blockNames = Object.values(names);
+  if (mode === 'audit' && names[1] && !/Дерево/i.test(names[1]))
+    add('D15', 'блоки', page, `блок 1 — «${names[1]}», а не дерево компонентов; номера сдвинуты`, '§3.1 п.4: 1 — Дерево компонентов, обязателен');
+  const have = [...new Set(nums)].sort((a, b) => a - b);
+  out.inventory.blocks = have;
+  if (have.length) {
+    const miss = want.filter(x => !have.includes(x)), extra = have.filter(x => !want.includes(x));
+    if (miss.length || extra.length) add('D15', 'блоки', page, `блоки ${have.join(',')}; нет ${miss.join(',') || '—'}, лишние ${extra.join(',') || '—'}`,
+      mode === 'audit' ? 'аудит — блоки 0–8 по §3.1 п.4 (1 — дерево компонентов)' : 'сборка — 1–8, 10, 11 по §3.8 п.4; 9 — секция Changelog');
+  } else add('D15', 'блоки', page, 'не найдено фреймов блоков «N. Имя»', 'блоки по таблице протокола', 'warn');
+}
+
+// ── D16 якоря: ссылка на узел другого пейджа или пропавший узел ──────────
+for (const t of texts) {
+  if (!t.visible) continue;
+  let segs = [];
+  try { segs = t.getStyledTextSegments(['hyperlink']); } catch (e) { continue; }
+  for (const sg of segs) {
+    const h = sg.hyperlink;
+    if (!h || h.type !== 'NODE') continue;
+    const target = await figma.getNodeByIdAsync(h.value);
+    let pg = target; while (pg && pg.type !== 'PAGE') pg = pg.parent;
+    if (!target) add('D16', blockOf(t), t, `якорь «${sg.characters.slice(0, 30)}» на несуществующий узел ${h.value}`, 'якорь — на слайд этого пейджа (§3.1 блок 8)');
+    else if (pg && pg.id !== page.id) add('D16', blockOf(t), t, `якорь «${sg.characters.slice(0, 30)}» ведёт на пейдж «${pg.name}» (${h.value})`, 'якорь — на слайд этого пейджа (§3.1 блок 8)');
+  }
+}
 
 // ── D14 темы: режимы переменных на пейдже ─────────────────────────────
 const modeUse = new Map();
