@@ -1,0 +1,56 @@
+{
+  "id": "component-route-row",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Route Row",
+  "componentId": "route-row",
+  "product": "rider",
+  "task": "designer-34",
+  "taskKey": "AID-95",
+  "issue": 598,
+  "changeSummary": "RouteRow Rider — новый компонент (designer-34, AID-95, issue #598), флоу figma-library-workflow §3.1: ячейка списка маршрута — старт, промежуточная остановка, финиш. Вход — ячейки виджета «Маршрут» New Rider Drafts 7734:232693 (Route Points), остальные элементы виджета не трогаем. По ответам PD 25.11 («1Согласно стандартам 2Нарисуем оба варианта для сравнения 3А 4А 5Б, обрезание фейдом 6А, но справа может быть только шеврон пока что (и он опционален) 7нет»): Point = Start / Stop / Finish; маркеры из Rider Icons — Start ic_circle_stop, Finish ic_finish_flag (рядом показан ic_finish), Stop — иконки-точки нет (пробел, заявка Rider Icons; в аудите точка 6 слоем); линия маршрута на Stroke/Separator Secondary вместо хекса #D3D3D9, толщина 2 — литерал-допущение; адрес одной строкой, Bodies/Body 2 + Text/Primary, обрезка фейдом space-24 (Show Fade, в коде только при обрезке); нажимается вся строка, State Default / Pressed (Background/Secondary, как List Item 259:3755); справа только шеврон ic_chevron_right, Show Chevron; подписи под адресом нет. Отступы space-20 / space-16, промежуток space-12, высота 52 = space-14 + маркер 24 + space-14. Линия маршрута — два варианта рядом для решения: а — отрезки внутри ячейки, список без промежутков; б — линию рисует список. Имя RouteRow (Entity + Row, Structural View) ждёт подтверждения Standards. List Item не меняется. Новых токенов нет.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "RouteRow: новая ячейка списка маршрута Rider — старт, остановка, финиш"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2341:2",
+    "auditSection": "2341:6635",
+    "auditBlocks": {
+      "cover": "2341:6637",
+      "0": "2341:6660",
+      "1": "2341:6683",
+      "2": "2341:6706",
+      "3": "2341:6729",
+      "4": "2341:6752",
+      "5": "2341:6775",
+      "6": "2341:6798",
+      "7": "2341:6821"
+    },
+    "auditPrototypes": {
+      ".Route Row · audit": "2341:95"
+    },
+    "input": {
+      "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
+      "node": "7734:232693"
+    }
+  },
+  "openQuestions": [
+    "Имя RouteRow — ждёт Standards (блок 7, вопрос 1)",
+    "Линия маршрута: а — отрезки в ячейке, б — линию рисует список (блок 7, вопрос 2)",
+    "Иконка промежуточной точки — заявка Rider Icons (блок 7, вопрос 4)",
+    "Толщина линии 2 — литерал до нормы толщины линий (блок 7, вопрос 6)"
+  ],
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej"
+}
