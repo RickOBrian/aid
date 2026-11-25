@@ -17,10 +17,12 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "auditPage": "2312:8650",
     "componentPage": null,
     "components": {},
-    "auditPrototypes": {},
+    "auditPrototypes": {
+      ".Switch · audit": "2313:104"
+    },
     "input": {
       "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
       "node": "2421:224410"
@@ -28,7 +30,8 @@
     "reference": {
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "5262:187123"
-    }
+    },
+    "auditSection": "2312:8651"
   },
   "relatedTokenChanges": [],
   "reviewRoute": null,
