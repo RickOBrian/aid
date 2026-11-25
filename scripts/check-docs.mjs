@@ -346,8 +346,6 @@ function validate(schema, value, root, path = '') {
   if (schema === false) return [{ path, msg: 'значение запрещено схемой' }];
   const out = [];
   const at = path || '(корень)';
-  for (const k of Object.keys(schema))
-    if (!SCHEMA_KEYWORDS.has(k)) out.push({ path: at, msg: `схема: ключевое слово «${k}» валидатор не поддерживает` });
 
   if (schema.$ref) {
     const m = /^#\/\$defs\/(.+)$/.exec(schema.$ref);
@@ -374,10 +372,10 @@ function validate(schema, value, root, path = '') {
     out.push({ path: at, msg: `${value} < ${schema.minimum}` });
   if (typeOf(value) === 'object') {
     for (const r of schema.required || [])
-      if (!(r in value)) out.push({ path: at, msg: `нет обязательного поля «${r}»` });
+      if (!Object.hasOwn(value, r)) out.push({ path: at, msg: `нет обязательного поля «${r}»` });
     for (const [k, v] of Object.entries(value)) {
       const sub = `${path}${path ? '.' : ''}${k}`;
-      if (schema.properties && k in schema.properties) out.push(...validate(schema.properties[k], v, root, sub));
+      if (schema.properties && Object.hasOwn(schema.properties, k)) out.push(...validate(schema.properties[k], v, root, sub));
       else if (schema.additionalProperties !== undefined) out.push(...validate(schema.additionalProperties, v, root, sub));
     }
   }
@@ -399,6 +397,18 @@ function validate(schema, value, root, path = '') {
 if (existsSync(join(repoRoot, PENDING_SCHEMA))) {
   const schema = JSON.parse(readFileSync(join(repoRoot, PENDING_SCHEMA), 'utf-8'));
   const RULE = 'pending-schema';
+  /* словарь схемы — один обход до проверки данных: внутри if и anyOf
+     ошибка ключевого слова иначе выглядела бы как «ветка не подошла» */
+  const unknownKeywords = (s, path) => {
+    if (typeOf(s) !== 'object') return;
+    for (const [k, v] of Object.entries(s)) {
+      if (!SCHEMA_KEYWORDS.has(k)) err(PENDING_SCHEMA, RULE, `${path}: ключевое слово «${k}» валидатор не поддерживает`);
+      if (k === 'properties' || k === '$defs') for (const [n, sub] of Object.entries(v)) unknownKeywords(sub, `${path}/${k}/${n}`);
+      else if (k === 'allOf' || k === 'anyOf') v.forEach((sub, i) => unknownKeywords(sub, `${path}/${k}/${i}`));
+      else if (['items', 'additionalProperties', 'if', 'then', 'else'].includes(k)) unknownKeywords(v, `${path}/${k}`);
+    }
+  };
+  unknownKeywords(schema, '#');
   for (const product of readdirSync(join(repoRoot, 'changes'))) {
     const dir = join('changes', product, 'pending');
     if (!existsSync(join(repoRoot, dir)) || !statSync(join(repoRoot, dir)).isDirectory()) continue;
