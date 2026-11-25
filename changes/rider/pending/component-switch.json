@@ -17,9 +17,11 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": "2312:8650",
-    "componentPage": null,
-    "components": {},
+    "auditPage": "2349:8766",
+    "componentPage": "2349:8766",
+    "components": {
+      "Switch": "2349:8768"
+    },
     "auditPrototypes": {
       ".Switch · audit": "2313:104"
     },
@@ -31,7 +33,12 @@
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "5262:187123"
     },
-    "auditSection": "2312:8651"
+    "auditSection": "2312:8651",
+    "componentKey": "e982f8c9505701bc8507050a9a46795239385303",
+    "guide": "2349:8795",
+    "changelogSection": "2349:9237",
+    "masterSection": "2349:8767",
+    "preview": "https://preview.aidteam.pro/pr-608/rider/preview/switch"
   },
   "relatedTokenChanges": [],
   "reviewRoute": null,
