@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { SwitchPreviewPage } from './SwitchPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -163,6 +164,14 @@ export function App() {
   }
   if (managePath === '/manage/team') {
     return <TeamPage />;
+  }
+  // Превью Switch Rider (AID-94): только по прямой ссылке и кнопке из Figma, без ссылок из меню.
+  if (managePath === '/rider/preview/switch') {
+    return (
+      <ProductAccentScope productId="rider">
+        <SwitchPreviewPage />
+      </ProductAccentScope>
+    );
   }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());
