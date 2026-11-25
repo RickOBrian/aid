@@ -1,0 +1,40 @@
+{
+  "id": "component-map-zone",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Map Zone",
+  "componentId": "map-zone",
+  "product": "rider",
+  "task": "designer-36",
+  "taskKey": "AID-102",
+  "issue": 618,
+  "changeSummary": "Map Zone Rider — создание (designer-36, AID-102, issue #618), флоу figma-library-workflow §3.1. Вход — набор Area 4365:206476 в New Rider Drafts (пейдж «✅ Order Flow»): зона сдвига точки подачи на карте, Size Small/Large/Extra Large × State Idle/Error. Решения PD 25.11 «1а 2а 3а 4б 5 покажи оба варианта»: объект карты — рисует SDK карты, в Figma эталон вида; без свойства Size (радиус задаёт карта); Default на Background/Zone Unavailable + Stroke/Zone Availability; Error — градиент и свечение на новых токенах (пробел, заявка Designer · Components), до токенов — Background/Zone Forbidden + Stroke/Zone Forbidden; две версии — плоская и с шумом («в коде нет»). State = Default / Error. Аудит — пейдж «👀 Map Zone · audit» 2453:12860, блоки 0–8; ждёт приёмки Standards. Открыто: выбор фона Available/Unavailable, когда показывается Error (в PRD нет), стык с MapPin (красный пин вне зоны), толщина обводки 3 литералом до нормы.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Map Zone: зона сдвига точки подачи на карте, состояния Default и Error"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2453:12860",
+    "auditSection": "2453:12861",
+    "auditPrototypes": {
+      ".Map Zone · audit": "2453:13281",
+      ".Map Zone · audit · с шумом": "2453:13282"
+    },
+    "input": {
+      "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
+      "node": "4365:206476"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej"
+}
