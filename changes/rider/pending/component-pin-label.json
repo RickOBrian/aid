@@ -23,12 +23,30 @@
     "input": {
       "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
       "node": "7500:970900"
+    },
+    "auditPage": "2453:3557",
+    "auditSection": "2453:7997",
+    "auditBlocks": {
+      "cover": "2453:7999",
+      "0": "2453:8000",
+      "1": "2453:8009",
+      "2": "2453:8048",
+      "3": "2453:8178",
+      "4": "2453:8188",
+      "5": "2453:8255",
+      "6": "2453:8280",
+      "7": "2453:11004",
+      "8": "2453:8291"
+    },
+    "auditPrototypes": {
+      ".Pin Label · audit": "2453:3750"
     }
   },
   "openQuestions": [
-    "Имя PinLabel (Role Pin) — подтверждение Standards",
-    "Нажатие (State Pressed) — ждёт решения продакта, Order Flow OF-3.8",
-    "Пробелы токенов после перевода legacy (тень, радиусы, отступы) — одной анкетой"
+    "Имя PinLabel (Role Pin) — подтверждение Standards (блок 8, вопрос 1)",
+    "Тень: а Shadows/Small ★ / б Shadows/Mini / в новый токен как Shadow S черновика (блок 8, вопрос 9)",
+    "Ночь: в черновике белый текст на Background/Tooltip (ночью #EEEEEE) не читается; ★ а — Text/Icon Primary Inverted у обычного тона (блок 8, вопрос 10)",
+    "Нажатие (State Pressed) — ждёт решения продакта, Order Flow OF-3.8"
   ],
   "relatedTokenChanges": [],
   "reviewRoute": null,
