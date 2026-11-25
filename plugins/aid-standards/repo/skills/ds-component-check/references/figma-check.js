@@ -19,6 +19,8 @@ const CONFIG = {
   // Фразы, которых нет на пейдже аудита и сборки (протокол §3.1 п.1, §3.8 п.3).
   FORBIDDEN_PHRASES: [
     { re: '[Рр]ешени[ея] PD', why: 'история решений не входит в аудит и сборку (§3.1 п.1)' },
+    // пометки решений — только в блоке 8; подагент смотрит, в каком блоке строка
+    { re: '\\((sergej|PD)[ ,]', why: 'пометка решения вне блока 8? (поздние решения PD)' },
   ],
   CAP: 15,                         // примеров на правило в выводе
 };
@@ -64,6 +66,8 @@ if (mode === 'construction') {
   if (sameAudit) add('D2', 'пейдж', sameAudit, 'отдельный пейдж аудита остался рядом с пейджем сборки', 'аудит — секцией на пейдже сборки, пустой пейдж удалить после сверки (§3.1 п.6)');
 }
 function topOf(n) { let p = n; while (p.parent && p.parent.type !== 'PAGE') p = p.parent; return p; }
+// ближайший блок по имени фрейма «4. Сборка», иначе секция
+function blockOf(n) { let p = n.parent; while (p && p.type !== 'PAGE') { if (/^\d{1,2}\. /.test(p.name)) return (topOf(p).name.slice(0, 24) + ' › ' + p.name).slice(0, 50); p = p.parent; } return topOf(n).name.slice(0, 30); }
 function inAudit(n) { return auditSections.includes(topOf(n)); }
 
 const masters = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] })
@@ -231,9 +235,9 @@ out.inventory.texts = texts.length;
 for (const t of texts) {
   if (!t.visible) continue;
   const s = t.characters;
-  for (const d of CONFIG.DEPRECATED) if (new RegExp(d.re).test(s)) add('D11', topOf(t).name.slice(0, 30), t, `«${s.slice(0, 70)}»: ${d.why}`, 'действующее имя токена');
-  for (const d of CONFIG.FORBIDDEN_PHRASES) if (new RegExp(d.re).test(s)) add('D12', topOf(t).name.slice(0, 30), t, `«${s.slice(0, 70)}»: ${d.why}`, 'только факт', 'warn');
-  if (ENT.test(s)) add('D11', topOf(t).name.slice(0, 30), t, `HTML-сущность в тексте «${s.slice(0, 50)}»`, 'символы как есть');
+  for (const d of CONFIG.DEPRECATED) if (new RegExp(d.re).test(s)) add('D11', blockOf(t), t, `«${s.slice(0, 70)}»: ${d.why}`, 'действующее имя токена');
+  for (const d of CONFIG.FORBIDDEN_PHRASES) if (new RegExp(d.re).test(s)) add('D12', blockOf(t), t, `«${s.slice(0, 70)}»: ${d.why}`, 'только факт', 'warn');
+  if (ENT.test(s)) add('D11', blockOf(t), t, `HTML-сущность в тексте «${s.slice(0, 50)}»`, 'символы как есть');
 }
 
 // ── D13 экземпляры: потерянный мастер, TagMarker, тексты примеров ──────
