@@ -17,16 +17,31 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "auditPage": "2453:15574",
     "componentPage": null,
     "components": {},
-    "auditPrototypes": {},
+    "auditPrototypes": {
+      ".Chip · audit": "2453:15708"
+    },
     "input": {
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "5262:26152"
     },
     "deprecates": {
       "Chips": "231:1274"
+    },
+    "auditSection": "2453:15575",
+    "auditBlocks": {
+      "cover": "2453:16368",
+      "0": "2453:16369",
+      "1": "2453:17125",
+      "2": "2453:16378",
+      "3": "2453:16398",
+      "4": "2453:16541",
+      "5": "2453:16555",
+      "6": "2453:16600",
+      "7": "2453:16621",
+      "8": "2453:16631"
     }
   },
   "relatedTokenChanges": [],
