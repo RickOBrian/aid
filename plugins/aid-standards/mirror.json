@@ -70,6 +70,10 @@
       "source": "tokens"
     },
     {
+      "path": "skills/ds-acceptance-request",
+      "source": "skills/ds-acceptance-request"
+    },
+    {
       "path": "skills/ds-component-audit",
       "source": "skills/ds-component-audit"
     },
