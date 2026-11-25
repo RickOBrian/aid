@@ -20,12 +20,32 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "auditPage": "2431:2",
     "components": {},
-    "auditPrototypes": {},
+    "auditPrototypes": {
+      ".ButtonInline · audit": "2431:37"
+    },
     "input": {
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "5331:107323"
+    },
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2434-53",
+    "auditSection": "2434:53",
+    "auditBlocks": {
+      "cover": "2434:55",
+      "0": "2434:78",
+      "1": "2434:101",
+      "2": "2434:124",
+      "3": "2434:147",
+      "4": "2434:170",
+      "5": "2434:193",
+      "6": "2434:216",
+      "7": "2434:239",
+      "8": "2434:262"
+    },
+    "usage": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5262:26034"
     }
   },
   "decisions": [
@@ -53,5 +73,7 @@
   "sourcePath": null,
   "status": "pending",
   "created": "2026-11-25",
-  "author": "sergej"
+  "author": "sergej",
+  "pr": 629,
+  "updated": "2026-11-25"
 }
