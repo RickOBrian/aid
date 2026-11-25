@@ -1,0 +1,38 @@
+{
+  "id": "component-chip",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Chip",
+  "componentId": "chip",
+  "product": "rider",
+  "changeSummary": "Chip Rider — создание (designer-43, AID-109, issue #631), флоу figma-library-workflow §3.1. Вход PD 25.11 — виджет оценки и чаевых Island 5262:26152 (New Rider DEV 5mg6h0oB8yRDoUfTruogca, только чтение) делится на Widget AID-104, Rating Bar AID-103, Button AID-74 и Chip. Исходник — Chips 231:1274 Rider Components (State Default/Active × Size Medium/Small, без Pressed и Disabled, Active на Pastel/Maggie); в New Rider DEV 959 экземпляров, выбор перекрашен в экземплярах. Решения предаудита (PD 25.11 «1а 2б 3а 4… 5а 6а 7а 8а 9а 10а»): Chip — только выбор (сумма чаевых — один, причины оценки — несколько); действия «Добавить остановку», «Карта», «Оценить» — ButtonInline AID-105, показ «Картой / Наличными» — Tag; имя Chip, новый ключ, 231:1274 устаревает (замена §3.9); ось Selected True/False отдельно от State; State Default/Pressed (слой 12 %), Disabled нет; выбранный — Background/Accent + Text/Primary Inverted, дополнительно виды Secondary и бледно-фиолетовый как Active старых Chips (PD 25.11 «Цвета дополнительно сделать Secondary и бледно фиолетовый (как в старых чипсах)»; Pastel/Maggie — недействующий токен, lookup действующего, пробел — в анкету); Surface Primary/Secondary — подложка, на которой лежит чип; один размер 36; иконка слева необязательная, Icon Size 20; ChipGroup не заводим — ряд собирает родитель; подпись в одну строку без обрезки.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Chip: компактный элемент выбора на токенах Rider — значение Selected, подложка Surface, состояния Default и Pressed"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": null,
+    "componentPage": null,
+    "components": {},
+    "auditPrototypes": {},
+    "input": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5262:26152"
+    },
+    "deprecates": {
+      "Chips": "231:1274"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej"
+}
