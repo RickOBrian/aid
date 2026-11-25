@@ -18,6 +18,10 @@ import {
   type RiderMode,
   type SwitchState,
 } from './switchPreviewData';
+import { DsPageHeader } from './DsPageHeader';
+import { DS_PORTAL_LAYOUT_TOKENS, DS_TOKEN_TABLE_STYLE } from './dsChangelogTable';
+
+const T = DS_PORTAL_LAYOUT_TOKENS;
 
 /**
  * Превью Switch Rider (AID-94) — `aidteam.pro/rider/preview/switch`.
@@ -164,16 +168,17 @@ export function SwitchPreviewPage() {
 
   return (
     <div className="swp-page" style={timing}>
+      <style>{DS_TOKEN_TABLE_STYLE}</style>
       <style>{SWITCH_PREVIEW_STYLE}</style>
-      <header className="swp-header">
+      <DsPageHeader title="Switch · превью анимации" backAriaLabel="Назад к Rider" showSearch={false} />
+      <div className="swp-header">
         <p className="pf-label-xs-caps swp-muted">Rider · AID-94 · аудит</p>
-        <h1 className="pf-heading-l swp-h1">Switch · превью анимации</h1>
         <p className="pf-body-m swp-muted swp-lead">
           Переключатель вкл/выкл на токенах Rider. Нажмите на дорожку или сфокусируйтесь клавишей Tab и нажмите Space —
           бегунок переедет, дорожка сменит цвет. Пока палец или клавиша нажаты — состояние Pressed.
         </p>
         <span className="pf-badge pf-badge--warning">Не опубликовано · только по прямой ссылке</span>
-      </header>
+      </div>
 
       <section className="swp-card" aria-labelledby="swp-live-title">
         <div className="swp-section-head">
@@ -228,7 +233,7 @@ export function SwitchPreviewPage() {
         <h2 id="swp-matrix-title" className="pf-heading-s swp-h2">
           Все варианты · Checked × State
         </h2>
-        <p className="pf-body-s swp-muted">Как набор `.Switch · audit` 2313:104 в Rider Components — 8 вариантов, образцы не нажимаются.</p>
+        <p className="pf-body-s swp-muted">Как набор <code className="pf-code-s">.Switch · audit</code> 2313:104 в Rider Components — 8 вариантов, образцы не нажимаются.</p>
         <div className="swp-grid">
           {MODES.map(({ mode, label }) => (
             <div key={mode} className="swp-matrix" style={{ background: riderColor('Background/Primary', mode) }}>
@@ -261,8 +266,8 @@ export function SwitchPreviewPage() {
         <h2 id="swp-spec-title" className="pf-heading-s swp-h2">
           Размеры и токены
         </h2>
-        <div className="swp-table-wrap">
-          <table className="swp-table pf-body-s">
+        <div className="ds-token-table-wrap">
+          <table className="ds-token-table">
             <thead>
               <tr>
                 <th>Что</th>
@@ -326,8 +331,8 @@ export function SwitchPreviewPage() {
             </tbody>
           </table>
         </div>
-        <div className="swp-table-wrap">
-          <table className="swp-table pf-body-s">
+        <div className="ds-token-table-wrap">
+          <table className="ds-token-table">
             <thead>
               <tr>
                 <th>Цвет</th>
@@ -379,7 +384,7 @@ const SWITCH_PREVIEW_STYLE = `
 .swp-page {
   min-height: 100vh;
   box-sizing: border-box;
-  background: var(--pf-bg-surface-muted);
+  background: ${T.surface};
   color: var(--pf-text-primary);
   font-family: var(--pf-type-family-sans-1);
   padding: var(--pf-spacing-40) var(--pf-spacing-48) var(--pf-spacing-64);
@@ -393,11 +398,11 @@ const SWITCH_PREVIEW_STYLE = `
   .swp-page { padding: var(--pf-spacing-20) var(--pf-spacing-16) var(--pf-spacing-40); }
 }
 .swp-header { display: flex; flex-direction: column; align-items: flex-start; gap: var(--pf-spacing-8); }
-.swp-h1, .swp-h2, .swp-header p { margin: 0; }
+.swp-h2, .swp-header p { margin: 0; }
 .swp-lead { max-width: 68ch; }
 .swp-muted { color: var(--pf-text-secondary); margin: 0; }
 .swp-card {
-  background: var(--pf-bg-surface-main);
+  background: ${T.surfaceMuted};
   border: 1px solid var(--pf-line-default);
   border-radius: var(--pf-radius-l);
   padding: var(--pf-spacing-24);
@@ -417,9 +422,10 @@ const SWITCH_PREVIEW_STYLE = `
   cursor: pointer;
   color: var(--pf-text-secondary);
 }
+.swp-seg-option:hover { border-color: var(--pf-line-hover); }
 .swp-seg-option.is-active { background: var(--pf-bg-accent-main); border-color: var(--pf-bg-accent-main); color: var(--pf-text-inverse); }
 .swp-seg-option input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.swp-seg-option:focus-within { outline: 2px solid var(--pf-line-focus); outline-offset: 2px; }
+.swp-seg-option:focus-within { outline: var(--pf-focus-ring); outline-offset: var(--pf-focus-offset); }
 .swp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: var(--pf-spacing-16); }
 .swp-stage {
   position: relative;
@@ -454,7 +460,7 @@ const SWITCH_PREVIEW_STYLE = `
 .swp-switch--live:not(:disabled) { cursor: pointer; }
 .swp-switch--live:not(:disabled):active { background: var(--sw-off-pressed); }
 .swp-switch--live[aria-checked='true']:not(:disabled):active { background: var(--sw-on-pressed); }
-.swp-switch--live:focus-visible { outline: 2px solid var(--pf-line-focus); outline-offset: 3px; }
+.swp-switch--live:focus-visible { outline: var(--pf-focus-ring); outline-offset: var(--pf-focus-offset); }
 .swp-knob {
   box-sizing: border-box;
   width: ${SWITCH_NO_TOKEN.knob}px;
@@ -492,7 +498,8 @@ const SWITCH_PREVIEW_STYLE = `
   border-radius: var(--pf-radius-m);
   padding: var(--pf-spacing-20) var(--pf-spacing-16);
   display: grid;
-  grid-template-columns: 40px repeat(4, minmax(0, 1fr));
+  grid-template-columns: var(--pf-spacing-40) repeat(4, minmax(${SWITCH_NO_TOKEN.width}px, 1fr));
+  overflow-x: auto;
   row-gap: var(--pf-spacing-16);
   column-gap: var(--pf-spacing-8);
   align-items: center;
@@ -501,22 +508,13 @@ const SWITCH_PREVIEW_STYLE = `
 .swp-matrix-row { display: contents; }
 .swp-matrix-head { text-align: center; }
 .swp-matrix-cell { display: flex; justify-content: center; }
-.swp-table-wrap { overflow-x: auto; }
-.swp-table { width: 100%; border-collapse: collapse; }
-.swp-table th, .swp-table td {
-  text-align: left;
-  padding: var(--pf-spacing-8) var(--pf-spacing-12);
-  border-bottom: 1px solid var(--pf-line-default);
-  vertical-align: top;
-}
-.swp-table th { color: var(--pf-text-secondary); font-weight: 500; }
-.swp-table code { font-family: var(--pf-type-family-mono, ui-monospace, monospace); }
+.ds-token-table code { font: var(--pf-font-code-s); }
 .swp-swatch {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: var(--pf-spacing-16);
+  height: var(--pf-spacing-16);
   margin-right: var(--pf-spacing-6);
-  border-radius: 4px;
+  border-radius: var(--pf-radius-s);
   border: 1px solid var(--pf-line-default);
   vertical-align: -2px;
 }
