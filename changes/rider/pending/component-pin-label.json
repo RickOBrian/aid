@@ -9,6 +9,7 @@
   "task": "designer-35",
   "taskKey": "AID-101",
   "issue": 616,
+  "pr": 634,
   "changeSummary": "PinLabel Rider — новый компонент (designer-35, AID-101, issue #616), флоу figma-library-workflow §3.1: подпись точки маршрута на карте с хвостом к координате (время подачи, остановки, прибытия; дельта альтернативного маршрута; только иконка). Вход — набор «Bubble» New Rider Drafts 7500:970900 (16 вариантов, 35 экземпляров), черновик — только источник, замена экземпляров после публикации. По ответам PD 25.11 («2. Без хвоста не нужен 3. давай попробуем одним, да 4. ок 5. да 6. да 7. да 8. а»): хвост — одна ось Tail из 8 значений (Left / Top Left / Top / Top Right / Right / Bottom Right / Bottom / Bottom Left), без значения «нет», вместо 4 булевых Top/Left/Right/Down; один компонент на текст и иконку — Content = Text / Icon вместо Type Main Route / Icon Only; Tone = Default (Background/Tooltip) / Accent (Background/Accent), второй токен тела Background/Promo у Icon Only убирается; содержимое — подпись Bodies/Body 3 + значение Subtitles/Subtitle 2 + иконка слева (swap), справа одна иконка (swap) вместо трёх; статичный, без нажатия — Pressed ждёт решения продакта по Order Flow OF-3.8; legacy-коллекции черновика (Отступы SPx, Shadow S, радиусы литералами, строки Language) → Rider Tokens, пробелы — одной анкетой; ширина Hug без предела, без фейда. Не Tooltip: тултип временный и привязан к элементу интерфейса, PinLabel постоянный и привязан к координате карты (ответ Standards на вопрос PD 25.11).",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
