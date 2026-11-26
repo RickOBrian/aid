@@ -146,7 +146,8 @@ async function doPair(o, c, inM) {
     const bb = prop === 'effects' && b.sig === '' && a.style && /brand button/i.test(await sName(a.style));
     if (!b.tok && !bb) { bump(noTok, prop + ': ' + (await lab(o, prop, sp)) + ' → ' + (await lab(c, prop, sp))); continue; }
     const k = prop + ': ' + (a.mixed ? 'mixed' : await lab(o, prop, sp)) + ' → ' + (await lab(c, prop, sp)) + (inM ? ' (мастер)' : '');
-    todo.push([prop, k, async () => { if (b.style) await o[setS](b.style); else { if (bb) await o.setEffectStyleIdAsync(''); o[prop] = clonePaints(c[prop]); } }]);
+    // прозрачность могла переехать с заливки на слой (DEV Taxi шаг 4: Radius 12 %) — переносим и её (26.11)
+    todo.push([prop, k, async () => { if (b.style) await o[setS](b.style); else { if (bb) await o.setEffectStyleIdAsync(''); o[prop] = clonePaints(c[prop]); } if (prop === 'fills' && Math.abs((o.opacity ?? 1) - (c.opacity ?? 1)) > 0.001) o.opacity = c.opacity; }]);
   }
   // стиль текста
   if (o.type === 'TEXT' && c.type === 'TEXT') {
