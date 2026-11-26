@@ -70,6 +70,10 @@
       "source": "tokens"
     },
     {
+      "path": "skills/ds-acceptance-request",
+      "source": "skills/ds-acceptance-request"
+    },
+    {
       "path": "skills/ds-component-audit",
       "source": "skills/ds-component-audit"
     },
@@ -92,6 +96,10 @@
     {
       "path": "skills/ds-developer-guide",
       "source": "skills/ds-developer-guide"
+    },
+    {
+      "path": "skills/ds-figma-page-brief",
+      "source": "skills/ds-figma-page-brief"
     },
     {
       "path": "skills/ds-import",
