@@ -1,0 +1,68 @@
+#	page=✅ Service coverage — Switched Styles	id=4581:28557	dry=1	nodes=5665	replaced=775	skipped=286	date=2026-11-26
+D	151	{Gaps:SPx2} → space-8
+D	144	{Отступы:SPx3} → space-12
+D	83	сырая тень → [Shadows/FAB]
+D	60	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	51	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	36	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	32	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	24	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	20	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	20	сырая тень → [Glass/Navbar]
+D	19	SF Pro Display Semibold 22/22 → [Titles/Title 4]
+D	16	[Icons day/Secondary Pressed] → Icon/Secondary (shape)
+D	14	[Shadows / Brand button] → снята
+D	12	[Icon [day]/Primary] → Icon/Primary (shape)
+D	11	#000000 → Icon/Primary (shape)
+D	10	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	10	{Theme:text icon/secondary} → Text/Secondary (text)
+D	7	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	7	{Gaps:SPx3} → space-12
+D	5	[Subtitles/Subtitle 3] (стар.) → [Subtitles/Subtitle 3]
+D	4	#000000 → Technical/Visible Deep (shape)
+D	4	[Texts night/Primary] → Icon/Constant White (shape)
+D	4	{Gaps:SPx0,5} → space-2
+D	3	сырая тень → [Shadows/Bottom Sheet]
+D	3	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	3	[Day / White] → Stroke/Inverted (stroke)
+D	3	[Shadow 6] → [Shadows/Bottom Sheet]
+D	2	сырая тень (анкета А) → [Shadows/Medium]
+D	2	сырая тень → [Shadows/Medium]
+D	2	сырая тень → [Shadows/Large Air]
+D	2	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	2	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	2	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	2	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	2	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	1	{Gaps:SPx4} → space-16
+D	1	{Gaps:SPx2,5} → space-10
+D	1	{Gaps:SPx1} → space-4
+S	85	сырой #c4c4c4 [shape]	I4581:28568;69:109;4581:29365;1465:154025;1248:7516 I4581:28568;69:109;4581:29365;1465:154025;1248:7522 I4581:28568;69:109;4581:29365;1465:154025;1248:7525
+S	30	сырой эффект: layer_blur	I4581:28566;1067:131367 I4581:28578;1074:135195 I4581:28595;1067:131383
+S	25	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	4581:28623 4581:28624 4581:28625
+S	23	сырой #000000 [shape]	I4581:28595;1067:131384 I4581:28595;1108:132101;991:56 4581:28632
+S	18	градиент [shape]	I4581:28567;1074:135481 I4581:28579;1074:135481 I4581:28596;1074:135481
+S	12	сырой эффект: background_blur	I4581:29014;1228:7439 I4581:29014;1228:7441 I4581:29014;1228:7463
+S	11	сырой #8626ff@0.12 [shape]	I4581:28567;1074:135478 I4581:28579;1074:135478 I4581:28596;1074:135478
+S	11	градиент [frame]	I4581:28567;1093:24175 I4581:28579;1093:24175 I4581:28596;1093:24175
+S	10	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I4581:28566;1067:131368 I4581:28578;1074:135196 I4581:28595;1067:131384
+S	8	сырой #d9d9d9 [shape]	4581:28631 I4581:28777;2263:18394 I4581:28777;2263:18396
+S	8	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff	4581:28632 4581:28637 I4581:28777;2263:18395
+S	4	TEXT смешанные заливки — оставлено	I4581:28836;1093:24504;1093:24530 I4581:28838;1093:24504;1093:24530 I4581:28840;1093:24504;1093:24530
+S	4	сырой #8626ff [shape]	I4581:29014;1228:7445 I4581:29049;1264:100 I4581:29265;1228:7445
+S	4	сырой #ffffff [stroke]	I4581:29014;1228:7446 I4581:29049;1264:101 I4581:29265;1228:7446
+S	4	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I4581:29014;1228:7452 I4581:29049;1264:107 I4581:29265;1228:7452
+S	4	сырой #ffffff@0.05 [shape]	4581:29020 4581:29021 4581:29271
+S	4	сырой #000000@0.08 [stroke]	4581:29020 4581:29021 4581:29271
+S	3	[Background [day]/Secondary] [shape/shape] — нет правила	I4581:28648;1244:7535;589:16 I4581:29039;1244:7535;589:16 I4581:29290;1244:7535;589:16
+S	3	сырой эффект: inner_shadow	I4581:28703;1067:131368 I4581:28717;1074:135196 I4581:28735;1067:131384
+S	2	сырой #000000 [frame]	4581:28558 4581:28764
+S	2	сырой #ffffff@0.10 [stroke]	4581:28558 4581:28764
+S	2	сырой эффект: drop 0,0 r250 s0 #ffffff@0.50 + drop 0,0 r100 s0 #ffffff	4581:28636 4581:28787
+S	2	сырой #ffffff@0.10 [shape]	4581:29022 4581:29273
+S	2	сырой #000000@0.03 [stroke]	4581:29022 4581:29273
+S	2	шрифт без стиля: SF Pro Text Regular 12/16	4581:29027 4581:29278
+S	2	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I4581:29049;1264:96 I4581:29300;1264:96
+S	1	сырой эффект: drop 3,4 r10 s0 #351516@0.08 + glass	I4581:29099;15:3905
+X	градиент ffffff@0.78>ffffff@0 → [Gradients/Top]	4581:28562 «Whitener» < Taxi w1 390x116 ¦ 4581:28574 «Whitener» < Taxi w1 390x116 ¦ 4581:28591 «Whitener» < Taxi w1 390x116 ¦ 4581:28608 «Whitener» < Taxi w1 390x116
+X	сырая тень → [Shadows/Medium]	4581:28849 «Address Search» < Work zone w1 390x844 ¦ 4581:29100 «Address Search» < Work zone w1 390x844

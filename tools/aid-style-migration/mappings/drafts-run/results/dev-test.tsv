@@ -1,0 +1,175 @@
+#	page=test	id=2319:13949	dry=1	nodes=1731	replaced=1098	skipped=233	date=2026-11-26
+D	56	[Background [day]/Primary] → Icon/Primary Inverted (shape)
+D	53	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	51	#000000 → Icon/Primary (shape)
+D	46	[Text [day]/Secondary] → Text/Secondary (text)
+D	44	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	43	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	41	сырая тень → [Shadows/FAB]
+D	36	[Background [day]/Primary] → Background/Primary (frame)
+D	32	[Text [day]/Primary] → Text/Primary (text)
+D	23	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	23	[Text [day]/Constant White] → Text/Constant White (text)
+D	22	{Color:tx-accent/grey/primary} → Icon/Primary (shape)
+D	20	[Icon [day]/Tertiary] → Icon/Tertiary (shape)
+D	20	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	18	{Color:tx-bg/level 1 base} → Background/Primary (frame)
+D	16	[Icon [day]/Accent] → Icon/Accent (shape)
+D	16	#ffffff → Text/Constant White (text)
+D	16	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	16	{Gaps:SPx4} → space-16
+D	15	SF Pro Text Semibold 12/16 SMALL_CAPS_FORCED → [Captions/Caption 1 CAP]
+D	14	[iOS / Caption] (стар.) → [Bodies/Body 3]
+D	14	{Gaps:SPx3} → space-12
+D	14	{Gaps:SPx1,5} → space-6
+D	13	{Gaps:SPx2} → space-8
+D	12	{Theme:separator/default} → Stroke/Separator (shape)
+D	11	#ffffff → Background/Primary (frame)
+D	11	[Subtitles/Subtitle 3] (стар.) → [Subtitles/Subtitle 3]
+D	10	[Shadows/[day] Medium] → [Shadows/Medium]
+D	10	{Variable collection:Accent Purple} → Icon/Accent (shape)
+D	10	{Variable collection:Accent Purple} → Text/Accent (text)
+D	10	{Color:tx-bg/level −1 muted} → Background/Secondary (frame)
+D	10	{Color:tx-accent/grey/quaternary} → Icon/Secondary Inverted (shape)
+D	10	{Gaps:SPx1} → space-4
+D	9	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	9	сырая тень → [Shadows/Bottom Sheet]
+D	9	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	9	[Text [day]/Constant White] → Icon/Constant White (shape)
+D	9	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	9	[Day / White] → Background/Constant White (frame)
+D	9	[iOS / Subtitle] (стар.) → [Outstanding/iOS - Subtitle]
+D	8	[Title/title2] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	8	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	8	[Field [day]/Primary] → Field/Primary (frame)
+D	8	[Day / White] → Stroke/Inverted (stroke)
+D	8	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	8	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	8	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	8	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	8	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	8	#f5f5f5@0.60 → Background/Navbar (frame)
+D	8	сырая тень → [Glass/Navbar]
+D	8	#ededed → Background/Tab Selected (frame)
+D	8	{Theme:text icon/primary} → Icon/Primary (shape)
+D	8	[Icons day/Secondary Pressed] → Icon/Secondary (shape)
+D	8	[Day / Black] → Text/Primary (text)
+D	8	[Day / Gray 40] → Text/Tertiary (text)
+D	7	[Background [day]/Primary] → Stroke/Secondary (stroke)
+D	7	[Text [day]/Constant White Secondary] → Text/Constant White Secondary (text)
+D	7	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	7	{Variable collection:BG Dark} → Background/Constant Dark Secondary (frame)
+D	7	[Icon [day]/Primary] → Icon/Primary (shape)
+D	7	[Day / Gray 60] → Text/Secondary (text)
+D	7	{Отступы:SPx2} → space-8
+D	5	{Gaps:SPx2,5} → space-10
+D	4	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	4	{Color:tx-accent/grey/light const} → Icon/Constant White (shape)
+D	4	{Radius:CRx4} → radius-16
+D	4	[Captions/Caption 1] (стар.) → [Captions/Caption 1]
+D	4	{Gaps:SPx5} → space-20
+D	4	{Button:Border radius} → radius-16
+D	3	градиент ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.9>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0 → [Gradients/Shimmer] (анкета А)
+D	3	[Texts day/primary 1] → Text/Primary (text)
+D	3	{Color:tx-accent/grey/secondary} → Text/Secondary (text)
+D	3	{Отступы:SPx1,5} → space-6
+D	3	{Color:tx-accent/grey/dark const} → Icon/Constant Black (shape)
+D	3	{Color:tx-accent/grey/quaternary} → Stroke/Primary (stroke)
+D	2	{Color:tx-bg/banner} → Background/Pill Secondary (frame)
+D	2	{Color:tx-accent/green/alt} → Text/Success (text)
+D	2	{Color:tx-accent/green/alt} → Icon/Success (shape)
+D	2	сырая тень (анкета А) → [Shadows/Medium]
+D	2	[Pastel [day]/Peach] → Pastel/Bart (frame)
+D	2	#ffffff → Stroke/Secondary (stroke)
+D	2	[Texts night/Primary] → Icon/Constant White (shape)
+D	2	[Icon [day]/Constant White] → Icon/Constant White (shape)
+D	2	#232326 → Icon/Primary (shape)
+D	2	[Button [day]/Primary] → Button/Primary (frame)
+D	2	{Color:tx-accent/purple/fg} → Icon/Accent (shape)
+D	2	[shadow/close/s] → [Shadows/Mini]
+D	2	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+D	2	[shadow/diffuse/s] → [Shadows/Small]
+D	2	{Color:tx-accent/grey/light const} → Text/Constant White (text)
+D	2	{Отступы:SPx3} → space-12
+D	1	SF Pro Text Semibold 17/20 → [Outstanding/NRD - Body]
+D	1	сырая тень → [Shadows/Medium]
+D	1	#ffffff@0.90 → Background/Navbar (frame)
+D	1	сырая тень → [Shadows/Large Air]
+D	1	[Text [day]/Accent] → Text/Accent (text)
+D	1	#000000 → Technical/Visible Deep (shape)
+D	1	#000000@0.30 → Background/Overlay (shape)
+D	1	[Bg day/primary] → Background/Primary (frame)
+D	1	[Shadow 6] → [Shadows/Bottom Sheet]
+D	1	{Color:tx-accent/grey/light strong} → Icon/Primary Inverted (shape)
+D	1	{Theme TX:tx-bg/level 1 base} → Background/Primary (frame)
+D	1	{Color:tx-accent/grey/dark strong} → Route/Primary (stroke)
+D	1	{Color:tx-accent/grey/dark const} → Background/Constant Dark (frame)
+D	1	[shadow/diffuse/m] → [Shadows/Small]
+D	1	{Gaps:SPx0} → space-0
+D	1	[Shadows/[day] Large] → [Shadows/Large]
+D	1	{Отступы:SPx10} → space-40
+D	1	{Color:tx-accent/grey/dark strong} → Icon/Primary (shape)
+D	1	{Color:tx-accent/purple/bg} → Stroke/Accent (stroke)
+D	1	SF Pro Text Regular 12/16 (анкета А) → [Captions/Caption 1]
+D	1	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	1	{Color:tx-accent/grey/tertiary} → Text/Tertiary (text)
+D	1	сырая тень → [Shadows/Knob]
+S	28	сырой #242428 [text]	I2319:14017;2038:8699;2038:6608 I2319:14017;2038:8699;2038:6618 I2319:14017;2038:8701;2038:6608
+S	24	[Background [day]/Secondary] [shape/shape] — нет правила	I2319:13967;1242:357 I2319:13968;1244:7534 I2319:13968;1244:7535;589:16
+S	23	сырой эффект: layer_blur	I2319:13961;2038:6761 I2319:13972;1207:219;1248:7581 I2319:13972;1207:219;1248:7583
+S	22	сырой #c4c4c4 [shape]	I2319:13972;1207:219;1248:7510 I2319:13972;1207:219;1248:7504 I2319:14000;1207:219;1248:7510
+S	16	сырой #000000 [shape]	I2319:13972;1207:219;1248:7581 I2319:13972;1207:219;1248:7583 I2319:14000;1207:219;1248:7581
+S	10	сырой #8626ff [shape]	I2319:13961;2038:6763 I2319:13989;2038:6763 I2319:14198;2038:6763
+S	9	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I2319:13961;2038:6762 I2319:13989;2038:6762 I2319:14198;2038:6762
+S	8	{Color:tx-accent/grey/primary} «Shadow» — пробел	I2319:13961;2038:6761 I2319:13989;2038:6761 I2319:14198;2038:6761
+S	8	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I2319:14017;2038:8696 I2319:14205;2038:8696 2319:14457
+S	7	сырой #ffffff [text]	2319:13980 2319:14008 2319:14489
+S	7	шрифт без стиля: Google Sans Regular 17/20	2319:13980 2319:14008 2319:14489
+S	6	сырой #ffffff [shape]	I2319:14017;2038:8703;2038:6611 I2319:14205;2038:8703;2038:6611 I2319:14420;3:197;1937:2777
+S	6	сырой эффект: background_blur	I2319:14376;1228:7439 I2319:14376;1228:7441 I2319:14376;1228:7463
+S	5	сырой #ffffff@0.90 [shape]	I2319:14376;1228:7440 I2319:14376;1228:7482 I2319:14376;1228:7464
+S	4	сырой #f5f5f5 [shape]	I2319:14622;1037:164 I2319:14622;1037:169 I2319:14624;3051:20208
+S	3	сырой #000000@0.12 [shape]	2319:14012 2319:14200 2319:14618
+S	3	{Color:tx-bg/level −1 muted} [shape/shape] — нет правила	I2319:14017;2038:8697;578:320 I2319:14205;2038:8697;578:320 I2319:14625;2038:8697;578:320
+S	2	сырой эффект: drop 0,0 r20 s0 #9925fe@0.32 + drop 0,0 r4 s0 #9925fe@0.50	I2319:14017;2038:8699;2038:6604 I2319:14205;2038:8699;2038:6604
+S	2	{Color:tx-bg/map} [frame] — нет в маппинге	I2319:14017;2038:8705;2038:6612 I2319:14205;2038:8705;2038:6612
+S	2	сырой #ffffff [stroke]	I2319:14376;1228:7446 I2319:14411;1264:101
+S	2	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I2319:14376;1228:7452 I2319:14411;1264:107
+S	2	сырой #ffffff@0.05 [shape]	2319:14382 2319:14383
+S	2	сырой #000000@0.08 [stroke]	2319:14382 2319:14383
+S	2	[Day / Gray 20] [shape] — нет в маппинге	I2319:14420;3:197;1937:2778 I2319:14421;3:197;1937:2778
+S	2	эффект [/Input shadow] — нет в маппинге	I2319:14436;11:1235 I2319:14436;11:1852
+S	2	[Button [day]/Primary] [shape/shape] — нет правила	I2319:14438;1037:164 I2319:14438;1037:169
+S	2	сырой #f5f5f5 [frame]	I2319:14622;1037:165 I2319:14624;3051:20209
+S	1	сырой #3a3a3a [frame]	2319:13950
+S	1	сырой #ffffff@0.10 [stroke]	2319:13950
+S	1	{Color:tx-accent/orange/tint} [frame] — нет в маппинге	I2319:14017;2038:8707;2038:6612
+S	1	{Color:tx-control/orange/bg/hover} [text] — нет в маппинге	I2319:14017;2038:8707;2038:6612;2038:6598
+S	1	{Color:tx-control/orange/bg/hover} [shape] — нет в маппинге	I2319:14017;2038:8707;2038:6612;2038:6599;1448:345
+S	1	сырой #ffffff@0.10 [shape]	2319:14384
+S	1	сырой #000000@0.03 [stroke]	2319:14384
+S	1	шрифт без стиля: SF Pro Text Regular 12/16	2319:14389
+S	1	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I2319:14411;1264:96
+S	1	[Button day/Secondary] [shape] — нет в маппинге	I2319:14422;912:2;899:200
+S	1	[Bg day/secondary] [frame] — нет в маппинге	2319:14427
+S	1	[Buttons day/fab] [frame] — нет в маппинге	2319:14430
+S	1	эффект [Shadow 2] — нет в маппинге	2319:14430
+S	1	[Day / Gray 14] [stroke] — нет в маппинге	I2319:14436;11:1235
+S	1	[Day / Gray 20] [stroke] — нет в маппинге	I2319:14436;11:1852
+S	1	[Day / Gray 4] [frame] — нет в маппинге	2319:14437
+S	1	[Icon [day]/Primary] [text/text] — нет правила	I2319:14437;11:1823;11:1914
+S	1	{System:Magin Top}=54 paddingTop — нет цели	I3032:24564;40006214:22340
+S	1	{Color:tx-brand/green/green} [shape] — нет в маппинге	I3032:24564;40006214:22340;40006535:17778;40000385:8868;40006534:14641;40006534:7699
+S	1	шрифт без стиля: WB Sans Medium 24/100	I3032:24564;40006214:22340;40006535:17778;40000385:8868;40006534:7701
+S	1	{Color:tx-bg/level 1 base} [stroke] — нет правила	I3032:24564;40006214:22340;40001478:11677;3032:24532;40003372:84930
+S	1	сырой #fe5f00 [shape]	I3032:24564;40006214:22340;40001478:11677;3032:24556;427:15332;427:17588
+S	1	сырой #ec001b [shape]	I3032:24564;40006214:22340;40001478:11677;3032:24556;427:15332;427:17589
+S	1	сырой #f79e1c [shape]	I3032:24564;40006214:22340;40001478:11677;3032:24556;427:15332;427:17590
+X	градиент ffffff@0.78>ffffff@0 → [Gradients/Top]	2319:13955 «Whitener» < Taxi w1 390x116 ¦ 2319:13988 «Whitener» < Taxi w1 390x116 ¦ 2319:14184 «Whitener» < Delivery w1 390x116 ¦ 2319:14378 «Whitener» < 460003942 w1 390x116
+X	градиент ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.9>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0>ffffff@0.29>ffffff@0.6>ffffff@0.87>ffffff>ffffff@0.87>ffffff@0.6>ffffff@0.29>ffffff@0 → [Gradients/Shimmer]	I2319:14017;2038:8701;2038:6629;2038:6783 «Gradient» < Loading Fade w0.625 2400x2400 ¦ I2319:14205;2038:8701;2038:6629;2038:6783 «Gradient» < Loading Fade w0.625 2400x2400 ¦ I2319:14625;2038:8701;2038:6629;2038:6783 «Gradient» < Loading Fade w0.625 2400x2400
+X	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal]	I2319:14017;2038:8703;2038:6610 «Rectangle 407901427» < Fade w1 61x20 ¦ I2319:14205;2038:8703;2038:6610 «Rectangle 407901427» < Fade w1 61x20 ¦ I2319:14568;2038:6718 «Rectangle 407901427» < Fade w1 61x22 ¦ I2319:14625;2038:8699;2038:6610 «Rectangle 407901427» < Fade w1 61x20
+X	сырая тень → [Shadows/Medium]	2319:14018 «Delivery» < Для бренда w1 390x844 ¦ 2319:14206 «460003942» < Для бренда w1 390x844
+X	{Color:tx-accent/grey/dark strong} → Route/Primary (stroke)	I3032:24564;40006214:22340;40001453:30457 «Route» < Route Elements w4 290x27
+X	[shadow/close/s] → [Shadows/Mini]	I3032:24564;40006214:22340;40001460:8579 «Bubble» < Route Elements w1 73x45 ¦ I3032:24564;40006214:22340;40001460:11872 «Bubble» < Route Elements w1 65x45
+X	SF Pro Text Regular 12/16 → [Captions/Caption 1]	I3032:24564;40006214:22340;40001478:11677;3032:24532;40003372:84369 «Стандарт» < Text "Стандарт" w0 136x16
+X	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)	I3032:24564;40006214:22340;40001478:11677;3032:24532;40003372:84928 «Line 2» < Old Price w1 67x0

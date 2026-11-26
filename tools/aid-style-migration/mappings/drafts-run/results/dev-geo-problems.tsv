@@ -1,0 +1,88 @@
+#	page=✅ GEO Problems — Switched Styles	id=4572:14630	dry=1	nodes=1788	replaced=349	skipped=289	date=2026-11-26
+D	40	{Отступы:SPx3} → space-12
+D	30	сырая тень → [Shadows/FAB]
+D	23	{Gaps:SPx2} → space-8
+D	19	[Subtitles/Subtitle 3] (стар.) → [Subtitles/Subtitle 3]
+D	18	#000000 → Icon/Primary (shape)
+D	17	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	16	[Icon [day]/Primary] → Icon/Primary (shape)
+D	16	[Icons day/Secondary Pressed] → Icon/Secondary (shape)
+D	16	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	16	{Скругления:CRx2} → radius-8
+D	12	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	11	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	9	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	9	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	8	сырая тень → [Shadows/Bottom Sheet]
+D	8	{Скругления:CRx3} → radius-12
+D	8	{Скругления:CRx1,5} → radius-6
+D	6	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	6	{Gaps:SPx3} → space-12
+D	6	SF Pro Text Regular 12/16 (анкета А) → [Captions/Caption 1]
+D	5	[Text [day]/Primary] → Text/Primary (text)
+D	4	[Texts night/Primary] → Icon/Constant White (shape)
+D	4	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	4	сырая тень → [Glass/Navbar]
+D	4	#000000 → Text/Primary (text)
+D	3	[Shadow 6] → [Shadows/Bottom Sheet]
+D	3	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	3	SF Pro Display Semibold 22/22 → [Titles/Title 4]
+D	2	сырая тень (анкета А) → [Shadows/Medium]
+D	2	сырая тень → [Shadows/Medium]
+D	2	сырая тень → [Shadows/Large Air]
+D	2	#000000 → Technical/Visible Deep (shape)
+D	2	[Day / White] → Stroke/Inverted (stroke)
+D	2	[Shadows/[day] Large] → [Shadows/Large]
+D	2	[Background [day]/Primary] → Icon/Primary Inverted (shape)
+D	2	[Day / Black] → Icon/Primary (shape)
+D	2	[Day / White] → Icon/Constant White (shape)
+D	2	[Shadows/[day] Medium] → [Shadows/Medium]
+D	1	[Button [day]/Secondary] → Button/Secondary (frame)
+D	1	[Button [day]/Primary] → Button/Primary (frame)
+D	1	[Text [day]/Constant White] → Text/Constant White (text)
+D	1	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	1	градиент TX Loading Fade → [Gradients/Shimmer]
+S	44	сырой #000000 [shape]	4572:14815 I4572:14828;1207:219;1248:7581 I4572:14828;1207:219;1248:7583
+S	35	сырой #c4c4c4 [shape]	I4572:14799;1228:7454 I4572:14799;1228:7455 I4572:14799;1228:7457
+S	33	сырой #ff0000 [shape]	4572:15338 4572:15339 4572:15343
+S	21	градиент [shape]	I4572:14883;1074:135481 4572:15328 4572:15329
+S	18	сырой #1d364f [shape]	4572:15316 4572:15317 4572:15318
+S	18	сырой #ffb800 [shape]	4572:15316 4572:15317 4572:15318
+S	12	сырой эффект: background_blur	I4572:14799;1228:7439 I4572:14799;1228:7441 I4572:14799;1228:7463
+S	11	сырой эффект: layer_blur	4572:14814 I4572:14828;1207:219;1248:7581 I4572:14828;1207:219;1248:7583
+S	8	шрифт без стиля: SF Pro Text Regular 17/24	I4572:15289;1187:96 I4572:15290;1187:30 I4572:15291;1187:96
+S	8	сырой #ffffff@0.25 [shape]	4572:15333 4572:15334 4572:15335
+S	7	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	4572:14815 I4572:14882;1067:131368 4572:15068
+S	6	сырой #ffffff@0.30 [shape]	4572:15346 4572:15347 4572:15372
+S	5	сырой #ffffff [shape]	I4588:143492;349:4084;244:1423 I4588:143492;349:4084;244:1424 I4588:143492;349:4084;244:1424
+S	4	сырой #8626ff [shape]	I4572:14799;1228:7445 I4572:14834;1264:100 I4572:15052;1228:7445
+S	4	сырой #ffffff [stroke]	I4572:14799;1228:7446 I4572:14834;1264:101 I4572:15052;1228:7446
+S	4	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I4572:14799;1228:7452 I4572:14834;1264:107 I4572:15052;1228:7452
+S	4	сырой #ffffff@0.05 [shape]	4572:14805 4572:14806 4572:15058
+S	4	сырой #000000@0.08 [stroke]	4572:14805 4572:14806 4572:15058
+S	4	TEXT смешанные заливки — оставлено	I5133:159758;1093:24504;1093:24530 I5133:159768;1093:24504;1093:24530 I5133:159778;1093:24504;1093:24530
+S	4	сырой #d62247 [shape]	4572:15359 4572:15360 4572:15506
+S	2	сырой #ffffff@0.10 [shape]	4572:14807 4572:15060
+S	2	сырой #000000@0.03 [stroke]	4572:14807 4572:15060
+S	2	шрифт без стиля: SF Pro Text Regular 12/16	4572:14812 4572:15065
+S	2	[Background [day]/Secondary] [shape/shape] — нет правила	I4572:14824;1244:7535;589:16 I4572:15077;1244:7535;589:16
+S	2	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I4572:14834;1264:96 I4572:15087;1264:96
+S	2	сырой эффект: drop 0,4 r20 s0 #000000@0.06	4572:15257 4572:15404
+S	2	сырой #10754e [shape]	I4572:15290;3872:24490;1562:500 I4572:15437;3872:24490;1562:500
+S	2	сырой #000000@0.05 [shape]	4572:15322 4572:15469
+S	2	сырой #25444f [shape]	4572:15357 4572:15504
+S	2	сырой #ff0c3e [shape]	4572:15358 4572:15505
+S	2	сырой #000000@0.10 [shape]	4572:15361 4572:15508
+S	2	сырой #000000@0.44 [shape]	4572:15362 4572:15509
+S	2	сырой #fffae3 [frame]	4798:36674 4798:36677
+S	2	шрифт без стиля: Inter Regular 14/20	4798:36675 4798:36678
+S	2	шрифт без стиля: Inter Regular 11/auto	4798:36676 4798:36679
+S	1	сырой #444444 [frame]	4572:14631
+S	1	сырой #ffffff@0.10 [stroke]	4572:14631
+S	1	сырой #8626ff@0.12 [shape]	I4572:14883;1074:135478
+S	1	градиент [frame]	I4572:14883;1093:24175
+S	1	эффект [.blur tiny] — нет в маппинге	I4588:143492;349:4084;244:1423
+X	сырая тень → [Shadows/Medium]	4572:14634 «Address Search» < Проблемы с ГЕО w1 390x844 ¦ 4572:14887 «Address Search» < Проблемы с ГЕО w1 390x844
+X	градиент ffffff@0.78>ffffff@0 → [Gradients/Top]	4572:14801 «Whitener» < Address Search w1 390x116 ¦ 4572:14865 «Whitener» < Taxi w1 390x116 ¦ 4572:15054 «Whitener» < Address Search w1 390x116 ¦ 5133:159695 «Whitener» < Taxi w1 390x116
+X	SF Pro Text Regular 12/16 → [Captions/Caption 1]	4572:15273 «Позвонить» < Group 934 "Позвонить" w0 76x16 ¦ 4572:15278 «Написать» < Group 934 "Написать" w0 76x16 ¦ 4572:15283 «Место подачи» < Group 934 "Место подачи" w0 99x16 ¦ 4572:15420 «Позвонить» < Group 934 "Позвонить" w0 76x16
+X	#000000 → Text/Primary (text)	4798:36675 «Аннотация · 4572:15130» < Аннотации · 4572:15115 "Если мы не можем определ" w1 358x40 ¦ 4798:36676 «↗ status bar» < Аннотации · 4572:15115 "↗ status bar" w1 358x16 ¦ 4798:36678 «Аннотация · 4572:15158» < Аннотации · 4572:15158 "Loading" w1 358x20 ¦ 4798:36679 «↗ Taxi» < Аннотации · 4572:15158 "↗ Taxi" w1 358x16
