@@ -5,7 +5,7 @@
   "artifact": "route-point-row",
   "product": "rider",
   "standard": "skills/_shared/standards/component-states-guide.md 1.4.0 §2.1 — Pressed: слой цвета содержимого 12 % поверх фона, не отдельная заливка",
-  "actual": "RoutePointRow, State=Pressed: заливка строки Background/Secondary (варианты 2341:50 / 2341:65 / 2341:80, фейд 2341:62 / 2341:77 / 2341:92)",
+  "actual": "Route Point Row (код RoutePointRow), State=Pressed: заливка строки Background/Secondary — мастер 2520:5004 / 2520:5020 / 2520:5040, цвет фейда 2520:5017 / 2520:5037 / 2520:5053 (в аудите — прототип 2341:50 / 2341:65 / 2341:80, теперь в Archive)",
   "reason": "Как у List Item 259:3755 — единый вид нажатия ячеек Rider, пока остальные Row-ячейки не переведены на слой 12 %.",
   "recommendation": "Снять одним шагом с переводом Row-ячеек Rider (MenuRow AID-106 и RoutePointRow) на слой 12 %. Утверждает и вносит в реестр отличий Rider Standards (после #329).",
   "status": "temporary",
@@ -23,5 +23,6 @@
     }
   },
   "created": "2026-11-26",
-  "author": "sergej"
+  "author": "sergej",
+  "updated": "2026-11-26"
 }
