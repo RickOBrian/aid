@@ -8,11 +8,11 @@
   "product": "rider",
   "changeSummary": "Toast Rider — создание (designer-41, AID-107, issue #625), флоу figma-library-workflow §3.1. Вход PD 25.11: New Rider DEV 3854:3827 «Specification / Snackbar» (набор Snackbar 3854:3851, обёртка Snackbar Wrapper 3854:4081), только чтение. Ответы PD 25.11 на анкету: имя Toast (устоявшееся, Overlays); тона — по одной схеме со Standards (рабочие Default / Success / Attention / Warning, ждёт ответа Standards); в Figma только стекло, Blur и Solid — описанием в гайде; Toast бывает persistent (граница с BannerStatus — в аудите); показ 1000 / 2000 / 4000 мс, слой Timing убрать, настройки подбора — в превью Presentbook при сборке; обёртка не публикуется; без действий в 1.0; иконку можно менять, как в IconSurface; стекло — по TabBar (Background/Navbar + эффект Glass/Navbar, без отдельной обводки и тени); motion-токены появления и исчезновения — пробел, пока пропускаем. Аудит — пейдж «👀 Toast · audit» в Rider Components.",
   "currentVersion": null,
-  "proposedSemVerImpact": "minor",
+  "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
     "kind": "added",
-    "impact": "minor",
+    "impact": "initial",
     "description": "Toast: временное или постоянное сообщение поверх экрана — стекло, тон, иконка, заголовок и описание"
   },
   "figma": {
