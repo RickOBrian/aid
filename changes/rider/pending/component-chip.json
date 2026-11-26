@@ -63,7 +63,12 @@
       "cover": "2585:25230"
     },
     "changelogSection": "2585:25756",
-    "componentKey": "e13e95d527f390426de2e33155c70e970bc4e529"
+    "componentKey": "e13e95d527f390426de2e33155c70e970bc4e529",
+    "guideNotes": {
+      "block10Table": "2642:791",
+      "block6DayRow": "2643:1144",
+      "block6NightRow": "2643:1145"
+    }
   },
   "relatedTokenChanges": [],
   "reviewRoute": null,
