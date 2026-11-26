@@ -10,7 +10,7 @@
   "taskKey": "AID-101",
   "issue": 616,
   "pr": 634,
-  "changeSummary": "PinLabel Rider — новый компонент (designer-35, AID-101, issue #616), флоу figma-library-workflow §3.1: подпись точки маршрута на карте с хвостом к координате (время подачи, остановки, прибытия; дельта альтернативного маршрута; только иконка). Вход — набор «Bubble» New Rider Drafts 7500:970900 (16 вариантов, 35 экземпляров), черновик — только источник, замена экземпляров после публикации. По ответам PD 25.11 («2. Без хвоста не нужен 3. давай попробуем одним, да 4. ок 5. да 6. да 7. да 8. а»): хвост — одна ось Tail из 8 значений (Left / Top Left / Top / Top Right / Right / Bottom Right / Bottom / Bottom Left), без значения «нет», вместо 4 булевых Top/Left/Right/Down; один компонент на текст и иконку — Content = Text / Icon вместо Type Main Route / Icon Only; тело — один токен Background/Tooltip, второй токен тела Background/Promo у Icon Only убирается; тона нет — фиолетовые (акцентные) подписи не переносятся (sergej 26.11, пересматривает ответ PD 25.11 п.4); содержимое — подпись Bodies/Body 3 + значение Subtitles/Subtitle 2 + иконка слева (swap), справа одна иконка (swap) вместо трёх; статичный, без нажатия — Pressed ждёт решения продакта по Order Flow OF-3.8; legacy-коллекции черновика (Отступы SPx, Shadow S, радиусы литералами, строки Language) → Rider Tokens, пробелы — одной анкетой; ширина Hug без предела, без фейда. Не Tooltip: тултип временный и привязан к элементу интерфейса, PinLabel постоянный и привязан к координате карты (ответ Standards на вопрос PD 25.11). Иконка слева — по центру первой строки (подписи), не тела (sergej 26.11). Имя PinLabel / «Pin Label» подтверждено Standards 26.11.",
+  "changeSummary": "PinLabel Rider — новый компонент (designer-35, AID-101, issue #616), флоу figma-library-workflow §3.1: подпись точки маршрута на карте с хвостом к координате (время подачи, остановки, прибытия; дельта альтернативного маршрута; только иконка). Вход — набор «Bubble» New Rider Drafts 7500:970900 (16 вариантов, 35 экземпляров), черновик — только источник, замена экземпляров после публикации. По ответам PD 25.11 («2. Без хвоста не нужен 3. давай попробуем одним, да 4. ок 5. да 6. да 7. да 8. а»): хвост — одна ось Tail из 8 значений (Left / Top Left / Top / Top Right / Right / Bottom Right / Bottom / Bottom Left), без значения «нет», вместо 4 булевых Top/Left/Right/Down; один компонент на текст и иконку — Content = Text / Icon вместо Type Main Route / Icon Only; тело и хвост — один токен Background/Constant Dark, текст Text/Constant White, иконки Icon/Constant White — подпись тёмная и ночью (sergej 26.11), второй токен тела Background/Promo у Icon Only убирается; тона нет — фиолетовые (акцентные) подписи не переносятся (sergej 26.11, пересматривает ответ PD 25.11 п.4); содержимое — подпись Bodies/Body 3 + значение Subtitles/Subtitle 2 + иконка слева (swap), справа одна иконка (swap) вместо трёх; статичный, без нажатия — Pressed ждёт решения продакта по Order Flow OF-3.8; legacy-коллекции черновика (Отступы SPx, Shadow S, радиусы литералами, строки Language) → Rider Tokens, пробелы — одной анкетой; ширина Hug без предела, без фейда. Не Tooltip: тултип временный и привязан к элементу интерфейса, PinLabel постоянный и привязан к координате карты (ответ Standards на вопрос PD 25.11). Иконка слева — по центру первой строки (подписи), не тела (sergej 26.11). Имя PinLabel / «Pin Label» подтверждено Standards 26.11.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
@@ -45,7 +45,6 @@
   },
   "openQuestions": [
     "Тень: а Shadows/Small ★ / б Shadows/Mini / в новый токен как Shadow S черновика (блок 8, вопрос 9)",
-    "Ночь: в черновике белый текст на Background/Tooltip (ночью #EEEEEE) не читается; ★ а — Text/Icon Primary Inverted (блок 8, вопрос 10)",
     "Нажатие (State Pressed) — ждёт решения продакта, Order Flow OF-3.8"
   ],
   "relatedTokenChanges": [],
@@ -78,6 +77,12 @@
       "by": "Standards",
       "quote": "PinLabel / «Pin Label» — да (не Tooltip; Role Pin в гайд 1.7.0 вносит Standards)",
       "replaces": "блок 8, вопрос 1"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "Мы решили в темной теме оставлять пин темным: фон включая хвостик Background/Constant Dark, текст Text/Constant White, иконки Icon/Constant White",
+      "replaces": "блок 8, вопрос 10 (ночь): ответ б"
     }
   ]
 }
