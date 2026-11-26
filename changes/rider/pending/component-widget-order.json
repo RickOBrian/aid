@@ -1,0 +1,33 @@
+{
+  "id": "component-widget-order",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "WidgetOrder",
+  "componentId": "widget-order",
+  "product": "rider",
+  "changeSummary": "WidgetOrder Rider (Figma «Widget Order») — создание (designer-15, AID-78, issue #479), флоу figma-library-workflow §3.1. Вход PD 26.10: New Rider DEV 2038:6786 секция «Status Island», набор Status Multiple 2038:6667 (One / Two / Three / Notification), только чтение. Капсула заказов в центре верхней панели («Island, как iOS Dynamic Island»), слот Center у DockNavBar. Имя — Standards 26.10. Ответы PD 26.10: список заказов 2038:8653 — отдельный компонент; уведомление активности — состояние того же компонента (Compact / Notification), морфинг — прототипом; максимум три аватара, при 4+ заказах третий — «иконка + фон»; ширина — Fill между боковыми кнопками, заголовок 1 строка с многоточием; нажимается вся капсула (Pressed); переливание при поиске (Loading) — свойством. Аудит — пейдж «👀 Widget Order · audit» в Rider Components.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "WidgetOrder: капсула активных заказов в верхней панели — до трёх аватаров, заголовок, уведомление активности"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": null,
+    "input": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "2038:6786",
+      "componentSet": "2038:6667"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-26",
+  "author": "sergej"
+}
