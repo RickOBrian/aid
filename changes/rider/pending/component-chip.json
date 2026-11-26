@@ -17,9 +17,11 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": "2453:15574",
-    "componentPage": null,
-    "components": {},
+    "auditPage": null,
+    "componentPage": "2585:25051",
+    "components": {
+      "Chip": "2585:25052"
+    },
     "auditPrototypes": {
       ".Chip · audit": "2453:15708"
     },
@@ -32,7 +34,6 @@
     },
     "auditSection": "2453:15575",
     "auditBlocks": {
-      "cover": "2453:16368",
       "0": "2453:16369",
       "1": "2453:17125",
       "2": "2453:16378",
@@ -41,8 +42,28 @@
       "5": "2453:16555",
       "6": "2453:16600",
       "7": "2453:16621",
-      "8": "2453:16631"
-    }
+      "8": "2453:16631",
+      "cover": "2453:16368"
+    },
+    "auditArchivePage": "465:630",
+    "constructionPage": "2585:25051",
+    "masterSection": "2585:25775",
+    "guideSection": "2585:25229",
+    "guideBlocks": {
+      "1": "2585:25231",
+      "2": "2585:25237",
+      "3": "2585:25264",
+      "4": "2585:25375",
+      "5": "2585:25419",
+      "6": "2585:25452",
+      "7": "2585:25462",
+      "8": "2585:25482",
+      "10": "2585:25490",
+      "11": "2585:25579",
+      "cover": "2585:25230"
+    },
+    "changelogSection": "2585:25756",
+    "componentKey": "e13e95d527f390426de2e33155c70e970bc4e529"
   },
   "relatedTokenChanges": [],
   "reviewRoute": null,
