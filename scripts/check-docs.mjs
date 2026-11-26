@@ -316,6 +316,123 @@ if (existsSync(join(repoRoot, REGISTRY))) {
       err(REGISTRY, 'registry-dead', `запись "${s.id}" указывает на несуществующий ${s.humanFile}`);
 }
 
+/* ---------- pending-записи: changes/<product>/pending/*.json ----------
+   Схема — skills/_shared/schemas/pending-item.schema.json (AID-98, #615).
+   Свой минимальный валидатор вместо Ajv: в репо нет зависимостей для
+   скриптов проверки, а схема использует узкий набор ключевых слов.
+   Ключевое слово вне набора — ошибка самой схемы, чтобы расширение схемы
+   не проходило молча непроверенным. */
+
+const PENDING_SCHEMA = 'skills/_shared/schemas/pending-item.schema.json';
+const SCHEMA_KEYWORDS = new Set([
+  '$schema', '$id', '$defs', '$ref', 'title', 'description',
+  'type', 'enum', 'const', 'pattern', 'minLength', 'minimum',
+  'required', 'properties', 'additionalProperties', 'items',
+  'anyOf', 'allOf', 'if', 'then', 'else',
+]);
+
+function typeOf(v) {
+  if (v === null) return 'null';
+  if (Array.isArray(v)) return 'array';
+  if (typeof v === 'number') return Number.isInteger(v) ? 'integer' : 'number';
+  return typeof v;
+}
+const typeMatches = (v, t) => typeOf(v) === t || (t === 'number' && typeOf(v) === 'integer');
+const show = (v) => (typeof v === 'string' ? `"${v.length > 60 ? v.slice(0, 57) + '…' : v}"` : JSON.stringify(v));
+
+/* Возвращает список нарушений [{path, msg}]; пустой — значение проходит. */
+function validate(schema, value, root, path = '') {
+  if (schema === true || schema === undefined) return [];
+  if (schema === false) return [{ path, msg: 'значение запрещено схемой' }];
+  const out = [];
+  const at = path || '(корень)';
+
+  if (schema.$ref) {
+    const m = /^#\/\$defs\/(.+)$/.exec(schema.$ref);
+    const target = m && root.$defs?.[m[1]];
+    if (!target) out.push({ path: at, msg: `схема: $ref ${schema.$ref} не найден` });
+    else out.push(...validate(target, value, root, path));
+  }
+  if (schema.type !== undefined) {
+    const types = [].concat(schema.type);
+    if (!types.some((t) => typeMatches(value, t)))
+      return [...out, { path: at, msg: `ожидается ${types.join(' | ')}, а не ${typeOf(value)}` }];
+  }
+  if (schema.enum && !schema.enum.some((e) => JSON.stringify(e) === JSON.stringify(value)))
+    out.push({ path: at, msg: `${show(value)} не из [${schema.enum.map(show).join(', ')}]` });
+  if ('const' in schema && JSON.stringify(schema.const) !== JSON.stringify(value))
+    out.push({ path: at, msg: `${show(value)} ≠ ${show(schema.const)}` });
+  if (typeof value === 'string') {
+    if (schema.pattern && !new RegExp(schema.pattern, 'u').test(value))
+      out.push({ path: at, msg: `${show(value)} не по шаблону ${schema.pattern}` });
+    if (schema.minLength !== undefined && [...value].length < schema.minLength)
+      out.push({ path: at, msg: `строка короче ${schema.minLength}` });
+  }
+  if (typeof value === 'number' && schema.minimum !== undefined && value < schema.minimum)
+    out.push({ path: at, msg: `${value} < ${schema.minimum}` });
+  if (typeOf(value) === 'object') {
+    for (const r of schema.required || [])
+      if (!Object.hasOwn(value, r)) out.push({ path: at, msg: `нет обязательного поля «${r}»` });
+    for (const [k, v] of Object.entries(value)) {
+      const sub = `${path}${path ? '.' : ''}${k}`;
+      if (schema.properties && Object.hasOwn(schema.properties, k)) out.push(...validate(schema.properties[k], v, root, sub));
+      else if (schema.additionalProperties !== undefined) out.push(...validate(schema.additionalProperties, v, root, sub));
+    }
+  }
+  if (Array.isArray(value) && schema.items !== undefined)
+    value.forEach((v, i) => out.push(...validate(schema.items, v, root, `${path}[${i}]`)));
+  if (schema.allOf) for (const s of schema.allOf) out.push(...validate(s, value, root, path));
+  if (schema.anyOf) {
+    const runs = schema.anyOf.map((s) => validate(s, value, root, path));
+    if (!runs.some((r) => r.length === 0))
+      out.push({ path: at, msg: `не подходит ни один вариант anyOf: ${runs.map((r) => r[0]?.msg).join(' / ')}` });
+  }
+  if (schema.if !== undefined) {
+    const branch = validate(schema.if, value, root, path).length === 0 ? schema.then : schema.else;
+    if (branch !== undefined) out.push(...validate(branch, value, root, path));
+  }
+  return out;
+}
+
+if (existsSync(join(repoRoot, PENDING_SCHEMA))) {
+  const schema = JSON.parse(readFileSync(join(repoRoot, PENDING_SCHEMA), 'utf-8'));
+  const RULE = 'pending-schema';
+  /* словарь схемы — один обход до проверки данных: внутри if и anyOf
+     ошибка ключевого слова иначе выглядела бы как «ветка не подошла» */
+  const unknownKeywords = (s, path) => {
+    if (typeOf(s) !== 'object') return;
+    for (const [k, v] of Object.entries(s)) {
+      if (!SCHEMA_KEYWORDS.has(k)) err(PENDING_SCHEMA, RULE, `${path}: ключевое слово «${k}» валидатор не поддерживает`);
+      if (k === 'properties' || k === '$defs') for (const [n, sub] of Object.entries(v)) unknownKeywords(sub, `${path}/${k}/${n}`);
+      else if (k === 'allOf' || k === 'anyOf') v.forEach((sub, i) => unknownKeywords(sub, `${path}/${k}/${i}`));
+      else if (['items', 'additionalProperties', 'if', 'then', 'else'].includes(k)) unknownKeywords(v, `${path}/${k}`);
+    }
+  };
+  unknownKeywords(schema, '#');
+  for (const product of readdirSync(join(repoRoot, 'changes'))) {
+    const dir = join('changes', product, 'pending');
+    if (!existsSync(join(repoRoot, dir)) || !statSync(join(repoRoot, dir)).isDirectory()) continue;
+    for (const name of readdirSync(join(repoRoot, dir)).filter((n) => n.endsWith('.json')).sort()) {
+      const file = join(dir, name);
+      let data;
+      try {
+        data = JSON.parse(readFileSync(join(repoRoot, file), 'utf-8'));
+      } catch (e) {
+        err(file, RULE, `не JSON: ${e.message}`);
+        continue;
+      }
+      for (const v of validate(schema, data, schema)) err(file, RULE, `${v.path}: ${v.msg}`);
+      if (typeOf(data) !== 'object') continue;
+      const id = basename(name, '.json');
+      if (data.id !== undefined && data.id !== id) err(file, RULE, `id ${show(data.id)} ≠ имени файла "${id}"`);
+      if (data.product !== undefined && data.product !== product)
+        err(file, RULE, `product ${show(data.product)} ≠ папке changes/${product}/`);
+      if (typeof data.pendingRef === 'string' && !existsSync(join(repoRoot, data.pendingRef)))
+        err(file, RULE, `pendingRef ведёт на несуществующий файл: ${data.pendingRef}`);
+    }
+  }
+}
+
 /* ---------- вывод ---------- */
 
 if (asJson) {
