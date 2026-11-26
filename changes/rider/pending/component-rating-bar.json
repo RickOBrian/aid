@@ -6,7 +6,7 @@
   "artifact": "Rating Bar",
   "componentId": "rating-bar",
   "product": "rider",
-  "changeSummary": "Rating Bar Rider — создание (designer-37, AID-103, issue #620), флоу figma-library-workflow §3.1. Основа — набор «Rating Bar» 346:3031 на пейдже «❄️ Controls» (Stars 0–5, без описания), после публикации и замены экземпляров старый удаляется по «да» PD. Ответы PD 25.11 на предаудит: имя RatingBar («Bar» — полоса-шкала, как Android RatingBar, не панель); только ввод оценки; значение Value 0–5 без половинок; состояние только Default, нажатие — системный отклик, Disabled нет; звезда ic_star 46 литералом (пробел Icon Size, токен не заводим), высота 48 (space-1 сверху и снизу), gap space-8; цвета как в исходнике (пустая Icon/Secondary Inverted, заполненная Icon/Attention Deep), контраст днём ниже 3:1 — исключение через Standards; ширина Hug, центрирует родитель (Widget Trip Feedback, AID-104); один нарисованный компонент для iOS и Android. Аудит принят Standards 26.11 — секция 2473:2476 на пейдже сборки «🚧 Rating Bar · construction» 2510:4349; сборка принята Standards 26.11.",
+  "changeSummary": "Rating Bar Rider — создание (designer-37, AID-103, issue #620), флоу figma-library-workflow §3.1. Основа — набор «Rating Bar» 346:3031 на пейдже «❄️ Controls» (Stars 0–5, без описания), после публикации и замены экземпляров старый удаляется по «да» PD. Ответы PD 25.11 на предаудит: имя RatingBar («Bar» — полоса-шкала, как Android RatingBar, не панель); только ввод оценки; значение Value 0–5 без половинок; состояние только Default, нажатие — системный отклик, Disabled нет; звезда ic_star 46 литералом (пробел Icon Size, токен не заводим), высота 48 (space-1 сверху и снизу), gap space-8; цвета как в исходнике (пустая Icon/Secondary Inverted, заполненная Icon/Attention Deep), контраст днём ниже 3:1 — исключение через Standards; ширина Hug, центрирует родитель (Widget Trip Feedback, AID-104); один нарисованный компонент для iOS и Android. Аудит принят Standards 26.11 — секция 2473:2476, при сборке перенесена в Archive как «Rating Bar · audit · 2026-11-26»; сборка — «🚧 Rating Bar · construction» 2510:4349; сборка принята Standards 26.11.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
@@ -17,7 +17,7 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": "2473:2475 (перенесён секцией 2473:2476 на пейдж сборки)",
+    "auditPage": "Archive 465:630 — секция «Rating Bar · audit · 2026-11-26» 2473:2476 (persefona-figma-pages 0.15.0 §7.1)",
     "componentPage": "2510:4349",
     "components": {
       "Rating Bar": "2510:5625",
