@@ -43,7 +43,7 @@ await figma.setCurrentPageAsync(page);
 
 let mode = CONFIG.MODE;
 if (mode === 'auto' || mode.startsWith('__')) mode = / · (construction|readyfordev)$/.test(page.name) ? 'construction' : 'audit';
-// readyfordev: проверки сборки, но аудит уже в Archive — его секции здесь быть не должно
+// readyfordev: проверки сборки; аудит ушёл в Archive ещё на этапе сборки (PD 2026-11-26)
 const rfd = / · readyfordev$/.test(page.name);
 out.meta = { page: page.name, pageId: page.id, mode, file: CONFIG.FILE_KEY };
 
@@ -63,11 +63,22 @@ const top = page.children;
 out.inventory.top = top.slice(0, 40).map(n => ({ id: n.id, type: n.type, name: n.name.slice(0, 60), children: 'children' in n ? n.children.length : 0 }));
 const auditSections = top.filter(n => / · audit( · \d{4}-\d{2}-\d{2})?$/.test(n.name));
 if (mode === 'construction') {
-  if (rfd && auditSections.length) add('D2', 'пейдж', auditSections[0], 'на readyfordev секция аудита осталась на пейдже', 'аудит — в Archive (§3.8 п.6)');
-  if (!rfd && !auditSections.length) add('D2', 'пейдж', page, 'нет секции «<Компонент> · audit» на пейдже сборки', '§3.1 п.6 (PD 2026-10-28, #532): до readyfordev аудит — секцией здесь, в Archive — только на readyfordev');
+  // PD 2026-11-26 (#649): с созданием пейджа сборки аудит — сразу в Archive, на пейдже сборки его нет
+  if (auditSections.length) add('D2', 'пейдж', auditSections[0], `секция аудита на пейдже ${rfd ? 'readyfordev' : 'сборки'}`, 'аудит — в Archive секцией «<Компонент> · audit · ГГГГ-ММ-ДД», id те же (§3.1 п.6, PD 2026-11-26)');
+  const comp = page.name.replace(/^\S+ /, '').replace(/ · (construction|readyfordev)$/, '');
+  const arch = figma.root.children.find(p => /Archive/i.test(p.name));
+  if (!arch) add('D2', 'пейдж', page, 'в файле нет пейджа Archive — аудит некуда было перенести', '§3.1 п.6; persefona-figma-pages §7.1, §7.3', 'warn');
+  else {
+    await arch.loadAsync();
+    const esc = comp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const inArch = arch.findAll(n => n.type === 'SECTION' && new RegExp('^' + esc + ' · audit( · \\d{4}-\\d{2}-\\d{2})?$').test(n.name));
+    out.inventory.archiveAudit = inArch.slice(0, 5).map(n => ({ id: n.id, name: n.name }));
+    if (!inArch.length && !auditSections.length) add('D2', 'пейдж', arch, `нет секции «${comp} · audit · ГГГГ-ММ-ДД» в Archive`, 'аудит при сборке — в Archive (§3.1 п.6, PD 2026-11-26)', 'warn');
+    else if (inArch.length && !inArch.some(n => / · \d{4}-\d{2}-\d{2}$/.test(n.name))) add('D2', 'пейдж', inArch[0], 'секция аудита в Archive без даты переноса', '«<Компонент> · audit · ГГГГ-ММ-ДД» (persefona-figma-pages §7.3)', 'warn');
+  }
   const sameAudit = figma.root.children.find(p => p.id !== page.id && / · audit$/.test(p.name) &&
     p.name.replace(/^\S+ /, '').replace(/ · audit$/, '') === page.name.replace(/^\S+ /, '').replace(/ · construction$/, ''));
-  if (sameAudit) add('D2', 'пейдж', sameAudit, 'отдельный пейдж аудита остался рядом с пейджем сборки', 'аудит — секцией на пейдже сборки, пустой пейдж удалить после сверки (§3.1 п.6)');
+  if (sameAudit) add('D2', 'пейдж', sameAudit, 'отдельный пейдж аудита остался рядом с пейджем сборки', 'аудит — в Archive, пустой пейдж · audit удалить после сверки (§3.1 п.6)');
 }
 function topOf(n) { let p = n; while (p.parent && p.parent.type !== 'PAGE') p = p.parent; return p; }
 // ближайший блок по имени фрейма «4. Сборка», иначе секция
