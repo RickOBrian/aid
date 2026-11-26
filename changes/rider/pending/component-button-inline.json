@@ -16,7 +16,7 @@
   "proposedChangelogEntry": {
     "kind": "added",
     "impact": "initial",
-    "description": "ButtonInline: компактная кнопка-действие внутри контента — иконка слева и подпись, на токенах Rider"
+    "description": "ButtonInline: компактная кнопка-действие внутри контента — иконка слева и подпись, состояния Default, Pressed, Disabled, Loading, Pending, на токенах Rider"
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
@@ -63,15 +63,14 @@
       "date": "2026-11-26",
       "by": "sergej",
       "quote": "1. Убери внутри текстового блока отступ 1 снизу\n2. Вне зависимости от наличия иконки высота не должна уменьшаться если есть только текст\n3. Аналогично Button сделай опциональный fade"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "3А, плюс посмотри есть у Button еще состояние когда по тексту градиент бежит\n4а\n6а (принципы те же, что в Button, только размеры могут отличаться если надо)\n10а\n\n5а\n9а"
     }
   ],
-  "openQuestions": [
-    "Состояния: Default, Pressed (слой 12 %, component-states-guide 1.4.0 §2.1), Disabled; нужен ли Loading.",
-    "Цветовые варианты: только вид на Background/Secondary или ещё (акцентный, на карте).",
-    "Отступ слева space-10 (оптика под иконку) в мастер или space-12 как справа.",
-    "Область нажатия 36 — расширение до 44/48 в коде.",
-    "Визуальное совпадение с Chips Default: действие и выбор неразличимы — отличать или принять."
-  ],
+  "openQuestions": [],
   "relatedTokenChanges": [],
   "reviewRoute": null,
   "sourcePath": null,
