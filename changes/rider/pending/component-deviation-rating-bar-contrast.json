@@ -1,0 +1,18 @@
+{
+  "id": "component-deviation-rating-bar-contrast",
+  "type": "component",
+  "exceptionType": "accessibility",
+  "artifact": "rating-bar",
+  "product": "rider",
+  "standard": "skills/_shared/standards/accessibility.md — контраст нетекстовых элементов, по которым читается состояние, не ниже 3:1 (WCAG 1.4.11)",
+  "actual": "Rating Bar Rider: заполненная звезда Icon/Attention Deep к белому фону днём ≈2,7:1 (ночью ≈5,5:1 при фактическом #FF661A); пустая звезда Icon/Secondary Inverted днём ≈1,2:1, ночью ≈1,4:1.",
+  "reason": "Решение PD 25.11 (анкета предаудита AID-103, п.6 «В»): цвета оставить как в исходнике 346:3031. Число выбранных звёзд дублируется доступным именем и состоянием («N из 5», выбрано) — цвет не единственный носитель значения.",
+  "recommendation": "Пересмотреть при приведении Rider Tokens (цвета оценки) или по слову PD; до того — запись в реестре отличий Rider после standards-11 (#329).",
+  "guard": "Аудит Rating Bar, блок 3 (2473:2567), пометка «исключение в записи»; описание набора 2473:7638.",
+  "status": "temporary",
+  "reviewAt": "release",
+  "pendingRef": "changes/rider/pending/component-deviation-rating-bar-contrast.json",
+  "decidedBy": "Principal Designer, 2026-11-25",
+  "created": "2026-11-26",
+  "author": "sergej"
+}
