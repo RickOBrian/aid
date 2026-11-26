@@ -5,15 +5,17 @@
   "artifact": "toast",
   "product": "rider",
   "standard": "skills/_shared/standards/accessibility.md — контраст нетекстового элемента, несущего смысл, не ниже 3:1 (WCAG 1.4.11)",
-  "actual": "Иконка тона Toast на стекле Background/Navbar + Glass/Navbar (Rider Components 2455:4255, блок 3, таблица 2500:3668): днём Icon/Attention 1,5 / 1,2, Icon/Attention Deep 2,6 / 2,1, Icon/Success 2,6 на серой карте; ночью Icon/Warning 2,8 на светлых участках карты. Текст не входит: Description переведён на Text/Primary (≥ 9,1).",
-  "reason": "Подходящего токена иконки нет: даже Attention Deep на стекле даёт 2,1–2,6. Стекло — общий стиль Rider (как TabBar), фон под тостом — карта. Прецедент — IconSurface Attention (PD 2026-11-23).",
-  "condition": "Тон дублируется для скринридера: объявление Toast начинается с тона («Предупреждение: …», «Успешно: …», «Внимание: …»); записано в «Для инженера» и описании мастера.",
+  "actual": "Иконка тона Toast на стекле Background/Navbar + Glass/Navbar (Rider Components 2455:4255, блок 3, таблица 2500:3668). Тоны: Default (фиолетовый, Icon/Accent), Success, Warning. Ниже 3:1: днём Icon/Success 2,6 над серой картой; ночью над светлыми участками карты Icon/Warning 2,8 и Icon/Accent 2,6. Текст не входит: Description на Text/Primary (≥ 9,1).",
+  "reason": "Подходящего токена иконки нет. Стекло — общий стиль Rider (как TabBar), фон под тостом — карта. Прецедент — IconSurface Attention (PD 2026-11-23).",
+  "condition": "Тон дублируется для скринридера: объявление Toast начинается с тона («Предупреждение: …», «Успешно: …»); записано в «Для инженера» и описании мастера.",
   "recommendation": "Снять при приведении Rider Tokens: иконки тонов с контрастом ≥ 3:1 на Background/Navbar днём и ночью.",
   "status": "temporary",
   "reviewAt": "rider-tokens-alignment",
   "pendingRef": "changes/rider/pending/component-deviation-toast-icon-contrast-on-glass.json",
   "decidedBy": "Standards, 2026-11-26 (приёмка аудита Toast, в.8 «а для текста + б для иконок»)",
-  "related": ["component-toast"],
+  "related": [
+    "component-toast"
+  ],
   "created": "2026-11-26",
   "author": "sergej"
 }
