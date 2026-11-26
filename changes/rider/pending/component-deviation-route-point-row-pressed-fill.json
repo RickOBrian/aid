@@ -1,0 +1,27 @@
+{
+  "id": "component-deviation-route-point-row-pressed-fill",
+  "type": "component",
+  "exceptionType": "states",
+  "artifact": "route-point-row",
+  "product": "rider",
+  "standard": "skills/_shared/standards/component-states-guide.md 1.4.0 §2.1 — Pressed: слой цвета содержимого 12 % поверх фона, не отдельная заливка",
+  "actual": "RoutePointRow, State=Pressed: заливка строки Background/Secondary (варианты 2341:50 / 2341:65 / 2341:80, фейд 2341:62 / 2341:77 / 2341:92)",
+  "reason": "Как у List Item 259:3755 — единый вид нажатия ячеек Rider, пока остальные Row-ячейки не переведены на слой 12 %.",
+  "recommendation": "Снять одним шагом с переводом Row-ячеек Rider (MenuRow AID-106 и RoutePointRow) на слой 12 %. Утверждает и вносит в реестр отличий Rider Standards (после #329).",
+  "status": "temporary",
+  "reviewAt": "release",
+  "pendingRef": "changes/rider/pending/component-route-point-row.json",
+  "decidedBy": "sergej, 2026-11-26: «пока нет, будет исключением»; исключение принято Standards 26.11",
+  "task": "designer-34",
+  "taskKey": "AID-95",
+  "issue": 598,
+  "pr": 611,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPrototypes": {
+      ".Route Point Row · audit": "2341:95"
+    }
+  },
+  "created": "2026-11-26",
+  "author": "sergej"
+}
