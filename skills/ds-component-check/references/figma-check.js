@@ -313,7 +313,8 @@ for (const t of texts) {
     const target = await figma.getNodeByIdAsync(h.value);
     let pg = target; while (pg && pg.type !== 'PAGE') pg = pg.parent;
     if (!target) add('D16', blockOf(t), t, `якорь «${sg.characters.slice(0, 30)}» на несуществующий узел ${h.value}`, 'якорь — на слайд этого пейджа (§3.1 блок 8)');
-    else if (pg && pg.id !== page.id) add('D16', blockOf(t), t, `якорь «${sg.characters.slice(0, 30)}» ведёт на пейдж «${pg.name}» (${h.value})`, 'якорь — на слайд этого пейджа (§3.1 блок 8)');
+    // ссылка «Аудит — для истории →» на секцию аудита в Archive — норма (§3.1 п.6, §3.8 п.3)
+    else if (pg && pg.id !== page.id && !(/Archive/i.test(pg.name) && / · audit( · \d{4}-\d{2}-\d{2})?$/.test(target.name))) add('D16', blockOf(t), t, `якорь «${sg.characters.slice(0, 30)}» ведёт на пейдж «${pg.name}» (${h.value})`, 'якорь — на слайд этого пейджа (§3.1 блок 8)');
   }
 }
 
