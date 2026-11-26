@@ -64,6 +64,7 @@ for (let i = 0; i < args.length; i++) {
 }
 if (!prNumber) usage(2);
 if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { console.error('merge-precheck: --repo вида owner/name'); process.exit(2); }
+if (doMerge && repo !== 'RickOBrian/aid') { console.error('merge-precheck: --merge только для RickOBrian/aid (merge.md)'); process.exit(2); }
 
 function usage(code) {
   console.error('Использование: node scripts/merge-precheck.mjs <номер PR> [--merge] [--ack PD1,PD4] [--no-docs] [--repo owner/name]');
@@ -82,7 +83,7 @@ function gh(...a) {
 }
 
 function git(...a) {
-  return execFileSync('git', ['-C', repoRoot, ...a], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
+  return execFileSync('git', ['-C', repoRoot, '-c', 'core.quotepath=false', ...a], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
 }
 
 const stops = [];    // не мержить
@@ -135,7 +136,8 @@ const checks = (pr.statusCheckRollup || []).map((c) => {
   else st = ['SUCCESS', 'NEUTRAL', 'SKIPPED'].includes(c.conclusion) ? 'pass' : 'fail';
   return { name, workflow, st, conclusion: c.conclusion || c.state || c.status };
 });
-const counted = checks.filter((c) => !/vercel/i.test(`${c.name} ${c.workflow}`));
+// §4: не учитываются только проверки Vercel (имена начинаются с «Vercel»).
+const counted = checks.filter((c) => !/^Vercel\b/i.test(c.name));
 const failed = counted.filter((c) => c.st === 'fail');
 const pending = counted.filter((c) => c.st === 'pending');
 const passed = counted.filter((c) => c.st === 'pass');
@@ -144,7 +146,9 @@ info.push(`CI: ${passed.length} зелёных, ${pending.length} идут, ${fa
 if (!counted.length) stops.push('на head нет проверок CI');
 for (const c of failed) stops.push(`CI красный: ${c.workflow ? c.workflow + ' / ' : ''}${c.name} (${c.conclusion})`);
 for (const c of pending) stops.push(`CI не завершён: ${c.workflow ? c.workflow + ' / ' : ''}${c.name}`);
-for (const need of ['Документы', 'Портал', 'Плагин']) {
+const docsCheck = counted.find((c) => c.name === 'Документы');
+if (!docsCheck || docsCheck.conclusion === 'SKIPPED') stops.push('проверка «Документы» не прошла на head (нет или пропущена)');
+for (const need of ['Портал', 'Плагин']) {
   if (!counted.some((c) => c.name === need)) warns.push(`нет проверки «${need}» на head`);
 }
 
@@ -166,17 +170,26 @@ let files = [];        // { status, path, old }
 const added = new Map(); // path → [добавленные строки]
 const removed = new Map();
 if (base) {
-  for (const line of git('diff', '--name-status', '-M', base, sha).split('\n').filter(Boolean)) {
-    const [status, a, b] = line.split('\t');
-    files.push({ status: status[0], path: b || a, old: b ? a : null });
+  // -z: пути без кавычек и экранирования (кириллица, табы) — иначе ^scripts\/ не сработает.
+  const parts = git('diff', '--name-status', '-z', '-M', base, sha).split('\0');
+  for (let i = 0; i < parts.length && parts[i];) {
+    const status = parts[i++];
+    if (/^[RC]/.test(status)) { const old = parts[i++]; files.push({ status: status[0], path: parts[i++], old }); }
+    else files.push({ status: status[0], path: parts[i++], old: null });
   }
-  let cur = null;
-  for (const line of git('diff', '-U0', '--no-color', '--no-ext-diff', base, sha).split('\n')) {
-    if (line.startsWith('+++ ')) { cur = line.slice(4).replace(/^b\//, ''); continue; }
-    if (line.startsWith('--- ')) continue;
-    if (!cur) continue;
-    if (line.startsWith('+')) (added.get(cur) || added.set(cur, []).get(cur)).push(line.slice(1));
-    else if (line.startsWith('-')) (removed.get(cur) || removed.set(cur, []).get(cur)).push(line.slice(1));
+  // Строки — пофайлово: заголовок только до первого @@, дальше любая «+» — содержимое
+  // (добавленная строка «++ x.md» в общем diff выглядела бы как заголовок файла).
+  for (const f of files) {
+    if (f.status === 'D') continue;
+    const a = [], r = [];
+    let body = false;
+    for (const line of git('diff', '-U0', '--no-color', '--no-ext-diff', '--no-renames', base, sha, '--', f.path).split('\n')) {
+      if (line.startsWith('@@')) { body = true; continue; }
+      if (!body) continue;
+      if (line.startsWith('+')) a.push(line.slice(1));
+      else if (line.startsWith('-')) r.push(line.slice(1));
+    }
+    added.set(f.path, a); removed.set(f.path, r);
   }
   const del = files.filter((f) => f.status === 'D').length;
   info.push(`файлов: ${files.length}${del ? ` (удалено ${del})` : ''} · база ${base.slice(0, 7)}`);
@@ -209,8 +222,11 @@ for (const f of files) {
     else if (CODE.test(p) && level < 2) level = 2;
   }
 }
-if (files.some((f) => f.path === 'docs/hub/BOARD.md') && /Решения PD/.test((added.get('docs/hub/BOARD.md') || []).join('\n') + (removed.get('docs/hub/BOARD.md') || []).join('\n'))) {
-  warns.push('BOARD.md: правка рядом с «Решения PD» — если строка разрешает пункт «Только PD», это уровень 3');
+// Строка «Решения PD», разрешающая пункт «Только PD», — уровень 3. Какая строка
+// что разрешает, скрипт не понимает: любая правка раздела — уровень 3.
+if (base && files.some((f) => f.path === 'docs/hub/BOARD.md') &&
+    section(base, 'docs/hub/BOARD.md', /^## Решения PD/, /^## (?!Решения PD)/) !== section(sha, 'docs/hub/BOARD.md', /^## Решения PD/, /^## (?!Решения PD)/)) {
+  level = 3; level3Why.add('BOARD.md «Решения PD»');
 }
 info.push(`уровень ${level}${level3Why.size ? ` — ${[...level3Why].join(', ')}` : ''}`);
 
@@ -234,13 +250,14 @@ const show = (l) => (l.kind === 'ok' ? 'ок' : l.kind === 'empty' ? `нет${l.
 info.push(`описание: Самопроверка — ${show(selfLine)}; Подагент — ${show(subLine)}`);
 
 const short = sha.slice(0, 7);
-const notes = [...(pr.comments || []), ...(pr.reviews || [])]
-  .filter((c) => (c.body || '').includes(short));
-const okNote = notes.filter((c) => /(^|[^а-яё])ок([^а-яё]|$)/i.test(c.body) && !/не\s+ок|стоп/i.test(c.body))
+const okLine = (body) => String(body || '').split('\n').find((l) =>
+  /Review/i.test(l) && l.includes(short) && /(^|[^а-яё])ок([^а-яё]|$)/i.test(l) && !/не\s+ок|стоп|находк/i.test(l));
+const notes = [...(pr.comments || []), ...(pr.reviews || []).filter((r) => r.state !== 'CHANGES_REQUESTED')];
+const okNote = notes.filter((c) => okLine(c.body) && !/не\s+ок|стоп/i.test(c.body))
   .sort((a, b) => String(b.createdAt || b.submittedAt).localeCompare(String(a.createdAt || a.submittedAt)))[0];
 
 if (level === 3) {
-  if (okNote) info.push(`уровень 3: комментарий «ок» с ${short} — ${(okNote.createdAt || okNote.submittedAt || '').slice(0, 16)} («${firstLine(okNote.body)}»)`);
+  if (okNote) info.push(`уровень 3: комментарий «ок» с ${short} — ${(okNote.createdAt || okNote.submittedAt || '').slice(0, 16)} («${okLine(okNote.body).trim().slice(0, 80)}»)`);
   else stops.push(`уровень 3: нет комментария Review «ок» с head ${short}`);
 } else {
   for (const [name, l] of [['Самопроверка', selfLine], ['Подагент', subLine]]) {
@@ -249,7 +266,6 @@ if (level === 3) {
   }
 }
 
-function firstLine(s) { return String(s).split('\n').map((l) => l.trim()).find(Boolean)?.slice(0, 80) ?? ''; }
 
 // ---------- 6. «Только PD» (CLAUDE.md «Git-полномочия») ----------
 // Эвристика: добавленные строки вне .md (в документах эти слова — норма) и пути.
@@ -302,7 +318,7 @@ function section(rev, path, startRe, endRe) {
 }
 const GUARDS = [
   ['CLAUDE.md', /^## Git-полномочия/, /^## (?!Git-полномочия)/, '«Git-полномочия» корневого CLAUDE.md'],
-  ['docs/hub/ORCHESTRATION.md', /^## 4\. /, /^### Решения PD через Штаб|^## 5\. /, 'ORCHESTRATION §4 «Что считается разрешением», «Проверка PR»'],
+  ['docs/hub/ORCHESTRATION.md', /^## 4\. /, /^## 5\. /, 'ORCHESTRATION §4 (разрешения, «Проверка PR», «Решения PD через Штаб»)'],
 ];
 if (base) {
   for (const [path, s, e, label] of GUARDS) {
@@ -329,13 +345,16 @@ if (touched.length > 1) stops.push(`PR задевает два контура: $
 if (runDocs && base && !stops.some((s) => s.startsWith('head сменился'))) {
   const dir = mkdtempSync(join(tmpdir(), 'merge-precheck-'));
   try {
-    execFileSync('sh', ['-c', `git -C "$1" archive --format=tar "$2" | tar -x -C "$3" && find "$3" -type l -delete`, 'sh', repoRoot, sha, dir]);
-    // Код из PR не исполняем: check-docs — из main; ссылки из дерева PR
+    // read-tree + checkout-index, не archive: export-ignore из .gitattributes PR не прячет файлы.
+    execFileSync('sh', ['-c', 'GIT_INDEX_FILE="$3/.idx" git -C "$1" read-tree "$2" && GIT_INDEX_FILE="$3/.idx" git -C "$1" checkout-index -a -f --prefix="$3/t/" && rm -f "$3/.idx" && find "$3/t" -type l -delete', 'sh', repoRoot, sha, dir]);
+    // Код из PR не исполняем: check-docs — из main (сейчас импортирует только node:*;
+    // если начнёт импортировать соседние скрипты — копировать из main весь scripts/).
+    // Ссылки из дерева PR
     // удалены выше, чтобы чтение не ушло за пределы временной папки.
-    mkdirSync(join(dir, 'scripts'), { recursive: true });
-    writeFileSync(join(dir, 'scripts', 'check-docs.mjs'), git('show', 'origin/main:scripts/check-docs.mjs'));
+    mkdirSync(join(dir, 't', 'scripts'), { recursive: true });
+    writeFileSync(join(dir, 't', 'scripts', 'check-docs.mjs'), git('show', 'origin/main:scripts/check-docs.mjs'));
     const changed = files.some((f) => f.path === 'scripts/check-docs.mjs');
-    const r = spawnSync(process.execPath, [join(dir, 'scripts', 'check-docs.mjs')], { cwd: dir, encoding: 'utf8' });
+    const r = spawnSync(process.execPath, [join(dir, 't', 'scripts', 'check-docs.mjs')], { cwd: join(dir, 't'), encoding: 'utf8' });
     const tail = `${r.stdout}\n${r.stderr}`.trim().split('\n').filter(Boolean).slice(-1)[0] || '';
     if (r.status === 0) info.push(`check-docs (версия main) на head: ок${tail ? ` — ${tail.slice(0, 100)}` : ''}`);
     else if (changed) warns.push(`check-docs из main падает на head, но PR меняет сам check-docs — смотреть CI «Документы»: ${tail.slice(0, 120)}`);
