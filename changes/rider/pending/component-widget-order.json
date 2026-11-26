@@ -17,11 +17,19 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "auditPage": "2637:34300",
     "input": {
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "2038:6786",
       "componentSet": "2038:6667"
+    },
+    "auditSection": "2637:34301",
+    "auditPrototypes": {
+      ".Widget Order · audit": "2637:39266"
+    },
+    "prototypeFrames": {
+      "day": "2652:734",
+      "night": "2652:811"
     }
   },
   "relatedTokenChanges": [],
