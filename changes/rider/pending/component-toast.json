@@ -6,7 +6,7 @@
   "artifact": "Toast",
   "componentId": "toast",
   "product": "rider",
-  "changeSummary": "Toast Rider — создание (designer-41, AID-107, issue #625), флоу figma-library-workflow §3.1. Вход PD 25.11: New Rider DEV 3854:3827 «Specification / Snackbar» (набор Snackbar 3854:3851, обёртка Snackbar Wrapper 3854:4081), только чтение. Ответы PD 25.11 на анкету: имя Toast (устоявшееся, Overlays); тона — по одной схеме со Standards (итог 26.11: Default (фиолетовый) / Success / Warning, Attention не нужен); в Figma только стекло, Blur и Solid — описанием в гайде; Toast только временный — постоянное показывает BannerStatus (в.6 «а», решение пользователя 26.11, по ответу Product Logic 25.11 и решению PD 29.10); показ 1000 / 2000 / 4000 мс, слой Timing убрать, настройки подбора — в превью Presentbook при сборке; обёртка не публикуется; без действий в 1.0; иконку можно менять, как в IconSurface; стекло — по TabBar (Background/Navbar + эффект Glass/Navbar, без отдельной обводки и тени); motion-токены появления и исчезновения — пробел, пока пропускаем. Аудит — пейдж «👀 Toast · audit» в Rider Components. Аудит принят Standards 26.11; отступ space-10 (в.4 «а»), заголовок и описание до 2 строк с фейдом-маской (Show Fade), иконка по верху текста, высота Hug; контраст иконок на стекле — исключение component-deviation-toast-icon-contrast-on-glass.",
+  "changeSummary": "Toast Rider — создание (designer-41, AID-107, issue #625), флоу figma-library-workflow §3.1. Вход PD 25.11: New Rider DEV 3854:3827 «Specification / Snackbar» (набор Snackbar 3854:3851, обёртка Snackbar Wrapper 3854:4081), только чтение. Ответы PD 25.11 на анкету: имя Toast (устоявшееся, Overlays); тона — по одной схеме со Standards (итог 26.11: Default (фиолетовый) / Success / Warning, Attention не нужен); в Figma только стекло, Blur и Solid — описанием в гайде; Toast только временный — постоянное показывает BannerStatus (в.6 «а», решение пользователя 26.11, по ответу Product Logic 25.11 и решению PD 29.10); показ 1000 / 2000 / 4000 мс, слой Timing убрать, настройки подбора — в превью Presentbook при сборке; обёртка не публикуется; без действий в 1.0; иконку можно менять, как в IconSurface; стекло — по TabBar (Background/Navbar + эффект Glass/Navbar, без отдельной обводки и тени); motion-токены появления и исчезновения — пробел, пока пропускаем. Аудит — пейдж «👀 Toast · audit» в Rider Components. Аудит принят Standards 26.11; отступ space-10 (в.4 «а»), заголовок и описание до 2 строк с фейдом-маской (Show Fade), иконка по верху текста, высота Hug; контраст иконок на стекле — исключение component-deviation-toast-icon-contrast-on-glass. Сборка 26.11: пейдж «🚧 Toast · construction» 2604:3188, аудит секцией 2455:4256 на нём (пейдж аудита 2455:4255 удалён после сверки).",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
@@ -17,8 +17,8 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": "2455:4255",
-    "componentPage": null,
+    "auditPage": null,
+    "componentPage": "2604:3188",
     "input": {
       "fileKey": "5mg6h0oB8yRDoUfTruogca",
       "node": "3854:3827",
@@ -29,7 +29,18 @@
     "auditPrototypes": {
       ".Toast · audit": "2455:4287",
       ".Toast Position · audit": "2455:6142"
-    }
+    },
+    "componentSet": "2604:3190",
+    "componentKey": "cda081eb4e339ddefa01596ee93673b7da4f2894",
+    "variants": {
+      "Tone=Default": "2604:3191",
+      "Tone=Success": "2604:3208",
+      "Tone=Warning": "2604:3225"
+    },
+    "guideSection": "2604:3245",
+    "changelogSection": "2604:3638",
+    "masterSection": "2604:3189",
+    "servicePosition": "2605:2374"
   },
   "relatedTokenChanges": [],
   "reviewRoute": null,
