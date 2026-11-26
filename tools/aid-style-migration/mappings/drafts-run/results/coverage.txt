@@ -16,3 +16,11 @@ M	test — Switched Styles	5374:1030847	nodes=5103	fill=1961/330/131	stroke=34/1
 M	✅ Where 🗺️ - Migration — Switched Styles	5374:623349	nodes=34724	fill=12822/1677/1236	stroke=228/416/27	font=3941/282/463	effect=958/1018/504
 M	✅ Where 🗺️ — Switched Styles	5374:421690	nodes=34724	fill=12565/1934/1236	stroke=244/400/27	font=3941/282/463	effect=958/1018/504
 M	Pre-final for Style Switch	6991:303670	nodes=34481	hidden=2092	fill=12613/1409/376	stroke=851/351/0	font=4597/75/37	effect=835/318/136
+M	Taxi Start Page	2007:5985	nodes=377	hidden=20	fill=157/12/15	stroke=3/0/0	font=53/1/6	effect=17/6/6
+M	✅ GEO Problems	2247:29895	nodes=1132	hidden=125	fill=446/19/38	stroke=5/7/0	font=148/0/6	effect=40/18/22
+M	✅ Permissions	2314:23316	nodes=1849	hidden=180	fill=693/109/65	stroke=23/14/0	font=231/10/11	effect=70/32/36
+M	test	2319:13949	nodes=1593	hidden=92	fill=604/100/54	stroke=15/6/1	font=221/9/18	effect=68/24/20
+M	✅ Taxi for friends	2314:16494	nodes=2556	hidden=203	fill=968/132/45	stroke=15/16/0	font=377/39/13	effect=81/30/16
+M	✅ Service coverage	2251:13938	nodes=5338	hidden=269	fill=2049/59/340	stroke=40/8/0	font=663/0/54	effect=202/46/83
+M	🔹 Components	3577:55382	nodes=4740	hidden=548	fill=1637/353/160	stroke=25/86/1	font=586/169/23	effect=118/89/93
+M	✅ Navigation 🧭	2001:68545	nodes=9513	hidden=612	fill=3688/550/296	stroke=70/32/6	font=1295/58/100	effect=442/146/139
