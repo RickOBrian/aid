@@ -183,7 +183,7 @@ if (base) {
     if (f.status === 'D') continue;
     const a = [], r = [];
     let body = false;
-    for (const line of git('diff', '-U0', '--no-color', '--no-ext-diff', '--no-renames', base, sha, '--', f.path).split('\n')) {
+    for (const line of git('diff', '-U0', '--no-color', '--no-ext-diff', '--no-textconv', '--no-renames', base, sha, '--', f.path).split('\n')) {
       if (line.startsWith('@@')) { body = true; continue; }
       if (!body) continue;
       if (line.startsWith('+')) a.push(line.slice(1));
@@ -250,15 +250,25 @@ const show = (l) => (l.kind === 'ok' ? 'ок' : l.kind === 'empty' ? `нет${l.
 info.push(`описание: Самопроверка — ${show(selfLine)}; Подагент — ${show(subLine)}`);
 
 const short = sha.slice(0, 7);
-const okLine = (body) => String(body || '').split('\n').find((l) =>
-  /Review/i.test(l) && l.includes(short) && /(^|[^а-яё])ок([^а-яё]|$)/i.test(l) && !/не\s+ок|стоп|находк/i.test(l));
-const notes = [...(pr.comments || []), ...(pr.reviews || []).filter((r) => r.state !== 'CHANGES_REQUESTED')];
-const okNote = notes.filter((c) => okLine(c.body) && !/не\s+ок|стоп/i.test(c.body))
-  .sort((a, b) => String(b.createdAt || b.submittedAt).localeCompare(String(a.createdAt || a.submittedAt)))[0];
+// Вердикт Review — строка, начинающаяся с «Review · …», с «(head <SHA>)», где SHA —
+// префикс head от 7 знаков. Решает ПОСЛЕДНИЙ вердикт для этого head: «находки» после
+// «ок» на том же head — стоп. «ок» — только строгий формат.
+const VERDICT = /^\s*\**Review · (.*)\(head ([0-9a-f]{7,40})\)\**\s*$/;
+const OK = /^\s*\**Review · качество: ок · безопасность: ок \(head ([0-9a-f]{7,40})\)\**\s*$/;
+const verdicts = [];
+for (const c of [...(pr.comments || []), ...(pr.reviews || [])]) {
+  for (const l of String(c.body || '').split('\n')) {
+    const m = l.match(VERDICT);
+    if (m && sha.startsWith(m[2])) verdicts.push({ at: String(c.createdAt || c.submittedAt || ''), line: l.trim(), ok: OK.test(l) && c.state !== 'CHANGES_REQUESTED' });
+  }
+}
+verdicts.sort((a, b) => a.at.localeCompare(b.at));
+const last = verdicts[verdicts.length - 1];
 
 if (level === 3) {
-  if (okNote) info.push(`уровень 3: комментарий «ок» с ${short} — ${(okNote.createdAt || okNote.submittedAt || '').slice(0, 16)} («${okLine(okNote.body).trim().slice(0, 80)}»)`);
-  else stops.push(`уровень 3: нет комментария Review «ок» с head ${short}`);
+  if (last?.ok) info.push(`уровень 3: последний вердикт Review на ${short} — ${last.at.slice(0, 16)} («${last.line.slice(0, 80)}»)`);
+  else if (last) stops.push(`уровень 3: последний вердикт Review на ${short} не «ок»: «${last.line.slice(0, 100)}»`);
+  else stops.push(`уровень 3: нет вердикта «Review · качество: ок · безопасность: ок (head ${short})»`);
 } else {
   for (const [name, l] of [['Самопроверка', selfLine], ['Подагент', subLine]]) {
     if (l.kind === 'empty') stops.push(`уровень ${level}: нет строки «${name}: ок» в описании`);
