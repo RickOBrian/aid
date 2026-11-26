@@ -44,7 +44,12 @@ if ctx > LIMIT:
 # Размер файла состояния (AID-112): больше лимита — сворачивать, не дописывать.
 try:
     STATE_LIMIT = int(os.environ.get("AID_STATE_LIMIT", "15000"))
-    size = os.path.getsize(os.path.join(data.get("cwd") or os.getcwd(), "CLAUDE.local.md"))
+    size = 0
+    for d in (data.get("cwd"), os.environ.get("CLAUDE_PROJECT_DIR"), os.getcwd()):
+        f = os.path.join(d or "", "CLAUDE.local.md")
+        if d and os.path.isfile(f):
+            size = os.path.getsize(f)
+            break
 except Exception:
     size = 0
 if size > STATE_LIMIT:
