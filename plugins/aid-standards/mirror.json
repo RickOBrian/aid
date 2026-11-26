@@ -110,6 +110,10 @@
       "source": "skills/ds-ui-review"
     },
     {
+      "path": "skills/figma-prelude",
+      "source": "skills/figma-prelude"
+    },
+    {
       "path": "skills/guide-lint",
       "source": "skills/guide-lint"
     }
