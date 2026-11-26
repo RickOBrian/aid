@@ -17,7 +17,7 @@
   },
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "auditPage": "2473:2475",
     "componentPage": "74:2",
     "components": {
       "Rating Bar (старый)": "346:3031"
@@ -25,6 +25,10 @@
     "input": {
       "fileKey": "79UryRdexwKAv8vDIV5v4v",
       "node": "346:3031"
+    },
+    "auditSection": "2473:2476",
+    "auditPrototypes": {
+      ".RatingBar · audit": "2473:7638"
     }
   },
   "relatedTokenChanges": [],
