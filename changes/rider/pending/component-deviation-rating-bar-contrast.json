@@ -1,0 +1,18 @@
+{
+  "id": "component-deviation-rating-bar-contrast",
+  "type": "component",
+  "exceptionType": "accessibility",
+  "artifact": "rating-bar",
+  "product": "rider",
+  "standard": "skills/_shared/standards/accessibility.md — контраст нетекстовых элементов, по которым читается состояние, не ниже 3:1 (WCAG 1.4.11)",
+  "actual": "Rating Bar Rider: заполненная звезда Icon/Attention Deep к белому фону днём ≈2,7:1 (ночью ≈5,5:1 при фактическом #FF661A); пустая звезда Icon/Secondary Inverted днём ≈1,2:1, ночью ≈1,4:1.",
+  "reason": "Решение PD 25.11 (анкета предаудита AID-103, п.6: пустая звезда — а Background/Tertiary / б Icon/Tertiary / в оставить Icon/Secondary Inverted), дословно: «6. В». Цвета оставлены как в исходнике 346:3031. Число выбранных звёзд дублируется доступным именем и состоянием («N из 5», выбрано) — цвет не единственный носитель значения.",
+  "recommendation": "Условие снятия: заполненная звезда (сейчас Icon/Attention Deep) и пустая (сейчас Icon/Secondary Inverted) — на токенах с контрастом ≥ 3:1 к фону Background/Primary днём и ночью (WCAG 1.4.11), по решению PD или при приведении Rider Tokens. До того — запись в реестре отличий Rider после standards-11 (#329).",
+  "guard": "Мастер Rating Bar 2510:5625 (описание) и блок 3 гайда 2510:4385 — Banner «Исключение в записи»; аудит: блок 3 2473:2567, прототип 2473:7638.",
+  "status": "temporary",
+  "reviewAt": "release",
+  "pendingRef": "changes/rider/pending/component-deviation-rating-bar-contrast.json",
+  "decidedBy": "Principal Designer, 2026-11-25",
+  "created": "2026-11-26",
+  "author": "sergej"
+}
