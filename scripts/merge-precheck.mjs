@@ -35,7 +35,7 @@
  */
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync, mkdirSync, readdirSync, lstatSync, realpathSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -352,15 +352,46 @@ if (touched.length > 1) stops.push(`PR задевает два контура: $
 
 // ---------- 8. check-docs на дереве head ----------
 
+/* Ссылки из дерева PR: ведущие внутрь дерева остаются (check-docs требует
+   симлинки .claude/skills/<имя> → ../../skills/<имя>, правило skill-link,
+   AID-114), ведущие наружу и битые удаляются, чтобы чтение не ушло за
+   пределы временной папки. Проверка — по realpath.native (физический путь ОС, с учётом
+   цепочек и «..» после ссылки на каталог), до неподвижной точки: удалённая
+   ссылка может сделать битой другую. В каталоги-ссылки обход не заходит. */
+function pruneOutwardLinks(root) {
+  const real = realpathSync.native(root);
+  const links = [];
+  const walk = (d) => {
+    for (const e of readdirSync(d)) {
+      const p = join(d, e);
+      const st = lstatSync(p);
+      if (st.isSymbolicLink()) links.push(p);
+      else if (st.isDirectory()) walk(p);
+    }
+  };
+  walk(root);
+  let left = links;
+  for (let removed = true; removed; ) {
+    removed = false;
+    left = left.filter((p) => {
+      let target = null;
+      try { target = realpathSync.native(p); } catch { /* битая */ }
+      if (target && (target === real || target.startsWith(real + '/'))) return true;
+      unlinkSync(p);
+      removed = true;
+      return false;
+    });
+  }
+}
+
 if (runDocs && base && !stops.some((s) => s.startsWith('head сменился'))) {
   const dir = mkdtempSync(join(tmpdir(), 'merge-precheck-'));
   try {
     // read-tree + checkout-index, не archive: export-ignore из .gitattributes PR не прячет файлы.
-    execFileSync('sh', ['-c', 'GIT_INDEX_FILE="$3/.idx" git -C "$1" read-tree "$2" && GIT_INDEX_FILE="$3/.idx" git -C "$1" checkout-index -a -f --prefix="$3/t/" && rm -f "$3/.idx" && find "$3/t" -type l -delete', 'sh', repoRoot, sha, dir]);
+    execFileSync('sh', ['-c', 'GIT_INDEX_FILE="$3/.idx" git -C "$1" read-tree "$2" && GIT_INDEX_FILE="$3/.idx" git -C "$1" checkout-index -a -f --prefix="$3/t/" && rm -f "$3/.idx"', 'sh', repoRoot, sha, dir]);
+    pruneOutwardLinks(join(dir, 't'));
     // Код из PR не исполняем: check-docs — из main (сейчас импортирует только node:*;
     // если начнёт импортировать соседние скрипты — копировать из main весь scripts/).
-    // Ссылки из дерева PR
-    // удалены выше, чтобы чтение не ушло за пределы временной папки.
     mkdirSync(join(dir, 't', 'scripts'), { recursive: true });
     writeFileSync(join(dir, 't', 'scripts', 'check-docs.mjs'), git('show', 'origin/main:scripts/check-docs.mjs'));
     const changed = files.some((f) => f.path === 'scripts/check-docs.mjs');
