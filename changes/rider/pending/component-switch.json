@@ -1,0 +1,53 @@
+{
+  "id": "component-switch",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Switch",
+  "componentId": "switch",
+  "product": "rider",
+  "changeSummary": "Switch Rider — создание (designer-33, AID-94, issue #596), флоу figma-library-workflow §3.1. Вход PD 25.11 — черновик New Rider Drafts eSitSKeHzy5fOUF1n3zg2B, набор 2421:224410 (753 экземпляра; уже вставлен в Dialog и аудит BottomSheet Rider Components); референс размеров и состояний — 5mg6h0oB8yRDoUfTruogca 5262:187123 (чужая ДС, только для понимания). Решения предаудита (PD 25.11, все ★ приняты): имя Switch — устоявшееся (naming-conventions); Checked False/True — значение, State Default/Pressed/Disabled/Loading; 50×32, бегунок 28 литералом (PD 25.11 «Не нужен токен»), отступы space-2/space-20, radius-pill; On — Background/Accent (Pressed — Background/Accent Pressed), Off — Background/Tertiary, бегунок — Background/Constant White, тени Shadows/Knob; Disabled — Background/Accent Tint / Background/Secondary, бегунок без иконки (PD 25.11 «Просто убираем иконку замка с дизейб-свитчеров»); Loading — Spinner 24 в бегунке; один нарисованный Switch для iOS и Android. Отход: контраст дорожки Off к фону 1,29 день / 1,67 ночь < 3:1 — принят как у iOS, исключение через Standards. Пробелы: Off Pressed — слой 12 % по #577; Skeleton не делаем (нет токенов); motion переключения — нет токена. On на Background/Secondary ночью 2,96 : 1 — снято (PD 25.11 «Пропускаем»).",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Switch: переключатель вкл/выкл на токенах Rider — значение Checked, состояния Default, Pressed, Disabled, Loading"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2349:8766",
+    "componentPage": "2349:8766",
+    "components": {
+      "Switch": "2349:8768"
+    },
+    "auditPrototypes": {
+      ".Switch · audit": "2313:104"
+    },
+    "input": {
+      "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
+      "node": "2421:224410"
+    },
+    "reference": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5262:187123"
+    },
+    "auditSection": "2312:8651",
+    "componentKey": "e982f8c9505701bc8507050a9a46795239385303",
+    "guide": "2349:8795",
+    "changelogSection": "2349:9237",
+    "masterSection": "2349:8767",
+    "preview": "https://preview.aidteam.pro/pr-608/rider/preview/switch"
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej",
+  "acceptance": {
+    "audit": "accepted 2026-11-26 Standards",
+    "construction": "accepted 2026-11-26 Standards"
+  }
+}
