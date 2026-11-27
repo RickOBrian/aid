@@ -1,0 +1,71 @@
+{
+  "id": "component-widget-trip-feedback",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "WidgetTripFeedback",
+  "componentId": "widget-trip-feedback",
+  "product": "rider",
+  "changeSummary": "Widget Trip Feedback Rider — создание (designer-38, AID-104, issue #622), флоу figma-library-workflow §3.1. Вход PD 2026-11-25: New Rider DEV 5262:26145 (локальный Rating), объём расширен до виджета Island 5262:26152 (оценка + чаевые), только чтение. Имя WidgetTripFeedback — Standards 2026-11-26. Части — свойства Show Rating / Show Tips; состояние Rated (звёзды выбраны, «Спасибо за оценку!»); причины низкой оценки — в шторке, не в виджете, порог негатива ≤3 (PRD); RatingBar 2510:5625 (AID-103; 346:3031 устаревает) — вложенным экземпляром как есть; суммы чаевых — Chip (AID-109) рядом с прокруткой, одна выбранная; кнопка — Button 1513:3772 Secondary с суммой в подписи; скрытые Info Row, разделители, ряд Buttons убраны; нижний space-36 убран (safe area у контейнера). Аудит — пейдж «👀 Widget Trip Feedback · audit» в Rider Components.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Widget Trip Feedback: блок оценки поездки и чаевых — заголовок, звёзды RatingBar, суммы чаевых Chip и кнопка; части включаются свойствами Show Rating и Show Tips, состояние Rated после оценки"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2800:904",
+    "input": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5262:26152",
+      "rating": "5262:26145"
+    },
+    "nested": {
+      "RatingBar": "2510:5625",
+      "Chip": "2585:25052",
+      "Button": "1513:3772"
+    },
+    "auditSection": "2800:905",
+    "auditPrototypes": {
+      ".WidgetTripFeedback · audit": "2800:1188",
+      "Rated=False": "2800:1030",
+      "Rated=True": "2800:1111",
+      "prototype day": "2804:2765",
+      "prototype night": "2804:2823"
+    }
+  },
+  "task": "designer-38",
+  "taskKey": "AID-104",
+  "issue": 622,
+  "decisions": [
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "about": "Объём задачи — весь виджет Island 5262:26152 (оценка + чаевые) одним Widget, Show Rating / Show Tips; подтверждено Штабом 2026-11-25"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "Standards",
+      "about": "Имя WidgetTripFeedback / «Widget Trip Feedback»; RatingBar и Chip — вложенными экземплярами; выбор суммы = Chip, действие = Button (стык с ButtonInline AID-105); причины низкой оценки — в шторке"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "PD",
+      "quote": "3а ≤3, 5а, 6а, 7а, 8а",
+      "about": "Анкета v3: порог негатива ≤3; кнопка Button Secondary с суммой; состояние Rated; скрытые Info Row / разделители / ряд Buttons убрать; нижний space-36 убрать"
+    }
+  ],
+  "openQuestions": [
+    "Блок 8 аудита: 10 вопросов «Ждёт решения» (2804:6584…2804:6790) — заголовок чаевых, цвет описания, отступы подложки, кнопка Secondary на серой подложке, Show Rating и Show Tips выключены вместе, переоценка в Rated, верхний отступ, кнопка до выбора суммы, прокрутка ряда сумм, радиус кнопки",
+    "Chip AID-109: выбранная сумма в мастере 2585:25075 — Text/Constant White, договорено Text/Primary Inverted — вопрос чату Chip"
+  ],
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej"
+}
