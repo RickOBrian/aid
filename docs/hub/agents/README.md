@@ -35,6 +35,7 @@ AID-114 (issue #646). Скилл зовут, когда наступил мом�
 | Собрать пейдж аудита или сборки компонента в Figma | `ds-figma-page-brief` (подагенту) | Designer компонентов | — |
 | Аудит, сборка или правки по вердикту готовы — до запроса приёмки | `ds-component-check` (подагентом) | Designer компонентов | да: Standards без отчёта не принимает |
 | Запросить приёмку аудита, сборки, перепроверки у Standards | `ds-acceptance-request` | Designer компонентов | да: запрос в другом виде Standards возвращает |
+| Создана страница сборки компонента (этап 6); сменился значок или имя страницы сборки; догон витрины — пока Rider Components | `ds-showcase-add` | Designer компонентов, Designer · Persefona | да: сборку без карточки на витрине Standards · Persefona не принимает (L22) |
 | Оформление страниц файла библиотеки готово — до приёмки | `persefona-figma-lint` | Designer · Persefona, Designer компонентов | — |
 | Опознать компонент по скриншоту или ссылке Figma | `ds-component-audit` | Designer, Standards — только по команде человека `/audit_component` | — |
 | Спецификация компонента для Web, iOS, Android | `ds-component-spec` | Standards, Developer | — |
