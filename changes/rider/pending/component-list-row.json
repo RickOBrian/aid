@@ -1,19 +1,19 @@
 {
-  "id": "component-menu-row",
+  "id": "component-list-row",
   "type": "component",
   "changeType": "added",
   "taskType": "create",
-  "artifact": "MenuRow",
-  "componentId": "menu-row",
+  "artifact": "ListRow",
+  "componentId": "list-row",
   "product": "rider",
-  "changeSummary": "MenuRow Rider — дефолтная ячейка списка (строка меню): leading — слот (Icon 24 или графика 24), текст — overline + title, trailing — один элемент (шеврон, Switch, Button или текст значения). Вход — строки острова 5262:25888 (New Rider DEV, Order Flow), собранные на чужом List Item 5221:12496. Новый мастер 1.0.0; List Item 259:3755 в Rider Components устаревает с протягиванием по §3.9. Отдельный компонент от RouteRow (AID-95) и других ячеек; остров со строками и разделителями — не в этой задаче.",
+  "changeSummary": "ListRow Rider — дефолтная ячейка списка: leading — слот (Icon 24 или графика 24), текст — overline + title, trailing — один элемент (шеврон, Switch, Button или текст значения). Вход — строки острова 5262:25888 (New Rider DEV, Order Flow), собранные на чужом List Item 5221:12496. Новый мастер 1.0.0; List Item 259:3755 в Rider Components устаревает с протягиванием по §3.9. Отдельный компонент от RouteRow (AID-95) и других ячеек; остров со строками и разделителями — не в этой задаче.",
   "currentVersion": null,
   "proposedSemVerImpact": "initial",
   "proposedVersion": "1.0.0",
   "proposedChangelogEntry": {
     "kind": "added",
     "impact": "initial",
-    "description": "MenuRow: строка меню — иконка или графика слева, подпись над заголовком, справа шеврон, переключатель, кнопка или значение"
+    "description": "ListRow: строка списка — иконка или графика слева, подпись над заголовком, справа шеврон, переключатель, кнопка или значение"
   },
   "relatedTokenChanges": [],
   "task": "designer-40",
@@ -46,23 +46,32 @@
     {
       "date": "2026-11-26",
       "by": "Standards",
-      "about": "Имя MenuRow / «Menu Row»"
+      "about": "Имя MenuRow / «Menu Row»",
+      "status": "заменено"
     },
     {
       "date": "2026-11-27",
       "by": "PD",
       "about": "Анкета 2: leading — слот (2а), overline + title (3а), Hug и отступы токенами (4а), trailing — один элемент (5а); destructive — показать",
       "quote": "1 покажи где глазами посмотреть\n2 а\n3 а\n4 а\n5 а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Имя ListRow / «List Row» по lookup Standards (передал Штаб): MenuRow занят ячейкой меню AID-118",
+      "replaces": "2026-11-26 Standards, имя MenuRow"
     }
   ],
   "openQuestions": [
     "Тон Destructive у строки «Отменить заказ» (Text/Warning + Icon/Warning) или нейтральная — PD, пара на пейдже аудита",
     "Логотип карты в leading — пробел Rider Icons, заявка",
-    "Show Trailing против Show Chevron — сверить с RouteRow при его сборке"
+    "Show Trailing против Show Chevron — сверить с RouteRow при его сборке",
+    "Имя ListRow: PD 25.11 писал, что ListRow его смущает как слишком общее — подтверждение PD через Штаб"
   ],
   "reviewRoute": null,
   "sourcePath": null,
   "status": "pending",
   "created": "2026-11-27",
-  "author": "sergej"
+  "author": "sergej",
+  "updated": "2026-11-27"
 }
