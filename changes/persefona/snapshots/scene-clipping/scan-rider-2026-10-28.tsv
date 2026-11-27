@@ -1,0 +1,99 @@
+# scan-scenes.js, Rider Components 79UryRdexwKAv8vDIV5v4v, 2026-10-28 (вечер). Сцен 345 на 16 страницах, со срезом 95 на 13 страницах (геом 40, тень 55).
+# Driver Components o0IUYIS7vadbmXPXd81ql9 — сцен 18, срезов 0. Persefona Components — 1 образец 40:87, срезов 0.
+# Вылет — максимум по рамке, px: лево/право/верх/низ. Узлов — сколько дочерних узлов вылезает.
+страница	сцена	имя сцены	рамка с обрезкой	узел	вид	вылет	узлов
+🚧 TabBar · construction	421:940	Примеры · 3 / 4 / 5 табов	421:941 Day; 421:1019 Night	.TabBar · аудит	тень	0/0/0/7	1
+🚧 MapPin · construction	737:342	Опубликованный Map Pin	737:353 Сцена	Map Pin	тень	0/0/12/5	1
+🚧 MapPin · construction	734:4899	День	734:4925 Сцена	.MapPin · аудит · А	геом	0/0/14/5	1
+🚧 MapPin · construction	734:4927	Ночь	734:4953 Сцена	.MapPin · аудит · А	геом	0/0/14/5	1
+🚧 Spinner · construction	1035:22089	Stage	1035:22113/22131/22149 Size 16/24/32	Spinner	геом	2…4/0/0/0	1
+🚧 Spinner · construction	1035:22171	Stage	1035:22191/22209/22227 Size 16/24/32	Spinner	геом	2…4/0/0/0	1
+🚧 Spinner · construction	1035:22565	Stage	1035:22637 MapPin · loading	MapPin	тень	17/17/14/0	1
+🚧 Spinner · construction	1035:22668	Stage	1035:22733 MapPin · loading	MapPin	тень	17/17/14/0	1
+👀 Button Floating · construction	1078:7414	Экран 360 · обычный набор · день	1078:7420 Верхний ряд; 1078:7422 Справа	Button Floating	тень	20/20/20/20	3
+👀 Button Floating · construction	1078:7415	Экран 360 · обычный набор · ночь	1078:7429 Верхний ряд; 1078:7431 Справа	Button Floating	тень	20/20/20/20	3
+👀 Button Floating · construction	1078:7435	Худший случай 360 · день	1078:7441 Верхний ряд	Button Floating	геом	8/113/12/12	3
+👀 Button Floating · construction	1108:575	Худший случай 360 · день	1108:580 Верхний ряд	Button Floating	тень	8/0/12/12	3
+👀 Button Floating · construction	1108:450	Худший случай 360 · ночь	1108:463 Верхний ряд	Button Floating	геом	8/113/12/12	3
+👀 Button Floating · construction	1108:533	Худший случай 360 · ночь	1108:538 Верхний ряд	Button Floating	тень	8/0/12/12	3
+👀 Button Floating · construction	1078:7454	Короткие подписи и цветная иконка · день	1078:7460 Верхний ряд	Button Floating	тень	8/0/8/8	4
+👀 Button Floating · construction	1078:7455	Короткие подписи и цветная иконка · ночь	1078:7469 Верхний ряд	Button Floating	тень	8/0/8/8	4
+👀 Button Floating · construction	1078:7698	Экран «Такси» · День	1078:7704 Верхняя панель · 68	Button Floating	тень	8/8/12/12	2
+👀 Button Floating · construction	1078:7740	Экран «Такси» · Ночь	1078:7746 Верхняя панель · 68	Button Floating	тень	8/8/12/12	2
+👀 Divider · правка	1145:1016	Search Route · день	1145:1025 Сцена · день	Search Route	тень	20/20/14/26	1
+👀 Divider · правка	1145:1017	Search Route · ночь	1145:1028 Сцена · ночь	Search Route	тень	20/20/14/26	1
+👀 Divider · audit	775:147	Единственное применение · Search Route	775:156 Сцена · день	Search Route	тень	20/20/14/26	1
+👀 Divider · audit	778:831	Было · Search Route	778:840 Сцена · день	Search Route	тень	20/20/14/26	1
+👀 Divider · audit	1052:979	Было · Search Route · ночь	1052:981 Сцена · ночь	Search Route	тень	20/20/14/26	1
+👀 Divider · audit	778:895	Стало · Search Route	778:904 Сцена · день	Search Route	тень	20/20/14/26	1
+👀 Divider · audit	778:948	Стало · ночь	778:957 Сцена · ночь	Search Route	тень	20/20/14/26	1
+👀 Spinner · audit	1035:24088	Stage	1035:24128 MapPin · loading — ic_loading	MapPin	тень	13/13/14/0	1
+👀 Spinner · audit	1035:24150	Stage	1035:24177 MapPin · loading — ic_loading	MapPin	тень	13/13/14/0	1
+👀 Card Service · audit	848:1090	Согласованный вид · «стало» ряда 1	848:1092 Сцена · день	_Cards	геом	7/7/0/0	1
+👀 Card Service · audit	1081:4445	Экран 360 · ряд 328	1081:4447 Сцена · день	Бенто 328	геом	1/1/0/0	1
+👀 Card Service · audit	1081:4644	Экран 390 · ряд 358 (макет)	1081:4646 Сцена · день	Бенто 358	геом	1/1/0/0	1
+👀 Card Service · audit	1081:4843	Экран 430 · ряд 398	1081:4845 Сцена · день	Бенто 398	геом	1/1/0/0	1
+👀 Card Service · audit	1081:5042	Экран 430 · ночь	1081:5044 Сцена · ночь	Бенто 398	геом	1/1/0/0	1
+👀 Card Service · audit	850:1253	Было · экран 492 Taxi	850:1255 Сцена · день	Было · снимок	геом	1/1/0/0	1
+👀 Card Service · audit	850:1268	Стало · день	850:1270 Сцена · день	Бенто 358	геом	1/1/0/0	1
+👀 Card Service · audit	850:1319	Стало · ночь	850:1321 Сцена · ночь	Бенто 358	геом	1/1/0/0	1
+👀 Button Floating · audit	898:63	Опубликованный Button Floating · день	898:81 Ряд	Button Floating	тень	20/20/20/20	3
+👀 Button Floating · audit	898:120	Тот же · ночь	898:137 Ряд	Button Floating	тень	20/20/20/20	3
+👀 Button Floating · audit	900:221	Все состояния · день	900:239 Без подписи; 900:284 С подписью	.Proto/Button Floating · аудит	тень	20/20/20/20	8
+👀 Button Floating · audit	900:324	Все состояния · ночь	900:341 Без подписи; 900:382 С подписью	.Proto/Button Floating · аудит	тень	20/20/20/20	8
+👀 Button Floating · audit	900:423	Прототип · день	900:440 Ряд	.Proto/Button Floating · аудит	тень	20/20/20/20	2
+👀 Button Floating · audit	900:464	Прототип · ночь	900:481 Ряд	.Proto/Button Floating · аудит	тень	20/20/20/20	2
+👀 Button Floating · audit	908:2315	Нажатие · кандидаты · день	908:2340 а; 908:2366 б; 908:2390 в	.Proto/Button Floating · аудит	тень	20/0/20/20	6
+👀 Button Floating · audit	908:2413	Нажатие · кандидаты · ночь	908:2437 а; 908:2461 б; 908:2485 в	.Proto/Button Floating · аудит	тень	20/0/20/20	6
+👀 Button Floating · audit	900:574	Сочетания · день	900:591 Ряд	.Proto/Button Floating · аудит	тень	20/20/20/20	5
+👀 Button Floating · audit	900:647	Сочетания · ночь	900:664 Ряд	.Proto/Button Floating · аудит	тень	20/20/20/20	5
+👀 Button Floating · audit	902:1168	Экран 360 · обычный набор · день	902:1195 Верхний ряд; 902:1207 Справа	.Proto/Button Floating · аудит	тень	20/20/20/20	3
+👀 Button Floating · audit	902:11479	Экран 360 · обычный набор · ночь	902:11484 Верхний ряд; 902:11486 Справа	.Proto/Button Floating · аудит	тень	20/20/20/20	3
+👀 Button Floating · audit	909:2739	Худший случай 360 · день	909:2765 Верхний ряд	.Proto/Button Floating · аудит	геом	8/113/12/12	3
+👀 Button Floating · audit	909:2799	Худший случай 360 · ночь	909:2825 Верхний ряд	.Proto/Button Floating · аудит	геом	8/113/12/12	3
+👀 Button Floating · audit	909:2859	Переполнение: варианты · день	909:2887/2934/2979 Верхний ряд	.Proto/Button Floating · аудит	тень	8/8/12/12	9
+👀 Button Floating · audit	909:3033	Переполнение: варианты · ночь	909:3061/3108/3153 Верхний ряд	.Proto/Button Floating · аудит	тень	8/8/12/12	9
+👀 Button Floating · audit	902:1284	Короткие подписи и цветная иконка · день	902:1310 Верхний ряд	.Proto/Button Floating · аудит	тень	8/0/8/8	4
+👀 Button Floating · audit	902:1351	Короткие подписи и цветная иконка · ночь	902:1377 Верхний ряд	.Proto/Button Floating · аудит	тень	8/0/8/8	4
+👀 Button Floating · audit	902:1495	Стало · день	902:1531 Верхняя панель · 68	.Proto/Button Floating · аудит	тень	8/8/12/12	2
+👀 Button Floating · audit	902:1605	Стало · ночь	902:1641 Верхняя панель · 68	.Proto/Button Floating · аудит	тень	8/8/12/12	2
+👀 Button · audit	909:14975	Было · день · 390	909:14977 Сцена · день	Bottom sheet	тень	20/20/0/26	1
+👀 Button · audit	909:15055	Стало · день · 390	909:15057 Сцена · день	Bottom sheet	тень	20/20/0/26	1
+👀 Button · audit	909:15207	Стало · ночь · 390	909:15209 Сцена · ночь	Bottom sheet	тень	20/20/0/26	1
+👀 Button · audit	909:15285	Стало · день · 360	909:15287 Сцена · день	Bottom sheet	тень	20/20/0/26	1
+👀 Bottom Sheet · audit	1097:1083	Мастер Bottom sheet / Sheet · день	Stage (мастер)	Bottom sheet / Sheet	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1097:1095	Мастер Bottom sheet / Sheet · ночь	Stage (мастер)	Bottom sheet / Sheet	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:1656	BottomSheet · Default · день	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:1667	BottomSheet · Default · ночь	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:2015	Экран 360	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:2095	Длинный заголовок, 360	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:2194	Содержимое длиннее шторки · ночь	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:2272	Фиксированная высота как в макете	Stage (мастер)	.BottomSheet · audit	тень	0/0/0/1	1
+👀 Bottom Sheet · audit	1099:2353	Было · день	1099:2363 Было · главная Taxi	Bottom sheet / Sheet	тень	20/20/0/26	1
+👀 Bottom Sheet · audit	1099:2553	Было · ночь	1099:2563 Было · главная Taxi	Bottom sheet / Sheet	тень	20/20/0/26	1
+👀 Icon Surface · audit	1137:1041	Было · день	1137:1051 Было · Alert · день	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1154	Стало · день	1137:1163 Стало · Alert · день	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1264	Было · день	1137:1273 Было · Work zone · день	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1376	Стало · день	1137:1385 Стало · Work zone · день	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1487	Было · ночь	1137:1496 Было · Alert · ночь	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1599	Стало · ночь	1137:1608 Стало · Alert · ночь	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1709	Было · ночь	1137:1718 Было · Work zone · ночь	.Главная · audit	геом	20/20/0/64	2
+👀 Icon Surface · audit	1137:1821	Стало · ночь	1137:1830 Стало · Work zone · ночь	.Главная · audit	геом	20/20/0/64	2
+👀 Pin Car · audit	863:72	Прототип · день	863:90 Маркеры	.Proto/Pin Car · аудит	геом	8/8/0/18	3
+👀 Pin Car · audit	863:112	Прототип · ночь	863:129 Маркеры	.Proto/Pin Car · аудит	геом	8/8/0/18	3
+👀 Pin Car · audit	888:368	Вопрос 5а · выбор вне Pin Car · день	888:386 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	895:467	Вопрос 5а · выбор вне Pin Car · ночь	895:470 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	888:408	Вопрос 5б · Selected · день	888:425 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	895:501	Вопрос 5б · Selected · ночь	895:504 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	866:296	Одна и две цифры · день	866:314 Маркеры	.Proto/Pin Car · аудит	геом	8/8/0/18	3
+👀 Pin Car · audit	895:619	Одна и две цифры · ночь	895:622 Маркеры	.Proto/Pin Car · аудит	геом	8/8/0/18	3
+👀 Pin Car · audit	895:653	0 машин · день	895:656 Маркеры	.Proto/Pin Car · аудит	тень	8/8/6/10	1
+👀 Pin Car · audit	895:686	0 машин · ночь	895:689 Маркеры	.Proto/Pin Car · аудит	тень	8/8/6/10	1
+👀 Pin Car · audit	866:336	Вопрос 1а · «99+» · день	866:353 Маркеры	.Proto/Pin Car · аудит	геом	8/16/0/18	2
+👀 Pin Car · audit	895:707	Вопрос 1а · «99+» · ночь	895:710 Маркеры	.Proto/Pin Car · аудит	геом	8/16/0/18	2
+👀 Pin Car · audit	866:368	Вопрос 1б · без ограничения · день	866:385 Маркеры	.Proto/Pin Car · аудит	геом	8/16/0/18	2
+👀 Pin Car · audit	895:735	Вопрос 1б · без ограничения · ночь	895:738 Маркеры	.Proto/Pin Car · аудит	геом	8/16/0/18	2
+👀 Pin Car · audit	866:401	Скопление машин · день	866:418 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	895:764	Скопление машин · ночь	895:767 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	3
+👀 Pin Car · audit	895:865	Худший случай · день	895:868 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	5
+👀 Pin Car · audit	895:798	Худший случай · ночь	895:801 Маркеры	.Proto/Pin Car · аудит	геом	16/8/0/18	5

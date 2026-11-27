@@ -1,0 +1,277 @@
+#	page=Order Flow	id=5374:903468	dry=0	nodes=0	replaced=5482	skipped=7624	date=2026-11-03
+D	4100	{Button:Border radius} → radius-16
+D	220	{Color:tx-accent/grey/primary} → Stroke/Inverted (stroke)
+D	171	[Titles/Title 1] (стар.) → [Titles/Title 1]
+D	164	{Corner Radius:CRx0} → radius-flat
+D	152	{Radius:CRx4} → radius-16
+D	133	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	76	{Theme TX:tx-accent/grey/primary} → Icon/Primary (shape)
+D	76	{Gaps:SPx4} → space-16
+D	57	{Gaps:SPx2} → space-8
+D	57	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	57	{Отступы:SPx2} → space-8
+D	38	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	38	{Spacing:SPx3} → space-12
+D	25	[Captions/Caption] (стар.) → [Captions/Caption 1]
+D	20	{Corner Radius:CRxfull} → radius-pill
+D	19	{Gaps:SPx6} → space-24
+D	19	{Gaps:SPx1} → space-4
+D	19	{Color:tx-accent/grey/primary} → Icon/Primary (shape)
+D	19	{Spacing:SPx2} → space-8
+D	8	#242429 → Text/Primary (text)
+D	6	#232326 → Icon/Primary (shape)
+D	4	SF Pro Text Semibold 15/20 → [Subtitles/Subtitle 2]
+D	4	SF Pro Text Regular 15/20 → [Bodies/Body 2]
+S	607	сырой эффект: layer_blur	I5374:904563;1074:135167 I5374:904620;1074:135167 5374:904906
+S	498	шрифт без стиля: SF Pro Text Semibold 12/13	5374:903597 5374:903601 5374:903605
+S	390	эффект [shadow/diffuse/m] — нет в маппинге	I5374:903482;40000385:8868 I5374:903637;40000385:8868 I5374:903793;40000385:8868
+S	368	градиент [shape]	I5374:903956;1074:135481 I5374:904564;1074:135481 I5374:904621;1074:135481
+S	340	сырой #c4c4c4 [shape]	I5374:918263;1228:7454 I5374:918263;1228:7455 I5374:918263;1228:7457
+S	299	сырой #000000 [shape]	I5374:903780;15:3905;15:3692;15:3250 I5374:903780;15:3905;15:3692;15:3253 I5374:904948;67:2463
+S	295	сырой #ffffff [shape]	5374:903543 5374:903698 I5374:903780;15:3905;15:3692;15:3252
+S	284	сырой #ffffff [stroke]	I5374:903506;40008793:92370 I5374:903661;40008793:92370 I5374:903817;40008793:92370
+S	275	эффект [shadow/diffuse/s] — нет в маппинге	5374:903482 5374:903637 5374:903793
+S	262	сырой #ff5f00 [shape]	I5374:903615;1093:24503;3072:124505 I5374:903770;1093:24503;3072:124505 I5374:903926;1093:24503;3072:124505
+S	262	сырой #eb001b [shape]	I5374:903615;1093:24503;3072:124506 I5374:903770;1093:24503;3072:124506 I5374:903926;1093:24503;3072:124506
+S	262	сырой #f79e1b [shape]	I5374:903615;1093:24503;3072:124507 I5374:903770;1093:24503;3072:124507 I5374:903926;1093:24503;3072:124507
+S	256	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:903482;40000385:8868;3866:93273;40006534:7699 I5374:903637;40000385:8868;3866:93273;40006534:7699 I5374:903793;40000385:8868;3866:93273;40006534:7699
+S	244	{System:Magin Top}=54 paddingTop — нет цели	5374:903470 5374:903625 5374:903781
+S	199	сырой эффект: background_blur	5374:903543 5374:903698 5374:903854
+S	161	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила	5374:903479 5374:903634 5374:903790
+S	153	градиент [frame]	I5374:903956;1093:24175 I5374:904564;1093:24175 I5374:904621;1093:24175
+S	133	сырой эффект: drop 0,3 r1 s0 #000000@0.06 + drop 0,3 r8 s0 #000000@0.15	I5374:903999;1093:24505;5374:928911;2421:224412 I5374:904731;3374:165301;1093:24505;5568:158090;2421:224412 I5374:904791;1093:24505;5374:929137;2421:224412
+S	125	сырой #ffffff@0.90 [shape]	I5374:918263;1228:7440 I5374:918263;1228:7482 I5374:918263;1228:7464
+S	121	сырой эффект: drop 0,4 r12 s0 #000000@0.10	I5374:918015;1108:130148 I5374:918015;1108:130149 I5374:918056;1108:130148
+S	111	сырой #ffffff [text]	5374:905408 5374:905409 5374:905410
+S	109	шрифт без стиля: WB Sans Medium 24/100	I5374:904566;40000385:8868;40006534:7701 I5374:904623;40000385:8868;40006534:7701 I5374:904690;40000385:8868;40006534:7701
+S	104	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге	I5374:904017;40001063:14769 I5374:904608;40001063:14769 I5374:904665;40001063:14769
+S	97	сырой #000000 [stroke]	5374:904026 5374:904162 5374:904298
+S	93	сырой #00b23c [stroke]	5374:903478 5374:903633 5374:903789
+S	83	градиент [stroke]	I5374:903780;15:3905 I5374:905008;15:3905 I5374:905271;15:3905
+S	80	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:904563;1074:135168 I5374:904620;1074:135168 I5374:904963;1074:135168
+S	75	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:918287;1242:357 I5374:918288;1244:7534 I5374:918288;1244:7535
+S	68	{Color:tx-bg/level −1 muted} [stroke] — нет правила	5374:903944 5374:904676 5374:905017
+S	68	{Color:tx-accent/green/bg} [stroke] — нет правила	5374:903948 5374:904680 5374:905021
+#	page=Order Flow — Switched Styles	id=5374:903468	dry=0	nodes=77301	replaced=13922	skipped=7939	date=2026-11-06
+D	1281	{Gaps:SPx2} → space-8
+D	1046	{Gaps:SPx4} → space-16
+D	931	{Spacing:SPx3} → space-12
+D	852	{Gaps:SPx3} → space-12
+D	839	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	808	{Color:tx-accent/grey/tertiary} → Icon/Tertiary (shape)
+D	792	{Button:Border radius} → radius-16
+D	609	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	588	{Radius:CRx4} → radius-16
+D	508	{Отступы:SPx2} → space-8
+D	308	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	294	{Gaps:SPx0,5} → space-2
+D	286	{Theme TX:tx-accent/grey/primary} → Icon/Primary (shape)
+D	278	{Gaps:SPx1} → space-4
+D	262	{Color:tx-accent/grey/primary} → Icon/Primary (shape)
+D	261	{Отступы:SPx1,5} → space-6
+D	240	{Radius:CRx6} → radius-24
+D	234	{Theme:text icon/primary} → Text/Primary (text)
+D	219	{Gaps:SPx5} → space-20
+D	198	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	183	{Spacing:SPx2} → space-8
+D	175	{Color:tx-bg/level 1 base} → Background/Primary (frame)
+D	134	{Gaps:SPx1,5} → space-6
+D	121	{Theme:text icon/secondary} → Text/Secondary (text)
+D	120	{Corner Radius:CRx0} → radius-flat
+D	116	{Radius:CRx7} → radius-28
+D	99	{Gaps:SPx15} → space-60
+D	96	{Spacing:SPx0} → space-0
+D	86	{Theme TX:tx-bg/level 1 base} → Background/Primary (frame)
+D	85	{Color:tx-accent/grey/dark const} → Icon/Constant Black (shape)
+D	79	{Color:tx-accent/red/bg} → Stroke/Warning (stroke)
+D	74	#ffffff → Background/Primary (frame)
+D	72	{Color:tx-accent/grey/primary} → Stroke/Inverted (stroke)
+D	64	{Color:tx-bg/level −1 muted} → Background/Secondary (frame)
+D	61	{Gaps:SPx6} → space-24
+D	60	[Titles/Title 1] (стар.) → [Titles/Title 1]
+D	59	{Gaps:SPx3,5} → space-14
+D	55	{Color:tx-control/neutral/bg/idle} → Field/Primary (frame)
+D	53	#8526ff@0.12 → Icon/Accent + слой 12 %
+D	53	[White] → Icon/Constant White (shape)
+D	52	{Отступы:SPx3} → space-12
+D	50	{Color:tx-accent/grey/light const} → Icon/Constant White (shape)
+D	50	[Button [day]/Primary] → Button/Primary (frame)
+D	48	{Отступы:SPx0,5} → space-2
+D	48	{Radius:CRx3} → radius-12
+D	43	[Icon [day]/Constant White] → Icon/Constant White (shape)
+D	41	{Color:tx-accent/grey/light strong} → Icon/Primary Inverted (shape)
+D	41	{Color:tx-accent/purple/fg} → Background/Accent (frame)
+D	41	{Отступы:SPx0} → space-0
+D	40	{Color:tx-accent/grey/dark strong} → Icon/Primary (shape)
+D	36	[Text [day]/Primary] → Text/Primary (text)
+D	34	[Subtitles/Subtitle 3] (стар.) → [Subtitles/Subtitle 3]
+D	33	{Gaps:SPx0} → space-0
+D	32	{Color:tx-control/red/tint/idle} → Pastel/Tony (frame)
+D	30	{Color:tx-accent/purple/bg} → Stroke/Accent (stroke)
+D	29	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	28	{Color:tx-accent/grey/light const} → Text/Constant White (text)
+D	26	{Color:tx-control/yellow/bg/idle} → Icon/Attention (shape)
+D	24	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	23	{Отступы:SPx1} → space-4
+D	21	{Color:tx-accent/purple/fg} → Icon/Accent (shape)
+D	21	[Background [day]/Primary] → Background/Primary (frame)
+D	21	[Button [day]/Secondary] → Button/Secondary (frame)
+D	20	{Color:tx-control/orange/bg/idle} → Icon/Attention Deep (shape)
+D	17	{Gaps:SPx8} → space-32
+D	16	{Corner Radius:CRxfull} → radius-pill
+D	15	{Color:tx-accent/grey/dark const} → Background/Constant Dark (frame)
+D	15	{Gaps:SPx2,5} → space-10
+D	15	{Color:tx-accent/grey/secondary} → Text/Secondary (text)
+D	15	[Background [day]/Primary] → Stroke/Secondary (stroke)
+D	15	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	15	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	15	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	15	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	15	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	15	{Theme:bg/level 1 base} → Icon/Primary Inverted (shape)
+D	12	{Radius:CRx5} → radius-20
+D	12	[Titles/Title 3] (стар.) → [Titles/Title 3]
+D	10	{Color:tx-accent/red/fg} → Icon/Warning (shape)
+D	10	{Spacing:SPx0,5} → space-2
+D	10	{Spacing:SPx1} → space-4
+D	10	{Color:tx-accent/purple/fg} → Text/Accent (text)
+D	10	[Text [day]/Constant White] → Text/Constant White (text)
+D	9	{Color:tx-control/red/bg/idle} → Background/Warning (frame)
+D	9	{Color:tx-accent/grey/light strong} → Background/Primary (frame)
+D	9	[Bodies/Body 1] (стар.) → [Bodies/Body 1]
+D	9	[Text [day]/Secondary] → Text/Secondary (text)
+D	8	{Spacing:SPx4} → space-16
+D	8	{Variable collection:Neon Green} → Text/Neon (text)
+D	7	{Theme:loader/whiteConst} → Icon/Constant White (shape)
+D	7	#262626 → Text/Primary (text)
+D	7	{Отступы:SPx4} → space-16
+D	7	{Отступы:SPx2,5} → space-10
+D	7	{Variable collection:Accent Purple} → Icon/Accent (shape)
+D	6	{Theme:text icon/primary} → Icon/Primary (shape)
+D	5	[Bodies/Body 3 Reg] (стар.) → [Bodies/Body 3]
+D	5	{Color:tx-accent/grey/quaternary} → Icon/Secondary Inverted (shape)
+D	5	{Color:tx-accent/green/alt} → Icon/Success (shape)
+D	4	{Size:24} → radius-24
+D	4	{Color:tx-bg/level 1 base} → Icon/Primary Inverted (shape)
+D	3	{Color:tx-accent/purple/bg} → Icon/Accent (shape)
+D	3	{Theme TX:tx-control/purple/bg/idle} → Background/Accent (frame)
+D	3	#f5f5f5@0.60 → Background/Navbar (frame)
+D	3	#ededed → Background/Tab Selected (frame)
+D	3	{Variable collection:Accent Purple} → Text/Accent (text)
+D	3	[Shadows/Brand button] → снята
+D	2	{Color:tx-accent/grey/primary-Inverted} → Icon/Secondary Inverted (shape)
+D	2	{Color:tx-accent/green/bg} → Icon/Success (shape)
+D	2	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	2	[Shadows / Brand button] → снята
+D	2	[Bg day/primary] → Background/Primary (frame)
+D	2	[Shadow 6] → [Shadows/Bottom Sheet]
+D	2	{Variable collection:Neon Green} → Stroke/Neon (stroke)
+D	1	{Gaps:SPx7} → space-28
+D	1	{Color:tx-accent/red/fg} → Text/Warning (text)
+D	1	{Color:tx-accent/grey/secondary} → Icon/Secondary (shape)
+D	1	сырая тень → [Shadows/Medium]
+D	1	SF Pro Text Semibold 17/20 → [Outstanding/NRD - Body]
+D	1	{Size:24} → space-24
+S	661	сырой эффект: layer_blur	I5871:168780;1074:135167 I5871:168880;1074:135167 5374:904906
+S	471	шрифт без стиля: SF Pro Text Semibold 12/13	5374:903752 5374:903756 5374:903760
+S	427	эффект [shadow/diffuse/m] — нет в маппинге	I5374:903637;40000385:8868 I5374:903793;40000385:8868 I5374:904029;40000385:8868
+S	421	градиент [shape]	I5871:168781;1074:135481 I5871:168881;1074:135481 I5374:904688;1074:135481
+S	340	сырой #c4c4c4 [shape]	I5374:918263;1228:7454 I5374:918263;1228:7455 I5374:918263;1228:7457
+S	320	сырой #000000 [shape]	I5374:903780;15:3905;15:3692;15:3250 I5374:903780;15:3905;15:3692;15:3253 I5374:904948;67:2463
+S	309	сырой #ffffff [shape]	5374:903698 I5374:903780;15:3905;15:3692;15:3252 5374:903854
+S	297	эффект [shadow/diffuse/s] — нет в маппинге	5374:903637 5374:903793 5374:904029
+S	284	сырой #ff5f00 [shape]	I5374:903770;1093:24503;3072:124505 I5374:903926;1093:24503;3072:124505 I5374:904153;3374:165305;1093:24503;3072:124505
+S	284	сырой #eb001b [shape]	I5374:903770;1093:24503;3072:124506 I5374:903926;1093:24503;3072:124506 I5374:904153;3374:165305;1093:24503;3072:124506
+S	284	сырой #f79e1b [shape]	I5374:903770;1093:24503;3072:124507 I5374:903926;1093:24503;3072:124507 I5374:904153;3374:165305;1093:24503;3072:124507
+S	278	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:903637;40000385:8868;3866:93273;40006534:7699 I5374:903793;40000385:8868;3866:93273;40006534:7699 I5374:904029;40000385:8868;3866:93273;40006534:7699
+S	266	{System:Magin Top}=54 paddingTop — нет цели	5374:903625 5374:903781 5374:904019
+S	198	сырой эффект: background_blur	5374:903698 5374:903854 5374:904102
+S	186	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила	5374:903634 5374:903790 5871:168778
+S	171	градиент [frame]	I5871:168781;1093:24175 I5871:168881;1093:24175 I5374:904688;1093:24175
+S	140	сырой эффект: drop 0,3 r1 s0 #000000@0.06 + drop 0,3 r8 s0 #000000@0.15	I5374:904731;3374:165301;1093:24505;5568:158090;2421:224412 I5374:904791;1093:24505;5374:929137;2421:224412 I5374:904862;1093:24505;5374:929280;2421:224412
+S	129	сырой эффект: drop 0,4 r12 s0 #000000@0.10	I5871:182291;1108:130148 I5871:182291;1108:130149 I5871:182340;1108:130148
+S	125	сырой #ffffff@0.90 [shape]	I5374:918263;1228:7440 I5374:918263;1228:7482 I5374:918263;1228:7464
+S	124	сырой #ffffff [stroke]	I5871:168795;40008793:92370 I5871:168895;40008793:92370 5871:171207
+S	111	сырой #00b23c [stroke]	5374:903633 5374:903789 5871:168777
+S	110	шрифт без стиля: WB Sans Medium 24/100	I5871:168783;40000385:8868;40006534:7701 I5871:168883;40000385:8868;40006534:7701 I5374:904690;40000385:8868;40006534:7701
+S	101	градиент [stroke]	I5374:903780;15:3905 I5374:905008;15:3905 I5374:905271;15:3905
+S	100	сырой #000000 [stroke]	5374:904026 5374:904162 5374:904298
+S	99	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге	I5871:168825;40001063:14769 I5871:168925;40001063:14769 I5374:904805;40001063:14769
+S	97	сырой #d9d9d9 [shape]	5374:903673 5374:903829 5374:904077
+S	89	эффект [Shadow S] — нет в маппинге	5374:904682 5374:905023 5374:905092
+S	84	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5871:168780;1074:135168 I5871:168880;1074:135168 I5374:904963;1074:135168
+S	75	{Color:tx-bg/level −1 muted} [stroke] — нет правила	5374:904676 5374:905017 5374:905086
+S	75	{Color:tx-accent/green/bg} [stroke] — нет правила	5374:904680 5374:905021 5374:905090
+S	75	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:918287;1242:357 I5374:918288;1244:7534 I5374:918288;1244:7535;589:16
+S	59	сырой #000000 [text]	5374:905238 5374:905239 I5871:169126;40006948:14035
+S	53	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5871:168780;1074:135167 I5871:168880;1074:135167 I5374:904963;1074:135167
+S	50	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:918263;1228:7452 I5374:918298;1264:107 I5374:919779;1228:7452
+S	50	сырой #ffffff@0.05 [shape]	5374:918269 5374:918270 5374:919784
+S	50	сырой #000000@0.08 [stroke]	5374:918269 5374:918270 5374:919784
+S	49	сырой #f3f3f3 [frame]	5871:175980 5871:182778 5871:182865
+S	44	сырой #ffffff [text]	5871:172059 5871:173200 5871:177389
+S	44	[Bodies/Body Large] — нет в маппинге	5871:172059 5871:173200 5871:177389
+S	40	сырой #ff661a [shape]	I5374:906118;69:114;5374:929770;40001075:11432 I5374:906394;69:114;5374:929836;40001075:11432 I5374:906394;69:114;5374:929837;40001075:11432
+S	36	сырой #ffffff@0.10 [stroke]	5374:904552 5374:904735 5374:905685
+S	29	сырой #000000 [frame]	I5374:904946;40006689:21142 I5374:905226;40006663:32103 I5871:169106;40006663:32103
+S	26	сырой #0f013e@0.16 [shape]	5374:905225 5871:169105 5871:172050
+S	25	сырой эффект: drop 0,0 r20 s0 #000000@0.06	5374:918098 5374:919614 5374:920110
+S	25	сырой #ffffff@0.10 [shape]	5374:918271 5374:919786 5374:920283
+S	25	сырой #000000@0.03 [stroke]	5374:918271 5374:919786 5374:920283
+S	25	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I5374:918298;1264:96 I5374:919813;1264:96 I5374:920310;1264:96
+S	21	TEXT смешанные заливки — оставлено	I5374:912511;40007217:34955;40007495:39497;40007495:32737;40001298:18988 I5374:918873;1093:24504;1093:24530 I5374:918875;1093:24504;1093:24530
+S	20	сырой #505050 [frame]	5374:904552 5374:904735 5374:905685
+S	18	шрифт без стиля: Inter Bold 16/16	5374:918723 5374:918724 5374:918726
+S	17	сырой #cacad1 [shape]	5374:918695 5374:918701 I5374:918650;3374:165301;1093:24503;14787:854
+S	17	градиент [text]	I5374:919104;810:137 5871:184732 5871:184738
+S	14	шрифт без стиля: SF Pro Text Regular 12/16	I5374:904551;40006214:22340;40001478:11677;5374:928994;40003372:84369 I5374:905270;40001478:11677;5374:929489;40003372:84369 I5374:905715;40001478:11677;5374:929616;40003372:84369
+S	14	{Color:tx-accent/grey/secondary} [stroke] — нет правила	I5374:904551;40006214:22340;40001478:11677;5374:928994;40003372:84928 I5374:905270;40001478:11677;5374:929489;40003372:84928 I5374:905715;40001478:11677;5374:929616;40003372:84928
+S	14	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass	I5374:905614;15:3905 I5374:911162;15:3905 I5374:911350;15:3905
+S	14	{theme:promo/primary/bg/neutralPrimary} [shape] — нет в маппинге	5871:175988 5871:176010 5871:176032
+S	12	эффект [shadow/close/s] — нет в маппинге	I5374:904551;40006214:22340;40001453:29737;5568:158063 I5374:904551;40006214:22340;40001453:29737;5568:158064 I5374:905270;40001453:29737;5568:158122
+S	12	[Captions/Caption 3] — нет в маппинге	I5374:904551;40006214:22340;40001453:29737;5568:158063;40001456:9986 I5374:904551;40006214:22340;40001453:29737;5568:158064;40001456:9986 I5374:905270;40001453:29737;5568:158122;40001456:9986
+S	12	сырой #ff10d7 [shape]	5871:184640 5871:184641 5871:184642
+S	11	{Safe zones:safe-top}=62 paddingTop — нет цели	5871:183138 5374:926059 5871:187886
+R	382	остальные причины: 121
+#	page=Order Flow — Switched Styles	id=5374:903468	dry=0	nodes=77353	replaced=1186	skipped=6778	date=2026-11-06
+D	427	[shadow/diffuse/m] → [Shadows/Small]
+D	297	[shadow/diffuse/s] → [Shadows/Small]
+D	140	сырая тень → [Shadows/Knob]
+D	129	сырая тень → [Shadows/FAB]
+D	129	#000000 → Icon/Primary (shape)
+D	26	градиент TX Loading Fade → [Gradients/Shimmer]
+D	8	сырая тень → [Glass/Navbar]
+D	8	{Gaps:SPx4} → space-16
+D	6	#0f0f1f@0.87 → Text/Primary (text)
+D	4	#aaff00 → Stroke/Neon (stroke)
+D	4	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	2	#8f69ff → Stroke/Zone Availability (stroke)
+D	2	{Theme:text icon/primary} → Text/Primary (text)
+D	2	{Отступы:SPx2} → space-8
+D	2	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+S	661	сырой эффект: layer_blur	I5871:168780;1074:135167
+S	471	шрифт без стиля: SF Pro Text Semibold 12/13	5374:903752
+S	421	градиент [shape]	I5871:168781;1074:135481
+S	340	сырой #c4c4c4 [shape]	I5374:918263;1228:7454
+S	309	сырой #ffffff [shape]	5374:903698
+S	284	сырой #ff5f00 [shape]	I5374:903770;1093:24503;3072:124505
+S	284	сырой #eb001b [shape]	I5374:903770;1093:24503;3072:124506
+S	284	сырой #f79e1b [shape]	I5374:903770;1093:24503;3072:124507
+S	278	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:903637;40000385:8868;3866:93273;40006534:7699
+S	266	{System:Magin Top}=54 paddingTop — нет цели	5374:903625
+S	198	сырой эффект: background_blur	5374:903698
+S	191	сырой #000000 [shape]	I5374:903780;15:3905;15:3692;15:3250
+S	186	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила	5374:903634
+S	145	градиент [frame]	I5871:168781;1093:24175
+S	125	сырой #ffffff@0.90 [shape]	I5374:918263;1228:7440
+S	124	сырой #ffffff [stroke]	I5871:168795;40008793:92370
+S	111	сырой #00b23c [stroke]	5374:903633
+S	110	шрифт без стиля: WB Sans Medium 24/100	I5871:168783;40000385:8868;40006534:7701
+S	101	градиент [stroke]	I5374:903780;15:3905
+S	100	сырой #000000 [stroke]	5374:904026
+S	1	ошибка: in get_strokes: The node with id "I5374:922110;1095:415;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922110;1095:415;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922111;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922111;1095:809;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922112;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922112;1095:809;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922131;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922131;599:2880;599:2845;599:2809;3867:457
+S	1	ошибка: in get_strokes: The node with id "I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457" does not exist	I5374:922132;1095:809;599:2880;599:2845;599:2809;3867:457
+R	1784	остальные причины: 152
