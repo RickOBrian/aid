@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# gh-retry — обёртка над `gh` с повтором при сетевом сбое до отправки запроса
+# (AID-100, issue #606).
+#
+#   scripts/gh-retry pr list --repo RickOBrian/aid --state open
+#   GH_RETRY_ATTEMPTS=5 GH_RETRY_DELAY=3 scripts/gh-retry issue view 606
+#
+# Повторяет только ошибки соединения, при которых запрос ещё не ушёл на
+# сервер: TLS handshake timeout, dial tcp, отказ в соединении, нет DNS.
+# Команда из одного запроса (`issue comment`, `api -X POST`) при таком сбое
+# не записала ничего — повтор безопасен. Команды из нескольких запросов
+# (`pr create` с --label/--reviewer, `release create`, `pr merge`) могут
+# упасть на втором запросе после первого: повтор вызовет «already exists»
+# или дубль — после такой команды проверить результат. Остальные ошибки
+# (401, 404, 422, сброс уже открытого соединения) возвращаются сразу.
+#
+# Настройки: GH_RETRY_ATTEMPTS — попыток всего (по умолчанию 4, от 1 до 5);
+# GH_RETRY_DELAY — пауза перед первым повтором, с (по умолчанию 5; дальше
+# растёт: 5, 10, 15 …).
+#
+# Секреты: аргументы команды не печатаются (в -f/-F/--body бывают токены),
+# в сообщении о повторе — только подкоманда `gh` и номер попытки. Вывод `gh`
+# отдаётся как есть, один раз — от последней попытки.
+#
+# Ограничения: stdin не буферизуется — команды, читающие stdin
+# (`--body-file -`, `--input -`), передавайте через файл. Вывод `gh` идёт
+# через временный файл, у `gh` нет TTY: для интерактивных и потоковых
+# команд (`run watch`, `pr checks --watch`, `auth login`) не использовать.
+
+set -u
+
+attempts="${GH_RETRY_ATTEMPTS:-4}"
+delay="${GH_RETRY_DELAY:-5}"
+case "$attempts" in ''|*[!0-9]*) attempts=4 ;; esac
+case "$delay" in ''|*[!0-9]*) delay=5 ;; esac
+attempts=$((10#$attempts)); delay=$((10#$delay))
+[ "$attempts" -lt 1 ] && attempts=1
+[ "$attempts" -gt 5 ] && attempts=5
+
+if [ "$#" -eq 0 ]; then
+  echo "gh-retry: нужна команда gh, например: scripts/gh-retry pr list" >&2
+  exit 2
+fi
+if ! command -v gh >/dev/null 2>&1; then
+  echo "gh-retry: gh не найден в PATH" >&2
+  exit 127
+fi
+
+# Для сообщений — только подкоманда (pr, issue, api …): первое слово из
+# строчных латинских букв; значения флагов и аргументы не печатаются.
+label=""
+for a in "$@"; do
+  case "$a" in -*|*[!a-z-]*) ;; *) label="$a"; break ;; esac
+done
+
+umask 077
+out="$(mktemp)" || exit 1
+err="$(mktemp)" || { rm -f "$out"; exit 1; }
+trap 'rm -f "$out" "$err"' EXIT
+trap 'exit 130' INT TERM
+
+transient='TLS handshake timeout|dial tcp|connection refused|no such host|network is unreachable|i/o timeout.*dial'
+
+n=1
+while :; do
+  gh "$@" >"$out" 2>"$err"
+  code=$?
+  if [ "$code" -eq 0 ] || [ "$n" -ge "$attempts" ] || ! grep -Eqi "$transient" "$err"; then
+    cat "$out"
+    cat "$err" >&2
+    exit "$code"
+  fi
+  pause=$((delay * n))
+  echo "gh-retry: gh $label … — сбой соединения, попытка $n из $attempts; повтор через ${pause} с" >&2
+  sleep "$pause"
+  n=$((n + 1))
+done
