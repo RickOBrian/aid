@@ -16,7 +16,22 @@
   "issue": 665,
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2807-528",
+    "auditPage": "2807:528",
+    "auditSection": "2808:4",
+    "auditBlocks": {
+      "cover": "2808:2343",
+      "0": "2808:2352",
+      "1": "2808:2361",
+      "2": "2808:2370",
+      "3": "2808:2379",
+      "4": "2808:2388",
+      "5": "2808:2397",
+      "6": "2808:2406",
+      "7": "2808:2415",
+      "8": "2808:2424"
+    },
+    "auditMaster": "2808:62",
     "input": [
       {
         "fileKey": "5mg6h0oB8yRDoUfTruogca",
@@ -91,9 +106,16 @@
   "openQuestions": [
     "Токен Icon/Quaternary — token-change-gate, отдельная задача (Ops, исполнитель 🎨 Rider); сборка ждёт токен",
     "Product Logic → PD: PRD бокового меню vs шторка в макете; что открывает «Способ оплаты»; есть ли «Выйти» (destructive)",
-    "Стык с BadgeCount AID-116 (вопрос 10 его аудита): экземпляр BadgeCount перед шевроном в слоте trailing"
+    "Стык с BadgeCount AID-116 (вопрос 10 его аудита): экземпляр BadgeCount перед шевроном в слоте trailing",
+    "Шеврон ночью: Background/Quaternary ночью #0F0F1F 54 % на карточке #202024 — контраст 1,1:1, Icon/Quaternary «как Background/Quaternary» ночью не виден; а — как решено, б★ — ночью белый 38 % (3,5:1), в — Icon/Tertiary. Хозяин PD через Standards (блок 8, вопрос 10)",
+    "Заголовок до двух строк (★, высота 80/84) — блок 8, вопрос 13",
+    "Стиль значения в trailing: ★ Body 2 Text/Secondary — блок 8, вопрос 14",
+    "Цветной графики cash 24 нет в Rider Icons — блок 8, вопрос 15",
+    "Leading: подмена экземпляра (★, в наборе сейчас) или слот Figma (в ответе 3а — «слот») — блок 8, вопрос 16"
   ],
   "status": "pending",
   "created": "2026-11-27",
-  "author": "sergej"
+  "author": "sergej",
+  "pr": 674,
+  "updated": "2026-11-27"
 }
