@@ -2,7 +2,7 @@
 name: ds-acceptance-request
 argument-hint: "<audit|construction|recheck> <путь к pending-JSON или AID-NN>"
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   kind: protocol
   status: draft
   platforms: [web, ios, android]
@@ -21,7 +21,7 @@ description: >
 
 Задача standards-19 / AID-98 (issue #604). Слово PD 2026-11-25 «Да, все»
 на список скиллов из разбора чатов. Протокол — `figma-library-workflow`
-0.8.0: приёмка аудита §3.1 и §3.4 (этап 4), приёмка сборки §3.8 (этап 7).
+0.10.0: приёмка аудита §3.1 и §3.4 (этап 4), приёмка сборки §3.8 (этап 7).
 
 Зачем: запросы приходили в разном виде — где-то без id набора, где-то
 без PR, решения PD пересказом, must после правок без узлов. Standards
@@ -93,7 +93,7 @@ pending-JSON и блока 8 — дословно, с датой и авторо
 | `pr` | PR с этой записью | `611` |
 | `taskType`, `currentVersion`, `proposedVersion`, `proposedSemVerImpact` | Тип задачи и версия (§3.3) | `create`, `null`, `1.0.0`, `initial` |
 | `figma.fileKey` | Библиотека | `79UryRdexwKAv8vDIV5v4v` |
-| `figma.auditPage`, `figma.auditSection`, `figma.auditBlocks` | Пейдж аудита (до переноса), секция, блоки `cover`, `0`…`8` | `2341:2`, `2341:6635` |
+| `figma.auditPage`, `figma.auditSection`, `figma.auditBlocks` | Пейдж аудита (до переноса в `Archive`), секция, блоки `cover`, `0`…`8` | `2341:2`, `2341:6635` |
 | `figma.auditPrototypes` | Прототипы аудита | `{".Route Row · audit": "2341:95"}` |
 | `figma.constructionPage`, `figma.components`, `figma.componentKey` | Сборка: пейдж, набор или мастер, ключ | `2349:8766`, `{"Switch": "2349:8768"}` |
 | `figma.guide`, `figma.guideBlocks`, `figma.changelogSection` | Сборка: гайд, блоки `cover`, `1`…`8`, `10`, `11`, Changelog | `2349:8795`, `2349:9237` |
@@ -101,8 +101,9 @@ pending-JSON и блока 8 — дословно, с датой и авторо
 | `decisions` | Решения дословно: `date`, `by`, `quote` | см. `component-route-row` |
 | `openQuestions` | Открытые вопросы — строкой, с блоком | «Линия маршрута а/б (блок 7, вопрос 2)» |
 
-После переноса аудита секцией на пейдж сборки `figma.auditPage` —
-`null`: пейдж удалён, id секции остаётся прежним (§3.1 п.6).
+После переноса аудита в `Archive` на этапе сборки `figma.auditPage` —
+`null`: пейдж удалён, id секции остаётся прежним (§3.1 п.6, решение PD
+2026-11-26).
 
 ---
 
@@ -171,6 +172,9 @@ Product Logic: <вывод одной строкой, ID записи> | воп�
 ---
 
 ## 6. Changelog
+
+- **0.2.0** — 2026-11-26. Протокол 0.10.0: аудит при сборке уходит в
+  `Archive`, не на пейдж сборки (решение PD 2026-11-26, #649).
 
 - **0.1.0** — 2026-11-25. Первая версия (AID-98): виды audit,
   construction, recheck; pending-JSON — источник id узлов, схема
