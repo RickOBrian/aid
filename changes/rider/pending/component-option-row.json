@@ -21,13 +21,39 @@
   "issue": 624,
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "auditPage": null,
-    "input": {
-      "fileKey": "5mg6h0oB8yRDoUfTruogca",
-      "node": "5262:25888"
-    },
+    "auditPage": "2798:2",
+    "input": [
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5262:25888"
+      },
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5262:37018"
+      }
+    ],
     "deprecates": {
       "List Item": "259:3755"
+    },
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2798-2",
+    "auditSection": "2798:3",
+    "auditBlocks": {
+      "cover": "2798:5",
+      "0": "2798:38",
+      "1": "2798:50",
+      "2": "2798:60",
+      "3": "2798:70",
+      "4": "2798:80",
+      "5": "2798:90",
+      "6": "2798:100",
+      "7": "2798:110",
+      "8": "2798:120"
+    },
+    "auditMaster": "2799:893",
+    "auditMasterKey": "62e8fa876e699be091ee0fe742338cb58587d641",
+    "auditPrototypes": {
+      "Прототип · OptionRow · день": "2804:1504",
+      "Прототип · OptionRow · ночь": "2804:1646"
     }
   },
   "decisions": [
@@ -71,10 +97,13 @@
     }
   ],
   "openQuestions": [
-    "Тон Destructive у строки «Отменить заказ» (Text/Warning + Icon/Warning) или нейтральная — PD, пара на пейдже аудита",
-    "Логотип карты в leading — пробел Rider Icons, заявка",
-    "Show Trailing против Show Chevron — сверить с RouteRow при его сборке",
-    "Стык с MenuRow (AID-118): граница строки опции и ячейки меню"
+    "Тон строки отмены: нейтральная или Destructive (в.1) — PD",
+    "Вертикальные отступы: space-16 / 12 / 20 — Standards",
+    "Минимальная высота (токена зоны нажатия нет) — Standards",
+    "Логотип карты в Leading — пробел Rider Icons",
+    "Trailing Button: ButtonInline 36 вместо Button (строка 68 против 88) — Standards",
+    "Show Trailing или Show Chevron — Standards",
+    "Стык с MenuRow (AID-118)"
   ],
   "reviewRoute": null,
   "sourcePath": null,
