@@ -1,4 +1,4 @@
-// persefona-figma-lint 0.1.0 · skills/persefona-figma-lint/lint.js — только чтение.
+// persefona-figma-lint 0.2.0 · skills/persefona-figma-lint/lint.js — только чтение.
 // Вставлять ПОСЛЕ skills/figma-prelude/prelude.js (нужны byId, toPage, pageOf, walk, box,
 // overlaps, paints, sget, ret). Перед вызовом заменить CONFIG. Справка и коды — SKILL.md.
 // Вывод — JSON { meta, findings[{code, level, page, pageId, node, name, msg, fix}], pages? }.
@@ -12,6 +12,7 @@ const CONFIG = {
   MAPPING_MERGED: false,      // PR #365 слит: страница `Mapping`; до него `Маппинг` (§4.3)
   LINE_SCENE: false,          // PR #524 слит: у клона на холсте — рамка line-scene (§6.3)
   SECTION_GAP: 80,            // зазор между секциями (§6.3)
+  SHOWCASE: false,            // витрина §6.10 обязательна: пока только Rider Components (true)
   RAW_OK: [],                 // имена узлов, у которых сырой цвет принят записью (regex-строки)
   CAP: 20,                    // примеров на код в выводе; счёт — полный
 };
@@ -27,7 +28,7 @@ const L_add = (code, level, pg, node, msg, fix) => {
     node: node ? node.id : null, name: node ? String(node.name).slice(0, 60) : null, msg, fix });
 };
 const L_CYR = /[А-Яа-яЁё]/;
-const L_SERVICE = ['Cover', 'Mapping', 'Маппинг', 'Doc blocks', 'Drafts', 'Archive', 'Thumbnail'];
+const L_SERVICE = ['Cover', 'Showcase', 'Mapping', 'Маппинг', 'Doc blocks', 'Drafts', 'Archive', 'Thumbnail'];
 const L_OLD = { 'Обложка': 'Cover', 'Оформление': 'Doc blocks', 'Черновики': 'Drafts', 'Draft': 'Drafts',
   'Идеи': 'Drafts', 'Архив': 'Archive', '_archive': 'Archive' };
 const L_KINDS = ['audit', 'construction', 'update', 'readyfordev', 'proposals', 'правка', 'предложения'];
@@ -52,7 +53,7 @@ const L_parse = name => {
 // Зона страницы по её имени (§3): 0 готово, 1 служебное, 2 библиотека, 3 в работе, 4 архив, 5 миниатюра.
 const L_zone = p => {
   if (p.prd) return 'prd';
-  if (['Cover', 'Mapping', 'Маппинг', 'Doc blocks'].includes(p.service || p.old)) return 1;
+  if (['Cover', 'Showcase', 'Mapping', 'Маппинг', 'Doc blocks'].includes(p.service || p.old)) return 1;
   if ((p.service || p.old) === 'Archive') return 4;
   if (p.service === 'Thumbnail') return 5;
   if ((p.service || p.old) === 'Drafts') return 3;
@@ -152,7 +153,7 @@ if (CONFIG.MODE === 'file') {
   // L5 пары страниц: сборка и аудит одного компонента (§7.1)
   const cons = new Set(named.filter(x => ['construction', 'readyfordev'].includes(x.p.kind)).map(x => L_key(x.p.object)));
   for (const x of named.filter(x => x.p.kind === 'audit' && cons.has(L_key(x.p.object))))
-    L_add('L5', 'error', x.pg, null, 'отдельная страница аудита у компонента со сборкой', 'аудит — секцией `<Компонент> · audit` на странице сборки, узлы с прежними id (§7.1)');
+    L_add('L5', 'error', x.pg, null, 'отдельная страница аудита у компонента со сборкой', 'аудит — секцией `<Компонент> · audit · ГГГГ-ММ-ДД` в `Archive`, узлы с прежними id; страницу удалить после сверки (§7.1)');
   // L6 PRD-страницы в конце файла (§6.7, §6.8)
   const firstPrd = named.findIndex(x => x.z === 'prd');
   if (firstPrd >= 0 && named.slice(firstPrd).some(x => x.z !== 'prd')) L_add('L6', 'error', named[firstPrd].pg, null, 'после страниц PRD есть другие', 'PRD audit и PRD idea — в конце файла (§6.7, §6.8)');
@@ -197,7 +198,46 @@ if (CONFIG.MODE === 'file') {
     const order = want.filter(pg => inWant.includes(pg.id)).map(pg => pg.id);
     if (inWant.join() !== order.join()) L_add('L9', 'error', cover.pg, null, 'порядок содержания не совпадает с порядком страниц', 'обновить содержание по списку страниц (§6.1)');
   }
-  L_out.next = named.filter(x => [0, 2, 3].includes(x.z) || x.z === 'prd' || ['Cover', 'Archive'].includes(x.p.service)).map(x => x.pg.id);
+  // L22 витрина: карточка и строка у каждого компонента со сборкой, readyfordev или в зоне 2 (§6.10)
+  const sc = named.find(x => x.p.service === 'Showcase');
+  if (sc && CONFIG.KIND !== 'components') L_add('L22', 'error', sc.pg, null, '`Showcase` вне файла компонентов', 'витрина — только в файле компонентов (§6.10)');
+  if (CONFIG.SHOWCASE && CONFIG.KIND === 'components') {
+    const ci = named.findIndex(x => x.p.service === 'Cover');
+    if (!sc) L_add('L22', 'error', null, null, 'нет страницы `Showcase`', 'собрать витрину по §6.10 сразу после `Cover`');
+    else if (ci >= 0 && named[ci + 1] !== sc) L_add('L22', 'error', sc.pg, null, '`Showcase` не сразу после `Cover`', 'переставить (§3, §6.10)');
+    if (sc) {
+      await sc.pg.loadAsync();
+      const wantS = new Map(); // id страницы → { st, obj, old }: значок, имя, зона 2 без сборки (§8, вопрос 14 — warn)
+      for (const x of named) {
+        const { p } = x;
+        if (p.kind === 'construction' && p.status === '🚧') wantS.set(x.pg.id, { st: '🚧', obj: p.object });
+        else if ((p.kind === 'construction' || p.kind === 'readyfordev') && p.status === '✅') wantS.set(x.pg.id, { st: '✅', obj: p.object });
+        else if (x.z === 2 && !p.kind) wantS.set(x.pg.id, { st: '✅', obj: p.object, old: true });
+      }
+      for (const [sec, unit, what] of [['By category', /^Card · /, 'карточки'], ['A–Z', /^Row · /, 'строки']]) {
+        const s = sc.pg.findChildren(n => n.type === 'SECTION' && n.name === sec)[0];
+        if (!s) { L_add('L22', 'error', sc.pg, null, `нет секции \`${sec}\``, 'разметка витрины — §6.10'); continue; }
+        const got = new Map();
+        for (const u of s.findAll(n => unit.test(n.name) && !/_template$/.test(n.name) && n.visible !== false)) {
+          let t = u.type === 'TEXT' ? u : null; // текст Name своей разметки, не внутри экземпляра превью
+          if (!t) walk(u, n => { if (t) return false; if (n !== u && n.type === 'TEXT' && n.name === 'Name') { t = n; return false; } if (n !== u && n.type === 'INSTANCE') return false; });
+          let id = null; try { id = t?.getStyledTextSegments(['hyperlink']).find(g => g.hyperlink?.type === 'NODE')?.hyperlink.value ?? null; } catch (e) {}
+          if (!id) { L_add('L22', 'error', sc.pg, u, `у ${what} нет ссылки на страницу`, 'гиперссылка на имени — скилл `ds-showcase-add` (§6.10)'); continue; }
+          const tg = await figma.getNodeByIdAsync(id);
+          if (!tg) { L_add('L22', 'error', sc.pg, u, `ссылка ${what} на удалённый узел ${id}`, '`ds-showcase-add` sync — в `orphans`, решить (§6.10)'); continue; }
+          if (tg.type !== 'PAGE' || !wantS.has(tg.id)) { L_add('L22', 'error', sc.pg, u, `ссылка ${what} на «${tg.name}» — не страница компонента со сборкой`, 'ссылка — на страницу сборки, readyfordev или зоны 2 (§6.10)'); continue; }
+          if (got.has(tg.id)) L_add('L22', 'error', sc.pg, u, `вторая ${what.replace(/и$/, 'а')} для «${tg.name}»`, 'одна карточка и одна строка на компонент (§6.10)');
+          got.set(tg.id, t.characters.trim());
+        }
+        for (const [id, w] of wantS) {
+          const pg = all.find(q => q.id === id);
+          if (!got.has(id)) { L_add('L22', w.old ? 'warn' : 'error', pg, null, `нет ${what} на витрине (\`${sec}\`)`, w.old ? 'догон — `ds-showcase-add` add, до ответа PD по §8 вопросу 14' : '`ds-showcase-add` add — без карточки сборку не принимают (§6.10)'); continue; }
+          if (got.get(id) !== `${w.st} ${w.obj}`) L_add('L22', 'error', pg, null, `на витрине «${got.get(id).slice(0, 40)}», ждём «${w.st} ${w.obj}»`, '`ds-showcase-add` sync (§6.10)');
+        }
+      }
+    }
+  }
+  L_out.next = named.filter(x => [0, 2, 3].includes(x.z) || x.z === 'prd' || ['Cover', 'Showcase', 'Archive'].includes(x.p.service)).map(x => x.pg.id);
 }
 
 // ══ MODE page — содержимое одной страницы ═══════════════════════════════════
@@ -296,7 +336,7 @@ if (CONFIG.MODE === 'page') {
   }
 
   // L19 шапка: есть на страницах зон 0, 2, 3; метка статуса совпадает со значком (§6.2)
-  if (([0, 2, 3].includes(z) || p.service === 'Cover') && !HP.header) L_add('L19', 'error', pg, null, 'нет шапки `HeaderPage`', 'экземпляр `HeaderPage` в левом верхнем углу первой секции (§6.2)');
+  if (([0, 2, 3].includes(z) || p.service === 'Cover' || p.service === 'Showcase') && !HP.header) L_add('L19', 'error', pg, null, 'нет шапки `HeaderPage`', 'экземпляр `HeaderPage` в левом верхнем углу первой секции (§6.2)');
   const words = Object.values(L_WORD);
   for (const h of HP.list) {
     const found = h.findAllWithCriteria({ types: ['TEXT'] }).map(t => t.characters.trim()).filter(s => words.includes(s));

@@ -869,7 +869,7 @@
       "kind": "standard",
       "humanFile": "products/persefona/rules/persefona-figma-pages.md",
       "machineFile": null,
-      "version": "0.15.1",
+      "version": "0.16.0",
       "status": "draft",
       "wave": null,
       "core": false,
