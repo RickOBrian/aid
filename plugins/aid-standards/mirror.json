@@ -70,12 +70,20 @@
       "source": "tokens"
     },
     {
+      "path": "skills/ds-acceptance-request",
+      "source": "skills/ds-acceptance-request"
+    },
+    {
       "path": "skills/ds-component-audit",
       "source": "skills/ds-component-audit"
     },
     {
       "path": "skills/ds-component-build",
       "source": "skills/ds-component-build"
+    },
+    {
+      "path": "skills/ds-component-check",
+      "source": "skills/ds-component-check"
     },
     {
       "path": "skills/ds-component-migration",
@@ -90,6 +98,10 @@
       "source": "skills/ds-developer-guide"
     },
     {
+      "path": "skills/ds-figma-page-brief",
+      "source": "skills/ds-figma-page-brief"
+    },
+    {
       "path": "skills/ds-import",
       "source": "skills/ds-import"
     },
@@ -98,8 +110,16 @@
       "source": "skills/ds-ui-review"
     },
     {
+      "path": "skills/figma-prelude",
+      "source": "skills/figma-prelude"
+    },
+    {
       "path": "skills/guide-lint",
       "source": "skills/guide-lint"
+    },
+    {
+      "path": "skills/persefona-figma-lint",
+      "source": "skills/persefona-figma-lint"
     }
   ]
 }

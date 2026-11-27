@@ -1,0 +1,107 @@
+#	page=Where	id=5374:421690	dry=0	nodes=0	replaced=837	skipped=8578	date=2026-11-03
+D	208	{borderRadius:BRfull} → radius-pill
+D	104	{borderRadius:BRx0} → radius-flat
+D	96	{Скругления:CRfull} → radius-pill
+D	96	{Скругления:BRfull} → radius-pill
+D	76	[Captions/Caption] (стар.) → [Captions/Caption 1]
+D	72	{Corner Radius:CRx0} → radius-flat
+D	38	{Скругления:CRx0} → radius-flat
+D	35	#232326 → Icon/Primary (shape)
+D	28	{Скругления:BRx4} → radius-16
+D	19	[Texts day/primary 1] → Text/Primary (text)
+D	12	{Spacing:SPx2} → space-8
+D	8	{Button:Border radius} → radius-16
+D	7	{theme:stroke/contrasteInverted} → Stroke/Contrast (stroke)
+D	6	{Spacing:SPx1} → space-4
+D	4	{Скругления:BRx0} → radius-flat
+D	4	{Spacing:SPx0,5} → space-2
+D	4	{theme:stroke/contrasteInverted} → Icon/Primary Inverted (shape)
+D	4	{Corner radius:button/large} → radius-16
+D	3	{Spacing:SPx1,5} → space-6
+D	3	[iOS / Subtitle L] (стар.) → [Outstanding/iOS - Subtitle L]
+D	2	{Color:tx-accent/grey/tertiary} → Icon/Tertiary (shape)
+D	2	{theme:text/danger} → Text/Warning (text)
+D	2	{theme:text/whitePrimaryConst} → Text/Constant White (text)
+D	2	{theme:icon/whiteConst} → Icon/Constant White (shape)
+D	1	{theme:bg/level 1 base} → Icon/Primary Inverted (shape)
+D	1	{theme:stroke/primary} → Stroke/Accent (stroke)
+S	1182	сырой #c4c4c4 [shape]	I5374:421707;1207:219;1248:7510 I5374:421707;1207:219;1248:7504 I5374:421880;1228:7454
+S	987	сырой #000000 [shape]	I5374:421707;1207:219;1248:7581 I5374:421707;1207:219;1248:7583 I5374:421714;1037:166;1716:341
+S	507	сырой эффект: background_blur	I5374:421880;1228:7439 I5374:421880;1228:7441 I5374:421880;1228:7463
+S	440	градиент [shape]	5374:421694 5374:421882 5374:422083
+S	410	сырой #ffffff@0.90 [shape]	I5374:421880;1228:7440 I5374:421880;1228:7482 I5374:421880;1228:7464
+S	399	сырой эффект: layer_blur	I5374:421696;19:89299 I5374:421707;1207:219;1248:7581 I5374:421707;1207:219;1248:7583
+S	362	сырой эффект: drop 0,4 r12 s0 #000000@0.10	I5374:421695;15:79193 I5374:421695;15:79194 5374:421714
+S	329	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:421702;1242:357 I5374:421703;1244:7534 I5374:421703;1244:7535;589:16
+S	201	сырой #ffffff [stroke]	I5374:421880;1228:7446 I5374:422081;1228:7446 I5374:422116;1264:101
+S	166	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:421880;1228:7452 I5374:422081;1228:7452 I5374:422116;1264:107
+S	154	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:421696;19:89300 5374:421895 5374:422097
+S	152	сырой #ffffff@0.05 [shape]	5374:421885 5374:421886 5374:422087
+S	152	сырой #000000@0.08 [stroke]	5374:421885 5374:421886 5374:422087
+S	144	градиент [frame]	I5374:425063;2785:78499;525:3285;129:397;1075:43848 I5374:425063;2785:78499;525:3286;129:397;1075:43848 I5374:425064;1352:6168;421:1642
+S	142	сырой #ffffff [shape]	I5374:422125;3:197;1937:2777 I5374:422126;3:197;1937:2777 5374:423758
+S	129	[Action/actionAccent — miniPig] — нет в маппинге	I5374:425063;2785:78496;431:1658;435:2551 I5374:425063;2856:34111;2856:33979;431:1658;435:2544 I5374:425068;91:1957
+S	95	сырой эффект: drop 0,0 r20 s0 #000000@0.06	5374:421916 5374:422147 5374:422399
+S	87	сырой #000000@0.30 [shape]	5374:422117 5374:422348 5374:422600
+S	86	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I5374:422116;1264:96 I5374:422347;1264:96 I5374:422599;1264:96
+S	79	[Description/descriptionAccent — lion] — нет в маппинге	I5374:425058;409:1590 I5374:425063;2785:78499;525:3285;129:389 I5374:425063;2785:78499;525:3286;129:389
+S	76	сырой #ffffff@0.10 [shape]	5374:421887 5374:422089 5374:422320
+S	76	сырой #000000@0.03 [stroke]	5374:421887 5374:422089 5374:422320
+S	72	{theme:icon/contraste} [shape] — нет в маппинге	I5374:425058;409:1561 I5374:425062;123:178;185:778;605:75 I5374:425082;123:178;185:778;605:75
+S	64	[Text [day]/Primary] [stroke] — нет правила	5374:431573 5374:431575 5374:431584
+S	55	эффект [Shadow Up] — нет в маппинге	5374:425062 5374:425067 5374:425082
+S	54	сырой #ffc800 [stroke]	I5374:425086;1168:1949;1157:1873;3263:22958 I5374:425086;1168:1949;1157:1873;3263:22959 I5374:425300;1168:1949;1157:1873;3263:22958
+S	49	[Body/body] — нет в маппинге	I5374:425070;98:375 I5374:425074;98:375 I5374:425076;98:375
+S	46	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:421696;19:89299 I5374:427398;5374:448297 I5374:427431;5374:448297
+S	43	[Captions/Caption 3] — нет в маппинге	I5374:423644;40001586:29745 5374:429042 5374:430123
+S	40	градиент [stroke]	5374:423957 5374:423958 5374:424153
+#	page=✅ Where 🗺️ — Switched Styles	id=5374:421690	dry=0	nodes=42240	replaced=1209	skipped=7273	date=2026-11-06
+D	510	#000000 → Icon/Primary (shape)
+D	362	сырая тень → [Shadows/FAB]
+D	87	#000000@0.30 → Background/Overlay (shape)
+D	29	сырая тень → [Glass/Navbar]
+D	28	{Скругления:BRx4} → radius-16
+D	24	[Gray / 40%] → Text/Tertiary (text)
+D	23	[Body/body — horse] (стар.) → [Bodies/Body 2]
+D	17	[Title/title2 — pig] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	16	#262626 → Text/Primary (text)
+D	15	градиент TX Loading Fade → [Gradients/Shimmer]
+D	12	#0f0f1f@0.87 → Text/Primary (text)
+D	12	{Spacing:SPx2} → space-8
+D	9	[shadow/diffuse/s] → [Shadows/Small]
+D	9	[iOS / H4] (стар.) → [Outstanding/NRD - Action Bold]
+D	8	[shadow/diffuse/m] → [Shadows/Small]
+D	8	сырая тень → [Shadows/Knob]
+D	7	{theme:stroke/contrasteInverted} → Stroke/Contrast (stroke)
+D	6	{Spacing:SPx1} → space-4
+D	4	{theme:bg/level -1} → Background/Secondary (frame)
+D	4	{Spacing:SPx0,5} → space-2
+D	4	{theme:stroke/contrasteInverted} → Icon/Primary Inverted (shape)
+D	4	#000000@0.87 → Icon/Primary (shape)
+D	3	{Spacing:SPx1,5} → space-6
+D	2	{theme:text/danger} → Text/Warning (text)
+D	2	{theme:text/whitePrimaryConst} → Text/Constant White (text)
+D	2	{theme:icon/whiteConst} → Icon/Constant White (shape)
+D	1	{theme:bg/level 1 base} → Icon/Primary Inverted (shape)
+D	1	{theme:stroke/primary} → Stroke/Accent (stroke)
+S	1182	сырой #c4c4c4 [shape]	I5374:421707;1207:219;1248:7510
+S	507	сырой эффект: background_blur	I5374:421880;1228:7439
+S	477	сырой #000000 [shape]	I5374:421707;1207:219;1248:7581
+S	440	градиент [shape]	5374:421694
+S	410	сырой #ffffff@0.90 [shape]	I5374:421880;1228:7440
+S	399	сырой эффект: layer_blur	I5374:421696;19:89299
+S	329	[Background [day]/Secondary] [shape/shape] — нет правила	I5374:421702;1242:357
+S	201	сырой #ffffff [stroke]	I5374:421880;1228:7446
+S	166	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I5374:421880;1228:7452
+S	154	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:421696;19:89300
+S	152	сырой #ffffff@0.05 [shape]	5374:421885
+S	152	сырой #000000@0.08 [stroke]	5374:421885
+S	142	сырой #ffffff [shape]	I5374:422125;3:197;1937:2777
+S	129	[Action/actionAccent — miniPig] — нет в маппинге	I5374:425063;2785:78496;431:1658;435:2551
+S	129	градиент [frame]	I5374:425063;2785:78499;525:3285;129:397;1075:43848
+S	95	сырой эффект: drop 0,0 r20 s0 #000000@0.06	5374:421916
+S	86	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I5374:422116;1264:96
+S	79	[Description/descriptionAccent — lion] — нет в маппинге	I5374:425058;409:1590
+S	76	сырой #ffffff@0.10 [shape]	5374:421887
+S	76	сырой #000000@0.03 [stroke]	5374:421887
+R	1892	остальные причины: 239

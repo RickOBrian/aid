@@ -2,7 +2,7 @@
 destination: skills/_shared/standards/
 name: semantic-space-tokens-guide
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   kind: standard
   platforms: [web, ios, android]
   owner: design-system-team
@@ -12,7 +12,7 @@ description: >
 
 # Semantic Space Tokens Guide
 
-> Статус: Draft · v1.1.0 · обновлено 2026-09-21
+> Статус: Draft · v1.1.1 · обновлено 2026-11-22
 
 ---
 
@@ -94,7 +94,7 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 
 #### `inset-row-*` — строчные компоненты
 
-Применяется к Structural View со строчной структурой: `ListRow`, `MenuRow`, `BottomSheetRow`, `IslandRow`.
+Применяется к Structural View со строчной структурой: `ListRow`, `MenuRow`, `IslandRow`. Строка в шторке — `ListRow`.
 
 Характеристика: широкий горизонтальный отступ, высота определяет плотность списка.
 
@@ -279,6 +279,7 @@ Core-примитивы описаны в `core-space-tokens-guide.md`.
 
 ## 9. Changelog
 
+- **1.1.1** — 2026-11-22. `inset-row-*`: `BottomSheetRow` убран из списка строчных компонентов — не заводится, строка в шторке — `ListRow` (`ds-component-architecture-guide.md` 1.7.0).
 - **1.1.0** — 2026-09-21. Ссылки на стоп-правила заменены уровнями соответствия.
 - **1.0.1** — 2026-09-20. guide-lint: нормализация формы.
 - **1.0.0** — Первая версия. `inset-*` с осями h/v и четырьмя категориями (control, row, container, screen). `gap-*` для Layout. `radius-*` как Semantic-алиасы над `shape-corner-N`.
