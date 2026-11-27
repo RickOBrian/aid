@@ -70,6 +70,7 @@ import {
 import { countResolvedByTeam, mergeRegistryDecisions } from "./lib/registryDecisions";
 import { isLibraryBoundDecision, scopeHistoryToLibrary } from "./lib/libraryScope";
 import { reconcileProposalStatuses, signaturesToCheck } from "./lib/proposalLifecycle";
+import { MAPPING_PAGE_NAME, isMarkedMappingPage, markMappingPage, pickMappingPage } from "./lib/mappingPage";
 import {
   handleChangelogBaseline,
   handleChangelogLoad,
@@ -183,8 +184,6 @@ function getLastRecords(category: TokenCategory): LayoutRecord[] {
 function setLastRecords(category: TokenCategory, records: LayoutRecord[]): void {
   lastRecordsByCategory[category] = records;
 }
-
-const MAPPING_PAGE_NAME = "Маппинг";
 
 const SCAN_SCOPE_LABELS: Record<ScanScope, string> = {
   file: "Весь файл",
@@ -2092,20 +2091,17 @@ async function handleResizeWindowEnd(width: number, height: number): Promise<voi
 }
 
 /**
- * Находит страницу "Маппинг" среди figma.root.children (безопасно без
- * loadAsync — доступ к имени/id страниц разрешён и в dynamic-page режиме),
- * либо создаёт новую (figma.createPage() уже добавляет её в конец списка
- * страниц). Перед любой работой с содержимым страницы — loadAsync().
+ * Находит страницу маппинга по метке плагина, а на переходный период — по
+ * имени «Маппинг» или «Mapping» (lib/mappingPage.ts), и ставит на неё метку;
+ * иначе создаёт страницу «Mapping» (figma.createPage() добавляет её в конец).
+ * Имя и sharedPluginData страниц доступны без loadAsync и в dynamic-page
+ * режиме; перед работой с содержимым страницы — loadAsync().
  */
 async function findOrCreateMappingPage(): Promise<PageNode> {
-  const existing = figma.root.children.find((page) => page.name === MAPPING_PAGE_NAME);
-  if (existing) {
-    await existing.loadAsync();
-    return existing;
-  }
-
-  const page = figma.createPage();
-  page.name = MAPPING_PAGE_NAME;
+  const existing = pickMappingPage(figma.root.children);
+  const page = existing ?? figma.createPage();
+  if (!existing) page.name = MAPPING_PAGE_NAME;
+  if (!isMarkedMappingPage(page)) markMappingPage(page);
   await page.loadAsync();
   return page;
 }
@@ -2140,14 +2136,13 @@ async function handlePrintToFigma(
     // Все строки печати приходят из одной таблицы, поэтому категория у них общая.
     const category = results[0].category;
 
-    send({ type: "print-progress", payload: { message: `Строим таблицу на странице «${MAPPING_PAGE_NAME}»...` } });
-
     const truncated = results.length > MAX_PRINTABLE_ROWS;
     const resultsForTable = truncated ? results.slice(0, MAX_PRINTABLE_ROWS) : results;
     // Один источник данных для CSV/JSON/MD и для Figma-таблицы — buildExportRows().
     const rows = buildExportRows(resultsForTable);
 
     const page = await findOrCreateMappingPage();
+    send({ type: "print-progress", payload: { message: `Строим таблицу на странице «${page.name}»...` } });
     // dynamic-page: figma.currentPage — read-only, переключение только через setCurrentPageAsync.
     await figma.setCurrentPageAsync(page);
 
@@ -2170,7 +2165,7 @@ async function handlePrintToFigma(
         send({
           type: "print-progress",
           payload: {
-            message: `Строим таблицу на странице «${MAPPING_PAGE_NAME}»... (${completed}/${total})`,
+            message: `Строим таблицу на странице «${page.name}»... (${completed}/${total})`,
             percent,
           },
         });
