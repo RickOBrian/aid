@@ -1,6 +1,6 @@
 {
   "id": "ds-component-architecture-guide",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "status": "alpha",
   "humanFile": "ds-component-architecture-guide.md",
   "note": "Машинный слой архитектуры компонентов. Используется при определении уровня чужого компонента, разборе библиотек и распознавании по коду или макету.",
@@ -28,7 +28,7 @@
       "id": "structural-view", "order": 3, "label": "Structural View",
       "definition": "два и более именованных слота, составной макет",
       "test": "есть несколько именованных зон",
-      "examples": ["ListRow", "MenuRow", "BottomSheetRow", "IslandRow", "TableRow", "StatTile", "FieldCheckbox", "FieldRadio", "IslandProduct", "WidgetBalance", "Banner", "Toast", "EmptyState", "NavBar", "TabBar", "DockTabBar", "Menu", "BottomSheet", "Dialog", "SidePanel"],
+      "examples": ["ListRow", "MenuRow", "IslandRow", "TableRow", "StatTile", "FieldCheckbox", "FieldRadio", "IslandProduct", "WidgetBalance", "Banner", "Toast", "EmptyState", "NavBar", "TabBar", "DockTabBar", "Menu", "BottomSheet", "Dialog", "SidePanel"],
       "ownStates": true,
       "allowedTokens": "all"
     },
@@ -71,7 +71,8 @@
     ],
     "legacyRowPattern": {
       "form": "Entity + Row",
-      "appliesTo": ["ListRow", "MenuRow", "BottomSheetRow", "IslandRow", "TableRow"],
+      "appliesTo": ["ListRow", "MenuRow", "IslandRow", "TableRow"],
+      "notCreated": { "BottomSheetRow": "строка в шторке — ListRow (AID-79, вопрос 4)" },
       "newComponentsFollowIt": true
     },
     "standaloneNames": ["Avatar", "Badge", "Tag", "Chip", "Dialog"],
@@ -83,8 +84,25 @@
     ]
   },
 
+  "listRow": {
+    "products": ["rider", "driver"],
+    "source": "решение sergej (Standards) 2026-11-22; ds-component-architecture-guide §6",
+    "rules": [
+      { "id": "listrow-name", "level": "must", "rule": "имя ListRow и в Figma; не «List Item»" },
+      { "id": "listrow-zones", "level": "must", "rule": "leading · content (overline, title, subtitle) · trailing; свойства Figma Leading, Show Leading, Trailing, Show Trailing, Overline, Show Overline, Title, Subtitle, Show Subtitle; без Left/Right" },
+      { "id": "listrow-lines", "level": "must", "rule": "overline 1 строка, title и subtitle до 2; обрезка — fade маской в конце последней строки; многоточия и isFade нет" },
+      { "id": "listrow-align", "level": "should", "rule": "leading и trailing — по первой строке текста content" },
+      { "id": "listrow-slot-content", "level": "should", "rule": "leading: Icon 24 или IconSurface; trailing: один элемент — шеврон, текст значения, Switch, Checkbox, Radio, служебный элемент продукта; trailing не сжимается" },
+      { "id": "listrow-one-target", "level": "must", "rule": "одна цель нажатия; контрол в trailing переключается нажатием строки; отдельная кнопка — только у строки без действия" },
+      { "id": "listrow-no-divider", "level": "must", "rule": "разделитель не часть строки: отдельный Divider между строками; свойства разделителя у ListRow нет" },
+      { "id": "listrow-size", "level": "must", "rule": "горизонтальные отступы у строки; высота Hug; отступы — токены; минимум — область нажатия платформы" },
+      { "id": "listrow-states", "level": "must", "rule": "Default, Pressed, Disabled, Skeleton; Pressed — слой 12 %; без действия — без Pressed; selected — значение контрола trailing; focused — только Web" },
+      { "id": "listrow-a11y", "level": "must", "rule": "один элемент скринридера; подпись overline+title+subtitle полным текстом; декоративные leading и шеврон скрыты; значение trailing — value; роль — кнопка, ссылка или роль контрола" }
+    ]
+  },
+
   "slots": {
-    "canonical": ["leading", "content", "trailing", "badge", "header", "footer", "title", "subtitle", "action"],
+    "canonical": ["leading", "content", "trailing", "badge", "header", "footer", "overline", "title", "subtitle", "action"],
     "isSingleCanon": true,
     "platformSynonymsAllowed": false,
     "forbiddenExamples": ["leftContent", "startSlot", "rightContent"],

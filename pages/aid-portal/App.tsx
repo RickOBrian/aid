@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { TabBarPreviewPage } from './TabBarPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -19,6 +20,7 @@ import { BadgeDotPage } from './BadgeDotPage';
 import { GuidesHubPage } from './GuidesHubPage';
 import { ToolsHubPage } from './ToolsHubPage';
 import { TokenComparatorPluginPage } from './TokenComparatorPluginPage';
+import { MapShimmerPage } from './MapShimmerPage';
 import { GuidePage, findGuideByPath } from './GuidePage';
 import { TypographyPage } from './TypographyPage';
 import { ProductSectionUnavailablePage } from './ProductSectionUnavailablePage';
@@ -109,6 +111,10 @@ function resolveSectionKey(remainder: string) {
     return 'toolsTokenComparator' as const;
   }
 
+  if (path === HUB_ROUTES.toolsMapShimmer) {
+    return 'toolsMapShimmer' as const;
+  }
+
   return 'not-found' as const;
 }
 
@@ -159,6 +165,14 @@ export function App() {
   if (managePath === '/manage/team') {
     return <TeamPage />;
   }
+  // Превью TabBar Rider (AID-89, presentbook-10): только по прямой ссылке, без ссылок из меню.
+  if (managePath === '/rider/preview/tab-bar') {
+    return (
+      <ProductAccentScope productId="rider">
+        <TabBarPreviewPage />
+      </ProductAccentScope>
+    );
+  }
 
   const { productId, remainder } = resolveProductRoute(currentAppPath());
   const page = resolveSectionKey(remainder);
@@ -167,7 +181,7 @@ export function App() {
     // Гайд не принадлежит продукту и ставит свой заголовок сам. Эффект
     // родителя выполняется после эффекта потомка, поэтому без этой проверки
     // он бы перезаписал название гайда меткой продукта.
-    if (page !== 'not-found' && page !== 'guide') {
+    if (page !== 'not-found' && page !== 'guide' && page !== 'toolsMapShimmer') {
       document.title = getProductLabel(productId);
     }
   }, [productId, page]);
@@ -202,6 +216,8 @@ export function App() {
     content = <ToolsHubPage />;
   } else if (page === 'toolsTokenComparator') {
     content = <TokenComparatorPluginPage />;
+  } else if (page === 'toolsMapShimmer') {
+    content = <MapShimmerPage />;
   } else if (productId !== DEFAULT_PRODUCT_ID) {
     content = <ProductSectionUnavailablePage productId={productId} sectionKey={page} />;
   } else if (page === 'icons') {
@@ -227,7 +243,7 @@ export function App() {
   // Гайды, инструменты и «не найдено» не зависят от продукта: хром у них —
   // графит Kit из `:root`, без цвета продукта (приёмка #384, п. 1).
   const productNeutral =
-    page === 'not-found' || page === 'guides' || page === 'guide' || page === 'tools' || page === 'toolsTokenComparator';
+    page === 'not-found' || page === 'guides' || page === 'guide' || page === 'tools' || page === 'toolsTokenComparator' || page === 'toolsMapShimmer';
   if (productNeutral || content.type === NotFoundPage) {
     return content;
   }
