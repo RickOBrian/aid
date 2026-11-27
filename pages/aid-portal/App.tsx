@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { BottomSheetPreviewPage } from './BottomSheetPreviewPage';
 import { TabBarPreviewPage } from './TabBarPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
@@ -164,6 +165,14 @@ export function App() {
   }
   if (managePath === '/manage/team') {
     return <TeamPage />;
+  }
+  // Веб-демо шторки BottomSheet (AID-79, presentbook-11): только по прямой ссылке, без ссылок из меню.
+  if (managePath === '/rider/preview/bottom-sheet') {
+    return (
+      <ProductAccentScope productId="rider">
+        <BottomSheetPreviewPage />
+      </ProductAccentScope>
+    );
   }
   // Превью TabBar Rider (AID-89, presentbook-10): только по прямой ссылке, без ссылок из меню.
   if (managePath === '/rider/preview/tab-bar') {
