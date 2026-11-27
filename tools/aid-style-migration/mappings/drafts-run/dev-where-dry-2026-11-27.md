@@ -27,3 +27,36 @@
 - Верх отличий: `[Background [day]/Primary] → {Background/Primary}` 128, `{text icon/secondary} → {Text/Secondary}` 123,
   `[Text [day]/Secondary] → {Text/Secondary}` 114, `[Text [day]/Primary] → {Text/Primary}` 100.
 - noTok 23 — сырые тени/стекло → сырые, не переносятся.
+
+## Боевой прогон (2026-11-27)
+
+Основание: arturuxui 27.11 «Без него, остальное да» — Technical/Visible Deep с копии не переносить, остальное — бой.
+Порядок — как на остальных страницах DEV 26.11: мастера → перенос → правила → контроль.
+
+| Шаг | замен | ошибок | заметки |
+|---|---:|---:|---|
+| Мастера правилами (1: Taxi `2247:20753`, тело `mig` HASH 1785929411) | 40 | 0 | пропуск 9 (сырые) |
+| Перенос левый набор `4411:*` → оригинал (SCREENS, `MASTERS=false`, `SKIPVARS=['Technical/Visible Deep']`) | 1 496 из 1 502 | 0 | 6 — пары внутри мастера; исключено 377 (364 + 13 в мастере); noTok 23 |
+| Правила по оригиналу (`run-page`, DRY=false) | 1 213 | 0 | пропуск 730 |
+| Контрольный DRY | **0** | — | пропуск 735; планы сняты |
+
+Итого на Where ≈ **2 750 замен**. Строки — `results/dev-where-original.tsv`.
+
+- **Technical/Visible Deep на оригинале — 26 узлов**, не с копии: 14 «Shadow < Pin» — наше правило
+  `#000000 → Technical/Visible Deep (shape)` (оно действует на всех страницах DEV и Drafts); 12 «auto tint < Home Indicator iOS»
+  — стояли на оригинале до прогона.
+- Сплошных Radius у My Location нет (0).
+- Глазами: Map Selection «Taxi» `3118:50865` / копия `4411:12167` (снимки 0.4×) — совпадают. Остальное не смотрели.
+- Без пары в копии (13) прошли правилами: 3 Taxi, 3 «Аннотации», 5 List Item, 2 Divider.
+- Скрипт переноса: опция `SKIPVARS` добавлена в `scripts/transfer-to-original.js` (на прогоне подставлялась в тело на лету).
+
+## Покрытие (measure-page.js, только чтение)
+
+Where 91,9 % (3 618 / 3 935; заливки 2 528/139, обводки 37/46, шрифты 805/17, эффекты 248/115).
+DEV, 9 страниц: **88,2 %** (18 668 / 21 165), было 87,3 % по 8 страницам 26.11.
+
+## Конец серии DEV
+
+С root DEV сняты `mig` (runner, body, hash, meas) и `mig2` (body); со страниц Taxi for friends, GEO, Permissions, Service,
+Navigation, Taxi Start, test сняты оставшиеся `mig` plan/agg (от контрольных прогонов 26.11). Служебных ключей в DEV нет.
+Копии «— Switched Styles» не удалены (только по «да» arturuxui).

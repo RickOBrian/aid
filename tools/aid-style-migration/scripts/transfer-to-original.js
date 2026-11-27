@@ -190,7 +190,9 @@ async function doPair(o, c, inM) {
     if (!(ov && ov.id) && typeof rv === 'number' && typeof o[f] === 'number' && Math.abs(rv - o[f]) > 0.5) { bump(drift, o.id + ' ' + k + ' (в оригинале ' + r(o[f]) + ')'); continue; }
     todo.push(['bv', k, async () => { const v = await figma.variables.getVariableByIdAsync(cv.id); o.setBoundVariable(f, v); }]);
   }
-  const real = todo.filter(t => t[1]);
+  // SKIPVARS (необязательно, const SKIPVARS = ['Technical/Visible Deep']): не переносить привязки к этим переменным
+  // (arturuxui 27.11, DEV Where — токен дизайнера на статус-баре и home indicator); счёт — в noTok «исключено»
+  const real = todo.filter(t => { if (t[1] && typeof SKIPVARS !== 'undefined' && SKIPVARS.some(v => t[1].includes('{' + v + '}'))) { bump(noTok, 'исключено: ' + t[1]); return false; } return t[1]; });
   if (!real.length) return;
   for (const t of real) bump(agg, t[1]);
   if (DRY || !allow) return;

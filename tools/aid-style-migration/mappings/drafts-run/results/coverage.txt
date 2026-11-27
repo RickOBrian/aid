@@ -24,3 +24,4 @@ M	✅ Taxi for friends	2314:16494	nodes=2556	hidden=203	fill=968/132/45	stroke=1
 M	✅ Service coverage	2251:13938	nodes=5338	hidden=269	fill=2049/59/340	stroke=40/8/0	font=663/0/54	effect=202/46/83
 M	🔹 Components	3577:55382	nodes=4740	hidden=548	fill=1637/353/160	stroke=25/86/1	font=586/169/23	effect=118/89/93
 M	✅ Navigation 🧭	2001:68545	nodes=9513	hidden=612	fill=3688/550/296	stroke=70/32/6	font=1295/58/100	effect=442/146/139
+M	✅ Where 🗺️	2247:16932	nodes=6521	hidden=689	fill=2528/139/263	stroke=37/46/0	font=805/17/63	effect=248/115/138

@@ -63,8 +63,9 @@
 | ✅ Service coverage | 97 % | 83 % | 100 % | 81 % | **96 %** | 2 954 | 113 | 477 |
 | 🔹 Components | 82 % | 23 % | 78 % | 57 % | **77 %** | 2 366 | 697 | 277 |
 | ✅ Navigation 🧭 | 87 % | 69 % | 96 % | 75 % | **87 %** | 5 495 | 786 | 541 |
-| **Итого, в работе** | 88 % | 54 % | 93 % | 73 % | **87 %** | 15 050 | 2 180 | 1 667 |
-| Итого, все 17 | 86 % | 52 % | 91 % | 62 % | **84 %** | 163 303 | 31 420 | 13 405 |
+| ✅ Where 🗺️ | 95 % | 45 % | 98 % | 68 % | **92 %** | 3 618 | 317 | 464 |
+| **Итого, в работе** | 90 % | 52 % | 94 % | 72 % | **88 %** | 18 668 | 2 497 | 2 131 |
+| Итого, все 17 | 86 % | 52 % | 91 % | 63 % | **84 %** | 166 921 | 31 737 | 13 869 |
 | Pre-final for Style Switch · не из 17 | 90 % | 71 % | 98 % | 72 % | **90 %** | 18 896 | 2 153 | 549 |
 
 ### Не покрыто: кто закрыл
@@ -74,11 +75,11 @@
 
 | | значений | доля от «всё» |
 |---|---:|---:|
-| покрыто | 163 303 | 84 % |
-| закрыто решением дизайнера | 26 396 | 14 % |
+| покрыто | 166 921 | 84 % |
+| закрыто решением дизайнера | 26 396 | 13 % |
 | закрыто решением arturuxui | 2 844 | 1 % |
-| **открыто** (страницы в работе) | **2 180** | **1 %** |
-| итого | 194 723 | 100 % |
+| **открыто** (страницы в работе) | **2 497** | **1 %** |
+| итого | 198 658 | 100 % |
 
 Покрыто или закрыто решением: **99 %**.
 
@@ -98,6 +99,7 @@
 | ✅ Taxi for friends | в работе | `2314:16494` | 929 | 444 | 2026-11-26 |
 | Taxi Start Page | в работе | `2007:5985` | 252 | 44 | 2026-11-26 |
 | test | в работе | `2319:13949` | 956 | 240 | 2026-11-26 |
+| ✅ Where 🗺️ | в работе | `2247:16932` | 2 749 | 735 | 2026-11-27 |
 | Errors — Switched Styles | пропущена | `5374:358551` | 195 | 1 564 | 2026-11-12 |
 | ✅ GEO Problems — Switched Styles | пропущена | `5374:885750` | 154 | 356 | 2026-11-12 |
 | ✅ Illustrations Request 💅🏻 — Switched Styles | пропущена | `5374:721192` | 1 123 | 3 159 | 2026-11-12 |
@@ -116,93 +118,96 @@
 | test — Switched Styles | пропущена | `5374:1030847` | 617 | 1 018 | 2026-11-12 |
 | ✅ Where 🗺️ - Migration — Switched Styles | пропущена | `5374:623349` | 2 839 | 6 517 | 2026-11-12 |
 | ✅ Where 🗺️ — Switched Styles | пропущена | `5374:421690` | 2 958 | 6 827 | 2026-11-12 |
-| **Итого, в работе** | | | **25 770** | **9 863** | |
-| Итого, 17 копий | | | 60 409 | 63 675 | |
+| **Итого, в работе** | | | **28 519** | **10 598** | |
+| Итого, 17 копий | | | 63 158 | 64 410 | |
 | — из них не заменено, закрыто решением дизайнера | | | | 50 620 | |
 | — из них не заменено, закрыто решением arturuxui | | | | 8 388 | |
-| — из них не заменено, открыто | | | | 4 667 | |
+| — из них не заменено, открыто | | | | 5 402 | |
 
 ## Незаменённое по страницам в работе
 
 | причина | кол-во | страниц | где | ID |
 |---|---:|---:|---|---|
-| сырой #c4c4c4 [shape] | 855 | 11 | dev-components, dev-geo-original, dev-geo-problems … | I2247:21268;1248:7516 I2247:21268;1248:7522 I2247:21268;1248:7525 |
-| сырой #000000 [shape] | 478 | 11 | dev-components, dev-geo-original, dev-geo-problems … | I2247:21061;991:56 2247:21065 I2247:21074;991:56 |
-| сырой эффект: layer_blur | 453 | 11 | dev-components, dev-geo-original, dev-geo-problems … | 2247:21050 2247:21064 2247:21080 |
-| [Background [day]/Secondary] [shape/shape] — нет правила | 259 | 11 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9916;1242:357 I3196:9917;1244:7534 I3196:9917;1244:7535;589:16 |
-| сырой #ffffff [shape] | 229 | 7 | dev-components, dev-geo-problems, dev-navigation … | 2247:21109 3233:26881 3233:26887 |
-| сырой эффект: background_blur | 216 | 10 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7439 I3196:9892;1228:7441 I3196:9892;1228:7463 |
-| сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow | 196 | 11 | dev-components, dev-geo-original, dev-geo-problems … | 2247:21051 2247:21065 2247:21081 |
-| градиент [shape] | 180 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3077:17932 I3196:11728;115:19 5262:26105 |
+| сырой #c4c4c4 [shape] | 1 062 | 12 | dev-components, dev-geo-original, dev-geo-problems … | I2247:21268;1248:7516 I2247:21268;1248:7522 I2247:21268;1248:7525 |
+| сырой #000000 [shape] | 524 | 12 | dev-components, dev-geo-original, dev-geo-problems … | I2247:21061;991:56 2247:21065 I2247:21074;991:56 |
+| сырой эффект: layer_blur | 517 | 12 | dev-components, dev-geo-original, dev-geo-problems … | 2247:21050 2247:21064 2247:21080 |
+| сырой эффект: background_blur | 288 | 11 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7439 I3196:9892;1228:7441 I3196:9892;1228:7463 |
+| [Background [day]/Secondary] [shape/shape] — нет правила | 271 | 12 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9916;1242:357 I3196:9917;1244:7534 I3196:9917;1244:7535;589:16 |
+| сырой #ffffff [shape] | 245 | 8 | dev-components, dev-geo-problems, dev-navigation … | 2247:21109 3233:26881 3233:26887 |
+| сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow | 235 | 12 | dev-components, dev-geo-original, dev-geo-problems … | 2247:21051 2247:21065 2247:21081 |
+| градиент [shape] | 193 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3077:17932 I3196:11728;115:19 5262:26105 |
 | сырой #242428 [text] | 132 | 5 | dev-components, dev-navigation, dev-taxi-original … | 2038:6608 2038:6618 2038:6622 |
+| сырой #ffffff [stroke] | 113 | 11 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7446 I3196:9927;1264:101 3233:26878 |
 | сырой #ffffff [text] | 110 | 7 | dev-components, dev-geo-original, dev-navigation … | I3593:27654;1465:154027 2038:6747 2038:6751 |
 | сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15 | 104 | 5 | dev-permissions-original, dev-service-coverage, dev-service-original … | 2314:23955 2314:23956 2314:23957 |
-| сырой #ff0000 [shape] | 102 | 4 | dev-geo-problems, dev-navigation, dev-permissions-original … | 4572:15338 4572:15339 4572:15343 |
+| сырой #ff0000 [shape] | 103 | 5 | dev-geo-problems, dev-navigation, dev-permissions-original … | 4572:15338 4572:15339 4572:15343 |
 | остальные причины (≤2 значений, 48+ видов) — в выводе прогона не перечислены | 94 | 1 | dev-taxi-original |  |
-| {Color:tx-accent/grey/primary} «Shadow» — пробел | 91 | 8 | dev-components, dev-navigation, dev-permissions-original … | 2247:21050 2247:21080 2247:21093 |
-| сырой #ffffff [stroke] | 87 | 10 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7446 I3196:9927;1264:101 3233:26878 |
-| [Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL | 69 | 9 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7452 I3196:9927;1264:107 I3196:11227;1228:7452 |
-| сырой #8626ff [shape] | 67 | 9 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7445 I3196:9927;1264:100 3233:26886 |
-| градиент [frame] | 67 | 8 | dev-components, dev-geo-original, dev-geo-problems … | I3196:11728;115:20 3854:3849 3854:3849 |
-| сырой #ffffff@0.05 [shape] | 66 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9898 3196:9899 3196:11233 |
-| сырой #000000@0.08 [stroke] | 66 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9898 3196:9899 3196:11233 |
-| градиент [stroke] | 61 | 4 | dev-components, dev-permissions-original, dev-taxi-original … | 3854:3852 3854:3861 3854:3870 |
+| {Color:tx-accent/grey/primary} «Shadow» — пробел | 93 | 9 | dev-components, dev-navigation, dev-permissions-original … | 2247:21050 2247:21080 2247:21093 |
+| сырой #8626ff [shape] | 93 | 10 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7445 I3196:9927;1264:100 3233:26886 |
+| [Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL | 93 | 10 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9892;1228:7452 I3196:9927;1264:107 I3196:11227;1228:7452 |
+| сырой #ffffff@0.05 [shape] | 90 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9898 3196:9899 3196:11233 |
+| сырой #000000@0.08 [stroke] | 90 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9898 3196:9899 3196:11233 |
+| градиент [frame] | 78 | 9 | dev-components, dev-geo-original, dev-geo-problems … | I3196:11728;115:20 3854:3849 3854:3849 |
+| TEXT смешанные заливки — оставлено | 68 | 7 | dev-geo-original, dev-geo-problems, dev-service-coverage … | I5243:28287;1093:24504;1093:24530 I5243:28297;1093:24504;1093:24530 I5243:28307;1093:24504;1093:24530 |
+| градиент [stroke] | 62 | 5 | dev-components, dev-permissions-original, dev-taxi-original … | 3854:3852 3854:3861 3854:3870 |
 | сырой #ffffff@0.90 [shape] | 59 | 6 | dev-components, dev-navigation, dev-permissions-original … | I3196:9892;1228:7440 I3196:9892;1228:7482 I3196:9892;1228:7464 |
 | сырой #d9d9d9 [shape] | 56 | 4 | dev-components, dev-service-coverage, dev-service-original … | 5262:26213 5262:41895 5262:41916 |
+| шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED | 55 | 6 | dev-components, dev-navigation, dev-taxi-start … | 2288:22154 2038:6687 2288:22182 |
 | сырой #1d364f [shape] | 54 | 3 | dev-geo-problems, dev-navigation, dev-taxi-original | 4572:15316 4572:15317 4572:15318 |
 | сырой #ffb800 [shape] | 54 | 3 | dev-geo-problems, dev-navigation, dev-taxi-original | 4572:15316 4572:15317 4572:15318 |
-| шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED | 52 | 5 | dev-components, dev-navigation, dev-taxi-start … | 2288:22154 2038:6687 2288:22182 |
-| TEXT смешанные заливки — оставлено | 52 | 6 | dev-geo-original, dev-geo-problems, dev-service-coverage … | I5243:28287;1093:24504;1093:24530 I5243:28297;1093:24504;1093:24530 I5243:28307;1093:24504;1093:24530 |
-| [Gradients/Fade Horizontal] [shape] — нет в маппинге | 48 | 3 | dev-components, dev-navigation, dev-test | 3077:17400 3077:17406 3077:17921 |
+| [Gradients/Fade Horizontal] [shape] — нет в маппинге | 50 | 4 | dev-components, dev-navigation, dev-test … | 3077:17400 3077:17406 3077:17921 |
+| сырой #ffffff@0.10 [shape] | 45 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9900 3196:11235 2247:31354 |
+| сырой #000000@0.03 [stroke] | 45 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9900 3196:11235 2247:31354 |
 | шрифт без стиля: Google Sans Regular 17/20 | 45 | 5 | dev-navigation, dev-taxi-original, dev-taxi-start … | 2038:7622 2038:7677 2038:7881 |
+| сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur | 44 | 10 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9927;1264:96 I3196:11262;1264:96 I2247:31381;1264:96 |
 | [pure black] [text] — нет в маппинге | 40 | 1 | dev-components | I3854:4040;400:18443;40006303:62353 I3854:4040;400:18443;40006303:62355 I3854:4040;400:18443;40006303:62377 |
 | [Bodies/Body Large] — нет в маппинге | 38 | 3 | dev-components, dev-geo-original, dev-navigation | 3854:3832 3854:3833 3854:3835 |
-| сырой #ffffff@0.10 [shape] | 33 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9900 3196:11235 2247:31354 |
-| сырой #000000@0.03 [stroke] | 33 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9900 3196:11235 2247:31354 |
-| сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur | 32 | 9 | dev-components, dev-geo-original, dev-geo-problems … | I3196:9927;1264:96 I3196:11262;1264:96 I2247:31381;1264:96 |
+| сырой #ffffff@0.10 [stroke] | 32 | 10 | dev-components, dev-geo-original, dev-geo-problems … | 3076:21866 3854:3827 5262:159647 |
 | сырой #979797 [shape] | 32 | 2 | dev-taxi-original, primerka-switched | 2314:18658 2314:18743 2314:18744 |
 | шрифт без стиля: SF Pro Display Bold 34/40 | 31 | 1 | dev-components | 3076:21864 3076:21865 3076:21863 |
 | {Color:tx-control/neutral/bg/idle} [shape/shape] — нет правила | 30 | 1 | dev-components | I3854:4040;400:18439;400:16501;353:1275 I3854:4040;400:18440;400:16501;353:1275 I3854:4040;400:18441;400:16501;353:1275 |
-| сырой #8626ff@0.12 [shape] | 29 | 6 | dev-components, dev-geo-original, dev-geo-problems … | I3196:11728;115:15 I2247:31504;1074:135478 I4572:14883;1074:135478 |
+| шрифт без стиля: SF Pro Text Regular 12/16 | 30 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9905 3196:11240 2247:31359 |
+| сырой #8626ff@0.12 [shape] | 30 | 7 | dev-components, dev-geo-original, dev-geo-problems … | I3196:11728;115:15 I2247:31504;1074:135478 I4572:14883;1074:135478 |
 | шрифт без стиля: SF Pro Text Regular 17/24 | 28 | 3 | dev-geo-problems, dev-navigation, dev-taxi-original | I4572:15289;1187:96 I4572:15290;1187:30 I4572:15291;1187:96 |
 | сырой #ffffff@0.25 [shape] | 28 | 4 | dev-geo-problems, dev-navigation, dev-taxi-original … | 4572:15333 4572:15334 4572:15335 |
 | сырой #7b2df5 [shape] | 28 | 1 | primerka-switched | I7151:57372;1228:7445 |
-| сырой #ffffff@0.10 [stroke] | 27 | 9 | dev-components, dev-geo-original, dev-geo-problems … | 3076:21866 3854:3827 5262:159647 |
+| сырой #000000@0.12 [shape] | 27 | 4 | dev-navigation, dev-test, dev-where-original … | 2038:7587 2038:7986 2038:8023 |
 | шрифт без стиля: SF Pro Text Semibold 14/110.00000238418579 | 25 | 1 | dev-components | 3854:3962 3854:3963 3854:3965 |
 | сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff | 25 | 3 | dev-service-coverage, dev-service-original, primerka-switched | 4581:28632 4581:28637 I4581:28777;2263:18395 |
-| сырой #000000@0.12 [shape] | 21 | 3 | dev-navigation, dev-test, primerka-switched | 2038:7587 2038:7986 2038:8023 |
+| сырой эффект: drop 0,1 r2 s0 #000000@0.20 | 23 | 3 | dev-components, dev-where-original, primerka-switched | 3233:26884 3233:26888 3233:26892 |
 | сырой #ea3323 [shape] | 21 | 1 | primerka-switched | I7151:54629;349:4028;244:1424 |
 | {Color:tx-control/purple/bg/idle} [shape/shape] — нет правила | 20 | 1 | dev-components | I3854:4040;400:18430;40006303:59184 I3854:4040;400:18430;40006303:59186 I3854:4043;400:18430;40006303:59184 |
 | сырой #f5f5f5 [shape] | 20 | 2 | dev-navigation, dev-test | I2038:7990;1037:164 I2038:7990;1037:169 I2038:7992;3051:20208 |
 | сырой #232326 [shape] | 20 | 3 | dev-permissions-original, dev-taxi-original, primerka-switched | I2314:23961;619:1373 I2314:23961;619:1374 I2314:23961;619:1378 |
 | шрифт без стиля: SF Pro Medium 16/16 | 20 | 2 | dev-taxi-original, primerka-switched | 2314:18676 2314:18677 2314:18680 |
 | шрифт без стиля: Google Sans Medium 14/20 SMALL_CAPS_FORCED | 18 | 1 | dev-components | I3310:14305;45:733 I3310:14308;45:733 I3310:14310;45:733 |
-| шрифт без стиля: SF Pro Text Regular 12/16 | 18 | 8 | dev-components, dev-geo-original, dev-geo-problems … | 3196:9905 3196:11240 2247:31359 |
+| [Gradients/Shimmer] [frame] — нет в маппинге | 18 | 5 | dev-components, dev-geo-original, dev-navigation … | 2038:6783 2038:6785 I2038:7749;2038:6629;2038:6783 |
 | сырой #ffffff@0.30 [shape] | 18 | 3 | dev-geo-problems, dev-navigation, dev-taxi-original | 4572:15346 4572:15347 4572:15372 |
+| шрифт без стиля: Inter Regular 14/20 | 18 | 3 | dev-geo-problems, dev-where-original, primerka-switched | 4798:36675 4798:36678 4797:16446 |
 | сырой #e7f5e9 [frame] | 17 | 1 | dev-components | 3310:14305 3310:14308 3310:14310 |
 | сырой #2f7d31 [text] | 17 | 1 | dev-components | I3310:14305;45:733 I3310:14308;45:733 I3310:14310;45:733 |
 | {theme:promo/primary/bg/neutralPrimary} [shape] — нет в маппинге | 17 | 1 | dev-components | 5262:41897 5262:41918 5262:41939 |
-| сырой эффект: drop 0,1 r2 s0 #000000@0.20 | 17 | 2 | dev-components, primerka-switched | 3233:26884 3233:26888 3233:26892 |
 | {Color:tx-notifications/bg-success} [frame] — нет в маппинге | 16 | 1 | dev-components | 3854:3852 3854:3861 3854:3986 |
 | сырой эффект: drop 3,4 r10 s0 #351516@0.08 + glass | 16 | 2 | dev-components, dev-service-coverage | 3854:3897 3854:3933 3854:3951 |
 | {System Colors:Labels/Primary} [text] — нет в маппинге | 16 | 3 | dev-permissions-original, dev-taxi-original, primerka-switched | I2314:24154;2189:194705 I2314:24154;2189:194706 I2314:24413;2189:195900 |
-| [Gradients/Shimmer] [frame] — нет в маппинге | 15 | 4 | dev-components, dev-geo-original, dev-navigation … | 2038:6783 2038:6785 I2038:7749;2038:6629;2038:6783 |
-| шрифт без стиля: Inter Regular 14/20 | 15 | 2 | dev-geo-problems, primerka-switched | 4798:36675 4798:36678 7151:57052 |
 | шрифт без стиля: Inter Regular 11/auto | 15 | 2 | dev-geo-problems, primerka-switched | 4798:36676 4798:36679 7151:57053 |
 | [Day / White] [text/text] — нет правила | 15 | 2 | dev-navigation, dev-permissions-original | I2038:6368;1991:8564;1746:8329 I2038:6369;2007:8683;1746:8327 I2038:6370;1991:8556;1746:8327 |
 | {Color:tx-bg/level −1 muted} [shape/shape] — нет правила | 15 | 2 | dev-navigation, dev-test | I2038:7592;2038:8697;578:320 I2038:7745;578:320 I2038:7993;2038:8697;578:320 |
 | сырой эффект: drop 3,4 r10 s0 #1c361b@0.08 + glass | 14 | 1 | dev-components | 3854:3852 3854:3986 3854:4025 |
+| шрифт без стиля: SF Pro Text Medium 12/auto | 14 | 3 | dev-components, dev-where-original, primerka-switched | 3233:26882 3233:26898 3233:26495 |
+| шрифт без стиля: SF Pro Text Semibold 16/16 | 14 | 3 | dev-components, dev-where-original, primerka-switched | 3233:26883 3233:26899 3233:26496 |
 | сырой эффект: drop 0,0 r20 s0 #9925fe@0.32 + drop 0,0 r4 s0 #9925fe@0.50 | 14 | 3 | dev-components, dev-navigation, dev-test | 2038:6604 5262:26070 5262:26096 |
+| [Titles/Large Title] — нет в маппинге | 14 | 3 | dev-components, dev-navigation, dev-where-original | 3077:13390 2038:8615 2038:8903 |
+| сырой #444444 [frame] | 14 | 5 | dev-components, dev-geo-original, dev-geo-problems … | 3076:21866 2247:31178 4572:14631 |
 | {Color:tx-brand/green/green} [shape] — нет в маппинге | 13 | 2 | dev-components, dev-test | I3077:13173;40006534:14641;40006534:7699 I3854:4040;40000389:28998;40000385:8868;40006534:14641;40006534:7699 I3854:4043;40000389:28998;40000385:8868;40006534:14641;40006534:7699 |
-| [Titles/Large Title] — нет в маппинге | 13 | 2 | dev-components, dev-navigation | 3077:13390 2038:8615 2038:8903 |
+| {Safe zones:safe-top}=62 paddingTop — нет цели | 13 | 2 | dev-components, dev-where-original | 3854:4041 3854:4044 3854:4047 |
 | {System Colors:Colors/Blue} [text] — нет в маппинге | 13 | 3 | dev-permissions-original, dev-taxi-original, primerka-switched | I2314:24154;2189:194713 I2314:24154;2189:194711 I2314:24413;2189:195906 |
-| {Safe zones:safe-top}=62 paddingTop — нет цели | 12 | 1 | dev-components | 3854:4041 3854:4044 3854:4047 |
 | шрифт без стиля: WB Sans Medium 24/100 | 12 | 2 | dev-components, dev-test | I3077:13173;40006534:7701 I3854:4040;40000389:28998;40000385:8868;40006534:7701 I3854:4043;40000389:28998;40000385:8868;40006534:7701 |
+| эффект [.blur tiny] — нет в маппинге | 12 | 4 | dev-geo-problems, dev-permissions-original, dev-where-original … | I4588:143492;349:4084;244:1423 2314:23515 2314:23869 |
 | шрифт без стиля: SF Pro Regular 14/16 | 12 | 2 | dev-taxi-original, primerka-switched | 2314:18637 2314:18641 2314:18687 |
 | сырой #fefae5 [frame] | 12 | 1 | primerka-switched | 7151:57051 |
 | {Color:tx-notifications/bg-error} [frame] — нет в маппинге | 11 | 1 | dev-components | 3854:3888 3854:3879 3854:3989 |
 | {System:Magin Top}=54 paddingTop — нет цели | 11 | 2 | dev-components, dev-test | 3854:4040 3854:4043 3854:4046 |
-| эффект [.blur tiny] — нет в маппинге | 11 | 3 | dev-geo-problems, dev-permissions-original, primerka-switched | I4588:143492;349:4084;244:1423 2314:23515 2314:23869 |
 | [Gradients/Fade Horizontal] 7, [Gradients/Shimmer] 4 — уже библиотечные | 11 | 1 | dev-taxi-original |  |
 | сырой #7b2df5@0.12 [shape] | 11 | 1 | primerka-switched | I7151:57677;1074:135478 |
 | {Color:tx-brand/pink/idle} [shape] — нет в маппинге | 10 | 1 | dev-components | I3854:4040;400:18430;40006303:59187 I3854:4043;400:18430;40006303:59187 I3854:4046;400:18430;40006303:59187 |
@@ -216,8 +221,6 @@
 | шрифт без стиля: WB Sans Bold 30.510181427001953/108.2064151763916 | 10 | 1 | dev-components | I3854:4040;400:18443;40006303:62360 I3854:4043;400:18443;40006303:62360 I3854:4046;400:18443;40006303:62360 |
 | шрифт без стиля: WB Sans Bold 32/101.99999809265137 | 10 | 1 | dev-components | I3854:4040;400:18443;40006303:62377 I3854:4043;400:18443;40006303:62377 I3854:4046;400:18443;40006303:62377 |
 | шрифт без стиля: WB Sans Bold 16/101.99999809265137 | 10 | 1 | dev-components | I3854:4040;400:18443;40006303:62381 I3854:4043;400:18443;40006303:62381 I3854:4046;400:18443;40006303:62381 |
-| шрифт без стиля: SF Pro Text Medium 12/auto | 10 | 2 | dev-components, primerka-switched | 3233:26882 3233:26898 3233:26495 |
-| шрифт без стиля: SF Pro Text Semibold 16/16 | 10 | 2 | dev-components, primerka-switched | 3233:26883 3233:26899 3233:26496 |
 | сырой #d62247 [shape] | 10 | 2 | dev-geo-problems, dev-navigation | 4572:15359 4572:15360 4572:15506 |
 | [Day / Gray 20] [shape] — нет в маппинге | 10 | 2 | dev-navigation, dev-test | I2038:7070;3:197;1937:2778 I2038:7071;3:197;1937:2778 I2038:7311;3:197;1937:2778 |
 | эффект [/Input shadow] — нет в маппинге | 10 | 2 | dev-navigation, dev-test | I2038:7086;11:1235 I2038:7086;11:1852 I2038:7327;11:1235 |
@@ -226,7 +229,6 @@
 | сырой #cacacc [shape] | 10 | 3 | dev-permissions-original, dev-taxi-original, primerka-switched | I2314:23961;619:1369 I2314:23961;619:1372 I2314:18096;619:1369 |
 | {System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге | 10 | 3 | dev-permissions-original, dev-taxi-original, primerka-switched | I2314:24154;2189:194712 I2314:24154;2189:194710 I2314:17572;2189:194712 |
 | сырой #9746ff [stroke] | 9 | 1 | dev-components | 2247:21039 2038:6781 2038:6667 |
-| сырой #444444 [frame] | 9 | 4 | dev-components, dev-geo-original, dev-geo-problems … | 3076:21866 2247:31178 4572:14631 |
 | сырой #000000 [frame] | 9 | 4 | dev-permissions-original, dev-service-coverage, dev-service-original … | 2314:23322 4581:28558 4581:28764 |
 | сырой #23354d [shape] | 9 | 1 | primerka-switched | 7151:56347 |
 | сырой #f4bb40 [shape] | 9 | 1 | primerka-switched | 7151:56347 |
@@ -249,6 +251,8 @@
 | сырой #3a3a3a [frame] | 6 | 2 | dev-navigation, dev-test | 2038:6034 2038:6786 2038:9169 |
 | {Color:tx-bg/map} [frame] — нет в маппинге | 6 | 2 | dev-navigation, dev-test | I2038:8705;2038:6612 I2038:8902;2038:8705;2038:6612 I2038:9236;2038:8705;2038:6612 |
 | сырой эффект: inner_shadow | 6 | 2 | dev-service-coverage, dev-service-original | I4581:28703;1067:131368 I4581:28717;1074:135196 I4581:28735;1067:131384 |
+| сырой #4e4e60 [stroke] | 5 | 2 | dev-components, dev-where-original | 3233:26879 3233:26492 3233:26619 |
+| сырой #fffae3 [frame] | 5 | 2 | dev-geo-problems, dev-where-original | 4798:36674 4798:36677 4797:16445 |
 | шрифт без стиля: Google Sans Bold 24/29 | 5 | 1 | dev-navigation | 2038:6107 2038:6589 2038:6591 |
 | [Button day/Secondary] [shape] — нет в маппинге | 5 | 2 | dev-navigation, dev-test | I2038:7072;912:2;899:200 I2038:7313;912:2;899:200 I2038:7567;912:2;899:200 |
 | [Day / Gray 14] [stroke] — нет в маппинге | 5 | 2 | dev-navigation, dev-test | I2038:7086;11:1235 I2038:7327;11:1235 I2038:7581;11:1235 |
@@ -271,7 +275,6 @@
 | сырой #5abd5f [shape] | 4 | 1 | primerka-switched |  |
 | сырой #000000 [text] | 4 | 1 | primerka-switched | 7151:57053 |
 | сырой #ffffff@0.50 [text] | 3 | 1 | dev-components | I3593:27654;1465:154021 I3593:27654;1465:154023;2341:15816 I3593:27654;1465:154028 |
-| сырой #4e4e60 [stroke] | 3 | 1 | dev-components | 3233:26879 3233:26492 3233:26619 |
 | шрифт без стиля: SF Pro Text Regular 14/110.00000238418579 | 3 | 1 | dev-components | 3854:4001 3854:4004 3854:4007 |
 | сырой #ffff00 [text] | 3 | 1 | dev-components | 3854:4055 3854:4080 3854:4093 |
 | сырой #d3d3d9 [stroke] | 3 | 1 | dev-components | 5262:26031 I5262:159653;5262:26028 I5262:159653;5262:26031 |
@@ -279,6 +282,9 @@
 | {Theme:switch/circle/on/default} [frame] — нет в маппинге | 3 | 1 | dev-components | 5262:187129 5262:187135 5262:187141 |
 | шрифт без стиля: SF Pro Semibold 16/16 | 3 | 1 | dev-taxi-original | 2314:18638 2314:18642 2314:18804 |
 | [Green] [shape] — нет в маппинге | 3 | 1 | dev-taxi-original | I2314:18689;1945:3103 I2314:18689;1945:3105 I2314:18689;1945:3107 |
+| сырой #262115 [text] | 3 | 1 | dev-where-original | 4797:16446 4797:16449 4797:16452 |
+| сырой #664d1a [text] | 3 | 1 | dev-where-original | 4797:16447 4797:16450 4797:16453 |
+| шрифт без стиля: Inter Regular 11/16 | 3 | 1 | dev-where-original | 4797:16447 4797:16450 4797:16453 |
 | {Color:tx-control/red/bg/pressed} [frame] — нет в маппинге | 2 | 1 | dev-components | 3076:21842 3076:21852 |
 | сырой #e62818 [shape] | 2 | 1 | dev-components | 3077:13368 3359:14403 |
 | сырой #f8faff@0.87 [text] | 2 | 1 | dev-components | I3593:27654;1465:154020 I3593:27654;1465:154023;2341:15815 |
@@ -306,7 +312,6 @@
 | сырой #ff0c3e [shape] | 2 | 1 | dev-geo-problems | 4572:15358 4572:15505 |
 | сырой #000000@0.10 [shape] | 2 | 1 | dev-geo-problems | 4572:15361 4572:15508 |
 | сырой #000000@0.44 [shape] | 2 | 1 | dev-geo-problems | 4572:15362 4572:15509 |
-| сырой #fffae3 [frame] | 2 | 1 | dev-geo-problems | 4798:36674 4798:36677 |
 | [Blue] [shape] — нет в маппинге | 2 | 1 | dev-permissions-original | I2314:23992;1609:1657 I2314:24066;448:19 |
 | #000000 → Route/Primary [stroke] — не w4 (w2) | 2 | 1 | dev-permissions-original | I2314:24063;1932:113 I2314:24063;1932:114 |
 | сырой #b3b3b3@0.82 [frame] | 2 | 1 | dev-permissions-original | I2314:24154;2189:194703;510:79117 I2314:24413;2189:195898;510:79117 |
@@ -316,6 +321,8 @@
 | [Footnote/Regular] — нет в маппинге | 2 | 1 | dev-permissions-original | I2314:24154;2189:194706 I2314:24413;2189:195901 |
 | {System Colors:Separators/Non-opaque} [stroke] — нет в маппинге | 2 | 1 | dev-permissions-original | I2314:24413;2189:195907 I2314:24413;2189:195944 |
 | сырой #ededff@0.70 [shape] | 2 | 1 | dev-service-original | 2262:9697 2262:9759 |
+| сырой эффект: drop 3,4 r10 s0 #311717@0.08 + glass | 2 | 2 | dev-service-original, dev-where-original | I3837:47129;15:3905 I4408:31140;3854:4085 |
+| сырой эффект: background_blur + inner_shadow | 2 | 1 | dev-where-original | 3605:76950 3605:76951 |
 | сырой #8a38f5 [stroke] | 1 | 1 | dev-components | 2247:21294 |
 | сырой #e53828 [shape] | 1 | 1 | dev-components | 3077:13369 |
 | сырой #3d4340 [frame] | 1 | 1 | dev-components | I3593:27654;1465:154018 |
@@ -357,8 +364,8 @@
 | [Buttons day/Pressed] [stroke] — нет в маппинге | 1 | 1 | dev-permissions-original | 2314:24011 |
 | сырой эффект: drop 0,2 r8 s0 #000517@0.10 | 1 | 1 | dev-permissions-original | 2314:24011 |
 | [Body/Emphasized] — нет в маппинге | 1 | 1 | dev-permissions-original | I2314:24154;2189:194711 |
-| сырой эффект: drop 3,4 r10 s0 #311717@0.08 + glass | 1 | 1 | dev-service-original | I3837:47129;15:3905 |
 | {Color:tx-accent/orange/tint} [frame] — нет в маппинге | 1 | 1 | dev-test | I2319:14017;2038:8707;2038:6612 |
 | {Color:tx-control/orange/bg/hover} [text] — нет в маппинге | 1 | 1 | dev-test | I2319:14017;2038:8707;2038:6612;2038:6598 |
 | {Color:tx-control/orange/bg/hover} [shape] — нет в маппинге | 1 | 1 | dev-test | I2319:14017;2038:8707;2038:6612;2038:6599;1448:345 |
 | {Color:tx-bg/level 1 base} [stroke] — нет правила | 1 | 1 | dev-test | I3032:24564;40006214:22340;40001478:11677;3032:24532;40003372:84930 |
+| сырой #47ea4c [shape] | 1 | 1 | dev-where-original | I3775:30674;349:4030;250:14;3775:30734;238:8;3867:1026 |
