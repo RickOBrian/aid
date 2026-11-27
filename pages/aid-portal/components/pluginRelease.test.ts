@@ -11,7 +11,7 @@ describe('PLUGIN_RELEASE', () => {
   it('совпадает со ссылкой кнопки в tools-registry.json — иначе версия будет от другого файла', () => {
     const plugin = toolsRegistry.plugins.find((item) => item.pluginId === 'token-comparator');
     expect(plugin).toBeDefined();
-    expect(parseLatestDownloadUrl(plugin!.downloadUrl)).toEqual(PLUGIN_RELEASE);
+    expect(parseLatestDownloadUrl(plugin?.downloadUrl ?? '')).toEqual(PLUGIN_RELEASE);
   });
 });
 
