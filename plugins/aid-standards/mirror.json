@@ -116,6 +116,10 @@
     {
       "path": "skills/guide-lint",
       "source": "skills/guide-lint"
+    },
+    {
+      "path": "skills/persefona-figma-lint",
+      "source": "skills/persefona-figma-lint"
     }
   ]
 }
