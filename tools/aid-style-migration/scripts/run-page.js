@@ -1,19 +1,23 @@
 // Прогон страницы-копии порциями внутри Figma: один короткий вызов идёт по единицам, пока есть время,
 // состояние хранит в shared pluginData страницы, следующий такой же вызов продолжает с места остановки.
 // Заливается на figma.root вместе с телом migrate-styles.js (scripts/build-kit.mjs), вызов — mappings/drafts-run/RUNBOOK.md.
-// Параметры вызова: PAGE_ID, DRY, HASH; необязательно CLEAN = true (снять ключи страницы), TOP (сколько причин отдать).
+// Параметры вызова: PAGE_ID, DRY, HASH; необязательно CLEAN = true (снять ключи страницы), TOP (сколько причин отдать),
+// NODISPUTE = true (спорные п.1–3 не применять, Pre-final 18.11); SKIP = ['<id>', …] — узлы с поддеревом не трогать
+// (исключения дизайнера, «Макеты для примерки» 18.11); SKIP запоминается в плане, в следующих вызовах можно не передавать.
 const NS = 'mig', BUDGET = 25000, LIMIT = 1000, SPLIT = 1500, MAXUNITS = 30, MAXIDS = 3;
 const top = typeof TOP === 'undefined' ? 60 : TOP;
+const nod = typeof NODISPUTE !== 'undefined' && !!NODISPUTE;
 const page = await figma.getNodeByIdAsync(PAGE_ID);
 const get = k => page.getSharedPluginData(NS, k), put = (k, v) => page.setSharedPluginData(NS, k, v);
 if (typeof CLEAN !== 'undefined' && CLEAN) { put('plan', ''); put('agg', ''); return { cleaned: page.getSharedPluginDataKeys(NS).filter(get).length === 0 }; }
 if (figma.root.getSharedPluginData(NS, 'hash') !== String(HASH)) return { error: 'на файле другая версия скрипта: залить заново (build-kit)' };
-await page.loadAsync();
+{ let p = page; while (p.type !== 'PAGE') p = p.parent; await p.loadAsync(); } // PAGE_ID может быть секцией
 let plan = JSON.parse(get('plan') || 'null');
-if (plan && plan.dry !== DRY) return { error: `на странице план с DRY=${plan.dry}: сначала CLEAN` };
+if (plan && (plan.dry !== DRY || !!plan.nod !== nod)) return { error: `на странице план с DRY=${plan.dry}, NODISPUTE=${!!plan.nod}: сначала CLEAN` };
 if (!plan) {
-  const units = [], shallow = [];
+  const units = [], shallow = [], skipIds = typeof SKIP === 'undefined' ? [] : SKIP;
   const add = n => {
+    if (n.name.startsWith('❌') || skipIds.includes(n.id)) return; // узел с «❌ » в имени — референс, не сканируем (arturuxui 10.11)
     const size = 'findAll' in n ? n.findAll().length + 1 : 1;
     if (size > SPLIT && 'children' in n && n.children.length) { shallow.push(n.id); n.children.forEach(add); } else units.push([n.id, size]);
   };
@@ -24,10 +28,10 @@ if (!plan) {
     b.ids.push(id); b.size += size;
   }
   if (shallow.length) batches.push({ ids: shallow, size: shallow.length, shallow: true });
-  plan = { dry: DRY, i: 0, batches: batches.map(x => ({ ids: x.ids, shallow: !!x.shallow })) };
+  plan = { dry: DRY, nod, skip: skipIds, i: 0, batches: batches.map(x => ({ ids: x.ids, shallow: !!x.shallow })) };
   put('plan', JSON.stringify(plan)); put('agg', '');
 }
-const agg = JSON.parse(get('agg') || '{"nodes":0,"done":{},"skip":{}}');
+const agg = JSON.parse(get('agg') || '{"nodes":0,"done":{},"skip":{},"samp":{}}');
 const saveAgg = () => {
   let s = JSON.stringify(agg);
   // у записи pluginData предел 100 КБ: при переполнении ID остаются только у частых причин
@@ -39,7 +43,7 @@ const body = figma.root.getSharedPluginData(NS, 'body');
 const t0 = Date.now();
 while (plan.i < plan.batches.length && Date.now() - t0 < BUDGET) {
   const b = plan.batches[plan.i];
-  const head = `const DRY=${DRY},SHOT=false,PAGE_ID=${JSON.stringify(PAGE_ID)},ROOTS=${JSON.stringify(b.ids)},MAXIDS=${MAXIDS},SHALLOW=${b.shallow};`;
+  const head = `const DRY=${DRY},SHOT=false,PAGE_ID=${JSON.stringify(PAGE_ID)},ROOTS=${JSON.stringify(b.ids)},MAXIDS=${MAXIDS},SHALLOW=${b.shallow},NODISPUTE=${nod},SKIP=${JSON.stringify(plan.skip || [])};`;
   let r;
   try { r = await new AF(head + body)(); } catch (e) { return { error: String(e.message || e).slice(0, 200), batch: plan.i, of: plan.batches.length }; }
   agg.nodes += r.nodes;
@@ -48,6 +52,8 @@ while (plan.i < plan.batches.length && Date.now() - t0 < BUDGET) {
     const e = agg.skip[s.reason] || (agg.skip[s.reason] = { count: 0, ids: [] });
     e.count += s.count; e.ids = e.ids.concat(s.ids).slice(0, MAXIDS);
   }
+  agg.samp = agg.samp || {};
+  for (const [k, a] of Object.entries(r.samples || {})) agg.samp[k] = (agg.samp[k] || []).concat(a).slice(0, 5); // примеры узлов (анкета А)
   plan.i++;
   saveAgg(); put('plan', JSON.stringify(plan));
 }
@@ -62,5 +68,6 @@ const rest = skips.slice(top).filter(([k]) => !errs.includes(k));
 const lines = [`#\tpage=${clean(page.name)}\tid=${page.id}\tdry=${DRY ? 1 : 0}\tnodes=${agg.nodes}\treplaced=${replaced}\tskipped=${skipped}\tdate=${new Date().toISOString().slice(0, 10)}`];
 for (const [k, v] of Object.entries(agg.done).sort((a, b) => b[1] - a[1])) lines.push(`D\t${v}\t${clean(k)}`);
 for (const [k, e] of skips) if (!rest.some(x => x[0] === k)) lines.push(`S\t${e.count}\t${clean(k)}\t${e.ids.join(' ')}`);
+for (const [k, a] of Object.entries(agg.samp || {})) lines.push(`X	${k}	${a.join(" ¦ ")}`);
 if (rest.length) lines.push(`R\t${rest.reduce((a, x) => a + x[1].count, 0)}\tостальные причины: ${rest.length}`);
 return lines.join('\n');

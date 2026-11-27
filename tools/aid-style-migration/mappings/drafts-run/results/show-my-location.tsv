@@ -79,3 +79,388 @@ S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге	I5374:80266
 S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге	I5374:803123;2189:195907
 S	62	сырой #000000 [frame]	5374:803278
 R	1413	остальные причины: 226
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=50992	replaced=81	skipped=5056	date=2026-11-10
+D	81	[Action/actionAccent — miniPig] (стар.) → [Outstanding/NRD - Body]
+S	393	сырой эффект: layer_blur
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13
+S	257	{System:Magin Top}=54 paddingTop — нет цели
+S	239	градиент [shape]
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге
+S	234	шрифт без стиля: WB Sans Medium 24/100
+S	222	сырой #000000 [shape]
+S	210	сырой #ffffff [stroke]
+S	201	сырой #ff5f00 [shape]
+S	201	сырой #eb001b [shape]
+S	201	сырой #f79e1b [shape]
+S	178	сырой #ffffff [shape]
+S	174	сырой #000000 [stroke]
+S	162	градиент [frame]
+S	107	сырой #d9d9d9 [shape]
+S	96	шрифт без стиля: SF Pro Regular 17/22
+S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге
+S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге
+S	62	сырой #000000 [frame]
+S	60	[Caption2/Regular] — нет в маппинге
+S	56	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила
+S	45	сырой #000000 [text]
+S	40	сырой #ffffff [text]
+S	36	градиент [stroke]
+S	32	сырой #00b23c [stroke]
+S	31	сырой эффект: background_blur
+S	26	эффект [shadow/close/s] — нет в маппинге
+S	25	сырой #ffffff@0.10 [stroke]
+S	24	шрифт без стиля: SF Pro Text Regular 12/14
+S	24	{Color:tx-bg/level −1 muted} [stroke] — нет правила
+S	24	{Color:tx-accent/green/bg} [stroke] — нет правила
+S	24	эффект [Shadow S] — нет в маппинге
+S	23	{Color:tx-control/purple/tint/idle} [frame] — нет в маппинге
+S	22	[Captions/Caption 3] — нет в маппинге
+S	20	сырой #ff0000 [shape]
+S	19	сырой #f6f6f9 [frame]
+S	18	сырой #100f25 [shape]
+S	18	[Gradients/Shimmer] [frame] — нет в маппинге
+S	18	шрифт без стиля: SF Pro Text Medium 14/110.00000238418579
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/20
+S	17	{Color:tx-accent/grey/primary-Inverted} [frame/frame] — нет правила
+S	16	сырой эффект: inner_shadow + inner_shadow + inner_shadow
+S	15	шрифт без стиля: SF Pro Text Regular 12/16
+S	13	{Color:tx-accent/grey/tertiary} [frame/frame] — нет правила
+S	13	сырой #505050 [frame]
+S	12	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	12	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	12	сырой #ff661a [shape]
+S	12	{Color:tx-bg/level 1 base} [stroke] — нет правила
+S	12	сырой #ffc800 [stroke]
+S	12	{Theme TX:tx-accent/orange/tint} [text] — нет в маппинге
+S	12	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass
+S	11	сырой #26013e@0.25 [shape]
+S	11	{Color:tx-accent/grey/dark strong} [stroke] — нет правила
+S	11	{Color:tx-accent/grey/secondary} [stroke] — нет правила
+S	11	сырой эффект: drop 0,-10 r80 s0 #ffffff
+S	10	сырой эффект: drop 0,-4 r16 s0 #000000@0.12 + noise
+S	10	сырой #0f013e@0.16 [shape]
+S	10	сырой #ff7200 [shape]
+S	9	{System Colors:Colors/Blue} [text] — нет в маппинге
+R	587	остальные причины: 186
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=50992	replaced=22	skipped=5034	date=2026-11-11
+D	22	[Captions/Caption 3] (стар.) → [Captions/Caption 1 Semibold]
+S	393	сырой эффект: layer_blur
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13
+S	257	{System:Magin Top}=54 paddingTop — нет цели
+S	239	градиент [shape]
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге
+S	234	шрифт без стиля: WB Sans Medium 24/100
+S	222	сырой #000000 [shape]
+S	210	сырой #ffffff [stroke]
+S	201	сырой #ff5f00 [shape]
+S	201	сырой #eb001b [shape]
+S	201	сырой #f79e1b [shape]
+S	178	сырой #ffffff [shape]
+S	174	сырой #000000 [stroke]
+S	162	градиент [frame]
+S	107	сырой #d9d9d9 [shape]
+S	96	шрифт без стиля: SF Pro Regular 17/22
+S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге
+S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге
+S	62	сырой #000000 [frame]
+S	60	[Caption2/Regular] — нет в маппинге
+S	56	{Color:tx-control/yellow/bg/idle} [stroke] — нет правила
+S	45	сырой #000000 [text]
+S	40	сырой #ffffff [text]
+S	36	градиент [stroke]
+S	32	сырой #00b23c [stroke]
+S	31	сырой эффект: background_blur
+S	26	эффект [shadow/close/s] — нет в маппинге
+S	25	сырой #ffffff@0.10 [stroke]
+S	24	шрифт без стиля: SF Pro Text Regular 12/14
+S	24	{Color:tx-bg/level −1 muted} [stroke] — нет правила
+S	24	{Color:tx-accent/green/bg} [stroke] — нет правила
+S	24	эффект [Shadow S] — нет в маппинге
+S	23	{Color:tx-control/purple/tint/idle} [frame] — нет в маппинге
+S	20	сырой #ff0000 [shape]
+S	19	сырой #f6f6f9 [frame]
+S	18	сырой #100f25 [shape]
+S	18	[Gradients/Shimmer] [frame] — нет в маппинге
+S	18	шрифт без стиля: SF Pro Text Medium 14/110.00000238418579
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/20
+S	17	{Color:tx-accent/grey/primary-Inverted} [frame/frame] — нет правила
+S	16	сырой эффект: inner_shadow + inner_shadow + inner_shadow
+S	15	шрифт без стиля: SF Pro Text Regular 12/16
+S	13	{Color:tx-accent/grey/tertiary} [frame/frame] — нет правила
+S	13	сырой #505050 [frame]
+S	12	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	12	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	12	сырой #ff661a [shape]
+S	12	{Color:tx-bg/level 1 base} [stroke] — нет правила
+S	12	сырой #ffc800 [stroke]
+S	12	{Theme TX:tx-accent/orange/tint} [text] — нет в маппинге
+S	12	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass
+S	11	сырой #26013e@0.25 [shape]
+S	11	{Color:tx-accent/grey/dark strong} [stroke] — нет правила
+S	11	{Color:tx-accent/grey/secondary} [stroke] — нет правила
+S	11	сырой эффект: drop 0,-10 r80 s0 #ffffff
+S	10	сырой эффект: drop 0,-4 r16 s0 #000000@0.12 + noise
+S	10	сырой #0f013e@0.16 [shape]
+S	10	сырой #ff7200 [shape]
+S	9	{System Colors:Colors/Blue} [text] — нет в маппинге
+S	9	сырой #1d354f [shape]
+R	578	остальные причины: 185
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=0	nodes=50992	replaced=624	skipped=4293	date=2026-11-12
+D	163	#000000 → Route/Primary (stroke) w4
+D	148	#ffffff → Stroke/Secondary (stroke) w4
+D	45	#000000 → Text/Primary (text)
+D	31	#ffffff → Stroke/Secondary (stroke) w2.72
+D	31	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	26	[shadow/close/s] → [Shadows/Mini]
+D	39	SF Pro Text Regular 12/14 + 12/16 (анкета А) → [Captions/Caption 1]
+D	24	[Shadow S] → [Shadows/Small]
+D	23	{Color:tx-control/purple/tint/idle} → Background/Pill Accent (frame)
+D	17	{Color:tx-accent/grey/primary-Inverted} → Background/Secondary (frame)
+D	13	{Color:tx-accent/grey/tertiary} → Background/Tertiary (frame)
+D	12	#ffffff → Stroke/Secondary (stroke) w6
+D	12	#ff661a → Icon/Attention Deep (shape)
+D	11	{Color:tx-accent/grey/dark strong} → Route/Primary (stroke)
+D	11	{Color:tx-accent/grey/secondary} → Stroke/Disabled (stroke)
+D	5	{Theme TX:tx-control/neutral/bg/idle} → Field/Primary (frame)
+D	5	SF Pro Text Medium 14/14 (анкета А) → [Subtitles/Subtitle 3]
+D	4	#ffffff → Stroke/Secondary (stroke) w3
+D	2	[Orange] → Icon/Attention Deep (shape)
+D	1	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	1	#232326 → Text/Primary (text)
+S	393	сырой эффект: layer_blur	I5374:803118;1067:131367
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13	5374:803458
+S	257	{System:Magin Top}=54 paddingTop — нет цели	5374:802550
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:802560;40000385:8868;40006534:14641;40006534:7699
+S	234	шрифт без стиля: WB Sans Medium 24/100	I5374:802560;40000385:8868;40006534:7701
+S	222	сырой #000000 [shape]	I5374:802792;40007495:32555;20:3349;353:10462
+S	207	градиент [shape]	I5374:803119;1074:135481
+S	201	сырой #ff5f00 [shape]	I5374:802565;40007187:67012;40007187:43967;427:17588
+R	2229	остальные причины (TOP=8): 218
+#	page=✅ Show my location — Switched Styles	id=5374:802548	dry=1	nodes=50992	replaced=0	skipped=4324	date=2026-11-12
+S	393	сырой эффект: layer_blur	I5374:803118;1067:131367
+S	315	шрифт без стиля: SF Pro Text Semibold 12/13	5374:803458
+S	257	{System:Magin Top}=54 paddingTop — нет цели	5374:802550
+S	235	{Color:tx-brand/green/green} [shape] — нет в маппинге	I5374:802560;40000385:8868;40006534:14641;40006534:7699
+S	234	шрифт без стиля: WB Sans Medium 24/100	I5374:802560;40000385:8868;40006534:7701
+S	222	сырой #000000 [shape]	I5374:802792;40007495:32555;20:3349;353:10462
+S	207	градиент [shape]	I5374:803119;1074:135481
+S	201	сырой #ff5f00 [shape]	I5374:802565;40007187:67012;40007187:43967;427:17588
+S	201	сырой #eb001b [shape]	I5374:802565;40007187:67012;40007187:43967;427:17589
+S	201	сырой #f79e1b [shape]	I5374:802565;40007187:67012;40007187:43967;427:17590
+S	178	сырой #ffffff [shape]	I5374:803142;40001108:25773;5374:817787;40001611:17557;1937:2777
+S	162	градиент [frame]	I5374:803119;1093:24175
+S	107	сырой #d9d9d9 [shape]	I5374:803140;40001108:25773;5374:817780;427:15332;40001108:28677
+S	96	шрифт без стиля: SF Pro Regular 17/22	I5374:803697;40001403:28636;40001069:17932;126:59452
+S	76	{Theme TX:tx-bg/overlay} [shape] — нет в маппинге	I5374:802669;40001063:14769
+S	62	{System Colors:Separators/Non-opaque} [stroke] — нет в маппинге	I5374:803123;2189:195907
+S	62	сырой #000000 [frame]	5374:803278
+S	60	[Caption2/Regular] — нет в маппинге	I5374:803697;40001403:28636;40001097:25307
+S	40	сырой #ffffff [text]	5374:803094
+S	36	градиент [stroke]	I5374:803294;40007495:44585;40007507:35770;40008797:93422;40008797:93159
+S	31	сырой эффект: background_blur	5374:803825
+S	31	[Gradients/Fade Horizontal] [shape] — нет в маппинге	I5374:804228;2781:11251;2781:9186;431:1658;435:2547
+S	25	сырой #ffffff@0.10 [stroke]	5374:802549
+S	24	{Color:tx-bg/level −1 muted} [stroke] — нет правила	5374:808299
+S	20	сырой #ff0000 [shape]	5374:803530
+S	19	сырой #f6f6f9 [frame]	5374:803319
+S	18	сырой #100f25 [shape]	I5374:803294;40007495:44585;40007507:36185;40007507:36140
+S	18	шрифт без стиля: SF Pro Text Medium 14/110.00000238418579	I5374:804071;40001108:25773;5374:818838
+S	18	[Gradients/Shimmer] [frame] — нет в маппинге	I5374:803386;40007540:53530;40006948:14037;40006695:23336
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/20	I5374:804259;2314:4619;305:1432;309:1387
+S	16	сырой эффект: inner_shadow + inner_shadow + inner_shadow	I5374:804278;2229:48781;2229:19970;2223:2090
+S	15	сырой #ffffff [stroke]	I5374:803294;40007495:44585;40007507:35770;40008797:93422;40008797:93158
+S	13	сырой #505050 [frame]	5374:806316
+S	12	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:803118;1067:131367
+S	12	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:803118;1067:131368
+S	12	{Color:tx-bg/level 1 base} [stroke] — нет правила	I5374:803393;40006214:22340;40001478:11677;5374:818350;40003372:84930
+S	12	сырой #ffc800 [stroke]	I5374:804228;2781:9146;1168:1949;1157:1873;3263:22958
+S	12	{Theme TX:tx-accent/orange/tint} [text] — нет в маппинге	I5374:804259;2314:7790;305:1431
+S	12	сырой эффект: drop 3,4 r10 s0 #361616@0.08 + glass	I5374:807753;15:3905
+S	11	сырой #26013e@0.25 [shape]	I5374:803386;40007540:53521
+S	11	сырой эффект: drop 0,-10 r80 s0 #ffffff	I5374:804228;2781:9134;1070:18232;237:849
+S	10	сырой эффект: drop 0,-4 r16 s0 #000000@0.12 + noise	5374:803202
+S	10	сырой #0f013e@0.16 [shape]	5374:806229
+S	10	сырой #ff7200 [shape]	I5374:817034;40001075:11430
+S	9	{System Colors:Colors/Blue} [text] — нет в маппинге	I5374:803123;2189:195906
+S	9	сырой #1d354f [shape]	5374:803508
+S	9	сырой #ffb800 [shape]	5374:803508
+S	9	{Theme TX:tx-bg/map} [frame] — нет в маппинге	I5374:804228;2781:9101
+S	8	сырой #444444 [frame]	5374:802549
+S	8	[pure black] [text] — нет в маппинге	I5374:803406;400:18443;40006303:62353
+S	8	{theme:stroke/blackConst} [shape] — нет в маппинге	I5374:804278;2328:7237;1212:2036;1138:7255
+S	8	шрифт без стиля: ALS Hauss VF Regular 48/48	I5374:804278;2229:48781;2229:19970;2223:2090
+S	8	{Theme:text icon/primary} [stroke] — нет правила	I5374:804278;2229:48781;2229:19970;2223:2095
+S	8	сырой #2f2e43 [shape]	I5374:804460;40006739:17633
+S	8	{Color:tx-accent/grey/dark const} [text/text] — нет правила	I5374:804807;40004841:66861;40004769:34875
+S	7	эффект [Material Blur] — нет в маппинге	I5374:803123;2189:195898;510:79117
+S	7	[Footnote/Regular] — нет в маппинге	I5374:803123;2189:195901
+S	7	сырой #000000@0.10 [shape]	5374:803553
+S	7	сырой эффект: drop 0,14 r64 s0 #f24f18@0.00	I5374:804228;2781:9134;1070:18232;237:848
+S	7	сырой эффект: drop 0,-8 r20 s0 #2d2d53@0.12	I5374:804228;2781:11251;2781:9181
+S	7	сырой #ff661a [text]	I5374:804275;3406:38819;1255:2416;1485:2288
+S	7	шрифт без стиля: ALS Hauss VF Bold 15/20	I5374:804275;3406:38819;1255:2416;1485:2288
+S	7	сырой эффект: drop 3,4 r10 s0 #1d361b@0.08	I5374:805743;15:3905
+S	6	сырой #c4c4c4 [shape]	I5374:803113;1465:154025;1248:7516
+S	6	сырой #181819 [shape]	I5374:803294;40007495:44585;40007507:35770;40008797:93422;40008797:93159
+S	6	{Color:tx-control/neutral/bg/idle} [shape/shape] — нет правила	I5374:803406;400:18439;400:16501;353:1275
+S	6	сырой #999999@0.97 [frame]	I5374:803697;40001403:28636;40001097:25303
+S	6	сырой #5c5c5c [frame]	I5374:803697;40001403:28636;40001097:25303
+S	6	сырой #661aff [frame]	I5374:803697;40001403:28636;40001075:10742
+S	6	сырой #ff00ff [shape]	I5374:803697;40001403:28636;40001075:10742;207:51803
+S	6	[Subheadline/Emphasized] — нет в маппинге	I5374:803697;40001403:28636;40001069:17904
+S	6	{iOS Colors:Fills/Tertiary} [frame] — нет в маппинге	I5374:803697;40001403:28636;40001069:17907
+S	6	{System Colors:Labels/Secondary} [text] — нет в маппинге	I5374:803697;40001403:28636;40001069:17907;2522:16894
+S	6	шрифт без стиля: SF Pro Semibold 16/21	I5374:803697;40001403:28636;40001069:17907;2522:16894
+S	6	шрифт без стиля: SF Pro Regular 17/24	I5374:803697;40001403:28636;40001069:17942
+S	6	текст со смешанными стилями — оставлено	I5374:803323;40007217:34955;40007495:39497;40007495:32737;40001298:18988
+S	6	сырой #ffc800 [shape]	I5374:804228;2781:9146;1168:1949;1157:1873;3263:22958
+S	6	сырой #fffbdd [shape]	I5374:804228;2781:9146;1168:1949;1157:1876
+S	6	#000000 → Route/Primary [stroke] — не w4 (w1)	I5374:804275;3406:38819;1255:2416;1485:2290;4632:230
+S	6	{Color:tx-accent/red/bg} [frame/frame] — нет правила	5374:804684
+S	6	шрифт без стиля: SF Pro Semibold 14/120.00000476837158	I5374:804807;40004841:66861;40004769:34875
+S	5	[Day / Gray 20] [shape] — нет в маппинге	I5374:803648;669:723;1945:2847
+S	5	{Color:tx-control/purple/bg/idle} [shape/shape] — нет правила	I5374:803406;400:18430;40006303:59184
+S	5	сырой #000000 [stroke]	I5374:804073;40001007:26289;5374:818867
+S	5	TEXT смешанные заливки — оставлено	I5374:803323;40007217:34955;40007495:39497;40007495:32737;40001298:18988
+S	5	шрифт без стиля: ALS Hauss VF Regular 15/20	I5374:804228;2781:11251;2781:9186;98:375
+S	5	эффект [Shadow Up] — нет в маппинге	5374:804278
+S	5	эффект [Shadow Down] — нет в маппинге	5374:804279
+S	5	{theme:icon/contraste} [shape] — нет в маппинге	I5374:804279;400:1773;586:144
+S	5	сырой эффект: drop 0,4 r24 s0 #10032b@0.07	5374:804674
+S	4	сырой #99ffbb [shape]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17632
+S	4	сырой #014d2d [stroke]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17638
+S	4	сырой #1cc052 [shape]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17639
+S	4	сырой #ffffff@0.25 [shape]	5374:803525
+S	4	сырой #232326 [shape]	5374:803601
+S	4	[Day / Black] [stroke] — нет правила	I5374:803654;669:723;7570:38
+S	4	сырой #ffe2f1 [frame]	5374:803660
+S	4	[Day / Black] [frame/frame] — нет правила	I5374:803660;52:3317
+S	4	сырой эффект: drop 0,-6 r64 s0 #ffffff	I5374:804228;2900:9478
+S	4	сырой #ccced9 [shape]	I5374:804228;2898:10365;2898:9750;2304:28367;2304:27489;2055:65042
+S	4	{Theme TX:tx-accent/orange/tint} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:29698;2690:6562;2715:2324
+S	4	шрифт без стиля: ALS Hauss VF Medium 17/22	I5374:804259;2314:4624
+S	4	сырой эффект: drop 0,-6 r30 s0 #267366@0.10	I5374:804278;2328:7237
+S	4	{Theme:bg/level -1} [shape/shape] — нет правила	I5374:804278;2328:7237;1212:2007
+S	4	{Theme TX:tx-button/blurring/solid/content/defaultPrimary} [stroke] — нет в маппинге	I5374:804278;2328:7237;1212:2036;1126:14491
+S	4	сырой #b099bf [shape]	I5374:804278;2328:7237;1212:2036;1138:7297
+S	4	сырой #ff00ff@0.62 [shape]	I5374:804278;2229:48781;2229:19970;2223:2019
+S	4	сырой #ffb2ff [shape]	I5374:804278;2229:48781;2229:19970;2223:2021
+S	4	сырой #ffffff@0.31 [frame]	I5374:804310;2328:2805;175:2156
+S	4	эффект [Background Blur/Ultra Thin] — нет в маппинге	I5374:804310;2328:2805;175:2156
+S	4	[Body/body] — нет в маппинге	I5374:804384;98:375
+S	4	{theme:icon/tertiary} [shape] — нет в маппинге	I5374:804396;3605:99846;379:1418;372:1387
+S	4	{Color:tx-bg/level 1 base} [text/text] — нет правила	5374:804667
+S	4	{Color:tx-accent/red/tint} [frame] — нет в маппинге	5374:806784
+S	4	эффект [.blur tiny] — нет в маппинге	I5374:806789;67:2462
+S	4	сырой #ff4a33 [shape]	I5374:807971;3141:176311;208:11108;3072:146262
+S	3	[Body/Regular] — нет в маппинге	I5374:803123;2189:195906
+S	3	{Color:tx-accent/red/fg} [frame/frame] — нет правила	5374:803221
+S	3	{Color:tx-accent/green/fg-inverted} [frame] — нет в маппинге	5374:803202
+S	3	{Color:tx-accent/purple/fg-inverted} [frame] — нет в маппинге	5374:803414
+S	3	сырой #ffffff@0.30 [shape]	5374:803538
+S	3	сырой #cacacc [shape]	5374:803597
+S	3	[Day / Gray 4] [shape] — нет в маппинге	5374:803628
+S	3	{Color:tx-brand/pink/idle} [shape] — нет в маппинге	I5374:803406;400:18430;40006303:59187
+S	3	{Color:tx-brand/pink/blue/idle} [shape] — нет в маппинге	I5374:803406;400:18430;40006303:59188
+S	3	{Theme:bg/accentLight} [shape] — нет в маппинге	I5374:804259;2314:4623;2296:2668
+S	3	{Theme:bg/accentLight} [text] — нет в маппинге	I5374:804259;2314:4624
+S	3	{Theme:additional/buttonBuy/bg/default} [frame] — нет в маппинге	5374:804267
+S	3	сырой #1d1d22 [frame]	5374:804267
+S	3	{Gaps:SPx11}=44 paddingBottom — нет цели	I5374:804420;40006695:21044
+S	3	{Color:tx-accent/orange/tint} [frame] — нет в маппинге	5374:804682
+S	3	{Color:tx-bg/map} [frame] — нет в маппинге	5374:804704
+S	3	{Safe zones:safe-top}=42 paddingTop — нет цели	5374:805743
+S	2	{System Colors:Labels/Primary} [text] — нет в маппинге	I5374:803123;2189:195900
+S	2	сырой #000000@0.20 [shape]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17633
+S	2	сырой #002f0f [shape]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17634
+S	2	сырой #c3ffa6 [shape]	I5374:803388;40007540:53530;40007187:66955;40007187:43967;427:17642
+S	2	сырой #d62347 [shape]	5374:803551
+S	2	сырой #ebecf0 [shape]	5374:803621
+S	2	сырой #212121 [shape]	5374:803633
+S	2	[Night / Black] [text] — нет в маппинге	I5374:803637;600:75
+S	2	[Day / Gray 4] [stroke] — нет в маппинге	5374:803647
+S	2	сырой эффект: drop 0,1 r20 s0 #000000@0.05	5374:803309
+S	2	{Theme TX:tx-accent/grey/secondary} [shape] — нет в маппинге	I5374:803406;400:18436;1312:43830;256:650
+S	2	сырой #ffe1ff [frame]	I5374:803406;400:18443
+S	2	шрифт без стиля: WB Sans Medium 17/101.99999809265137	I5374:803406;400:18443;40006303:62353
+S	2	шрифт без стиля: Inter Variable Medium 12/119.0000057220459	I5374:803406;400:18443;40006303:62355
+S	2	[accent yellow] [frame] — нет в маппинге	I5374:803406;400:18443;40006303:62373
+S	2	шрифт без стиля: WB Sans Bold 30/108.2064151763916	I5374:803406;400:18443;40006303:62374
+S	2	[pure black] [frame] — нет в маппинге	I5374:803406;400:18443;40006303:62359
+S	2	шрифт без стиля: WB Sans Bold 30.510181427001953/108.2064151763916	I5374:803406;400:18443;40006303:62360
+S	2	шрифт без стиля: WB Sans Bold 32/101.99999809265137	I5374:803406;400:18443;40006303:62377
+S	2	шрифт без стиля: WB Sans Bold 16/101.99999809265137	I5374:803406;400:18443;40006303:62381
+S	2	шрифт без стиля: ALS Hauss VF Regular 44/44	I5374:804228;2781:11251;2781:11150;2781:9155
+S	2	[Title/title1 — elephant] — нет в маппинге	I5374:804228;2898:10365;2898:9749;178:635
+S	2	{theme:button/secondary/bg/default} [frame] — нет в маппинге	I5374:804228;2898:10365;2898:9750;2304:27941
+S	2	{theme:promo/secondary/content/neutralSecondary} [text] — нет в маппинге	I5374:804228;2898:10365;2898:9750;2304:27941;2304:27487
+S	2	эффект [Shadow Down V] — нет в маппинге	I5374:804228;2781:9144
+S	2	{Theme:button/secondary/bg/default} [frame] — нет в маппинге	I5374:804228;2781:9145;4192:28390;2690:6562
+S	2	{theme:tx-regime/basic/secondary} [shape] — нет в маппинге	I5374:804228;2781:9145;4192:28390;2690:6562;2690:6588
+S	2	{theme:tx-regime/basic/primary} [shape] — нет в маппинге	I5374:804228;2781:9145;4192:28390;2690:6562;2690:6110;20726:1723
+S	2	{Theme TX:tx-accent/orange/bg} [text/text] — нет правила	I5374:804310;2328:2807;2229:15197;98:376;2229:21858
+S	2	{Theme:bg/level 2} [shape/shape] — нет правила	I5374:804310;2328:2807;2229:15197;98:376;2229:21861
+S	2	[Action/action— capybara] — нет в маппинге	I5374:804396;3605:99828
+S	2	{theme:separator/default} [shape] — нет в маппинге	I5374:804396;3605:99840;100:119
+S	2	эффект [Shadow Surface] — нет в маппинге	5374:804686
+S	2	{Color:tx-accent/green/fg} [text] — нет в маппинге	5374:804705
+S	2	{Color:tx-control/yellow/bg/idle} [frame/frame] — нет правила	I5374:804808;40004841:67361
+S	2	сырой #9747ff [stroke]	5374:806793
+S	2	шрифт без стиля: ALS Hauss VF Book 90/85	I5374:808541;69:109;5374:820801
+S	2	шрифт без стиля: SF Pro Display Light 68/48	I5374:808614;69:109;5374:820886
+S	2	сырой эффект: drop 3,4 r10 s0 #0f0f12@0.08	I5374:809532;15:3905
+S	1	сырой #60ff3c [stroke]	5374:803092
+S	1	сырой #b3b3b3@0.82 [frame]	I5374:803123;2189:195898;510:79117
+S	1	сырой #383838 [frame]	I5374:803123;2189:195898;510:79117
+S	1	[Headline/Regular] — нет в маппинге	I5374:803123;2189:195900
+S	1	сырой #7b61ff [stroke]	5374:803124
+S	1	сырой #121212 [frame]	5374:803263
+S	1	шрифт без стиля: Roboto Bold 65.25/85	5374:803264
+S	1	{Color:tx-accent/grey/tertiary} [stroke] — нет правила	I5374:803413;40001007:26289;5374:818386;427:15354;40001657:53879
+S	1	сырой эффект: drop 0,0 r1 s0 #000000@0.20	5374:803499
+S	1	шрифт без стиля: SF Pro Display Semibold 16/16	5374:803501
+S	1	шрифт без стиля: SF Pro Display Semibold 10/10	5374:803502
+S	1	сырой эффект: drop 0,4 r12 s0 #000000@0.15	5374:803504
+S	1	сырой #000000@0.05 [shape]	5374:803514
+S	1	сырой #24444f [shape]	5374:803549
+S	1	сырой #ff0e3e [shape]	5374:803550
+S	1	сырой #000000@0.44 [shape]	5374:803554
+S	1	сырой #0e1820@0.76 [shape]	5374:803579
+S	1	шрифт без стиля: SF Pro Text Bold 16/16	5374:803592
+S	1	сырой #ff7200 [text]	5374:803593
+S	1	шрифт без стиля: SF Pro Text Medium 16/16	5374:803593
+S	1	сырой эффект: drop 0,0 r20 s0 #000000@0.10	5374:803624
+S	1	сырой #ffd000 [frame]	5374:803631
+S	1	сырой #c4cdd5 [stroke]	5374:803632
+S	1	[Night / Black] [shape] — нет в маппинге	I5374:803637;600:76;1963:47
+S	1	сырой #e1102e [shape]	5374:803640
+S	1	сырой #d8d8d8 [shape]	I5374:803652;669:723;1944:72
+S	1	сырой #979797 [stroke]	I5374:803652;669:723;1944:72
+S	1	[Night / Gray 8] [text] — нет в маппинге	5374:803656
+S	1	шрифт без стиля: SF Pro Bold 20/22	I5374:803664;9:2028
+S	1	[Android / Body] — нет в маппинге	I5374:804107;40000167:14176;40000167:14158
+S	1	[Titles/Title 2] — нет в маппинге	I5374:804119;40001870:9985;40001007:26289;5561:145075;40001298:18988
+S	1	{Theme:bg/level 1 base} [stroke] — нет правила	I5374:804228;2781:11251;2781:11150;2781:9151;1454:26572
+S	1	шрифт без стиля: ALS Hauss VF Medium 24/32	I5374:804228;2781:11251;2781:11150;2781:9157
+S	1	шрифт без стиля: ALS Hauss VF Medium 32/32	I5374:804228;2781:11251;2781:11150;2781:9158
+S	1	шрифт без стиля: ALS Hauss VF Bold 24/32 + ALS Hauss VF Medium 24/32	I5374:804228;2781:11251;2781:11150;2781:9160
+S	1	сырой #000000@0.30 [shape]	I5374:804228;2781:11251;2781:9199;2583:5531
+S	1	эффект [Shadow Up V] — нет в маппинге	I5374:804228;2898:10365
+S	1	сырой эффект: drop 0,-6 r64 s0 #006aff	I5374:804228;2898:10365;2898:9747;237:848
+S	1	{Theme TX:tx-accent/purple/tint} [frame] — нет в маппинге	I5374:804228;2898:10365;2898:9750;2304:27708
+S	1	{theme:tx-regime/home/primary} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:29698;2690:6562;2715:2326;2707:2316
+S	1	{Theme TX:tx-accent/blue/tint} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:31340;2690:6562;2715:2366
+S	1	{theme:tx-regime/errands/primary} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:31340;2690:6562;2715:2368;2036:4652
+S	1	{Theme TX:tx-accent/green/tint} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:31552;2690:6562;2715:2410
+S	1	{theme:tx-regime/around/primary} [shape] — нет в маппинге	I5374:804228;2781:9145;4210:31552;2690:6562;2715:2412;2116:3882
+S	1	сырой эффект: drop 0,-6 r64 s0 #00ff55	I5374:804277;237:848
+S	1	[Body/bodyAccent — buffalo] — нет в маппинге	I5374:804310;2328:2807;2229:15197;98:376;2229:21858
+S	1	{Theme TX:tx-button/blurring/solid/bg/default} [frame] — нет в маппинге	I5374:804380;123:179;185:777
+S	1	[Action/actionAccent] — нет в маппинге	I5374:804384;431:1658;435:2544
+S	1	сырой #000000@0.60 [shape]	5374:804395
+S	1	сырой эффект: drop 0,-6 r64 s0 #00ffbb + drop 0,0 r48 s0 #00ff55	I5374:804396;3605:101074;237:848
+S	1	{theme:icon/warning} [shape] — нет в маппинге	I5374:804396;3605:99846;379:1417;372:1384
+S	1	{theme:button/buy/content/default} [text] — нет в маппинге	I5374:804396;3605:99847;127:166;2345:6744
+S	1	[TX Body/tx body regular--ml] — нет в маппинге	I5374:804805;4502:20761;4522:18967;4482:7422
+S	1	шрифт без стиля: SF Pro Display Semibold 60/48	5374:806720
+S	1	шрифт без стиля: Inter Regular 12/auto	5374:817503

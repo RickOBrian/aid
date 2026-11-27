@@ -1,0 +1,114 @@
+#	page=Taxi Start Page	id=2007:5985	dry=1	nodes=401	replaced=252	skipped=44	date=2026-11-26
+D	18	[Background [day]/Primary] → Icon/Primary Inverted (shape)
+D	18	[Text [day]/Secondary] → Text/Secondary (text)
+D	15	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	15	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	14	#000000 → Icon/Primary (shape)
+D	13	[Text [day]/Primary] → Text/Primary (text)
+D	12	[Background [day]/Primary] → Background/Primary (frame)
+D	12	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	11	сырая тень → [Shadows/FAB]
+D	9	[Text [day]/Constant White] → Text/Constant White (text)
+D	8	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	6	#ffffff → Text/Constant White (text)
+D	6	[Icon [day]/Tertiary] → Icon/Tertiary (shape)
+D	5	{Color:tx-accent/grey/primary} → Icon/Primary (shape)
+D	4	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	4	{Theme:text icon/primary} → Icon/Primary (shape)
+D	3	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	3	[Icon [day]/Accent] → Icon/Accent (shape)
+D	3	[Title/title2] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	3	#ffffff → Background/Primary (frame)
+D	3	[Background [day]/Primary] → Stroke/Secondary (stroke)
+D	3	сырая тень → [Shadows/Bottom Sheet]
+D	3	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	3	[Field [day]/Primary] → Field/Primary (frame)
+D	3	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	3	[Day / White] → Stroke/Inverted (stroke)
+D	3	[Text [day]/Constant White] → Icon/Constant White (shape)
+D	3	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	3	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	3	[Text [day]/Constant White Secondary] → Text/Constant White Secondary (text)
+D	3	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	3	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	3	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	3	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	3	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	3	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	3	#f5f5f5@0.60 → Background/Navbar (frame)
+D	3	сырая тень → [Glass/Navbar]
+D	3	#ededed → Background/Tab Selected (frame)
+D	3	{Variable collection:Accent Purple} → Icon/Accent (shape)
+D	3	{Variable collection:Accent Purple} → Text/Accent (text)
+D	2	{Color:tx-bg/level 1 base} → Background/Primary (frame)
+D	2	[Shadows/[day] Medium] → [Shadows/Medium]
+D	2	{Variable collection:BG Dark} → Background/Constant Dark Secondary (frame)
+D	1	SF Pro Text Semibold 17/20 → [Outstanding/NRD - Body]
+S	9	сырой эффект: layer_blur	I2007:5996;2003:80923 I2007:6007;1207:219;1248:7581 I2007:6007;1207:219;1248:7583
+S	9	[Background [day]/Secondary] [shape/shape] — нет правила	I2007:6002;1242:357 I2007:6003;1244:7534 I2007:6003;1244:7535;589:16
+S	6	сырой #c4c4c4 [shape]	I2007:6007;1207:219;1248:7510 I2007:6007;1207:219;1248:7504 I2007:6539;1207:219;1248:7510
+S	6	сырой #000000 [shape]	I2007:6007;1207:219;1248:7581 I2007:6007;1207:219;1248:7583 I2007:6539;1207:219;1248:7581
+S	3	{Color:tx-accent/grey/primary} «Shadow» — пробел	I2007:5996;2003:80923 I2007:6528;2003:80923 I2007:6702;2003:80923
+S	3	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I2007:5996;2003:80924 I2007:6528;2003:80924 I2007:6702;2003:80924
+S	3	сырой #8626ff [shape]	I2007:5996;2003:80925 I2007:6528;2003:80925 I2007:6702;2003:80925
+S	2	сырой #ffffff [text]	2007:6015 2007:6547
+S	2	шрифт без стиля: Google Sans Regular 17/20	2007:6015 2007:6547
+S	1	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I2007:6526;2003:80837
+X	градиент ffffff@0.78>ffffff@0 → [Gradients/Top]	2007:5990 «Whitener» < Taxi w1 390x116 ¦ 2007:6522 «Whitener» < Taxi w1 390x116 ¦ 2007:6700 «Whitener» < Taxi w1 390x116
+#	page=Taxi Start Page	id=2007:5985	dry=0	nodes=401	replaced=252	skipped=44	date=2026-11-26
+D	18	[Background [day]/Primary] → Icon/Primary Inverted (shape)
+D	18	[Text [day]/Secondary] → Text/Secondary (text)
+D	15	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	15	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	14	#000000 → Icon/Primary (shape)
+D	13	[Text [day]/Primary] → Text/Primary (text)
+D	12	[Background [day]/Primary] → Background/Primary (frame)
+D	12	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	11	сырая тень → [Shadows/FAB]
+D	9	[Text [day]/Constant White] → Text/Constant White (text)
+D	8	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	6	#ffffff → Text/Constant White (text)
+D	6	[Icon [day]/Tertiary] → Icon/Tertiary (shape)
+D	5	{Color:tx-accent/grey/primary} → Icon/Primary (shape)
+D	4	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	4	{Theme:text icon/primary} → Icon/Primary (shape)
+D	3	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	3	[Icon [day]/Accent] → Icon/Accent (shape)
+D	3	[Title/title2] (стар.) → [Outstanding/Title-title2 (NRD)]
+D	3	#ffffff → Background/Primary (frame)
+D	3	[Background [day]/Primary] → Stroke/Secondary (stroke)
+D	3	сырая тень → [Shadows/Bottom Sheet]
+D	3	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	3	[Field [day]/Primary] → Field/Primary (frame)
+D	3	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	3	[Day / White] → Stroke/Inverted (stroke)
+D	3	[Text [day]/Constant White] → Icon/Constant White (shape)
+D	3	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	3	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	3	[Text [day]/Constant White Secondary] → Text/Constant White Secondary (text)
+D	3	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	3	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	3	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	3	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	3	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	3	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	3	#f5f5f5@0.60 → Background/Navbar (frame)
+D	3	сырая тень → [Glass/Navbar]
+D	3	#ededed → Background/Tab Selected (frame)
+D	3	{Variable collection:Accent Purple} → Icon/Accent (shape)
+D	3	{Variable collection:Accent Purple} → Text/Accent (text)
+D	2	{Color:tx-bg/level 1 base} → Background/Primary (frame)
+D	2	[Shadows/[day] Medium] → [Shadows/Medium]
+D	2	{Variable collection:BG Dark} → Background/Constant Dark Secondary (frame)
+D	1	SF Pro Text Semibold 17/20 → [Outstanding/NRD - Body]
+#	page=Taxi Start Page	id=2007:5985	dry=1	nodes=401	replaced=0	skipped=44	date=2026-11-26
+S	9	сырой эффект: layer_blur	I2007:5996;2003:80923 I2007:6007;1207:219;1248:7581 I2007:6007;1207:219;1248:7583
+S	9	[Background [day]/Secondary] [shape/shape] — нет правила	I2007:6002;1242:357 I2007:6003;1244:7534 I2007:6003;1244:7535;589:16
+S	6	сырой #c4c4c4 [shape]	I2007:6007;1207:219;1248:7510 I2007:6007;1207:219;1248:7504 I2007:6539;1207:219;1248:7510
+S	6	сырой #000000 [shape]	I2007:6007;1207:219;1248:7581 I2007:6007;1207:219;1248:7583 I2007:6539;1207:219;1248:7581
+S	3	{Color:tx-accent/grey/primary} «Shadow» — пробел	I2007:5996;2003:80923 I2007:6528;2003:80923 I2007:6702;2003:80923
+S	3	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I2007:5996;2003:80924 I2007:6528;2003:80924 I2007:6702;2003:80924
+S	3	сырой #8626ff [shape]	I2007:5996;2003:80925 I2007:6528;2003:80925 I2007:6702;2003:80925
+S	2	сырой #ffffff [text]	2007:6015 2007:6547
+S	2	шрифт без стиля: Google Sans Regular 17/20	2007:6015 2007:6547
+S	1	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I2007:6526;2003:80837

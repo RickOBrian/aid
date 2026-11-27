@@ -94,3 +94,209 @@ S	15	сырой эффект: inner_shadow + inner_shadow + inner_shadow	I5374:3
 S	13	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:358560;218:117
 S	12	сырой #fb8437 [shape]	I5374:358834;4906:196320;2646:2330;494:16636
 R	400	остальные причины: 92
+#	page=Errors — Switched Styles	id=5374:358551	dry=0	nodes=3110	replaced=16	skipped=1576	date=2026-11-10
+D	16	[Action/actionAccent — miniPig] (стар.) → [Outstanding/NRD - Body]
+S	455	градиент [shape]
+S	122	сырой эффект: layer_blur
+S	98	градиент [frame]
+S	89	градиент [stroke]
+S	62	сырой #ffffff [shape]
+S	55	сырой эффект: inner_shadow
+S	48	сырой #18181b [shape]
+S	40	сырой #000000 [shape]
+S	24	сырой #d85d00 [shape]
+S	24	сырой эффект: drop 0,7 r9 s0 #ffffff
+S	24	сырой эффект: inner_shadow + inner_shadow
+S	24	сырой #eaeaea [shape]
+S	22	сырой #ffc800 [stroke]
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/22
+S	17	сырой #131313 [frame]
+S	16	сырой #000000 [frame]
+S	15	сырой эффект: inner_shadow + inner_shadow + inner_shadow
+S	13	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow
+S	12	сырой #fb8437 [shape]
+S	12	сырой эффект: drop 0,4 r4 s0 #000000@0.25 + inner_shadow
+S	12	сырой эффект: drop 0,0.5 r0 s0 #ed8221
+S	12	сырой #000000 [stroke]
+S	12	сырой #131313 [shape]
+S	12	градиент [text]
+S	12	сырой #ffffff [stroke]
+S	11	сырой #ffc800 [shape]
+S	11	сырой #fffbdd [shape]
+S	10	{Color:tx-accent/grey/primary} «Shadow» — пробел
+S	10	сырой #c85626 [frame]
+S	10	сырой #ff6a00 [frame]
+S	9	сырой #c4c4c4 [shape]
+S	9	[Body/body] — нет в маппинге
+S	8	сырой #000000@0.40 [shape]
+S	7	сырой #ff0000 [shape]
+S	7	{Radius:CRx10}=40 topLeftRadius — нет цели
+S	7	{Radius:CRx10}=40 topRightRadius — нет цели
+S	7	{Radius:CRx10}=40 bottomLeftRadius — нет цели
+S	7	{Radius:CRx10}=40 bottomRightRadius — нет цели
+S	7	шрифт без стиля: WB Sans Medium 40/auto
+S	7	сырой эффект: background_blur
+S	7	[Description/descriptionAccent — lion] — нет в маппинге
+S	6	эффект [.blur tiny] — нет в маппинге
+S	6	сырой #ff8533 [shape]
+S	6	{theme:notification/warningPrimary} [shape] — нет в маппинге
+S	6	сырой #ffffff [text]
+S	6	{Theme:button/secondary/bg/default} [frame] — нет в маппинге
+S	5	[Gradients/Shimmer] [frame] — нет в маппинге
+S	5	[Body/bodyAccent — buffalo] — нет в маппинге
+S	5	[Action/actionAccent] — нет в маппинге
+S	5	сырой #a73afd [frame]
+S	5	сырой #000041 [frame]
+S	4	сырой #70707f [shape]
+S	4	сырой #656573 [shape]
+S	4	сырой #ffffff@0.20 [shape]
+S	4	{Theme:button/tertiary/bg/default} [frame] — нет в маппинге
+S	4	{Theme:button/tertiary/content/primary/default} [text] — нет в маппинге
+S	4	{Theme:bg/accentLight} [frame] — нет в маппинге
+S	4	[Description/descriptionAccent] — нет в маппинге
+S	4	эффект [Shadow Up] — нет в маппинге
+S	4	[Display/display — whale] — нет в маппинге
+R	101	остальные причины: 52
+#	page=Errors — Switched Styles	id=5374:358551	dry=0	nodes=3110	replaced=2	skipped=1574	date=2026-11-10
+D	2	{theme:bg/accentSecondary} → Tint/Accent (frame)
+S	455	градиент [shape]
+S	122	сырой эффект: layer_blur
+S	98	градиент [frame]
+S	89	градиент [stroke]
+S	62	сырой #ffffff [shape]
+S	55	сырой эффект: inner_shadow
+S	48	сырой #18181b [shape]
+S	40	сырой #000000 [shape]
+S	24	сырой #d85d00 [shape]
+S	24	сырой эффект: drop 0,7 r9 s0 #ffffff
+S	24	сырой эффект: inner_shadow + inner_shadow
+S	24	сырой #eaeaea [shape]
+S	22	сырой #ffc800 [stroke]
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/22
+R	272	остальные причины: 81
+#	page=Errors — Switched Styles	id=5374:358551	dry=0	nodes=3110	replaced=23	skipped=1551	date=2026-11-12
+D	10	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	9	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	4	градиент ... → [Gradients/Shimmer] (анкета А)
+S	436	градиент [shape]	I5374:358630;4365:206498
+S	122	сырой эффект: layer_blur	I5374:358560;218:116
+S	94	градиент [frame]	I5374:358834;4906:196320;2646:2348
+S	89	градиент [stroke]	I5374:358834;4906:196320;2646:2330;494:16458
+S	62	сырой #ffffff [shape]	I5374:358559;349:4028;244:1423
+S	55	сырой эффект: inner_shadow	I5374:358797;4270:112359
+S	48	сырой #18181b [shape]	I5374:358834;4906:196320;2646:2322
+S	40	сырой #000000 [shape]	I5374:358559;349:4028;244:1424
+R	605	остальные причины (TOP=8): 103
+#	page=Errors — Switched Styles	id=5374:358551	dry=1	nodes=3110	replaced=0	skipped=1564	date=2026-11-12
+S	436	градиент [shape]	I5374:358630;4365:206498
+S	122	сырой эффект: layer_blur	I5374:358560;218:116
+S	94	градиент [frame]	I5374:358834;4906:196320;2646:2348
+S	89	градиент [stroke]	I5374:358834;4906:196320;2646:2330;494:16458
+S	62	сырой #ffffff [shape]	I5374:358559;349:4028;244:1423
+S	55	сырой эффект: inner_shadow	I5374:358797;4270:112359
+S	48	сырой #18181b [shape]	I5374:358834;4906:196320;2646:2322
+S	40	сырой #000000 [shape]	I5374:358559;349:4028;244:1424
+S	24	сырой #d85d00 [shape]	I5374:358834;4906:196320;2646:2330;494:16064
+S	24	сырой эффект: drop 0,7 r9 s0 #ffffff	I5374:358834;4906:196320;2646:2330;494:17578
+S	24	сырой эффект: inner_shadow + inner_shadow	I5374:358834;4906:196320;2646:2330;496:22880
+S	24	сырой #eaeaea [shape]	I5374:358834;4906:196320;2646:2330;496:20944
+S	22	сырой #ffc800 [stroke]	I5374:358836;1168:1949;1157:1873;3263:22958
+S	18	шрифт без стиля: ALS Hauss VF Medium 19/22	I5374:358834;4906:196320;2646:2347
+S	17	сырой #131313 [frame]	I5374:358834;4906:196320;2646:2348
+S	16	сырой #000000 [frame]	I5374:358834;4906:196320;2646:2346
+S	15	сырой эффект: inner_shadow + inner_shadow + inner_shadow	I5374:358922;3075:5573
+S	13	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I5374:358560;218:117
+S	12	сырой #fb8437 [shape]	I5374:358834;4906:196320;2646:2330;494:16636
+S	12	сырой эффект: drop 0,4 r4 s0 #000000@0.25 + inner_shadow	I5374:358834;4906:196320;2646:2330;494:17745
+S	12	сырой эффект: drop 0,0.5 r0 s0 #ed8221	I5374:358834;4906:196320;2646:2330;496:20944
+S	12	сырой #000000 [stroke]	I5374:358834;4906:196320;2646:2337
+S	12	сырой #131313 [shape]	I5374:358834;4906:196320;2646:2339
+S	12	градиент [text]	I5374:358834;4906:196320;2646:2349
+S	12	сырой #ffffff [stroke]	I5374:358922;3075:5614;1826:32799
+S	11	сырой #ffc800 [shape]	I5374:358836;1168:1949;1157:1873;3263:22958
+S	11	сырой #fffbdd [shape]	I5374:358836;1168:1949;1157:1876
+S	10	{Color:tx-accent/grey/primary} «Shadow» — пробел	I5374:358587;2189:196066;2189:196058
+S	10	сырой #c85626 [frame]	I5374:358922;3075:5617
+S	10	сырой #ff6a00 [frame]	I5374:358922;3075:5619
+S	9	[Gradients/Shimmer] [frame] — нет в маппинге	I5374:358580;471:162368
+S	9	сырой #c4c4c4 [shape]	I5374:358587;2498:9996;69:109;5377:474204;1465:154025;1248:7516
+S	9	[Body/body] — нет в маппинге	I5374:358834;4906:196324;286:7048
+S	9	[Gradients/Fade Horizontal] [shape] — нет в маппинге	I5374:358981;2856:34111;2856:33979;431:1658;435:2547
+S	8	сырой #000000@0.40 [shape]	I5374:358797;4270:112414
+S	7	сырой #ff0000 [shape]	I5374:358559;349:4028;244:1424
+S	7	{Radius:CRx10}=40 topLeftRadius — нет цели	5374:358788
+S	7	{Radius:CRx10}=40 topRightRadius — нет цели	5374:358788
+S	7	{Radius:CRx10}=40 bottomLeftRadius — нет цели	5374:358788
+S	7	{Radius:CRx10}=40 bottomRightRadius — нет цели	5374:358788
+S	7	шрифт без стиля: WB Sans Medium 40/auto	I5374:358788;40007404:39090
+S	7	сырой эффект: background_blur	I5374:358834;4906:196320;2646:2330;494:15686
+S	7	[Description/descriptionAccent — lion] — нет в маппинге	I5374:358976;409:1590
+S	6	эффект [.blur tiny] — нет в маппинге	I5374:358559;349:4028;244:1423
+S	6	сырой #ff8533 [shape]	I5374:358834;4906:196320;2646:2318
+S	6	{theme:notification/warningPrimary} [shape] — нет в маппинге	I5374:358834;4906:196320;2646:2319
+S	6	сырой #ffffff [text]	I5374:358834;4906:196320;2646:2347
+S	6	{Theme:button/secondary/bg/default} [frame] — нет в маппинге	I5374:358834;4906:196326
+S	5	[Body/bodyAccent — buffalo] — нет в маппинге	I5374:358835;97:15288;627:1119;29:11509
+S	5	[Action/actionAccent] — нет в маппинге	I5374:358886;2605:6175
+S	5	сырой #a73afd [frame]	I5374:358922;3075:5579
+S	5	сырой #000041 [frame]	I5374:358922;3075:5613
+S	4	сырой #70707f [shape]	I5374:358797;4270:112412
+S	4	сырой #656573 [shape]	I5374:358797;4270:112420
+S	4	сырой #ffffff@0.20 [shape]	I5374:358797;4270:112422
+S	4	{Theme:button/tertiary/bg/default} [frame] — нет в маппинге	I5374:358835;97:15288;627:1119
+S	4	{Theme:button/tertiary/content/primary/default} [text] — нет в маппинге	I5374:358835;97:15288;627:1119;29:11509
+S	4	{Theme:bg/accentLight} [frame] — нет в маппинге	I5374:358941;5930:6223
+S	4	[Description/descriptionAccent] — нет в маппинге	I5374:358941;5930:6224
+S	4	эффект [Shadow Up] — нет в маппинге	5374:358980
+S	4	[Display/display — whale] — нет в маппинге	I5374:358981;2785:78499;525:3285;129:393
+S	4	{theme:separator/default} [shape] — нет в маппинге	I5374:358981;2785:78497;100:119
+S	4	[Action/action— capybara] — нет в маппинге	I5374:358981;3439:86016;431:1658;435:2535
+S	3	сырой #48ea4d [shape]	I5374:358746;349:4030;250:14;5374:359200;238:8;3867:1026
+S	3	{theme:filledArea/bg/default} [frame] — нет в маппинге	I5374:358835;97:15293;3107:24017
+S	3	{Theme:input/bg/default} [frame] — нет в маппинге	I5374:358835;97:15293;3107:24021
+S	3	{Theme:input/stroke/default} [stroke] — нет в маппинге	I5374:358835;97:15293;3107:24021
+S	3	сырой #1d1c1e [frame]	5374:358852
+S	3	сырой #f7ccff [shape]	I5374:358952;2036:4155
+S	3	шрифт без стиля: ALS Hauss VF Regular 15/20	I5374:358956;286:7048
+S	3	{theme:icon/contraste} [shape] — нет в маппинге	I5374:358976;409:1561
+S	2	сырой эффект: inner_shadow + layer_blur	I5374:358797;4270:112407
+S	2	сырой #8f8fa3 [shape]	I5374:358797;4270:112419
+S	2	сырой #000000@0.70 [shape]	I5374:358797;4270:112423
+S	2	сырой #c7c7d7@0.60 [shape]	I5374:358797;4270:112427
+S	2	сырой #ffffff@0.80 [shape]	I5374:358797;4270:112439
+S	2	сырой #ffffff@0.32 [shape]	I5374:358797;4270:112441
+S	2	сырой #000000@0.00 [shape]	I5374:358797;4270:112442
+S	2	сырой #ff00ff [text]	I5374:358834;4906:196326;2605:6175
+S	2	[Text/textSecondary (day)] [text] — нет в маппинге	I5374:358835;97:15292
+S	2	{theme:filledArea/stroke/defaultOFF} [stroke] — нет в маппинге	I5374:358835;97:15293;3107:24017
+S	2	[Title/title1 — elephant] — нет в маппинге	I5374:358835;97:15293;3107:24017;3014:22403
+S	2	сырой #d9d9d9@0.00 [shape]	I5374:358835;97:15294;28208:15102;28208:14578
+S	2	сырой #000000@0.10 [stroke]	5374:358852
+S	2	сырой #bf80ff [shape]	I5374:358922;3075:5577
+S	2	сырой #661aff [shape]	I5374:358922;3075:5583
+S	2	сырой #9933ff [shape]	I5374:358922;3075:5594
+S	2	сырой #d9d9d9 [shape]	I5374:358922;3075:5595
+S	2	{Theme:additional/buttonBuy/bg/default} [frame] — нет в маппинге	5374:358958
+S	2	{Theme TX:tx-bg/map} [frame] — нет в маппинге	5374:358974
+S	2	сырой #ffffff@0.31 [frame]	I5374:358979;175:2156
+S	2	эффект [Background Blur/Ultra Thin] — нет в маппинге	I5374:358979;175:2156
+S	2	эффект [Shadow Surface] — нет в маппинге	I5374:358981;2785:78499;525:3284
+S	2	[BG/bgAirToCoal (day)] [frame] — нет в маппинге	I5374:358981;3439:86014
+S	2	{Theme:text icon/whiteSecondaryConst} [text] — нет в маппинге	I5374:358982;1352:5983;1369:2187
+S	2	шрифт без стиля: ALS Hauss VF Medium 11/14	I5374:358982;1352:5983;1369:2187
+S	2	шрифт без стиля: ALS Hauss VF Medium 19/23	I5374:358982;1345:2064
+S	1	сырой #444444 [frame]	5374:358552
+S	1	сырой #ffffff@0.10 [stroke]	5374:358552
+S	1	{Theme:bg/level 2} [shape/shape] — нет правила	I5374:358797;4270:112355
+S	1	{Theme:stroke/secondary} [stroke] — нет в маппинге	I5374:358797;4270:112410
+S	1	[Text/textPrimary (day)] [text] — нет в маппинге	I5374:358835;97:15291
+S	1	{theme:filledArea/stroke/defaultON} [stroke] — нет в маппинге	I5374:358835;97:15293;3107:24019
+S	1	{theme:bg/airToCoal} [frame] — нет в маппинге	I5374:358835;97:15295
+S	1	[.auto tint/white] [shape] — нет в маппинге	I5374:358835;97:15295;7892:7436;7470:13530
+S	1	[.auto tint/auto] [shape] — нет в маппинге	I5374:358835;97:15295;7892:7436;7470:13531
+S	1	{theme:bg/level 2} [shape/shape] — нет правила	I5374:358846;3811:66084
+S	1	{theme:stroke/secondary} [stroke] — нет в маппинге	I5374:358846;3811:110348
+S	1	сырой эффект: drop 0,8 r20 s0 #2d2d53@0.12	5374:358997
+S	1	{Theme TX:tx-button/blurring/solid/bg/default} [frame] — нет в маппинге	I5374:358997;401:2067;91:1950
+S	1	сырой #000000@0.50 [shape]	5374:359005
+S	1	{theme:button/primary/content/default} [text] — нет в маппинге	I5374:359012;286:5729;286:5722;25:9630

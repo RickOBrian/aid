@@ -1,0 +1,135 @@
+#	page=Макеты для примерки цветов и шрифтов — Switched Styles	id=7151:54574	dry=0	nodes=17203	replaced=2214	skipped=1556	date=2026-11-18
+D	280	{Gaps:SPx2} → space-8
+D	221	сырая тень → [Shadows/FAB]
+D	145	[Subtitles/Subtitle 1] (стар.) → [Subtitles/Subtitle 1]
+D	138	{Отступы:SPx3} → space-12
+D	126	[Bodies/Body 3] (стар.) → [Bodies/Body 3]
+D	112	[Icons day/Secondary Pressed] → Icon/Secondary (shape)
+D	86	{Spacing:SPx3} → space-12
+D	84	[Icon [day]/Primary] → Icon/Primary (shape)
+D	69	[Caption/caption] (стар.) → [Captions/Caption 2]
+D	65	[Bodies/Body 2] (стар.) → [Bodies/Body 2]
+D	60	[Subtitles/Subtitle 2] (стар.) → [Subtitles/Subtitle 2]
+D	59	градиент ffffff@0.78>ffffff@0 → [Gradients/Top] (анкета А)
+D	53	#000000 → Icon/Primary (shape)
+D	48	{Corner Radius:CRx2} → radius-8
+D	45	сырая тень → [Glass/Navbar]
+D	41	[Titles/Title 4] (стар.) → [Titles/Title 4]
+D	38	[Subtitles/Subtitle 3] (стар.) → [Subtitles/Subtitle 3]
+D	37	SF Pro Text Regular 14/16 → [Bodies/Body 3]
+D	36	SF Pro Display Semibold 22/22 → [Titles/Title 4]
+D	28	[Texts night/Primary] → Icon/Constant White (shape)
+D	27	{Gaps:SPx3} → space-12
+D	25	сырая тень → [Shadows/Bottom Sheet]
+D	24	[Shadows / Brand button] → снята
+D	24	#000000 → Text/Primary (text)
+D	24	{Corner Radius:CRx3} → radius-12
+D	24	{Corner Radius:CRx1,5} → radius-6
+D	19	[Shadow 6] → [Shadows/Bottom Sheet]
+D	18	[Captions/Caption] (стар.) → [Captions/Caption 1]
+D	18	сырая тень → [Shadows/Medium]
+D	15	сырая тень (анкета А) → [Shadows/Medium]
+D	15	сырая тень → [Shadows/Large Air]
+D	15	[Icon [day]/Secondary Opposite] → Icon/Disabled (shape)
+D	15	[Day / White] → Stroke/Inverted (stroke)
+D	12	[Pastel [day]/Midway] → Pastel/Lenny (frame)
+D	12	[Pastel [day]/Mantle] → Pastel/Ralph (frame)
+D	12	[Pastel [day]/Liberty] → Pastel/Lisa (frame)
+D	12	[Pastel [day]/Asphalt] → Pastel/Apu (frame)
+D	12	[Pastel [day]/Graylord] → Pastel/Barney (frame)
+D	12	{Theme:text icon/primary} → Text/Primary (text)
+D	11	#232326 → Icon/Primary (shape)
+D	10	градиент ffffff>ffffff@0 → [Gradients/Fade Horizontal] (анкета А)
+D	10	{Theme:text icon/secondary} → Text/Secondary (text)
+D	8	#262626 → Text/Primary (text)
+D	7	градиент TX Loading Fade → [Gradients/Shimmer]
+D	4	[Purple] → Icon/Accent (shape)
+D	4	[Bodies/Body 1] (стар.) → [Bodies/Body 1]
+D	4	{Corner radius:BRx6} → radius-24
+D	4	#232326 → Text/Primary (text)
+D	4	[Button [day]/Primary] → Button/Primary (frame)
+D	4	[Text [day]/Constant White] → Text/Constant White (text)
+D	4	#000000 → Technical/Visible Deep (shape)
+D	4	{Gaps:SPx0,5} → space-2
+D	4	{Spacing:SPx0,5} → space-2
+D	3	#ffffff → Background/Primary (frame)
+D	3	{Theme:bg/level 1 base} → Icon/Primary Inverted (shape)
+D	3	{Color:tx-accent/grey/primary} → Text/Primary (text)
+D	2	#6d6f75 → Text/Secondary (text)
+D	2	[Icon [day]/Secondary] → Icon/Secondary (shape)
+D	1	#000000@0.30 → Background/Overlay (shape)
+D	1	[Orange] → Icon/Attention Deep (shape)
+D	1	[Day / Gray 40] → Icon/Tertiary (shape)
+D	1	#e9e9ed → Stroke/Primary (stroke) w1
+D	1	[Button [day]/Secondary] → Button/Secondary (frame)
+D	1	[Text [day]/Primary] → Text/Primary (text)
+D	1	[Day / Gray 80] → Pastel/Apu (shape)
+D	1	{Gaps:SPx4} → space-16
+D	1	{Gaps:SPx2,5} → space-10
+D	1	{Gaps:SPx1} → space-4
+D	1	{Spacing:SPx4} → space-16
+D	1	{Spacing:SPx2,5} → space-10
+D	1	{Spacing:SPx1} → space-4
+S	328	сырой #c4c4c4 [shape]	I7151:55858;1465:154025;1248:7516
+S	116	сырой эффект: layer_blur	I7151:54621;218:48
+S	90	сырой эффект: background_blur	I7151:56072;1228:7439
+S	78	сырой #000000 [shape]	I7151:54629;349:4028;244:1424
+S	70	сырой #ffffff [shape]	I7151:54629;349:4028;244:1423
+S	59	сырой эффект: drop 0,1 r0 s0 #ffffff@0.30 + inner_shadow	I7151:54621;218:49
+S	54	градиент [shape]	I7151:54678;1074:135481
+S	37	сырой эффект: drop 0,1 r2 s0 #000000@0.12 + drop 0,0 r1 s0 #000000@0.15	7151:56429
+S	36	сырой #ffffff [stroke]	I7151:56072;1228:7446
+S	30	градиент [frame]	I7151:54678;1093:24175
+S	30	[Icons day/Secondary Pressed] → Icon/Secondary [stroke] — скоуп SHAPE_FILL	I7151:56072;1228:7452
+S	30	сырой #ffffff@0.05 [shape]	7151:56078
+S	30	сырой #000000@0.08 [stroke]	7151:56078
+S	28	TEXT смешанные заливки — оставлено	
+S	28	сырой #7b2df5 [shape]	I7151:57372;1228:7445
+S	22	сырой #d9d9d9 [shape]	I7151:55867;3131:32917;3131:30428
+S	21	сырой #ea3323 [shape]	I7151:54629;349:4028;244:1424
+S	21	[Background [day]/Secondary] [shape/shape] — нет правила	I7151:56096;1242:357
+S	16	сырой #ffffff [text]	7151:54667
+S	16	сырой #979797 [shape]	7151:56531
+S	15	сырой #ffffff@0.10 [shape]	7151:56080
+S	15	сырой #000000@0.03 [stroke]	7151:56080
+S	15	сырой эффект: drop 0,6 r20 s0 #000000@0.08 + background_blur	I7151:56107;1264:96
+S	13	шрифт без стиля: Inter Regular 14/20	7151:57052
+S	13	шрифт без стиля: Inter Regular 11/auto	7151:57053
+S	12	сырой #fefae5 [frame]	7151:57051
+S	11	сырой #7b2df5@0.12 [shape]	I7151:57677;1074:135478
+S	10	сырой #ffffff@0.10 [stroke]	7151:54575
+S	10	шрифт без стиля: SF Pro Medium 16/16	7151:56549
+S	9	сырой #23354d [shape]	7151:56347
+S	9	сырой #f4bb40 [shape]	7151:56347
+S	8	шрифт без стиля: WB Sans Bold 30/100	I7151:55867;3131:32917;3131:30431
+S	8	сырой #232326 [shape]	I7151:56170;619:1373
+S	8	сырой #0f0f1e@0.90 [text]	I7151:56689;1284:42181
+S	8	сырой #242428 [text]	I7151:56749;907:124131;859:104820
+S	8	сырой #000000@0.12 [shape]	7151:56148
+S	8	сырой эффект: drop 0,1 r2 s0 #000000@0.20	7151:56497
+S	8	сырой эффект: drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff + drop 0,0 r250 s0 #ffffff	7151:57742
+S	6	градиент [stroke]	7151:56173
+S	6	сырой #444444 [frame]	7151:54575
+S	6	{System Colors:Labels/Primary} [text] — нет в маппинге	I7151:56157;2189:194705
+S	6	шрифт без стиля: SF Pro Regular 14/16	7151:56510
+S	5	эффект [.blur tiny] — нет в маппинге	I7151:54629;349:4028;244:1423
+S	5	сырой #ffffff@0.90 [shape]	I7151:56072;1228:7440
+S	5	{Color:tx-accent/grey/primary} «Shadow» — пробел	I7151:56145;1067:131367
+S	5	сырой #23569a [shape]	7151:56590
+S	5	шрифт без стиля: SF Pro Text Semibold 17/20 SMALL_CAPS_FORCED	I7151:56141;2645:221737
+S	4	шрифт без стиля: WB Sans Bold 22/auto	I7151:55867;3122:27197
+S	4	сырой #b1fcc0 [shape]	
+S	4	сырой #5abd5f [shape]	
+S	4	сырой #000000 [text]	7151:57053
+S	4	сырой #000000 [frame]	7151:54704
+S	4	{System Colors:Miscellaneous/Alert, Menu, Action Sheet - Separators} [stroke] — нет в маппинге	
+S	4	{System Colors:Colors/Blue} [text] — нет в маппинге	
+S	4	сырой #cacacc [shape]	7151:56650
+S	4	сырой #ffffff@0.25 [shape]	7151:56364
+S	4	шрифт без стиля: Google Sans Regular 17/20	7151:56439
+S	4	сырой эффект: drop 0,4 r12 s0 #000000@0.15	7151:56527
+S	4	сырой #d8d8d8 [shape]	7151:56532
+S	4	сырой #979797 [stroke]	7151:56532
+S	4	шрифт без стиля: SF Pro Text Medium 12/auto	7151:57074
+S	4	шрифт без стиля: SF Pro Text Semibold 16/16	7151:57075
+R	139	остальные причины (по 1–3 значения): 83 — полный список в отчёте прогона чата 18.11 не сохранён
