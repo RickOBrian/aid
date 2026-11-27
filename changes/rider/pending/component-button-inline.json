@@ -1,0 +1,92 @@
+{
+  "id": "component-button-inline",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "ButtonInline",
+  "componentId": "button-inline",
+  "product": "rider",
+  "task": "designer-39",
+  "taskKey": "AID-105",
+  "issue": 623,
+  "changeSummary": "ButtonInline Rider — создание (designer-39, AID-105, issue #623), флоу figma-library-workflow §3.1. Вход PD 25.11 — New Rider DEV 5mg6h0oB8yRDoUfTruogca 5331:107323 (FRAME «Button» 193×36, не компонент, экземпляров нет; только чтение): кнопка-действие «Добавить остановку» — ic_plus 20 + подпись Subtitles/Subtitle 3 Text/Primary, заливка Background/Secondary, radius-pill, отступы space-8 / слева space-10 / справа space-12, gap space-2. Состояний нет. Lookup: Chips 231:1274 визуально почти совпадает, но это выбор, а не действие; Button 1513:3772 — другая анатомия и стили (56, Description, Width); ButtonFloating 1076:5989 — плавающая над картой. Решение PD 25.11: не Chip и не размер Button — отдельный компонент Role Button (component-standards §8.2: другой набор слотов). Имя ButtonInline / «Button Inline» — модификатор места, как ButtonFloating; Rider не делит кнопку на текстовую и иконочную (решение 26.10). Тип «Создание» 1.0.0, новый ключ; Chips 231:1274 не трогаем.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "ButtonInline: компактная кнопка-действие внутри контента — иконка слева и подпись, состояния Default, Pressed, Disabled, Loading, Pending, на токенах Rider"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2431:2",
+    "components": {
+      "ButtonInline": {
+        "node": "2546:7056",
+        "key": "95bf71bc0bd923da3ba5da982f1aa17b39a377e6"
+      }
+    },
+    "auditPrototypes": {
+      ".ButtonInline · audit": "2431:37"
+    },
+    "input": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5331:107323"
+    },
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2546-27079",
+    "auditSection": "2434:53",
+    "auditBlocks": {
+      "0": "2434:78",
+      "1": "2434:101",
+      "2": "2434:124",
+      "3": "2434:147",
+      "4": "2434:170",
+      "5": "2434:193",
+      "6": "2434:216",
+      "7": "2434:239",
+      "8": "2434:262",
+      "cover": "2434:55"
+    },
+    "usage": {
+      "fileKey": "5mg6h0oB8yRDoUfTruogca",
+      "node": "5262:26034"
+    },
+    "constructionPage": "2431:2",
+    "guideSection": "2546:27079",
+    "changelogSection": "2546:27472",
+    "masterSection": "2546:7055",
+    "archivePage": "465:630"
+  },
+  "decisions": [
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "quote": "Внимание, это не чип (в фигме референс мог неправильно быть назван), это именно кнопка (режим не включил-выключил, а переход или действие) как Button (но я сомневаюсь, что нужно добавлять в Button, так как у нее упрощенная анатомия и стили)"
+    },
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "about": "Имя — вариант «а»: ButtonInline / «Button Inline»."
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "1. Убери внутри текстового блока отступ 1 снизу\n2. Вне зависимости от наличия иконки высота не должна уменьшаться если есть только текст\n3. Аналогично Button сделай опциональный fade"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "3А, плюс посмотри есть у Button еще состояние когда по тексту градиент бежит\n4а\n6а (принципы те же, что в Button, только размеры могут отличаться если надо)\n10а\n\n5а\n9а"
+    }
+  ],
+  "openQuestions": [],
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej",
+  "pr": 629,
+  "updated": "2026-11-26"
+}
