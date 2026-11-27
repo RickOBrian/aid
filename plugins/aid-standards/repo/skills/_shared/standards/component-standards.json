@@ -1,6 +1,6 @@
 {
   "id": "component-standards",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "status": "alpha",
   "humanFile": "component-standards.md",
   "note": "Машинный слой стандарта компонентов. Проза объясняет, этот файл перечисляет. Версии обязаны совпадать — расхождение ловит scripts/check-docs.mjs.",
@@ -132,6 +132,7 @@
       "badge",
       "header",
       "footer",
+      "overline",
       "title",
       "subtitle",
       "action"
