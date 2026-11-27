@@ -1,0 +1,20 @@
+{
+  "id": "component-deviation-badge-count-contrast",
+  "type": "component",
+  "exceptionType": "accessibility",
+  "artifact": "badge-count",
+  "product": "rider",
+  "standard": "skills/_shared/standards/accessibility.md — нетекстовый контраст не ниже 3:1 (WCAG 1.4.11)",
+  "actual": "Night: плашка Background/Accent #8548FF к Background/Secondary — 2,96:1, к Background/Primary — 3,38:1. Число Text/Constant White #F8FAFF к фону — 4,60:1 (текст в норме). Day — в норме. Figma: Rider Components 79UryRdexwKAv8vDIV5v4v, блок 3 аудита 2707:27315.",
+  "reason": "Решение PD: без тени и обводки-отбивки, ночью на Background/Secondary каунтер остаётся как есть (AID-116, блок 8 аудита, вопрос 7).",
+  "quote": "а) Оставить, отклонение",
+  "status": "accepted",
+  "reviewAt": "release",
+  "pendingRef": "changes/rider/pending/component-deviation-badge-count-contrast.json",
+  "decidedBy": "Principal Designer, 2026-11-27",
+  "taskKey": "AID-116",
+  "issue": 654,
+  "pr": 663,
+  "created": "2026-11-27",
+  "author": "sergej"
+}
