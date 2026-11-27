@@ -1,0 +1,99 @@
+{
+  "id": "component-menu-row",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "MenuRow",
+  "componentId": "menu-row",
+  "product": "rider",
+  "changeSummary": "MenuRow Rider: ячейка списка меню — переход в раздел. leading — опциональный слот Icon 24 (Icon/Primary) или графика 24; заголовок Subtitle 2 Text/Primary и опциональная 2-я строка Body 2 Text/Secondary в 1 строку; trailing — шеврон (Show Chevron) и опционально значение или BadgeCount перед ним; высота Hug: space-20 сверху/снизу при одной строке (64), space-12 при двух. Шеврон — новый токен Icon/Quaternary (= Background/Quaternary день/ночь), до токена — хекс-допущение. Загрузка — общий скелетон, не вариант; группа-карточка и Payment — не часть компонента. Предаудит 2026-11-27: в макете строки — экземпляры чужого набора `icon` 5221:8203 (26 вариантов) с вариантом Counter=Yes, счётчик подменён шевроном; шеврон залит Background/Quaternary; высота литералами, gap 20 не привязан; у «Поддержки» текст сдвинут на 2 px.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "relatedTokenChanges": [],
+  "task": "designer-46",
+  "taskKey": "AID-118",
+  "issue": 665,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": null,
+    "input": [
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5274:128675"
+      },
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5274:128750"
+      },
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5274:154901"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Отдельный компонент, не вариант строки AID-106",
+      "quote": "Нужен вот такой компонент ячейки списка. Он похож на дефолтные, но имеет свои нюансы, поэтому лучше не смешивать"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Имя MenuRow; строка AID-106 — OptionRow",
+      "quote": "MenuRow — ячейка меню (AID-118); AID-106 — OptionRow"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Trailing: шеврон (Show Chevron) + опционально значение или BadgeCount перед ним",
+      "quote": "1а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Subtitle: опционально, Body 2 Text/Secondary, 1 строка",
+      "quote": "2а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Leading: слот Icon 24 Icon/Primary или графика 24, опционально",
+      "quote": "3а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Загрузка: общий скелетон отдельно, не вариант",
+      "quote": "4а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Группа и Payment: только строка",
+      "quote": "5а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Высота: Hug, space-20 (1 строка = 64) / space-12 (2 строки)",
+      "quote": "6а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Цвет шеврона — новый токен Icon/Quaternary",
+      "quote": "Нужен новый токен (в будущем шевроны на него переведем). Это будет Icon/Quaternary, он в лайт и дарк моде будет по значениям аналогично Background/Quaternary. Красить MenuRow будем в Icon/Quaternary"
+    }
+  ],
+  "openQuestions": [
+    "Токен Icon/Quaternary — token-change-gate, отдельная задача (Ops, исполнитель 🎨 Rider); сборка ждёт токен",
+    "Product Logic → PD: PRD бокового меню vs шторка в макете; что открывает «Способ оплаты»; есть ли «Выйти» (destructive)",
+    "Стык с BadgeCount AID-116 (вопрос 10 его аудита): экземпляр BadgeCount перед шевроном в слоте trailing"
+  ],
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej"
+}
