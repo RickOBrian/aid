@@ -7,6 +7,7 @@ import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
 import { BottomSheetPreviewPage } from './BottomSheetPreviewPage';
+import { TabBarPreviewPage } from './TabBarPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
 import { SpacingPage } from './SpacingPage';
@@ -170,6 +171,14 @@ export function App() {
     return (
       <ProductAccentScope productId="rider">
         <BottomSheetPreviewPage />
+      </ProductAccentScope>
+    );
+  }
+  // Превью TabBar Rider (AID-89, presentbook-10): только по прямой ссылке, без ссылок из меню.
+  if (managePath === '/rider/preview/tab-bar') {
+    return (
+      <ProductAccentScope productId="rider">
+        <TabBarPreviewPage />
       </ProductAccentScope>
     );
   }
