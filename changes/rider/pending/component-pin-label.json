@@ -1,0 +1,104 @@
+{
+  "id": "component-pin-label",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "Pin Label",
+  "componentId": "pin-label",
+  "product": "rider",
+  "task": "designer-35",
+  "taskKey": "AID-101",
+  "issue": 616,
+  "pr": 634,
+  "changeSummary": "PinLabel Rider — новый компонент (designer-35, AID-101, issue #616), флоу figma-library-workflow §3.1: подпись точки маршрута на карте с хвостом к координате (время подачи, остановки, прибытия; дельта альтернативного маршрута; только иконка). Вход — набор «Bubble» New Rider Drafts 7500:970900 (16 вариантов, 35 экземпляров), черновик — только источник, замена экземпляров после публикации. По ответам PD 25.11 («2. Без хвоста не нужен 3. давай попробуем одним, да 4. ок 5. да 6. да 7. да 8. а»): хвост — одна ось Tail из 8 значений (Left / Top Left / Top / Top Right / Right / Bottom Right / Bottom / Bottom Left), без значения «нет», вместо 4 булевых Top/Left/Right/Down; один компонент на текст и иконку — Content = Text / Icon вместо Type Main Route / Icon Only; тело и хвост — один токен Background/Constant Dark, текст Text/Constant White, иконки Icon/Constant White — подпись тёмная и ночью (sergej 26.11), второй токен тела Background/Promo у Icon Only убирается; тона нет — фиолетовые (акцентные) подписи не переносятся (sergej 26.11, пересматривает ответ PD 25.11 п.4); содержимое — подпись Bodies/Body 3 + значение Subtitles/Subtitle 2 + иконка слева (swap), справа одна иконка (swap) вместо трёх; статичный, без нажатия — Pressed ждёт решения продакта по Order Flow OF-3.8; legacy-коллекции черновика (Отступы SPx, Shadow S, радиусы литералами, строки Language) → Rider Tokens, пробелы — одной анкетой; ширина Hug без предела, без фейда. Не Tooltip: тултип временный и привязан к элементу интерфейса, PinLabel постоянный и привязан к координате карты (ответ Standards на вопрос PD 25.11). Иконка слева — по центру первой строки (подписи), не тела (sergej 26.11). Имя PinLabel / «Pin Label» подтверждено Standards 26.11. Тень — Shadows/Small (sergej 26.11). Сборка 26.11 (по слову sergej): пейдж «🚧 Pin Label · construction» 2660:27129, набор Pin Label 2660:27131, аудит перемещён в Archive секцией «Pin Label · audit · 2026-11-26» (persefona-figma-pages §7.1), пейдж аудита удалён после сверки.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "PinLabel: новая подпись точки маршрута на карте Rider — время, дельта маршрута или иконка, хвост в 8 направлениях"
+  },
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "input": {
+      "fileKey": "eSitSKeHzy5fOUF1n3zg2B",
+      "node": "7500:970900"
+    },
+    "auditPage": null,
+    "auditSection": "2453:7997",
+    "auditBlocks": {
+      "cover": "2453:7999",
+      "0": "2453:8000",
+      "1": "2453:8009",
+      "2": "2453:8048",
+      "3": "2453:8178",
+      "4": "2453:8188",
+      "5": "2453:8255",
+      "6": "2453:8280",
+      "7": "2453:11004",
+      "8": "2453:8291"
+    },
+    "auditPrototypes": {
+      ".Pin Label · audit": "2453:3750"
+    },
+    "componentPage": "2660:27129",
+    "masterSection": "2660:27130",
+    "componentSet": "2660:27131",
+    "componentKey": "712a7e562a5134d4a35b4d2a0cff69e2e68046d9",
+    "guideSection": "2660:27220",
+    "changelogSection": "2660:27692",
+    "auditArchive": {
+      "page": "465:630",
+      "section": "2453:7997",
+      "name": "Pin Label · audit · 2026-11-26"
+    }
+  },
+  "openQuestions": [
+    "Нажатие (State Pressed) — ждёт решения продакта, Order Flow OF-3.8"
+  ],
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-25",
+  "author": "sergej",
+  "decisions": [
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "quote": "1. Согласен, что уточнить со стандартами, но это не один из видов тултипа? 2. Без хвоста не нужен 3. давай попробуем одним, да 4. ок 5. да 6. да 7. да 8. а",
+      "replaces": "анкета предаудита 1–8"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "Фиолетовые нам не нужны пины",
+      "replaces": "блок 8, вопрос 4 (Tone = Default / Accent) — тона нет, 16 вариантов: Content × Tail"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "иконка слева — по центру первой строки (подписи), образец — экземпляр Bubble 2505:15873",
+      "replaces": "иконка по центру тела"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "Standards",
+      "quote": "PinLabel / «Pin Label» — да (не Tooltip; Role Pin в гайд 1.7.0 вносит Standards)",
+      "replaces": "блок 8, вопрос 1"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "Мы решили в темной теме оставлять пин темным: фон включая хвостик Background/Constant Dark, текст Text/Constant White, иконки Icon/Constant White",
+      "replaces": "блок 8, вопрос 10 (ночь): ответ б"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "sergej",
+      "quote": "1а",
+      "replaces": "блок 8, вопрос 9 (тень): Shadows/Small"
+    }
+  ]
+}
