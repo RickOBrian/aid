@@ -1,7 +1,6 @@
 ---
 name: ds-acceptance-request
 argument-hint: "<audit|construction|recheck> <путь к pending-JSON или AID-NN>"
-disable-model-invocation: true
 metadata:
   version: "0.1.0"
   kind: protocol
