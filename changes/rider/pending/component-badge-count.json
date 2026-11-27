@@ -16,7 +16,7 @@
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
     "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2696-28857",
-    "auditPage": null
+    "auditPage": "2707:27223"
   },
   "decisions": [
     { "date": "2026-11-27", "by": "PD", "about": "Имя BadgeCount, алиас Counter", "quote": "1ок" },
