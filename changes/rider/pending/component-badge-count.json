@@ -17,11 +17,10 @@
   "pr": 663,
   "figma": {
     "fileKey": "79UryRdexwKAv8vDIV5v4v",
-    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2696-28857",
-    "auditPage": "2707:27223",
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2754-945",
+    "auditPage": null,
     "auditSection": "2707:27224",
     "auditBlocks": {
-      "cover": "2707:27226",
       "0": "2707:27227",
       "1": "2707:27236",
       "2": "2707:27270",
@@ -30,24 +29,96 @@
       "5": "2707:27404",
       "6": "2707:27481",
       "7": "2707:27502",
-      "8": "2707:27513"
+      "8": "2707:27513",
+      "cover": "2707:27226"
     },
     "auditMaster": "2707:27841",
+    "constructionPage": "2751:586",
+    "guideSection": "2754:610",
+    "guideBlocks": {
+      "1": "2754:635",
+      "2": "2754:666",
+      "3": "2754:697",
+      "4": "2754:728",
+      "5": "2754:759",
+      "6": "2754:790",
+      "7": "2754:821",
+      "8": "2754:852",
+      "10": "2754:883",
+      "11": "2754:914",
+      "cover": "2754:612"
+    },
+    "changelogSection": "2759:1314",
+    "changelogTable": "2759:1425",
+    "master": "2754:945",
+    "componentKey": "a5d274cbef80a93143f0179d2ec80ad0234b9a97",
     "input": [
-      { "fileKey": "79UryRdexwKAv8vDIV5v4v", "node": "2696:28857" },
-      { "fileKey": "79UryRdexwKAv8vDIV5v4v", "node": "2696:28894" }
-    ]
+      {
+        "fileKey": "79UryRdexwKAv8vDIV5v4v",
+        "node": "2696:28857"
+      },
+      {
+        "fileKey": "79UryRdexwKAv8vDIV5v4v",
+        "node": "2696:28894"
+      }
+    ],
+    "auditArchive": "465:630"
   },
   "decisions": [
-    { "date": "2026-11-27", "by": "PD", "about": "Имя BadgeCount, алиас Counter", "quote": "1ок" },
-    { "date": "2026-11-27", "by": "PD", "about": "Тон", "quote": "только фиолетовый" },
-    { "date": "2026-11-27", "by": "PD", "about": "Размер", "quote": "один размер пока что" },
-    { "date": "2026-11-27", "by": "PD", "about": "Одна цифра — круг 24×24: min-width = высота, отступ space-6", "quote": "а" },
-    { "date": "2026-11-27", "by": "PD", "about": "Порог max", "quote": "можно и 99+, допустимо и больше (решается на уровне сценария)" },
-    { "date": "2026-11-27", "by": "PD", "about": "Фон — Background/Accent с правкой описания «для свитчеров» (token-change-gate, Designer · Components)", "quote": "а" },
-    { "date": "2026-11-27", "by": "PD", "about": "Тень или обводка-отбивка на фото и карте", "quote": "не нужна" },
-    { "date": "2026-11-27", "by": "Standards", "about": "Минимальная ширина", "quote": "а — литерал = высоте, инвариант" },
-    { "date": "2026-11-27", "by": "PD", "about": "Контраст ночью: Background/Accent к Background/Secondary 2,96 < 3:1 (к Primary 3,38) — без отбивки, принятым отклонением", "quote": "а) Оставить, отклонение" }
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Имя BadgeCount, алиас Counter",
+      "quote": "1ок"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Тон",
+      "quote": "только фиолетовый"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Размер",
+      "quote": "один размер пока что"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Одна цифра — круг 24×24: min-width = высота, отступ space-6",
+      "quote": "а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Порог max",
+      "quote": "можно и 99+, допустимо и больше (решается на уровне сценария)"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Фон — Background/Accent с правкой описания «для свитчеров» (token-change-gate, Designer · Components)",
+      "quote": "а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Тень или обводка-отбивка на фото и карте",
+      "quote": "не нужна"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Минимальная ширина",
+      "quote": "а — литерал = высоте, инвариант"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Контраст ночью: Background/Accent к Background/Secondary 2,96 < 3:1 (к Primary 3,38) — без отбивки, принятым отклонением",
+      "quote": "а) Оставить, отклонение"
+    }
   ],
   "openQuestions": [
     "Описание Background/Accent «для свитчеров» — заявка token-change-gate, хозяин Designer · Components (блок 8, вопрос 9, узел 2717:660)",
