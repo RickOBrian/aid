@@ -1,11 +1,24 @@
 {
   "artifact": "Rider Space",
-  "currentVersion": "1.0.1",
+  "currentVersion": "1.0.2",
   "figmaTable": {
     "fileKey": "yrfG6u9osujKX8e1B14lpT",
     "nodeId": "208:54"
   },
   "entries": [
+    {
+      "version": "1.0.2",
+      "date": "2026-10-26",
+      "author": "Sergey AI",
+      "type": "patch",
+      "changes": [
+        {
+          "kind": "changed",
+          "description": "У space-20 и space-52 расширена область применения: кроме промежутков — ширина и высота (min-ширина плашки Car Pin, min-размер Button Floating)",
+          "details": "space-20 (20): scopes GAP → GAP, WIDTH_HEIGHT\nspace-52 (52): scopes GAP → GAP, WIDTH_HEIGHT"
+        }
+      ]
+    },
     {
       "version": "1.0.1",
       "date": "2026-10-25",
