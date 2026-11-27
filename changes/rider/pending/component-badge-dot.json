@@ -1,0 +1,32 @@
+{
+  "id": "component-badge-dot",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "BadgeDot",
+  "componentId": "badge-dot",
+  "product": "rider",
+  "changeSummary": "BadgeDot Rider: точка-индикатор без числа (алиасы MiniNotification / mini_notification, как в Driver). Один тон — Accent, размер 12×12, без отбивки; место точки решает компонент-носитель, не BadgeDot. Предаудит 2026-11-27: черновик 2696:28840 — фрейм 12×12 на Archive, аналога в Rider Components нет. Пара к BadgeCount (AID-116): общий токен фона Background/Accent.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "relatedTokenChanges": [],
+  "task": "designer-45",
+  "taskKey": "AID-117",
+  "issue": 657,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2696-28840",
+    "auditPage": null
+  },
+  "decisions": [
+    { "date": "2026-11-27", "by": "PD", "about": "Точка нужна (через Штаб)", "quote": "кружок тоже нужен" },
+    { "date": "2026-11-27", "by": "PD", "about": "Размер 12×12 (Driver — 8×8)", "quote": "а) 12×12" },
+    { "date": "2026-11-27", "by": "PD", "about": "Тон — Background/Accent, как BadgeCount (Driver — Warning)", "quote": "а) Фиолетовый" },
+    { "date": "2026-11-27", "by": "PD", "about": "Место точки на носителе", "quote": "Может быть правый верхний или левый верхний — у некоторых компонентов будет такая вариативность, у некоторых нет. Это должно решаться на уровне этих компонентов, а не самого каунтера. В каунтер же гайды мы просто приносим примеры по готовности" },
+    { "date": "2026-11-27", "by": "PD", "about": "Отбивка (обводка цветом фона)", "quote": "а) Не нужна" }
+  ],
+  "openQuestions": [],
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej"
+}
