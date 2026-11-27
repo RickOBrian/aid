@@ -13,7 +13,8 @@
         "plugin-token-comparator",
         "plugin-style-migration",
         "plugin-mcp",
-        "ops-team"
+        "ops-team",
+        "product-logic"
       ],
       "decides": [
         "system"
@@ -51,6 +52,16 @@
       "decides": [],
       "manager": true,
       "tool": "cursor"
+    },
+    {
+      "github": "slnTeT",
+      "kind": "human",
+      "title": "Менеджер бизнес-логики",
+      "owns": [
+        "product-logic"
+      ],
+      "decides": [],
+      "tool": "claude"
     }
   ],
   "agents": [
