@@ -1,7 +1,6 @@
 ---
 name: board-task
 argument-hint: "<продукт-слово PD и что сделать>"
-disable-model-invocation: true
 metadata:
   version: "0.1.0"
   kind: protocol
