@@ -6,6 +6,7 @@ import { TtmPage } from './TtmPage';
 import { ManagePage } from './ManagePage';
 import { TasksPage } from './TasksPage';
 import { TeamPage } from './TeamPage';
+import { SwitchPreviewPage } from './SwitchPreviewPage';
 import { TabBarPreviewPage } from './TabBarPreviewPage';
 import { IconsPage } from './IconsPage';
 import { RadiusPage } from './RadiusPage';
@@ -164,6 +165,14 @@ export function App() {
   }
   if (managePath === '/manage/team') {
     return <TeamPage />;
+  }
+  // Превью Switch Rider (AID-94): только по прямой ссылке и кнопке из Figma, без ссылок из меню.
+  if (managePath === '/rider/preview/switch') {
+    return (
+      <ProductAccentScope productId="rider">
+        <SwitchPreviewPage />
+      </ProductAccentScope>
+    );
   }
   // Превью TabBar Rider (AID-89, presentbook-10): только по прямой ссылке, без ссылок из меню.
   if (managePath === '/rider/preview/tab-bar') {
