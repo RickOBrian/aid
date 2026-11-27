@@ -1,7 +1,6 @@
 ---
 name: ds-component-check
 argument-hint: "<figma-ссылка на пейдж аудита или сборки>"
-disable-model-invocation: true
 metadata:
   version: "0.2.0"
   kind: protocol
