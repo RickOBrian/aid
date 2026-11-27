@@ -1,0 +1,157 @@
+{
+  "id": "component-badges",
+  "type": "component",
+  "changeType": "changed",
+  "taskType": "evolve",
+  "artifact": "Badges",
+  "componentId": "badges",
+  "product": "driver",
+  "changeSummary": "Семья бейджей Driver — развитие (designer-27, issue #507, номер AID ждёт ai-tasks), платформы — все, флоу figma-library-workflow 0.8.0 §3.1. Девять одиночных мастеров страницы Badges без вариантов, свойств и описаний: small 89:4201 (вход Rows/address), medium/mono 89:4198 (Rows/tarif), medium/color 89:4195 (Rows/options), mini_notification 89:4216 (Tabs 89:5234), без входа — reward 89:4185, big 89:4192, tag 89:4205, notification 89:4209, Counter 89:4214. Код: BadgeCount (Counter) и BadgeDot (mini_notification) — Web в Presentbook, не выпущены; для остальных семи реализаций нет. Отступы, радиусы и шрифты на токенах; хексов-допущений нет. Находки: tag ночью нечитаем — Texts/Secondary Dark Ind (чёрный 54%) на Pastels/Nebula #3E4C45; цифра small на Texts/Tertiary 38% (~2,7:1); красная заливка Counter, notification и mini_notification стоит на токенах поля и иконки (Fields/Warning, Icons/Warning), своего токена заливки нет, Bg/Warning — бледный фон; ночной контраст белого числа 3,2:1 уже записан исключением component-deviation-badge-count-night-contrast; обводка big на Buttons/Secondary; reward — раскладка 360 с локальными фреймами вместо экземпляров; имя big повторяет Buttons/big; в Badges Spec Counter помечен 🚫 при 86 экземплярах в Order. Предложение аудита (все 14 вопросов блока 8 — «Ждёт решения», открыты): small, medium/mono, medium/color, big → один Badge с осями Size S/M/L и Tone Neutral/Mono/Soft/Color; tag → Tag; Counter → BadgeCount, mini_notification → BadgeDot — как в коде; reward — не компонент, а два Badge Size=L; notification — в архив или BadgeCount с хвостом; свойства Label, Icon, Show icon, Show label, у счётчика Value; длинная подпись — одна строка с многоточием; переполнение «99+». Хозяева: Standards — имена, повтор big, токен заливки; дизайнер — tag ночью, контраст small, переполнение; куратор — остальное. Аудит — пейдж «👀 Badges · audit» 495:1119, блоки 0–8, день и ночь на 360; мастера не правились. Имена сетов (RickOBrian/aid#506 п.4, naming-conventions §4 — Role + Entity + Qualifier, Role первым, без пробелов): Badge (Role, одиночное слово — базовый элемент семьи, как Comment), Tag, BadgeCount, BadgeDot; нынешние имена мастеров с пробелами, слешами и подчёркиваниями (medium/color, mini_notification) и имя big уходят; канон standaloneNames — #549. Недоступное (#506 п.3): у бейджей своего недоступного состояния нет, компонент неинтерактивен; когда родитель в State=Disabled — либо opacity 40 % на родителе, либо токены продукта Disabled, не оба сразу; 50 % не применяется. Текущей версии нет (`currentVersion: null`) — initial 1.0.0 по #506 п.5 (release-gate, component-gate, figma-library-workflow §3.3); номер версии ставится на границе релиза. Миграция экземпляров Figma: четыре контурных мастера → Badge с Size и Tone, Counter → BadgeCount, mini_notification → BadgeDot, tag → Tag, reward → два Badge Size=L; ссылки 86 экземпляров Counter в Order и входы Rows/address, Rows/tarif, Rows/options, Tabs 89:5234 перепроверить. Вопросы к куратору arturuxui из блока 8 остаются открытыми.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "Бейджи Driver: Badge с размером и тоном, Tag, BadgeCount, BadgeDot; подпись, иконка и число — свойства; tag читается ночью; у счётчика и точки — свой токен заливки"
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "495:1119",
+    "componentPage": "194:3102",
+    "components": {
+      "reward": "89:4185",
+      "big": "89:4192",
+      "medium/color": "89:4195",
+      "medium/mono": "89:4198",
+      "small": "89:4201",
+      "tag": "89:4205",
+      "notification": "89:4209",
+      "Counter": "89:4214",
+      "mini_notification": "89:4216"
+    },
+    "input": {
+      "fileKey": "XddnBR2XdC4l5HX7pPzTxF",
+      "node": "6976:99952"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-10-28",
+  "author": "arturuxui",
+  "proposal": {
+    "componentName": "Badge",
+    "sets": [
+      "Badge",
+      "Tag",
+      "BadgeCount",
+      "BadgeDot"
+    ],
+    "codeNames": {
+      "Badge": "Badge",
+      "Tag": "Tag",
+      "BadgeCount": "BadgeCount (есть в Presentbook, Web)",
+      "BadgeDot": "BadgeDot (есть в Presentbook, Web)"
+    },
+    "nameStatus": "принято Standards 02.11: Badge (Role-семья), Tag, BadgeCount, BadgeDot; big → Badge Size=L",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, пейдж Badges 194:3102; аудит 495:1119",
+    "tokensRequired": [
+      "Texts/Primary",
+      "Texts/Tertiary",
+      "Texts/Secondary Dark Ind",
+      "Texts/Primary Light Ind",
+      "Icons/Primary",
+      "Icons/Informative",
+      "Icons/Secondary Dark Ind",
+      "Icons/Primary Light Ind",
+      "Icons/Accent",
+      "Strokes/Primary",
+      "Strokes/Secondary",
+      "Strokes/Informative",
+      "Pastels/Rose",
+      "Pastels/Nebula",
+      "Buttons/Secondary",
+      "Gradients/Motivation",
+      "Fields/Warning — временно, gap: заливка BadgeCount",
+      "Icons/Warning — временно, gap: заливка BadgeDot и notification",
+      "Shadows/Shadow 1",
+      "Subtitles/Subtitle 1",
+      "Subtitles/Subtitle 2",
+      "Headlines/Headline 6",
+      "space-0",
+      "space-2",
+      "space-4",
+      "space-6",
+      "space-8",
+      "space-10",
+      "space-12",
+      "space-16",
+      "space-24",
+      "radius-flat",
+      "radius-8",
+      "radius-10",
+      "radius-12"
+    ],
+    "tokensSource": "lookup 02.11 по мастерам 89:4185, 89:4192, 89:4195, 89:4198, 89:4201, 89:4205, 89:4209, 89:4214, 89:4216 — привязанные сейчас переменные; хексов нет; Icons/Accent, Headline 6, space-16/24, Strokes/Informative — из reward (станет двумя Badge Size=L)",
+    "tokenGaps": {
+      "fill/counter": "нет сильных заливок статусов: BadgeCount на Fields/Warning, BadgeDot и notification на Icons/Warning — токены не по назначению, Bg/Warning бледный; та же дыра, что bar/slider в #502; в сборке — текущие привязанные токены без хекса; PD — вопрос «сильные заливки статусов Bg/*» (Standards 02.11)",
+      "tag/night": "Texts/Secondary на Pastels/Nebula ночью нечитаем — вопрос дизайнеру",
+      "small/value": "цифра small на Texts/Tertiary ~2,7:1 — вопрос дизайнеру"
+    },
+    "variants": {
+      "Badge": {
+        "Size": [
+          "S",
+          "M",
+          "L"
+        ],
+        "Tone": [
+          "Neutral",
+          "Mono",
+          "Soft",
+          "Color"
+        ],
+        "properties": {
+          "Label": "TEXT",
+          "Icon": "INSTANCE_SWAP",
+          "Show icon": "BOOLEAN",
+          "Show label": "BOOLEAN"
+        }
+      },
+      "BadgeCount": {
+        "properties": {
+          "Value": "TEXT"
+        },
+        "overflow": "99+ — открыто, вопрос дизайнеру"
+      },
+      "note": "неинтерактивны; недоступность задаёт родитель — opacity 40 % или токены Disabled, не оба (#506 п.3); Tone Neutral — обводка Strokes/Secondary, текст Texts/Tertiary (вторичный, small); Mono — обводка Strokes/Primary, текст Texts/Primary (medium/mono)"
+    },
+    "unsupportedStates": [
+      "Disabled",
+      "Pressed",
+      "Focused",
+      "Hovered"
+    ],
+    "modes": [
+      "day",
+      "night"
+    ],
+    "valueKinds": {
+      "colors": "semantic-token",
+      "fill/counter": "semantic-token, временно не по назначению (gap)",
+      "nightContrast/BadgeCount": "deviation: component-deviation-badge-count-night-contrast",
+      "gradient/L": "semantic-token Gradients/Motivation",
+      "typography": "semantic-token",
+      "spacing": "semantic-token",
+      "radius": "semantic-token",
+      "shadow": "semantic-token Shadows/Shadow 1"
+    },
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release",
+    "openQuestions": "Standards 2, 3, 6 — решены 02.11 (имена; big → Badge Size=L; заливка — gap, вопрос PD); открыты: дизайнер — tag ночью, контраст small, переполнение 99+; куратор arturuxui — reward, notification и остальные вопросы блока 8 495:3522"
+  }
+}
