@@ -1,0 +1,100 @@
+{
+  "id": "component-badge-dot",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "BadgeDot",
+  "componentId": "badge-dot",
+  "product": "rider",
+  "changeSummary": "BadgeDot Rider: точка-индикатор без числа (алиасы MiniNotification / mini_notification, как в Driver). Один тон — Accent, размер 12×12, без отбивки; место точки решает компонент-носитель, не BadgeDot. Предаудит 2026-11-27: черновик 2696:28840 — фрейм 12×12 на Archive, аналога в Rider Components нет. Пара к BadgeCount (AID-116): общий токен фона Background/Accent.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "relatedTokenChanges": [],
+  "task": "designer-45",
+  "taskKey": "AID-117",
+  "issue": 657,
+  "pr": 671,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2777-27868",
+    "auditPage": "2777:27868",
+    "auditSection": "2777:27869",
+    "auditBlocks": {
+      "0": "2777:27872",
+      "1": "2777:27883",
+      "2": "2777:27920",
+      "3": "2777:27930",
+      "4": "2777:27987",
+      "5": "2777:27997",
+      "6": "2777:28036",
+      "7": "2777:28053",
+      "8": "2777:28064",
+      "cover": "2777:27871"
+    },
+    "auditPrototypes": {
+      ".BadgeDot · audit": "2777:28971"
+    },
+    "auditMaster": "2777:28971",
+    "input": [
+      {
+        "fileKey": "79UryRdexwKAv8vDIV5v4v",
+        "node": "2696:28840"
+      },
+      {
+        "fileKey": "79UryRdexwKAv8vDIV5v4v",
+        "node": "2696:28894"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Точка нужна (через Штаб)",
+      "quote": "кружок тоже нужен"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Размер 12×12 (Driver — 8×8)",
+      "quote": "а) 12×12"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Тон — Background/Accent, как BadgeCount (Driver — Warning)",
+      "quote": "а) Фиолетовый"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Место точки на носителе",
+      "quote": "Может быть правый верхний или левый верхний — у некоторых компонентов будет такая вариативность, у некоторых нет. Это должно решаться на уровне этих компонентов, а не самого каунтера. В каунтер же гайды мы просто приносим примеры по готовности"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Отбивка (обводка цветом фона)",
+      "quote": "а) Не нужна"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Размер 12: литерал-инвариант, как min-width у BadgeCount; size-токенов в Rider нет",
+      "quote": "«а»"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Свойство Show — только в служебном мастере аудита для прототипа; в мастер сборки не переносить, показ точки решает носитель"
+    }
+  ],
+  "openQuestions": [
+    "Контраст ночью: Background/Accent к Background/Secondary 2,96:1 < 3:1 — решает PD, ★ отклонением как у BadgeCount (блок 8, вопрос 6, узел 2777:28118)",
+    "Описание Background/Accent «для свитчеров» — Designer · Components, общий пробел с AID-116 (блок 8, вопрос 8, узел 2777:28138)",
+    "Стык с носителями — аудиты носителей, ★ в гайде только примеры (блок 8, вопрос 9, узел 2777:28148)"
+  ],
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej"
+}
