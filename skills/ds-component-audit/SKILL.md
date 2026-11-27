@@ -3,7 +3,7 @@ name: ds-component-audit
 argument-hint: "[screenshot | figma-link]"
 disable-model-invocation: true
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
   platforms: [web, ios, android]
   owner: design-system-team
 description: >
@@ -121,7 +121,7 @@ MCP не подключён, интеграция ограничена» и ра
    - Нет свидетельств → не решай сам, зафиксируй как открытый вопрос для
      Шага 9.5.
 3. Явная аналогия с уже существующими Row-паттернами (`ListRow`,
-   `BottomSheetRow`, `IslandRow`, `MenuRow` —
+   `IslandRow`, `MenuRow` —
    `skills/_shared/standards/ds-component-architecture-guide.md`, раздел «Строчные
    компоненты»): если новый повторяющийся паттерн структурно похож на Row
    (строка с содержимым внутри более крупного контейнера), по умолчанию
@@ -461,6 +461,7 @@ Designer, не за skill.
 
 ### Changelog
 
+- **1.3.2** — 2026-11-22. Пример Row-паттернов: убран `BottomSheetRow` — не заводится, строка в шторке — `ListRow`.
 - **1.3.1** — 2026-10-09. База известных компонентов — Presentbook вместо легаси `docs/storybook/components/*.html` (ADR-044).
 - **1.3.0** — 2026-07-03. Added Decomposition Check step before verdict;
   moved clarifying questions to precede verdict instead of following it.
