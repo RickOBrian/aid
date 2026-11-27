@@ -1,7 +1,6 @@
 ---
 name: ds-figma-page-brief
 argument-hint: "<audit|construction> <компонент> <figma-ссылка на файл библиотеки или пейдж>"
-disable-model-invocation: true
 metadata:
   version: "0.2.0"
   kind: protocol

@@ -11,7 +11,7 @@
  *   node scripts/check-docs.mjs --json     машинный вывод
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, lstatSync, readlinkSync, existsSync } from 'node:fs';
 import { join, dirname, basename, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -431,6 +431,34 @@ if (existsSync(join(repoRoot, PENDING_SCHEMA))) {
         err(file, RULE, `pendingRef ведёт на несуществующий файл: ${data.pendingRef}`);
     }
   }
+}
+
+/* ---------- скиллы: подключение и триггеры (AID-114) ----------
+   skill-link: инструмент Skill видит только .claude/skills/, поэтому у каждого
+   skills/<имя>/SKILL.md — симлинк .claude/skills/<имя> → ../../skills/<имя>.
+   skill-trigger: каждый скилл назван в таблице «момент → скилл»
+   docs/hub/agents/README.md — иначе его зовут по памяти, то есть никогда. */
+
+const SKILLS_DIR = 'skills';
+const CLAUDE_SKILLS = '.claude/skills';
+const TRIGGERS = 'docs/hub/agents/README.md';
+const skillNames = (dir) =>
+  existsSync(join(repoRoot, dir))
+    ? readdirSync(join(repoRoot, dir)).filter((n) => existsSync(join(repoRoot, dir, n, 'SKILL.md')))
+    : [];
+for (const name of skillNames(SKILLS_DIR)) {
+  const link = join(CLAUDE_SKILLS, name);
+  let st;
+  try { st = lstatSync(join(repoRoot, link)); } catch { st = null; }
+  if (!st) err(join(SKILLS_DIR, name, 'SKILL.md'), 'skill-link', `нет симлинка ${link} → ../../skills/${name}: скилла нет в списке Skill`);
+  else if (!st.isSymbolicLink()) err(link, 'skill-link', `копия вместо симлинка на ../../skills/${name}: копии расходятся`);
+  else if (readlinkSync(join(repoRoot, link)) !== `../../skills/${name}`)
+    err(link, 'skill-link', `симлинк ведёт на ${readlinkSync(join(repoRoot, link))}, нужно ../../skills/${name}`);
+}
+if (existsSync(join(repoRoot, TRIGGERS))) {
+  const table = readFileSync(join(repoRoot, TRIGGERS), 'utf-8');
+  for (const name of new Set([...skillNames(SKILLS_DIR), ...skillNames(CLAUDE_SKILLS)]))
+    if (!table.includes(`\`${name}\``)) err(TRIGGERS, 'skill-trigger', `скилла «${name}» нет в таблице «момент → скилл»`);
 }
 
 /* ---------- вывод ---------- */
