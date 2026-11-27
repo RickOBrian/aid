@@ -1,0 +1,89 @@
+{
+  "id": "icons-arrow-location",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Icons/Wilhelm",
+  "collectionName": "icons",
+  "product": "driver",
+  "changeSummary": "Иконка arrow_location — стрелка положения водителя, бывший компонент Driver arrow small 89:5932 (designer-23, issue #491, задача AID-LU-29). Решение arturuxui 09.11 (после обсуждения с Сергеем): стрелка — по сути иллюстрация и переезжает в файл иконок Driver AwRpEGfyeNjRbZP8KGG1wy; токенов на градиенты нет, внутри граней простые хексы; Gradients/Arrow снят. Рабочий ответ Standards 09.11: хексы граней — отход, запись component-deviation-arrow-location-faces, decision:pd заводит Standards; мастер в файле иконок идёт по схеме иконок (без свойств и вариантов компонентная обёртка не нужна), запись — в чейнжлог tokens/driver-icons-changelog.json, impact minor, kind added, имя в snake_case; ArrowLocation из #506 п.4 и initial 1.0.0 отпадают. Имя: Standards предложил кандидата ic_arrow_location; в файле иконок префикс ic_ есть только у ic_maneuver_*_light, семья стрелок — arrow_up, arrow_left и другие, поэтому arrow_location. Текущий мастер: Pins, одиночный 20×20 без свойств; экземпляры — 3 в Route Progress 89:5939, через него — в Headers/navigation 89:4571; кода нет. Те же хексы и форма нарисованы заново в пине Driver 89:5852 (Navigating 2D 89:5881 и 3D) — пин берёт экземпляр стрелки. Сборка: один контур с тремя гранями вместо Bounds + маски + трёх слоёв Mask, слои outline / face-top / face-bottom / face-left, обводка внутри габарита 20×20; свойства направления нет, поворот задаёт родитель или код; пустые переопределения effects/strokes в экземплярах Route Progress сбросить. Тень: у мастера и экземпляров эффектов нет, тень — только на корне пина 89:5881 (0/4, размытие 12, чёрный 16 %); как тень держится при повороте — открыто, решает куратор, по стандартам возражений нет. Файл иконок (проверка 09.11, секция Icons 5608:62, 315 иконок): заливок 395, привязанных к переменным 0; обводок 9, привязанных 0; градиентов нет; локальных коллекций нет. Сейчас у мастера заливка Icons/Accent и обводка Strokes/Primary Inverted на переменных Driver; при переезде практики привязки в файле иконок нет — останутся ли токенами, в proposal.openQuestions. Открыто у дизайнера: меняются ли оттенок граней и цвет обводки между днём и ночью; хекс по теме не переключается, при «да» нужны два ассета или токен; recommendation записи отхода — после ответа. Аудит — пейдж «👀 Driver Arrow · audit» 460:2122, блоки 0–8 и 8.1 506:5723; мастер не правился. Заметка о миграции: мастер — в файле иконок, старый Driver arrow small — в Archive, замена в Route Progress и пине Driver (§3.9).",
+  "currentVersion": "1.1.0",
+  "proposedSemVerImpact": "minor",
+  "proposedVersion": null,
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "minor",
+    "description": "arrow_location: стрелка положения водителя 20×20 — иллюстрация с гранями на градиентах, обводка внутри габарита; направление задаёт родитель"
+  },
+  "proposal": {
+    "iconName": "arrow_location",
+    "figmaSource": "AID Driver Components o0IUYIS7vadbmXPXd81ql9, мастер Driver arrow small 89:5932; аудит 460:2122, варианты рядом 506:5723; целевой файл — иконки Driver AwRpEGfyeNjRbZP8KGG1wy",
+    "tokensCurrent": [
+      "Icons/Accent",
+      "Strokes/Primary Inverted"
+    ],
+    "rawValues": {
+      "faces": "простые хексы в радиальных градиентах трёх граней: #C166F9→#9542FF, #7941C0→#8526FF, #6203DC→#9937FB — решение arturuxui 09.11; токенов нет"
+    },
+    "unsupportedStates": [
+      "Pressed",
+      "Hovered",
+      "Focused",
+      "Disabled"
+    ],
+    "unsupportedStatesNote": "декоративный неинтерактивный индикатор положения (component-states-guide §5); смысл передаёт родитель — Route Progress или пин Driver",
+    "modes": [
+      "day",
+      "night"
+    ],
+    "modesNote": "меняются ли оттенок граней и цвет обводки между днём и ночью — ждёт ответа дизайнера",
+    "valueKinds": {
+      "size20": "raw-value",
+      "colors": "semantic-token",
+      "faces": "hardcode (исключение: component-deviation-arrow-location-faces)"
+    },
+    "a11y": "декоративная: скрыта от экранного диктора, положение озвучивает родитель",
+    "confidence": "medium",
+    "namingException": false,
+    "architectureException": false,
+    "reviewAt": "release",
+    "openQuestions": [
+      "Дизайнер: меняются ли оттенок граней и цвет обводки между днём и ночью; при «да» — два ассета или токен",
+      "Standards: в файле иконок цвета не привязаны к переменным (0 из 395 заливок, 0 из 9 обводок) — остаются ли Icons/Accent и Strokes/Primary Inverted токенами у этой иконки или входят в запись отхода",
+      "Standards: arrow_location вместо кандидата ic_arrow_location; секция файла иконок — при сборке",
+      "Куратор: тень пина при повороте; по стандартам возражений нет ни к одному варианту"
+    ],
+    "findings": [
+      "Грани — шесть хексов в радиальных градиентах; решением 09.11 остаются хексами; ночью сейчас стрелка дневная",
+      "Форма и хексы продублированы в пине Driver 89:5852 (Navigating 2D 89:5881 и 3D) — заменить экземпляром",
+      "Пустые переопределения effects/strokes в экземплярах Route Progress 89:5939",
+      "Тень только на корне пина 89:5881 (0/4, размытие 12, чёрный 16 %); поворот инстанса пина поворачивает и тень",
+      "В файле иконок нет привязок цветов к переменным и нет градиентов — arrow_location будет первой с градиентами"
+    ]
+  },
+  "figma": {
+    "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+    "auditPage": "460:2122",
+    "componentPage": "194:3106",
+    "components": {
+      "Driver arrow small": "89:5932"
+    },
+    "auditBlocks": {
+      "8.1 Варианты рядом": "506:5723"
+    },
+    "input": {
+      "fileKey": "o0IUYIS7vadbmXPXd81ql9",
+      "node": "89:5932"
+    },
+    "targetFile": {
+      "fileKey": "AwRpEGfyeNjRbZP8KGG1wy",
+      "label": "иконки Driver"
+    }
+  },
+  "relatedTokenChanges": [],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "deviationRef": "changes/driver/pending/component-deviation-arrow-location-faces.json",
+  "created": "2026-10-27",
+  "author": "arturuxui"
+}
