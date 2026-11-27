@@ -1,0 +1,34 @@
+{
+  "id": "component-badge-count",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "BadgeCount",
+  "componentId": "badge-count",
+  "product": "rider",
+  "changeSummary": "BadgeCount Rider: числовой каунтер (алиас Counter), как в Driver. Один тон — Accent, один размер 24, круг при одной цифре, value и max — значения, не варианты. Предаудит 2026-11-27: черновик 2696:28857 — фрейм на Archive, аналога в Rider Components нет; отступы не привязаны к space-4/space-8, лишняя скрытая обводка Stroke/Primary.",
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "relatedTokenChanges": [],
+  "task": "designer-44",
+  "taskKey": "AID-116",
+  "issue": 654,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2696-28857",
+    "auditPage": null
+  },
+  "decisions": [
+    { "date": "2026-11-27", "by": "PD", "about": "Имя BadgeCount, алиас Counter", "quote": "1ок" },
+    { "date": "2026-11-27", "by": "PD", "about": "Тон", "quote": "только фиолетовый" },
+    { "date": "2026-11-27", "by": "PD", "about": "Размер", "quote": "один размер пока что" },
+    { "date": "2026-11-27", "by": "PD", "about": "Одна цифра — круг 24×24: min-width = высота, отступ space-6", "quote": "а" },
+    { "date": "2026-11-27", "by": "PD", "about": "Порог max", "quote": "можно и 99+, допустимо и больше (решается на уровне сценария)" },
+    { "date": "2026-11-27", "by": "PD", "about": "Фон — Background/Accent с правкой описания «для свитчеров» (token-change-gate, Designer · Components)", "quote": "а" },
+    { "date": "2026-11-27", "by": "PD", "about": "Тень или обводка-отбивка на фото и карте", "quote": "не нужна" }
+  ],
+  "openQuestions": [],
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej"
+}
