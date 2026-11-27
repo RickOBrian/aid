@@ -50,6 +50,7 @@ export const HUB_ROUTES = {
   guides: '/guides',
   tools: '/tools',
   toolsTokenComparator: '/tools/token-comparator',
+  toolsMapShimmer: '/tools/map-shimmer',
 } as const;
 
 /** Название дизайн-системы. */
