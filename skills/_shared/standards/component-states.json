@@ -1,6 +1,6 @@
 {
   "id": "component-states-guide",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "status": "alpha",
   "humanFile": "component-states-guide.md",
   "note": "Машинный слой состояний. Имя состояния в Figma — источник истины; платформенные колонки описывают идиому стека, стек резолвится из products/<id>/product.json → platformModel.",
@@ -84,7 +84,10 @@
       ]
     },
     "pressed": {
+      "preferred": "state-layer",
       "token": "bg-accent-states-pressed",
+      "tokenLevel": "may",
+      "note": "семантический токен состояния заливки вместо слоя, если есть в обеих темах; основной механизм — pressedLayer",
       "platforms": [
         "web",
         "ios",
@@ -151,6 +154,32 @@
       ],
       "restriction": "только контролы форм"
     }
+  },
+  "pressedLayer": {
+    "_doc": "§2.1. Решение Standards по #506 п.2 (PD 09.11, задача #564).",
+    "color": "токен цвета содержимого варианта (текст или иконка)",
+    "opacity": 0.12,
+    "valueKind": "platform-convention",
+    "levels": {
+      "layer": "should",
+      "semanticStateToken": "may"
+    },
+    "platforms": {
+      "ios": "слой 12 %",
+      "web": "слой 12 %",
+      "android": "ripple цвета содержимого, системная прозрачность; на акцентной заливке — bg-accent-states-ripple-android",
+      "figma": "слой State над заливкой, токен содержимого, opacity 12 %"
+    },
+    "appliesExisting": [
+      {
+        "rule": "без component-токенов pressed",
+        "source": "token-rules §4"
+      },
+      {
+        "rule": "контраст содержимого на нажатой заливке ≥ 4.5:1 день и ночь",
+        "source": "accessibility"
+      }
+    ]
   },
   "absorptionPriority": [
     "disabled",

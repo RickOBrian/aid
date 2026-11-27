@@ -1,0 +1,4 @@
+{"1:3 Shadows":{"17:21 Header":{"count":3,"fnv":"45a8ac0b","lines":["1.1.0","Коллекция токенов: effects  ·  Режимы: Day, Night","Стили Shadows"]},"17:24 Data":{"count":419,"fnv":"3127422f"},"21:15 CHANGELOG":{"count":18,"fnv":"8346fb60"}},
+ "66:278 Glass":{"70:13 Header":{"count":3,"fnv":"75f3e3b9","lines":["1.0.0","Glass","Коллекция токенов: effects · Режимы: Day, Night"]},"70:19 Data":{"count":183,"fnv":"baaa7d78"},"71:17 CHANGELOG":{"count":12,"fnv":"1876291f"}},
+ "1:4 Space":{"62:35 Header":{"count":2,"fnv":"ee09a912","lines":["Коллекция токенов: space","Переменные отступов в Rider"]},"62:39 Token Table":{"count":69,"fnv":"c2aa47dc"},"208:54 CHANGELOG":{"count":24,"fnv":"a147d17d"}},
+ "1:5 Radius":{"63:15 Header":{"count":2,"fnv":"c023a684","lines":["Коллекция токенов: radius","Переменные скруглений в Rider"]},"63:19 Token Table":{"count":45,"fnv":"f5a7790c"},"204:50 CHANGELOG":{"count":12,"fnv":"e56bfc01"}}}

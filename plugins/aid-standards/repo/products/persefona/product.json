@@ -44,8 +44,21 @@
   "figmaFolder": {
     "folderId": "638447836",
     "url": "https://www.figma.com/files/1379448576167521267/folder/638447836",
-    "note": "Папка библиотек AID (решение PD 2026-10-23). Файл библиотеки Persefona — figmaFiles, когда создан (persefona-1)."
+    "note": "Папка библиотек AID (решение PD 2026-10-23). Библиотека Persefona — три файла (product-context §9.1), ключи — figmaFiles; раскладка и порядок публикации — rules/persefona-figma-pages.md §10.4."
   },
-  "figmaFiles": null,
+  "figmaFiles": {
+    "tokens": {
+      "fileKey": "YDjPxFrW1yXqm9RzBGQXuc",
+      "url": "https://www.figma.com/design/YDjPxFrW1yXqm9RzBGQXuc"
+    },
+    "icons": {
+      "fileKey": "dcccBNrHsTuROv7uUp3NGk",
+      "url": "https://www.figma.com/design/dcccBNrHsTuROv7uUp3NGk"
+    },
+    "components": {
+      "fileKey": "X8DoqKC0SKfxb8SoKboo3N",
+      "url": "https://www.figma.com/design/X8DoqKC0SKfxb8SoKboo3N"
+    }
+  },
   "notes": "Статус internal: в пайплайне токенов и компонентов участвует, в переключателе продуктов Presentbook не показывается (product-context §2). Токены и компоненты Persefona заводятся по общим стандартам AID с визуальным языком AID; Standards · Persefona создаёт их по необходимости (решение PD 2026-10-23), гейты и lookup обязательны."
 }

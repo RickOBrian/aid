@@ -164,6 +164,8 @@ export const riderIconSections: IconSection[] = [
       icon('safety_warning', 'safety_warning', '3867:543'),
       icon('lifebuoy', 'lifebuoy', '3867:551'),
       icon('clipboard_outline', 'clipboard_outline', '3867:559'),
+      icon('delivery_fill', 'delivery_fill', '3904:16'),
+      icon('medicine_case_fill', 'medicine_case_fill', '3904:22'),
     ],
   },
   {
@@ -203,6 +205,8 @@ export const riderIconSections: IconSection[] = [
       icon('external_link', 'external_link', '3867:373'),
       icon('map_outline', 'map_outline', '3867:381'),
       icon('download', 'download', '3867:391'),
+      icon('chat_call_fill', 'chat_call_fill', '3927:20'),
+      icon('chat_call_outline', 'chat_call_outline', '3927:30'),
     ],
   },
   {
