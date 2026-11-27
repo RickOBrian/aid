@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aid/skills/_shared/schemas/pending-item.schema.json",
+  "title": "Pending-запись AID",
+  "description": "Схема файла changes/<продукт>/pending/*.json: предложение изменения (компонент, токен, иконка, скиллы), находка аудита или запись исключения. Версия схемы 0.1.0 (AID-98, #604). Правила, которые схемой не выразить и которые проверяет check-docs: id совпадает с именем файла без .json; product совпадает с папкой changes/<product>/; pendingRef у исключения указывает на существующий файл. Поля сверх перечисленных допустимы — схема держит общее ядро, а не все поля всех задач.",
+  "type": "object",
+  "required": ["id", "type", "product", "status", "created", "author"],
+  "properties": {
+    "id": {
+      "description": "Имя файла без .json, латиница через дефис: component-<slug>, token-<slug>, component-deviation-<slug>, audit-<дата>-<slug>.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "type": {
+      "description": "Вид артефакта. skills — релиз скиллов (versioning-strategy, «Skills release»).",
+      "enum": ["component", "token", "icon", "skills"]
+    },
+    "product": {
+      "description": "Id продукта — папка products/<id> и changes/<id>.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "status": {
+      "description": "pending — ждёт релиза; resolved — находка аудита закрыта (нужно поле resolved); temporary и accepted — статусы записи исключения (component-gate §9).",
+      "enum": ["pending", "resolved", "temporary", "accepted"]
+    },
+    "created": { "$ref": "#/$defs/date" },
+    "updated": { "$ref": "#/$defs/date" },
+    "resolved": { "$ref": "#/$defs/date" },
+    "author": { "type": "string", "minLength": 1 },
+
+    "changeType": {
+      "description": "Тип изменения по changelog-guide; audit-finding — находка аудита (нужно поле auditFinding).",
+      "enum": ["added", "changed", "deprecated", "removed", "fixed", "audit-finding"]
+    },
+    "taskType": {
+      "description": "Тип задачи по протоколу figma-library-workflow §3.3: create — создание, evolve — развитие.",
+      "enum": ["create", "evolve"]
+    },
+    "artifact": { "type": "string", "minLength": 1 },
+    "componentId": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "collectionName": { "type": "string", "minLength": 1 },
+    "changeSummary": { "type": "string", "minLength": 1 },
+    "currentVersion": { "$ref": "#/$defs/versionOrNull" },
+    "proposedSemVerImpact": {
+      "description": "Предложенный импакт; итог — только на границе релиза (release-gate).",
+      "enum": ["initial", "major", "minor", "patch", "undetermined"]
+    },
+    "proposedVersion": { "$ref": "#/$defs/versionOrNull" },
+    "proposedChangelogEntry": {
+      "description": "Строка changelog {kind, impact, description} или релиз целиком {type, changes[]}, как в changelog-JSON токенов.",
+      "anyOf": [{ "$ref": "#/$defs/changelogEntry" }, { "$ref": "#/$defs/changelogRelease" }]
+    },
+    "proposedChangelogEntries": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "relatedTokenChanges": {
+      "description": "id других pending-записей.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "reviewRoute": {
+      "description": "Маршрут Presentbook или null, пока страницы нет.",
+      "type": ["string", "null"],
+      "pattern": "^/"
+    },
+    "sourcePath": { "type": ["string", "null"] },
+
+    "task": {
+      "description": "Задача на доске в свободной форме (designer-34 и т.п.).",
+      "type": "string"
+    },
+    "taskKey": {
+      "description": "Ключ задачи: AID-95, AID-LU-11.",
+      "type": "string",
+      "pattern": "^[A-Z]+(-[A-Z]+)*-[0-9]+$"
+    },
+    "issue": { "type": "integer", "minimum": 1 },
+    "pr": {
+      "description": "Номер PR с этой записью — для запроса приёмки (скилл ds-acceptance-request).",
+      "type": "integer",
+      "minimum": 1
+    },
+    "figma": { "$ref": "#/$defs/figma" },
+    "decisions": {
+      "description": "Решения PD и куратора дословно, с датой и автором.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/decision" }
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "auditFinding": { "type": "object" },
+    "proposal": {
+      "description": "Предложение компонента по component-gate (Phase 3) — форма гейта, схема её не повторяет.",
+      "type": "object"
+    },
+
+    "exceptionType": {
+      "description": "Признак записи исключения (component-gate §9).",
+      "type": "string",
+      "minLength": 1
+    },
+    "standard": { "type": "string", "minLength": 1 },
+    "actual": { "type": "string", "minLength": 1 },
+    "reason": { "type": "string", "minLength": 1 },
+    "recommendation": { "type": ["string", "null"] },
+    "reviewAt": { "enum": ["release", "next-major"] },
+    "pendingRef": {
+      "type": "string",
+      "pattern": "^changes/[a-z][a-z0-9-]*/(pending|released)/[^/]+\\.json$"
+    },
+    "decidedBy": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": { "required": ["exceptionType"] },
+      "then": {
+        "description": "Запись исключения.",
+        "required": ["standard", "actual", "reason", "reviewAt", "pendingRef"],
+        "properties": { "status": { "enum": ["temporary", "accepted"] } }
+      },
+      "else": {
+        "description": "Предложение изменения или находка аудита.",
+        "required": ["changeType", "artifact", "changeSummary"],
+        "properties": { "status": { "enum": ["pending", "resolved"] } }
+      }
+    },
+    {
+      "if": { "required": ["changeType"], "properties": { "changeType": { "const": "audit-finding" } } },
+      "then": { "required": ["auditFinding"] }
+    },
+    {
+      "if": { "required": ["status"], "properties": { "status": { "const": "resolved" } } },
+      "then": { "required": ["resolved"] }
+    },
+    {
+      "if": { "required": ["taskType"], "properties": { "taskType": { "const": "create" } } },
+      "then": {
+        "description": "Создание — proposedVersion 1.0.0 или null до приёмки, импакт initial (протокол §3.3).",
+        "properties": {
+          "proposedSemVerImpact": { "const": "initial" },
+          "proposedVersion": { "enum": ["1.0.0", null] }
+        }
+      }
+    },
+    {
+      "if": { "required": ["taskType"] },
+      "then": {
+        "description": "Компонент во флоу figma-library-workflow — запрос приёмки берёт id узлов отсюда. componentId не обязателен: запись Persefona бывает на несколько компонентов сразу.",
+        "required": ["proposedSemVerImpact", "figma"]
+      }
+    }
+  ],
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "versionOrNull": {
+      "anyOf": [{ "$ref": "#/$defs/version" }, { "type": "null" }]
+    },
+    "nodeId": {
+      "description": "Id узла Figma: 2349:8768.",
+      "type": "string",
+      "pattern": "^[0-9]+:[0-9]+$"
+    },
+    "nodeMap": {
+      "description": "Имя → id узла.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/nodeId" }
+    },
+    "changelogEntry": {
+      "type": "object",
+      "required": ["kind", "impact", "description"],
+      "properties": {
+        "kind": { "enum": ["added", "changed", "deprecated", "removed", "fixed"] },
+        "impact": { "enum": ["initial", "major", "minor", "patch", "undetermined"] },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "changelogRelease": {
+      "type": "object",
+      "required": ["type", "changes"],
+      "properties": {
+        "type": { "enum": ["initial", "major", "minor", "patch"] },
+        "changes": {
+          "type": "array",
+          "items": { "type": "object", "required": ["kind", "description"] }
+        }
+      }
+    },
+    "nodeIdOrNull": {
+      "description": "Id узла или null, если узла больше нет (пейдж аудита удалён после переноса секцией).",
+      "anyOf": [{ "$ref": "#/$defs/nodeId" }, { "type": "null" }]
+    },
+    "figmaRef": {
+      "type": "object",
+      "properties": {
+        "fileKey": { "type": "string", "pattern": "^[A-Za-z0-9]{22}$" },
+        "node": { "$ref": "#/$defs/nodeId" }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["date", "by"],
+      "anyOf": [{ "required": ["quote"] }, { "required": ["about"] }],
+      "properties": {
+        "date": { "$ref": "#/$defs/date" },
+        "by": { "type": "string", "minLength": 1 },
+        "quote": { "description": "Дословно, без пересказа.", "type": "string", "minLength": 1 },
+        "about": { "type": "string", "minLength": 1 },
+        "replaces": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+    "figma": {
+      "description": "Где лежит работа в Figma. Ключи ниже — общие для флоу figma-library-workflow; остальные допустимы.",
+      "type": "object",
+      "required": ["fileKey"],
+      "properties": {
+        "fileKey": { "type": "string", "pattern": "^[A-Za-z0-9]{22}$" },
+        "url": { "type": "string", "pattern": "^https://" },
+        "auditPage": { "$ref": "#/$defs/nodeIdOrNull" },
+        "auditSection": { "$ref": "#/$defs/nodeId" },
+        "auditBlocks": {
+          "description": "Номер блока (0–8) или cover → id узла.",
+          "$ref": "#/$defs/nodeMap"
+        },
+        "auditPrototypes": { "$ref": "#/$defs/nodeMap" },
+        "constructionPage": { "$ref": "#/$defs/nodeId" },
+        "componentPage": { "$ref": "#/$defs/nodeId" },
+        "masterSection": { "$ref": "#/$defs/nodeId" },
+        "guide": { "$ref": "#/$defs/nodeId" },
+        "guideSection": { "$ref": "#/$defs/nodeId" },
+        "guideBlocks": {
+          "description": "Номер блока гайда (1–8, 10, 11) или cover → id узла.",
+          "$ref": "#/$defs/nodeMap"
+        },
+        "changelogSection": { "$ref": "#/$defs/nodeId" },
+        "components": { "type": "object" },
+        "componentKey": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "masterKey": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "input": {
+          "description": "Вход задачи: файл и узел или список таких.",
+          "anyOf": [
+            { "$ref": "#/$defs/figmaRef" },
+            { "type": "array", "items": { "$ref": "#/$defs/figmaRef" } }
+          ]
+        },
+        "preview": { "type": "string", "pattern": "^https://" }
+      }
+    }
+  }
+}
