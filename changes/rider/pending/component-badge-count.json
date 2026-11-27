@@ -25,7 +25,8 @@
     { "date": "2026-11-27", "by": "PD", "about": "Одна цифра — круг 24×24: min-width = высота, отступ space-6", "quote": "а" },
     { "date": "2026-11-27", "by": "PD", "about": "Порог max", "quote": "можно и 99+, допустимо и больше (решается на уровне сценария)" },
     { "date": "2026-11-27", "by": "PD", "about": "Фон — Background/Accent с правкой описания «для свитчеров» (token-change-gate, Designer · Components)", "quote": "а" },
-    { "date": "2026-11-27", "by": "PD", "about": "Тень или обводка-отбивка на фото и карте", "quote": "не нужна" }
+    { "date": "2026-11-27", "by": "PD", "about": "Тень или обводка-отбивка на фото и карте", "quote": "не нужна" },
+    { "date": "2026-11-27", "by": "PD", "about": "Контраст ночью: Background/Accent к Background/Secondary 2,96 < 3:1 (к Primary 3,38) — без отбивки, принятым отклонением", "quote": "а) Оставить, отклонение" }
   ],
   "openQuestions": [],
   "status": "pending",
