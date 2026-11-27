@@ -118,6 +118,10 @@
       "source": "skills/guide-lint"
     },
     {
+      "path": "skills/ds-showcase-add",
+      "source": "skills/ds-showcase-add"
+    },
+    {
       "path": "skills/persefona-figma-lint",
       "source": "skills/persefona-figma-lint"
     }
