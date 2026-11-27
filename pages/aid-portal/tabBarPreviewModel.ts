@@ -33,30 +33,22 @@ export interface TabBarMotion {
   tabs: 3 | 4;
 }
 
-/** Как в гайде TabBar, блок 5: Smart Animate 140 мс ease-in-out, пружина 1 / 420 / 24, +2. */
+/**
+ * Значения гайда TabBar, блок 5 — зафиксированы PD 27.11: растяжение 80 мс
+ * ease-in-out, расширение +2, пружина mass 1 · stiffness 740 · damping 34.
+ */
 export const GUIDE_MOTION: TabBarMotion = {
-  stretchMs: 140,
+  stretchMs: 80,
   stretchEasing: 'ease-in-out',
   growPx: 2,
   mass: 1,
-  stiffness: 420,
-  damping: 24,
+  stiffness: 740,
+  damping: 34,
   tabs: 4,
 };
 
-/**
- * Умолчания страницы — быстрее гайда (Валентина Волчёнкова, 30.10: «надо только
- * сделать анимацию перехода фона выбранного таба быстрее»). Кандидаты, не решение.
- */
-export const DEFAULT_MOTION: TabBarMotion = {
-  stretchMs: 100,
-  stretchEasing: 'ease-in-out',
-  growPx: 2,
-  mass: 1,
-  stiffness: 700,
-  damping: 40,
-  tabs: 4,
-};
+/** Умолчания страницы совпадают с гайдом. */
+export const DEFAULT_MOTION: TabBarMotion = { ...GUIDE_MOTION };
 
 export interface MotionKnob {
   key: 'stretchMs' | 'growPx' | 'mass' | 'stiffness' | 'damping';

@@ -71,7 +71,7 @@ describe('превью TabBar Rider (presentbook-10)', () => {
     expect(ease('ease-out', 0.5)).toBeGreaterThan(0.5);
     expect(springProgress(0, GUIDE_MOTION)).toBe(0);
     expect(springProgress(2000, GUIDE_MOTION)).toBeCloseTo(1, 3);
-    // перелёт есть: пружина 1/420/24 недодемпфирована
+    // перелёт есть: пружина 1/740/34 недодемпфирована
     expect(Math.max(...Array.from({ length: 300 }, (_, t) => springProgress(t, GUIDE_MOTION)))).toBeGreaterThan(1);
     // передемпфированная тоже доходит
     expect(springProgress(3000, { mass: 1, stiffness: 200, damping: 80 })).toBeCloseTo(1, 2);
@@ -88,17 +88,16 @@ describe('превью TabBar Rider (presentbook-10)', () => {
     expect(end).toEqual({ rect: restRect(2, 4), phase: 'rest' });
   });
 
-  it('умолчания быстрее гайда и укладываются в 400 мс', () => {
-    expect(totalMs(DEFAULT_MOTION)).toBeLessThan(totalMs(GUIDE_MOTION));
-    expect(totalMs(DEFAULT_MOTION)).toBeLessThan(400);
-    expect(GUIDE_MOTION).toMatchObject({ stretchMs: 140, stretchEasing: 'ease-in-out', mass: 1, stiffness: 420, damping: 24, growPx: 2 });
-    expect(DEFAULT_MOTION.growPx).toBe(2);
+  it('значения гайда зафиксированы PD 27.11, умолчания совпадают', () => {
+    expect(GUIDE_MOTION).toEqual({ stretchMs: 80, stretchEasing: 'ease-in-out', growPx: 2, mass: 1, stiffness: 740, damping: 34, tabs: 4 });
+    expect(DEFAULT_MOTION).toEqual(GUIDE_MOTION);
+    expect(DEFAULT_MOTION).not.toBe(GUIDE_MOTION);
   });
 
   it('JSON для передачи несёт и значения гайда', () => {
     const out = motionExport(DEFAULT_MOTION);
-    expect(out.stretch).toMatchObject({ durationMs: 100, heightGrowPx: 2, cssEasing: 'cubic-bezier(0.42, 0, 0.58, 1)' });
-    expect(out.guide.spring).toEqual({ mass: 1, stiffness: 420, damping: 24 });
+    expect(out.stretch).toMatchObject({ durationMs: 80, heightGrowPx: 2, cssEasing: 'cubic-bezier(0.42, 0, 0.58, 1)' });
+    expect(out.guide.spring).toEqual({ mass: 1, stiffness: 740, damping: 34 });
   });
 
   it('сохранённое: битое — null, числа обрезаются до границ бегунков', () => {

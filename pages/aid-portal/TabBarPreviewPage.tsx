@@ -43,7 +43,8 @@ import {
  * подписано на странице.
  */
 
-const STORAGE_KEY = 'aid-tab-bar-preview-v1';
+// v2: значения гайда зафиксированы PD 27.11 — прежние сохранённые подборы не подхватываются.
+const STORAGE_KEY = 'aid-tab-bar-preview-v2';
 const MAP_IMAGES: Record<TabBarTheme, string> = { day: mapDay, night: mapNight };
 const THEME_TITLE: Record<TabBarTheme, string> = { day: 'День', night: 'Ночь' };
 const PHASE_LABEL: Record<Phase, string> = { stretch: 'фаза 1 · растяжение', spring: 'фаза 2 · пружина', rest: 'покой' };
@@ -446,10 +447,8 @@ export function TabBarPreviewPage() {
           </div>
         </div>
         <p className="pf-body-s tbx-muted">
-          Было в гайде: растяжение {GUIDE_MOTION.stretchMs} мс {GUIDE_MOTION.stretchEasing}, пружина {GUIDE_MOTION.mass} ·{' '}
-          {GUIDE_MOTION.stiffness} · {GUIDE_MOTION.damping} (mass · stiffness · damping), расширение +{GUIDE_MOTION.growPx}. Умолчания
-          страницы быстрее — по пожеланию дизайнера 30.10 «сделать анимацию перехода фона выбранного таба быстрее»:{' '}
-          {DEFAULT_MOTION.stretchMs} мс, пружина {DEFAULT_MOTION.mass} · {DEFAULT_MOTION.stiffness} · {DEFAULT_MOTION.damping}.
+          Значения гайда (зафиксированы PD 27.11): растяжение {GUIDE_MOTION.stretchMs} мс {GUIDE_MOTION.stretchEasing}, расширение +
+          {GUIDE_MOTION.growPx}, пружина {GUIDE_MOTION.mass} · {GUIDE_MOTION.stiffness} · {GUIDE_MOTION.damping}.
         </p>
         <div className="tbx-knobs">
           {MOTION_KNOBS.map((knob) => (
