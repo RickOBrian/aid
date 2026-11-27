@@ -1,0 +1,115 @@
+{
+  "id": "component-option-row",
+  "type": "component",
+  "changeType": "added",
+  "taskType": "create",
+  "artifact": "OptionRow",
+  "componentId": "option-row",
+  "product": "rider",
+  "changeSummary": "OptionRow Rider — строка опции на острове заказа (дефолтная ячейка): leading — слот (Icon 24 или графика 24), текст — overline + title, trailing — один элемент (шеврон, Switch, Button или текст значения). Вход — строки острова 5262:25888 (New Rider DEV, Order Flow), собранные на чужом List Item 5221:12496. Новый мастер 1.0.0; List Item 259:3755 в Rider Components устаревает с протягиванием по §3.9. Отдельный компонент от RouteRow (AID-95) и других ячеек; остров со строками и разделителями — не в этой задаче.",
+  "currentVersion": null,
+  "proposedSemVerImpact": "initial",
+  "proposedVersion": "1.0.0",
+  "proposedChangelogEntry": {
+    "kind": "added",
+    "impact": "initial",
+    "description": "OptionRow: строка опции — иконка или графика слева, подпись над заголовком, справа шеврон, переключатель, кнопка или значение"
+  },
+  "relatedTokenChanges": [],
+  "task": "designer-40",
+  "taskKey": "AID-106",
+  "issue": 624,
+  "figma": {
+    "fileKey": "79UryRdexwKAv8vDIV5v4v",
+    "auditPage": "2798:2",
+    "input": [
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5262:25888"
+      },
+      {
+        "fileKey": "5mg6h0oB8yRDoUfTruogca",
+        "node": "5262:37018"
+      }
+    ],
+    "deprecates": {
+      "List Item": "259:3755"
+    },
+    "url": "https://www.figma.com/design/79UryRdexwKAv8vDIV5v4v/?node-id=2798-2",
+    "auditSection": "2798:3",
+    "auditBlocks": {
+      "cover": "2798:5",
+      "0": "2798:38",
+      "1": "2798:50",
+      "2": "2798:60",
+      "3": "2798:70",
+      "4": "2798:80",
+      "5": "2798:90",
+      "6": "2798:100",
+      "7": "2798:110",
+      "8": "2798:120"
+    },
+    "auditMaster": "2799:893",
+    "auditMasterKey": "62e8fa876e699be091ee0fe742338cb58587d641",
+    "auditPrototypes": {
+      "Прототип · OptionRow · день": "2804:1504",
+      "Прототип · OptionRow · ночь": "2804:1646"
+    }
+  },
+  "decisions": [
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "about": "Отдельный компонент — дефолтная ячейка",
+      "quote": "Это Row (это не финальное название, просто объясняю смысл). У нас будет много типов ячеек (например,  Route Row), которые решили не смешивать в один супер компонент, тк у них разная анатомия и логика применения. То, чем занимаешься ты, это условно дефолтная ячейка списка."
+    },
+    {
+      "date": "2026-11-25",
+      "by": "PD",
+      "about": "Мастер: новый 1.0.0, List Item 259:3755 устаревает (2б); только строка, без острова (3а)",
+      "quote": "2. Б\n3. А"
+    },
+    {
+      "date": "2026-11-26",
+      "by": "Standards",
+      "about": "Имя MenuRow / «Menu Row»",
+      "status": "заменено"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "PD",
+      "about": "Анкета 2: leading — слот (2а), overline + title (3а), Hug и отступы токенами (4а), trailing — один элемент (5а); destructive — показать",
+      "quote": "1 покажи где глазами посмотреть\n2 а\n3 а\n4 а\n5 а"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Имя ListRow / «List Row» по lookup Standards (передал Штаб): MenuRow занят ячейкой меню AID-118",
+      "replaces": "2026-11-26 Standards, имя MenuRow",
+      "status": "заменено"
+    },
+    {
+      "date": "2026-11-27",
+      "by": "Standards",
+      "about": "Имя OptionRow (с учётом слова PD 25.11 о ListRow): строка опции с контролом справа на острове заказа; MenuRow занят ячейкой меню AID-118 (переход в раздел, только шеврон)",
+      "replaces": "2026-11-27 Standards, имя ListRow",
+      "status": "Принято"
+    }
+  ],
+  "openQuestions": [
+    "Тон строки отмены: нейтральная или Destructive (в.1) — PD",
+    "Вертикальные отступы: space-16 / 12 / 20 — Standards",
+    "Минимальная высота (токена зоны нажатия нет) — Standards",
+    "Логотип карты в Leading — пробел Rider Icons",
+    "Trailing Button: ButtonInline 36 вместо Button (строка 68 против 88) — Standards",
+    "Show Trailing или Show Chevron — Standards",
+    "Стык с MenuRow (AID-118)"
+  ],
+  "reviewRoute": null,
+  "sourcePath": null,
+  "status": "pending",
+  "created": "2026-11-27",
+  "author": "sergej",
+  "updated": "2026-11-27",
+  "pr": 667
+}
