@@ -1,0 +1,31 @@
+{
+  "id": "token-rider-text-constant-white-loading",
+  "type": "token",
+  "changeType": "added",
+  "artifact": "Rider Colors/Semantic",
+  "collectionName": "rider-colors-semantic",
+  "product": "rider",
+  "task": "designer-12 · AID-74 · Button (issue #459)",
+  "changeSummary": "Новая переменная Text/Constant White Loading для переливания белой подписи кнопки Button в состоянии Pending (Primary, Destructive). Анкета token-change-gate — ответ sergej 2026-11-09: «Всё как предлагаешь».",
+  "status": "pending",
+  "created": "2026-11-09",
+  "author": "Sergey AI",
+  "questionnaire": {
+    "artifact": "Rider Colors/Semantic (color-sem); попутно — описание Duration/Loop (motion)",
+    "semverType": "minor",
+    "proposedVersion": "1.12.0 → 1.13.0 (номер называет человек, принимающий работу; запись в tokens/ — только через release-gate)",
+    "changelog": true,
+    "dependencies": "Core не меняется. У коллекции motion нет файла changelog в репо — пробел, правку описания Duration/Loop записать некуда."
+  },
+  "proposedChanges": [
+    {
+      "kind": "added",
+      "description": "Добавлена переменная Text/Constant White Loading — середина переливания белой подписи кнопки в состоянии Pending",
+      "details": "Text/Constant White Loading: Day #FFFFFF 20 %, Night #F8FAFF 20 %; scopes TEXT_FILL. Figma: yrfG6u9osujKX8e1B14lpT, VariableID:1756:183"
+    }
+  ],
+  "relatedChanges": [
+    "motion · Duration/Loop: описание обобщено — цикл повторяющейся анимации (спиннер, переливание Pending), значение 2000 мс не менялось (patch, нет файла changelog)"
+  ],
+  "publish": "Rider Tokens не опубликован. После публикации — привязать средний стоп градиента подписи Pending у Primary и Destructive (.Proto/Button · аудит 902:11790) к Text/Constant White Loading."
+}
