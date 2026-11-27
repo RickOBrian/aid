@@ -16,6 +16,8 @@ const CONFIG = {
   CAP: 20,                    // примеров на код в выводе; счёт — полный
 };
 
+if (!['file', 'page'].includes(CONFIG.MODE) || CONFIG.PRODUCT.startsWith('__') || CONFIG.KIND.startsWith('__') || (CONFIG.MODE === 'page' && CONFIG.PAGE_ID.startsWith('__')))
+  throw new Error('persefona-figma-lint: CONFIG не заменён (MODE, PRODUCT, KIND, PAGE_ID)');
 const L_out = { meta: { mode: CONFIG.MODE, product: CONFIG.PRODUCT, kind: CONFIG.KIND }, findings: [] };
 const L_cnt = {};
 const L_add = (code, level, pg, node, msg, fix) => {
@@ -174,7 +176,8 @@ if (CONFIG.MODE === 'file') {
   if (cover) {
     await figma.setCurrentPageAsync(cover.pg);
     const linked = [];
-    for (const t of cover.pg.findAllWithCriteria({ types: ['TEXT'] })) {
+    const ctexts = cover.pg.findAllWithCriteria({ types: ['TEXT'] }).filter(t => box(t)).sort((a, b) => box(a).y - box(b).y || box(a).x - box(b).x);
+    for (const t of ctexts) {
       let segs = []; try { segs = t.getStyledTextSegments(['hyperlink']); } catch (e) { continue; }
       for (const sg of segs) {
         if (sg.hyperlink?.type !== 'NODE') continue;
@@ -211,6 +214,7 @@ if (CONFIG.MODE === 'page') {
   for (const n of pg.children) if (n.type !== 'SECTION') L_add('L10', 'error', pg, n, `узел ${n.type} вне секции`, 'перенести в секцию (§6.3)');
   for (let i = 0; i < secs.length; i++) for (let j = i + 1; j < secs.length; j++) {
     const a = box(secs[i]), b = box(secs[j]);
+    if (!a || !b) continue;
     if (overlaps(a, b)) L_add('L10', 'error', pg, secs[j], `секция пересекается с «${secs[i].name}»`, 'раздвинуть, зазор 80 (§6.3)');
     else if (overlaps(a, b, CONFIG.SECTION_GAP - 0.5)) L_add('L10', 'error', pg, secs[j], `зазор до «${secs[i].name}» меньше ${CONFIG.SECTION_GAP}`, 'сдвинуть секции справа и ниже (§6.3, PD 2026-11-09)');
   }
@@ -218,7 +222,7 @@ if (CONFIG.MODE === 'page') {
   const inside = (c, s) => c.x >= s.x - 0.5 && c.y >= s.y - 0.5 && c.x + c.width <= s.x + s.width + 0.5 && c.y + c.height <= s.y + s.height + 0.5;
   walk(pg, n => {
     if (n.type !== 'SECTION') return n.type === 'PAGE';
-    const sb = box(n);
+    const sb = box(n); if (!sb) return false;
     for (const c of n.children) { const cb = c.absoluteRenderBounds || box(c); if (cb && !inside(cb, sb)) L_add('L11', 'error', pg, c, `выходит за секцию «${n.name}»`, 'увеличить секцию и сдвинуть соседние (§6.3)'); }
     const inner = n.children.filter(c => c.type === 'SECTION');
     for (let i = 0; i < inner.length; i++) for (let j = i + 1; j < inner.length; j++) if (overlaps(box(inner[i]), box(inner[j]))) L_add('L11', 'error', pg, inner[j], `вложенная секция пересекается с «${inner[i].name}»`, 'раздвинуть (§6.3)');
@@ -237,12 +241,12 @@ if (CONFIG.MODE === 'page') {
 
   // Клоны экранов на холсте: прямые дети секции, не экземпляры Kit и не тексты.
   const clones = new Set();
-  if (canvas) for (const s of secs) for (const c of s.children) if (!['INSTANCE', 'TEXT', 'RECTANGLE', 'SECTION'].includes(c.type)) clones.add(c.id);
+  if (canvas) for (const s of secs) for (const c of s.children) if (['FRAME', 'GROUP', 'COMPONENT', 'COMPONENT_SET'].includes(c.type)) clones.add(c.id);
   // L13 рамка line-scene позади клона (§6.3, после #524)
   if (canvas && CONFIG.LINE_SCENE) for (const s of secs) for (let i = 0; i < s.children.length; i++) {
     const c = s.children[i]; if (!clones.has(c.id)) continue;
-    const cb = box(c); let ok = false;
-    for (const r of s.children.slice(0, i)) { if (r.type !== 'RECTANGLE') continue; const rb = box(r);
+    const cb = box(c); if (!cb) continue; let ok = false;
+    for (const r of s.children.slice(0, i)) { if (r.type !== 'RECTANGLE') continue; const rb = box(r); if (!rb) continue;
       if (Math.abs(rb.x - cb.x + 1) < 0.6 && Math.abs(rb.width - cb.width - 2) < 0.6 && Math.abs(rb.y - cb.y + 1) < 0.6 && Math.abs(rb.height - cb.height - 2) < 0.6) {
         const st = await paints(r, 'strokes'); ok = st !== 'mixed' && st.some(x => x.var?.endsWith('line-scene')) && r.strokeWeight === 1; } }
     if (!ok) L_add('L13', 'error', pg, c, 'у клона нет рамки `line-scene` позади', 'прямоугольник 1 px `line-scene`, на 1 px шире клона с каждой стороны, слоем ниже (§6.3)');
@@ -260,13 +264,13 @@ if (CONFIG.MODE === 'page') {
     }
     return null;
   };
-  const HP = { header: 0, version: 0 };
+  const HP = { header: 0, list: [] };
   for (const n of [...nodes, ...instInClones]) {
     if (n.type === 'INSTANCE') {
       const mc = await n.getMainComponentAsync();
       if (!mc) { L_add('L17', 'error', pg, n, 'экземпляр без главного компонента', 'заменить экземпляром Kit или отвязать по решению (§9, §10.4)'); continue; }
       const mname = mc.parent?.type === 'COMPONENT_SET' ? mc.parent.name : mc.name;
-      if (mname === 'HeaderPage') HP.header++;
+      if (mname === 'HeaderPage') { HP.header++; HP.list.push(n); }
       continue;
     }
     if (instInClones.includes(n)) continue;
@@ -279,12 +283,12 @@ if (CONFIG.MODE === 'page') {
       const ps = await paints(n);
       if (ps !== 'mixed') for (const x of ps) if (x.type === 'SOLID' && !x.var) L_add('L14', 'error', pg, n, `голый цвет текста ${x.hex}`, 'переменная `text-*` Kit (§6.6)');
       if (!n.textStyleId || typeof n.textStyleId === 'symbol') L_add('L15', 'error', pg, n, typeof n.textStyleId === 'symbol' ? 'смешанные стили в тексте' : 'текст без стиля типографики', 'стиль `persefona/*` (§6.6)');
-      const white = ps !== 'mixed' && ps.some(x => x.hex && lum(x.hex) > 0.85);
-      if (white) { const bg = await bgOf(n); if (bg && lum(bg) > 0.5) L_add('L16', 'error', pg, n, `светлый текст ${ps[0].hex} на светлом фоне ${bg}`, 'белый текст — только на тёмной сцене (§6.3, Ф2а)'); }
+      const white = ps !== 'mixed' && ps.find(x => x.hex && lum(x.hex) > 0.85);
+      if (white) { const bg = await bgOf(n); if (bg && lum(bg) > 0.5) L_add('L16', 'error', pg, n, `светлый текст ${white.hex} на светлом фоне ${bg}`, 'белый текст — только на тёмной сцене (§6.3, Ф2а)'); }
     }
   }
   // L18 ссылки: на удалённый узел; «см. страницу» текстом (§6.3)
-  for (const t of pg.findAllWithCriteria({ types: ['TEXT'] })) {
+  for (const t of nodes.filter(n => n.type === 'TEXT')) {
     if (/см\.?\s+(страниц|пейдж)/i.test(t.characters)) L_add('L18', 'warn', pg, t, 'ссылка текстом «см. страницу…»', 'гиперссылка на узел (§6.3)');
     let segs = []; try { segs = t.getStyledTextSegments(['hyperlink']); } catch (e) { continue; }
     for (const sg of segs) if (sg.hyperlink?.type === 'NODE' && !(await figma.getNodeByIdAsync(sg.hyperlink.value)))
@@ -292,10 +296,9 @@ if (CONFIG.MODE === 'page') {
   }
 
   // L19 шапка: есть на страницах зон 0, 2, 3; метка статуса совпадает со значком (§6.2)
-  if ([0, 2, 3].includes(z) && !HP.header) L_add('L19', 'error', pg, null, 'нет шапки `HeaderPage`', 'экземпляр `HeaderPage` в левом верхнем углу первой секции (§6.2)');
+  if (([0, 2, 3].includes(z) || p.service === 'Cover') && !HP.header) L_add('L19', 'error', pg, null, 'нет шапки `HeaderPage`', 'экземпляр `HeaderPage` в левом верхнем углу первой секции (§6.2)');
   const words = Object.values(L_WORD);
-  const hps = pg.findAllWithCriteria({ types: ['INSTANCE'] }).filter(n => /^HeaderPage$/.test(n.name));
-  for (const h of hps) {
+  for (const h of HP.list) {
     const found = h.findAllWithCriteria({ types: ['TEXT'] }).map(t => t.characters.trim()).filter(s => words.includes(s));
     if (p.kind === 'readyfordev' || (z === 2 && CONFIG.KIND === 'components')) {
       if (found.length) L_add('L19', 'error', pg, h, `в шапке компонента после сборки метка «${found[0]}»`, 'меток над заголовком нет, рядом — бейдж версии (§6.2)');
@@ -312,6 +315,7 @@ if (CONFIG.MODE === 'page') {
     const art = secs.find(s => s.name === c.name.replace(/^Changelog · /, ''));
     if (!art) { L_add('L20', 'warn', pg, c, `нет секции «${c.name.replace(/^Changelog · /, '')}» для чейнжлога`, 'имя секции = `Changelog · ` + имя секции артефакта (§6.5)'); continue; }
     const a = box(art), b = box(c);
+    if (!a || !b) continue;
     if (Math.abs(b.y - a.y) > 0.5 || Math.abs(b.x - a.x - a.width - CONFIG.SECTION_GAP) > 0.5) L_add('L20', 'error', pg, c, `не справа от «${art.name}» верх к верху с отступом ${CONFIG.SECTION_GAP}`, 'справа, верхним краем по верху, отступ 80 (§6.5)');
   }
   // L21 аудит при сборке — в Archive секцией с датой (§7.1, решение PD 2026-11-26)
